@@ -34,8 +34,7 @@ netflix_session = NetflixSession(
 )
 library = Library(
     base_url=base_url,
-    #root_folder=kodi_helper.base_data_path,
-    root_folder='/Users/asciidisco/Desktop/lib',
+    root_folder=kodi_helper.base_data_path,
     library_settings=kodi_helper.get_custom_library_settings(),
     log_fn=kodi_helper.log
 )
