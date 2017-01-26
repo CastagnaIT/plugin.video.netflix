@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.netflix" name="Netflix" version="0.2.0" provider-name="tba">
+  <requires>
+    <import addon="xbmc.python" version="2.24.0"/>
+    <import addon="script.module.beautifulsoup" version="3.2.1"/>
+    <import addon="script.module.requests" version="2.12.4"/>
+    <import addon="script.module.pycryptodome" version="3.4.3"/>
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="inputstream.adaptive" version="1.0.6"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.service" library="service.py" start="login" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de">Netflix</summary>
+    <description lang="de">Addon für Netflix VOD Services</description>
+    <disclaimer lang="de">Möglicherweise sind einge Teile dieses Addons in Ihrem Land illegal, Sie sollten dies unbedingt vor der Installation überprüfen.</disclaimer>
+    <summary lang="en">Netflix</summary>
+    <description lang="en">Netflix VOD Services Addon</description>
+    <disclaimer lang="en">Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing.</disclaimer>
+    <assets>
+      <icon>resources\icon.png</icon>
+      <fanart>resources\fanart.jpg</fanart>
+      <screenshot>resources\screenshot-01.jpg</screenshot>
+      <screenshot>resources\screenshot-02.jpg</screenshot>
+      <screenshot>resources\screenshot-03.jpg</screenshot>
+    </assets>
+    <platform>all</platform>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+    <forum>http://www.kodinerds.net/</forum>
+    <source>https://github.com/kodinerds/repo</source>
+  </extension>
+</addon>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="30014">
+    <setting id="email" type="text" label="30005" default="" />
+    <setting id="password" type="text" option="hidden" label="30004" default="" />
+    <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
+  </category>
+  <category label="30025">
+    <setting id="enablelibraryfolder" type="bool" label="30026" default="false" />
+    <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true" />
+  </category>
+  <category label="30023">
+    <setting id="ssl_verification" type="bool" label="30024" default="true"/>
+  </category>
+  <category label="30015">
+    <setting id="logging" type="bool" label="30016" default="false"/>
+  </category>
+</settings>

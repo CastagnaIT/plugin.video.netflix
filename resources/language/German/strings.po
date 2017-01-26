@@ -1,0 +1,150 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon version: 0.2.0
+# Addon Provider: tba.
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2017-01-01 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Addon für Netflix VOD Services"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Möglicherweise sind einge Teile dieses Addons in Ihrem Land illegal, Sie sollten dies unbedingt vor der Installation überprüfen."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Vorschläge"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Pin"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Suchbegriff"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Passwort"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-mail"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Kindersicherungs-PIN nicht korrekt"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Bitter überprüfen Sie Ihre Kindersicherungs-PIN"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Login nicht erfolgreich"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Bitte überprüfen Sie Ihre Login Daten"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Genres"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Suche"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Keine Staffeln verfügbar"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Keine Titel gefunden"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Account"
+
+msgctxt "#30015"
+msgid "Logging"
+msgstr "Logging"
+
+msgctxt "#30016"
+msgid "Verbose logging"
+msgstr "Verbose logging"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Logout"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "In Bibliothek exportieren"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Auf Netflix bewerten"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Von 'Meiner Liste' entfernen"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Zu 'Meiner Liste' hinzufügen"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(zwischen 0 & 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Experte"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL verifizierung"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Bibliothek"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Eigenen Bibliotheks ordner nutzen"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Pfad zur Bibliothek"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Fehler beim abspielen"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Inputstream nicht gefunden"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Aus Bibliothek entfernen"
