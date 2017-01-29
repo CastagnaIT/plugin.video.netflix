@@ -233,7 +233,7 @@ class MSL:
                 rep = ET.SubElement(video_adaption_set, 'Representation',
                                     width=str(downloadable['width']),
                                     height=str(downloadable['height']),
-                                    bandwidth=str(downloadable['bitrate']*8*1024),
+                                    bandwidth=str(downloadable['bitrate']*1024),
                                     codecs='h264',
                                     mimeType='video/mp4')
 
@@ -254,7 +254,7 @@ class MSL:
             for downloadable in audio_track['downloadables']:
                 rep = ET.SubElement(audio_adaption_set, 'Representation',
                                     codecs='aac',
-                                    bandwidth=str(downloadable['bitrate'] * 8 * 1024),
+                                    bandwidth=str(downloadable['bitrate']*1024),
                                     mimeType='audio/mp4')
 
                 #AudioChannel Config
