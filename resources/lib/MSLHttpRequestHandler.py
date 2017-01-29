@@ -3,7 +3,7 @@ import base64
 from urlparse import urlparse, parse_qs
 
 from MSL import MSL
-from lib import ADDON
+from common import ADDON
 email = ADDON.getSetting('email')
 password = ADDON.getSetting('password')
 msl = MSL(email, password)

@@ -9,6 +9,7 @@ ADDONVERSION = ADDON.getAddonInfo('version')
 ADDONNAME = ADDON.getAddonInfo('name')
 ADDONPATH = ADDON.getAddonInfo('path').decode('utf-8')
 ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
+ADDONUSERDATA = xbmc.translatePath("special://profile/addon_data/service.msl").decode('utf-8') + "/"
 ICON = ADDON.getAddonInfo('icon')
 
 def log(txt):

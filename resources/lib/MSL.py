@@ -18,7 +18,8 @@ from Crypto.Random import get_random_bytes
 # from Crypto.Hash import HMAC, SHA256
 from Crypto.Util import Padding
 import xml.etree.ElementTree as ET
-from lib import log
+from common import log
+from common import ADDONUSERDATA
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -37,7 +38,8 @@ class MSL:
     handshake_performed = False  # Is a handshake already performed and the keys loaded
     last_drm_context = ''
     last_playback_context = ''
-    esn = "NFCDCH-LX-CQE0NU6PA5714R25VPLXVU2A193T36"
+    #esn = "NFCDCH-LX-CQE0NU6PA5714R25VPLXVU2A193T36"
+    esn = "WWW-BROWSE-D7GW1G4NPXGR1F0X1H3EQGY3V1F5WE"
     current_message_id = 0
     session = requests.session()
     rndm = random.SystemRandom()
@@ -54,6 +56,10 @@ class MSL:
         """
         self.email = email
         self.password = password
+        try:
+            os.mkdir(ADDONUSERDATA)
+        except OSError:
+            pass
 
         if self.file_exists('msl_data.json'):
             self.__load_msl_data()
@@ -190,7 +196,7 @@ class MSL:
 
     def __tranform_to_dash(self, manifest):
 
-        self.save_file('/home/johannes/manifest.json', json.dumps(manifest))
+        self.save_file('manifest.json', json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
 
         self.last_playback_context = manifest['playbackContextId']
@@ -227,7 +233,8 @@ class MSL:
                 rep = ET.SubElement(video_adaption_set, 'Representation',
                                     width=str(downloadable['width']),
                                     height=str(downloadable['height']),
-                                    bitrate=str(downloadable['bitrate']*8*1024),
+                                    bandwidth=str(downloadable['bitrate']*8*1024),
+                                    codecs='h264',
                                     mimeType='video/mp4')
 
                 #BaseURL
@@ -247,7 +254,7 @@ class MSL:
             for downloadable in audio_track['downloadables']:
                 rep = ET.SubElement(audio_adaption_set, 'Representation',
                                     codecs='aac',
-                                    bitrate=str(downloadable['bitrate'] * 8 * 1024),
+                                    bandwidth=str(downloadable['bitrate'] * 8 * 1024),
                                     mimeType='audio/mp4')
 
                 #AudioChannel Config
@@ -526,7 +533,7 @@ class MSL:
         :param filename: The filename
         :return: True if so
         """
-        return os.path.isfile(filename)
+        return os.path.isfile(ADDONUSERDATA + filename)
 
     @staticmethod
     def save_file(filename, content):
@@ -535,7 +542,7 @@ class MSL:
         :param filename: The filename
         :param content: The content of the file
         """
-        with open(filename, 'w') as file_:
+        with open(ADDONUSERDATA + filename, 'w') as file_:
             file_.write(content)
             file_.flush()
 
@@ -546,6 +553,6 @@ class MSL:
         :param filename: The file to load
         :return: The content of the file
         """
-        with open(filename) as file_:
+        with open(ADDONUSERDATA + filename) as file_:
             file_content = file_.read()
         return file_content
