@@ -4,23 +4,22 @@
 # Created on: 13.01.2017
 
 import os
+import urllib
 import xbmcplugin
 import xbmcgui
 import xbmcaddon
 import xbmc
 import json
+try:
+   import cPickle as pickle
+except:
+   import pickle
 
 class KodiHelper:
     """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
 
-    msl_service_server_certificate = 'Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP0vrYimyYiBmk9GG+S0wB3CRITgweNE15cD33MQYyS3zpBd4z+sCJam2+jj1ZA4uijE2dxGC+gRBRnw9WoPyw7D8RuhGSJ95OEtzg3Ho+mEsxuE5xg9LM4+Zuro/9msz2bFgJUjQUVHo5j+k4qLWu4ObugFmc9DLIAohL58UR5k0XnvizulOHbMMxdzna9lwTw/4SALadEV/CZXBmswUtBgATDKNqjXwokohncpdsWSauH6vfS6FXwizQoZJ9TdjSGC60rUB2t+aYDm74cIuxAgMBAAE6EHRlc3QubmV0ZmxpeC5jb20SgAOE0y8yWw2Win6M2/bw7+aqVuQPwzS/YG5ySYvwCGQd0Dltr3hpik98WijUODUr6PxMn1ZYXOLo3eED6xYGM7Riza8XskRdCfF8xjj7L7/THPbixyn4mULsttSmWFhexzXnSeKqQHuoKmerqu0nu39iW3pcxDV/K7E6aaSr5ID0SCi7KRcL9BCUCz1g9c43sNj46BhMCWJSm0mx1XFDcoKZWhpj5FAgU4Q4e6f+S8eX39nf6D6SJRb4ap7Znzn7preIvmS93xWjm75I6UBVQGo6pn4qWNCgLYlGGCQCUm5tg566j+/g5jvYZkTJvbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw='
-    """str: MSL service certificate"""
-
     msl_service_server_url = 'http://localhost:%PORT%'
     """str: MSL service url"""
-
-    msl_service_port = 8000
-    """str: MSL service port (TODO: Make it dynamic)"""
 
     def __init__ (self, plugin_handle, base_url):
         """Fetches all needed info from Kodi & configures the baseline of the plugin
@@ -47,6 +46,7 @@ class KodiHelper:
         self.default_fanart = self.addon.getAddonInfo('fanart')
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         self.library = None
+        self.setup_memcache()
 
     def refresh (self):
         """Refrsh the current list"""
@@ -79,11 +79,30 @@ class KodiHelper:
 
         Returns
         -------
-        term : :obj:`str`
+        :obj:`str`
             Term to search for
         """
         dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30003), type=xbmcgui.INPUT_ALPHANUM)
+        term = dlg.input(self.get_local_string(string_id=30003), type=xbmcgui.INPUT_ALPHANUM)
+        if len(term) == 0:
+            term = ' '
+        return term
+
+    def show_add_to_library_title_dialog (self, original_title):
+        """Asks the user for an alternative title for the show/movie that gets exported to the local library
+
+        Parameters
+        ----------
+        original_title : :obj:`str`
+            Original title of the show (as suggested by the addon)
+
+        Returns
+        -------
+        :obj:`str`
+            Title to persist
+        """
+        dlg = xbmcgui.Dialog()
+        return dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM)
 
     def show_password_dialog (self):
         """Asks the user for its Netflix password
@@ -143,7 +162,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
-    def set_setting (key, value):
+    def set_setting (self, key, value):
         """Public interface for the addons setSetting method
 
         Returns
@@ -179,11 +198,95 @@ class KodiHelper:
             'customlibraryfolder': self.addon.getSetting('customlibraryfolder')
         }
 
+    def get_ssl_verification_setting (self):
+        """Returns the setting that describes if we should verify the ssl transport when loading data
+
+        Returns
+        -------
+        bool
+            Verify or not
+        """
+        return self.addon.getSetting('ssl_verification') == 'true'
+
     def set_main_menu_selection (self, type):
+        """Persist the chosen main menu entry in memory
+
+        Parameters
+        ----------
+        type : :obj:`str`
+            Selected menu item
+        """
         self.win.setProperty('main_menu_selection', type)
 
     def get_main_menu_selection (self):
+        """Gets the persisted chosen main menu entry from memory
+
+        Returns
+        -------
+        :obj:`str`
+            The last chosen main menu entry
+        """
         return self.win.getProperty('main_menu_selection')
+
+    def setup_memcache (self):
+        """Sets up the memory cache if not existant"""
+        cached_items = self.win.getProperty('memcache')
+        # no cache setup yet, create one
+        if len(cached_items) < 1:
+            self.win.setProperty('memcache', pickle.dumps({}))
+
+    def invalidate_memcache (self):
+        """Invalidates the memory cache"""
+        self.win.setProperty('memcache', pickle.dumps({}))
+
+    def has_cached_item (self, cache_id):
+        """Checks if the requested item is in memory cache
+
+        Parameters
+        ----------
+        cache_id : :obj:`str`
+            ID of the cache entry
+
+        Returns
+        -------
+        bool
+            Item is cached
+        """
+        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        return cache_id in cached_items.keys()
+
+    def get_cached_item (self, cache_id):
+        """Returns an item from the in memory cache
+
+        Parameters
+        ----------
+        cache_id : :obj:`str`
+            ID of the cache entry
+
+        Returns
+        -------
+        mixed
+            Contents of the requested cache item or none
+        """
+        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        if self.has_cached_item(cache_id) != True:
+            return None
+        return cached_items[cache_id]
+
+    def add_cached_item (self, cache_id, contents):
+        """Adds an item to the in memory cache
+
+        Parameters
+        ----------
+        cache_id : :obj:`str`
+            ID of the cache entry
+
+        contents : mixed
+            Cache entry contents
+        """
+        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        cached_items.update({cache_id: contents})
+        self.win.setProperty('memcache', pickle.dumps(cached_items))
 
     def build_profiles_listing (self, profiles, action, build_url):
         """Builds the profiles list Kodi screen
@@ -288,16 +391,12 @@ class KodiHelper:
 
         # (re)select the previously selected main menu entry
         idx = 1
-        preselected_list_item = None
         for item in preselect_items:
             idx += 1
-            if item:
-                preselected_list_item = idx
-        if self.get_main_menu_selection() == 'search':
-            preselected_list_item = idx + 2
+            preselected_list_item = idx if item else None
+        preselected_list_item = idx + 1 if self.get_main_menu_selection() == 'search' else preselected_list_item
         if preselected_list_item != None:
-            xbmc.executebuiltin('SetFocus(%s, %s)' % (self.win.getFocusId(), preselected_list_item))
-
+            xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(self.win.getFocusId()), str(preselected_list_item)))
         return True
 
     def build_video_listing (self, video_list, actions, type, build_url):
@@ -344,6 +443,10 @@ class KodiHelper:
                 xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_GENRE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
@@ -467,6 +570,10 @@ class KodiHelper:
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
@@ -503,7 +610,14 @@ class KodiHelper:
                     needs_pin = (True, False)[int(episode['maturity']['rating']['maturityLevel']) >= 1000]
                     url = build_url({'action': 'play_video', 'video_id': episode_id, 'pin': needs_pin, 'start_offset': episode['bookmark']})
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
+
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_DURATION)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
@@ -533,12 +647,12 @@ class KodiHelper:
             return False
 
         # inputstream addon properties
-        msl_service_url = self.msl_service_server_url.replace('%PORT%', str(self.msl_service_port))
+        msl_service_url = self.msl_service_server_url.replace('%PORT%', str(self.addon.getSetting('msl_service_port')))
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
         play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')
         play_item.setProperty(inputstream_addon + '.license_key', msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
-        play_item.setProperty(inputstream_addon + '.server_certificate', self.msl_service_server_certificate)
+        play_item.setProperty(inputstream_addon + '.server_certificate', self.addon.getSetting('msl_service_certificate'))
         play_item.setProperty('inputstreamaddon', inputstream_addon)
 
         # check if we have a bookmark e.g. start offset position
@@ -679,7 +793,8 @@ class KodiHelper:
         entry_keys = entry.keys()
 
         # action item templates
-        url_tmpl = 'XBMC.RunPlugin(' + self.base_url + '?action=%action%&id=' + str(entry['id']) + ')'
+        encoded_title = urllib.urlencode({'title': entry['title'].encode('utf-8')}) if 'title' in entry else ''
+        url_tmpl = 'XBMC.RunPlugin(' + self.base_url + '?action=%action%&id=' + str(entry['id']) + '&' + encoded_title + ')'
         actions = [
             ['export_to_library', self.get_local_string(30018), 'export'],
             ['remove_from_library', self.get_local_string(30030), 'remove'],
@@ -703,10 +818,15 @@ class KodiHelper:
         items.append(action['rate_on_netflix'])
 
         # add possibility to export this movie/show/season/episode to a static/local library (and to remove it)
-        # TODO: Not yet finished, still needs implementation
-        #if 'type' in entry_keys:
-            #items.append(action['export_to_library'])
-            #items.append(action['remove_from_library'])
+        if 'type' in entry_keys:
+            # add/remove movie
+            if entry['type'] == 'movie':
+                action_type = 'remove_from_library' if self.library.movie_exists(title=entry['title'], year=entry['year']) else 'export_to_library'
+                items.append(action[action_type])
+            # add/remove show
+            if entry['type'] == 'show' and 'title' in entry_keys:
+                action_type = 'remove_from_library' if self.library.show_exists(title=entry['title']) else 'export_to_library'
+                items.append(action[action_type])
 
         # add it to the item
         li.addContextMenuItems(items)
@@ -723,11 +843,12 @@ class KodiHelper:
         level : :obj:`int`
             Kodi log level
         """
-        if level == xbmc.LOGDEBUG and self.verb_log:
-            level = xbmc.LOGNOTICE
-        if isinstance(msg, unicode):
-            msg = msg.encode('utf-8')
-        xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
+        if self.verb_log:
+            if level == xbmc.LOGDEBUG and self.verb_log:
+                level = xbmc.LOGNOTICE
+            if isinstance(msg, unicode):
+                msg = msg.encode('utf-8')
+            xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
 
     def get_local_string (self, string_id):
         """Returns the localized version of a string

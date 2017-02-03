@@ -148,3 +148,7 @@ msgstr ""
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr ""
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr ""

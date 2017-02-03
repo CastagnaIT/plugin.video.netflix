@@ -30,10 +30,10 @@ kodi_helper = KodiHelper(
 netflix_session = NetflixSession(
     cookie_path=kodi_helper.cookie_path,
     data_path=kodi_helper.data_path,
+    verify_ssl=kodi_helper.get_ssl_verification_setting(),
     log_fn=kodi_helper.log
 )
 library = Library(
-    base_url=base_url,
     root_folder=kodi_helper.base_data_path,
     library_settings=kodi_helper.get_custom_library_settings(),
     log_fn=kodi_helper.log

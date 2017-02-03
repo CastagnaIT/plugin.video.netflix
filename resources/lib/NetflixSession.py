@@ -10,15 +10,18 @@ import time
 import urllib
 import json
 import requests
-import pickle
-from BeautifulSoup import BeautifulSoup
+try:
+   import cPickle as pickle
+except:
+   import pickle
+from bs4 import BeautifulSoup
 from utils import strip_tags
 from utils import noop
 
 class NetflixSession:
     """Helps with login/session management of Netflix users & API data fetching"""
 
-    base_url = 'https://www.netflix.com/'
+    base_url = 'https://www.netflix.com'
     """str: Secure Netflix url"""
 
     urls = {
@@ -86,7 +89,7 @@ class NetflixSession:
     esn = ''
     """str: Widevine esn, something like: NFCDCH-MC-D7D6F54LOPY8J416T72MQXX3RD20ME"""
 
-    def __init__(self, cookie_path, data_path, log_fn=noop):
+    def __init__(self, cookie_path, data_path, verify_ssl=True, log_fn=noop):
         """Stores the cookie path for later use & instanciates a requests
            session with a proper user agent & stored cookies/data if available
 
@@ -103,6 +106,7 @@ class NetflixSession:
         """
         self.cookie_path = cookie_path
         self.data_path = data_path
+        self.verify_ssl = verify_ssl
         self.log = log_fn
 
         # start session, fake chrome (so that we get a proper widevine esn) & enable gzip
@@ -128,7 +132,7 @@ class NetflixSession:
                 value from the form field
         """
         login_input_fields = {}
-        login_inputs = form_soup.findAll('input')
+        login_inputs = form_soup.find_all('input')
         # gather all form fields, set an empty string as the default value
         for item in login_inputs:
             keys = dict(item.attrs).keys()
@@ -166,7 +170,7 @@ class NetflixSession:
                 List of all the serialized data pulled out of the pagws <script/> tags
         """
         inline_data = [];
-        data_scripts = page_soup.findAll('script', attrs={'src': None});
+        data_scripts = page_soup.find_all('script', attrs={'src': None});
         for script in data_scripts:
             # ugly part: try to parse the data & don't care about errors (as they will be some)
             try:
@@ -374,7 +378,7 @@ class NetflixSession:
             return False
         if self._load_data(filename=self.data_path + '_' + account_hash) == False:
             # load the profiles page (to verify the user)
-            response = self.session.get(self._get_document_url_for(component='profiles'))
+            response = self.session.get(self._get_document_url_for(component='profiles'), verify=self.verify_ssl)
 
             # parse out the needed inline information
             page_soup = BeautifulSoup(response.text)
@@ -418,7 +422,7 @@ class NetflixSession:
         bool
             User could be logged in or not
         """
-        response = self.session.get(self._get_document_url_for(component='login'))
+        response = self.session.get(self._get_document_url_for(component='login'), verify=self.verify_ssl)
         if response.status_code != 200:
             return False;
 
@@ -433,7 +437,7 @@ class NetflixSession:
         login_payload['password'] = account['password']
 
         # perform the login
-        login_response = self.session.post(self._get_document_url_for(component='login'), data=login_payload)
+        login_response = self.session.post(self._get_document_url_for(component='login'), data=login_payload, verify=self.verify_ssl)
         login_soup = BeautifulSoup(login_response.text)
 
         # we know that the login was successfull if we find an HTML element with the class of 'profile-name'
@@ -471,12 +475,12 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         }
 
-        response = self.session.get(self._get_api_url_for(component='switch_profiles'), params=payload);
+        response = self.session.get(self._get_api_url_for(component='switch_profiles'), params=payload, verify=self.verify_ssl);
         if response.status_code != 200:
             return False
 
         # fetch the index page again, so that we can fetch the corresponding user data
-        browse_response = self.session.get(self._get_document_url_for(component='browse'))
+        browse_response = self.session.get(self._get_document_url_for(component='browse'), verify=self.verify_ssl)
         browse_soup = BeautifulSoup(browse_response.text)
         self._parse_page_contents(page_soup=browse_soup)
         account_hash = self._generate_account_hash(account=account)
@@ -506,7 +510,7 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         }
         url = self._get_api_url_for(component='adult_pin')
-        response = self.session.get(url, params=payload);
+        response = self.session.get(url, params=payload, verify=self.verify_ssl);
         pin_response = self._process_response(response=response, component=url)
         keys = pin_response.keys()
         if 'success' in keys:
@@ -585,7 +589,7 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         })
 
-        response = self.session.post(self._get_api_url_for(component='set_video_rating'), params=params, headers=headers, data=payload)
+        response = self.session.post(self._get_api_url_for(component='set_video_rating'), params=params, headers=headers, data=payload, verify=self.verify_ssl)
         return response.status_code == 200
 
     def parse_video_list_ids (self, response_data):
@@ -1460,7 +1464,7 @@ class NetflixSession:
         :obj:`BeautifulSoup`
             Instance of an BeautifulSoup document containing the complete page contents
         """
-        response = self.session.get(self._get_document_url_for(component='browse'))
+        response = self.session.get(self._get_document_url_for(component='browse'), verify=self.verify_ssl)
         return BeautifulSoup(response.text)
 
     def fetch_video_list_ids (self, list_from=0, list_to=50):
@@ -1488,7 +1492,7 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         }
         url = self._get_api_url_for(component='video_list_ids')
-        response = self.session.get(url, params=payload);
+        response = self.session.get(url, params=payload, verify=self.verify_ssl);
         return self._process_response(response=response, component=url)
 
     def fetch_search_results (self, search_str, list_from=0, list_to=48):
@@ -1614,7 +1618,7 @@ class NetflixSession:
             '_': int(time.time())
         }
         url = self._get_api_url_for(component='metadata')
-        response = self.session.get(url, params=payload);
+        response = self.session.get(url, params=payload, verify=self.verify_ssl);
         return self._process_response(response=response, component=url)
 
     def fetch_show_information (self, id, type):
@@ -1724,8 +1728,7 @@ class NetflixSession:
             Dict containing an email, country & a password property
         """
         # load the profiles page (to verify the user)
-        response = self.session.get(self._get_document_url_for(component='profiles'))
-
+        response = self.session.get(self._get_document_url_for(component='profiles'), verify=self.verify_ssl)
         # parse out the needed inline information
         page_soup = BeautifulSoup(response.text)
         page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
@@ -1762,7 +1765,7 @@ class NetflixSession:
             'model': self.user_data['gpsModel']
         }
 
-        return self.session.post(self._get_api_url_for(component='shakti'), params=params, headers=headers, data=data)
+        return self.session.post(self._get_api_url_for(component='shakti'), params=params, headers=headers, data=data, verify=self.verify_ssl)
 
     def _is_size_key (self, key):
         """Tiny helper that checks if a given key is called $size or size, as we need to check this often
@@ -1869,7 +1872,7 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         })
 
-        response = self.session.post(self._get_api_url_for(component='update_my_list'), headers=headers, data=payload)
+        response = self.session.post(self._get_api_url_for(component='update_my_list'), headers=headers, data=payload, verify=self.verify_ssl)
         return response.status_code == 200
 
     def _save_data(self, filename):
