@@ -18,9 +18,6 @@ except:
 class KodiHelper:
     """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
 
-    msl_service_server_url = 'http://localhost:%PORT%'
-    """str: MSL service url"""
-
     def __init__ (self, plugin_handle, base_url):
         """Fetches all needed info from Kodi & configures the baseline of the plugin
 
@@ -42,6 +39,7 @@ class KodiHelper:
         self.cookie_path = self.base_data_path + 'COOKIE'
         self.data_path = self.base_data_path + 'DATA'
         self.config_path = os.path.join(self.base_data_path, 'config')
+        self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
         self.verb_log = self.addon.getSetting('logging') == 'true'
         self.default_fanart = self.addon.getAddonInfo('fanart')
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -647,7 +645,7 @@ class KodiHelper:
             return False
 
         # inputstream addon properties
-        msl_service_url = self.msl_service_server_url.replace('%PORT%', str(self.addon.getSetting('msl_service_port')))
+        msl_service_url = 'http://localhost:' + str(self.addon.getSetting('msl_service_port'))
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
         play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')

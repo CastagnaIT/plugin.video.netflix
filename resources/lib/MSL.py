@@ -18,8 +18,14 @@ from Crypto.Random import get_random_bytes
 # from Crypto.Hash import HMAC, SHA256
 from Crypto.Util import Padding
 import xml.etree.ElementTree as ET
-from common import log
-from common import ADDONUSERDATA
+from KodiHelper import KodiHelper
+
+plugin_handle = int(sys.argv[1])
+base_url = sys.argv[0]
+kodi_helper = KodiHelper(
+    plugin_handle=plugin_handle,
+    base_url=base_url
+)
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -57,7 +63,7 @@ class MSL:
         self.email = email
         self.password = password
         try:
-            os.mkdir(ADDONUSERDATA)
+            os.mkdir(kodi_helper.msl_data_path)
         except OSError:
             pass
 
@@ -65,11 +71,11 @@ class MSL:
             self.__load_msl_data()
             self.handshake_performed = True
         elif self.file_exists('rsa_key.bin'):
-            log('RSA Keys do already exist load old ones')
+            kodi_helper.log(msg='RSA Keys do already exist load old ones')
             self.__load_rsa_keys()
             self.__perform_key_handshake()
         else:
-            log('Create new RSA Keys')
+            kodi_helper.log(msg='Create new RSA Keys')
             # Create new Key Pair and save
             self.rsa_key = RSA.generate(2048)
             self.__save_rsa_keys()
@@ -113,7 +119,7 @@ class MSL:
 
         try:
             resp.json()
-            log('MANIFEST RESPONE JSON: '+resp.text)
+            kodi_helper.log(msg='MANIFEST RESPONE JSON: '+resp.text)
         except ValueError:
             # Maybe we have a CHUNKED response
             resp = self.__parse_chunked_msl_response(resp.text)
@@ -161,7 +167,7 @@ class MSL:
 
         try:
             resp.json()
-            log('LICENSE RESPONE JSON: '+resp.text)
+            kodi_helper.log(msg='LICENSE RESPONE JSON: '+resp.text)
         except ValueError:
             # Maybe we have a CHUNKED response
             resp = self.__parse_chunked_msl_response(resp.text)
@@ -456,21 +462,21 @@ class MSL:
             'headerdata': base64.standard_b64encode(header),
             'signature': '',
         }
-        log('Key Handshake Request:')
-        log(json.dumps(request))
+        kodi_helper.log(msg='Key Handshake Request:')
+        kodi_helper.log(msg=json.dumps(request))
 
 
         resp = self.session.post(self.endpoints['manifest'], json.dumps(request, sort_keys=True))
         if resp.status_code == 200:
             resp = resp.json()
             if 'errordata' in resp:
-                log('Key Exchange failed')
-                log(base64.standard_b64decode(resp['errordata']))
+                kodi_helper.log(msg='Key Exchange failed')
+                kodi_helper.log(msg=base64.standard_b64decode(resp['errordata']))
                 return False
             self.__parse_crypto_keys(json.JSONDecoder().decode(base64.standard_b64decode(resp['headerdata'])))
         else:
-            log('Key Exchange failed')
-            log(resp.text)
+            kodi_helper.log(msg='Key Exchange failed')
+            kodi_helper.log(msg=resp.text)
 
     def __parse_crypto_keys(self, headerdata):
         self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
@@ -521,7 +527,7 @@ class MSL:
         self.rsa_key = RSA.importKey(loaded_key)
 
     def __save_rsa_keys(self):
-        log('Save RSA Keys')
+        kodi_helper.log(msg='Save RSA Keys')
         # Get the DER Base64 of the keys
         encrypted_key = self.rsa_key.exportKey()
         self.save_file('rsa_key.bin', encrypted_key)
@@ -533,7 +539,7 @@ class MSL:
         :param filename: The filename
         :return: True if so
         """
-        return os.path.isfile(ADDONUSERDATA + filename)
+        return os.path.isfile(kodi_helper.msl_data_path + filename)
 
     @staticmethod
     def save_file(filename, content):
@@ -542,7 +548,7 @@ class MSL:
         :param filename: The filename
         :param content: The content of the file
         """
-        with open(ADDONUSERDATA + filename, 'w') as file_:
+        with open(kodi_helper.msl_data_path + filename, 'w') as file_:
             file_.write(content)
             file_.flush()
 
@@ -553,6 +559,6 @@ class MSL:
         :param filename: The file to load
         :return: The content of the file
         """
-        with open(ADDONUSERDATA + filename) as file_:
+        with open(kodi_helper.msl_data_path + filename) as file_:
             file_content = file_.read()
         return file_content
