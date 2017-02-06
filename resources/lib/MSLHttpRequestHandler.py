@@ -5,17 +5,12 @@ from urlparse import urlparse, parse_qs
 from MSL import MSL
 from KodiHelper import KodiHelper
 
-plugin_handle = int(sys.argv[1])
-base_url = sys.argv[0]
 kodi_helper = KodiHelper(
-    plugin_handle=plugin_handle,
-    base_url=base_url
+    plugin_handle=None,
+    base_url=None
 )
-
-account = kodi_helper.addon.get_credentials()
-email = account['email']
-password = account['password']
-msl = MSL(email, password)
+account = kodi_helper.get_credentials()
+msl = MSL(account['email'], account['password'], kodi_helper)
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 

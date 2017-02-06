@@ -18,14 +18,6 @@ from Crypto.Random import get_random_bytes
 # from Crypto.Hash import HMAC, SHA256
 from Crypto.Util import Padding
 import xml.etree.ElementTree as ET
-from KodiHelper import KodiHelper
-
-plugin_handle = int(sys.argv[1])
-base_url = sys.argv[0]
-kodi_helper = KodiHelper(
-    plugin_handle=plugin_handle,
-    base_url=base_url
-)
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -55,27 +47,28 @@ class MSL:
         'license': 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/license'
     }
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, kodi_helper):
         """
         The Constructor checks for already existing crypto Keys.
         If they exist it will load the existing keys
         """
         self.email = email
         self.password = password
+        self.kodi_helper = kodi_helper
         try:
-            os.mkdir(kodi_helper.msl_data_path)
+            os.mkdir(self.kodi_helper.msl_data_path)
         except OSError:
             pass
 
-        if self.file_exists('msl_data.json'):
+        if self.file_exists(self.kodi_helper.msl_data_path, 'msl_data.json'):
             self.__load_msl_data()
             self.handshake_performed = True
-        elif self.file_exists('rsa_key.bin'):
-            kodi_helper.log(msg='RSA Keys do already exist load old ones')
+        elif self.file_exists(self.kodi_helper.msl_data_path, 'rsa_key.bin'):
+            self.kodi_helper.log(msg='RSA Keys do already exist load old ones')
             self.__load_rsa_keys()
             self.__perform_key_handshake()
         else:
-            kodi_helper.log(msg='Create new RSA Keys')
+            self.kodi_helper.log(msg='Create new RSA Keys')
             # Create new Key Pair and save
             self.rsa_key = RSA.generate(2048)
             self.__save_rsa_keys()
@@ -119,7 +112,7 @@ class MSL:
 
         try:
             resp.json()
-            kodi_helper.log(msg='MANIFEST RESPONE JSON: '+resp.text)
+            self.kodi_helper.log(msg='MANIFEST RESPONE JSON: '+resp.text)
         except ValueError:
             # Maybe we have a CHUNKED response
             resp = self.__parse_chunked_msl_response(resp.text)
@@ -167,7 +160,7 @@ class MSL:
 
         try:
             resp.json()
-            kodi_helper.log(msg='LICENSE RESPONE JSON: '+resp.text)
+            self.kodi_helper.log(msg='LICENSE RESPONE JSON: '+resp.text)
         except ValueError:
             # Maybe we have a CHUNKED response
             resp = self.__parse_chunked_msl_response(resp.text)
@@ -202,7 +195,7 @@ class MSL:
 
     def __tranform_to_dash(self, manifest):
 
-        self.save_file('manifest.json', json.dumps(manifest))
+        self.save_file(self.kodi_helper.msl_data_path, 'manifest.json', json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
 
         self.last_playback_context = manifest['playbackContextId']
@@ -462,21 +455,21 @@ class MSL:
             'headerdata': base64.standard_b64encode(header),
             'signature': '',
         }
-        kodi_helper.log(msg='Key Handshake Request:')
-        kodi_helper.log(msg=json.dumps(request))
+        self.kodi_helper.log(msg='Key Handshake Request:')
+        self.kodi_helper.log(msg=json.dumps(request))
 
 
         resp = self.session.post(self.endpoints['manifest'], json.dumps(request, sort_keys=True))
         if resp.status_code == 200:
             resp = resp.json()
             if 'errordata' in resp:
-                kodi_helper.log(msg='Key Exchange failed')
-                kodi_helper.log(msg=base64.standard_b64decode(resp['errordata']))
+                self.kodi_helper.log(msg='Key Exchange failed')
+                self.kodi_helper.log(msg=base64.standard_b64decode(resp['errordata']))
                 return False
             self.__parse_crypto_keys(json.JSONDecoder().decode(base64.standard_b64decode(resp['headerdata'])))
         else:
-            kodi_helper.log(msg='Key Exchange failed')
-            kodi_helper.log(msg=resp.text)
+            self.kodi_helper.log(msg='Key Exchange failed')
+            self.kodi_helper.log(msg=resp.text)
 
     def __parse_crypto_keys(self, headerdata):
         self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
@@ -497,7 +490,7 @@ class MSL:
         self.handshake_performed = True
 
     def __load_msl_data(self):
-        msl_data = json.JSONDecoder().decode(self.load_file('msl_data.json'))
+        msl_data = json.JSONDecoder().decode(self.load_file(self.kodi_helper.msl_data_path, 'msl_data.json'))
         self.__set_master_token(msl_data['tokens']['mastertoken'])
         self.encryption_key = base64.standard_b64decode(msl_data['encryption_key'])
         self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
@@ -515,7 +508,7 @@ class MSL:
             }
         }
         serialized_data = json.JSONEncoder().encode(data)
-        self.save_file('msl_data.json', serialized_data)
+        self.save_file(self.kodi_helper.msl_data_path, 'msl_data.json', serialized_data)
 
     def __set_master_token(self, master_token):
         self.mastertoken = master_token
@@ -523,42 +516,42 @@ class MSL:
             'sequencenumber']
 
     def __load_rsa_keys(self):
-        loaded_key = self.load_file('rsa_key.bin')
+        loaded_key = self.load_file(self.kodi_helper.msl_data_path, 'rsa_key.bin')
         self.rsa_key = RSA.importKey(loaded_key)
 
     def __save_rsa_keys(self):
-        kodi_helper.log(msg='Save RSA Keys')
+        self.kodi_helper.log(msg='Save RSA Keys')
         # Get the DER Base64 of the keys
         encrypted_key = self.rsa_key.exportKey()
-        self.save_file('rsa_key.bin', encrypted_key)
+        self.save_file(self.kodi_helper.msl_data_path, 'rsa_key.bin', encrypted_key)
 
     @staticmethod
-    def file_exists(filename):
+    def file_exists(msl_data_path, filename):
         """
         Checks if a given file exists
         :param filename: The filename
         :return: True if so
         """
-        return os.path.isfile(kodi_helper.msl_data_path + filename)
+        return os.path.isfile(msl_data_path + filename)
 
     @staticmethod
-    def save_file(filename, content):
+    def save_file(msl_data_path, filename, content):
         """
         Saves the given content under given filename
         :param filename: The filename
         :param content: The content of the file
         """
-        with open(kodi_helper.msl_data_path + filename, 'w') as file_:
+        with open(msl_data_path + filename, 'w') as file_:
             file_.write(content)
             file_.flush()
 
     @staticmethod
-    def load_file(filename):
+    def load_file(msl_data_path, filename):
         """
         Loads the content of a given filename
         :param filename: The file to load
         :return: The content of the file
         """
-        with open(kodi_helper.msl_data_path + filename) as file_:
+        with open(msl_data_path + filename) as file_:
             file_content = file_.read()
         return file_content

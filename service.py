@@ -13,13 +13,10 @@ def select_unused_port():
   s.close()
   return port
 
-plugin_handle = int(sys.argv[1])
-base_url = sys.argv[0]
 addon = xbmcaddon.Addon()
-
 kodi_helper = KodiHelper(
-    plugin_handle=plugin_handle,
-    base_url=base_url
+    plugin_handle=None,
+    base_url=None
 )
 
 PORT = select_unused_port()
