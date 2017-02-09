@@ -1495,7 +1495,7 @@ class NetflixSession:
         response = self.session.get(url, params=payload, verify=self.verify_ssl);
         return self._process_response(response=response, component=url)
 
-    def fetch_search_results (self, search_str, list_from=0, list_to=48):
+    def fetch_search_results (self, search_str, list_from=0, list_to=10):
         """Fetches the JSON which contains the results for the given search query
 
         Parameters
@@ -1520,7 +1520,10 @@ class NetflixSession:
         paths = [
             ['search', encoded_search_string, 'titles', {'from': list_from, 'to': list_to}, ['summary', 'title']],
             ['search', encoded_search_string, 'titles', {'from': list_from, 'to': list_to}, 'boxarts', '_342x192', 'jpg'],
-            ['search', encoded_search_string, 'titles', ['id', 'length', 'name', 'trackIds', 'requestId']]
+            ['search', encoded_search_string, 'titles', ['id', 'length', 'name', 'trackIds', 'requestId']],
+            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', {'from': list_from, 'to': list_to}, ['summary', 'title']],
+            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', {'from': list_from, 'to': list_to}, 'boxarts', '_342x192', 'jpg'],
+            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', ['id', 'length', 'name', 'trackIds', 'requestId']]
         ]
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
