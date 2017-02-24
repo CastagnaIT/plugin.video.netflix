@@ -110,7 +110,7 @@ class Navigation:
                 adult_pin = self.kodi_helper.show_adult_pin_dialog()
                 if self.netflix_session.send_adult_pin(adult_pin=adult_pin) != True:
                     return self.kodi_helper.show_wrong_adult_pin_notification()
-            self.play_video(video_id=params['video_id'], start_offset=params['start_offset'])
+            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1))
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
