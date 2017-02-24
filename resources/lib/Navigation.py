@@ -273,8 +273,8 @@ class Navigation:
         type : :obj:`str`
             None or 'queue' f.e. when it´s a special video lists
         """
-        if self.kodi_helper.has_cached_item(cache_id=type):
-            video_list = self.kodi_helper.get_cached_item(cache_id=type)
+        if self.kodi_helper.has_cached_item(cache_id=video_list_id):
+            video_list = self.kodi_helper.get_cached_item(cache_id=video_list_id)
         else:
             raw_video_list = self.netflix_session.fetch_video_list(list_id=video_list_id)
             # check for any errors
@@ -283,7 +283,7 @@ class Navigation:
             # parse the video list ids
             if 'videos' in raw_video_list['value'].keys():
                 video_list = self.netflix_session.parse_video_list(response_data=raw_video_list)
-                self.kodi_helper.add_cached_item(cache_id=type, contents=video_list)
+                self.kodi_helper.add_cached_item(cache_id=video_list_id, contents=video_list)
             else:
                 video_list = []
         actions = {'movie': 'play_video', 'show': 'season_list'}
