@@ -281,7 +281,9 @@ class NetflixSession:
                         profile = {'id': profile_id}
                         for important_field in important_fields:
                             profile.update({important_field: item['profiles'][profile_id]['summary'][important_field]})
-                        profile.update({'avatar': item['avatars']['nf'][item['profiles'][profile_id]['summary']['avatarName']]['images']['byWidth']['320']['value']})
+                        avatar_base = item['avatars']['nf'].get(item['profiles'][profile_id]['summary']['avatarName'], False);
+                        avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
+                        profile.update({'avatar': avatar})
                         profiles.update({profile_id: profile})
 
         return profiles
