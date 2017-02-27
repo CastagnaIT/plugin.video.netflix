@@ -3,23 +3,6 @@
 # Module: utils
 # Created on: 13.01.2017
 
-# strips html from input
-# used the kick out the junk, when parsing the inline JS objects of the Netflix homepage
-from HTMLParser import HTMLParser
-class MLStripper(HTMLParser):
-    def __init__(self):
-        self.reset()
-        self.fed = []
-    def handle_data(self, d):
-        self.fed.append(d)
-    def get_data(self):
-        return ''.join(self.fed)
-
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
-
 # Takes everything, does nothing, classic no operation function
 def noop (**kwargs):
     return True
