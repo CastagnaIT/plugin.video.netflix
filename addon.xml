@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.3.0" provider-name="tba">
+<addon id="plugin.video.netflix" name="Netflix" version="0.9.0" provider-name="libdev,jojo,asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.requests" version="2.12.4"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.simplejson" version="3.3.0"/>
-    <import addon="inputstream.adaptive" version="1.0.7"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
@@ -27,7 +26,7 @@
       <screenshot>resources\screenshot-03.jpg</screenshot>
     </assets>
     <platform>all</platform>
-    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+    <license>MIT</license>
     <forum>http://www.kodinerds.net/</forum>
     <source>https://github.com/kodinerds/repo</source>
   </extension>
