@@ -557,7 +557,7 @@ class KodiHelper:
         for index in seasons_sorted:
             for season_id in season_list:
                 season = season_list[season_id]
-                if int(season['shortName'].split(' ')[1]) == index:
+                if int(season['id']) == index:
                     li = xbmcgui.ListItem(label=season['text'])
                     # add some art to the item
                     li = self._generate_art_info(entry=season, li=li)

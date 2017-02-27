@@ -258,7 +258,10 @@ class Navigation:
         # sort seasons by index by default (they´re coming back unsorted from the api)
         seasons_sorted = []
         for season_id in season_list:
-            seasons_sorted.append(int(season_list[season_id]['shortName'].split(' ')[1]))
+            print '---Le DEBUG--'
+            print season_list[season_id]
+            print '---Le DEBUG--'
+            seasons_sorted.append(int(season_list[season_id]['id']))
             seasons_sorted.sort()
         return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, season_list=season_list, build_url=self.build_url)
 
