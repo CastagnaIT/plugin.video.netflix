@@ -207,15 +207,13 @@ class MSL:
             if len(manifest['psshb64']) >= 1:
                 pssh = manifest['psshb64'][0]
 
-
+        seconds = manifest['runtime']/1000
+        duration = "PT"+str(seconds)+".00S"
 
         root = ET.Element('MPD')
         root.attrib['xmlns'] = 'urn:mpeg:dash:schema:mpd:2011'
         root.attrib['xmlns:cenc'] = 'urn:mpeg:cenc:2013'
-
-
-        seconds = manifest['runtime']/1000
-        duration = "PT"+str(seconds)+".00S"
+        root.attrib['mediaPresentationDuration'] = duration
 
         period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
 
