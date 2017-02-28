@@ -1,27 +1,49 @@
 # plugin.video.netflix
 
-Einstellungen:
---------------
+## Netflix Plugin for Kodi 18
 
-  - E-Mail/Passwort: Logindaten des Netflix-Accounts
-  - Verbose logging an/aus
-  - Logout (löscht gespeicherte Cookies & Nutzerdaten)
-  - Library Einstellungen
-  - SSL Einstellungen
 
-Funktionen:
------------
+###Prerequisites
+----------------
 
-  - Wechsel zwischen Profilen
-  - Suche nach Filmen/Serien (inkl. suggestions)
-  - Anzeigen von Kategorien wie "Meine Liste", "Weil Sie x gesehen haben", "Mit dem Profil von x weiterschauen", "Originals" etc.
-  - Eingabe von "Adult Pin" bei FSK 18 Filmen/Serien
-  - Rating aus Kodi in Netflix  
-  - Einträge auf Netflix in Watchlist (Meine Liste) hinzufügen/entfernen
-  - Export in lokale Library (Filme & komplette shows - keine einzelnen Staffeln oder einzelnen Episoden)
+- Kodi 18 [agile build](https://github.com/FernetMenta/kodi-agile)
+- Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
+- Inputstream.adaptive [agile branch build](https://github.com/liberty-developer/inputstream.adaptive/tree/agile)
 
-ToDo:
------
+###Functionality
+----------------
+- Multiple profiles
+- Search Netflix (incl. suggestions)
+- Netflix categories, recommendations, "my list" & continue watching
+- Rate show/movie
+- Add & remove to/from "my list"
+- Export of complete shows & movies in local database (custom library folder can be configured, by default the .strm files are stored in `userdata/addon_data/plugin.video.netflix` )
 
-  - Fehlende Daten (Cast, bookmark position, etc.) den Show items in der Serien Video Liste hinzufügen
-  - Mit dem Profil von "x" weiterschauen - Statt der Liste der Shows direkt die Episode mit Bookmark anzeigen
+###ToDo
+----------------
+- [ ] Add missing meta data for episodes/seasons (Cast, bookmark position, etc.)
+- [ ] Change list of shows to actual list of episodes in the "Continue watching"" section, like it´s done on the website
+- [ ] Enable possibility to export single episodes or seasons to the Library
+- [ ] Evaluate idea of an auto updating library exporter that keeps track
+
+###Error Handling
+-----------------
+
+If something doesn't work for you, please:
+
+- Make sure all prerequisites are met
+- Enable verbose logging in the plugin settings
+- Enable the Debug log in you Kodi settings
+- Open an issue with a titles that summarises your problems and include:
+	- Kodi version (git sha as long as we´re on agile only)
+	- Inputstream.adaptive version (git sha as long as we´re on the agile branch)
+	- Your OS and OS version
+	- Libwedevine version
+	- A Kodi debug log that represents your issue
+	
+###Licence
+-----------------	
+
+Licenced under The MIT License.
+Includes [pyjsparser](https://github.com/PiotrDabkowski/pyjsparser) by [Piotr Dabkowski](https://github.com/PiotrDabkowski)
+
