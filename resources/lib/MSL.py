@@ -13,7 +13,7 @@ from Cryptodome.PublicKey import RSA
 from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
-from Crypto.Hash import HMAC, SHA256
+from Cryptodome.Hash import HMAC, SHA256
 from Cryptodome.Util import Padding
 import xml.etree.ElementTree as ET
 
@@ -36,6 +36,7 @@ class MSL:
     last_playback_context = ''
     #esn = "NFCDCH-LX-CQE0NU6PA5714R25VPLXVU2A193T36"
     esn = "WWW-BROWSE-D7GW1G4NPXGR1F0X1H3EQGY3V1F5WE"
+    #esn = "NFCDIE-02-DCH84Q2EK3N6VFVQJ0NLRQ27498N0F"
     current_message_id = 0
     session = requests.session()
     rndm = random.SystemRandom()
@@ -86,6 +87,7 @@ class MSL:
             'profiles': [
                 'playready-h264mpl30-dash',
                 'playready-h264mpl31-dash',
+                'playready-h264mpl40-dash',
                 'heaac-2-dash',
                 'dfxp-ls-sdh',
                 'simplesdh',
