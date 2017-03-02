@@ -104,12 +104,6 @@ class Navigation:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
-            # play a video, check for adult pin if needed
-            adult_pin = None
-            if self.check_for_adult_pin(params=params):
-                adult_pin = self.kodi_helper.show_adult_pin_dialog()
-                if self.netflix_session.send_adult_pin(pin=adult_pin) != True:
-                    return self.kodi_helper.show_wrong_adult_pin_notification()
             self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1))
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
@@ -372,12 +366,12 @@ class Navigation:
         video = metadata['video']
 
         if video['type'] == 'movie':
-            self.library.add_movie(title=video['title'], alt_title=alt_title, year=video['year'], video_id=video_id, pin=video['requiresPin'], build_url=self.build_url)
+            self.library.add_movie(title=video['title'], alt_title=alt_title, year=video['year'], video_id=video_id, build_url=self.build_url)
         if video['type'] == 'show':
             episodes = []
             for season in video['seasons']:
                 for episode in season['episodes']:
-                    episodes.append({'season': season['seq'], 'episode': episode['seq'], 'id': episode['id'], 'pin': episode['requiresAdultVerification']})
+                    episodes.append({'season': season['seq'], 'episode': episode['seq'], 'id': episode['id']})
 
             self.library.add_show(title=video['title'], alt_title=alt_title, episodes=episodes, build_url=self.build_url)
         return self.kodi_helper.refresh()
@@ -479,21 +473,6 @@ class Navigation:
             return False
         current_profile_id = self.netflix_session.user_data['guid']
         return 'profile_id' in params and current_profile_id != params['profile_id']
-
-    def check_for_adult_pin (self, params):
-        """Checks if an adult pin is given in the query params
-
-        Parameters
-        ----------
-        params : :obj:`dict` of :obj:`str`
-            Url query params
-
-        Returns
-        -------
-        bool
-            Adult pin parameter exists or not
-        """
-        return (True, False)[params['pin'] == 'True']
 
     def parse_paramters (self, paramstring):
         """Tiny helper to convert a url paramstring into a dictionary

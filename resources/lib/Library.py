@@ -218,7 +218,7 @@ class Library:
         episode_entry = 'S%02dE%02d' % (season, episode)
         return episode_entry in show_entry['episodes']
 
-    def add_movie (self, title, alt_title, year, video_id, pin, build_url):
+    def add_movie (self, title, alt_title, year, video_id, build_url):
         """Adds a movie to the local db, generates & persists the strm file
 
         Parameters
@@ -235,9 +235,6 @@ class Library:
         video_id : :obj:`str`
             ID of the video to be played
 
-        pin : bool
-            Needs adult pin
-
         build_url : :obj:`fn`
             Function to generate the stream url
         """
@@ -253,7 +250,7 @@ class Library:
         if self.movie_exists(title=title, year=year) == False:
             self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
             self._update_local_db(filename=self.db_filepath, db=self.db)
-        self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id, 'pin': pin}))
+        self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id}))
 
     def add_show (self, title, alt_title, episodes, build_url):
         """Adds a show to the local db, generates & persists the strm files
@@ -283,11 +280,11 @@ class Library:
         if self.show_exists(title) == False:
             self.db[self.series_label][show_meta] = {'seasons': [], 'episodes': [], 'alt_title': alt_title}
         for episode in episodes:
-            self._add_episode(show_dir=show_dir, title=title, season=episode['season'], episode=episode['episode'], video_id=episode['id'], pin=episode['pin'], build_url=build_url)
+            self._add_episode(show_dir=show_dir, title=title, season=episode['season'], episode=episode['episode'], video_id=episode['id'], build_url=build_url)
         self._update_local_db(filename=self.db_filepath, db=self.db)
         return show_dir
 
-    def _add_episode (self, title, show_dir, season, episode, video_id, pin, build_url):
+    def _add_episode (self, title, show_dir, season, episode, video_id, build_url):
         """Adds a single episode to the local DB, generates & persists the strm file
 
         Parameters
@@ -306,9 +303,6 @@ class Library:
 
         video_id : :obj:`str`
             ID of the video to be played
-
-        pin : bool
-            Needs adult pin
 
         build_url : :obj:`fn`
             Function to generate the stream url
@@ -330,7 +324,7 @@ class Library:
         filepath = os.path.join(show_dir, filename)
         if os.path.exists(filepath):
             return
-        self.write_strm_file(path=filepath, url=build_url({'action': 'play_video', 'video_id': video_id, 'pin': pin}))
+        self.write_strm_file(path=filepath, url=build_url({'action': 'play_video', 'video_id': video_id}))
 
     def remove_movie (self, title, year):
         """Removes the DB entry & the strm file for the movie given

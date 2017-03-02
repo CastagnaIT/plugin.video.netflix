@@ -61,17 +61,6 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.numeric(heading=self.get_local_string(string_id=30019) + ' ' + self.get_local_string(string_id=30022), type=0)
 
-    def show_adult_pin_dialog (self):
-        """Asks the user for the adult pin
-
-        Returns
-        -------
-        :obj:`int`
-            4 digit adult pin needed for adult movies
-        """
-        dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30002), type=xbmcgui.INPUT_NUMERIC)
-
     def show_search_term_dialog (self):
         """Asks the user for a term to query the netflix search for
 
@@ -123,18 +112,6 @@ class KodiHelper:
         """
         dlg = xbmcgui.Dialog()
         return dlg.input(self.get_local_string(string_id=30005), type=xbmcgui.INPUT_ALPHANUM)
-
-    def show_wrong_adult_pin_notification (self):
-        """Shows notification that a wrong adult pin was given
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
 
     def show_login_failed_notification (self):
         """Shows notification that the login failed
@@ -432,9 +409,7 @@ class KodiHelper:
                 if video_list[video_list_id]['type'] == 'movie':
                     # it´s a movie, so we need no subfolder & a route to play it
                     isFolder = False
-                    # check maturity index, to determine if we need the adult pin
-                    needs_pin = (True, False)[int(video['maturity']['level']) >= 1000]
-                    url = build_url({'action': 'play_video', 'video_id': video_list_id, 'pin': needs_pin})
+                    url = build_url({'action': 'play_video', 'video_id': video_list_id})
                 # add list item info
                 li = self._generate_entry_info(entry=video, li=li)
                 li = self._generate_context_menu_items(entry=video, li=li)
@@ -604,9 +579,7 @@ class KodiHelper:
                     # add list item info
                     li = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
                     li = self._generate_context_menu_items(entry=episode, li=li)
-                    # check maturity index, to determine if we need the adult pin
-                    needs_pin = (True, False)[int(episode['maturity']['rating']['maturityLevel']) >= 1000]
-                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'pin': needs_pin, 'start_offset': episode['bookmark']})
+                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark']})
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
@@ -657,7 +630,7 @@ class KodiHelper:
 
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
-            play_item.setProperty('StartOffset', str(start_offset))
+            play_item.setProperty('StartOffset', str(start_offset) + '.0')
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
     def _generate_art_info (self, entry, li):
