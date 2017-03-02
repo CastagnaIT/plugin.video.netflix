@@ -2,7 +2,6 @@
 
 ## Netflix Plugin for Kodi 18
 
-
 ###Prerequisites
 ----------------
 
@@ -21,13 +20,21 @@
 
 ###ToDo
 ----------------
+
+> Note: Those Todos are considered enhancements, they´re not issues, nor they prevent the usage of the plugin for everyday business
+
+If you feel, you´d like to contribute to this plugin or directly work on one of these items,
+please open an issue & we can provide you with some help to get started
+
 - [ ] Add missing meta data for episodes/seasons (Cast, bookmark position, etc.)
 - [ ] Change list of shows to actual list of episodes in the "Continue watching"" section, like it´s done on the website
 - [ ] Enable possibility to export single episodes or seasons to the Library
-- [ ] Evaluate idea of an auto updating library exporter that keeps track
+- [ ] Evaluate idea of an auto updating library exporter that keeps track (on Plugin start/on Service start maybe)
+- [ ] If a new user has been created, they need to select their movie/show preferences to actually get started, we could provide the same mechanisms in Kodi
+- [ ] Enable aggressive fetching of data in background (maybe using Futures), like the Netflix website does, to enhance the speed and the user experience when browsing the frontend
 
-###Error Handling
------------------
+###Something doesn't work
+-------------------------
 
 If something doesn't work for you, please:
 
@@ -40,10 +47,9 @@ If something doesn't work for you, please:
 	- Your OS and OS version
 	- Libwedevine version
 	- A Kodi debug log that represents your issue
-	
+
 ###Licence
------------------	
+-----------------
 
 Licenced under The MIT License.
 Includes [pyjsparser](https://github.com/PiotrDabkowski/pyjsparser) by [Piotr Dabkowski](https://github.com/PiotrDabkowski)
-
