@@ -6,25 +6,27 @@ import socket
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
 
-def select_unused_port():
-  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  s.bind(('localhost', 0))
-  addr, port = s.getsockname()
-  s.close()
-  return port
-
 addon = xbmcaddon.Addon()
 kodi_helper = KodiHelper(
     plugin_handle=None,
     base_url=None
 )
 
-PORT = select_unused_port()
-addon.setSetting('msl_service_port', str(PORT))
-kodi_helper.log(msg='Picked Port: ' + str(PORT))
-Handler = MSLHttpRequestHandler
+
+def select_unused_port():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 0))
+    addr, port = sock.getsockname()
+    sock.close()
+    return port
+
+port = select_unused_port()
+addon.setSetting('msl_service_port', str(port))
+kodi_helper.log(msg='Picked Port: ' + str(port))
+
+#Config the HTTP Server
 SocketServer.TCPServer.allow_reuse_address = True
-server = SocketServer.TCPServer(('127.0.0.1', PORT), Handler)
+server = SocketServer.TCPServer(('127.0.0.1', port), MSLHttpRequestHandler)
 server.server_activate()
 server.timeout = 1
 

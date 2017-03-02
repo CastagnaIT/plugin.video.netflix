@@ -1,7 +1,7 @@
 import BaseHTTPServer
 import base64
 from urlparse import urlparse, parse_qs
-
+import xbmcaddon
 from MSL import MSL
 from KodiHelper import KodiHelper
 
@@ -9,6 +9,7 @@ kodi_helper = KodiHelper(
     plugin_handle=None,
     base_url=None
 )
+
 account = kodi_helper.get_credentials()
 msl = MSL(account['email'], account['password'], kodi_helper)
 

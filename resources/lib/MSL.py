@@ -5,18 +5,16 @@ import os
 import pprint
 import random
 from StringIO import StringIO
-from hmac import HMAC
-import hashlib
 import requests
 import zlib
 
 import time
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
-# from Crypto.Hash import HMAC, SHA256
-from Crypto.Util import Padding
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Cipher import PKCS1_OAEP
+from Cryptodome.Cipher import AES
+from Cryptodome.Random import get_random_bytes
+from Crypto.Hash import HMAC, SHA256
+from Cryptodome.Util import Padding
 import xml.etree.ElementTree as ET
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -61,6 +59,7 @@ class MSL:
             pass
 
         if self.file_exists(self.kodi_helper.msl_data_path, 'msl_data.json'):
+            self.kodi_helper.log(msg='MSL Data exists. Use old Tokens.')
             self.__load_msl_data()
             self.handshake_performed = True
         elif self.file_exists(self.kodi_helper.msl_data_path, 'rsa_key.bin'):
@@ -75,6 +74,11 @@ class MSL:
             self.__perform_key_handshake()
 
     def load_manifest(self, viewable_id):
+        """
+        Loads the manifets for the given viewable_id and returns a mpd-XML-Manifest
+        :param viewable_id: The id of of the viewable
+        :return: MPD XML Manifest or False if no success
+        """
         manifest_request_data = {
             'method': 'manifest',
             'lookupType': 'PREPARE',
@@ -106,38 +110,28 @@ class MSL:
             'uiVersion': 'akira'
         }
         request_data = self.__generate_msl_request_data(manifest_request_data)
-
         resp = self.session.post(self.endpoints['manifest'], request_data)
 
-
         try:
+            # if the json() does not fail we have an error because the manifest response is a chuncked json response
             resp.json()
-            self.kodi_helper.log(msg='MANIFEST RESPONE JSON: '+resp.text)
+            self.kodi_helper.log(msg='Error getting Manifest: '+resp.text)
+            return False
         except ValueError:
-            # Maybe we have a CHUNKED response
+            # json() failed so parse the chunked response
+            self.kodi_helper.log(msg='Got chunked Manifest Response: ' + resp.text)
             resp = self.__parse_chunked_msl_response(resp.text)
+            self.kodi_helper.log(msg='Parsed chunked Response: ' + json.dumps(resp))
             data = self.__decrypt_payload_chunk(resp['payloads'][0])
-            # pprint.pprint(data)
             return self.__tranform_to_dash(data)
 
-
     def get_license(self, challenge, sid):
-
         """
-            std::time_t t = std::time(0);  // t is an integer type
-    licenseRequestData["clientTime"] = (int)t;
-    //licenseRequestData["challengeBase64"] = challengeStr;
-    licenseRequestData["licenseType"] = "STANDARD";
-    licenseRequestData["playbackContextId"] = playbackContextId;//"E1-BQFRAAELEB32o6Se-GFvjwEIbvDydEtfj6zNzEC3qwfweEPAL3gTHHT2V8rS_u1Mc3mw5BWZrUlKYIu4aArdjN8z_Z8t62E5jRjLMdCKMsVhlSJpiQx0MNW4aGqkYz-1lPh85Quo4I_mxVBG5lgd166B5NDizA8.";
-    licenseRequestData["drmContextIds"] = Json::arrayValue;
-    licenseRequestData["drmContextIds"].append(drmContextId);
-
-        :param viewable_id:
-        :param challenge:
-        :param kid:
-        :return:
+        Requests and returns a license for the given challenge and sid
+        :param challenge: The base64 encoded challenge
+        :param sid: The sid paired to the challengew
+        :return: Base64 representation of the license key or False if no success
         """
-
         license_request_data = {
             'method': 'license',
             'licenseType': 'STANDARD',
@@ -159,18 +153,19 @@ class MSL:
         resp = self.session.post(self.endpoints['license'], request_data)
 
         try:
+            # If is valid json the request for the licnese failed
             resp.json()
-            self.kodi_helper.log(msg='LICENSE RESPONE JSON: '+resp.text)
+            self.kodi_helper.log(msg='Error getting license: '+resp.text)
+            return False
         except ValueError:
-            # Maybe we have a CHUNKED response
+            # json() failed so we have a chunked json response
             resp = self.__parse_chunked_msl_response(resp.text)
             data = self.__decrypt_payload_chunk(resp['payloads'][0])
-            # pprint.pprint(data)
             if data['success'] is True:
                 return data['result']['licenses'][0]['data']
             else:
-                return ''
-
+                self.kodi_helper.log(msg='Error getting license: ' + json.dumps(data))
+                return False
 
     def __decrypt_payload_chunk(self, payloadchunk):
         payloadchunk = json.JSONDecoder().decode(payloadchunk)
@@ -329,21 +324,7 @@ class MSL:
             'signature': self.__sign(first_payload_encryption_envelope),
         }
 
-
-        # Create Second Payload
-        second_payload = {
-            "messageid": self.current_message_id,
-            "data": "",
-            "endofmsg": True,
-            "sequencenumber": 2
-        }
-        second_payload_encryption_envelope = self.__encrypt(json.dumps(second_payload))
-        second_payload_chunk = {
-            'payload': base64.standard_b64encode(second_payload_encryption_envelope),
-            'signature': base64.standard_b64encode(self.__sign(second_payload_encryption_envelope)),
-        }
-
-        request_data = json.dumps(header) + json.dumps(first_payload_chunk) # + json.dumps(second_payload_chunk)
+        request_data = json.dumps(header) + json.dumps(first_payload_chunk)
         return request_data
 
 
@@ -430,18 +411,18 @@ class MSL:
         encryption_envelope['ciphertext'] = base64.standard_b64encode(ciphertext)
         return json.dumps(encryption_envelope)
 
+
     def __sign(self, text):
-        #signature = hmac.new(self.sign_key, text, hashlib.sha256).digest()
-        signature = HMAC(self.sign_key, text, hashlib.sha256).digest()
-
-
-        # hmac = HMAC.new(self.sign_key, digestmod=SHA256)
-        # hmac.update(text)
+        """
+        Calculates the HMAC signature for the given text with the current sign key and SHA256
+        :param text:
+        :return: Base64 encoded signature
+        """
+        signature = HMAC.new(self.sign_key, text, SHA256).digest()
         return base64.standard_b64encode(signature)
 
 
     def __perform_key_handshake(self):
-
         header = self.__generate_msl_header(is_key_request=True, is_handshake=True, compressionalgo="", encrypt=False)
         request = {
             'entityauthdata': {
@@ -455,7 +436,6 @@ class MSL:
         }
         self.kodi_helper.log(msg='Key Handshake Request:')
         self.kodi_helper.log(msg=json.dumps(request))
-
 
         resp = self.session.post(self.endpoints['manifest'], json.dumps(request, sort_keys=True))
         if resp.status_code == 200:
@@ -510,8 +490,7 @@ class MSL:
 
     def __set_master_token(self, master_token):
         self.mastertoken = master_token
-        self.sequence_number = json.JSONDecoder().decode(base64.standard_b64decode(master_token['tokendata']))[
-            'sequencenumber']
+        self.sequence_number = json.JSONDecoder().decode(base64.standard_b64decode(master_token['tokendata']))['sequencenumber']
 
     def __load_rsa_keys(self):
         loaded_key = self.load_file(self.kodi_helper.msl_data_path, 'rsa_key.bin')
