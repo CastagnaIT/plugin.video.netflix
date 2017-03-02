@@ -85,14 +85,6 @@ msgctxt "#30014"
 msgid "Account"
 msgstr "Account"
 
-msgctxt "#30015"
-msgid "Logging"
-msgstr "Logging"
-
-msgctxt "#30016"
-msgid "Verbose logging"
-msgstr "Verbose logging"
-
 msgctxt "#30017"
 msgid "Logout"
 msgstr "Logout"

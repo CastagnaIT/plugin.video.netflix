@@ -832,7 +832,7 @@ class KodiHelper:
         li.addContextMenuItems(items)
         return li
 
-    def log (self, msg, level=xbmc.LOGNOTICE):
+    def log (self, msg, level=xbmc.LOGDEBUG):
         """Adds a log entry to the Kodi log
 
         Parameters
@@ -843,12 +843,9 @@ class KodiHelper:
         level : :obj:`int`
             Kodi log level
         """
-        if self.verb_log:
-            if level == xbmc.LOGDEBUG and self.verb_log:
-                level = xbmc.LOGNOTICE
-            if isinstance(msg, unicode):
-                msg = msg.encode('utf-8')
-            xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
+        if isinstance(msg, unicode):
+            msg = msg.encode('utf-8')
+        xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
 
     def get_local_string (self, string_id):
         """Returns the localized version of a string
