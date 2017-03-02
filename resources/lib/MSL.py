@@ -85,10 +85,72 @@ class MSL:
             'lookupType': 'PREPARE',
             'viewableIds': [viewable_id],
             'profiles': [
-                'playready-h264mpl30-dash',
-                'playready-h264mpl31-dash',
-                'playready-h264mpl40-dash',
+                "playready-h264bpl30-dash",
+                "playready-h264mpl30-dash",
+                "playready-h264mpl31-dash",
+                "playready-h264mpl40-dash",
+                # "hevc-main-L30-dash-cenc",
+                # "hevc-main-L31-dash-cenc",
+                # "hevc-main-L40-dash-cenc",
+                # "hevc-main-L41-dash-cenc",
+                # "hevc-main-L50-dash-cenc",
+                # "hevc-main-L51-dash-cenc",
+                # "hevc-main10-L30-dash-cenc",
+                # "hevc-main10-L31-dash-cenc",
+                # "hevc-main10-L40-dash-cenc",
+                # "hevc-main10-L41-dash-cenc",
+                # "hevc-main10-L50-dash-cenc",
+                # "hevc-main10-L51-dash-cenc",
+                # "hevc-main10-L30-dash-cenc-prk",
+                # "hevc-main10-L31-dash-cenc-prk",
+                # "hevc-main10-L40-dash-cenc-prk",
+                # "hevc-main10-L41-dash-cenc-prk",
+                # "hevc-main-L30-L31-dash-cenc-tl",
+                # "hevc-main-L31-L40-dash-cenc-tl",
+                # "hevc-main-L40-L41-dash-cenc-tl",
+                # "hevc-main-L50-L51-dash-cenc-tl",
+                # "hevc-main10-L30-L31-dash-cenc-tl",
+                # "hevc-main10-L31-L40-dash-cenc-tl",
+                # "hevc-main10-L40-L41-dash-cenc-tl",
+                # "hevc-main10-L50-L51-dash-cenc-tl",
+                # "hevc-dv-main10-L30-dash-cenc",
+                # "hevc-dv-main10-L31-dash-cenc",
+                # "hevc-dv-main10-L40-dash-cenc",
+                # "hevc-dv-main10-L41-dash-cenc",
+                # "hevc-dv-main10-L50-dash-cenc",
+                # "hevc-dv-main10-L51-dash-cenc",
+                # "hevc-dv5-main10-L30-dash-cenc-prk",
+                # "hevc-dv5-main10-L31-dash-cenc-prk",
+                # "hevc-dv5-main10-L40-dash-cenc-prk",
+                # "hevc-dv5-main10-L41-dash-cenc-prk",
+                # "hevc-dv5-main10-L50-dash-cenc-prk",
+                # "hevc-dv5-main10-L51-dash-cenc-prk",
+                # "hevc-hdr-main10-L30-dash-cenc",
+                # "hevc-hdr-main10-L31-dash-cenc",
+                # "hevc-hdr-main10-L40-dash-cenc",
+                # "hevc-hdr-main10-L41-dash-cenc",
+                # "hevc-hdr-main10-L50-dash-cenc",
+                # "hevc-hdr-main10-L51-dash-cenc",
+                # "hevc-hdr-main10-L30-dash-cenc-prk",
+                # "hevc-hdr-main10-L31-dash-cenc-prk",
+                # "hevc-hdr-main10-L40-dash-cenc-prk",
+                # "hevc-hdr-main10-L41-dash-cenc-prk",
+                # "hevc-hdr-main10-L50-dash-cenc-prk",
+                # "hevc-hdr-main10-L51-dash-cenc-prk"
+
+               # 'playready-h264mpl30-dash',
+                #'playready-h264mpl31-dash',
+                #'playready-h264mpl40-dash',
+                #'hevc-main10-L41-dash-cenc',
+                #'hevc-main10-L50-dash-cenc',
+                #'hevc-main10-L51-dash-cenc',
+
+
+
+                # Audio
                 'heaac-2-dash',
+                'ddplus-2.0-dash',
+                'ddplus-5.1-dash',
                 'dfxp-ls-sdh',
                 'simplesdh',
                 'nflx-cmisc',
@@ -224,10 +286,18 @@ class MSL:
                 ET.SubElement(protection, 'cenc:pssh').text = pssh
 
             for downloadable in video_track['downloadables']:
+
+                hdcp_versions = '0.0'
+                for hdcp in downloadable['hdcpVersions']:
+                    if hdcp != 'none':
+                        hdcp_versions = hdcp
+
                 rep = ET.SubElement(video_adaption_set, 'Representation',
                                     width=str(downloadable['width']),
                                     height=str(downloadable['height']),
                                     bandwidth=str(downloadable['bitrate']*1024),
+                                    hdcp=hdcp_versions,
+                                    nflxContentProfile=str(downloadable['contentProfile']),
                                     codecs='h264',
                                     mimeType='video/mp4')
 
@@ -246,8 +316,13 @@ class MSL:
                                                contentType='audio',
                                                mimeType='audio/mp4')
             for downloadable in audio_track['downloadables']:
+                codec = 'aac'
+                print downloadable
+                if downloadable['contentProfile'] == 'ddplus-2.0-dash' or downloadable['contentProfile'] == 'ddplus-5.1-dash':
+                    codec = 'ec-3'
+                print "codec is: " + codec
                 rep = ET.SubElement(audio_adaption_set, 'Representation',
-                                    codecs='aac',
+                                    codecs=codec,
                                     bandwidth=str(downloadable['bitrate']*1024),
                                     mimeType='audio/mp4')
 
@@ -308,7 +383,7 @@ class MSL:
         # Serialize the given Data
         serialized_data = json.dumps(data)
         serialized_data = serialized_data.replace('"', '\\"')
-        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-11","payload":{"data":"' + serialized_data + '"},"query":""}]\n'
+        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"' + serialized_data + '"},"query":""}]\n'
 
         compressed_data = self.__compress_data(serialized_data)
 
