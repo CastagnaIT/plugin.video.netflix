@@ -31,6 +31,7 @@ please open an issue & we can provide you with some help to get started
 - [ ] Enable possibility to export single episodes or seasons to the Library
 - [ ] Evaluate idea of an auto updating library exporter that keeps track (on Plugin start/on Service start maybe)
 - [ ] If a new user has been created, they need to select their movie/show preferences to actually get started, we could provide the same mechanisms in Kodi
+- [ ] Enable aggressive fetching of data in background (maybe using Futures), like the Netflix website does, to enhance the speed and the user experience when browsing the frontend
 
 ###Something doesn't work
 -------------------------
