@@ -33,8 +33,10 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.wfile.write(base64.standard_b64decode(b64license))
                 self.finish()
             else:
+                kodi_helper.log(msg='Error getting License')
                 self.send_response(400)
         else:
+            kodi_helper.log(msg='Error in License Request')
             self.send_response(400)
 
     def do_GET(self):

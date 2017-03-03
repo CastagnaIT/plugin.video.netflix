@@ -10,6 +10,8 @@ import xbmcgui
 import xbmcaddon
 import xbmc
 import json
+import uuid
+from UniversalAnalytics import Tracker
 try:
    import cPickle as pickle
 except:
@@ -638,6 +640,9 @@ class KodiHelper:
             self.log(msg='Inputstream addon not found')
             return False
 
+        # track play event
+        self.track_event('playVideo')
+
         # inputstream addon properties
         msl_service_url = 'http://localhost:' + str(self.addon.getSetting('msl_service_port'))
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
@@ -895,3 +900,21 @@ class KodiHelper:
             instance of the Library class
         """
         self.library = library
+
+    def track_event(self, event):
+        """
+        Send a tracking event if tracking is enabled
+        :param event: the string idetifier of the event
+        :return: None
+        """
+        # Check if tracking is enabled
+        enable_tracking = (self.addon.getSetting('enable_logging') == 'true')
+        if enable_tracking:
+            #Get or Create Tracking id
+            tracking_id = self.addon.getSetting('tracking_id')
+            if tracking_id is '':
+                tracking_id = str(uuid.uuid4())
+                self.addon.setSetting('tracking_id', tracking_id)
+            # Send the tracking event
+            tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)
+            tracker.send('event', event)
