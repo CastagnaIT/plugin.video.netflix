@@ -100,7 +100,7 @@ class KodiHelper:
             Netflix password
         """
         dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30004), type=xbmcgui.INPUT_ALPHANUM)
+        return dlg.input(self.get_local_string(string_id=30004), type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)
 
     def show_email_dialog (self):
         """Asks the user for its Netflix account email
@@ -135,6 +135,30 @@ class KodiHelper:
         """
         dialog = xbmcgui.Dialog()
         dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return True
+
+    def show_no_search_results_notification (self):
+        """Shows notification that no search results could be found
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=30011), self.get_local_string(string_id=30013))
+        return True
+
+    def show_no_seasons_notification (self):
+        """Shows notification that no seasons be found
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
         return True
 
     def set_setting (self, key, value):
@@ -452,8 +476,7 @@ class KodiHelper:
         bool
             List could be build
         """
-        li = xbmcgui.ListItem(label=self.get_local_string(30012))
-        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url='', listitem=li, isFolder=False)
+        self.show_no_seasons_notification()
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
@@ -473,10 +496,8 @@ class KodiHelper:
         bool
             List could be build
         """
-        li = xbmcgui.ListItem(label=self.get_local_string(30013))
-        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=build_url({'action': action}), listitem=li, isFolder=False)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
-        return True
+        self.show_no_search_results_notification()
+        return xbmcplugin.endOfDirectory(self.plugin_handle)
 
     def build_user_sub_listing (self, video_list_ids, type, action, build_url):
         """Builds the video lists screen for user subfolders (genres & recommendations)
