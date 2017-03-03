@@ -267,6 +267,7 @@ class MSL:
                 pssh = manifest['psshb64'][0]
 
         seconds = manifest['runtime']/1000
+        init_length = seconds / 2 * 12 + 20*1000
         duration = "PT"+str(seconds)+".00S"
 
         root = ET.Element('MPD')
@@ -287,6 +288,10 @@ class MSL:
 
             for downloadable in video_track['downloadables']:
 
+                codec = 'h264'
+                if 'hevc' in downloadable['contentProfile']:
+                    codec = 'hevc'
+
                 hdcp_versions = '0.0'
                 for hdcp in downloadable['hdcpVersions']:
                     if hdcp != 'none':
@@ -298,14 +303,14 @@ class MSL:
                                     bandwidth=str(downloadable['bitrate']*1024),
                                     hdcp=hdcp_versions,
                                     nflxContentProfile=str(downloadable['contentProfile']),
-                                    codecs='h264',
+                                    codecs=codec,
                                     mimeType='video/mp4')
 
                 #BaseURL
                 ET.SubElement(rep, 'BaseURL').text = self.__get_base_url(downloadable['urls'])
                 # Init an Segment block
-                segment_base = ET.SubElement(rep, 'SegmentBase', indexRange="0-60000", indexRangeExact="true")
-                ET.SubElement(segment_base, 'Initialization', range='0-60000')
+                segment_base = ET.SubElement(rep, 'SegmentBase', indexRange="0-"+str(init_length), indexRangeExact="true")
+                ET.SubElement(segment_base, 'Initialization', range='0-'+str(init_length))
 
 
 
@@ -334,8 +339,8 @@ class MSL:
                 #BaseURL
                 ET.SubElement(rep, 'BaseURL').text = self.__get_base_url(downloadable['urls'])
                 # Index range
-                segment_base = ET.SubElement(rep, 'SegmentBase', indexRange="0-60000", indexRangeExact="true")
-                ET.SubElement(segment_base, 'Initialization', range='0-60000')
+                segment_base = ET.SubElement(rep, 'SegmentBase', indexRange="0-"+str(init_length), indexRangeExact="true")
+                ET.SubElement(segment_base, 'Initialization', range='0-'+str(init_length))
 
 
         xml = ET.tostring(root, encoding='utf-8', method='xml')
