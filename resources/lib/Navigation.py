@@ -157,10 +157,11 @@ class Navigation:
                 if self.netflix_session._is_size_key(key=key) == False:
                     has_search_results = search_results_raw['value']['search'][key]['titles']['length'] > 0
                     if has_search_results == False:
-                        for entry in search_results_raw['value']['search'][key]['suggestions']:
-                            if self.netflix_session._is_size_key(key=entry) == False:
-                                if search_results_raw['value']['search'][key]['suggestions'][entry]['relatedvideos']['length'] > 0:
-                                    has_search_results = True
+                        if search_results_raw['value']['search'][key].get('suggestions', False) != False:
+                            for entry in search_results_raw['value']['search'][key]['suggestions']:
+                                if self.netflix_session._is_size_key(key=entry) == False:
+                                    if search_results_raw['value']['search'][key]['suggestions'][entry]['relatedvideos']['length'] > 0:
+                                        has_search_results = True
 
 
         # display that we haven't found a thing

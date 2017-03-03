@@ -1164,11 +1164,11 @@ class NetflixSession:
         :obj:`str`
             Quality of the video
         """
-        quality = '540'
+        quality = '720'
         if video['videoQuality']['hasHD']:
-            quality = '720'
-        if video['videoQuality']['hasUltraHD']:
             quality = '1080'
+        if video['videoQuality']['hasUltraHD']:
+            quality = '4000'
         return quality
 
     def parse_runtime_for_video (self, video):
