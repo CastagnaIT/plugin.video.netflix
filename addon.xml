@@ -28,6 +28,6 @@
     <platform>all</platform>
     <license>MIT</license>
     <forum>http://www.kodinerds.net/</forum>
-    <source>https://github.com/kodinerds/repo</source>
+    <source>https://github.com/asciidisco/plugin.video.netflix</source>
   </extension>
 </addon>
