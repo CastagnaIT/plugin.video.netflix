@@ -243,9 +243,6 @@ class NetflixSession:
             if 'memberContext' in dict(item).keys():
                 for important_field in important_fields:
                     user_data.update({important_field: item['memberContext']['data']['userInfo'][important_field]})
-        print '.............'
-        print user_data
-        print '.............'
         return user_data
 
     def _parse_profile_data (self, netflix_page_data):
@@ -284,9 +281,6 @@ class NetflixSession:
         for item in netflix_page_data:
             if 'hasViewedRatingWelcomeModal' in dict(item).keys():
                 for profile_id in item:
-                    print '------------'
-                    print profile_id
-                    print '------------'
                     if self._is_size_key(key=profile_id) == False and type(item[profile_id]) == dict and item[profile_id].get('avatar', False) != False:
                         profile = {'id': profile_id}
                         for important_field in important_fields:
@@ -366,11 +360,6 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-        if self.user_data.get('bauthURL', False) == False:
-            print '...............'
-            print page_soup.text.find('authURL');
-            print '...............'
-
 
     def is_logged_in (self, account):
         """Determines if a user is already logged in (with a valid cookie),
@@ -1326,8 +1315,14 @@ class NetflixSession:
         for key in videos.keys():
             if self._is_size_key(key=key) == False:
                 video_key = key
+        # get season index
+        sorting = {}
+        for idx in videos[video_key]['seasonList']:
+            if self._is_size_key(key=idx) == False and idx != 'summary':
+                sorting[int(videos[video_key]['seasonList'][idx][1])] = int(idx)
         return {
             season['summary']['id']: {
+                'idx': sorting[season['summary']['id']],
                 'id': season['summary']['id'],
                 'text': season['summary']['name'],
                 'shortName': season['summary']['shortName'],
