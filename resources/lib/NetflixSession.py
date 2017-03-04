@@ -433,7 +433,7 @@ class NetflixSession:
             return False;
 
         # collect all the login fields & their contents and add the user credentials
-        page_soup = BeautifulSoup(response.text)
+        page_soup = BeautifulSoup(response.text, 'html.parser')
         login_form = page_soup.find(attrs={'class' : 'ui-label-text'}).findPrevious('form')
         login_payload = self.parse_login_form_fields(form_soup=login_form)
         if 'email' in login_payload:
@@ -488,7 +488,7 @@ class NetflixSession:
         # fetch the index page again, so that we can fetch the corresponding user data
         browse_response = self.session.get(self._get_document_url_for(component='browse'), verify=self.verify_ssl)
         only_script_tags = SoupStrainer('script')
-        browse_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
+        browse_soup = BeautifulSoup(browse_response.text, 'html.parser', parse_only=only_script_tags)
         self._parse_page_contents(page_soup=browse_soup)
         account_hash = self._generate_account_hash(account=account)
         self._save_data(filename=self.data_path + '_' + account_hash)
