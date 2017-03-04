@@ -148,3 +148,7 @@ msgstr "Export titel ändern"
 msgctxt "#30032"
 msgid "Tracking"
 msgstr "Tracking"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Benutze Dolby Ton"

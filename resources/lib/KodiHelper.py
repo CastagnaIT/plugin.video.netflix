@@ -186,6 +186,13 @@ class KodiHelper:
             'password': self.addon.getSetting('password')
         }
 
+    def get_dolby_setting(self):
+        """
+        Returns if the dolby sound is enabled
+        :return: True|False
+        """
+        return self.addon.getSetting('enable_dolby_sound') == 'true'
+
     def get_custom_library_settings (self):
         """Returns the settings in regards to the custom library folder(s)
 
@@ -908,7 +915,7 @@ class KodiHelper:
         :return: None
         """
         # Check if tracking is enabled
-        enable_tracking = (self.addon.getSetting('enable_logging') == 'true')
+        enable_tracking = (self.addon.getSetting('enable_tracking') == 'true')
         if enable_tracking:
             #Get or Create Tracking id
             tracking_id = self.addon.getSetting('tracking_id')

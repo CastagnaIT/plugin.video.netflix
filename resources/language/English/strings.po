@@ -148,3 +148,8 @@ msgstr ""
 msgctxt "#30032"
 msgid "Tracking"
 msgstr ""
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr ""
+

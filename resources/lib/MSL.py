@@ -147,8 +147,6 @@ class MSL:
 
                 # Audio
                 'heaac-2-dash',
-                'ddplus-2.0-dash',
-                'ddplus-5.1-dash',
                 'dfxp-ls-sdh',
                 'simplesdh',
                 'nflx-cmisc',
@@ -171,6 +169,12 @@ class MSL:
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
+
+        # Check if dolby sound is enabled and add to profles
+        if self.kodi_helper.get_dolby_setting():
+            manifest_request_data['profiles'].append('ddplus-2.0-dash')
+            manifest_request_data['profiles'].append('ddplus-5.1-dash')
+
         request_data = self.__generate_msl_request_data(manifest_request_data)
         resp = self.session.post(self.endpoints['manifest'], request_data)
 
