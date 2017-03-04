@@ -14,7 +14,7 @@ try:
    import cPickle as pickle
 except:
    import pickle
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 from pyjsparser import PyJsParser
 from utils import noop
 
@@ -360,6 +360,7 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
+        return netflix_page_data
 
     def is_logged_in (self, account):
         """Determines if a user is already logged in (with a valid cookie),
@@ -386,9 +387,9 @@ class NetflixSession:
             response = self.session.get(self._get_document_url_for(component='profiles'), verify=self.verify_ssl)
 
             # parse out the needed inline information
-            page_soup = BeautifulSoup(response.text)
-            page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
-            self._parse_page_contents(page_soup=page_soup)
+            only_script_tags = SoupStrainer('script')
+            page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
+            page_data = self._parse_page_contents(page_soup=page_soup)
 
             # check if the cookie is still valid
             for item in page_data:
@@ -443,7 +444,7 @@ class NetflixSession:
 
         # perform the login
         login_response = self.session.post(self._get_document_url_for(component='login'), data=login_payload, verify=self.verify_ssl)
-        login_soup = BeautifulSoup(login_response.text)
+        login_soup = BeautifulSoup(login_response.text, 'html.parser')
 
         # we know that the login was successfull if we find an HTML element with the class of 'profile-name'
         if login_soup.find(attrs={'class' : 'profile-name'}) or login_soup.find(attrs={'class' : 'profile-icon'}):
@@ -486,7 +487,8 @@ class NetflixSession:
 
         # fetch the index page again, so that we can fetch the corresponding user data
         browse_response = self.session.get(self._get_document_url_for(component='browse'), verify=self.verify_ssl)
-        browse_soup = BeautifulSoup(browse_response.text)
+        only_script_tags = SoupStrainer('script')
+        browse_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
         self._parse_page_contents(page_soup=browse_soup)
         account_hash = self._generate_account_hash(account=account)
         self._save_data(filename=self.data_path + '_' + account_hash)
@@ -1476,7 +1478,7 @@ class NetflixSession:
             Instance of an BeautifulSoup document containing the complete page contents
         """
         response = self.session.get(self._get_document_url_for(component='browse'), verify=self.verify_ssl)
-        return BeautifulSoup(response.text)
+        return BeautifulSoup(response.text, 'html.parser')
 
     def fetch_video_list_ids (self, list_from=0, list_to=50):
         """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
@@ -1744,9 +1746,9 @@ class NetflixSession:
         # load the profiles page (to verify the user)
         response = self.session.get(self._get_document_url_for(component='profiles'), verify=self.verify_ssl)
         # parse out the needed inline information
-        page_soup = BeautifulSoup(response.text)
-        page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
-        self._parse_page_contents(page_soup)
+        only_script_tags = SoupStrainer('script')
+        page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
+        page_data = self._parse_page_contents(page_soup=page_soup)
         account_hash = self._generate_account_hash(account=account)
         self._save_data(filename=self.data_path + '_' + account_hash)
 
