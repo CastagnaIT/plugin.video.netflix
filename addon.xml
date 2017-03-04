@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.9.6" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.9.7" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>

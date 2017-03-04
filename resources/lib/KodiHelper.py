@@ -44,12 +44,11 @@ class KodiHelper:
         self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
         self.verb_log = self.addon.getSetting('logging') == 'true'
         self.default_fanart = self.addon.getAddonInfo('fanart')
-        self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         self.library = None
         self.setup_memcache()
 
     def refresh (self):
-        """Refrsh the current list"""
+        """Refresh the current list"""
         return xbmc.executebuiltin('Container.Refresh')
 
     def show_rating_dialog (self):
@@ -224,7 +223,7 @@ class KodiHelper:
         type : :obj:`str`
             Selected menu item
         """
-        self.win.setProperty('main_menu_selection', type)
+        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('main_menu_selection', type)
 
     def get_main_menu_selection (self):
         """Gets the persisted chosen main menu entry from memory
@@ -234,18 +233,18 @@ class KodiHelper:
         :obj:`str`
             The last chosen main menu entry
         """
-        return self.win.getProperty('main_menu_selection')
+        return xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('main_menu_selection')
 
     def setup_memcache (self):
         """Sets up the memory cache if not existant"""
-        cached_items = self.win.getProperty('memcache')
+        cached_items = xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache')
         # no cache setup yet, create one
         if len(cached_items) < 1:
-            self.win.setProperty('memcache', pickle.dumps({}))
+            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
 
     def invalidate_memcache (self):
         """Invalidates the memory cache"""
-        self.win.setProperty('memcache', pickle.dumps({}))
+        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
 
     def has_cached_item (self, cache_id):
         """Checks if the requested item is in memory cache
@@ -260,7 +259,7 @@ class KodiHelper:
         bool
             Item is cached
         """
-        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
         return cache_id in cached_items.keys()
 
     def get_cached_item (self, cache_id):
@@ -276,7 +275,7 @@ class KodiHelper:
         mixed
             Contents of the requested cache item or none
         """
-        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
         if self.has_cached_item(cache_id) != True:
             return None
         return cached_items[cache_id]
@@ -292,9 +291,9 @@ class KodiHelper:
         contents : mixed
             Cache entry contents
         """
-        cached_items = pickle.loads(self.win.getProperty('memcache'))
+        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
         cached_items.update({cache_id: contents})
-        self.win.setProperty('memcache', pickle.dumps(cached_items))
+        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps(cached_items))
 
     def build_profiles_listing (self, profiles, action, build_url):
         """Builds the profiles list Kodi screen
@@ -404,7 +403,7 @@ class KodiHelper:
             preselected_list_item = idx if item else None
         preselected_list_item = idx + 1 if self.get_main_menu_selection() == 'search' else preselected_list_item
         if preselected_list_item != None:
-            xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(self.win.getFocusId()), str(preselected_list_item)))
+            xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId()), str(preselected_list_item)))
         return True
 
     def build_video_listing (self, video_list, actions, type, build_url):

@@ -491,6 +491,7 @@ class NetflixSession:
         browse_soup = BeautifulSoup(browse_response.text, 'html.parser', parse_only=only_script_tags)
         self._parse_page_contents(page_soup=browse_soup)
         account_hash = self._generate_account_hash(account=account)
+        self.user_data['guid'] = profile_id;
         self._save_data(filename=self.data_path + '_' + account_hash)
         return True
 
