@@ -1,7 +1,6 @@
 import BaseHTTPServer
 import base64
 from urlparse import urlparse, parse_qs
-import xbmcaddon
 from MSL import MSL
 from KodiHelper import KodiHelper
 
@@ -10,8 +9,7 @@ kodi_helper = KodiHelper(
     base_url=None
 )
 
-account = kodi_helper.get_credentials()
-msl = MSL(account['email'], account['password'], kodi_helper)
+msl = MSL(kodi_helper)
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
@@ -51,3 +49,12 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/xml')
             self.end_headers()
             self.wfile.write(data)
+
+    def log_message(self, format, *args):
+        """
+        Disable the BaseHTTPServer Log
+        :param format:
+        :param args:
+        :return: None
+        """
+        return

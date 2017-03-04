@@ -46,13 +46,11 @@ class MSL:
         'license': 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/license'
     }
 
-    def __init__(self, email, password, kodi_helper):
+    def __init__(self, kodi_helper):
         """
         The Constructor checks for already existing crypto Keys.
         If they exist it will load the existing keys
         """
-        self.email = email
-        self.password = password
         self.kodi_helper = kodi_helper
         try:
             os.mkdir(self.kodi_helper.msl_data_path)
@@ -459,12 +457,13 @@ class MSL:
             if 'usertoken' in self.tokens:
                 pass
             else:
+                account = self.kodi_helper.get_credentials()
                 # Auth via email and password
                 header_data['userauthdata'] = {
                     'scheme': 'EMAIL_PASSWORD',
                     'authdata': {
-                        'email': self.email,
-                        'password': self.password
+                        'email': account['email'],
+                        'password': account['password']
                     }
                 }
 
