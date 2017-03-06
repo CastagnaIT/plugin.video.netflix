@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon version: 0.9.8
+# Addon version: 0.9.9
 # Addon Provider: libdev + jojo + asciidisco
 msgid ""
 msgstr ""
@@ -151,4 +151,8 @@ msgstr ""
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
+msgstr ""
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
 msgstr ""
