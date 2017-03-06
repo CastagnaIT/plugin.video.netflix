@@ -4,19 +4,12 @@
 # Created on: 13.01.2017
 
 # import local classes
-if __package__ is None:
-    import sys
-    import os
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from resources.lib.NetflixSession import NetflixSession
-    from resources.lib.KodiHelper import KodiHelper
-    from resources.lib.Navigation import Navigation
-    from resources.lib.Library import Library
-else:
-    from .resources.lib.NetflixSession import NetflixSession
-    from .resources.lib.KodiHelper import KodiHelper
-    from .resources.lib.Navigation import Navigation
-    from .resources.lib.Library import Library
+
+import sys
+from resources.lib.NetflixSession import NetflixSession
+from resources.lib.KodiHelper import KodiHelper
+from resources.lib.Navigation import Navigation
+from resources.lib.Library import Library
 
 # Setup plugin
 plugin_handle = int(sys.argv[1])

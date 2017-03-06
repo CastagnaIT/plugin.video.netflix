@@ -3,20 +3,17 @@
 # Module: NetflixSession
 # Created on: 13.01.2017
 
-import sys
 import os
 import base64
 import time
 import urllib
 import json
 import requests
-import platform
 try:
    import cPickle as pickle
 except:
    import pickle
 from bs4 import BeautifulSoup, SoupStrainer
-from pyjsparser import PyJsParser
 from utils import noop
 
 class NetflixSession:
@@ -1862,6 +1859,7 @@ class NetflixSession:
         :obj:`str`
             User Agent for platform
         """
+        import platform
         if platform == 'linux' or platform == 'linux2':
             return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
         elif platform == 'darwin':
@@ -2073,16 +2071,17 @@ class NetflixSession:
             :obj:`dict` of :obj:`str`
                 Dict containing user, api & profile data
         """
-        inline_data = [];
+        inline_data = []
+        from pyjsparser import PyJsParser
         parser = PyJsParser()
         for script in scripts:
-            data = {};
+            data = {}
             # unicode escape that incoming script stuff
             contents = self._to_unicode(str(script.contents[0]))
             # parse the JS & load the declarations we´re interested in
             parsed = parser.parse(contents)
             if len(parsed['body']) > 1 and parsed['body'][1]['expression']['right'].get('properties', None) != None:
-                declarations = parsed['body'][1]['expression']['right']['properties'];
+                declarations = parsed['body'][1]['expression']['right']['properties']
                 for declaration in declarations:
                     for key in declaration:
                         # we found the correct path if the declaration is a dict & of type 'ObjectExpression'
@@ -2272,7 +2271,7 @@ class NetflixSession:
             :obj:`str` of :obj:`str
             ESN, something like: NFCDCH-MC-D7D6F54LOPY8J416T72MQXX3RD20ME
         """
-        esn = '';
+        esn = ''
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
             return netflix_page_data.get('esn', '')
@@ -2297,5 +2296,5 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-        self.log('Found ESN "' + self.esn + '" for platform "' + str(platform.system()) + '"')
+        self.log('Found ESN "' + self.esn)
         return netflix_page_data
