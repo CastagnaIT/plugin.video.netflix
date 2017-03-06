@@ -3,11 +3,9 @@
 # Module: Navigation
 # Created on: 13.01.2017
 
-import urllib
-import time
+from urllib import urlencode, unquote
 from urlparse import parse_qsl
-from utils import noop
-from utils import log
+from utils import noop, log
 
 class Navigation:
     """Routes to the correct subfolder, dispatches actions & acts as a controller for the Kodi view & the Netflix model"""
@@ -95,7 +93,7 @@ class Navigation:
             return self.add_to_list(video_id=params['id'])
         elif params['action'] == 'export':
             # adds a title to the users list on Netflix
-            alt_title = self.kodi_helper.show_add_to_library_title_dialog(original_title=urllib.unquote(params['title']).decode('utf8'))
+            alt_title = self.kodi_helper.show_add_to_library_title_dialog(original_title=unquote(params['title']).decode('utf8'))
             return self.export_to_library(video_id=params['id'], alt_title=alt_title)
         elif params['action'] == 'remove':
             # adds a title to the users list on Netflix
@@ -543,4 +541,4 @@ class Navigation:
         str
             Url + querystring based on the param
         """
-        return self.base_url + '?' + urllib.urlencode(query)
+        return self.base_url + '?' + urlencode(query)

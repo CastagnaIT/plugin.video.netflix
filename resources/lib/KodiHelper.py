@@ -3,14 +3,14 @@
 # Module: KodiHelper
 # Created on: 13.01.2017
 
-import os
-import urllib
 import xbmcplugin
 import xbmcgui
-import xbmcaddon
 import xbmc
 import json
-import uuid
+from os.path import join
+from urllib import urlencode
+from xbmcaddon import Addon
+from uuid import uuid4
 from UniversalAnalytics import Tracker
 try:
    import cPickle as pickle
@@ -33,14 +33,14 @@ class KodiHelper:
         """
         self.plugin_handle = plugin_handle
         self.base_url = base_url
-        self.addon = xbmcaddon.Addon()
+        self.addon = Addon()
         self.plugin = self.addon.getAddonInfo('name')
         self.base_data_path = xbmc.translatePath(self.addon.getAddonInfo('profile'))
         self.home_path = xbmc.translatePath('special://home')
         self.plugin_path = self.addon.getAddonInfo('path')
         self.cookie_path = self.base_data_path + 'COOKIE'
         self.data_path = self.base_data_path + 'DATA'
-        self.config_path = os.path.join(self.base_data_path, 'config')
+        self.config_path = join(self.base_data_path, 'config')
         self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
         self.verb_log = self.addon.getSetting('logging') == 'true'
         self.default_fanart = self.addon.getAddonInfo('fanart')
@@ -801,7 +801,7 @@ class KodiHelper:
         entry_keys = entry.keys()
 
         # action item templates
-        encoded_title = urllib.urlencode({'title': entry['title'].encode('utf-8')}) if 'title' in entry else ''
+        encoded_title = urlencode({'title': entry['title'].encode('utf-8')}) if 'title' in entry else ''
         url_tmpl = 'XBMC.RunPlugin(' + self.base_url + '?action=%action%&id=' + str(entry['id']) + '&' + encoded_title + ')'
         actions = [
             ['export_to_library', self.get_local_string(30018), 'export'],
@@ -922,7 +922,7 @@ class KodiHelper:
             #Get or Create Tracking id
             tracking_id = self.addon.getSetting('tracking_id')
             if tracking_id is '':
-                tracking_id = str(uuid.uuid4())
+                tracking_id = str(uuid4())
                 self.addon.setSetting('tracking_id', tracking_id)
             # Send the tracking event
             tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)

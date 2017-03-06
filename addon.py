@@ -3,8 +3,6 @@
 # Module: default
 # Created on: 13.01.2017
 
-# import local classes
-
 import sys
 from resources.lib.NetflixSession import NetflixSession
 from resources.lib.KodiHelper import KodiHelper

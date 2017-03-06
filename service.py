@@ -12,7 +12,6 @@ kodi_helper = KodiHelper(
     base_url=None
 )
 
-
 def select_unused_port():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('localhost', 0))

@@ -4,17 +4,17 @@
 # Created on: 13.01.2017
 
 import os
-import base64
-import time
-import urllib
 import json
-import requests
+from requests import session, cookies
+from urllib import quote
+from time import time
+from base64 import urlsafe_b64encode
+from bs4 import BeautifulSoup, SoupStrainer
+from utils import noop
 try:
    import cPickle as pickle
 except:
    import pickle
-from bs4 import BeautifulSoup, SoupStrainer
-from utils import noop
 
 class NetflixSession:
     """Helps with login/session management of Netflix users & API data fetching"""
@@ -100,7 +100,7 @@ class NetflixSession:
         self.log = log_fn
 
         # start session, fake chrome on the current platform (so that we get a proper widevine esn) & enable gzip
-        self.session = requests.session()
+        self.session = session()
         self.session.headers.update({
             'User-Agent': self._get_user_agent_for_current_platform(),
             'Accept-Encoding': 'gzip'
@@ -272,7 +272,7 @@ class NetflixSession:
         """
         payload = {
             'switchProfileGuid': profile_id,
-            '_': int(time.time()),
+            '_': int(time()),
             'authURL': self.user_data['authURL']
         }
 
@@ -1295,7 +1295,7 @@ class NetflixSession:
             'toRow': list_to,
             'opaqueImageExtension': 'jpg',
             'transparentImageExtension': 'png',
-            '_': int(time.time()),
+            '_': int(time()),
             'authURL': self.user_data['authURL']
         }
         response = self._session_get(component='video_list_ids', params=payload, type='api')
@@ -1321,7 +1321,7 @@ class NetflixSession:
             Raw Netflix API call response or api call error
         """
         # properly encode the search string
-        encoded_search_string = urllib.quote(search_str)
+        encoded_search_string = quote(search_str)
 
         paths = [
             ['search', encoded_search_string, 'titles', {'from': list_from, 'to': list_to}, ['summary', 'title']],
@@ -1424,7 +1424,7 @@ class NetflixSession:
         payload = {
             'movieid': id,
             'imageformat': 'jpg',
-            '_': int(time.time())
+            '_': int(time())
         }
         response = self._session_get(component='metadata', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='metadata'))
@@ -1813,10 +1813,10 @@ class NetflixSession:
             return False
 
         with open(filename) as f:
-            cookies = pickle.load(f)
-            if cookies:
-                jar = requests.cookies.RequestsCookieJar()
-                jar._cookies = cookies
+            _cookies = pickle.load(f)
+            if _cookies:
+                jar = cookies.RequestsCookieJar()
+                jar._cookies = _cookies
                 self.session.cookies = jar
             else:
                 return False
@@ -1849,7 +1849,7 @@ class NetflixSession:
         :obj:`str`
             Account data hash
         """
-        return base64.urlsafe_b64encode(account['email'])
+        return urlsafe_b64encode(account['email'])
 
     def _get_user_agent_for_current_platform (self):
         """Determines the user agent string for the current platform (to retrieve a valid ESN)
@@ -1895,9 +1895,9 @@ class NetflixSession:
                 Contents of the field to match
         """
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
-        start = time.time()
+        start = time()
         response = self.session.post(url=url, data=data, params=params, headers=headers, verify=self.verify_ssl)
-        end = time.time()
+        end = time()
         self.log('[POST] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
@@ -1921,9 +1921,9 @@ class NetflixSession:
                 Contents of the field to match
         """
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
-        start = time.time()
+        start = time()
         response = self.session.get(url=url, verify=self.verify_ssl, params=params)
-        end = time.time()
+        end = time()
         self.log('[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 

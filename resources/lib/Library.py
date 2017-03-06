@@ -4,12 +4,12 @@
 # Created on: 13.01.2017
 
 import os
-import shutil
+from shutil import rmtree
+from utils import noop
 try:
    import cPickle as pickle
 except:
    import pickle
-from utils import noop
 
 class Library:
     """Exports Netflix shows & movies to a local library folder"""
@@ -348,7 +348,7 @@ class Library:
         self._update_local_db(filename=self.db_filepath, db=self.db)
         dirname = os.path.join(self.movie_path, folder)
         if os.path.exists(dirname):
-            shutil.rmtree(dirname)
+            rmtree(dirname)
             return True
         return False
 
@@ -370,7 +370,7 @@ class Library:
         self._update_local_db(filename=self.db_filepath, db=self.db)
         show_dir = os.path.join(self.tvshow_path, folder)
         if os.path.exists(show_dir):
-            shutil.rmtree(show_dir)
+            rmtree(show_dir)
             return True
         return False
 
