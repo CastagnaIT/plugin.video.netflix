@@ -69,7 +69,7 @@ class Navigation:
             return False
         if 'action' not in params.keys():
             # show the profiles
-            self.show_profiles()
+            return self.show_profiles()
         elif params['action'] == 'video_lists':
             # list lists that contain other lists (starting point with recommendations, search, etc.)
             return self.show_video_lists()
