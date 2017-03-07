@@ -9,6 +9,7 @@ class NetflixHttpSubRessourceHandler:
         self.kodi_helper = kodi_helper
         self.netflix_session = netflix_session
         self.credentials = self.kodi_helper.get_credentials()
+        self.video_list_cache = {}
 
         if self.credentials['email'] != '' and self.credentials['password'] != '':
             if self.netflix_session.is_logged_in(account=self.credentials):
@@ -16,8 +17,15 @@ class NetflixHttpSubRessourceHandler:
             else:
                 self.netflix_session.login(account=self.credentials)
             self.profiles = self.netflix_session.profiles
+            self._prefetch_user_video_lists()
         else:
             self.profiles = []
+
+    def _prefetch_user_video_lists (self):
+        for profile_id in self.profiles:
+            self.switch_profile({'profile_id': [profile_id]})
+            self.video_list_cache[profile_id] = self.fetch_video_list_ids({})
+        print self.video_list_cache
 
     def is_logged_in (self, params):
         if self.credentials['email'] == '' or self.credentials['password'] == '':
@@ -46,6 +54,10 @@ class NetflixHttpSubRessourceHandler:
         return self.netflix_session.esn
 
     def fetch_video_list_ids (self, params):
+        cached_list = self.video_list_cache.get(self.netflix_session.user_data['guid'], None)
+        if cached_list != None:
+            self.kodi_helper.log('Serving cached list for user: ' + self.netflix_session.user_data['guid'])
+            return cached_list
         video_list_ids_raw = self.netflix_session.fetch_video_list_ids()
         if 'error' in video_list_ids_raw:
             return video_list_ids_raw

@@ -2296,5 +2296,5 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-        self.log('Found ESN "' + self.esn)
+        self.log('Found ESN "' + self.esn + '"')
         return netflix_page_data

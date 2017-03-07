@@ -415,7 +415,6 @@ class Navigation:
             self.call_netflix_service({'method': 'switch_profile', 'profile_id': params['profile_id']})
         # check login, in case of main menu
         if 'action' not in params:
-            self.kodi_helper.log('ES Called - Zeile 428')
             self.establish_session(account=credentials)
         return options
 
@@ -486,7 +485,6 @@ class Navigation:
         if 'error' in response:
             # check if we do not have a valid session, in case that happens: (re)login
             if self._is_expired_session(response=response):
-                self.kodi_helper.log('ES Called - Zeile 499')
                 if self.establish_session(account=self.kodi_helper.get_credentials()):
                     return True
             message = response['message'] if 'message' in response else ''
