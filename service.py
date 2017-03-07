@@ -1,16 +1,11 @@
 import threading
 import SocketServer
 import xbmc
-import xbmcaddon
 import socket
+from xbmcaddon import Addon
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
-
-addon = xbmcaddon.Addon()
-kodi_helper = KodiHelper(
-    plugin_handle=None,
-    base_url=None
-)
+from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
 
 def select_unused_port():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,28 +14,49 @@ def select_unused_port():
     sock.close()
     return port
 
+addon = Addon()
+kodi_helper = KodiHelper()
+
 port = select_unused_port()
 addon.setSetting('msl_service_port', str(port))
 kodi_helper.log(msg='Picked Port: ' + str(port))
 
-#Config the HTTP Server
+# server defaults
 SocketServer.TCPServer.allow_reuse_address = True
-server = SocketServer.TCPServer(('127.0.0.1', port), MSLHttpRequestHandler)
-server.server_activate()
-server.timeout = 1
+
+# configure the MSL Server
+msl_server = SocketServer.TCPServer(('127.0.0.1', port), MSLHttpRequestHandler)
+msl_server.server_activate()
+msl_server.timeout = 1
+
+# configure the Netflix Data Server
+nd_server = SocketServer.TCPServer(('127.0.0.1', 7005), NetflixHttpRequestHandler)
+nd_server.server_activate()
+nd_server.timeout = 1
 
 if __name__ == '__main__':
     monitor = xbmc.Monitor()
-    thread = threading.Thread(target=server.serve_forever)
-    thread.daemon = True
-    thread.start()
+
+    msl_thread = threading.Thread(target=msl_server.serve_forever)
+    msl_thread.daemon = True
+    msl_thread.start()
+
+    nd_thread = threading.Thread(target=nd_server.serve_forever)
+    nd_thread.daemon = True
+    nd_thread.start()
 
     while not monitor.abortRequested():
         if monitor.waitForAbort(5):
-            server.shutdown()
+            msl_server.shutdown()
+            nd_server.shutdown()
             break
 
-    server.server_close()
-    server.socket.close()
-    server.shutdown()
+    msl_server.server_close()
+    msl_server.socket.close()
+    msl_server.shutdown()
     kodi_helper.log(msg='Stopped MSL Service')
+
+    nd_server.server_close()
+    nd_server.socket.close()
+    nd_server.shutdown()
+    kodi_helper.log(msg='Stopped HTTP Service')

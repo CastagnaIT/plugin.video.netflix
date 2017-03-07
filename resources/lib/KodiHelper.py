@@ -20,7 +20,7 @@ except:
 class KodiHelper:
     """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
 
-    def __init__ (self, plugin_handle, base_url):
+    def __init__ (self, plugin_handle=None, base_url=None):
         """Fetches all needed info from Kodi & configures the baseline of the plugin
 
         Parameters

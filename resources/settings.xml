@@ -13,8 +13,9 @@
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
-    <setting id="esn" type="text" label="30034" value="" default=""/>    
+    <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="msl_service_port" value="8000" visible="false"/>
+    <setting id="netflix_service_port" value="8001" visible="false"/>
   </category>
 </settings>
