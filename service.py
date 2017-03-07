@@ -17,20 +17,24 @@ def select_unused_port():
 addon = Addon()
 kodi_helper = KodiHelper()
 
-port = select_unused_port()
-addon.setSetting('msl_service_port', str(port))
-kodi_helper.log(msg='Picked Port: ' + str(port))
+msl_port = select_unused_port()
+addon.setSetting('msl_service_port', str(msl_port))
+kodi_helper.log(msg='[MSL] Picked Port: ' + str(msl_port))
+
+ns_port = select_unused_port()
+addon.setSetting('netflix_service_port', str(ns_port))
+kodi_helper.log(msg='[NS] Picked Port: ' + str(ns_port))
 
 # server defaults
 SocketServer.TCPServer.allow_reuse_address = True
 
 # configure the MSL Server
-msl_server = SocketServer.TCPServer(('127.0.0.1', port), MSLHttpRequestHandler)
+msl_server = SocketServer.TCPServer(('127.0.0.1', msl_port), MSLHttpRequestHandler)
 msl_server.server_activate()
 msl_server.timeout = 1
 
 # configure the Netflix Data Server
-nd_server = SocketServer.TCPServer(('127.0.0.1', 7005), NetflixHttpRequestHandler)
+nd_server = SocketServer.TCPServer(('127.0.0.1', ns_port), NetflixHttpRequestHandler)
 nd_server.server_activate()
 nd_server.timeout = 1
 

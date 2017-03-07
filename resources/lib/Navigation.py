@@ -35,7 +35,7 @@ class Navigation:
         self.log = log_fn
 
     def get_netflix_service_url (self):
-        return 'http://localhost:7005'
+        return 'http://localhost:' + str(self.kodi_helper.addon.getSetting('netflix_service_port'))
 
     def call_netflix_service (self, params):
         url_values = urllib.urlencode(params)
