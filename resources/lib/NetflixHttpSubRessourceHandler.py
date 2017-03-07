@@ -1,22 +1,43 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Module: NetflixHttpSubRessourceHandler
+# Created on: 07.03.2017
+
 class NetflixHttpSubRessourceHandler:
 
     def __init__ (self, kodi_helper, netflix_session):
         self.kodi_helper = kodi_helper
         self.netflix_session = netflix_session
-        credentials = self.kodi_helper.get_credentials()
+        self.credentials = self.kodi_helper.get_credentials()
 
-        if self.netflix_session.is_logged_in(account=credentials):
-            self.netflix_session.refresh_session_data(account=credentials)
+        if self.credentials['email'] != '' and self.credentials['password'] != '':
+            if self.netflix_session.is_logged_in(account=self.credentials):
+                self.netflix_session.refresh_session_data(account=self.credentials)
+            else:
+                self.netflix_session.login(account=self.credentials)
+            self.profiles = self.netflix_session.profiles
         else:
-            self.netflix_session.login(account=credentials)
-        self.profiles = self.netflix_session.profiles
+            self.profiles = []
 
     def is_logged_in (self, params):
-        credentials = self.kodi_helper.get_credentials()
-        return self.netflix_session.is_logged_in(account=credentials)
+        if self.credentials['email'] == '' or self.credentials['password'] == '':
+            return False
+        return self.netflix_session.is_logged_in(account=self.credentials)
 
     def logout (self, params):
+        self.profiles = []
+        self.credentials = {'email': '', 'password': ''}
         return self.netflix_session.logout()
+
+    def login (self, params):
+        email = params.get('email', [''])[0]
+        password = params.get('password', [''])[0]
+        if email != '' and password != '':
+            self.credentials = {'email': email, 'password': password}
+            _ret = self.netflix_session.login(account=self.credentials)
+            self.profiles = self.netflix_session.profiles
+            return _ret
+        return None
 
     def list_profiles (self, params):
         return self.profiles
@@ -74,9 +95,8 @@ class NetflixHttpSubRessourceHandler:
         return self.netflix_session.fetch_metadata(id=video_id)
 
     def switch_profile (self, params):
-        credentials = self.kodi_helper.get_credentials()
         profile_id = params.get('profile_id', [''])[0]
-        return self.netflix_session.switch_profile(profile_id=profile_id, account=credentials)
+        return self.netflix_session.switch_profile(profile_id=profile_id, account=self.credentials)
 
     def get_user_data (self, params):
         return self.netflix_session.user_data

@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Module: NetflixHttpRequestHandler
+# Created on: 07.03.2017
+
 import BaseHTTPServer
 import json
 from types import FunctionType

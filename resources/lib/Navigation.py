@@ -34,17 +34,6 @@ class Navigation:
         self.base_url = base_url
         self.log = log_fn
 
-    def get_netflix_service_url (self):
-        return 'http://localhost:' + str(self.kodi_helper.addon.getSetting('netflix_service_port'))
-
-    def call_netflix_service (self, params):
-        url_values = urllib.urlencode(params)
-        url = self.get_netflix_service_url()
-        full_url = url + '?' + url_values
-        data = urllib2.urlopen(full_url).read()
-        parsed_json = json.loads(data)
-        return parsed_json.get('result', None)
-
     @log
     def router (self, paramstring):
         """Route to the requested subfolder & dispatch actions along the way
@@ -134,7 +123,6 @@ class Navigation:
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
         """
-        # widevine esn
         esn = self.call_netflix_service({'method': 'get_esn'})
         return self.kodi_helper.play_item(esn=esn, video_id=video_id, start_offset=start_offset)
 
@@ -281,6 +269,8 @@ class Navigation:
     def show_profiles (self):
         """List the profiles for the active account"""
         profiles = self.call_netflix_service({'method': 'list_profiles'})
+        if len(profiles) == 0:
+            return self.kodi_helper.show_login_failed_notification()
         return self.kodi_helper.build_profiles_listing(profiles=profiles, action='video_lists', build_url=self.build_url)
 
     @log
@@ -384,7 +374,7 @@ class Navigation:
             If we don't have an active session & the user couldn't be logged in
         """
         is_logged_in = self.call_netflix_service({'method': 'is_logged_in'})
-        return True if is_logged_in else self.call_netflix_service({'method': 'login'})
+        return True if is_logged_in else self.call_netflix_service({'method': 'login', 'email': account['email'], 'password': account['password']})
 
     @log
     def before_routing_action (self, params):
@@ -425,6 +415,7 @@ class Navigation:
             self.call_netflix_service({'method': 'switch_profile', 'profile_id': params['profile_id']})
         # check login, in case of main menu
         if 'action' not in params:
+            self.kodi_helper.log('ES Called - Zeile 428')
             self.establish_session(account=credentials)
         return options
 
@@ -495,6 +486,7 @@ class Navigation:
         if 'error' in response:
             # check if we do not have a valid session, in case that happens: (re)login
             if self._is_expired_session(response=response):
+                self.kodi_helper.log('ES Called - Zeile 499')
                 if self.establish_session(account=self.kodi_helper.get_credentials()):
                     return True
             message = response['message'] if 'message' in response else ''
@@ -517,3 +509,33 @@ class Navigation:
             Url + querystring based on the param
         """
         return self.base_url + '?' + urllib.urlencode(query)
+
+    def get_netflix_service_url (self):
+        """Returns URL & Port of the internal Netflix HTTP Proxy service
+
+        Returns
+        -------
+        str
+            Url + Port
+        """
+        return 'http://localhost:' + str(self.kodi_helper.addon.getSetting('netflix_service_port'))
+
+    def call_netflix_service (self, params):
+        """Makes a GET request to the internal Netflix HTTP proxy and returns the result
+
+        Parameters
+        ----------
+        params : :obj:`dict` of  :obj:`str`
+            List of paramters to be url encoded
+
+        Returns
+        -------
+        :obj:`dict`
+            Netflix Service RPC result
+        """
+        url_values = urllib.urlencode(params)
+        url = self.get_netflix_service_url()
+        full_url = url + '?' + url_values
+        data = urllib2.urlopen(full_url).read()
+        parsed_json = json.loads(data)
+        return parsed_json.get('result', None)
