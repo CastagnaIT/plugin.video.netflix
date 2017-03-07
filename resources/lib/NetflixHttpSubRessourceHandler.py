@@ -17,7 +17,7 @@ class NetflixHttpSubRessourceHandler:
             else:
                 self.netflix_session.login(account=self.credentials)
             self.profiles = self.netflix_session.profiles
-            self._prefetch_user_video_lists()
+            #self._prefetch_user_video_lists()
         else:
             self.profiles = []
 
@@ -25,7 +25,6 @@ class NetflixHttpSubRessourceHandler:
         for profile_id in self.profiles:
             self.switch_profile({'profile_id': [profile_id]})
             self.video_list_cache[profile_id] = self.fetch_video_list_ids({})
-        print self.video_list_cache
 
     def is_logged_in (self, params):
         if self.credentials['email'] == '' or self.credentials['password'] == '':
