@@ -156,3 +156,7 @@ msgstr "Benutze Dolby Ton"
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (änderbar, wird auto. gesetzt)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Inputstream Addon Settings..."

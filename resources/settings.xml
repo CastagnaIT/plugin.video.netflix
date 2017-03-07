@@ -4,6 +4,7 @@
     <setting id="email" type="text" label="30005" default=""/>
     <setting id="password" type="text" option="hidden" label="30004" default=""/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
+    <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" option="close"/>
   </category>
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>

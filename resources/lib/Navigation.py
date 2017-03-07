@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import json
+from xbmcaddon import Addon
 from urlparse import parse_qsl
 from utils import noop, log
 
@@ -44,6 +45,10 @@ class Navigation:
             Url query params
         """
         params = self.parse_paramters(paramstring=paramstring)
+
+        # open foreign settings dialog
+        if 'mode' in params.keys() and params['mode'] == 'openSettings':
+            return self.open_settings(params['url'])
 
         # log out the user
         if 'action' in params.keys() and params['action'] == 'logout':
@@ -537,3 +542,9 @@ class Navigation:
         data = urllib2.urlopen(full_url).read()
         parsed_json = json.loads(data)
         return parsed_json.get('result', None)
+
+    def open_settings(self, url):
+        """Opens a foreign settings dialog"""
+        is_addon = self.kodi_helper.get_inputstream_addon()
+        url = is_addon if url == 'is' else url
+        return Addon(url).openSettings()
