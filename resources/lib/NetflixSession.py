@@ -25,7 +25,7 @@ class NetflixSession:
     urls = {
         'login': '/login',
         'browse': '/browse',
-        'video_list_ids': '/warmer',
+        'video_list_ids': '/preflight',
         'shakti': '/pathEvaluator',
         'profiles':  '/browse',
         'switch_profiles': '/profiles/switch',
