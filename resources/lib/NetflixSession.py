@@ -280,14 +280,9 @@ class NetflixSession:
         if response.status_code != 200:
             return False
 
-        # fetch the index page again, so that we can fetch the corresponding user data
-        browse_response = self._session_get(component='browse')
-        only_script_tags = SoupStrainer('script')
-        browse_soup = BeautifulSoup(browse_response.text, 'html.parser', parse_only=only_script_tags)
         account_hash = self._generate_account_hash(account=account)
         self.user_data['guid'] = profile_id;
-        self._save_data(filename=self.data_path + '_' + account_hash)
-        return True
+        return self._save_data(filename=self.data_path + '_' + account_hash)
 
     def send_adult_pin (self, pin):
         """Send the adult pin to Netflix in case an adult rated video requests it
