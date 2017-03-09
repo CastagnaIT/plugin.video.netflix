@@ -24,10 +24,10 @@ class NetflixSession:
 
     urls = {
         'login': '/login',
-        'browse': '/browse',
+        'browse': '/profiles/manage',
         'video_list_ids': '/preflight',
         'shakti': '/pathEvaluator',
-        'profiles':  '/browse',
+        'profiles':  '/profiles/manage',
         'switch_profiles': '/profiles/switch',
         'adult_pin': '/pin/service',
         'metadata': '/metadata',
