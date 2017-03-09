@@ -25,8 +25,10 @@ methods = [x for x, y in NetflixHttpSubRessourceHandler.__dict__.items() if type
 sub_res_handler = NetflixHttpSubRessourceHandler(kodi_helper=kodi_helper, netflix_session=netflix_session)
 
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    """ Represents the callable internal server that dispatches requests to Netflix"""
 
     def do_GET(self):
+        """GET request handler (we only need this, as we only do GET requests internally)"""
         url = urlparse(self.path)
         params = parse_qs(url.query)
         method = params.get('method', [None])[0]

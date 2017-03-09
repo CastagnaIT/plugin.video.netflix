@@ -12,6 +12,7 @@ from resources.lib.KodiHelper import KodiHelper
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
 from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
 
+# helper function to select an unused port on the host machine
 def select_unused_port():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('localhost', 0))
@@ -22,10 +23,12 @@ def select_unused_port():
 addon = Addon()
 kodi_helper = KodiHelper()
 
+# pick & store a port for the MSL service
 msl_port = select_unused_port()
 addon.setSetting('msl_service_port', str(msl_port))
 kodi_helper.log(msg='[MSL] Picked Port: ' + str(msl_port))
 
+# pick & store a port for the internal Netflix HTTP proxy service
 ns_port = select_unused_port()
 addon.setSetting('netflix_service_port', str(ns_port))
 kodi_helper.log(msg='[NS] Picked Port: ' + str(ns_port))
@@ -46,25 +49,30 @@ nd_server.timeout = 1
 if __name__ == '__main__':
     monitor = xbmc.Monitor()
 
+    # start thread for MLS servie
     msl_thread = threading.Thread(target=msl_server.serve_forever)
     msl_thread.daemon = True
     msl_thread.start()
 
+    # start thread for Netflix HTTP service
     nd_thread = threading.Thread(target=nd_server.serve_forever)
     nd_thread.daemon = True
     nd_thread.start()
 
+    # kill the services if kodi monitor tells us to
     while not monitor.abortRequested():
         if monitor.waitForAbort(5):
             msl_server.shutdown()
             nd_server.shutdown()
             break
 
+    # MSL service shutdown sequence
     msl_server.server_close()
     msl_server.socket.close()
     msl_server.shutdown()
     kodi_helper.log(msg='Stopped MSL Service')
 
+    # Netflix service shutdown sequence
     nd_server.server_close()
     nd_server.socket.close()
     nd_server.shutdown()

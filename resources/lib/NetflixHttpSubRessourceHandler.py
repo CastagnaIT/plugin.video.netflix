@@ -4,39 +4,84 @@
 # Created on: 07.03.2017
 
 class NetflixHttpSubRessourceHandler:
+    """ Represents the callable internal server routes & translates/executes them to requests for Netflix"""
 
     def __init__ (self, kodi_helper, netflix_session):
+        """Sets up credentials & video_list_cache cache
+        Assigns the netflix_session/kodi_helper instacnes
+        Does the initial login if we have user data
+
+        Parameters
+        ----------
+        kodi_helper : :obj:`KodiHelper`
+            instance of the KodiHelper class
+
+        netflix_session : :obj:`NetflixSession`
+            instance of the NetflixSession class
+        """
         self.kodi_helper = kodi_helper
         self.netflix_session = netflix_session
         self.credentials = self.kodi_helper.get_credentials()
         self.video_list_cache = {}
 
+        # check if we have stored credentials, if so, do the login before the user requests it
+        # if that is done, we cache the profiles
         if self.credentials['email'] != '' and self.credentials['password'] != '':
             if self.netflix_session.is_logged_in(account=self.credentials):
                 self.netflix_session.refresh_session_data(account=self.credentials)
             else:
                 self.netflix_session.login(account=self.credentials)
             self.profiles = self.netflix_session.profiles
-            #self._prefetch_user_video_lists()
         else:
             self.profiles = []
 
-    def _prefetch_user_video_lists (self):
-        for profile_id in self.profiles:
-            self.switch_profile({'profile_id': [profile_id]})
-            self.video_list_cache[profile_id] = self.fetch_video_list_ids({})
-
     def is_logged_in (self, params):
+        """Existing login proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         if self.credentials['email'] == '' or self.credentials['password'] == '':
             return False
         return self.netflix_session.is_logged_in(account=self.credentials)
 
     def logout (self, params):
+        """Logout proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         self.profiles = []
         self.credentials = {'email': '', 'password': ''}
         return self.netflix_session.logout()
 
     def login (self, params):
+        """Logout proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         email = params.get('email', [''])[0]
         password = params.get('password', [''])[0]
         if email != '' and password != '':
@@ -47,12 +92,48 @@ class NetflixHttpSubRessourceHandler:
         return None
 
     def list_profiles (self, params):
+        """Returns the cached list of profiles
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`dict` of :obj:`str`
+            List of profiles
+        """
         return self.profiles
 
     def get_esn (self, params):
+        """ESN getter function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`str`
+            Exracted ESN
+        """
         return self.netflix_session.esn
 
     def fetch_video_list_ids (self, params):
+        """Video list ids proxy function (caches video lists)
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
         cached_list = self.video_list_cache.get(self.netflix_session.user_data['guid'], None)
         if cached_list != None:
             self.kodi_helper.log('Serving cached list for user: ' + self.netflix_session.user_data['guid'])
@@ -63,6 +144,18 @@ class NetflixHttpSubRessourceHandler:
         return self.netflix_session.parse_video_list_ids(response_data=video_list_ids_raw)
 
     def fetch_video_list (self, params):
+        """Video list proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
         list_id = params.get('list_id', [''])[0]
         raw_video_list = self.netflix_session.fetch_video_list(list_id=list_id)
         if 'error' in raw_video_list:
@@ -73,12 +166,36 @@ class NetflixHttpSubRessourceHandler:
         return []
 
     def fetch_episodes_by_season (self, params):
+        """Episodes for season proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
         raw_episode_list = self.netflix_session.fetch_episodes_by_season(season_id=params.get('season_id')[0])
         if 'error' in raw_episode_list:
             return raw_episode_list
         return self.netflix_session.parse_episodes_by_season(response_data=raw_episode_list)
 
     def fetch_seasons_for_show (self, params):
+        """Season for show proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
         show_id = params.get('show_id', [''])[0]
         raw_season_list = self.netflix_session.fetch_seasons_for_show(id=show_id)
         if 'error' in raw_season_list:
@@ -89,30 +206,114 @@ class NetflixHttpSubRessourceHandler:
         return self.netflix_session.parse_seasons(id=show_id, response_data=raw_season_list)
 
     def rate_video (self, params):
+        """Video rating proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         video_id = params.get('video_id', [''])[0]
         rating = params.get('rating', [''])[0]
         return self.netflix_session.rate_video(video_id=video_id, rating=rating)
 
     def remove_from_list (self, params):
+        """Remove from my list proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         video_id = params.get('video_id', [''])[0]
         return self.netflix_session.remove_from_list(video_id=video_id)
 
     def add_to_list (self, params):
+        """Add to my list proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         video_id = params.get('video_id', [''])[0]
         return self.netflix_session.add_to_list(video_id=video_id)
 
     def fetch_metadata (self, params):
+        """Metadata proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         video_id = params.get('video_id', [''])[0]
         return self.netflix_session.fetch_metadata(id=video_id)
 
     def switch_profile (self, params):
+        """Switch profile proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
         profile_id = params.get('profile_id', [''])[0]
         return self.netflix_session.switch_profile(profile_id=profile_id, account=self.credentials)
 
     def get_user_data (self, params):
+        """User data getter function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`str`
+            Exracted User Data
+        """
         return self.netflix_session.user_data
 
     def search (self, params):
+        """Search proxy function
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
         term = params.get('term', [''])[0]
         has_search_results = False
         raw_search_results = self.netflix_session.fetch_search_results(search_str=term)
