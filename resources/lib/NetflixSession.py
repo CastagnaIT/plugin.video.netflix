@@ -1563,8 +1563,6 @@ class NetflixSession:
         })
 
         params = {
-            'withSize': True,
-            'materialize': True,
             'model': self.user_data['gpsModel']
         }
 
@@ -1919,6 +1917,7 @@ class NetflixSession:
         start = time()
         response = self.session.get(url=url, verify=self.verify_ssl, params=params)
         end = time()
+        print params
         self.log('[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
