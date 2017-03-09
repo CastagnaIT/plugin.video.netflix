@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Module: MSL
+# Created on: 26.01.2017
+
 import base64
 import gzip
 import json

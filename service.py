@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Module: service
+# Created on: 26.01.2017
+
 import threading
 import SocketServer
 import xbmc
