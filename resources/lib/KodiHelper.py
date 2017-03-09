@@ -20,7 +20,7 @@ except:
 class KodiHelper:
     """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
 
-    def __init__ (self, plugin_handle, base_url):
+    def __init__ (self, plugin_handle=None, base_url=None):
         """Fetches all needed info from Kodi & configures the baseline of the plugin
 
         Parameters
@@ -430,22 +430,21 @@ class KodiHelper:
         """
         for video_list_id in video_list:
             video = video_list[video_list_id]
-            if type != 'queue' or (type == 'queue' and video['in_my_list'] == True):
-                li = xbmcgui.ListItem(label=video['title'])
-                # add some art to the item
-                li = self._generate_art_info(entry=video, li=li)
-                # it´s a show, so we need a subfolder & route (for seasons)
-                isFolder = True
-                url = build_url({'action': actions[video['type']], 'show_id': video_list_id})
-                # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
-                if video_list[video_list_id]['type'] == 'movie':
-                    # it´s a movie, so we need no subfolder & a route to play it
-                    isFolder = False
-                    url = build_url({'action': 'play_video', 'video_id': video_list_id})
-                # add list item info
-                li = self._generate_entry_info(entry=video, li=li)
-                li = self._generate_context_menu_items(entry=video, li=li)
-                xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+            li = xbmcgui.ListItem(label=video['title'])
+            # add some art to the item
+            li = self._generate_art_info(entry=video, li=li)
+            # it´s a show, so we need a subfolder & route (for seasons)
+            isFolder = True
+            url = build_url({'action': actions[video['type']], 'show_id': video_list_id})
+            # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
+            if video_list[video_list_id]['type'] == 'movie':
+                # it´s a movie, so we need no subfolder & a route to play it
+                isFolder = False
+                url = build_url({'action': 'play_video', 'video_id': video_list_id})
+            # add list item info
+            li = self._generate_entry_info(entry=video, li=li)
+            li = self._generate_context_menu_items(entry=video, li=li)
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)

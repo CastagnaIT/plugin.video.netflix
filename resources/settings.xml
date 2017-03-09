@@ -4,6 +4,7 @@
     <setting id="email" type="text" label="30005" default=""/>
     <setting id="password" type="text" option="hidden" label="30004" default=""/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
+    <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" option="close"/>
   </category>
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
@@ -13,8 +14,9 @@
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
-    <setting id="esn" type="text" label="30034" value="" default=""/>    
+    <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="msl_service_port" value="8000" visible="false"/>
+    <setting id="netflix_service_port" value="8001" visible="false"/>
   </category>
 </settings>

@@ -6,7 +6,7 @@
 import os
 import json
 from requests import session, cookies
-from urllib import quote
+from urllib import quote, unquote
 from time import time
 from base64 import urlsafe_b64encode
 from bs4 import BeautifulSoup, SoupStrainer
@@ -24,10 +24,10 @@ class NetflixSession:
 
     urls = {
         'login': '/login',
-        'browse': '/browse',
-        'video_list_ids': '/warmer',
+        'browse': '/profiles/manage',
+        'video_list_ids': '/preflight',
         'shakti': '/pathEvaluator',
-        'profiles':  '/browse',
+        'profiles':  '/profiles/manage',
         'switch_profiles': '/profiles/switch',
         'adult_pin': '/pin/service',
         'metadata': '/metadata',
@@ -280,14 +280,9 @@ class NetflixSession:
         if response.status_code != 200:
             return False
 
-        # fetch the index page again, so that we can fetch the corresponding user data
-        browse_response = self._session_get(component='browse')
-        only_script_tags = SoupStrainer('script')
-        browse_soup = BeautifulSoup(browse_response.text, 'html.parser', parse_only=only_script_tags)
         account_hash = self._generate_account_hash(account=account)
         self.user_data['guid'] = profile_id;
-        self._save_data(filename=self.data_path + '_' + account_hash)
-        return True
+        return self._save_data(filename=self.data_path + '_' + account_hash)
 
     def send_adult_pin (self, pin):
         """Send the adult pin to Netflix in case an adult rated video requests it
@@ -1298,6 +1293,13 @@ class NetflixSession:
             '_': int(time()),
             'authURL': self.user_data['authURL']
         }
+
+        # check if we have a root lolomo for that user within our cookies
+        for cookie in self.session.cookies:
+            if cookie.name == 'lhpuuidh-browse-' + self.user_data['guid']:
+                value = unquote(cookie.value)
+                payload['lolomoid'] = value[value.rfind(':')+1:];
+
         response = self._session_get(component='video_list_ids', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='video_list_ids'))
 
@@ -1568,8 +1570,6 @@ class NetflixSession:
         })
 
         params = {
-            'withSize': True,
-            'materialize': True,
             'model': self.user_data['gpsModel']
         }
 
@@ -2296,5 +2296,5 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-        self.log('Found ESN "' + self.esn)
+        self.log('Found ESN "' + self.esn + '"')
         return netflix_page_data

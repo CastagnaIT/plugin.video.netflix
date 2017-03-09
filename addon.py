@@ -4,7 +4,6 @@
 # Created on: 13.01.2017
 
 import sys
-from resources.lib.NetflixSession import NetflixSession
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.Navigation import Navigation
 from resources.lib.Library import Library
@@ -18,19 +17,12 @@ kodi_helper = KodiHelper(
     plugin_handle=plugin_handle,
     base_url=base_url
 )
-netflix_session = NetflixSession(
-    cookie_path=kodi_helper.cookie_path,
-    data_path=kodi_helper.data_path,
-    verify_ssl=kodi_helper.get_ssl_verification_setting(),
-    log_fn=kodi_helper.log
-)
 library = Library(
     root_folder=kodi_helper.base_data_path,
     library_settings=kodi_helper.get_custom_library_settings(),
     log_fn=kodi_helper.log
 )
 navigation = Navigation(
-    netflix_session=netflix_session,
     kodi_helper=kodi_helper,
     library=library,
     base_url=base_url,
