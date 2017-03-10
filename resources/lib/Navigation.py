@@ -160,7 +160,15 @@ class Navigation:
         user_list_id : :obj:`str`
             Type of list to display
         """
-        video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'type': type})
+        # determine if we´re in kids mode
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        profiles = self.call_netflix_service({'method': 'list_profiles'})
+        is_kids = profiles.get(user_data['guid']).get('isKids', False)
+        # fetch video lists
+        if is_kids == True:
+            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids'})
+        else:
+            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'type': type})
         # check for any errors
         if self._is_dirty_response(response=video_list_ids):
             return False
@@ -257,13 +265,21 @@ class Navigation:
         if self.kodi_helper.has_cached_item(cache_id=cache_id):
             video_list_ids = self.kodi_helper.get_cached_item(cache_id=cache_id)
         else:
+            # determine if we´re in Kids profile mode
+            user_data = self.call_netflix_service({'method': 'get_user_data'})
+            profiles = self.call_netflix_service({'method': 'list_profiles'})
+            is_kids = profiles.get(user_data['guid']).get('isKids', False)
             # fetch video lists
-            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids'})
+            if is_kids == True:
+                video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids'})
+            else:
+                video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids'})
+
             # check for any errors
             if self._is_dirty_response(response=video_list_ids):
                 return False
-            # parse the video list ids
-            self.kodi_helper.add_cached_item(cache_id=cache_id, contents=video_list_ids)
+            # cache the video list ids
+            #self.kodi_helper.add_cached_item(cache_id=cache_id, contents=video_list_ids)
         # defines an order for the user list, as Netflix changes the order at every request
         user_list_order = ['queue', 'continueWatching', 'topTen', 'netflixOriginals', 'trendingNow', 'newRelease', 'popularTitles']
         # define where to route the user

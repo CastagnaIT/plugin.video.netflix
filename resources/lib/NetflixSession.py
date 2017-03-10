@@ -32,7 +32,8 @@ class NetflixSession:
         'adult_pin': '/pin/service',
         'metadata': '/metadata',
         'set_video_rating': '/setVideoRating',
-        'update_my_list': '/playlistop'
+        'update_my_list': '/playlistop',
+        'kids': '/Kids'
     }
     """:obj:`dict` of :obj:`str` List of all static endpoints for HTML/JSON POST/GET requests"""
 
@@ -449,13 +450,13 @@ class NetflixSession:
         video_lists = response_data['lists']
         for video_list_id in video_lists.keys():
             video_list = video_lists[video_list_id]
-            if video_list['context'] == 'genre':
-                video_list_ids['genres'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
-            elif video_list['context'] == 'similars' or video_list['context'] == 'becauseYouAdded':
-                video_list_ids['recommendations'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
-            else:
-                video_list_ids['user'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
-
+            if video_list.get('context', False) != False:
+                if video_list['context'] == 'genre':
+                    video_list_ids['genres'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
+                elif video_list['context'] == 'similars' or video_list['context'] == 'becauseYouAdded':
+                    video_list_ids['recommendations'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
+                else:
+                    video_list_ids['user'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
         return video_list_ids
 
     def parse_video_list_ids_entry (self, id, entry):
@@ -1330,6 +1331,48 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
 
+    def get_lolomo_for_kids (self):
+        """Fetches the lolomo ID for Kids profiles
+
+        Returns
+        -------
+        :obj:`str`
+            Kids Lolomo ID
+        """
+        response = self._session_get(component='kids')
+        for cookie in response.cookies:
+            if cookie.name.find('lhpuuidh-browse-' + self.user_data['guid']) != -1 and cookie.name.rfind('-T') == -1:
+                start = unquote(cookie.value).rfind(':')
+                return unquote(cookie.value)[start+1:]
+        return None
+
+    def fetch_lists_for_kids (self, lolomo, list_from=0, list_to=50):
+        """Fetches the JSON which contains the contents of a the video list for kids users
+
+        Parameters
+        ----------
+        lolomo : :obj:`str`
+            Lolomo ID for the Kids profile
+
+        list_from : :obj:`int`
+            Start entry for pagination
+
+        list_to : :obj:`int`
+            Last entry for pagination
+
+        Returns
+        -------
+        :obj:`dict` of :obj:`dict` of :obj:`str`
+            Raw Netflix API call response or api call error
+        """
+        paths = [
+            ['lists', lolomo, {'from': list_from, 'to': list_to}, ['displayName', 'context', 'genreId', 'id', 'index', 'length']]
+        ]
+
+        response = self._path_request(paths=paths)
+        res = self._process_response(response=response, component='Kids lists')
+        return self.parse_video_list_ids(response_data=res['value'])
+
     def fetch_video_list (self, list_id, list_from=0, list_to=20):
         """Fetches the JSON which contains the contents of a given video list
 
@@ -2178,9 +2221,9 @@ class NetflixSession:
             'profileName',
             'isActive',
             'isFirstUse',
-            'isAccountOwner'
+            'isAccountOwner',
+            'isKids'
         ]
-
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
             for profile_id in netflix_page_data.get('profiles'):

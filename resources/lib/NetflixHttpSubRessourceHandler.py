@@ -23,6 +23,7 @@ class NetflixHttpSubRessourceHandler:
         self.netflix_session = netflix_session
         self.credentials = self.kodi_helper.get_credentials()
         self.video_list_cache = {}
+        self.lolomo = None
 
         # check if we have stored credentials, if so, do the login before the user requests it
         # if that is done, we cache the profiles
@@ -67,6 +68,7 @@ class NetflixHttpSubRessourceHandler:
         """
         self.profiles = []
         self.credentials = {'email': '', 'password': ''}
+        self.lolomo = None
         return self.netflix_session.logout()
 
     def login (self, params):
@@ -142,6 +144,24 @@ class NetflixHttpSubRessourceHandler:
         if 'error' in video_list_ids_raw:
             return video_list_ids_raw
         return self.netflix_session.parse_video_list_ids(response_data=video_list_ids_raw)
+
+    def fetch_video_list_ids_for_kids (self, params):
+        """Video list ids proxy function (thanks to Netflix that we need to use a different API for Kids profiles)
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`list`
+            Transformed response of the remote call
+        """
+        if self.lolomo == None:
+            self.lolomo = self.netflix_session.get_lolomo_for_kids()
+        response = self.netflix_session.fetch_lists_for_kids(lolomo=self.lolomo)
+        return response
 
     def fetch_video_list (self, params):
         """Video list proxy function
@@ -284,6 +304,7 @@ class NetflixHttpSubRessourceHandler:
             Response of the remote call
         """
         profile_id = params.get('profile_id', [''])[0]
+        self.lolomo = None
         return self.netflix_session.switch_profile(profile_id=profile_id, account=self.credentials)
 
     def get_user_data (self, params):
