@@ -1294,12 +1294,6 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         }
 
-        # check if we have a root lolomo for that user within our cookies
-        for cookie in self.session.cookies:
-            if cookie.name == 'lhpuuidh-browse-' + self.user_data['guid']:
-                value = unquote(cookie.value)
-                payload['lolomoid'] = value[value.rfind(':')+1:];
-
         response = self._session_get(component='video_list_ids', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='video_list_ids'))
 
