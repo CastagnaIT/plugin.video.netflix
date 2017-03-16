@@ -145,7 +145,8 @@ class Navigation:
         bool
             If no results are available
         """
-        search_contents = self.call_netflix_service({'method': 'search', 'term': term})
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        search_contents = self.call_netflix_service({'method': 'search', 'term': term, 'guid': user_data['guid'], 'cache': True})
         # check for any errors
         if self._is_dirty_response(response=search_contents):
             return False
@@ -182,17 +183,11 @@ class Navigation:
         season_id : :obj:`str`
             ID of the season episodes should be displayed for
         """
-        cache_id = 'episodes_' + season_id
-        if self.kodi_helper.has_cached_item(cache_id=cache_id):
-            episode_list = self.kodi_helper.get_cached_item(cache_id=cache_id)
-        else:
-            episode_list = self.call_netflix_service({'method': 'fetch_episodes_by_season', 'season_id': season_id})
-            # check for any errors
-            if self._is_dirty_response(response=episode_list):
-                return False
-            # parse the raw Netflix data
-            self.kodi_helper.add_cached_item(cache_id=cache_id, contents=episode_list)
-
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        episode_list = self.call_netflix_service({'method': 'fetch_episodes_by_season', 'season_id': season_id, 'guid': user_data['guid'], 'cache': True})
+        # check for any errors
+        if self._is_dirty_response(response=episode_list):
+            return False
         # sort seasons by number (they´re coming back unsorted from the api)
         episodes_sorted = []
         for episode_id in episode_list:
@@ -215,19 +210,14 @@ class Navigation:
         bool
             If no seasons are available
         """
-        cache_id = 'season_' + show_id
-        if self.kodi_helper.has_cached_item(cache_id=cache_id):
-            season_list = self.kodi_helper.get_cached_item(cache_id=cache_id)
-        else:
-            season_list = self.call_netflix_service({'method': 'fetch_seasons_for_show', 'show_id': show_id})
-            # check for any errors
-            if self._is_dirty_response(response=season_list):
-                return False
-            # check if we have sesons, announced shows that are not available yet have none
-            if len(season_list) == 0:
-                return self.kodi_helper.build_no_seasons_available()
-            # parse the seasons raw response from Netflix
-            self.kodi_helper.add_cached_item(cache_id=cache_id, contents=season_list)
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        season_list = self.call_netflix_service({'method': 'fetch_seasons_for_show', 'show_id': show_id, 'guid': user_data['guid'], 'cache': True})
+        # check for any errors
+        if self._is_dirty_response(response=season_list):
+            return False
+        # check if we have sesons, announced shows that are not available yet have none
+        if len(season_list) == 0:
+            return self.kodi_helper.build_no_seasons_available()
         # sort seasons by index by default (they´re coming back unsorted from the api)
         seasons_sorted = []
         for season_id in season_list:
@@ -246,40 +236,29 @@ class Navigation:
         type : :obj:`str`
             None or 'queue' f.e. when it´s a special video lists
         """
-        if self.kodi_helper.has_cached_item(cache_id=video_list_id):
-            video_list = self.kodi_helper.get_cached_item(cache_id=video_list_id)
-        else:
-            video_list = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id})
-            # check for any errors
-            if self._is_dirty_response(response=video_list):
-                return False
-            # parse the video list ids
-            if len(video_list) > 0:
-                self.kodi_helper.add_cached_item(cache_id=video_list_id, contents=video_list)
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        video_list = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'guid': user_data['guid'] ,'cache': True})
+        # check for any errors
+        if self._is_dirty_response(response=video_list):
+            return False
         actions = {'movie': 'play_video', 'show': 'season_list'}
         return self.kodi_helper.build_video_listing(video_list=video_list, actions=actions, type=type, build_url=self.build_url)
 
     def show_video_lists (self):
         """List the users video lists (recommendations, my list, etc.)"""
-        cache_id='main_menu'
-        if self.kodi_helper.has_cached_item(cache_id=cache_id):
-            video_list_ids = self.kodi_helper.get_cached_item(cache_id=cache_id)
+        # determine if we´re in Kids profile mode
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        profiles = self.call_netflix_service({'method': 'list_profiles'})
+        is_kids = profiles.get(user_data['guid']).get('isKids', False)
+        # fetch video lists
+        if is_kids == True:
+            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids', 'guid': user_data['guid'], 'cache': True})
         else:
-            # determine if we´re in Kids profile mode
-            user_data = self.call_netflix_service({'method': 'get_user_data'})
-            profiles = self.call_netflix_service({'method': 'list_profiles'})
-            is_kids = profiles.get(user_data['guid']).get('isKids', False)
-            # fetch video lists
-            if is_kids == True:
-                video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids'})
-            else:
-                video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids'})
+            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'guid': user_data['guid'], 'cache': True})
 
-            # check for any errors
-            if self._is_dirty_response(response=video_list_ids):
-                return False
-            # cache the video list ids
-            #self.kodi_helper.add_cached_item(cache_id=cache_id, contents=video_list_ids)
+        # check for any errors
+        if self._is_dirty_response(response=video_list_ids):
+            return False
         # defines an order for the user list, as Netflix changes the order at every request
         user_list_order = ['queue', 'continueWatching', 'topTen', 'netflixOriginals', 'trendingNow', 'newRelease', 'popularTitles']
         # define where to route the user
@@ -433,7 +412,11 @@ class Navigation:
         # check and switch the profile if needed
         if self.check_for_designated_profile_change(params=params):
             self.kodi_helper.invalidate_memcache()
-            self.call_netflix_service({'method': 'switch_profile', 'profile_id': params['profile_id']})
+            profile_id = params.get('profile_id', None)
+            if profile_id == None:
+                user_data = self.call_netflix_service({'method': 'get_user_data'})
+                profile_id = user_data['guid']
+            self.call_netflix_service({'method': 'switch_profile', 'profile_id': profile_id})
         # check login, in case of main menu
         if 'action' not in params:
             self.establish_session(account=credentials)
@@ -454,9 +437,12 @@ class Navigation:
         """
         # check if we need to switch the user
         user_data = self.call_netflix_service({'method': 'get_user_data'})
+        profiles = self.call_netflix_service({'method': 'list_profiles'})
         if 'guid' not in user_data:
             return False
         current_profile_id = user_data['guid']
+        if profiles.get(current_profile_id).get('isKids', False) == True:
+            return True
         return 'profile_id' in params and current_profile_id != params['profile_id']
 
     def parse_paramters (self, paramstring):
@@ -553,11 +539,19 @@ class Navigation:
             Netflix Service RPC result
         """
         url_values = urllib.urlencode(params)
+        # check for cached items
+        if self.kodi_helper.has_cached_item(cache_id=url_values) and params.get('cache', False) == True:
+            self.log(msg='Fetching item from cache: (cache_id=' + url_values + ')')
+            return self.kodi_helper.get_cached_item(cache_id=url_values)
         url = self.get_netflix_service_url()
         full_url = url + '?' + url_values
         data = urllib2.urlopen(full_url).read()
         parsed_json = json.loads(data)
-        return parsed_json.get('result', None)
+        result = parsed_json.get('result', None)
+        if params.get('cache', False) == True:
+            self.log(msg='Adding item to cache: (cache_id=' + url_values + ')')
+            self.kodi_helper.add_cached_item(cache_id=url_values, contents=result)
+        return result
 
     def open_settings(self, url):
         """Opens a foreign settings dialog"""

@@ -5,8 +5,8 @@
 
 import threading
 import SocketServer
-import xbmc
 import socket
+from xbmc import Monitor
 from xbmcaddon import Addon
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
@@ -47,7 +47,7 @@ nd_server.server_activate()
 nd_server.timeout = 1
 
 if __name__ == '__main__':
-    monitor = xbmc.Monitor()
+    monitor = Monitor()
 
     # start thread for MLS servie
     msl_thread = threading.Thread(target=msl_server.serve_forever)

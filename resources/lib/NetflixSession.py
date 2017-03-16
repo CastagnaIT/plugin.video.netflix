@@ -150,12 +150,12 @@ class NetflixSession:
                 List of all the serialized data pulled out of the pagws <script/> tags
         """
         scripts = page_soup.find_all('script', attrs={'src': None});
-        self.log('Trying sloppy inline data parser')
+        self.log(msg='Trying sloppy inline data parser')
         inline_data = self._sloppy_parse_inline_data(scripts=scripts)
         if self._verfify_auth_and_profiles_data(data=inline_data) != False:
-            self.log('Sloppy inline data parsing successfull')
+            self.log(msg='Sloppy inline data parsing successfull')
             return inline_data
-        self.log('Sloppy inline parser failed, trying JS parser')
+        self.log(msg='Sloppy inline parser failed, trying JS parser')
         return self._accurate_parse_inline_data(scripts=scripts)
 
     def is_logged_in (self, account):
@@ -769,7 +769,7 @@ class NetflixSession:
                 'synopsis': video['synopsis'],
                 'regular_synopsis': video['regularSynopsis'],
                 'type': video['summary']['type'],
-                'rating': video['userRating']['average'],
+                'rating': video['userRating'].get('average', 0) if video['userRating'].get('average', None) != None else video['userRating'].get('predicted', 0),
                 'episode_count': season_info['episode_count'],
                 'seasons_label': season_info['seasons_label'],
                 'seasons_count': season_info['seasons_count'],
@@ -1248,7 +1248,7 @@ class NetflixSession:
                 'mpaa': str(episode['maturity']['rating']['board']) + ' ' + str(episode['maturity']['rating']['value']),
                 'maturity': episode['maturity'],
                 'playcount': (0, 1)[episode['watched']],
-                'rating': episode['userRating']['average'],
+                'rating': episode['userRating'].get('average', 0) if episode['userRating'].get('average', None) != None else episode['userRating'].get('predicted', 0),
                 'thumb': episode['info']['interestingMoments']['url'],
                 'fanart': episode['interestingMoment']['_1280x720']['jpg']['url'],
                 'poster': episode['boxarts']['_1280x720']['jpg']['url'],
@@ -1935,7 +1935,7 @@ class NetflixSession:
         start = time()
         response = self.session.post(url=url, data=data, params=params, headers=headers, verify=self.verify_ssl)
         end = time()
-        self.log('[POST] Request for "' + url + '" took ' + str(end - start) + ' seconds')
+        self.log(msg='[POST] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
     def _session_get (self, component, type='document', params={}):
@@ -1960,8 +1960,12 @@ class NetflixSession:
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
         start = time()
         response = self.session.get(url=url, verify=self.verify_ssl, params=params)
+        for cookie in response.cookies:
+            if cookie.name.find('lhpuuidh-browse-' + self.user_data['guid']) != -1 and cookie.name.rfind('-T') == -1:
+                start = unquote(cookie.value).rfind(':')
+                return unquote(cookie.value)[start+1:]
         end = time()
-        self.log('[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
+        self.log(msg='[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
     def _sloppy_parse_user_and_api_data (self, key, contents):
@@ -2333,5 +2337,5 @@ class NetflixSession:
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
         self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-        self.log('Found ESN "' + self.esn + '"')
+        self.log(msg='Found ESN "' + self.esn + '"')
         return netflix_page_data

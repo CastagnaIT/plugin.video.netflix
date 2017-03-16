@@ -3,6 +3,8 @@
 # Module: NetflixHttpSubRessourceHandler
 # Created on: 07.03.2017
 
+from urllib2 import urlopen, URLError
+
 class NetflixHttpSubRessourceHandler:
     """ Represents the callable internal server routes & translates/executes them to requests for Netflix"""
 
@@ -22,19 +24,29 @@ class NetflixHttpSubRessourceHandler:
         self.kodi_helper = kodi_helper
         self.netflix_session = netflix_session
         self.credentials = self.kodi_helper.get_credentials()
+        self.profiles = []
+        self.prefetch_login()
         self.video_list_cache = {}
         self.lolomo = None
 
-        # check if we have stored credentials, if so, do the login before the user requests it
-        # if that is done, we cache the profiles
-        if self.credentials['email'] != '' and self.credentials['password'] != '':
-            if self.netflix_session.is_logged_in(account=self.credentials):
-                self.netflix_session.refresh_session_data(account=self.credentials)
+    def prefetch_login (self):
+        """Check if we have stored credentials.
+        If so, do the login before the user requests it
+        If that is done, we cache the profiles
+        """
+        if self._network_availble():
+            if self.credentials['email'] != '' and self.credentials['password'] != '':
+                if self.netflix_session.is_logged_in(account=self.credentials):
+                    self.netflix_session.refresh_session_data(account=self.credentials)
+                    self.profiles = self.netflix_session.profiles
+                else:
+                    self.netflix_session.login(account=self.credentials)
+                    self.profiles = self.netflix_session.profiles
             else:
-                self.netflix_session.login(account=self.credentials)
-            self.profiles = self.netflix_session.profiles
+                self.profiles = []
         else:
-            self.profiles = []
+            sleep(1)
+            self.prefetch_login()
 
     def is_logged_in (self, params):
         """Existing login proxy function
@@ -366,3 +378,16 @@ class NetflixHttpSubRessourceHandler:
         if 'error' in raw_search_contents:
             return raw_search_contents
         return self.netflix_session.parse_video_list(response_data=raw_search_contents)
+
+    def _network_availble(self):
+        """Check if the network is available
+        Returns
+        -------
+        bool
+            Network can be accessed
+        """
+        try:
+            urlopen('http://216.58.192.142', timeout=1)
+            return True
+        except URLError as err:
+            return False
