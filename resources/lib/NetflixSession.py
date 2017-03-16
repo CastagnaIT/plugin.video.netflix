@@ -1960,10 +1960,6 @@ class NetflixSession:
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
         start = time()
         response = self.session.get(url=url, verify=self.verify_ssl, params=params)
-        for cookie in response.cookies:
-            if cookie.name.find('lhpuuidh-browse-' + self.user_data['guid']) != -1 and cookie.name.rfind('-T') == -1:
-                start = unquote(cookie.value).rfind(':')
-                return unquote(cookie.value)[start+1:]
         end = time()
         self.log(msg='[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
