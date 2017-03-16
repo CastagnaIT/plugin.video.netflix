@@ -4,6 +4,7 @@
 # Created on: 07.03.2017
 
 from urllib2 import urlopen, URLError
+from time import sleep
 
 class NetflixHttpSubRessourceHandler:
     """ Represents the callable internal server routes & translates/executes them to requests for Netflix"""
