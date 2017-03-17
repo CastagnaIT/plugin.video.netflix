@@ -35,6 +35,7 @@ class KodiHelper:
         self.base_url = base_url
         self.addon = Addon()
         self.plugin = self.addon.getAddonInfo('name')
+        self.version = self.addon.getAddonInfo('version')
         self.base_data_path = xbmc.translatePath(self.addon.getAddonInfo('profile'))
         self.home_path = xbmc.translatePath('special://home')
         self.plugin_path = self.addon.getAddonInfo('path')
