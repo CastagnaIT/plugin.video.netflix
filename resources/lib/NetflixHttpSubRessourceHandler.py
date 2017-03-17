@@ -154,27 +154,10 @@ class NetflixHttpSubRessourceHandler:
             self.kodi_helper.log('Serving cached list for user: ' + self.netflix_session.user_data['guid'])
             return cached_list
         video_list_ids_raw = self.netflix_session.fetch_video_list_ids()
+
         if 'error' in video_list_ids_raw:
             return video_list_ids_raw
         return self.netflix_session.parse_video_list_ids(response_data=video_list_ids_raw)
-
-    def fetch_video_list_ids_for_kids (self, params):
-        """Video list ids proxy function (thanks to Netflix that we need to use a different API for Kids profiles)
-
-        Parameters
-        ----------
-        params : :obj:`dict` of :obj:`str`
-            Request params
-
-        Returns
-        -------
-        :obj:`list`
-            Transformed response of the remote call
-        """
-        if self.lolomo == None:
-            self.lolomo = self.netflix_session.get_lolomo_for_kids()
-        response = self.netflix_session.fetch_lists_for_kids(lolomo=self.lolomo)
-        return response
 
     def fetch_video_list (self, params):
         """Video list proxy function

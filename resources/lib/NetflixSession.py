@@ -446,6 +446,11 @@ class NetflixSession:
         for key in self.video_list_keys:
             video_list_ids[key] = {}
 
+        # check if the list items are hidden behind a `value` sub key
+        # this is the case when we fetch the lists via POST, not via a GET preflight request
+        if 'value' in response_data.keys():
+            response_data = response_data['value']
+
         # subcatogorize the lists by their context
         video_lists = response_data['lists']
         for video_list_id in video_lists.keys():
@@ -1270,8 +1275,9 @@ class NetflixSession:
         response = self._session_get(component='browse')
         return BeautifulSoup(response.text, 'html.parser')
 
-    def fetch_video_list_ids (self, list_from=0, list_to=50):
+    def fetch_video_list_ids_via_preflight (self, list_from=0, list_to=50):
         """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
+           via the preflight (GET) request
 
         Parameters
         ----------
@@ -1297,6 +1303,29 @@ class NetflixSession:
 
         response = self._session_get(component='video_list_ids', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='video_list_ids'))
+
+    def fetch_video_list_ids (self, list_from=0, list_to=50):
+        """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
+
+        Parameters
+        ----------
+        list_from : :obj:`int`
+            Start entry for pagination
+
+        list_to : :obj:`int`
+            Last entry for pagination
+
+        Returns
+        -------
+        :obj:`dict` of :obj:`dict` of :obj:`str`
+            Raw Netflix API call response or api call error
+        """
+        paths = [
+            ['lolomo', {'from': list_from, 'to': list_to}, ['displayName', 'context', 'id', 'index', 'length']]
+        ]
+
+        response = self._path_request(paths=paths)
+        return self._process_response(response=response, component='Video list ids')
 
     def fetch_search_results (self, search_str, list_from=0, list_to=10):
         """Fetches the JSON which contains the results for the given search query
@@ -1330,48 +1359,6 @@ class NetflixSession:
         ]
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
-
-    def get_lolomo_for_kids (self):
-        """Fetches the lolomo ID for Kids profiles
-
-        Returns
-        -------
-        :obj:`str`
-            Kids Lolomo ID
-        """
-        response = self._session_get(component='kids')
-        for cookie in response.cookies:
-            if cookie.name.find('lhpuuidh-browse-' + self.user_data['guid']) != -1 and cookie.name.rfind('-T') == -1:
-                start = unquote(cookie.value).rfind(':')
-                return unquote(cookie.value)[start+1:]
-        return None
-
-    def fetch_lists_for_kids (self, lolomo, list_from=0, list_to=50):
-        """Fetches the JSON which contains the contents of a the video list for kids users
-
-        Parameters
-        ----------
-        lolomo : :obj:`str`
-            Lolomo ID for the Kids profile
-
-        list_from : :obj:`int`
-            Start entry for pagination
-
-        list_to : :obj:`int`
-            Last entry for pagination
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`dict` of :obj:`str`
-            Raw Netflix API call response or api call error
-        """
-        paths = [
-            ['lists', lolomo, {'from': list_from, 'to': list_to}, ['displayName', 'context', 'genreId', 'id', 'index', 'length']]
-        ]
-
-        response = self._path_request(paths=paths)
-        res = self._process_response(response=response, component='Kids lists')
-        return self.parse_video_list_ids(response_data=res['value'])
 
     def fetch_video_list (self, list_id, list_from=0, list_to=20):
         """Fetches the JSON which contains the contents of a given video list

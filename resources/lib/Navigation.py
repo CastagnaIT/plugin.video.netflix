@@ -163,13 +163,7 @@ class Navigation:
         """
         # determine if we´re in kids mode
         user_data = self.call_netflix_service({'method': 'get_user_data'})
-        profiles = self.call_netflix_service({'method': 'list_profiles'})
-        is_kids = profiles.get(user_data['guid']).get('isKids', False)
-        # fetch video lists
-        if is_kids == True:
-            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids'})
-        else:
-            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'type': type})
+        video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'guid': user_data['guid'], 'cache': True})
         # check for any errors
         if self._is_dirty_response(response=video_list_ids):
             return False
@@ -246,16 +240,8 @@ class Navigation:
 
     def show_video_lists (self):
         """List the users video lists (recommendations, my list, etc.)"""
-        # determine if we´re in Kids profile mode
         user_data = self.call_netflix_service({'method': 'get_user_data'})
-        profiles = self.call_netflix_service({'method': 'list_profiles'})
-        is_kids = profiles.get(user_data['guid']).get('isKids', False)
-        # fetch video lists
-        if is_kids == True:
-            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids_for_kids', 'guid': user_data['guid'], 'cache': True})
-        else:
-            video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'guid': user_data['guid'], 'cache': True})
-
+        video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'guid': user_data['guid'], 'cache': True})
         # check for any errors
         if self._is_dirty_response(response=video_list_ids):
             return False
