@@ -7,7 +7,6 @@ import threading
 import SocketServer
 import socket
 from xbmc import Monitor
-from xbmcaddon import Addon
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
 from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
@@ -15,22 +14,21 @@ from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
 # helper function to select an unused port on the host machine
 def select_unused_port():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('localhost', 0))
+    sock.bind(('127.0.0.1', 0))
     addr, port = sock.getsockname()
     sock.close()
     return port
 
-addon = Addon()
 kodi_helper = KodiHelper()
 
 # pick & store a port for the MSL service
 msl_port = select_unused_port()
-addon.setSetting('msl_service_port', str(msl_port))
+kodi_helper.set_setting('msl_service_port', str(msl_port))
 kodi_helper.log(msg='[MSL] Picked Port: ' + str(msl_port))
 
 # pick & store a port for the internal Netflix HTTP proxy service
 ns_port = select_unused_port()
-addon.setSetting('netflix_service_port', str(ns_port))
+kodi_helper.set_setting('netflix_service_port', str(ns_port))
 kodi_helper.log(msg='[NS] Picked Port: ' + str(ns_port))
 
 # server defaults

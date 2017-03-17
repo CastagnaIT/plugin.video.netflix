@@ -33,5 +33,5 @@ kodi_helper.set_library(library=library)
 if __name__ == '__main__':
     # Call the router function and pass the plugin call parameters to it.
     # We use string slicing to trim the leading '?' from the plugin call paramstring
-    kodi_helper.log('started')
+    kodi_helper.log('Started (Version ' + kodi_helper.version + ')')
     navigation.router(paramstring=sys.argv[2][1:])
