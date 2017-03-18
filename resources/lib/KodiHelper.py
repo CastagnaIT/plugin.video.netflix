@@ -31,22 +31,26 @@ class KodiHelper:
         base_url : :obj:`str`
             Plugin base url
         """
+        addon = self.get_addon()
         self.plugin_handle = plugin_handle
         self.base_url = base_url
-        self.addon = Addon()
-        self.plugin = self.addon.getAddonInfo('name')
-        self.version = self.addon.getAddonInfo('version')
-        self.base_data_path = xbmc.translatePath(self.addon.getAddonInfo('profile'))
+        self.plugin = addon.getAddonInfo('name')
+        self.version = addon.getAddonInfo('version')
+        self.base_data_path = xbmc.translatePath(addon.getAddonInfo('profile'))
         self.home_path = xbmc.translatePath('special://home')
-        self.plugin_path = self.addon.getAddonInfo('path')
+        self.plugin_path = addon.getAddonInfo('path')
         self.cookie_path = self.base_data_path + 'COOKIE'
         self.data_path = self.base_data_path + 'DATA'
         self.config_path = join(self.base_data_path, 'config')
         self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
-        self.verb_log = self.addon.getSetting('logging') == 'true'
-        self.default_fanart = self.addon.getAddonInfo('fanart')
+        self.verb_log = addon.getSetting('logging') == 'true'
+        self.default_fanart = addon.getAddonInfo('fanart')
         self.library = None
         self.setup_memcache()
+
+    def get_addon (self):
+        """Returns a fresh addon instance"""
+        return Addon()
 
     def refresh (self):
         """Refresh the current list"""
@@ -171,7 +175,7 @@ class KodiHelper:
         bool
             Setting could be set or not
         """
-        return self.addon.setSetting(key, value)
+        return self.get_addon().setSetting(key, value)
 
     def get_credentials (self):
         """Returns the users stored credentials
@@ -182,8 +186,8 @@ class KodiHelper:
             The users stored account data
         """
         return {
-            'email': self.addon.getSetting('email'),
-            'password': self.addon.getSetting('password')
+            'email': self.get_addon().getSetting('email'),
+            'password': self.get_addon().getSetting('password')
         }
 
     def get_dolby_setting(self):
@@ -191,7 +195,7 @@ class KodiHelper:
         Returns if the dolby sound is enabled
         :return: True|False
         """
-        return self.addon.getSetting('enable_dolby_sound') == 'true'
+        return self.get_addon().getSetting('enable_dolby_sound') == 'true'
 
     def get_custom_library_settings (self):
         """Returns the settings in regards to the custom library folder(s)
@@ -202,8 +206,8 @@ class KodiHelper:
             The users library settings
         """
         return {
-            'enablelibraryfolder': self.addon.getSetting('enablelibraryfolder'),
-            'customlibraryfolder': self.addon.getSetting('customlibraryfolder')
+            'enablelibraryfolder': self.get_addon().getSetting('enablelibraryfolder'),
+            'customlibraryfolder': self.get_addon().getSetting('customlibraryfolder')
         }
 
     def get_ssl_verification_setting (self):
@@ -214,7 +218,7 @@ class KodiHelper:
         bool
             Verify or not
         """
-        return self.addon.getSetting('ssl_verification') == 'true'
+        return self.get_addon().getSetting('ssl_verification') == 'true'
 
     def set_main_menu_selection (self, type):
         """Persist the chosen main menu entry in memory
@@ -640,6 +644,7 @@ class KodiHelper:
         bool
             List could be build
         """
+        addon = self.get_addon()
         inputstream_addon = self.get_inputstream_addon()
         if inputstream_addon == None:
             self.show_missing_inputstream_addon_notification()
@@ -650,12 +655,12 @@ class KodiHelper:
         self.track_event('playVideo')
 
         # check esn in settings
-        settings_esn = str(self.addon.getSetting('esn'))
+        settings_esn = str(addon.getSetting('esn'))
         if len(settings_esn) == 0:
-            self.addon.setSetting('esn', str(esn))
+            addon.setSetting('esn', str(esn))
 
         # inputstream addon properties
-        msl_service_url = 'http://localhost:' + str(self.addon.getSetting('msl_service_port'))
+        msl_service_url = 'http://localhost:' + str(addon.getSetting('msl_service_port'))
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
         play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')
@@ -868,7 +873,7 @@ class KodiHelper:
         :obj:`str`
             Requested string or empty string
         """
-        src = xbmc if string_id < 30000 else self.addon
+        src = xbmc if string_id < 30000 else self.get_addon()
         locString = src.getLocalizedString(string_id)
         if isinstance(locString, unicode):
             locString = locString.encode('utf-8')
@@ -916,14 +921,15 @@ class KodiHelper:
         :param event: the string idetifier of the event
         :return: None
         """
+        addon = self.get_addon()
         # Check if tracking is enabled
-        enable_tracking = (self.addon.getSetting('enable_tracking') == 'true')
+        enable_tracking = (addon.getSetting('enable_tracking') == 'true')
         if enable_tracking:
             #Get or Create Tracking id
-            tracking_id = self.addon.getSetting('tracking_id')
+            tracking_id = addon.getSetting('tracking_id')
             if tracking_id is '':
                 tracking_id = str(uuid4())
-                self.addon.setSetting('tracking_id', tracking_id)
+                addon.setSetting('tracking_id', tracking_id)
             # Send the tracking event
             tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)
             tracker.send('event', event)

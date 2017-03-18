@@ -509,7 +509,7 @@ class Navigation:
         str
             Url + Port
         """
-        return 'http://127.0.0.1:' + str(self.kodi_helper.addon.getSetting('netflix_service_port'))
+        return 'http://127.0.0.1:' + str(self.kodi_helper.get_addon().getSetting('netflix_service_port'))
 
     def call_netflix_service (self, params):
         """Makes a GET request to the internal Netflix HTTP proxy and returns the result
