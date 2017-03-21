@@ -2,6 +2,11 @@
 
 ## Netflix Plugin for Kodi 18
 
+###Disclaimer
+-------------
+This plugin is not officially commisioned/supported by Netflix.
+The trademark "Netflix" is registered by "Netflix, Inc."
+
 ###Prerequisites
 ----------------
 
