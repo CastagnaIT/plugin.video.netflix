@@ -361,7 +361,7 @@ class MSL:
             subtiles_adaption_set = ET.SubElement(period, 'AdaptationSet',
                                                   lang=text_track['bcp47'],
                                                   contentType='text',
-                                                  mimeType='text/vtt')
+                                                  mimeType='text/ttml')
             for downloadable in text_track['downloadables']:
                 rep = ET.SubElement(subtiles_adaption_set, 'Representation',
                                     bandwidth='0',
