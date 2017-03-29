@@ -152,9 +152,13 @@ class MSL:
 
                 # Audio
                 'heaac-2-dash',
+
+                #subtiltes
                 'dfxp-ls-sdh',
-                'simplesdh',
-                'nflx-cmisc',
+                #'simplesdh',
+                #'nflx-cmisc',
+
+                #unkown
                 'BIF240',
                 'BIF320'
             ],
@@ -348,6 +352,26 @@ class MSL:
                 # Index range
                 segment_base = ET.SubElement(rep, 'SegmentBase', indexRange="0-"+str(init_length), indexRangeExact="true")
                 ET.SubElement(segment_base, 'Initialization', range='0-'+str(init_length))
+
+        # Multiple Adaption Set for subtiles
+        for text_track in manifest['textTracks']:
+            print text_track
+            if 'downloadables' not in text_track or text_track['downloadables'] is None:
+                continue
+            subtiles_adaption_set = ET.SubElement(period, 'AdaptationSet',
+                                                  lang=text_track['bcp47'],
+                                                  contentType='text',
+                                                  mimeType='text/vtt')
+            for downloadable in text_track['downloadables']:
+                rep = ET.SubElement(subtiles_adaption_set, 'Representation',
+                                    bandwidth='0',
+                                    nflxProfile=downloadable['contentProfile']
+                                    )
+                print downloadable['urls']
+                ET.SubElement(rep, 'BaseURL').text = self.__get_base_url(downloadable['urls'])
+
+
+
 
 
         xml = ET.tostring(root, encoding='utf-8', method='xml')
