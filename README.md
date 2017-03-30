@@ -2,20 +2,27 @@
 
 ## Netflix Plugin for Kodi 18
 
-###Disclaimer
+Disclaimer
 -------------
 This plugin is not officially commisioned/supported by Netflix.
 The trademark "Netflix" is registered by "Netflix, Inc."
 
-###Prerequisites
-----------------
+Prerequisites
+-------------
 
 - Kodi 18 [agile build](https://github.com/FernetMenta/kodi-agile)
 - Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
 - Inputstream.adaptive [agile branch build](https://github.com/liberty-developer/inputstream.adaptive/tree/agile)
 
-###Functionality
-----------------
+FAQ
+---
+
+- [Does it work with Kodi 17](https://github.com/asciidisco/plugin.video.netflix/issues/25)
+- [Does it work on a RPI](https://github.com/asciidisco/plugin.video.netflix/issues/28)
+- [Which video resolutions are supported](https://github.com/asciidisco/plugin.video.netflix/issues/27)
+
+Functionality
+-------------
 - Multiple profiles
 - Search Netflix (incl. suggestions)
 - Netflix categories, recommendations, "my list" & continue watching
@@ -23,8 +30,8 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Add & remove to/from "my list"
 - Export of complete shows & movies in local database (custom library folder can be configured, by default the .strm files are stored in `userdata/addon_data/plugin.video.netflix` )
 
-###ToDo
-----------------
+ToDo
+----
 
 > Note: Those Todos are considered enhancements, they´re not issues, nor they prevent the usage of the plugin for everyday business
 
@@ -38,8 +45,8 @@ please open an issue & we can provide you with some help to get started
 - [ ] If a new user has been created, they need to select their movie/show preferences to actually get started, we could provide the same mechanisms in Kodi
 - [ ] Enable aggressive fetching of data in background (maybe using Futures), like the Netflix website does, to enhance the speed and the user experience when browsing the frontend
 
-###Something doesn't work
--------------------------
+Something doesn't work
+----------------------
 
 If something doesn't work for you, please:
 
@@ -53,8 +60,8 @@ If something doesn't work for you, please:
 	- Libwedevine version
 	- A Kodi debug log that represents your issue
 
-###Licence
------------------
+Licence
+-------
 
 Licenced under The MIT License.
 Includes [pyjsparser](https://github.com/PiotrDabkowski/pyjsparser) by [Piotr Dabkowski](https://github.com/PiotrDabkowski)
