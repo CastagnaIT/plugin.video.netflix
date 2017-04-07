@@ -10,6 +10,8 @@ import os
 import pprint
 import random
 from StringIO import StringIO
+
+from datetime import datetime
 import requests
 import zlib
 
@@ -583,6 +585,18 @@ class MSL:
 
     def __load_msl_data(self):
         msl_data = json.JSONDecoder().decode(self.load_file(self.kodi_helper.msl_data_path, 'msl_data.json'))
+        #Check expire date of the token
+        master_token = json.JSONDecoder().decode(base64.standard_b64decode(msl_data['tokens']['mastertoken']['tokendata']))
+        valid_until = datetime.utcfromtimestamp(int(master_token['expiration']))
+        present = datetime.now()
+        difference = valid_until - present
+        difference = difference.total_seconds() / 60 / 60
+        # If token expires in less then 10 hours or is expires renew it
+        if difference < 10:
+            self.__load_rsa_keys()
+            self.__perform_key_handshake()
+            return
+
         self.__set_master_token(msl_data['tokens']['mastertoken'])
         self.encryption_key = base64.standard_b64decode(msl_data['encryption_key'])
         self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
