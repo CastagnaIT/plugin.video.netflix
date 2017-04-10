@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.11.10" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.11.11" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -28,7 +28,18 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.8 (2017-3-17)
+    <news>v0.11.11 (2017-4-10)
+    - Portugese translations
+    - Swedish translations
+
+    v0.11.10 (2017-4-10)
+    - Adds subtitle support
+    - Polish translations
+
+    v0.11.9 (2017-4-5)
+    - Fix issues with persisted msl manifests
+
+    v0.11.8 (2017-3-17)
     - Fix 1 sec delay per request on windows (see https://github.com/asciidisco/plugin.video.netflix/issues/21 for details)
 
     v0.11.7 (2017-3-17)
