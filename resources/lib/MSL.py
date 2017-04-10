@@ -156,8 +156,8 @@ class MSL:
                 'heaac-2-dash',
 
                 #subtiltes
-                'dfxp-ls-sdh',
-                #'simplesdh',
+                #'dfxp-ls-sdh',
+                'simplesdh',
                 #'nflx-cmisc',
 
                 #unkown
