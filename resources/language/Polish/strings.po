@@ -1,0 +1,163 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon version: 0.11.8
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2015-09-21 11:01+0000\n"
+"PO-Revision-Date: 2017-03-24 22:00+0100\n"
+"Last-Translator: Marcin W.\n"
+"Language: pl\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/teamxbmc/kodi-main/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.12\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Wtyczka dla usług VOD serwisu Netflix"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Niektóre części tego dodatku mogą być nielegalne w Twoim kraju zamieszkania - sprawdź, przed instalacją, czy nie jest w niezgodnem z lokalnym prawem."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Polecane"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Kod kontroli rodzicielskiej"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Szukane wyrażenie"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Hasło"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "Adres e-mail"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Nieudana weryfikacja kontroli rodzicielskiej"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Zweryfikuj poprawność kodu kontroli rodzicielskiej"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Nieudane logowanie"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Zweryfikuj poprawność wprowadzonych danych"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Gatunki"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Szukaj"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Brak dostępnych sezonów"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Brak pasujących wyników"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Konto"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Wyloguj"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Eksportuj do biblioteki"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Oceń w serwisie Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Usuń z 'Moja lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Dodaj do 'Moja lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(między 0 a 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Eksperckie"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Weryfikacja certyfikatu SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Biblioteka"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Używaj niestandardowego folderu biblioteki"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Folder niestandardowy"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Błąd odtwarzania"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Brakuje wtyczki strumieniowej InputStream Adaptive"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Usuń z biblioteki"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Zmień tytuł"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Śledzenie"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Używaj ścieżek Dolby Sound"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (ustawiany automatycznie, z możliwością zmiany)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Ustawienia wtyczki strumieniowej..."
