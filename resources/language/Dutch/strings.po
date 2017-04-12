@@ -27,23 +27,23 @@ msgstr "Addon voor de Netflix VOD Service"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr “Mogelijk zijn enkele onderdelen van deze Addon in uw land niet legaal, raadpleegt u voor installatie de lokale wetten.”
+msgstr "Mogelijk zijn enkele onderdelen van deze Addon in uw land niet legaal, raadpleegt u voor installatie de lokale wetten."
 
 msgctxt "#30001"
 msgid "Recommendations"
-msgstr “Aanbevelingen”
+msgstr "Aanbevelingen"
 
 msgctxt "#30002"
 msgid "Adult Pin"
-msgstr “Pincode”
+msgstr "Pincode"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr “Zoekterm”
+msgstr "Zoekterm"
 
 msgctxt "#30004"
 msgid "Password"
-msgstr "Paswoord”
+msgstr "Paswoord"
 
 msgctxt "#30005"
 msgid "E-mail"
@@ -51,19 +51,19 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr “Code kinderslot incorrect”
+msgstr "Code kinderslot incorrect"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr “Controleer de code van het kinderslot"
+msgstr "Controleer de code van het kinderslot"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr “Inloggen mislukt”
+msgstr "Inloggen mislukt"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr “Controleer uw inloggegevens“
+msgstr "Controleer uw inloggegevens"
 
 msgctxt "#30010"
 msgid "Genres"
@@ -71,15 +71,15 @@ msgstr "Genres"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr “Zoeken”
+msgstr "Zoeken"
 
 msgctxt "#30012"
 msgid "No seasons available"
-msgstr “Geen seizoenen beschikbaar“
+msgstr "Geen seizoenen beschikbaar"
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr “Geen overeenkomsten gevonden“
+msgstr "Geen overeenkomsten gevonden"
 
 msgctxt "#30014"
 msgid "Account"
@@ -87,15 +87,15 @@ msgstr "Account"
 
 msgctxt "#30017"
 msgid "Logout"
-msgstr “Uitloggen”
+msgstr "Uitloggen"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr “Naar bibliotheek exporteren"
+msgstr "Naar bibliotheek exporteren"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr “Op Netflix beoordelen”
+msgstr "Op Netflix beoordelen"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
@@ -103,11 +103,11 @@ msgstr "Van 'Mijn lijst’ verwijderen”
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr “Aan 'Mijn lijst’ toevoegen”
+msgstr "Aan 'Mijn lijst’ toevoegen"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
-msgstr “(tussen 0 & 10)"
+msgstr "(tussen 0 & 10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -115,7 +115,7 @@ msgstr "Expert"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL verificatie”
+msgstr "SSL verificatie"
 
 msgctxt "#30025"
 msgid "Library"
@@ -123,15 +123,15 @@ msgstr "Bibliotheek"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr “Eigen bibliotheek folder toestaan“
+msgstr "Eigen bibliotheek folder toestaan"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr “Eigen bibliotheek locatie”
+msgstr "Eigen bibliotheek locatie"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr “Afspeelfout”
+msgstr "Afspeelfout"
 
 msgctxt "#30029"
 msgid "Missing Inputstream addon"
@@ -139,11 +139,11 @@ msgstr "Inputstream niet gevonden”
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr “Van de bibliotheek verwijderen”
+msgstr "Van de bibliotheek verwijderen”
 
 msgctxt "#30031"
 msgid "Change library title"
-msgstr “Titel bibliotheek aanpassen”
+msgstr "Titel bibliotheek aanpassen"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -151,12 +151,12 @@ msgstr "Tracking"
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
-msgstr “Gebruik Dolby geluid”
+msgstr "Gebruik Dolby geluid"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (automatisch, kan handmatig aangepast worden)”
+msgstr "ESN (automatisch, kan handmatig aangepast worden)"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
-msgstr "Inputstream Addon instellingen…”
+msgstr "Inputstream Addon instellingen…"
