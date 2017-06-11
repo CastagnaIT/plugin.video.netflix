@@ -282,22 +282,6 @@ class KodiHelper:
         """Invalidates the memory cache"""
         xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
 
-    def has_cached_item (self, cache_id):
-        """Checks if the requested item is in memory cache
-
-        Parameters
-        ----------
-        cache_id : :obj:`str`
-            ID of the cache entry
-
-        Returns
-        -------
-        bool
-            Item is cached
-        """
-        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
-        return cache_id in cached_items.keys()
-
     def get_cached_item (self, cache_id):
         """Returns an item from the in memory cache
 
@@ -312,9 +296,8 @@ class KodiHelper:
             Contents of the requested cache item or none
         """
         cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
-        if self.has_cached_item(cache_id) != True:
-            return None
-        return cached_items[cache_id]
+
+        return cached_items.get(cache_id)
 
     def add_cached_item (self, cache_id, contents):
         """Adds an item to the in memory cache

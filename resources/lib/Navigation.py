@@ -541,9 +541,14 @@ class Navigation:
         """
         url_values = urllib.urlencode(params)
         # check for cached items
-        if self.kodi_helper.has_cached_item(cache_id=url_values) and params.get('cache', False) == True:
-            self.log(msg='Fetching item from cache: (cache_id=' + url_values + ')')
-            return self.kodi_helper.get_cached_item(cache_id=url_values)
+        if params.get('cache', False) == True:
+            cached_value = self.kodi_helper.get_cached_item(cache_id=url_values)
+
+            # Cache lookup successful?
+            if cached_value != None:
+                self.log(msg='Fetched item from cache: (cache_id=' + url_values + ')')
+                return cached_value
+
         url = self.get_netflix_service_url()
         full_url = url + '?' + url_values
         data = urllib2.urlopen(full_url).read()
