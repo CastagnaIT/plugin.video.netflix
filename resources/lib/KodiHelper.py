@@ -7,7 +7,9 @@ import xbmcplugin
 import xbmcgui
 import xbmc
 import json
-from os.path import join
+from MSL import MSL
+from os import remove
+from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
@@ -189,6 +191,31 @@ class KodiHelper:
             'email': self.get_addon().getSetting('email'),
             'password': self.get_addon().getSetting('password')
         }
+
+    def get_esn(self):
+        """
+        Returns the esn from settings
+        """
+        return self.get_addon().getSetting('esn')
+
+    def set_esn(self, esn):
+        """
+        Returns the esn from settings
+        """
+        stored_esn = self.get_esn()
+        if not stored_esn:
+            self.set_setting('esn', esn)
+            self.delete_manifest_data()            
+            return esn
+        return stored_esn
+    
+    def delete_manifest_data(self):
+        if isfile(self.msl_data_path + 'msl_data.json'):
+            remove(self.msl_data_path + 'msl_data.json')
+        if isfile(self.msl_data_path + 'manifest.json'):
+            remove(self.msl_data_path + 'manifest.json')
+        msl = MSL(kodi_helper=self)
+        msl.save_msl_data()
 
     def get_dolby_setting(self):
         """

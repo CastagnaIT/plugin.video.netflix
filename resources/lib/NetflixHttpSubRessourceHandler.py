@@ -40,6 +40,7 @@ class NetflixHttpSubRessourceHandler:
                 self.profiles = self.netflix_session.profiles
         else:
             self.profiles = []
+        self.kodi_helper.set_esn(self.netflix_session.esn)
 
     def is_logged_in (self, params):
         """Existing login proxy function

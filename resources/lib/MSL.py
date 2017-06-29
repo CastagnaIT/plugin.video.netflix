@@ -42,7 +42,7 @@ class MSL:
     last_drm_context = ''
     last_playback_context = ''
     #esn = "NFCDCH-LX-CQE0NU6PA5714R25VPLXVU2A193T36"
-    esn = "WWW-BROWSE-D7GW1G4NPXGR1F0X1H3EQGY3V1F5WE"
+    #esn = "WWW-BROWSE-D7GW1G4NPXGR1F0X1H3EQGY3V1F5WE"
     #esn = "NFCDIE-02-DCH84Q2EK3N6VFVQJ0NLRQ27498N0F"
     current_message_id = 0
     session = requests.session()
@@ -406,6 +406,7 @@ class MSL:
         }
 
     def __generate_msl_request_data(self, data):
+        self.__load_msl_data()
         header_encryption_envelope = self.__encrypt(self.__generate_msl_header())
         header = {
             'headerdata': base64.standard_b64encode(header_encryption_envelope),
@@ -453,9 +454,10 @@ class MSL:
         :return: The base64 encoded JSON String of the header
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
+        esn = self.kodi_helper.get_esn()
 
         header_data = {
-            'sender': self.esn,
+            'sender': esn,
             'handshake': is_handshake,
             'nonreplayable': False,
             'capabilities': {
@@ -507,10 +509,11 @@ class MSL:
         :param plaintext:
         :return: Serialized JSON String of the encryption Envelope
         """
+        esn = self.kodi_helper.get_esn()
         iv = get_random_bytes(16)
         encryption_envelope = {
             'ciphertext': '',
-            'keyid': self.esn + '_' + str(self.sequence_number),
+            'keyid': esn + '_' + str(self.sequence_number),
             'sha256': 'AA==',
             'iv': base64.standard_b64encode(iv)
         }
@@ -535,11 +538,12 @@ class MSL:
 
     def __perform_key_handshake(self):
         header = self.__generate_msl_header(is_key_request=True, is_handshake=True, compressionalgo="", encrypt=False)
+        esn = self.kodi_helper.get_esn()
         request = {
             'entityauthdata': {
                 'scheme': 'NONE',
                 'authdata': {
-                    'identity': self.esn
+                    'identity': esn
                 }
             },
             'headerdata': base64.standard_b64encode(header),
@@ -595,6 +599,10 @@ class MSL:
         self.__set_master_token(msl_data['tokens']['mastertoken'])
         self.encryption_key = base64.standard_b64decode(msl_data['encryption_key'])
         self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
+
+
+    def save_msl_data(self):
+        self.__save_msl_data()
 
     def __save_msl_data(self):
         """
