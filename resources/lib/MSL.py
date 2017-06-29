@@ -71,13 +71,18 @@ class MSL:
         elif self.file_exists(self.kodi_helper.msl_data_path, 'rsa_key.bin'):
             self.kodi_helper.log(msg='RSA Keys do already exist load old ones')
             self.__load_rsa_keys()
-            self.__perform_key_handshake()
+            if self.kodi_helper.get_esn():
+                self.__perform_key_handshake()
         else:
             self.kodi_helper.log(msg='Create new RSA Keys')
             # Create new Key Pair and save
             self.rsa_key = RSA.generate(2048)
             self.__save_rsa_keys()
-            self.__perform_key_handshake()
+            if self.kodi_helper.get_esn():
+                self.__perform_key_handshake()
+    
+    def perform_key_handshake(self):
+        self.__perform_key_handshake()
 
     def load_manifest(self, viewable_id):
         """
@@ -510,6 +515,7 @@ class MSL:
         :return: Serialized JSON String of the encryption Envelope
         """
         esn = self.kodi_helper.get_esn()
+
         iv = get_random_bytes(16)
         encryption_envelope = {
             'ciphertext': '',
@@ -539,6 +545,7 @@ class MSL:
     def __perform_key_handshake(self):
         header = self.__generate_msl_header(is_key_request=True, is_handshake=True, compressionalgo="", encrypt=False)
         esn = self.kodi_helper.get_esn()
+
         request = {
             'entityauthdata': {
                 'scheme': 'NONE',

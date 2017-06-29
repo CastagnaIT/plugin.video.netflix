@@ -196,6 +196,8 @@ class KodiHelper:
         """
         Returns the esn from settings
         """
+        self.log(msg='Is FILE: ' + str(isfile(self.msl_data_path + 'msl_data.json')))
+        self.log(msg=self.get_addon().getSetting('esn'))
         return self.get_addon().getSetting('esn')
 
     def set_esn(self, esn):
@@ -203,7 +205,7 @@ class KodiHelper:
         Returns the esn from settings
         """
         stored_esn = self.get_esn()
-        if not stored_esn:
+        if not stored_esn and esn:
             self.set_setting('esn', esn)
             self.delete_manifest_data()            
             return esn
@@ -215,6 +217,7 @@ class KodiHelper:
         if isfile(self.msl_data_path + 'manifest.json'):
             remove(self.msl_data_path + 'manifest.json')
         msl = MSL(kodi_helper=self)
+        msl.perform_key_handshake()
         msl.save_msl_data()
 
     def get_dolby_setting(self):
@@ -671,6 +674,7 @@ class KodiHelper:
         bool
             List could be build
         """
+        self.set_esn(esn)
         addon = self.get_addon()
         inputstream_addon = self.get_inputstream_addon()
         if inputstream_addon == None:
