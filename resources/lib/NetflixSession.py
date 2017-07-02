@@ -149,7 +149,9 @@ class NetflixSession:
             :obj:`list` of :obj:`dict`
                 List of all the serialized data pulled out of the pagws <script/> tags
         """
-        scripts = page_soup.find_all('script', attrs={'src': None});
+        scripts = page_soup.find_all('script', attrs={'src': None})
+        self.log(msg='Debug output for HTML contents:')
+        self.log(msg=page_soup)
         self.log(msg='Trying sloppy inline data parser')
         inline_data = self._sloppy_parse_inline_data(scripts=scripts)
         if self._verfify_auth_and_profiles_data(data=inline_data) != False:
@@ -1360,7 +1362,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
 
-    def fetch_video_list (self, list_id, list_from=0, list_to=20):
+    def fetch_video_list (self, list_id, list_from=0, list_to=26):
         """Fetches the JSON which contains the contents of a given video list
 
         Parameters
