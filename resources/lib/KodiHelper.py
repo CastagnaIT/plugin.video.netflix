@@ -775,7 +775,9 @@ class KodiHelper:
             if 'mpaa' in entry_keys:
                 infos.update({'mpaa': entry['mpaa']})
             else:
-                infos.update({'mpaa': str(entry['maturity']['board']) + '-' + str(entry['maturity']['value'])})
+                if entry.get('maturity', None) is not None:
+                    if entry['maturity']['board'] is not None and entry['maturity']['value'] is not None:
+                        infos.update({'mpaa': str(entry['maturity']['board'].encode('utf-8')) + '-' + str(entry['maturity']['value'].encode('utf-8'))})
         if 'rating' in entry_keys:
             infos.update({'rating': int(entry['rating']) * 2})
         if 'synopsis' in entry_keys:

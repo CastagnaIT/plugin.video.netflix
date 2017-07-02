@@ -1250,7 +1250,7 @@ class NetflixSession:
                 'title': episode['info']['title'],
                 'year': episode['info']['releaseYear'],
                 'genres': self.parse_genres_for_video(video=episode, genres=genres),
-                'mpaa': str(episode['maturity']['rating']['board']) + ' ' + str(episode['maturity']['rating']['value']),
+                'mpaa': str(episode['maturity']['rating']['board']).encode('utf-8') + ' ' + str(episode['maturity']['rating']['value']).encode('utf-8'),
                 'maturity': episode['maturity'],
                 'playcount': (0, 1)[episode['watched']],
                 'rating': episode['userRating'].get('average', 0) if episode['userRating'].get('average', None) != None else episode['userRating'].get('predicted', 0),

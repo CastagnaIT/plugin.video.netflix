@@ -28,9 +28,10 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.12 (2017-6-29)
+    <news>v0.11.12 (2017-07-02)
     - Fix missing isFirstUse inline setting
     - Fix dynamic ESN loading for widevine
+    - Fix unicode decoding problems
 
     v0.11.11 (2017-4-10)
     - Portugese translations
