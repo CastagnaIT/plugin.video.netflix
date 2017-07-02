@@ -7,7 +7,9 @@ import xbmcplugin
 import xbmcgui
 import xbmc
 import json
-from os.path import join
+from MSL import MSL
+from os import remove
+from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
@@ -189,6 +191,34 @@ class KodiHelper:
             'email': self.get_addon().getSetting('email'),
             'password': self.get_addon().getSetting('password')
         }
+
+    def get_esn(self):
+        """
+        Returns the esn from settings
+        """
+        self.log(msg='Is FILE: ' + str(isfile(self.msl_data_path + 'msl_data.json')))
+        self.log(msg=self.get_addon().getSetting('esn'))
+        return self.get_addon().getSetting('esn')
+
+    def set_esn(self, esn):
+        """
+        Returns the esn from settings
+        """
+        stored_esn = self.get_esn()
+        if not stored_esn and esn:
+            self.set_setting('esn', esn)
+            self.delete_manifest_data()            
+            return esn
+        return stored_esn
+    
+    def delete_manifest_data(self):
+        if isfile(self.msl_data_path + 'msl_data.json'):
+            remove(self.msl_data_path + 'msl_data.json')
+        if isfile(self.msl_data_path + 'manifest.json'):
+            remove(self.msl_data_path + 'manifest.json')
+        msl = MSL(kodi_helper=self)
+        msl.perform_key_handshake()
+        msl.save_msl_data()
 
     def get_dolby_setting(self):
         """
@@ -644,6 +674,7 @@ class KodiHelper:
         bool
             List could be build
         """
+        self.set_esn(esn)
         addon = self.get_addon()
         inputstream_addon = self.get_inputstream_addon()
         if inputstream_addon == None:
@@ -744,7 +775,9 @@ class KodiHelper:
             if 'mpaa' in entry_keys:
                 infos.update({'mpaa': entry['mpaa']})
             else:
-                infos.update({'mpaa': str(entry['maturity']['board']) + '-' + str(entry['maturity']['value'])})
+                if entry.get('maturity', None) is not None:
+                    if entry['maturity']['board'] is not None and entry['maturity']['value'] is not None:
+                        infos.update({'mpaa': str(entry['maturity']['board'].encode('utf-8')) + '-' + str(entry['maturity']['value'].encode('utf-8'))})
         if 'rating' in entry_keys:
             infos.update({'rating': int(entry['rating']) * 2})
         if 'synopsis' in entry_keys:

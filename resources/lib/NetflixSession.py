@@ -1250,7 +1250,7 @@ class NetflixSession:
                 'title': episode['info']['title'],
                 'year': episode['info']['releaseYear'],
                 'genres': self.parse_genres_for_video(video=episode, genres=genres),
-                'mpaa': str(episode['maturity']['rating']['board']) + ' ' + str(episode['maturity']['rating']['value']),
+                'mpaa': str(episode['maturity']['rating']['board']).encode('utf-8') + ' ' + str(episode['maturity']['rating']['value']).encode('utf-8'),
                 'maturity': episode['maturity'],
                 'playcount': (0, 1)[episode['watched']],
                 'rating': episode['userRating'].get('average', 0) if episode['userRating'].get('average', None) != None else episode['userRating'].get('predicted', 0),
@@ -1884,14 +1884,14 @@ class NetflixSession:
             User Agent for platform
         """
         import platform
-        if platform == 'linux' or platform == 'linux2':
-            return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        elif platform == 'darwin':
+        self.log(msg='Building User Agent for platform: ' + str(platform.system()) + ' - ' + str(platform.machine()))
+        if platform.system() == 'Darwin':
             return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        elif platform == 'win32':
+        if platform.system() == 'Windows':
             return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        else:
-            return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+        if platform.machine().startswith('arm'):
+            return 'Mozilla/5.0 (X11; CrOS armv7l 7647.78.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36'
+        return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
 
     def _session_post (self, component, type='document', data={}, headers={}, params={}):
         """Executes a get request using requests for the current session & measures the duration of that request
@@ -2207,7 +2207,6 @@ class NetflixSession:
         important_fields = [
             'profileName',
             'isActive',
-            'isFirstUse',
             'isAccountOwner',
             'isKids'
         ]
@@ -2220,7 +2219,7 @@ class NetflixSession:
                         profile.update({important_field: netflix_page_data['profiles'][profile_id]['summary'][important_field]})
                     avatar_base = netflix_page_data['nf'].get(netflix_page_data['profiles'][profile_id]['summary']['avatarName'], False);
                     avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
-                    profile.update({'avatar': avatar})
+                    profile.update({'avatar': avatar, 'isFirstUse': False})
                     profiles.update({profile_id: profile})
             return profiles
 
