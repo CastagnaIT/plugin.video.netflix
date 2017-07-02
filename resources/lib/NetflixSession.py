@@ -150,8 +150,6 @@ class NetflixSession:
                 List of all the serialized data pulled out of the pagws <script/> tags
         """
         scripts = page_soup.find_all('script', attrs={'src': None})
-        self.log(msg='Debug output for HTML contents:')
-        self.log(msg=page_soup)
         self.log(msg='Trying sloppy inline data parser')
         inline_data = self._sloppy_parse_inline_data(scripts=scripts)
         if self._verfify_auth_and_profiles_data(data=inline_data) != False:
@@ -1242,6 +1240,11 @@ class NetflixSession:
           },
         }
         """
+        mpaa = ''
+        if episode.get('maturity', None) is not None:
+            if episode['maturity'].get('board', None) is not None and episode['maturity'].get('value', None) is not None:
+                mpaa = str(episode['maturity'].get('board', '').encode('utf-8')) + '-' + str(episode['maturity'].get('value', '').encode('utf-8'))
+
         return {
             episode['summary']['id']: {
                 'id': episode['summary']['id'],
@@ -1252,7 +1255,7 @@ class NetflixSession:
                 'title': episode['info']['title'],
                 'year': episode['info']['releaseYear'],
                 'genres': self.parse_genres_for_video(video=episode, genres=genres),
-                'mpaa': str(episode['maturity']['rating']['board']).encode('utf-8') + ' ' + str(episode['maturity']['rating']['value']).encode('utf-8'),
+                'mpaa': mpaa,
                 'maturity': episode['maturity'],
                 'playcount': (0, 1)[episode['watched']],
                 'rating': episode['userRating'].get('average', 0) if episode['userRating'].get('average', None) != None else episode['userRating'].get('predicted', 0),
