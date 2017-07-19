@@ -12,7 +12,7 @@ Prerequisites
 
 - Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
 - Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
-- Inputstream.adaptive [v2.0.4](https://github.com/liberty-developer/inputstream.adaptive)
+- Inputstream.adaptive [v2.0.4](https://github.com/peak3d/inputstream.adaptive)
 
 FAQ
 ---
