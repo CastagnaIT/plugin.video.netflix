@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.11.15" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.11.16" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -28,8 +28,11 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.15 (2017-07-19)
-    - Fix issue with Slovak, Polich &amp; Swedish language filed
+    <news>v0.11.16 (2017-07-19)
+    - Fix error on *nix devices
+    
+    v0.11.15 (2017-07-19)
+    - Fix issue with Slovak, Polish &amp; Swedish language files
     - Add calculation of ESN for Android
     - Logout in settings now also deletes Manifest data
     - Add hidden ESN field in config &amp; delete Manifest data if it doesn't fit the public one

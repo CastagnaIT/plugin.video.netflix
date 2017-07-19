@@ -2301,20 +2301,22 @@ class NetflixSession:
         """
         # we generate an esn from device strings for android
         import subprocess
-        manufacturer = subprocess.check_output(["/system/bin/getprop", "ro.product.manufacturer"])
-
-        if manufacturer :
-            esn = 'NFANDROID1-PRV-'
-            input = subprocess.check_output(["/system/bin/getprop", "ro.nrdp.modelgroup"])
-            if not input:
-                esn = esn + 'T-L3-'
-            else:
-                esn = esn + input.strip(' \t\n\r') + '-'
-            esn = esn + '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
-            input = subprocess.check_output(["/system/bin/getprop" ,"ro.product.model"])
-            esn = esn + input.strip(' \t\n\r').replace(' ', '=').upper()
-            self.log(msg='Android generated ESN:' + esn)
-            return esn
+        try:
+            manufacturer = subprocess.check_output(["/system/bin/getprop", "ro.product.manufacturer"])
+            if manufacturer:
+                esn = 'NFANDROID1-PRV-'
+                input = subprocess.check_output(["/system/bin/getprop", "ro.nrdp.modelgroup"])
+                if not input:
+                    esn = esn + 'T-L3-'
+                else:
+                    esn = esn + input.strip(' \t\n\r') + '-'
+                esn = esn + '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
+                input = subprocess.check_output(["/system/bin/getprop" ,"ro.product.model"])
+                esn = esn + input.strip(' \t\n\r').replace(' ', '=').upper()
+                self.log(msg='Android generated ESN:' + esn)
+                return esn
+        except OSError as e:
+            self.log(msg='Ignoring exception for non Android devices')
 
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
