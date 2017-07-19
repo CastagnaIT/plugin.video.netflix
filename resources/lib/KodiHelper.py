@@ -205,6 +205,18 @@ class KodiHelper:
         Returns the esn from settings
         """
         stored_esn = self.get_esn()
+        hidden_esn = self.get_addon().getSetting('hidden_esn')
+        if hidden_esn == '' and esn:
+            self.set_setting('esn', esn)
+            self.set_setting('hidden_esn', esn)
+            self.delete_manifest_data()            
+            return esn            
+
+        if hidden_esn != stored_esn:
+            self.set_setting('hidden_esn', stored_esn)
+            self.delete_manifest_data()            
+            return stored_esn            
+
         if not stored_esn and esn:
             self.set_setting('esn', esn)
             self.delete_manifest_data()            

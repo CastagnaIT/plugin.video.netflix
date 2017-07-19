@@ -74,6 +74,8 @@ class NetflixHttpSubRessourceHandler:
         """
         self.profiles = []
         self.credentials = {'email': '', 'password': ''}
+        # delete esn data
+        self.kodi_helper.delete_manifest_data()
         return self.netflix_session.logout()
 
     def login (self, params):
