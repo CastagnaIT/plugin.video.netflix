@@ -28,7 +28,13 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.14 (2017-07-02)
+    <news>v0.11.15 (2017-07-19)
+    - Fix issue with Slovak, Polich &amp; Swedish language filed
+    - Add calculation of ESN for Android
+    - Logout in settings now also deletes Manifest data
+    - Add hidden ESN field in config &amp; delete Manifest data if it doesn't fit the public one
+    
+    v0.11.14 (2017-07-02)
     - Fix issue with Unicode escaping
 
     v0.11.13 (2017-07-02)
@@ -46,9 +52,6 @@
     v0.11.10 (2017-4-10)
     - Adds subtitle support
     - Polish translations
-
-    v0.11.9 (2017-4-5)
-    - Fix issues with persisted msl manifests
     </news>
   </extension>
 </addon>
