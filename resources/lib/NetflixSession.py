@@ -2299,10 +2299,28 @@ class NetflixSession:
             :obj:`str` of :obj:`str
             ESN, something like: NFCDCH-MC-D7D6F54LOPY8J416T72MQXX3RD20ME
         """
-        esn = ''
+        # we generate an esn from device strings for android
+        import subprocess
+        manufacturer = subprocess.check_output(["/system/bin/getprop", "ro.product.manufacturer"])
+
+        if manufacturer :
+            esn = 'NFANDROID1-PRV-'
+            input = subprocess.check_output(["/system/bin/getprop", "ro.nrdp.modelgroup"])
+            if not input:
+                esn = esn + 'T-L3-'
+            else:
+                esn = esn + input.strip(' \t\n\r') + '-'
+            esn = esn + '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
+            input = subprocess.check_output(["/system/bin/getprop" ,"ro.product.model"])
+            esn = esn + input.strip(' \t\n\r').replace(' ', '=').upper()
+            self.log(msg='Android generated ESN:' + esn)
+            return esn
+
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
             return netflix_page_data.get('esn', '')
+
+        esn = ''
 
         # values are stored in lists (returned from JS parser)
         for item in netflix_page_data:
