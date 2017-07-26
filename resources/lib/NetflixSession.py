@@ -10,7 +10,7 @@ from urllib import quote, unquote
 from time import time
 from base64 import urlsafe_b64encode
 from bs4 import BeautifulSoup, SoupStrainer
-from utils import noop
+from utils import noop, get_user_agent_for_current_platform
 try:
    import cPickle as pickle
 except:
@@ -103,7 +103,7 @@ class NetflixSession:
         # start session, fake chrome on the current platform (so that we get a proper widevine esn) & enable gzip
         self.session = session()
         self.session.headers.update({
-            'User-Agent': self._get_user_agent_for_current_platform(),
+            'User-Agent': get_user_agent_for_current_platform(),
             'Accept-Encoding': 'gzip'
         })
 
@@ -1879,24 +1879,6 @@ class NetflixSession:
             Account data hash
         """
         return urlsafe_b64encode(account['email'])
-
-    def _get_user_agent_for_current_platform (self):
-        """Determines the user agent string for the current platform (to retrieve a valid ESN)
-
-        Returns
-        -------
-        :obj:`str`
-            User Agent for platform
-        """
-        import platform
-        self.log(msg='Building User Agent for platform: ' + str(platform.system()) + ' - ' + str(platform.machine()))
-        if platform.system() == 'Darwin':
-            return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        if platform.system() == 'Windows':
-            return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        if platform.machine().startswith('arm'):
-            return 'Mozilla/5.0 (X11; CrOS armv7l 7647.78.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36'
-        return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
 
     def _session_post (self, component, type='document', data={}, headers={}, params={}):
         """Executes a get request using requests for the current session & measures the duration of that request
