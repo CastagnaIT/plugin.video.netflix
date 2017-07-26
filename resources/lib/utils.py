@@ -30,7 +30,7 @@ def log(f, name=None):
     wrapped.__doc__ = f.__doc__
     return wrapped
 
-def _get_user_agent_for_current_platform():
+def get_user_agent_for_current_platform():
     """Determines the user agent string for the current platform (to retrieve a valid ESN)
 
     Returns
