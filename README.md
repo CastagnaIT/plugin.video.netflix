@@ -2,6 +2,8 @@
 
 ## Netflix Plugin for Kodi 18
 
+<span class="badge-bitcoin"><a href="https://blockchain.info/address/1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF" title="Donate to this project using Bitcoin"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg" alt="Bitcoin donate button" /></a></span>
+
 Disclaimer
 -------------
 This plugin is not officially commisioned/supported by Netflix.
@@ -59,6 +61,12 @@ If something doesn't work for you, please:
 	- Your OS and OS version
 	- Libwedevine version
 	- A Kodi debug log that represents your issue
+
+Donate
+------
+
+If you like this project feel free to buy us some cups of coffee.
+Our bitcoin address is: 1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF
 
 Licence
 -------
