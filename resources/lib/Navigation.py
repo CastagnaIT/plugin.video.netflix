@@ -80,10 +80,10 @@ class Navigation:
             return self.show_video_list(video_list_id=params['video_list_id'], type=type)
         elif params['action'] == 'season_list':
             # list of seasons for a show
-            return self.show_seasons(show_id=params['show_id'])
+            return self.show_seasons(show_id=params['show_id'], tvshowtitle=params['tvshowtitle'])
         elif params['action'] == 'episode_list':
             # list of episodes for a season
-            return self.show_episode_list(season_id=params['season_id'])
+            return self.show_episode_list(season_id=params['season_id'], tvshowtitle=params['tvshowtitle'])
         elif params['action'] == 'rating':
             return self.rate_on_netflix(video_id=params['id'])
         elif params['action'] == 'remove_from_list':
@@ -169,7 +169,7 @@ class Navigation:
             return False
         return self.kodi_helper.build_user_sub_listing(video_list_ids=video_list_ids[type], type=type, action='video_list', build_url=self.build_url)
 
-    def show_episode_list (self, season_id):
+    def show_episode_list (self, season_id, tvshowtitle):
         """Lists all episodes for a given season
 
         Parameters
@@ -185,13 +185,14 @@ class Navigation:
         # sort seasons by number (they´re coming back unsorted from the api)
         episodes_sorted = []
         for episode_id in episode_list:
+            episode_list[episode_id]['tvshowtitle'] = tvshowtitle
             episodes_sorted.append(int(episode_list[episode_id]['episode']))
             episodes_sorted.sort()
 
         # list the episodes
         return self.kodi_helper.build_episode_listing(episodes_sorted=episodes_sorted, episode_list=episode_list, build_url=self.build_url)
 
-    def show_seasons (self, show_id):
+    def show_seasons (self, show_id, tvshowtitle):
         """Lists all seasons for a given show
 
         Parameters
@@ -215,6 +216,7 @@ class Navigation:
         # sort seasons by index by default (they´re coming back unsorted from the api)
         seasons_sorted = []
         for season_id in season_list:
+            season_list[season_id]['tvshowtitle'] = tvshowtitle
             seasons_sorted.append(int(season_list[season_id]['idx']))
             seasons_sorted.sort()
         return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, season_list=season_list, build_url=self.build_url)
