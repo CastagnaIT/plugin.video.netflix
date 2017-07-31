@@ -476,7 +476,7 @@ class KodiHelper:
             if video_list[video_list_id]['type'] == 'movie':
                 # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
-                url = build_url({'action': 'play_video', 'video_id': video_list_id})
+                url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
@@ -650,7 +650,7 @@ class KodiHelper:
                     # add list item info
                     li, infos = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
                     li = self._generate_context_menu_items(entry=episode, li=li)
-                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark']})
+                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark'], 'infoLabels': infos})
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
@@ -663,7 +663,7 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
-    def play_item (self, esn, video_id, start_offset=-1):
+    def play_item (self, esn, video_id, start_offset=-1, infoLabels={}):
         """Plays a video
 
         Parameters
@@ -676,6 +676,9 @@ class KodiHelper:
 
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
+        
+        infoLabels : :obj:`str`
+            the listitem's infoLabels
 
         Returns
         -------
@@ -713,6 +716,9 @@ class KodiHelper:
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
             play_item.setProperty('StartOffset', str(start_offset) + '.0')
+        # set infoLabels
+        if len(infoLabels) > 0:
+            play_item.setInfo('video',  infoLabels)
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
     def _generate_art_info (self, entry, li):

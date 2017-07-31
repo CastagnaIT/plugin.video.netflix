@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import json
+import ast
 from xbmcaddon import Addon
 from urlparse import parse_qsl
 from utils import noop, log
@@ -105,7 +106,7 @@ class Navigation:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
-            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1))
+            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params['infoLabels'])
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
@@ -115,7 +116,7 @@ class Navigation:
         return True
 
     @log
-    def play_video (self, video_id, start_offset):
+    def play_video (self, video_id, start_offset, infoLabels):
         """Starts video playback
 
         Note: This is just a dummy, inputstream is needed to play the vids
@@ -127,9 +128,16 @@ class Navigation:
 
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
+
+        infoLabels : :obj:`str`
+            the listitem's infoLabels
         """
+        try:
+            infoLabels = ast.literal_eval(infoLabels)
+        except:
+            infoLabels= {}
         esn = self.call_netflix_service({'method': 'get_esn'})
-        return self.kodi_helper.play_item(esn=esn, video_id=video_id, start_offset=start_offset)
+        return self.kodi_helper.play_item(esn=esn, video_id=video_id, start_offset=start_offset, infoLabels=infoLabels)
 
     @log
     def show_search_results (self, term):
@@ -176,6 +184,9 @@ class Navigation:
         ----------
         season_id : :obj:`str`
             ID of the season episodes should be displayed for
+
+        tvshowtitle : :obj:`str`
+            title of the show (for listitems' infolabels)
         """
         user_data = self.call_netflix_service({'method': 'get_user_data'})
         episode_list = self.call_netflix_service({'method': 'fetch_episodes_by_season', 'season_id': season_id, 'guid': user_data['guid'], 'cache': True})
@@ -200,6 +211,8 @@ class Navigation:
         show_id : :obj:`str`
             ID of the show seasons should be displayed for
 
+        tvshowtitle : :obj:`str`
+            title of the show (for listitems' infolabels)
         Returns
         -------
         bool
