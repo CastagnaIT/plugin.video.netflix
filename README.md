@@ -2,6 +2,8 @@
 
 ## Netflix Plugin for Kodi 18
 
+<span class="badge-bitcoin"><a href="https://blockchain.info/address/1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF" title="Donate to this project using Bitcoin"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg" alt="Bitcoin donate button" /></a></span>
+
 Disclaimer
 -------------
 This plugin is not officially commisioned/supported by Netflix.
@@ -10,9 +12,9 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 Prerequisites
 -------------
 
-- Kodi 18 [agile build](https://github.com/FernetMenta/kodi-agile)
+- Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
 - Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
-- Inputstream.adaptive [agile branch build](https://github.com/liberty-developer/inputstream.adaptive/tree/agile)
+- Inputstream.adaptive [v2.0.4](https://github.com/peak3d/inputstream.adaptive)
 
 FAQ
 ---
@@ -54,11 +56,17 @@ If something doesn't work for you, please:
 - Enable verbose logging in the plugin settings
 - Enable the Debug log in you Kodi settings
 - Open an issue with a titles that summarises your problems and include:
-	- Kodi version (git sha as long as we´re on agile only)
-	- Inputstream.adaptive version (git sha as long as we´re on the agile branch)
+	- Kodi version (git sha if possible)
+	- Inputstream.adaptive version (git sha if possible)
 	- Your OS and OS version
 	- Libwedevine version
 	- A Kodi debug log that represents your issue
+
+Donate
+------
+
+If you like this project feel free to buy us some cups of coffee.
+Our bitcoin address is: 1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF
 
 Licence
 -------

@@ -1,14 +1,14 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon version: 0.11.14
+# Addon version: 0.11.18
 # Addon Provider: libdev + jojo + asciidisco
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC-Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2017-01-01 12:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-05-14 19:55+0000\n"
 "Last-Translator: Matej Moško <matej.mosko@gmail.com>\n"
 "Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netlflix"
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Doplnok služby Netflix"
+msgstr "Doplnok na prehrávanie obsahu služby Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
@@ -135,7 +135,7 @@ msgstr "Chyba prehrávania"
 
 msgctxt "#30029"
 msgid "Missing Inputstream addon"
-msgstr "Nenašiel sa doplnok Inputstream"
+msgstr "Nepodarilo sa nájsť doplnok Inputstream"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -155,7 +155,7 @@ msgstr "Použiť Dolby Sound"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (nastavené automaticky, môžete to ručne zmeniť"
+msgstr "ESN (nastavené automaticky, môžete to ručne zmeniť)"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."

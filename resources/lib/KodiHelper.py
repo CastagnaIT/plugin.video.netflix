@@ -13,6 +13,7 @@ from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
+from utils import get_user_agent_for_current_platform
 from UniversalAnalytics import Tracker
 try:
    import cPickle as pickle
@@ -204,7 +205,7 @@ class KodiHelper:
         """
         Returns the esn from settings
         """
-        stored_esn = self.get_esn()
+        stored_esn = self.get_esn()        
         if not stored_esn and esn:
             self.set_setting('esn', esn)
             self.delete_manifest_data()            
@@ -693,6 +694,9 @@ class KodiHelper:
         # inputstream addon properties
         msl_service_url = 'http://localhost:' + str(addon.getSetting('msl_service_port'))
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
+        play_item.setContentLookup(False)
+        play_item.setMimeType('application/dash+xml')
+        play_item.setProperty(inputstream_addon + '.stream_headers', 'user-agent=' + get_user_agent_for_current_platform())        
         play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
         play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')
         play_item.setProperty(inputstream_addon + '.license_key', msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')

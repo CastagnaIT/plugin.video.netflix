@@ -1,14 +1,14 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon version: 0.11.14
+# Addon version: 0.11.18
 # Addon Provider: libdev + jojo + asciidisco
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC-Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2015-09-21 11:01+0000\n"
-"PO-Revision-Date: 2017-04-13 17:05+0200\n"
+"PO-Revision-Date: 2017-07-17 20:27+0200\n"
 "Last-Translator: Marcin W.\n"
 "Language: pl\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/teamxbmc/kodi-main/language/pl_PL/)\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.2\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -136,7 +136,7 @@ msgstr "Błąd odtwarzania"
 
 msgctxt "#30029"
 msgid "Missing Inputstream addon"
-msgstr "Brakuje zainstalowanej wtyczki strumieniowej"
+msgstr "Brakuje wtyczki strumieniowej InputStream Adaptive"
 
 msgctxt "#30030"
 msgid "Remove from library"

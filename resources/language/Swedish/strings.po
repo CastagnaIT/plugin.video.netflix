@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon version: 0.11.14
+# Addon version: 0.11.18
 # Addon Provider: libdev + jojo + asciidisco
 msgid ""
 msgstr ""
@@ -23,11 +23,11 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Netflix VOD Service Addon"
+msgstr "Netflix VOD-tjänstetillägg"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Vissa delar av detta addon kanske inte är fullt lagliga att använda i ditt land - kontrollera dina lokala lagar innan du installerar."
+msgstr "Vissa delar av detta tillägg kanske inte är fullt lagliga att använda i ditt land - kontrollera dina lokala lagar innan du installerar."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -35,7 +35,7 @@ msgstr "Rekommendationer"
 
 msgctxt "#30002"
 msgid "Adult Pin"
-msgstr "Vuxen-pinkod"
+msgstr "Barnskydd"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -51,15 +51,15 @@ msgstr "E-post"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Vuxen-pinkod verifiering misslyckades"
+msgstr "Verifiering av barnskyddet misslyckades"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr "Kontrollera din Vuxen-pinkod"
+msgstr "Kontrollera koden till barnskyddet"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Inloggning misslyckades"
+msgstr "Inloggningen misslyckades"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
@@ -115,7 +115,7 @@ msgstr "Expert"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL kontroll"
+msgstr "SSL-kontroll"
 
 msgctxt "#30025"
 msgid "Library"
@@ -127,15 +127,15 @@ msgstr "Aktivera anpassad biblioteksmapp"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Ändra bibliotek genväg"
+msgstr "Anpassad bibliotekssökväg"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr "Uppspelnings error"
+msgstr "Uppspelningsfel"
 
 msgctxt "#30029"
 msgid "Missing Inputstream addon"
-msgstr "Saknar 'InputStream' addon"
+msgstr "Saknar tillägget InputStream"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -143,7 +143,7 @@ msgstr "Ta bort från biblioteket"
 
 msgctxt "#30031"
 msgid "Change library title"
-msgstr "Ändra bibliotektiteln"
+msgstr "Ändra bibliotekstiteln"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -151,7 +151,7 @@ msgstr "Spårning"
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
-msgstr "Använd Dolby Digital ljud"
+msgstr "Använd Dolby Digital-ljud"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -159,4 +159,4 @@ msgstr "ESN (ändra automatiskt, kan ändras manuellt)"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
-msgstr "InputStream Addon inställningar..."
+msgstr "Inställningar för tillägget InputStream..."
