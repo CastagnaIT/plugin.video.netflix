@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import json
+import ast
 from xbmcaddon import Addon
 from urlparse import parse_qsl
 from utils import noop, log
@@ -80,10 +81,10 @@ class Navigation:
             return self.show_video_list(video_list_id=params['video_list_id'], type=type)
         elif params['action'] == 'season_list':
             # list of seasons for a show
-            return self.show_seasons(show_id=params['show_id'])
+            return self.show_seasons(show_id=params['show_id'], tvshowtitle=params['tvshowtitle'])
         elif params['action'] == 'episode_list':
             # list of episodes for a season
-            return self.show_episode_list(season_id=params['season_id'])
+            return self.show_episode_list(season_id=params['season_id'], tvshowtitle=params['tvshowtitle'])
         elif params['action'] == 'rating':
             return self.rate_on_netflix(video_id=params['id'])
         elif params['action'] == 'remove_from_list':
@@ -105,7 +106,7 @@ class Navigation:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
-            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1))
+            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params['infoLabels'])
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
@@ -115,7 +116,7 @@ class Navigation:
         return True
 
     @log
-    def play_video (self, video_id, start_offset):
+    def play_video (self, video_id, start_offset, infoLabels):
         """Starts video playback
 
         Note: This is just a dummy, inputstream is needed to play the vids
@@ -127,9 +128,16 @@ class Navigation:
 
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
+
+        infoLabels : :obj:`str`
+            the listitem's infoLabels
         """
+        try:
+            infoLabels = ast.literal_eval(infoLabels)
+        except:
+            infoLabels= {}
         esn = self.call_netflix_service({'method': 'get_esn'})
-        return self.kodi_helper.play_item(esn=esn, video_id=video_id, start_offset=start_offset)
+        return self.kodi_helper.play_item(esn=esn, video_id=video_id, start_offset=start_offset, infoLabels=infoLabels)
 
     @log
     def show_search_results (self, term):
@@ -169,13 +177,16 @@ class Navigation:
             return False
         return self.kodi_helper.build_user_sub_listing(video_list_ids=video_list_ids[type], type=type, action='video_list', build_url=self.build_url)
 
-    def show_episode_list (self, season_id):
+    def show_episode_list (self, season_id, tvshowtitle):
         """Lists all episodes for a given season
 
         Parameters
         ----------
         season_id : :obj:`str`
             ID of the season episodes should be displayed for
+
+        tvshowtitle : :obj:`str`
+            title of the show (for listitems' infolabels)
         """
         user_data = self.call_netflix_service({'method': 'get_user_data'})
         episode_list = self.call_netflix_service({'method': 'fetch_episodes_by_season', 'season_id': season_id, 'guid': user_data['guid'], 'cache': True})
@@ -185,13 +196,14 @@ class Navigation:
         # sort seasons by number (they´re coming back unsorted from the api)
         episodes_sorted = []
         for episode_id in episode_list:
+            episode_list[episode_id]['tvshowtitle'] = tvshowtitle
             episodes_sorted.append(int(episode_list[episode_id]['episode']))
             episodes_sorted.sort()
 
         # list the episodes
         return self.kodi_helper.build_episode_listing(episodes_sorted=episodes_sorted, episode_list=episode_list, build_url=self.build_url)
 
-    def show_seasons (self, show_id):
+    def show_seasons (self, show_id, tvshowtitle):
         """Lists all seasons for a given show
 
         Parameters
@@ -199,6 +211,8 @@ class Navigation:
         show_id : :obj:`str`
             ID of the show seasons should be displayed for
 
+        tvshowtitle : :obj:`str`
+            title of the show (for listitems' infolabels)
         Returns
         -------
         bool
@@ -215,6 +229,7 @@ class Navigation:
         # sort seasons by index by default (they´re coming back unsorted from the api)
         seasons_sorted = []
         for season_id in season_list:
+            season_list[season_id]['tvshowtitle'] = tvshowtitle
             seasons_sorted.append(int(season_list[season_id]['idx']))
             seasons_sorted.sort()
         return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, season_list=season_list, build_url=self.build_url)

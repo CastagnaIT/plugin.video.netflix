@@ -469,17 +469,21 @@ class KodiHelper:
             li = xbmcgui.ListItem(label=video['title'])
             # add some art to the item
             li = self._generate_art_info(entry=video, li=li)
-            # it´s a show, so we need a subfolder & route (for seasons)
-            isFolder = True
-            url = build_url({'action': actions[video['type']], 'show_id': video_list_id})
+            # add list item info
+            li, infos = self._generate_entry_info(entry=video, li=li)
+            li = self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video_list[video_list_id]['type'] == 'movie':
                 # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
-                url = build_url({'action': 'play_video', 'video_id': video_list_id})
-            # add list item info
-            li = self._generate_entry_info(entry=video, li=li)
-            li = self._generate_context_menu_items(entry=video, li=li)
+                url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
+            else:
+                # it´s a show, so we need a subfolder & route (for seasons)
+                isFolder = True
+                params = {'action': actions[video['type']], 'show_id': video_list_id}
+                if 'tvshowtitle' in infos:
+                    params['tvshowtitle'] = infos['tvshowtitle']
+                url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
@@ -601,9 +605,12 @@ class KodiHelper:
                     # add some art to the item
                     li = self._generate_art_info(entry=season, li=li)
                     # add list item info
-                    li = self._generate_entry_info(entry=season, li=li, base_info={'mediatype': 'season'})
+                    li, infos = self._generate_entry_info(entry=season, li=li, base_info={'mediatype': 'season'})
                     li = self._generate_context_menu_items(entry=season, li=li)
-                    url = build_url({'action': 'episode_list', 'season_id': season_id})
+                    params = {'action': 'episode_list', 'season_id': season_id}
+                    if 'tvshowtitle' in infos:
+                        params['tvshowtitle'] = infos['tvshowtitle']
+                    url = build_url(params)
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
@@ -641,9 +648,9 @@ class KodiHelper:
                     # add some art to the item
                     li = self._generate_art_info(entry=episode, li=li)
                     # add list item info
-                    li = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
+                    li, infos = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
                     li = self._generate_context_menu_items(entry=episode, li=li)
-                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark']})
+                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark'], 'infoLabels': infos})
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
@@ -656,7 +663,7 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
-    def play_item (self, esn, video_id, start_offset=-1):
+    def play_item (self, esn, video_id, start_offset=-1, infoLabels={}):
         """Plays a video
 
         Parameters
@@ -669,6 +676,9 @@ class KodiHelper:
 
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
+        
+        infoLabels : :obj:`str`
+            the listitem's infoLabels
 
         Returns
         -------
@@ -706,6 +716,9 @@ class KodiHelper:
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
             play_item.setProperty('StartOffset', str(start_offset) + '.0')
+        # set infoLabels
+        if len(infoLabels) > 0:
+            play_item.setInfo('video',  infoLabels)
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
     def _generate_art_info (self, entry, li):
@@ -801,6 +814,8 @@ class KodiHelper:
         if 'type' in entry_keys:
             if entry['type'] == 'movie' or entry['type'] == 'episode':
                 li.setProperty('IsPlayable', 'true')
+            elif entry['type'] == 'show':
+                infos.update({'tvshowtitle': entry['title']})
         if 'mediatype' in entry_keys:
             if entry['mediatype'] == 'movie' or entry['mediatype'] == 'episode':
                 li.setProperty('IsPlayable', 'true')
@@ -820,8 +835,10 @@ class KodiHelper:
             if entry['quality'] == '1080':
                 quality = {'width': '1920', 'height': '1080'}
             li.addStreamInfo('video', quality)
+        if 'tvshowtitle' in entry_keys:
+            infos.update({'tvshowtitle': entry['tvshowtitle']})
         li.setInfo('video', infos)
-        return li
+        return li, infos
 
     def _generate_context_menu_items (self, entry, li):
         """Adds context menue items to a Kodi list item
