@@ -169,7 +169,7 @@ class Navigation:
         user_list_id : :obj:`str`
             Type of list to display
         """
-        # determine if we´re in kids mode
+        # determine if weÂ´re in kids mode
         user_data = self.call_netflix_service({'method': 'get_user_data'})
         video_list_ids = self.call_netflix_service({'method': 'fetch_video_list_ids', 'guid': user_data['guid'], 'cache': True})
         # check for any errors
@@ -193,15 +193,18 @@ class Navigation:
         # check for any errors
         if self._is_dirty_response(response=episode_list):
             return False
-        # sort seasons by number (they´re coming back unsorted from the api)
-        episodes_sorted = []
-        for episode_id in episode_list:
-            episode_list[episode_id]['tvshowtitle'] = tvshowtitle
-            episodes_sorted.append(int(episode_list[episode_id]['episode']))
-            episodes_sorted.sort()
+
+        # Extract episode numbers and associated keys.
+        d = [(v['episode'], k) for k, v in episode_list.items()]
+
+        # sort episodes by number (theyÂ´re coming back unsorted from the api)
+        episodes_sorted = [episode_list[k] for (_, k) in sorted(d)]
+
+        for episode in episodes_sorted:
+            episode['tvshowtitle'] = tvshowtitle
 
         # list the episodes
-        return self.kodi_helper.build_episode_listing(episodes_sorted=episodes_sorted, episode_list=episode_list, build_url=self.build_url)
+        return self.kodi_helper.build_episode_listing(episodes_sorted=episodes_sorted, build_url=self.build_url)
 
     def show_seasons (self, show_id, tvshowtitle):
         """Lists all seasons for a given show
@@ -226,13 +229,17 @@ class Navigation:
         # check if we have sesons, announced shows that are not available yet have none
         if len(season_list) == 0:
             return self.kodi_helper.build_no_seasons_available()
-        # sort seasons by index by default (they´re coming back unsorted from the api)
-        seasons_sorted = []
-        for season_id in season_list:
-            season_list[season_id]['tvshowtitle'] = tvshowtitle
-            seasons_sorted.append(int(season_list[season_id]['idx']))
-            seasons_sorted.sort()
-        return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, season_list=season_list, build_url=self.build_url)
+
+        # Extract episode numbers and associated keys.
+        d = [(v['idx'], k) for k, v in season_list.items()]
+
+        # sort seasons by index by default (theyÂ´re coming back unsorted from the api)
+        seasons_sorted = [season_list[k] for (_, k) in sorted(d)]
+
+        for season in seasons_sorted:
+            season['tvshowtitle'] = tvshowtitle
+
+        return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, build_url=self.build_url)
 
     def show_video_list (self, video_list_id, type):
         """List shows/movies based on the given video list id
@@ -243,7 +250,7 @@ class Navigation:
             ID of the video list that should be displayed
 
         type : :obj:`str`
-            None or 'queue' f.e. when it´s a special video lists
+            None or 'queue' f.e. when itÂ´s a special video lists
         """
         user_data = self.call_netflix_service({'method': 'get_user_data'})
         video_list = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'guid': user_data['guid'] ,'cache': True})
@@ -272,7 +279,7 @@ class Navigation:
         profiles = self.call_netflix_service({'method': 'list_profiles'})
         if len(profiles) == 0:
             return self.kodi_helper.show_login_failed_notification()
-        return self.kodi_helper.build_profiles_listing(profiles=profiles, action='video_lists', build_url=self.build_url)
+        return self.kodi_helper.build_profiles_listing(profiles=profiles.values(), action='video_lists', build_url=self.build_url)
 
     @log
     def rate_on_netflix (self, video_id):

@@ -319,7 +319,7 @@ class KodiHelper:
 
         Parameters
         ----------
-        profiles : :obj:`dict` of :obj:`str`
+        profiles : :obj:`list` of :obj:`dict` of :obj:`str`
             List of user profiles
 
         action : :obj:`str`
@@ -333,9 +333,8 @@ class KodiHelper:
         bool
             List could be build
         """
-        for profile_id in profiles:
-            profile = profiles[profile_id]
-            url = build_url({'action': action, 'profile_id': profile_id})
+        for profile in profiles:
+            url = build_url({'action': action, 'profile_id': profile['id']})
             li = xbmcgui.ListItem(label=profile['profileName'], iconImage=profile['avatar'])
             li.setProperty('fanart_image', self.default_fanart)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
@@ -437,7 +436,7 @@ class KodiHelper:
             Dictionary of actions to build subsequent routes
 
         type : :obj:`str`
-            None or 'queue' f.e. when it´s a special video lists
+            None or 'queue' f.e. when itÂ´s a special video lists
 
         build_url : :obj:`fn`
             Function to build the subsequent routes
@@ -457,11 +456,11 @@ class KodiHelper:
             li = self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video_list[video_list_id]['type'] == 'movie':
-                # it´s a movie, so we need no subfolder & a route to play it
+                # itÂ´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
                 url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
             else:
-                # it´s a show, so we need a subfolder & route (for seasons)
+                # itÂ´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
                 params = {'action': actions[video['type']], 'show_id': video_list_id}
                 if 'tvshowtitle' in infos:
@@ -561,16 +560,13 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
-    def build_season_listing (self, seasons_sorted, season_list, build_url):
+    def build_season_listing (self, seasons_sorted, build_url):
         """Builds the season list screen for a show
 
         Parameters
         ----------
-        seasons_sorted : :obj:`list` of :obj:`str`
-            Sorted season indexes
-
-        season_list : :obj:`dict` of :obj:`str`
-            List of season entries
+        seasons_sorted : :obj:`list` of :obj:`dict` of :obj:`str`
+            Sorted list of season entries
 
         build_url : :obj:`fn`
             Function to build the subsequent routes
@@ -580,21 +576,18 @@ class KodiHelper:
         bool
             List could be build
         """
-        for index in seasons_sorted:
-            for season_id in season_list:
-                season = season_list[season_id]
-                if int(season['idx']) == index:
-                    li = xbmcgui.ListItem(label=season['text'])
-                    # add some art to the item
-                    li = self._generate_art_info(entry=season, li=li)
-                    # add list item info
-                    li, infos = self._generate_entry_info(entry=season, li=li, base_info={'mediatype': 'season'})
-                    li = self._generate_context_menu_items(entry=season, li=li)
-                    params = {'action': 'episode_list', 'season_id': season_id}
-                    if 'tvshowtitle' in infos:
-                        params['tvshowtitle'] = infos['tvshowtitle']
-                    url = build_url(params)
-                    xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
+        for season in seasons_sorted:
+            li = xbmcgui.ListItem(label=season['text'])
+            # add some art to the item
+            li = self._generate_art_info(entry=season, li=li)
+            # add list item info
+            li, infos = self._generate_entry_info(entry=season, li=li, base_info={'mediatype': 'season'})
+            li = self._generate_context_menu_items(entry=season, li=li)
+            params = {'action': 'episode_list', 'season_id': season['id']}
+            if 'tvshowtitle' in infos:
+                params['tvshowtitle'] = infos['tvshowtitle']
+            url = build_url(params)
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
@@ -604,16 +597,13 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
-    def build_episode_listing (self, episodes_sorted, episode_list, build_url):
+    def build_episode_listing (self, episodes_sorted, build_url):
         """Builds the episode list screen for a season of a show
 
         Parameters
         ----------
-        episodes_sorted : :obj:`list` of :obj:`str`
-            Sorted episode indexes
-
-        episode_list : :obj:`dict` of :obj:`str`
-            List of episode entries
+        episodes_sorted : :obj:`list` of :obj:`dict` of :obj:`str`
+            Sorted list of episode entries
 
         build_url : :obj:`fn`
             Function to build the subsequent routes
@@ -623,18 +613,15 @@ class KodiHelper:
         bool
             List could be build
         """
-        for index in episodes_sorted:
-            for episode_id in episode_list:
-                episode = episode_list[episode_id]
-                if int(episode['episode']) == index:
-                    li = xbmcgui.ListItem(label=episode['title'])
-                    # add some art to the item
-                    li = self._generate_art_info(entry=episode, li=li)
-                    # add list item info
-                    li, infos = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
-                    li = self._generate_context_menu_items(entry=episode, li=li)
-                    url = build_url({'action': 'play_video', 'video_id': episode_id, 'start_offset': episode['bookmark'], 'infoLabels': infos})
-                    xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
+        for episode in episodes_sorted:
+            li = xbmcgui.ListItem(label=episode['title'])
+            # add some art to the item
+            li = self._generate_art_info(entry=episode, li=li)
+            # add list item info
+            li, infos = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
+            li = self._generate_context_menu_items(entry=episode, li=li)
+            url = build_url({'action': 'play_video', 'video_id': episode['id'], 'start_offset': episode['bookmark'], 'infoLabels': infos})
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
