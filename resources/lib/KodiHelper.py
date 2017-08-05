@@ -460,11 +460,11 @@ class KodiHelper:
                 isFolder = False
                 url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
             else:
-                # itÂ´s a show, so we need a subfolder & route (for seasons)
+                # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
                 params = {'action': actions[video['type']], 'show_id': video_list_id}
                 if 'tvshowtitle' in infos:
-                    params['tvshowtitle'] = infos['tvshowtitle']
+                    params['tvshowtitle'] = infos.get('tvshowtitle', '').encode('utf-8')
                 url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
@@ -585,7 +585,7 @@ class KodiHelper:
             li = self._generate_context_menu_items(entry=season, li=li)
             params = {'action': 'episode_list', 'season_id': season['id']}
             if 'tvshowtitle' in infos:
-                params['tvshowtitle'] = infos['tvshowtitle']
+                params['tvshowtitle'] = infos.get('tvshowtitle', '').encode('utf-8')
             url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
@@ -806,7 +806,7 @@ class KodiHelper:
                 quality = {'width': '1920', 'height': '1080'}
             li.addStreamInfo('video', quality)
         if 'tvshowtitle' in entry_keys:
-            infos.update({'tvshowtitle': entry['tvshowtitle']})
+            infos.update({'tvshowtitle': entry.get('tvshowtitle', '').encode('utf-8')})
         li.setInfo('video', infos)
         return li, infos
 
