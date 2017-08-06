@@ -13,8 +13,13 @@ Prerequisites
 -------------
 
 - Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
+- Inputstream.adaptive [>=v2.0.4](https://github.com/peak3d/inputstream.adaptive) (should be included in your Kodi 18 installation)
 - Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
-- Inputstream.adaptive [v2.0.4](https://github.com/peak3d/inputstream.adaptive)
+
+Installation & Updates
+----------------------
+
+You can use [our repository](https://github.com/kodinerds/repo/raw/master/repository.netflix/repository.netflix-1.0.1.zip) to install plugin. Using this, you´ll immediately receive updates once a new release has been drafted.
 
 FAQ
 ---
@@ -31,21 +36,6 @@ Functionality
 - Rate show/movie
 - Add & remove to/from "my list"
 - Export of complete shows & movies in local database (custom library folder can be configured, by default the .strm files are stored in `userdata/addon_data/plugin.video.netflix` )
-
-ToDo
-----
-
-> Note: Those Todos are considered enhancements, they´re not issues, nor they prevent the usage of the plugin for everyday business
-
-If you feel, you´d like to contribute to this plugin or directly work on one of these items,
-please open an issue & we can provide you with some help to get started
-
-- [ ] Add missing meta data for episodes/seasons (Cast, bookmark position, etc.)
-- [ ] Change list of shows to actual list of episodes in the "Continue watching"" section, like it´s done on the website
-- [ ] Enable possibility to export single episodes or seasons to the Library
-- [ ] Evaluate idea of an auto updating library exporter that keeps track (on Plugin start/on Service start maybe)
-- [ ] If a new user has been created, they need to select their movie/show preferences to actually get started, we could provide the same mechanisms in Kodi
-- [ ] Enable aggressive fetching of data in background (maybe using Futures), like the Netflix website does, to enhance the speed and the user experience when browsing the frontend
 
 Something doesn't work
 ----------------------
@@ -66,7 +56,7 @@ Donate
 ------
 
 If you like this project feel free to buy us some cups of coffee.
-Our bitcoin address is: 1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF
+Our bitcoin address is: `1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF`
 
 Licence
 -------
