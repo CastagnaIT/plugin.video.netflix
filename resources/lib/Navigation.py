@@ -106,7 +106,7 @@ class Navigation:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
-            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params['infoLabels'])
+            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params.get('infoLabels', {}))
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
