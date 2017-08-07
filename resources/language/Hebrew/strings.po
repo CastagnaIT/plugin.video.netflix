@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon version: 0.11.19
+# Addon version: 0.11.20
 # Addon Provider: libdev + jojo + asciidisco
 # Translated by: Itayshechter
 msgid ""
