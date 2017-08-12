@@ -1074,14 +1074,29 @@ class NetflixSession:
                 }
             }
         """
-        seasons = {}
         raw_seasons = response_data['value']
+        videos = raw_seasons['videos']
+
+        # get art video key
+        video = {}
+        for key, video_candidate in videos.iteritems():
+            if not self._is_size_key(key):
+                video = video_candidate
+
+        # get season index
+        sorting = {}
+        for idx, season_list_entry in video['seasonList'].iteritems():
+            if self._is_size_key(key=idx) == False and idx != 'summary':
+                sorting[int(season_list_entry[1])] = int(idx)
+
+        seasons = {}
+
         for season in raw_seasons['seasons']:
             if self._is_size_key(key=season) == False:
-                seasons.update(self.parse_season_entry(season=raw_seasons['seasons'][season], videos=raw_seasons['videos']))
+                seasons.update(self.parse_season_entry(season=raw_seasons['seasons'][season], video=video, sorting=sorting))
         return seasons
 
-    def parse_season_entry (self, season, videos):
+    def parse_season_entry (self, season, video, sorting):
         """Parse a season list entry e.g. rip out the parts we need
 
         Parameters
@@ -1107,16 +1122,6 @@ class NetflixSession:
                 }
             }
         """
-        # get art video key
-        video_key = ''
-        for key in videos.keys():
-            if self._is_size_key(key=key) == False:
-                video_key = key
-        # get season index
-        sorting = {}
-        for idx in videos[video_key]['seasonList']:
-            if self._is_size_key(key=idx) == False and idx != 'summary':
-                sorting[int(videos[video_key]['seasonList'][idx][1])] = int(idx)
         return {
             season['summary']['id']: {
                 'idx': sorting[season['summary']['id']],
@@ -1124,10 +1129,10 @@ class NetflixSession:
                 'text': season['summary']['name'],
                 'shortName': season['summary']['shortName'],
                 'boxarts': {
-                    'small': videos[video_key]['boxarts']['_342x192']['jpg']['url'],
-                    'big': videos[video_key]['boxarts']['_1280x720']['jpg']['url']
+                    'small': video['boxarts']['_342x192']['jpg']['url'],
+                    'big': video['boxarts']['_1280x720']['jpg']['url']
                 },
-                'interesting_moment': videos[video_key]['interestingMoment']['_665x375']['jpg']['url'],
+                'interesting_moment': video['interestingMoment']['_665x375']['jpg']['url'],
             }
         }
 
