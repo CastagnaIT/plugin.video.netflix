@@ -895,12 +895,14 @@ class NetflixSession:
             List of genres
         """
         video_genres = []
-        for genre_key in dict(genres).keys():
-            if self._is_size_key(key=genre_key) == False and genre_key != 'summary':
-                for show_genre_key in dict(video['genres']).keys():
-                    if self._is_size_key(key=show_genre_key) == False and show_genre_key != 'summary':
-                        if video['genres'][show_genre_key][1] == genre_key:
-                            video_genres.append(genres[genre_key]['name'])
+
+        for video_genre_key, video_genre in video['genres'].iteritems():
+            if self._is_size_key(video_genre_key) == False and video_genre_key != 'summary':
+                name = genres.get(video_genre[1], {}).get('name')
+
+                if name:
+                    video_genres.append(name)
+
         return video_genres
 
     def parse_tags_for_video (self, video):
