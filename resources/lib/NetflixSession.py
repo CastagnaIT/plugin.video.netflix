@@ -1093,10 +1093,10 @@ class NetflixSession:
 
         for season in raw_seasons['seasons']:
             if self._is_size_key(key=season) == False:
-                seasons.update(self.parse_season_entry(season=raw_seasons['seasons'][season], video=video, sorting=sorting))
+                seasons.update(self._parse_season_entry(season=raw_seasons['seasons'][season], video=video, sorting=sorting))
         return seasons
 
-    def parse_season_entry (self, season, video, sorting):
+    def _parse_season_entry (self, season, video, sorting):
         """Parse a season list entry e.g. rip out the parts we need
 
         Parameters
