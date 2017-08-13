@@ -1,0 +1,163 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon version: 0.11.20
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2017-01-01 12:00+0000\n"
+"PO-Revision-Date: 2017-08-12 13:35+0200\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Addon per i servizi VOD di Netflix"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Alcune parti di questa addon potrebbero non essere legali nel tuo paese - verifica le leggi in vigore prima di installare."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Consigliati"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Pin per il controllo parentale"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Termine di ricerca"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-mail"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Verifica adulti fallita"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Verifica che il pin di controllo parentale sia corretto"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Accesso fallito"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Verifica le tue credenziali"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Generi"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Ricerca"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Nessuna stagione disponibile"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Nessuna corrispondenza trovata"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Account"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Logout"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Esporta nella libreria"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Vota su Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Rimuovi dalla 'Mia lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Aggiungi alla 'Mia lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(tra 0 e 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Esperto"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Verifica SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Libreria"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Abilita una cartella per la libreria personale"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Percorso della libreria personale"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Errore di riproduzione"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Addon Inputstream mancante"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Rimuovi dalla libreria"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Modifica il titolo della libreria"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Tracking"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Utilizza l'audio Dolby"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (impostato automaticamente, può essere modificato manualmente)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Configurazione dell'addon Inputstream..."
