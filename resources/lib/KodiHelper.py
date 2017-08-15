@@ -7,6 +7,7 @@ import xbmcplugin
 import xbmcgui
 import xbmc
 import json
+import base64
 from MSL import MSL
 from os import remove
 from os.path import join, isfile
@@ -464,7 +465,7 @@ class KodiHelper:
                 isFolder = True
                 params = {'action': actions[video['type']], 'show_id': video_list_id}
                 if 'tvshowtitle' in infos:
-                    params['tvshowtitle'] = infos.get('tvshowtitle', '').encode('utf-8')
+                    params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
                 url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
@@ -585,7 +586,7 @@ class KodiHelper:
             li = self._generate_context_menu_items(entry=season, li=li)
             params = {'action': 'episode_list', 'season_id': season['id']}
             if 'tvshowtitle' in infos:
-                params['tvshowtitle'] = infos.get('tvshowtitle', '').encode('utf-8')
+                params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
             url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
@@ -806,7 +807,7 @@ class KodiHelper:
                 quality = {'width': '1920', 'height': '1080'}
             li.addStreamInfo('video', quality)
         if 'tvshowtitle' in entry_keys:
-            infos.update({'tvshowtitle': entry.get('tvshowtitle', '').encode('utf-8')})
+            infos.update({'tvshowtitle': base64.urlsafe_b64decode(entry.get('tvshowtitle', '')).decode('utf-8')})
         li.setInfo('video', infos)
         return li, infos
 
