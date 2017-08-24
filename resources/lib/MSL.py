@@ -337,7 +337,8 @@ class MSL:
             audio_adaption_set = ET.SubElement(period, 'AdaptationSet',
                                                lang=audio_track['bcp47'],
                                                contentType='audio',
-                                               mimeType='audio/mp4')
+                                               mimeType='audio/mp4',
+                                               impaired='true' if audio_track['trackType'] == 'ASSISTIVE' else 'false')
             for downloadable in audio_track['downloadables']:
                 codec = 'aac'
                 print downloadable
