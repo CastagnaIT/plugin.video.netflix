@@ -63,7 +63,7 @@ msgstr "Anmeldung nicht erfolgreich"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Bitte überprüfen Sie Ihre Anmeldedaten"
+msgstr "Bitte die Anmeldedaten überprüfen"
 
 msgctxt "#30010"
 msgid "Genres"
