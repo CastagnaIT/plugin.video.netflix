@@ -301,6 +301,9 @@ class MSL:
             # Content Protection
             protection = ET.SubElement(video_adaption_set, 'ContentProtection',
                           schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')
+
+            ET.SubElement(protection, 'widevine:license', robustness_level='HW_SECURE_CODECS_REQUIRED')
+
             if pssh is not '':
                 ET.SubElement(protection, 'cenc:pssh').text = pssh
 
