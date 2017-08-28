@@ -16,6 +16,10 @@ Prerequisites
 - Inputstream.adaptive [>=v2.0.4](https://github.com/peak3d/inputstream.adaptive) (should be included in your Kodi 18 installation)
 - Libwidevine 1.4.8.962 (A german description how to get/install it, can be found [here](https://www.kodinerds.net/index.php/Thread/51486-Kodi-17-Inputstream-HowTo-AddOns-f%C3%BCr-Kodi-17-ab-Beta-6-aktuelle-Git-builds-Updat/))
 
+Note: The link to download the Widevine Libary for none ARM Systems can be found in the [Firefox Sources](https://hg.mozilla.org/mozilla-central/raw-file/31465a03c03d1eec31cd4dd5d6b803724dcb29cd/toolkit/content/gmp-sources/widevinecdm.json) & needs to be placed in the `cdm` folder in [special://home](http://kodi.wiki/view/Special_protocol).
+
+Please make sure to read the licence agreement that comes with it, so you know what you´re getting yourself into.
+
 Installation & Updates
 ----------------------
 
