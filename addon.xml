@@ -28,8 +28,10 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.22 (2017-08-25)
-    - Fixes issues with audio description tracks
+    <news>v0.11.23 (2017-08-28)
+- Update German translation
+- Don't use proxy for local IPC calls
+- Add DRM robustness level to manifest
     </news>
   </extension>
 </addon>
