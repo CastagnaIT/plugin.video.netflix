@@ -8,7 +8,7 @@ import urllib2
 import json
 import ast
 from xbmcaddon import Addon
-from urlparse import parse_qsl
+from urlparse import parse_qsl,urlparse
 from utils import noop, log
 
 class Navigation:
@@ -558,6 +558,9 @@ class Navigation:
 
         url = self.get_netflix_service_url()
         full_url = url + '?' + url_values
+        # don't use proxy for localhost
+        if (urlparse(url).hostname in ('localhost','127.0.0.1','::1')):
+            urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler({})))
         data = urllib2.urlopen(full_url).read()
         parsed_json = json.loads(data)
         result = parsed_json.get('result', None)
