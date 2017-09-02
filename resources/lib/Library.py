@@ -255,7 +255,7 @@ class Library:
         movie_meta = '%s (%d)' % (title, year)
         folder = alt_title
         dirname = os.path.join(self.movie_path, folder)
-        filename = os.path.join(dirname, movie_meta + '.strm')
+        filename = os.path.join(dirname, movie_meta.encode('utf8') + '.strm')
         if xbmcvfs.exists(filename):
             return
         if not xbmcvfs.exists(dirname):
@@ -333,7 +333,7 @@ class Library:
             self.db[self.series_label][title]['episodes'].append(episode_meta)
 
         # create strm file
-        filename = episode_meta + '.strm'
+        filename = episode_meta.encode('utf8') + '.strm'
         filepath = os.path.join(show_dir, filename)
         if xbmcvfs.exists(filepath):
             return
@@ -446,8 +446,8 @@ class Library:
         show_meta = '%s' % (title)
         episode_meta = 'S%02dE%02d' % (season, episode)
         show_dir = os.path.join(self.tvshow_path, self.db[self.series_label][show_meta]['alt_title'])
-        if os.path.exists(os.path.join(show_dir, episode_meta + '.strm')):
-            xbmcvfs.remove(os.path.join(show_dir, episode_meta + '.strm'))
+        if xbmcvfs.exists(os.path.join(show_dir, episode_meta.encode('utf8') + '.strm')):
+            xbmcvfs.remove(os.path.join(show_dir, episode_meta.encode('utf8') + '.strm'))
         for episode_entry in self.db[self.series_label][show_meta]['episodes']:
             if episode_meta != episode_entry:
                 episodes_list.append(episode_entry)
