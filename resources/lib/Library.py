@@ -47,19 +47,11 @@ class Library:
         self.custom_library_folder = library_settings['customlibraryfolder']
         self.db_filepath = os.path.join(self.base_data_path, self.db_filename)
         self.log = log_fn
-        
-        # debug dialog
-        #dialog = xbmcgui.Dialog()
-        #dialog.ok("Library path", self.custom_library_folder)
 
         # check for local library folder & set up the paths
         lib_path = self.base_data_path if self.enable_custom_library_folder != 'true' else self.custom_library_folder
         self.movie_path = os.path.join(lib_path, self.movies_label)
         self.tvshow_path = os.path.join(lib_path, self.series_label)
-        
-        # debug dialog
-        #dialog = xbmcgui.Dialog()
-        #dialog.ok("Media paths", self.movie_path,self.tvshow_path)
 
         # check if we need to setup the base folder structure & do so if needed
         self.setup_local_netflix_library(source={
@@ -80,9 +72,6 @@ class Library:
         """
         for label in source:
             if not xbmcvfs.exists(source[label]):
-        	# debug dialog
-    		#dialog = xbmcgui.Dialog()
-    		#dialog.ok("Missing path to create", source[label])
                 xbmcvfs.mkdir(source[label])
 
     def write_strm_file(self, path, url):
@@ -96,7 +85,7 @@ class Library:
         url : :obj:`str`
             Stream url
         """
-	f = xbmcvfs.File(path, 'w')
+        f = xbmcvfs.File(path, 'w')
         f.write(url)
         f.close()
 
@@ -114,7 +103,7 @@ class Library:
             Parsed contents of the db file
         """
         # if the db doesn't exist, create it
-        if not xbmcvfs.exists(filename):
+        if not os.path.isfile(filename):
             data = {self.movies_label: {}, self.series_label: {}}
             self.log('Setup local library DB')
             self._update_local_db(filename=filename, db=data)
@@ -143,11 +132,11 @@ class Library:
         bool
             Update has been successfully executed
         """
-        if not xbmcvfs.exists(os.path.dirname(filename)):
+        if not os.path.isdir(os.path.dirname(filename)):
             return False
-        xbmcvfs.File(filename, 'w')
-        f.truncate()
-        pickle.dump(db, f)
+        with open(filename, 'w') as f:
+            f.truncate()
+            pickle.dump(db, f)
         return True
 
     def movie_exists (self, title, year):
@@ -166,7 +155,7 @@ class Library:
         bool
             Movie exists in DB
         """
-        movie_meta = '%s (%d)' % (title, year)
+        movie_meta = ('%s (%d)' % (title, year)).encode('utf8')
         return movie_meta in self.db[self.movies_label]
 
     def show_exists (self, title):
@@ -182,7 +171,7 @@ class Library:
         bool
             Show exists in DB
         """
-        show_meta = '%s' % (title)
+        show_meta = ('%s' % (title)).encode('utf8')
         return show_meta in self.db[self.series_label]
 
     def season_exists (self, title, season):
@@ -252,10 +241,10 @@ class Library:
             Function to generate the stream url
         """
 
-        movie_meta = '%s (%d)' % (title, year)
+        movie_meta = ('%s (%d)' % (title, year)).encode('utf8')
         folder = alt_title
         dirname = os.path.join(self.movie_path, folder)
-        filename = os.path.join(dirname, movie_meta.encode('utf8') + '.strm')
+        filename = os.path.join(dirname, movie_meta + '.strm')
         if xbmcvfs.exists(filename):
             return
         if not xbmcvfs.exists(dirname):
@@ -285,7 +274,7 @@ class Library:
         build_url : :obj:`fn`
             Function to generate the stream url
         """
-        show_meta = '%s' % (title)
+        show_meta = ('%s' % (title)).encode('utf8')
         folder = alt_title
         show_dir = os.path.join(self.tvshow_path, folder)
         if not xbmcvfs.exists(show_dir):
@@ -328,12 +317,12 @@ class Library:
             self.db[self.series_label][title]['seasons'].append(season)
 
         # add episode
-        episode_meta = 'S%02dE%02d' % (season, episode)
+        episode_meta = ('S%02dE%02d' % (season, episode)).encode('utf8')
         if self.episode_exists(title=title, season=season, episode=episode) == False:
             self.db[self.series_label][title]['episodes'].append(episode_meta)
 
         # create strm file
-        filename = episode_meta.encode('utf8') + '.strm'
+        filename = (episode_meta + '.strm').encode('utf8')
         filepath = os.path.join(show_dir, filename)
         if xbmcvfs.exists(filepath):
             return
@@ -355,13 +344,15 @@ class Library:
         bool
             Delete successfull
         """
-        movie_meta = '%s (%d)' % (title, year)
+        movie_meta = ('%s (%d)' % (title, year)).encode('utf8')
         folder = self.db[self.movies_label][movie_meta]['alt_title']
         del self.db[self.movies_label][movie_meta]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         dirname = os.path.join(self.movie_path, folder)
+        filename = os.path.join(self.movie_path, folder, movie_meta + '.strm')
         if xbmcvfs.exists(dirname):
-            rmtree(dirname)
+            xbmcvfs.delete(filename)
+            xbmcvfs.rmdir(dirname)
             return True
         return False
 
@@ -378,12 +369,15 @@ class Library:
         bool
             Delete successfull
         """
-        folder = self.db[self.series_label][title]['alt_title']
+        folder = self.db[self.series_label][title]['alt_title'].encode('utf8')
         del self.db[self.series_label][title]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         show_dir = os.path.join(self.tvshow_path, folder)
         if xbmcvfs.exists(show_dir):
-            rmtree(show_dir)
+            show_files = xbmcvfs.listdir(show_dir)[1]
+            for filename in show_files:
+                xbmcvfs.delete(os.path.join(show_dir, filename))
+            xbmcvfs.rmdir(show_dir)
             return True
         return False
 
@@ -406,7 +400,7 @@ class Library:
         season = int(season)
         season_list = []
         episodes_list = []
-        show_meta = '%s' % (title)
+        show_meta = ('%s' % (title)).encode('utf8')
         for season_entry in self.db[self.series_label][show_meta]['seasons']:
             if season_entry != season:
                 season_list.append(season_entry)
@@ -443,17 +437,14 @@ class Library:
             Delete successfull
         """
         episodes_list = []
-        show_meta = '%s' % (title)
-        episode_meta = 'S%02dE%02d' % (season, episode)
+        show_meta = ('%s' % (title)).encode('utf8')
+        episode_meta = ('S%02dE%02d' % (season, episode)).encode('utf8')
         show_dir = os.path.join(self.tvshow_path, self.db[self.series_label][show_meta]['alt_title'])
-        if xbmcvfs.exists(os.path.join(show_dir, episode_meta.encode('utf8') + '.strm')):
-            xbmcvfs.remove(os.path.join(show_dir, episode_meta.encode('utf8') + '.strm'))
+        if xbmcvfs.exists(os.path.join(show_dir, episode_meta + '.strm')):
+            xbmcvfs.delete(os.path.join(show_dir, episode_meta + '.strm'))
         for episode_entry in self.db[self.series_label][show_meta]['episodes']:
             if episode_meta != episode_entry:
                 episodes_list.append(episode_entry)
         self.db[self.series_label][show_meta]['episodes'] = episodes_list
         self._update_local_db(filename=self.db_filepath, db=self.db)
         return True
-
-
-
