@@ -167,9 +167,7 @@ class NetflixHttpSubRessourceHandler:
             Transformed response of the remote call
         """
         list_id = params.get('list_id', [''])[0]
-        start = int(params.get('list_from', [0])[0])
-        end = int(params.get('list_to', [26])[0])
-        raw_video_list = self.netflix_session.fetch_video_list(list_id=list_id, list_from=start,list_to=end)
+        raw_video_list = self.netflix_session.fetch_video_list(list_id=list_id)
         if 'error' in raw_video_list:
             return raw_video_list
         # parse the video list ids

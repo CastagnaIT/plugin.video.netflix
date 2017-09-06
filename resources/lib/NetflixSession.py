@@ -1407,7 +1407,7 @@ class NetflixSession:
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'storyarts', '_1632x873', 'jpg'],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'interestingMoment', '_665x375', 'jpg'],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg']
-        ]
+        ];
 
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Video list')

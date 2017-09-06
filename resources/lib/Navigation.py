@@ -8,7 +8,6 @@ import urllib2
 import json
 import ast
 from xbmcaddon import Addon
-import xbmc
 from urlparse import parse_qsl,urlparse
 from utils import noop, log
 
@@ -254,17 +253,7 @@ class Navigation:
             None or 'queue' f.e. when itÂ´s a special video lists
         """
         user_data = self.call_netflix_service({'method': 'get_user_data'})
-        video_list = {}
-        start=0
-        end=26
-        while True:
-            items = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'list_from':start, 'list_to':end, 'guid': user_data['guid'] ,'cache': True})
-            if 'error' in items or items==None or len(items)==0:
-                break
-            video_list.update(items)
-            start=end+1
-            end=start+26
-
+        video_list = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'guid': user_data['guid'] ,'cache': True})
         # check for any errors
         if self._is_dirty_response(response=video_list):
             return False
