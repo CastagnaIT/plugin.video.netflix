@@ -9,6 +9,7 @@
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
+    <setting id="customexportname" type="bool" label="30036" default="false"/>
   </category>
   <category label="30023">
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>

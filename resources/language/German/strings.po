@@ -160,3 +160,7 @@ msgstr "ESN (änderbar, wird autom. gesetzt)"
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr "Inputstream Addon Einstellungen..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Immer den Originaltitel beim Export nutzen"

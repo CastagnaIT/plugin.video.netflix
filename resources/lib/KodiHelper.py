@@ -48,6 +48,7 @@ class KodiHelper:
         self.config_path = join(self.base_data_path, 'config')
         self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
         self.verb_log = addon.getSetting('logging') == 'true'
+        self.custom_export_name = addon.getSetting('customexportname')
         self.default_fanart = addon.getAddonInfo('fanart')
         self.library = None
         self.setup_memcache()
@@ -98,8 +99,12 @@ class KodiHelper:
         :obj:`str`
             Title to persist
         """
-        dlg = xbmcgui.Dialog()
-        return dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM)
+        if self.custom_export_name != 'true':
+            dlg = xbmcgui.Dialog()
+            custom_title = dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM) or original_title
+            return custom_title
+        else:
+            return original_title
 
     def show_password_dialog (self):
         """Asks the user for its Netflix password
