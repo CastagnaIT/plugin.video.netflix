@@ -376,7 +376,7 @@ class KodiHelper:
                     label = video_list_ids['user'][video_list_id]['displayName']
                     if category == 'netflixOriginals':
                         label = label.capitalize()
-                    li = xbmcgui.ListItem(label=label)
+                    li = xbmcgui.ListItem(label=label, iconImage=self.default_fanart)
                     li.setProperty('fanart_image', self.default_fanart)
                     # determine action route
                     action = actions['default']
@@ -401,7 +401,7 @@ class KodiHelper:
                     action = actions[type]
                 # determine if the item should be selected
                 preselect_items.append((False, True)[type == self.get_main_menu_selection()])
-                li_rec = xbmcgui.ListItem(label=i18n_ids[type])
+                li_rec = xbmcgui.ListItem(label=i18n_ids[type], iconImage=self.default_fanart)
                 li_rec.setProperty('fanart_image', self.default_fanart)
                 url_rec = build_url({'action': action, 'type': type})
                 xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
@@ -410,7 +410,7 @@ class KodiHelper:
         action = actions['default']
         if 'search' in actions.keys():
             action = actions[type]
-        li_rec = xbmcgui.ListItem(label=self.get_local_string(30011))
+        li_rec = xbmcgui.ListItem(label=self.get_local_string(30011), iconImage=self.default_fanart)
         li_rec.setProperty('fanart_image', self.default_fanart)
         url_rec = build_url({'action': action, 'type': 'search'})
         xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
@@ -453,7 +453,7 @@ class KodiHelper:
         """
         for video_list_id in video_list:
             video = video_list[video_list_id]
-            li = xbmcgui.ListItem(label=video['title'])
+            li = xbmcgui.ListItem(label=video['title'], iconImage=self.default_fanart)
             # add some art to the item
             li = self._generate_art_info(entry=video, li=li)
             # add list item info
@@ -556,7 +556,7 @@ class KodiHelper:
             List could be build
         """
         for video_list_id in video_list_ids:
-            li = xbmcgui.ListItem(video_list_ids[video_list_id]['displayName'])
+            li = xbmcgui.ListItem(video_list_ids[video_list_id]['displayName'], iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             url = build_url({'action': action, 'video_list_id': video_list_id})
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
