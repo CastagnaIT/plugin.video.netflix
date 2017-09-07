@@ -99,12 +99,11 @@ class KodiHelper:
         :obj:`str`
             Title to persist
         """
-        if self.custom_export_name != 'true':
-            dlg = xbmcgui.Dialog()
-            custom_title = dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM) or original_title
-            return custom_title
-        else:
+        if self.custom_export_name == 'true':
             return original_title
+        dlg = xbmcgui.Dialog()
+        custom_title = dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM) or original_title
+        return original_title or custom_title
 
     def show_password_dialog (self):
         """Asks the user for its Netflix password
