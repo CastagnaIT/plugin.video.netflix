@@ -160,3 +160,7 @@ msgstr ""
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr ""
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr ""
