@@ -425,7 +425,7 @@ class KodiHelper:
             xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId()), str(preselected_list_item)))
         return True
 
-    def build_video_listing (self, video_list, actions, type, build_url):
+    def build_video_listing (self, video_list, actions, type, build_url, has_more=False, start=0, current_video_list_id=""):
         """Builds the video lists (my list, continue watching, etc.) contents Kodi screen
 
         Parameters
@@ -469,11 +469,16 @@ class KodiHelper:
                 url = build_url(params)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
+        if has_more:
+            li_more = xbmcgui.ListItem(label="[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]")
+            more_url=build_url({"action":"video_list","type":type,"start":str(start),"video_list_id":current_video_list_id})
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=more_url, listitem=li_more, isFolder=True)
+
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_GENRE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)    
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 

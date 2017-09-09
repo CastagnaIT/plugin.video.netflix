@@ -8,7 +8,7 @@ import urllib2
 import json
 import ast
 from xbmcaddon import Addon
-import xbmc
+import resources.lib.NetflixSession as Netflix
 from urlparse import parse_qsl,urlparse
 from utils import noop, log
 
@@ -69,6 +69,7 @@ class Navigation:
 
         # check if one of the before routing options decided to killthe routing
         if 'exit' in options:
+            self.kodi_helper.log("exit in options")
             return False
         if 'action' not in params.keys():
             # show the profiles
@@ -79,7 +80,8 @@ class Navigation:
         elif params['action'] == 'video_list':
             # show a list of shows/movies
             type = None if 'type' not in params.keys() else params['type']
-            return self.show_video_list(video_list_id=params['video_list_id'], type=type)
+            start = 0 if 'start' not in params.keys() else int(params['start'])
+            return self.show_video_list(video_list_id=params['video_list_id'], type=type, start=start)
         elif params['action'] == 'season_list':
             # list of seasons for a show
             return self.show_seasons(show_id=params['show_id'], tvshowtitle=params['tvshowtitle'])
@@ -242,7 +244,7 @@ class Navigation:
 
         return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, build_url=self.build_url)
 
-    def show_video_list (self, video_list_id, type):
+    def show_video_list (self, video_list_id, type, start=0):
         """List shows/movies based on the given video list id
 
         Parameters
@@ -252,24 +254,30 @@ class Navigation:
 
         type : :obj:`str`
             None or 'queue' f.e. when itÂ´s a special video lists
+        
+        start : :obj:`int`
+            Starting point
         """
-        user_data = self.call_netflix_service({'method': 'get_user_data'})
+        end = start + Netflix.FETCH_VIDEO_REQUEST_COUNT
         video_list = {}
-        start=0
-        end=26
-        while True:
-            items = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'list_from':start, 'list_to':end, 'guid': user_data['guid'] ,'cache': True})
-            if 'error' in items or items==None or len(items)==0:
+        user_data = self.call_netflix_service({'method': 'get_user_data'})
+
+        for i in range(0,4):
+            items = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'list_from':start, 'list_to':end, 'guid': user_data['guid'] ,'cache': False})
+            if self._is_dirty_response(response=items) and i == 0:
+                self.kodi_helper.log("show_video_list response is dirty")
+                return False
+            elif len(items) == 0:
+                if i == 0:
+                    self.kodi_helper.log("show_video_list items=0")
+                    return False
                 break
             video_list.update(items)
             start=end+1
-            end=start+26
-
-        # check for any errors
-        if self._is_dirty_response(response=video_list):
-            return False
+            end=start+Netflix.FETCH_VIDEO_REQUEST_COUNT
+        has_more = len(video_list) == (Netflix.FETCH_VIDEO_REQUEST_COUNT + 1) * 4
         actions = {'movie': 'play_video', 'show': 'season_list'}
-        return self.kodi_helper.build_video_listing(video_list=video_list, actions=actions, type=type, build_url=self.build_url)
+        return self.kodi_helper.build_video_listing(video_list=video_list, actions=actions, type=type, build_url=self.build_url, has_more=has_more, start=start, current_video_list_id=video_list_id)
 
     def show_video_lists (self):
         """List the users video lists (recommendations, my list, etc.)"""
