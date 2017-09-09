@@ -478,6 +478,7 @@ class KodiHelper:
             more_url=build_url({"action":"video_list","type":type,"start":str(start),"video_list_id":current_video_list_id})
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=more_url, listitem=li_more, isFolder=True)
 
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)

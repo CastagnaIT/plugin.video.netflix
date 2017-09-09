@@ -263,7 +263,7 @@ class Navigation:
         user_data = self.call_netflix_service({'method': 'get_user_data'})
 
         for i in range(0,4):
-            items = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'list_from':start, 'list_to':end, 'guid': user_data['guid'] ,'cache': False})
+            items = self.call_netflix_service({'method': 'fetch_video_list', 'list_id': video_list_id, 'list_from':start, 'list_to':end, 'guid': user_data['guid'] ,'cache': True})
             if self._is_dirty_response(response=items) and i == 0:
                 self.kodi_helper.log("show_video_list response is dirty")
                 return False
