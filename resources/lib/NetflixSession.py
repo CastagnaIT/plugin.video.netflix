@@ -11,6 +11,7 @@ from time import time
 from base64 import urlsafe_b64encode
 from bs4 import BeautifulSoup, SoupStrainer
 from utils import noop, get_user_agent_for_current_platform
+import HTMLParser
 try:
    import cPickle as pickle
 except:
@@ -2212,7 +2213,10 @@ class NetflixSession:
                 if self._is_size_key(key=profile_id) == False and type(netflix_page_data['profiles'][profile_id]) == dict and netflix_page_data['profiles'][profile_id].get('avatar', False) != False:
                     profile = {'id': profile_id}
                     for important_field in important_fields:
-                        profile.update({important_field: netflix_page_data['profiles'][profile_id]['summary'][important_field]})
+                        if important_field == 'profileName':
+                            profile.update({important_field: HTMLParser.HTMLParser().unescape(netflix_page_data['profiles'][profile_id]['summary'][important_field]).encode('utf8')})
+                        else:
+                            profile.update({important_field: netflix_page_data['profiles'][profile_id]['summary'][important_field]})
                     avatar_base = netflix_page_data['nf'].get(netflix_page_data['profiles'][profile_id]['summary']['avatarName'], False);
                     avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
                     profile.update({'avatar': avatar, 'isFirstUse': False})

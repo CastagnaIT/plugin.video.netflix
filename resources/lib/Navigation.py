@@ -113,7 +113,7 @@ class Navigation:
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
-            return self.show_search_results(term=term)
+            return self.show_search_results(term=term) or False
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
         return True
