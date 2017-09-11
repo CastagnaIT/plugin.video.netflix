@@ -156,7 +156,7 @@ class Library:
         bool
             Movie exists in DB
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
         return movie_meta in self.db[self.movies_label]
 
@@ -173,7 +173,7 @@ class Library:
         bool
             Show exists in DB
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         show_meta = '%s' % (title)
         return show_meta in self.db[self.series_label]
 
@@ -193,7 +193,7 @@ class Library:
         bool
             Season of show exists in DB
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         if self.show_exists(title) == False:
             return False
         show_entry = self.db[self.series_label][title]
@@ -218,7 +218,7 @@ class Library:
         bool
             Episode of show exists in DB
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         if self.show_exists(title) == False:
             return False
         show_entry = self.db[self.series_label][title]
@@ -245,9 +245,9 @@ class Library:
         build_url : :obj:`fn`
             Function to generate the stream url
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
-        folder = re.sub(r'[^a-zA-Z0-9\s]','',(alt_title.encode('utf-8')))
+        folder = re.sub(r'[?|$|!|:|#]',r'',alt_title)
         dirname = os.path.join(self.movie_path, folder)
         filename = os.path.join(dirname, movie_meta + '.strm')
         if xbmcvfs.exists(filename):
@@ -279,9 +279,9 @@ class Library:
         build_url : :obj:`fn`
             Function to generate the stream url
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         show_meta = '%s' % (title)
-        folder = re.sub(r'[^a-zA-Z0-9\s]','',(alt_title.encode('utf-8')))
+        folder = re.sub(r'[?|$|!|:|#]',r'',alt_title.encode('utf-8'))
         show_dir = os.path.join(self.tvshow_path, folder)
         if not xbmcvfs.exists(show_dir):
             xbmcvfs.mkdirs(show_dir)
@@ -317,7 +317,7 @@ class Library:
         """
         season = int(season)
         episode = int(episode)
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
 
         # add season
         if self.season_exists(title=title, season=season) == False:
@@ -351,9 +351,9 @@ class Library:
         bool
             Delete successfull
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
-        folder = re.sub(r'[^a-zA-Z0-9\s]','',self.db[self.movies_label][movie_meta]['alt_title'].encode('utf-8'))
+        folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.movies_label][movie_meta]['alt_title'])
         del self.db[self.movies_label][movie_meta]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         dirname = os.path.join(self.movie_path, folder)
@@ -377,8 +377,8 @@ class Library:
         bool
             Delete successfull
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
-        folder = re.sub(r'[^a-zA-Z0-9\s]','',self.db[self.series_label][title]['alt_title'].encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title)
+        folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.series_label][title]['alt_title'].encode('utf-8'))
         del self.db[self.series_label][title]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         show_dir = os.path.join(self.tvshow_path, folder)
@@ -406,7 +406,7 @@ class Library:
         bool
             Delete successfull
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title.encode('utf-8'))
         season = int(season)
         season_list = []
         episodes_list = []
@@ -446,7 +446,7 @@ class Library:
         bool
             Delete successfull
         """
-        title=re.sub(r'[^a-zA-Z0-9\s]','',title.encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]',r'',title.encode('utf-8'))
         episodes_list = []
         show_meta = '%s' % (title)
         episode_meta = 'S%02dE%02d' % (season, episode)
