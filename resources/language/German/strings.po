@@ -164,3 +164,35 @@ msgstr "Inputstream Addon Einstellungen..."
 msgctxt "#30036"
 msgid "Always use the original title on export"
 msgstr "Immer den Originaltitel beim Export nutzen"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Ansichten"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Eigene Ansichten aktivieren"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Ansicht für Ordner"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Ansicht für Filme"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Ansicht für Serien"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Ansicht für Staffeln"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Ansicht für Episoden"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Ansicht für Profile"

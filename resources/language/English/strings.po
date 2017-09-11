@@ -164,3 +164,35 @@ msgstr ""
 msgctxt "#30036"
 msgid "Always use the original title on export"
 msgstr ""
+
+msgctxt "#30037"
+msgid "Views"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr ""
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr ""
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr ""
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr ""
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr ""
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr ""
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr ""
