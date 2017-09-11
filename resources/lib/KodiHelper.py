@@ -319,7 +319,7 @@ class KodiHelper:
         cached_items.update({cache_id: contents})
         xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps(cached_items))
 
-    def SetView(self, content):
+    def set_custom_view(self, content):
         """Set the view mode
 
         Parameters
@@ -361,7 +361,7 @@ class KodiHelper:
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
             xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.SetView('login')
+        self.set_custom_view('login')
         return True
 
     def build_main_menu_listing (self, video_list_ids, user_list_order, actions, build_url):
@@ -435,7 +435,7 @@ class KodiHelper:
         # no srting & close
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.SetView('folder')
+        self.set_custom_view('folder')
 
         # (re)select the previously selected main menu entry
         idx = 1
@@ -482,7 +482,7 @@ class KodiHelper:
                 # itÂ´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
                 url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
-                self.SetView('movie')
+                self.set_custom_view('movie')
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
@@ -490,7 +490,7 @@ class KodiHelper:
                 if 'tvshowtitle' in infos:
                     params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
                 url = build_url(params)
-                self.SetView('show')
+                self.set_custom_view('show')
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
@@ -583,7 +583,7 @@ class KodiHelper:
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.SetView('folder')
+        self.set_custom_view('folder')
         return True
 
     def build_season_listing (self, seasons_sorted, build_url):
@@ -621,7 +621,7 @@ class KodiHelper:
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.SetView('season')
+        self.set_custom_view('season')
         return True
 
     def build_episode_listing (self, episodes_sorted, build_url):
@@ -658,7 +658,7 @@ class KodiHelper:
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_DURATION)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.SetView('episode')
+        self.set_custom_view('episode')
         return True
 
     def play_item (self, esn, video_id, start_offset=-1, infoLabels={}):
