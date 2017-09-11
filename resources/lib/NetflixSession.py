@@ -17,6 +17,8 @@ try:
 except:
    import pickle
 
+FETCH_VIDEO_REQUEST_COUNT = 26
+
 class NetflixSession:
     """Helps with login/session management of Netflix users & API data fetching"""
 
@@ -1373,7 +1375,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
 
-    def fetch_video_list (self, list_id, list_from=0, list_to=26):
+    def fetch_video_list (self, list_id, list_from=0, list_to=FETCH_VIDEO_REQUEST_COUNT):
         """Fetches the JSON which contains the contents of a given video list
 
         Parameters
@@ -1408,7 +1410,7 @@ class NetflixSession:
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'storyarts', '_1632x873', 'jpg'],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'interestingMoment', '_665x375', 'jpg'],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg']
-        ];
+        ]
 
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Video list')

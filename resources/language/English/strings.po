@@ -196,3 +196,7 @@ msgstr ""
 msgctxt "#30044"
 msgid "View for profiles"
 msgstr ""
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr ""

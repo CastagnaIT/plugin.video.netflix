@@ -161,3 +161,7 @@ msgstr "ESN (impostato automaticamente, può essere modificato manualmente)"
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr "Configurazione dell'addon Inputstream..."
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- PAGINA SUCCESSIVA --[/B][/COLOR]"
