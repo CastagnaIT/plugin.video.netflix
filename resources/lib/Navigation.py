@@ -7,6 +7,7 @@ import urllib
 import urllib2
 import json
 import ast
+import xbmc
 from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
 from urlparse import parse_qsl,urlparse
@@ -116,6 +117,7 @@ class Navigation:
             return self.show_search_results(term=term) or False
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
+        xbmc.executebuiltin('Container.Refresh')
         return True
 
     @log
