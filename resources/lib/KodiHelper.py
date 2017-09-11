@@ -474,7 +474,7 @@ class KodiHelper:
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         if has_more:
-            li_more = xbmcgui.ListItem(label="[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]")
+            li_more = xbmcgui.ListItem(label=self.get_local_string(30045))
             more_url=build_url({"action":"video_list","type":type,"start":str(start),"video_list_id":current_video_list_id})
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=more_url, listitem=li_more, isFolder=True)
 

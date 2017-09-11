@@ -164,3 +164,7 @@ msgstr ""
 msgctxt "#30036"
 msgid "Always use the original title on export"
 msgstr ""
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr ""
