@@ -196,3 +196,7 @@ msgstr "Ansicht für Episoden"
 msgctxt "#30044"
 msgid "View for profiles"
 msgstr "Ansicht für Profile"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- NÄCHSTE SEITE --[/B][/COLOR]"
