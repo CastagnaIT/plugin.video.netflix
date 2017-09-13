@@ -158,6 +158,18 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
+    def show_disabled_inputstream_addon_notification (self):
+        """Shows notification that the inputstream addon isn't enabled.
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30046), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return True
+
+
     def show_no_search_results_notification (self):
         """Shows notification that no search results could be found
 
@@ -698,10 +710,14 @@ class KodiHelper:
         """
         self.set_esn(esn)
         addon = self.get_addon()
-        inputstream_addon = self.get_inputstream_addon()
+        (inputstream_addon, inputstream_enabled) = self.get_inputstream_addon()
         if inputstream_addon == None:
             self.show_missing_inputstream_addon_notification()
             self.log(msg='Inputstream addon not found')
+            return False
+        if not inputstream_enabled:
+            self.show_disabled_inputstream_addon_notification()
+            self.log(msg='Inputstream addon not enabled')
             return False
 
         # track play event
@@ -946,12 +962,13 @@ class KodiHelper:
 
     def get_inputstream_addon (self):
         """Checks if the inputstream addon is installed & enabled.
-           Returns the type of the inputstream addon used or None if not found
+           Returns the type of the inputstream addon used and if it's enabled,
+           or None if not found.
 
         Returns
         -------
-        :obj:`str` or None
-            Inputstream addon or None
+        :obj:`tuple` of obj:`str` and bool, or None
+            Inputstream addon and if it's enabled, or None
         """
         type = 'inputstream.adaptive'
         payload = {
@@ -966,8 +983,7 @@ class KodiHelper:
         response = xbmc.executeJSONRPC(json.dumps(payload))
         data = json.loads(response)
         if not 'error' in data.keys():
-            if data['result']['addon']['enabled'] == True:
-                return type
+            return (type, data['result']['addon']['enabled'])
         return None
 
     def set_library (self, library):

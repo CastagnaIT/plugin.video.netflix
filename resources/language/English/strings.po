@@ -200,3 +200,7 @@ msgstr ""
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr ""
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr ""
