@@ -6,17 +6,18 @@
 # Translated by: Itayshechter
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
+"Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2017-01-01 12:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-09-13 17:46+0300\n"
+"Language-Team: Eng2Heb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: he\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: A. Dambledore\n"
+"X-Generator: Poedit 2.0.3\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -48,7 +49,7 @@ msgstr "סיסמה"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "דואל"
+msgstr "אימייל"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -60,7 +61,7 @@ msgstr "אנא בדוק את קוד המבוגרים"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "כניסה נכשלה"
+msgstr "הכניסה נכשלה"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
@@ -68,7 +69,7 @@ msgstr "אנא בדוק את הגדרות ההרשאה (שם משתמש וסיס
 
 msgctxt "#30010"
 msgid "Genres"
-msgstr "ז'אנרים"
+msgstr "סגנונות"
 
 msgctxt "#30011"
 msgid "Search"
@@ -92,7 +93,7 @@ msgstr "ניתוק חשבון"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "יצא לספריה"
+msgstr "יצא לספרייה"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
@@ -100,7 +101,7 @@ msgstr "תן ציון בנטפליקס"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "הסר מתוך 'הרשימה שלי'”
+msgstr "הסר מתוך 'הרשימה שלי'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
@@ -116,35 +117,35 @@ msgstr "מומחה"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL אימות"
+msgstr "אימות SSL"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "ספריה"
+msgstr "ספרייה"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "הפעל תיקייה לספריה מותאמת אישית"
+msgstr "אפשר תיקייה מותאמת אישית לספרייה"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "נתיב ספריה מותאם אישית"
+msgstr "נתיב ספרייה מותאם אישית"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr "תקלה בניגון חוזר"
+msgstr "תקלה בניגון"
 
 msgctxt "#30029"
 msgid "Missing Inputstream addon"
-msgstr "Inputstream לא קיים תוסף”
+msgstr "הרחבת Inputstream חסרה"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "הסר מספריה”
+msgstr "הסר מהספרייה"
 
 msgctxt "#30031"
 msgid "Change library title"
-msgstr "שנה כותרת ספריה"
+msgstr "שנה כותרת ספרייה"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -156,8 +157,8 @@ msgstr "השתמש בפורמט דולבי"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (ברירת מחדל אוטומטי, ניתן לשנות ידנית)"
+msgstr "רשת ESN (ברירת מחדל אוטומטי, ניתן לשנות ידנית)"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
-msgstr "Inputstream הגדרות תוסף..."
+msgstr "הגדרות הרחבת Inputstream..."
