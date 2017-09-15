@@ -31,15 +31,14 @@ class NetflixHttpSubRessourceHandler:
         If so, do the login before the user requests it
         If that is done, we cache the profiles
         """
+        self.profiles = []
         if self.credentials['email'] != '' and self.credentials['password'] != '':
             if self.netflix_session.is_logged_in(account=self.credentials):
-                self.netflix_session.refresh_session_data(account=self.credentials)
-                self.profiles = self.netflix_session.profiles
+                if self.netflix_session.refresh_session_data(account=self.credentials):
+                    self.profiles = self.netflix_session.profiles
             else:
-                self.netflix_session.login(account=self.credentials)
-                self.profiles = self.netflix_session.profiles
-        else:
-            self.profiles = []
+                if self.netflix_session.login(account=self.credentials):
+                    self.profiles = self.netflix_session.profiles
         self.kodi_helper.set_esn(self.netflix_session.esn)
 
     def is_logged_in (self, params):

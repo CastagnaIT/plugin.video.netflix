@@ -9,6 +9,7 @@ import json
 import os
 import pprint
 import random
+import sys
 from StringIO import StringIO
 
 from datetime import datetime
@@ -192,20 +193,28 @@ class MSL:
             manifest_request_data['profiles'].append('ddplus-5.1-dash')
 
         request_data = self.__generate_msl_request_data(manifest_request_data)
-        resp = self.session.post(self.endpoints['manifest'], request_data)
 
         try:
-            # if the json() does not fail we have an error because the manifest response is a chuncked json response
-            resp.json()
-            self.kodi_helper.log(msg='Error getting Manifest: '+resp.text)
-            return False
-        except ValueError:
-            # json() failed so parse the chunked response
-            self.kodi_helper.log(msg='Got chunked Manifest Response: ' + resp.text)
-            resp = self.__parse_chunked_msl_response(resp.text)
-            self.kodi_helper.log(msg='Parsed chunked Response: ' + json.dumps(resp))
-            data = self.__decrypt_payload_chunk(resp['payloads'][0])
-            return self.__tranform_to_dash(data)
+            resp = self.session.post(self.endpoints['manifest'], request_data)
+        except:
+            resp = None
+            exc = sys.exc_info()
+            self.kodi_helper.log(msg='[MSL][POST] Error {} {}'.format(exc[0],exc[1]))
+
+        if resp:
+            try:
+                # if the json() does not fail we have an error because the manifest response is a chuncked json response
+                resp.json()
+                self.kodi_helper.log(msg='Error getting Manifest: '+resp.text)
+                return False
+            except ValueError:
+                # json() failed so parse the chunked response
+                self.kodi_helper.log(msg='Got chunked Manifest Response: ' + resp.text)
+                resp = self.__parse_chunked_msl_response(resp.text)
+                self.kodi_helper.log(msg='Parsed chunked Response: ' + json.dumps(resp))
+                data = self.__decrypt_payload_chunk(resp['payloads'][0])
+                return self.__tranform_to_dash(data)
+        return False
 
     def get_license(self, challenge, sid):
         """
@@ -232,22 +241,29 @@ class MSL:
         }
         request_data = self.__generate_msl_request_data(license_request_data)
 
-        resp = self.session.post(self.endpoints['license'], request_data)
-
         try:
-            # If is valid json the request for the licnese failed
-            resp.json()
-            self.kodi_helper.log(msg='Error getting license: '+resp.text)
-            return False
-        except ValueError:
-            # json() failed so we have a chunked json response
-            resp = self.__parse_chunked_msl_response(resp.text)
-            data = self.__decrypt_payload_chunk(resp['payloads'][0])
-            if data['success'] is True:
-                return data['result']['licenses'][0]['data']
-            else:
-                self.kodi_helper.log(msg='Error getting license: ' + json.dumps(data))
+            resp = self.session.post(self.endpoints['license'], request_data)
+        except:
+            resp = None
+            exc = sys.exc_info()
+            self.kodi_helper.log(msg='[MSL][POST] Error {} {}'.format(exc[0],exc[1]))
+
+        if resp:
+            try:
+                # If is valid json the request for the licnese failed
+                resp.json()
+                self.kodi_helper.log(msg='Error getting license: '+resp.text)
                 return False
+            except ValueError:
+                # json() failed so we have a chunked json response
+                resp = self.__parse_chunked_msl_response(resp.text)
+                data = self.__decrypt_payload_chunk(resp['payloads'][0])
+                if data['success'] is True:
+                    return data['result']['licenses'][0]['data']
+                else:
+                    self.kodi_helper.log(msg='Error getting license: ' + json.dumps(data))
+                    return False
+        return False
 
     def __decrypt_payload_chunk(self, payloadchunk):
         payloadchunk = json.JSONDecoder().decode(payloadchunk)
@@ -563,8 +579,14 @@ class MSL:
         self.kodi_helper.log(msg='Key Handshake Request:')
         self.kodi_helper.log(msg=json.dumps(request))
 
-        resp = self.session.post(self.endpoints['manifest'], json.dumps(request, sort_keys=True))
-        if resp.status_code == 200:
+        try:
+            resp = self.session.post(self.endpoints['manifest'], json.dumps(request, sort_keys=True))
+        except:
+            resp = None
+            exc = sys.exc_info()
+            self.kodi_helper.log(msg='[MSL][POST] Error {} {}'.format(exc[0],exc[1]))
+
+        if resp and resp.status_code == 200:
             resp = resp.json()
             if 'errordata' in resp:
                 self.kodi_helper.log(msg='Key Exchange failed')
