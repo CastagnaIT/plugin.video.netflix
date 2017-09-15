@@ -7,12 +7,16 @@ import os
 import xbmcgui
 import xbmcvfs
 import re
+import time
 from shutil import rmtree
 from utils import noop
+from resources.lib.KodiHelper import KodiHelper
 try:
    import cPickle as pickle
 except:
    import pickle
+
+kodi_helper = KodiHelper()
 
 class Library:
     """Exports Netflix shows & movies to a local library folder"""
@@ -250,14 +254,21 @@ class Library:
         folder = re.sub(r'[?|$|!|:|#]',r'',alt_title)
         dirname = os.path.join(self.movie_path, folder)
         filename = os.path.join(dirname, movie_meta + '.strm')
+        progress=xbmcgui.DialogProgress()
+        progress.create(kodi_helper.get_local_string(650),movie_meta)
         if xbmcvfs.exists(filename):
             return
         if not xbmcvfs.exists(dirname):
             xbmcvfs.mkdirs(dirname)
         if self.movie_exists(title=title, year=year) == False:
+            progress.update(50)
+            time.sleep(0.5)
             self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
             self._update_local_db(filename=self.db_filepath, db=self.db)
         self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id}))
+        progress.update(100)
+        time.sleep(1)
+        progress.close()
 
     def add_show (self, title, alt_title, episodes, build_url):
         """Adds a show to the local db, generates & persists the strm files
@@ -283,13 +294,24 @@ class Library:
         show_meta = '%s' % (title)
         folder = re.sub(r'[?|$|!|:|#]',r'',alt_title.encode('utf-8'))
         show_dir = os.path.join(self.tvshow_path, folder)
+        progress=xbmcgui.DialogProgress()
+        progress.create(kodi_helper.get_local_string(650),show_meta)
+        count = 1
         if not xbmcvfs.exists(show_dir):
             xbmcvfs.mkdirs(show_dir)
         if self.show_exists(title) == False:
             self.db[self.series_label][show_meta] = {'seasons': [], 'episodes': [], 'alt_title': alt_title}
+            episode_count_total = len(episodes)
+            step=round(100.0/episode_count_total,1)
+            percent=step
         for episode in episodes:
+            progress.update(int(percent), show_meta, kodi_helper.get_local_string(20373)+": "+str(episode['season']), kodi_helper.get_local_string(20359)+": "+str(episode['episode']))
             self._add_episode(show_dir=show_dir, title=title, season=episode['season'], episode=episode['episode'], video_id=episode['id'], build_url=build_url)
+            percent=percent+step
+            time.sleep(0.05)
         self._update_local_db(filename=self.db_filepath, db=self.db)
+        time.sleep(1)
+        progress.close()
         return show_dir
 
     def _add_episode (self, title, show_dir, season, episode, video_id, build_url):
@@ -354,6 +376,10 @@ class Library:
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
         folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.movies_label][movie_meta]['alt_title'])
+        progress=xbmcgui.DialogProgress()
+        progress.create(kodi_helper.get_local_string(1210),movie_meta)
+        progress.update(50)
+        time.sleep(0.5)
         del self.db[self.movies_label][movie_meta]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         dirname = os.path.join(self.movie_path, folder)
@@ -363,6 +389,8 @@ class Library:
             xbmcvfs.rmdir(dirname)
             return True
         return False
+        time.sleep(1)
+        progress.close()
 
     def remove_show (self, title):
         """Removes the DB entry & the strm files for the show given
@@ -379,16 +407,27 @@ class Library:
         """
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.series_label][title]['alt_title'].encode('utf-8'))
+        progress=xbmcgui.DialogProgress()
+        progress.create(kodi_helper.get_local_string(1210),title)
+        time.sleep(0.5)
         del self.db[self.series_label][title]
         self._update_local_db(filename=self.db_filepath, db=self.db)
         show_dir = os.path.join(self.tvshow_path, folder)
         if xbmcvfs.exists(show_dir):
-            show_files = xbmcvfs.listdir(show_dir)[1]
+            show_files = xbmcvfs.listdir(show_dir)[1]          
+            episode_count_total = len(show_files)
+            step=round(100.0/episode_count_total,1)
+            percent=100-step
             for filename in show_files:
+                progress.update(int(percent))
                 xbmcvfs.delete(os.path.join(show_dir, filename))
+                percent=percent-step
+                time.sleep(0.05)
             xbmcvfs.rmdir(show_dir)
             return True
         return False
+        time.sleep(1)
+        progress.close()
 
     def remove_season (self, title, season):
         """Removes the DB entry & the strm files for a season of a show given
