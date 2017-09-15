@@ -13,7 +13,7 @@
   </category>
   <category label="30037">
     <setting id="customview" type="bool" label="30038" default="false"/>
-    <setting id="viewmodelogin" type="number" label="30044" enable="eq(-1,true)" default="501"/>
+    <setting id="viewmodelogin" type="number" label="30044" enable="eq(-1,true)" default="501" visible="false"/>
     <setting id="viewmodefolder" type="number" label="30039" enable="eq(-2,true)" default="501"/>
     <setting id="viewmodemovie" type="number" label="30040" enable="eq(-3,true)" default="504"/>
     <setting id="viewmodeshow" type="number" label="30041" enable="eq(-4,true)" default="504"/>
