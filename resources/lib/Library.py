@@ -498,3 +498,73 @@ class Library:
         self.db[self.series_label][show_meta]['episodes'] = episodes_list
         self._update_local_db(filename=self.db_filepath, db=self.db)
         return True
+
+    def list_exported_media (self):
+        """Return List of exported movies
+
+        Returns
+        -------
+        obj:`dict`
+            Contents of export folder
+        """
+
+        if xbmcvfs.exists(self.movie_path):
+            movies = xbmcvfs.listdir(self.movie_path)
+        if xbmcvfs.exists(self.tvshow_path):
+            shows = xbmcvfs.listdir(self.tvshow_path)
+        return movies+shows
+
+    def get_exported_movie_year (self, title):
+        """Return year of given exported movie
+
+        Returns
+        -------
+        obj:`int`
+            year of given movie
+        """
+        folder = os.path.join(self.movie_path, title)
+        if xbmcvfs.exists(folder):
+            file = xbmcvfs.listdir(folder)
+            year = str(file[1]).split("(",1)[1].split(")",1)[0]
+        return int(year)
+
+    def updatedb_from_exported (self):
+        """Adds movies and shows from exported media to the local db 
+
+        Returns
+        -------
+        bool
+            Process finished
+        """
+        if xbmcvfs.exists(self.movie_path):
+            movies = xbmcvfs.listdir(self.movie_path)
+            for video in movies[0]:
+                folder = os.path.join(self.movie_path, video)
+                file = xbmcvfs.listdir(folder)
+                year = int(str(file[1]).split("(",1)[1].split(")",1)[0])
+                alt_title = unicode(video.decode('utf-8'))
+                title = unicode(video.decode('utf-8'))
+                movie_meta = '%s (%d)' % (title, year)
+                if self.movie_exists(title=title, year=year) == False:
+                    self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
+                    self._update_local_db(filename=self.db_filepath, db=self.db)
+
+        if xbmcvfs.exists(self.tvshow_path):
+            shows = xbmcvfs.listdir(self.tvshow_path)
+            for video in shows[0]:
+                show_dir = os.path.join(self.tvshow_path, video)
+                title = unicode(video.decode('utf-8'))
+                alt_title = unicode(video.decode('utf-8'))
+                show_meta = '%s' % (title)
+                if self.show_exists(title) == False:
+                    self.db[self.series_label][show_meta] = {'seasons': [], 'episodes': [], 'alt_title': alt_title}
+                    episodes = xbmcvfs.listdir(show_dir)
+                    for episode in episodes[1]:
+                        file=str(episode).split(".")[0]
+                        season=int(str(file).split("S")[1].split("E")[0])
+                        episode=int(str(file).split("E")[1])
+                        episode_meta = 'S%02dE%02d' % (season, episode)
+                        if self.episode_exists(title=title, season=season, episode=episode) == False:
+                            self.db[self.series_label][title]['episodes'].append(episode_meta)                        
+                            self._update_local_db(filename=self.db_filepath, db=self.db)
+        return True

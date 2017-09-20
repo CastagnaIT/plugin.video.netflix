@@ -200,3 +200,19 @@ msgstr "Ansicht für Profile"
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- NÄCHSTE SEITE --[/B][/COLOR]"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Endgültig entfernen?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Exportiert"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Aktualisiere DB"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Aktualisierung erfolgreich"
