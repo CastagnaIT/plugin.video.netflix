@@ -161,7 +161,8 @@ class Navigation:
         user_data = self.call_netflix_service({'method': 'get_user_data'})
         search_contents = self.call_netflix_service({'method': 'search', 'term': term, 'guid': user_data['guid'], 'cache': True})
         # check for any errors
-        if self._is_dirty_response(response=search_contents):
+        if self._is_dirty_response(response=search_contents) or len(search_contents) == 0:
+            self.kodi_helper.show_no_search_results_notification()
             return False
         actions = {'movie': 'play_video', 'show': 'season_list'}
         return self.kodi_helper.build_search_result_listing(video_list=search_contents, actions=actions, build_url=self.build_url)
