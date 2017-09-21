@@ -111,9 +111,10 @@ class Navigation:
             term = self.kodi_helper.show_finally_remove(title=params['title'], type=params['type'], year=params['year'])
             if params['type'] == 'movie' and str(term) == '1':
                 self.library.remove_movie(title=params['title'].decode('utf-8'), year=int(params['year']))
+                self.kodi_helper.refresh()
             if params['type'] == 'show' and str(term) == '1':
                 self.library.remove_show(title=params['title'].decode('utf-8'))
-            self.kodi_helper.refresh()
+                self.kodi_helper.refresh()
             return True
         elif params['action'] == 'updatedb':
             # adds a title to the users list on Netflix
