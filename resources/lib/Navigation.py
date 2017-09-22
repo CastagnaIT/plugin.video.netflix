@@ -133,7 +133,6 @@ class Navigation:
         elif params['action'] == 'user-items' and params['type'] == 'exported':
             # update local db from exported media
             self.library.updatedb_from_exported()
-            self.library.updatedb_from_exported()
             # list exported movies/shows
             return self.kodi_helper.build_video_listing_exported(content=self.library.list_exported_media(),build_url=self.build_url)
         else:
@@ -278,7 +277,7 @@ class Navigation:
 
         type : :obj:`str`
             None or 'queue' f.e. when itÂ´s a special video lists
-        
+
         start : :obj:`int`
             Starting point
         """
