@@ -29,5 +29,6 @@
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="msl_service_port" value="8000" visible="false"/>
     <setting id="netflix_service_port" value="8001" visible="false"/>
+    <setting id="show_update_db" type="bool" default="false" visible="false"/>
   </category>
 </settings>

@@ -204,3 +204,19 @@ msgstr ""
 msgctxt "#30046"
 msgid "Inputstream addon is not enabled"
 msgstr ""
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr ""
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr ""
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr ""

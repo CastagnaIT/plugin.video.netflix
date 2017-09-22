@@ -55,6 +55,7 @@ class KodiHelper:
         self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
         self.verb_log = addon.getSetting('logging') == 'true'
         self.custom_export_name = addon.getSetting('customexportname')
+        self.show_update_db = addon.getSetting('show_update_db')
         self.default_fanart = addon.getAddonInfo('fanart')
         self.library = None
         self.setup_memcache()
@@ -193,6 +194,31 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
         return True
 
+    def show_finally_remove (self, title, type, year):
+        """Ask user for yes / no
+
+        Returns
+        -------
+        bool
+            Answer yes/no
+        """
+        dialog = xbmcgui.Dialog()
+        if year == '0000':
+            return dialog.yesno(self.get_local_string(string_id=30047),title)
+        return dialog.yesno(self.get_local_string(string_id=30047),title+' ('+str(year)+')')
+
+    def show_local_db_updated (self):
+        """Shows notification that local db was updated
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
+        return True
+
     def set_setting (self, key, value):
         """Public interface for the addons setSetting method
 
@@ -228,13 +254,13 @@ class KodiHelper:
         """
         Returns the esn from settings
         """
-        stored_esn = self.get_esn()        
+        stored_esn = self.get_esn()
         if not stored_esn and esn:
             self.set_setting('esn', esn)
-            self.delete_manifest_data()            
+            self.delete_manifest_data()
             return esn
         return stored_esn
-    
+
     def delete_manifest_data(self):
         if isfile(self.msl_data_path + 'msl_data.json'):
             remove(self.msl_data_path + 'msl_data.json')
@@ -449,6 +475,22 @@ class KodiHelper:
         url_rec = build_url({'action': action, 'type': 'search'})
         xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
 
+        # add exported as subfolder
+        action = actions['default']
+        if 'exported' in actions.keys():
+            action = actions[type]
+        li_rec = xbmcgui.ListItem(label=self.get_local_string(30048), iconImage=self.default_fanart)
+        li_rec.setProperty('fanart_image', self.default_fanart)
+        url_rec = build_url({'action': action, 'type': 'exported'})
+        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+
+        if self.show_update_db == 'true':
+            # add updatedb as subfolder
+            li_rec = xbmcgui.ListItem(label=self.get_local_string(30049), iconImage=self.default_fanart)
+            li_rec.setProperty('fanart_image', self.default_fanart)
+            url_rec = build_url({'action': 'updatedb'})
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+
         # no srting & close
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
@@ -524,6 +566,42 @@ class KodiHelper:
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)    
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(view)
+        return True
+
+    def build_video_listing_exported (self, content, build_url):
+        """Build list of exported movies / shows
+
+        Parameters
+        ----------
+        content : :obj:`dict` of :obj:`str`
+            List of video lists
+
+        Returns
+        -------
+        bool
+            List could be build
+        """
+        action = ['remove_from_library', self.get_local_string(30030), 'remove']
+        listing = content
+        for video in listing[0]:
+            li = xbmcgui.ListItem(label=str(video)+' ('+str(self.library.get_exported_movie_year (title=video))+')', iconImage=self.default_fanart)
+            li.setProperty('fanart_image', self.default_fanart)
+            isFolder = False
+            year = self.library.get_exported_movie_year (title=video)
+            url = build_url({'action': 'removeexported', 'title': str(video), 'year': str(year), 'type': 'movie'})
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+        for video in listing[2]:
+            li = xbmcgui.ListItem(label=str(video), iconImage=self.default_fanart)
+            li.setProperty('fanart_image', self.default_fanart)
+            isFolder = False
+            year = '0000'
+            url = build_url({'action': 'removeexported', 'title': str(video), 'year': str(year), 'type': 'show'})
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE) 
+        xbmcplugin.endOfDirectory(self.plugin_handle)
+        self.set_custom_view(VIEW_FOLDER)
         return True
 
     def build_search_result_listing (self, video_list, actions, build_url):
@@ -699,7 +777,7 @@ class KodiHelper:
 
         start_offset : :obj:`str`
             Offset to resume playback from (in seconds)
-        
+
         infoLabels : :obj:`str`
             the listitem's infoLabels
 
@@ -1049,4 +1127,3 @@ class KodiHelper:
             # Send the tracking event
             tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)
             tracker.send('event', event)
-

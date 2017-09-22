@@ -106,7 +106,22 @@ class Navigation:
         elif params['action'] == 'remove':
             # adds a title to the users list on Netflix
             return self.remove_from_library(video_id=params['id'])
-        elif params['action'] == 'user-items' and params['type'] != 'search':
+        elif params['action'] == 'removeexported':
+            # adds a title to the users list on Netflix
+            term = self.kodi_helper.show_finally_remove(title=params['title'], type=params['type'], year=params['year'])
+            if params['type'] == 'movie' and str(term) == '1':
+                self.library.remove_movie(title=params['title'].decode('utf-8'), year=int(params['year']))
+                self.kodi_helper.refresh()
+            if params['type'] == 'show' and str(term) == '1':
+                self.library.remove_show(title=params['title'].decode('utf-8'))
+                self.kodi_helper.refresh()
+            return True
+        elif params['action'] == 'updatedb':
+            # adds a title to the users list on Netflix
+            self.library.updatedb_from_exported()
+            self.kodi_helper.show_local_db_updated()
+            return True
+        elif params['action'] == 'user-items' and params['type'] != 'search' and params['type'] != 'exported':
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
@@ -115,6 +130,11 @@ class Navigation:
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
             return self.show_search_results(term=term) or False
+        elif params['action'] == 'user-items' and params['type'] == 'exported':
+            # update local db from exported media
+            self.library.updatedb_from_exported()
+            # list exported movies/shows
+            return self.kodi_helper.build_video_listing_exported(content=self.library.list_exported_media(),build_url=self.build_url)
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
         xbmc.executebuiltin('Container.Refresh')
@@ -292,7 +312,7 @@ class Navigation:
         # defines an order for the user list, as Netflix changes the order at every request
         user_list_order = ['queue', 'continueWatching', 'topTen', 'netflixOriginals', 'trendingNow', 'newRelease', 'popularTitles']
         # define where to route the user
-        actions = {'recommendations': 'user-items', 'genres': 'user-items', 'search': 'user-items', 'default': 'video_list'}
+        actions = {'recommendations': 'user-items', 'genres': 'user-items', 'search': 'user-items', 'exported': 'user-items', 'default': 'video_list'}
         return self.kodi_helper.build_main_menu_listing(video_list_ids=video_list_ids, user_list_order=user_list_order, actions=actions, build_url=self.build_url)
 
     @log
