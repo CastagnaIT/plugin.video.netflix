@@ -133,6 +133,7 @@ class Navigation:
         elif params['action'] == 'user-items' and params['type'] == 'exported':
             # update local db from exported media
             self.library.updatedb_from_exported()
+            self.library.updatedb_from_exported()
             # list exported movies/shows
             return self.kodi_helper.build_video_listing_exported(content=self.library.list_exported_media(),build_url=self.build_url)
         else:
@@ -372,6 +373,9 @@ class Navigation:
             Alternative title (for the folder written to disc)
         """
         metadata = self.call_netflix_service({'method': 'fetch_metadata', 'video_id': video_id})
+        if "error" in metadata:
+            self.kodi_helper.show_no_metadata_notification()
+            return False
         # check for any errors
         if self._is_dirty_response(response=metadata):
             return False
@@ -393,11 +397,14 @@ class Navigation:
         """Removes an item from the local library
 
         Parameters
-        ----------
+        ---------
         video_id : :obj:`str`
             ID of the movie or show
         """
         metadata = self.call_netflix_service({'method': 'fetch_metadata', 'video_id': video_id})
+        if "error" in metadata:
+            self.kodi_helper.show_no_metadata_notification()
+            return False
         # check for any errors
         if self._is_dirty_response(response=metadata):
             return False
