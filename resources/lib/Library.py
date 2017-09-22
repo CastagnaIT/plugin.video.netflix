@@ -27,6 +27,9 @@ class Library:
     movies_label = 'movies'
     """str: Label to identify movies"""
 
+    metadata_label = 'metadata'
+    """str: Label to identify metadata"""
+
     db_filename = 'lib.ndb'
     """str: (File)Name of the store for the database dump that contains all shows/movies added to the library"""
 
@@ -57,11 +60,13 @@ class Library:
         lib_path = self.base_data_path if self.enable_custom_library_folder != 'true' else self.custom_library_folder
         self.movie_path = os.path.join(lib_path, self.movies_label)
         self.tvshow_path = os.path.join(lib_path, self.series_label)
+        self.metadata_path = os.path.join(lib_path, self.metadata_label)
 
         # check if we need to setup the base folder structure & do so if needed
         self.setup_local_netflix_library(source={
             self.movies_label: self.movie_path,
-            self.series_label: self.tvshow_path
+            self.series_label: self.tvshow_path,
+            self.metadata_label: self.metadata_path
         })
 
         # load the local db
@@ -79,7 +84,7 @@ class Library:
             if not xbmcvfs.exists(source[label]):
                 xbmcvfs.mkdir(source[label])
 
-    def write_strm_file(self, path, url):
+    def write_strm_file(self, path, url, title_player):
         """Writes the stream file that Kodi can use to integrate it into the DB
 
         Parameters
@@ -89,10 +94,89 @@ class Library:
 
         url : :obj:`str`
             Stream url
+
+        title_player : :obj:`str`
+            Video fallback title for m3u
+
         """
         f = xbmcvfs.File(path, 'w')
+        f.write('#EXTINF:-1,'+title_player.encode('utf-8')+'\n')
         f.write(url)
         f.close()
+
+    def write_metadata_file(self, video_id, content):
+        """Writes the metadata file that caches grabbed content from netflix
+
+        Parameters
+        ----------
+        video_id : :obj:`str`
+            ID of video
+
+        content :
+            Unchanged metadata from netflix
+        """
+        meta_file = os.path.join(self.metadata_path, video_id+'.meta')
+        if not xbmcvfs.exists(meta_file):
+            f = xbmcvfs.File(meta_file, 'wb')
+            pickle.dump(content,f)
+            f.close()
+
+    def read_metadata_file(self, video_id):
+        """Reads the metadata file that caches grabbed content from netflix
+
+        Parameters
+        ----------
+        video_id : :obj:`str`
+            ID of video
+
+        content :
+            Unchanged metadata from cache file
+        """
+        meta_file = os.path.join(self.metadata_path, str(video_id)+'.meta')
+        if xbmcvfs.exists(meta_file):
+            f = xbmcvfs.File(meta_file, 'rb')
+            content = f.read()
+            f.close()
+            meta_data = pickle.loads(content)
+            return meta_data
+        return
+
+    def read_artdata_file(self, video_id):
+        """Reads the artdata file that caches grabbed content from netflix
+
+        Parameters
+        ----------
+        video_id : :obj:`str`
+            ID of video
+
+        content :
+            Unchanged artdata from cache file
+        """
+        meta_file = os.path.join(self.metadata_path, str(video_id)+'.art')
+        if xbmcvfs.exists(meta_file):
+            f = xbmcvfs.File(meta_file, 'rb')
+            content = f.read()
+            f.close()
+            meta_data = pickle.loads(content)
+            return meta_data
+        return
+
+    def write_artdata_file(self, video_id, content):
+        """Writes the art data file that caches grabbed content from netflix
+
+        Parameters
+        ----------
+        video_id : :obj:`str`
+            ID of video
+
+        content :
+            Unchanged artdata from netflix
+        """
+        meta_file = os.path.join(self.metadata_path, video_id+'.art')
+        if not xbmcvfs.exists(meta_file):
+            f = xbmcvfs.File(meta_file, 'wb')
+            pickle.dump(content,f)
+            f.close()
 
     def _load_local_db (self, filename):
         """Loads the local db file and parses it, creates one if not existent
@@ -265,7 +349,7 @@ class Library:
             time.sleep(0.5)
             self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
             self._update_local_db(filename=self.db_filepath, db=self.db)
-        self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id}))
+        self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id}), title_player=movie_meta)
         progress.update(100)
         time.sleep(1)
         progress.close()
@@ -355,7 +439,7 @@ class Library:
         filepath = os.path.join(show_dir, filename)
         if xbmcvfs.exists(filepath):
             return
-        self.write_strm_file(path=filepath, url=build_url({'action': 'play_video', 'video_id': video_id}))
+        self.write_strm_file(path=filepath, url=build_url({'action': 'play_video', 'video_id': video_id}),title_player=title+' - '+episode_meta)
 
     def remove_movie (self, title, year):
         """Removes the DB entry & the strm file for the movie given

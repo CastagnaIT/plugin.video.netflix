@@ -745,7 +745,12 @@ class KodiHelper:
             play_item.setProperty('StartOffset', str(start_offset) + '.0')
         # set infoLabels
         if len(infoLabels) > 0:
-            play_item.setInfo('video',  infoLabels)
+            play_item.setInfo('video', infoLabels)
+        if len(infoLabels) == 0:
+            infoLabels = self.library.read_metadata_file(video_id=video_id)
+            art = self.library.read_artdata_file(video_id=video_id)
+            play_item.setArt(art)
+        play_item.setInfo('video', infoLabels)
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
     def _generate_art_info (self, entry, li):
@@ -765,6 +770,14 @@ class KodiHelper:
             Kodi list item instance
         """
         art = {'fanart': self.default_fanart}
+        #Cleanup art
+        art.update({
+            'landscape': '',
+            'thumb': '',
+            'fanart': '',
+            'poster': ''
+        })
+
         if 'boxarts' in dict(entry).keys():
             art.update({
                 'poster': entry['boxarts']['big'],
@@ -784,6 +797,7 @@ class KodiHelper:
         if 'poster' in dict(entry).keys():
             art.update({'poster': entry['poster']})
         li.setArt(art)
+        self.library.write_artdata_file(video_id=str(entry['id']), content=art)
         return li
 
     def _generate_entry_info (self, entry, li, base_info={}):
@@ -807,6 +821,26 @@ class KodiHelper:
         """
         infos = base_info
         entry_keys = entry.keys()
+        # Cleanup item info
+        infos.update({
+            'writer': '',
+            'director': '',
+            'genre': '',
+            'mpaa': '',
+            'rating': '',
+            'plot': '',
+            'plot': '',
+            'duration': '',
+            'season': '',
+            'title': '',
+            'tvshowtitle': '',
+            'mediatype': '',
+            'playcount': '',
+            'episode': '',
+            'year': '',
+            'tvshowtitle': ''
+        })
+
         if 'cast' in entry_keys and len(entry['cast']) > 0:
             infos.update({'cast': entry['cast']})
         if 'creators' in entry_keys and len(entry['creators']) > 0:
@@ -865,6 +899,7 @@ class KodiHelper:
         if 'tvshowtitle' in entry_keys:
             infos.update({'tvshowtitle': base64.urlsafe_b64decode(entry.get('tvshowtitle', '')).decode('utf-8')})
         li.setInfo('video', infos)
+        self.library.write_metadata_file(video_id=str(entry['id']), content=infos)
         return li, infos
 
     def _generate_context_menu_items (self, entry, li):
