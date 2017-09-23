@@ -219,6 +219,18 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
         return True
 
+    def show_no_metadata_notification (self):
+        """Shows notification that no metadata is available
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
+        return True
+
     def set_setting (self, key, value):
         """Public interface for the addons setSetting method
 

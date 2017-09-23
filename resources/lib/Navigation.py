@@ -277,7 +277,7 @@ class Navigation:
 
         type : :obj:`str`
             None or 'queue' f.e. when itÂ´s a special video lists
-        
+
         start : :obj:`int`
             Starting point
         """
@@ -372,6 +372,9 @@ class Navigation:
             Alternative title (for the folder written to disc)
         """
         metadata = self.call_netflix_service({'method': 'fetch_metadata', 'video_id': video_id})
+        if "error" in metadata:
+            self.kodi_helper.show_no_metadata_notification()
+            return False
         # check for any errors
         if self._is_dirty_response(response=metadata):
             return False
@@ -393,11 +396,14 @@ class Navigation:
         """Removes an item from the local library
 
         Parameters
-        ----------
+        ---------
         video_id : :obj:`str`
             ID of the movie or show
         """
         metadata = self.call_netflix_service({'method': 'fetch_metadata', 'video_id': video_id})
+        if "error" in metadata:
+            self.kodi_helper.show_no_metadata_notification()
+            return False
         # check for any errors
         if self._is_dirty_response(response=metadata):
             return False
