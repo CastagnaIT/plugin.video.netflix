@@ -64,6 +64,17 @@ class KodiHelper:
         """Returns a fresh addon instance"""
         return Addon()
 
+    def check_folder_path (self, path):
+        """Check if folderpath ends with path delimator - If not correct it (makes sure xbmcvfs.exists is working correct)
+        """
+        if '/' in path and not str(path).endswith('/'):
+            path = path + '/'
+            return path
+
+        if '\\' in path and not str(path).endswith('\\'):
+            path = path + '\\'
+            return path
+
     def refresh (self):
         """Refresh the current list"""
         return xbmc.executebuiltin('Container.Refresh')
@@ -596,19 +607,34 @@ class KodiHelper:
         action = ['remove_from_library', self.get_local_string(30030), 'remove']
         listing = content
         for video in listing[0]:
-            li = xbmcgui.ListItem(label=str(video)+' ('+str(self.library.get_exported_movie_year (title=video))+')', iconImage=self.default_fanart)
+            year = self.library.get_exported_movie_year (title=video)
+            li = xbmcgui.ListItem(label=str(video)+' ('+str(year)+')', iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             isFolder = False
-            year = self.library.get_exported_movie_year (title=video)
             url = build_url({'action': 'removeexported', 'title': str(video), 'year': str(year), 'type': 'movie'})
+            art = {}
+            image = self.library.get_previewimage(video)
+            art.update({
+                'landscape': image,
+                'thumb': image
+            })
+            li.setArt(art)
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+
         for video in listing[2]:
             li = xbmcgui.ListItem(label=str(video), iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             isFolder = False
             year = '0000'
-            url = build_url({'action': 'removeexported', 'title': str(video), 'year': str(year), 'type': 'show'})
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+            url = build_url({'action': 'removeexported', 'title': str(str(video)), 'year': str(year), 'type': 'show'})
+            art = {}
+            image = self.library.get_previewimage(video)
+            art.update({
+                'landscape': image,
+                'thumb': image
+            })
+            li.setArt(art)
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)     
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE) 
@@ -875,6 +901,10 @@ class KodiHelper:
                 'thumb': entry['boxarts']['small'],
                 'fanart': entry['boxarts']['big']
             })
+            # Download image for exported listing
+            if 'title' in entry:
+                self.library.download_image_file(title=entry['title'].encode('utf-8'), url=str(entry['boxarts']['big']))
+
         if 'interesting_moment' in dict(entry).keys():
             art.update({
                 'poster': entry['interesting_moment'],
@@ -918,7 +948,6 @@ class KodiHelper:
             'genre': '',
             'mpaa': '',
             'rating': '',
-            'plot': '',
             'plot': '',
             'duration': '',
             'season': '',
