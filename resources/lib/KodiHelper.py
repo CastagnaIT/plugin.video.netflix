@@ -890,7 +890,8 @@ class KodiHelper:
                 'fanart': entry['boxarts']['big']
             })
             # Download image for exported listing
-            self.library.download_image_file(title=entry['title'].encode('utf-8'), url=str(entry['boxarts']['big']))
+            if 'title' in entry:
+                self.library.download_image_file(title=entry['title'].encode('utf-8'), url=str(entry['boxarts']['big']))
 
         if 'interesting_moment' in dict(entry).keys():
             art.update({
