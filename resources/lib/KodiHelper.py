@@ -101,7 +101,7 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         term = dlg.input(self.get_local_string(string_id=30003), type=xbmcgui.INPUT_ALPHANUM)
         if len(term) == 0:
-            term = ' '
+            term = None
         return term
 
     def show_add_to_library_title_dialog (self, original_title):
@@ -155,6 +155,18 @@ class KodiHelper:
         """
         dialog = xbmcgui.Dialog()
         dialog.notification(self.get_local_string(string_id=30008), self.get_local_string(string_id=30009), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return True
+
+    def show_request_error_notification (self):
+        """Shows notification that a request error occured
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=30051), self.get_local_string(string_id=30052), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
     def show_missing_inputstream_addon_notification (self):
@@ -641,6 +653,50 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
+
+    def build_search_result_folder (self, build_url, term):
+        """Add search result folder
+
+        Parameters
+        ----------
+        build_url : :obj:`fn`
+            Function to build the subsequent routes
+
+        term : :obj:`str`
+            Search term
+
+        Returns
+        -------
+        :obj:`str`
+            Search result folder URL
+        """
+        # add search result as subfolder
+        li_rec = xbmcgui.ListItem(label='({})'.format(term), iconImage=self.default_fanart)
+        li_rec.setProperty('fanart_image', self.default_fanart)
+        url_rec = build_url({'action': 'search_result', 'term': term})
+        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.endOfDirectory(self.plugin_handle)
+        self.set_custom_view(VIEW_FOLDER)
+        return url_rec
+
+    def set_location (self, url, replace=False):
+        """Set URL location
+
+        Parameters
+        ----------
+        url : :obj:`str`
+            Window URL
+
+        ret : bool
+            Return to location prior to activation
+
+        Returns
+        -------
+        bool
+            Window was activated
+        """
+        return xbmc.executebuiltin('Container.Update({},{})'.format(url,str(replace)))
 
     def build_search_result_listing (self, video_list, actions, build_url):
         """Builds the search results list Kodi screen
