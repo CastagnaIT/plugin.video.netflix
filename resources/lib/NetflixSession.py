@@ -968,9 +968,9 @@ class NetflixSession:
             Quality of the video
         """
         quality = '720'
-        if video['videoQuality']['hasHD']:
+        if video['delivery']['hasHD']:
             quality = '1080'
-        if video['videoQuality']['hasUltraHD']:
+        if video['delivery']['hasUltraHD']:
             quality = '4000'
         return quality
 
@@ -1399,7 +1399,7 @@ class NetflixSession:
             Raw Netflix API call response or api call error
         """
         paths = [
-            ['lists', list_id, {'from': list_from, 'to': list_to}, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'videoQuality']],
+            ['lists', list_id, {'from': list_from, 'to': list_to}, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'cast', 'summary'],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
@@ -1434,7 +1434,7 @@ class NetflixSession:
         """
         paths = []
         for video_id in video_ids:
-            paths.append(['videos', video_id, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'videoQuality']])
+            paths.append(['videos', video_id, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']])
             paths.append(['videos', video_id, 'cast', {'from': 0, 'to': 15}, ['id', 'name']])
             paths.append(['videos', video_id, 'cast', 'summary'])
             paths.append(['videos', video_id, 'genres', {'from': 0, 'to': 5}, ['id', 'name']])
@@ -1553,7 +1553,7 @@ class NetflixSession:
             Raw Netflix API call response or api call error
         """
         paths = [
-            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'videoQuality']],
+            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'delivery']],
             #['videos', season_id, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
             #['videos', season_id, 'cast', 'summary'],
             #['videos', season_id, 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
