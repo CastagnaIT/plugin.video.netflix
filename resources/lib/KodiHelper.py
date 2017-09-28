@@ -67,10 +67,19 @@ class KodiHelper:
     def check_folder_path (self, path):
         """Check if folderpath ends with path delimator - If not correct it (makes sure xbmcvfs.exists is working correct)
         """
+        if isinstance(path, unicode):
+            check = path.encode('ascii','ignore')
+            if '/' in check and not str(check).endswith('/'):
+                end = u'/'
+                path = path + end
+                return path
+            if '\\' in check and not str(check).endswith('\\'):
+                end = u'\\'
+                path = path + end
+                return path
         if '/' in path and not str(path).endswith('/'):
             path = path + '/'
             return path
-
         if '\\' in path and not str(path).endswith('\\'):
             path = path + '\\'
             return path
