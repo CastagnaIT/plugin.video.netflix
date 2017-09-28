@@ -220,3 +220,11 @@ msgstr ""
 msgctxt "#30050"
 msgid "Update successful"
 msgstr ""
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr ""
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr ""
