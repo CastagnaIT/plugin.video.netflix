@@ -262,6 +262,18 @@ class KodiHelper:
         dialog = xbmcgui.Dialog()
         dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
         return True
+        
+    def show_autologin_enabled (self):
+        """Shows notification that auto login is enabled
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
+        return True
 
     def set_setting (self, key, value):
         """Public interface for the addons setSetting method
@@ -272,6 +284,15 @@ class KodiHelper:
             Setting could be set or not
         """
         return self.get_addon().setSetting(key, value)
+
+    def get_setting (self, key):
+        """Public interface to the addons getSetting method
+
+        Returns
+        -------
+        Returns setting key
+        """
+        return self.get_addon().getSetting(key)
 
     def get_credentials (self):
         """Returns the users stored credentials
@@ -423,6 +444,24 @@ class KodiHelper:
             if view != -1:
                 xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
 
+    def save_autologin_data(self, autologin_user, autologin_id):
+        """Write autologin data to settings
+
+        Parameters
+        ----------
+        autologin_user : :obj:`str`
+            Profile name from netflix
+
+        autologin_id : :obj:`str`
+            Profile id from netflix
+        """
+        self.set_setting ('autologin_user', autologin_user)
+        self.set_setting ('autologin_id', autologin_id)
+        self.set_setting ('autologin_enable', 'True')
+        self.show_autologin_enabled()
+        self.invalidate_memcache()
+        xbmc.executebuiltin('Container.Refresh')
+
     def build_profiles_listing (self, profiles, action, build_url):
         """Builds the profiles list Kodi screen
 
@@ -444,8 +483,10 @@ class KodiHelper:
         """
         for profile in profiles:
             url = build_url({'action': action, 'profile_id': profile['id']})
+            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['id'], 'autologin_user': profile['profileName']})
             li = xbmcgui.ListItem(label=profile['profileName'], iconImage=profile['avatar'])
             li.setProperty('fanart_image', self.default_fanart)
+            li.addContextMenuItems([(self.get_local_string(30053), 'RunPlugin('+url_save_autologin+')',)])
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
             xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.endOfDirectory(self.plugin_handle)
