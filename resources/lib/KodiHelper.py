@@ -8,6 +8,7 @@ import xbmcgui
 import xbmc
 import json
 import base64
+import re
 from MSL import MSL
 from os import remove
 from os.path import join, isfile
@@ -932,6 +933,22 @@ class KodiHelper:
             art = self.library.read_artdata_file(video_id=video_id)
             play_item.setArt(art)
         play_item.setInfo('video', infoLabels)
+
+        # check for content in kodi db
+        if str(infoLabels) != "None":     
+            if infoLabels['mediatype'] == 'episode':
+                id = self.showtitle_to_id(title=infoLabels['tvshowtitle'])
+                details = self.get_show_content_by_id(showid=id, showseason=infoLabels['season'], showepisode=infoLabels['episode'])
+                if details != False:
+                    play_item.setInfo('video', details[0])
+                    play_item.setArt(details[1])
+            if infoLabels['mediatype'] != 'episode':
+                id = self.movietitle_to_id(title=infoLabels['title'])
+                details = self.get_movie_content_by_id(movieid=id)
+                if details != False:
+                    play_item.setInfo('video', details[0])
+                    play_item.setArt(details[1])
+
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
     def _generate_art_info (self, entry, li):
@@ -1204,6 +1221,133 @@ class KodiHelper:
         if not 'error' in data.keys():
             return (type, data['result']['addon']['enabled'])
         return None
+
+    def movietitle_to_id(self, title):
+        query = {
+                "jsonrpc": "2.0",
+                "method": "VideoLibrary.GetMovies",
+                "params": {
+                    "properties": ["title"]
+                },
+                "id": "libMovies"
+                }
+        try:
+            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            if 'result' in json_result and 'movies' in json_result['result']:
+                json_result = json_result['result']['movies']
+                for movie in json_result:
+                    # Switch to ascii/lowercase and remove special chars and spaces
+                    # to make sure best possible compare is possible
+                    titledb = movie['title'].encode('ascii','ignore')
+                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titledb).lower().replace('-','')
+                    if '(' in titledb:
+                        titledb = titledb.split('(')[0]
+                    titlegiven = title.encode('ascii','ignore')
+                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titlegiven).lower().replace('-','')
+                    if '(' in titlegiven:
+                        titlegiven = titlegiven.split('(')[0]
+                    if titledb == titlegiven:
+                        return movie['movieid']
+            return '-1'
+        except Exception:
+            return '-1'
+
+    def showtitle_to_id(self, title):
+        query = {
+                "jsonrpc": "2.0",
+                "method": "VideoLibrary.GetTVShows",
+                "params": {
+                    "properties": ["title","genre"]
+                },
+                "id": "libTvShows"
+                }
+        try:
+            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            if 'result' in json_result and 'tvshows' in json_result['result']:
+                json_result = json_result['result']['tvshows']
+                for tvshow in json_result:
+                    # Switch to ascii/lowercase and remove special chars and spaces
+                    # to make sure best possible compare is possible
+                    titledb = tvshow['label'].encode('ascii','ignore')
+                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titledb).lower().replace('-','')
+                    if '(' in titledb:
+                        titledb = titledb.split('(')[0]
+                    titlegiven = title.encode('ascii','ignore')
+                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titlegiven).lower().replace('-','')
+                    if '(' in titlegiven:
+                        titlegiven = titlegiven.split('(')[0]
+                    if titledb == titlegiven:
+                        return tvshow['tvshowid'],tvshow['genre']
+            return '-1',''
+        except Exception:
+            return '-1',''
+
+    def get_show_content_by_id(self, showid, showseason, showepisode):
+        showseason = int(showseason)
+        showepisode = int(showepisode)
+        query = {
+                "jsonrpc": "2.0",
+                "method": "VideoLibrary.GetEpisodes",
+                "params": {
+                    "properties": ["season", "episode", "plot", "fanart", "art"],
+                    "tvshowid": int(showid[0])
+                },
+                "id": "1"
+                }
+        try:
+            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            if 'result' in json_result and 'episodes' in json_result['result']:
+                json_result = json_result['result']['episodes']
+                for episode in json_result:
+                    if episode['season'] == showseason and episode['episode'] == showepisode:
+                        infos = {}
+                        if 'plot' in episode and len(episode['plot']) > 0:
+                            infos.update({'plot': episode['plot'], 'genre': showid[1]})
+                        art = {}
+                        if 'fanart' in episode and len(episode['fanart']) > 0:
+                            art.update({'fanart': episode['fanart']})
+                        if 'art' in episode and len(episode['art']['season.poster']) > 0:
+                            art.update({'thumb': episode['art']['season.poster']})
+                        return infos,art
+            return False
+        except Exception:
+            return False
+
+    def get_movie_content_by_id(self, movieid):
+        query = {
+                "jsonrpc": "2.0",
+                "method": "VideoLibrary.GetMovieDetails",
+                "params": {
+                    "movieid": movieid,
+                    "properties": [
+                        "genre",
+                        "plot",
+                        "fanart",
+                        "thumbnail",
+                        "art"]
+                },
+                "id": "libMovies"
+                }
+        try:
+            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            if 'result' in json_result and 'moviedetails' in json_result['result']:
+                json_result = json_result['result']['moviedetails']
+                infos = {}
+                if 'genre' in json_result and len(json_result['genre']) > 0:
+                    infos.update({'genre': json_result['genre']})
+                if 'plot' in json_result and len(json_result['plot']) > 0:
+                    infos.update({'plot': json_result['plot']})
+                art = {}
+                if 'fanart' in json_result and len(json_result['fanart']) > 0:
+                    art.update({'fanart': json_result['fanart']})
+                if 'thumbnail' in json_result and len(json_result['thumbnail']) > 0:
+                    art.update({'thumb': json_result['thumbnail']})
+                if 'art' in json_result and len(json_result['art']['poster']) > 0:
+                    art.update({'poster': json_result['art']['poster']})
+                return infos,art
+            return False
+        except Exception:
+            return False
 
     def set_library (self, library):
         """Adds an instance of the Library class
