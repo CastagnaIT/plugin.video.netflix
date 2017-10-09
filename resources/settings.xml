@@ -31,4 +31,10 @@
     <setting id="netflix_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
   </category>
+  <category label="30053">
+    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
+    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
+  </category>
 </settings>

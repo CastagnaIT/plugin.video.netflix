@@ -216,3 +216,27 @@ msgstr "Aktualisiere DB"
 msgctxt "#30050"
 msgid "Update successful"
 msgstr "Aktualisierung erfolgreich"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Automatisch Anmelden"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Aktiviere automatisches Anmelden"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Wähle Profil in der Übersicht -> Kontextemnü"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Automatische Anmeldung aktiviert!"

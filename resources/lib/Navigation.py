@@ -74,7 +74,15 @@ class Navigation:
             return False
         if 'action' not in params.keys():
             # show the profiles
+            if self.kodi_helper.get_setting ('autologin_enable') == 'true':
+                profile_id = self.kodi_helper.get_setting ('autologin_id')
+                if profile_id != '':
+                    self.call_netflix_service({'method': 'switch_profile', 'profile_id': profile_id})
+                    return self.show_video_lists()
             return self.show_profiles()
+        elif params['action'] == 'save_autologin':
+            # save profile id and name to settings for autologin
+            return self.kodi_helper.save_autologin_data(autologin_id=params['autologin_id'],autologin_user=params['autologin_user'])
         elif params['action'] == 'video_lists':
             # list lists that contain other lists (starting point with recommendations, search, etc.)
             return self.show_video_lists()

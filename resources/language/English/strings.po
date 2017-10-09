@@ -228,3 +228,27 @@ msgstr ""
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
 msgstr ""
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr ""
+
+msgctxt "#30056"
+msgid "ID"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr ""
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr ""
