@@ -260,3 +260,7 @@ msgstr ""
 msgctxt "#30060"
 msgid "Enable HEVC profiles (f.e. 4k for Android)"
 msgstr ""
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr ""

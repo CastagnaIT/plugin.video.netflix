@@ -268,7 +268,7 @@ class KodiHelper:
         dialog = xbmcgui.Dialog()
         dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
         return True
-        
+
     def show_autologin_enabled (self):
         """Shows notification that auto login is enabled
 
@@ -321,7 +321,7 @@ class KodiHelper:
                 'email': self.get_addon().getSetting('email'),
                 'password': self.get_addon().getSetting('password')
             }
-        
+
         # if everything is fine, we decode the values
         if '' != email or '' != password:
             return {
@@ -332,7 +332,7 @@ class KodiHelper:
         # if email is empty, we return an empty map
         return {
             'email': '',
-            'password': ''                
+            'password': ''
         }
 
     def encode(self, raw):
@@ -398,7 +398,7 @@ class KodiHelper:
         setting = self.get_addon().getSetting('enable_dolby_sound')
         if setting == 'true' or setting == 'True':
             use_dolby = True
-        return use_dolby      
+        return use_dolby
 
     def use_hevc(self):
         """
@@ -409,7 +409,7 @@ class KodiHelper:
         setting = self.get_addon().getSetting('enable_hevc_profiles')
         if setting == 'true' or setting == 'True':
             use_hevc = True
-        return use_hevc        
+        return use_hevc
 
     def get_custom_library_settings (self):
         """Returns the settings in regards to the custom library folder(s)
@@ -1221,6 +1221,7 @@ class KodiHelper:
         actions = [
             ['export_to_library', self.get_local_string(30018), 'export'],
             ['remove_from_library', self.get_local_string(30030), 'remove'],
+            ['update_the_library', self.get_local_string(30061), 'update'],
             ['rate_on_netflix', self.get_local_string(30019), 'rating'],
             ['remove_from_my_list', self.get_local_string(30020), 'remove_from_list'],
             ['add_to_my_list', self.get_local_string(30021), 'add_to_list']
@@ -1246,11 +1247,17 @@ class KodiHelper:
             if entry['type'] == 'movie':
                 action_type = 'remove_from_library' if self.library.movie_exists(title=entry['title'], year=entry['year']) else 'export_to_library'
                 items.append(action[action_type])
-            # add/remove show
+                # Add update option
+                if action_type == 'remove_from_library':
+                    action_type = 'update_the_library'
+                    items.append(action[action_type])
             if entry['type'] == 'show' and 'title' in entry_keys:
                 action_type = 'remove_from_library' if self.library.show_exists(title=entry['title']) else 'export_to_library'
                 items.append(action[action_type])
-
+                # Add update option
+                if action_type == 'remove_from_library':
+                    action_type = 'update_the_library'
+                    items.append(action[action_type])
         # add it to the item
         li.addContextMenuItems(items)
         return li
