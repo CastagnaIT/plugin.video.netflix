@@ -25,6 +25,8 @@ Installation & Updates
 
 You can use [our repository](https://github.com/kodinerds/repo/raw/master/repository.netflix/repository.netflix-1.0.1.zip) to install plugin. Using this, you´ll immediately receive updates once a new release has been drafted.
 
+Further installations instructions can be found in the [Wiki](https://github.com/asciidisco/plugin.video.netflix/wiki)
+
 FAQ
 ---
 
@@ -51,11 +53,11 @@ If something doesn't work for you, please:
 - Enable verbose logging in the plugin settings
 - Enable the Debug log in you Kodi settings
 - Open an issue with a titles that summarises your problems and include:
-	- Kodi version (git sha if possible)
-	- Inputstream.adaptive version (git sha if possible)
-	- Your OS and OS version
-	- Libwedevine version
-	- A Kodi debug log that represents your issue
+    - Kodi version (git sha if possible)
+    - Inputstream.adaptive version (git sha if possible)
+    - Your OS and OS version
+    - Libwedevine version
+    - A Kodi debug log that represents your issue
 
 Donate
 ------
