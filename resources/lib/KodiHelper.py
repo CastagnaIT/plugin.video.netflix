@@ -392,9 +392,24 @@ class KodiHelper:
     def get_dolby_setting(self):
         """
         Returns if the dolby sound is enabled
-        :return: True|False
+        :return: bool - Dolby Sourrind profile setting is enabled
         """
-        return self.get_addon().getSetting('enable_dolby_sound') == 'true'
+        use_dolby = False
+        setting = self.get_addon().getSetting('enable_dolby_sound')
+        if setting == 'true' or setting == 'True':
+            use_dolby = True
+        return use_dolby      
+
+    def use_hevc(self):
+        """
+        Checks if HEVC profiles should be used
+        :return: bool - HEVC profile setting is enabled
+        """
+        use_hevc = False
+        setting = self.get_addon().getSetting('enable_hevc_profiles')
+        if setting == 'true' or setting == 'True':
+            use_hevc = True
+        return use_hevc        
 
     def get_custom_library_settings (self):
         """Returns the settings in regards to the custom library folder(s)

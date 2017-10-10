@@ -256,3 +256,7 @@ msgstr ""
 msgctxt "#30059"
 msgid "Switch accounts"
 msgstr ""
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr ""
