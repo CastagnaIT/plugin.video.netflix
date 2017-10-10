@@ -438,9 +438,9 @@ class MSL:
         }
 
         # Serialize the given Data
-       serialized_data = json.dumps(data)
-       serialized_data = serialized_data.replace('"', '\\"')
-     serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13'"payload":{"data":"' + serialized_data + '"},"query":""}]\n'
+        serialized_data = json.dumps(data)
+        serialized_data = serialized_data.replace('"', '\\"')
+        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"' + serialized_data + '"},"query":""}]\n'
 
         compressed_data = self.__compress_data(serialized_data)
 
