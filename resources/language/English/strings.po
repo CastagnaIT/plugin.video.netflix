@@ -252,3 +252,7 @@ msgstr ""
 msgctxt "#30058"
 msgid "Auto Login enabled!"
 msgstr ""
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr ""

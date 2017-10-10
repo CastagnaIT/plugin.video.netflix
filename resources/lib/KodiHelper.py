@@ -8,13 +8,17 @@ import xbmcgui
 import xbmc
 import json
 import base64
+import hashlib
+from Cryptodome import Random
+from Cryptodome.Cipher import AES
+from Cryptodome.Util import Padding
 from MSL import MSL
 from os import remove
 from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
-from utils import get_user_agent_for_current_platform
+from utils import get_user_agent_for_current_platform, uniq_id
 from UniversalAnalytics import Tracker
 try:
    import cPickle as pickle
@@ -57,6 +61,8 @@ class KodiHelper:
         self.custom_export_name = addon.getSetting('customexportname')
         self.show_update_db = addon.getSetting('show_update_db')
         self.default_fanart = addon.getAddonInfo('fanart')
+        self.bs = 32
+        self.crypt_key = uniq_id()
         self.library = None
         self.setup_memcache()
 
@@ -302,10 +308,58 @@ class KodiHelper:
         :obj:`dict` of :obj:`str`
             The users stored account data
         """
+        addon = self.get_addon()
+        email = addon.getSetting('email')
+        password = addon.getSetting('password')
+
+        # soft migration for existing credentials
+        # base64 can't contain `@` chars
+        if '@' in email:
+            addon.setSetting('email', self.encode(raw=email))
+            addon.setSetting('password', self.encode(raw=password))
+            return {
+                'email': self.get_addon().getSetting('email'),
+                'password': self.get_addon().getSetting('password')
+            }
+        
+        # if everything is fine, we decode the values
+        if '' != email or '' != password:
+            return {
+                'email': self.decode(enc=email),
+                'password': self.decode(enc=password)
+            }
+
+        # if email is empty, we return an empty map
         return {
-            'email': self.get_addon().getSetting('email'),
-            'password': self.get_addon().getSetting('password')
+            'email': '',
+            'password': ''                
         }
+
+    def encode(self, raw):
+        """
+        Encodes data
+
+        :param data: Data to be encoded
+        :type data: str
+        :returns:  string -- Encoded data
+        """
+        raw = Padding.pad(data_to_pad=raw, block_size=self.bs)
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
+        return base64.b64encode(iv + cipher.encrypt(raw))
+
+    def decode(self, enc):
+        """
+        Decodes data
+
+        :param data: Data to be decoded
+        :type data: str
+        :returns:  string -- Decoded data
+        """
+        enc = base64.b64decode(enc)
+        iv = enc[:AES.block_size]
+        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
+        return Padding.unpad(padded_data=cipher.decrypt(enc[AES.block_size:]), block_size=self.bs).decode('utf-8')
 
     def get_esn(self):
         """
