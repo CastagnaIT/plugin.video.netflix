@@ -31,6 +31,7 @@ FAQ
 - [Does it work with Kodi 17](https://github.com/asciidisco/plugin.video.netflix/issues/25)
 - [Does it work on a RPI](https://github.com/asciidisco/plugin.video.netflix/issues/28)
 - [Which video resolutions are supported](https://github.com/asciidisco/plugin.video.netflix/issues/27)
+- [Can it play 4k Videos](https://github.com/asciidisco/plugin.video.netflix/issues/86)
 
 Functionality
 -------------
