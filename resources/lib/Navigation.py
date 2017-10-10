@@ -16,7 +16,7 @@ from utils import noop, log
 class Navigation:
     """Routes to the correct subfolder, dispatches actions & acts as a controller for the Kodi view & the Netflix model"""
 
-    def __init__ (self, kodi_helper, library, base_url, log_fn=noop):
+    def __init__(self, kodi_helper, library, base_url, log_fn=noop):
         """Takes the instances & configuration options needed to drive the plugin
 
         Parameters
@@ -39,7 +39,7 @@ class Navigation:
         self.log = log_fn
 
     @log
-    def router (self, paramstring):
+    def router(self, paramstring):
         """Route to the requested subfolder & dispatch actions along the way
 
         Parameters
@@ -56,6 +56,10 @@ class Navigation:
         # log out the user
         if 'action' in params.keys() and params['action'] == 'logout':
             return self._check_response(self.call_netflix_service({'method': 'logout'}))
+
+        # switch user account
+        if 'action' in params.keys() and params['action'] == 'switch_account':
+            return self.switch_account()       
 
         # check login & try to relogin if necessary
         account = self.kodi_helper.get_credentials()
@@ -74,7 +78,15 @@ class Navigation:
             return False
         if 'action' not in params.keys():
             # show the profiles
+            if self.kodi_helper.get_setting ('autologin_enable') == 'true':
+                profile_id = self.kodi_helper.get_setting ('autologin_id')
+                if profile_id != '':
+                    self.call_netflix_service({'method': 'switch_profile', 'profile_id': profile_id})
+                    return self.show_video_lists()
             return self.show_profiles()
+        elif params['action'] == 'save_autologin':
+            # save profile id and name to settings for autologin
+            return self.kodi_helper.save_autologin_data(autologin_id=params['autologin_id'],autologin_user=params['autologin_user'])
         elif params['action'] == 'video_lists':
             # list lists that contain other lists (starting point with recommendations, search, etc.)
             return self.show_video_lists()
@@ -145,7 +157,7 @@ class Navigation:
         return True
 
     @log
-    def play_video (self, video_id, start_offset, infoLabels):
+    def play_video(self, video_id, start_offset, infoLabels):
         """Starts video playback
 
         Note: This is just a dummy, inputstream is needed to play the vids
@@ -171,7 +183,7 @@ class Navigation:
         return False
 
     @log
-    def show_search_results (self, term):
+    def show_search_results(self, term):
         """Display a list of search results
 
         Parameters
@@ -193,7 +205,7 @@ class Navigation:
         self.kodi_helper.show_no_search_results_notification()
         return False
 
-    def show_user_list (self, type):
+    def show_user_list(self, type):
         """List the users lists for shows/movies for recommendations/genres based on the given type
 
         Parameters
@@ -209,7 +221,7 @@ class Navigation:
                 return self.kodi_helper.build_user_sub_listing(video_list_ids=video_list_ids[type], type=type, action='video_list', build_url=self.build_url)
         return False
 
-    def show_episode_list (self, season_id, tvshowtitle):
+    def show_episode_list(self, season_id, tvshowtitle):
         """Lists all episodes for a given season
 
         Parameters
@@ -234,7 +246,7 @@ class Navigation:
                 return self.kodi_helper.build_episode_listing(episodes_sorted=episodes_sorted, build_url=self.build_url)
         return False
 
-    def show_seasons (self, show_id, tvshowtitle):
+    def show_seasons(self, show_id, tvshowtitle):
         """Lists all seasons for a given show
 
         Parameters
@@ -265,7 +277,7 @@ class Navigation:
                 return self.kodi_helper.build_season_listing(seasons_sorted=seasons_sorted, build_url=self.build_url)
         return False
 
-    def show_video_list (self, video_list_id, type, start=0):
+    def show_video_list(self, video_list_id, type, start=0):
         """List shows/movies based on the given video list id
 
         Parameters
@@ -301,7 +313,7 @@ class Navigation:
             return self.kodi_helper.build_video_listing(video_list=video_list, actions=actions, type=type, build_url=self.build_url, has_more=has_more, start=start, current_video_list_id=video_list_id)
         return False
 
-    def show_video_lists (self):
+    def show_video_lists(self):
         """List the users video lists (recommendations, my list, etc.)"""
         user_data = self._check_response(self.call_netflix_service({'method': 'get_user_data'}))
         if user_data:
@@ -315,7 +327,7 @@ class Navigation:
         return False
 
     @log
-    def show_profiles (self):
+    def show_profiles(self):
         """List the profiles for the active account"""
         profiles = self._check_response(self.call_netflix_service({'method': 'list_profiles'}))
         if profiles and len(profiles) != 0:
@@ -324,7 +336,7 @@ class Navigation:
         
 
     @log
-    def rate_on_netflix (self, video_id):
+    def rate_on_netflix(self, video_id):
         """Rate a show/movie/season/episode on Netflix
 
         Parameters
@@ -339,7 +351,7 @@ class Navigation:
         return result
 
     @log
-    def remove_from_list (self, video_id):
+    def remove_from_list(self, video_id):
         """Remove an item from 'My List' & refresh the view
 
         Parameters
@@ -353,7 +365,7 @@ class Navigation:
         return self.kodi_helper.show_request_error_notification()
 
     @log
-    def add_to_list (self, video_id):
+    def add_to_list(self, video_id):
         """Add an item to 'My List' & refresh the view
 
         Parameters
@@ -367,7 +379,7 @@ class Navigation:
         return self.kodi_helper.show_request_error_notification()
 
     @log
-    def export_to_library (self, video_id, alt_title):
+    def export_to_library(self, video_id, alt_title):
         """Adds an item to the local library
 
         Parameters
@@ -394,7 +406,7 @@ class Navigation:
         return False
 
     @log
-    def remove_from_library (self, video_id, season=None, episode=None):
+    def remove_from_library(self, video_id, season=None, episode=None):
         """Removes an item from the local library
 
         Parameters
@@ -431,8 +443,29 @@ class Navigation:
         is_logged_in = self._check_response(self.call_netflix_service({'method': 'is_logged_in'}))
         return True if is_logged_in else self._check_response(self.call_netflix_service({'method': 'login', 'email': account['email'], 'password': account['password']}))
 
+    def switch_account(self):
+        """Deletes all current account data & prompts with dialogs for new ones"""
+        self._check_response(self.call_netflix_service({'method': 'logout'}))
+        self.kodi_helper.set_setting(key='email', value='')
+        self.kodi_helper.set_setting(key='password', value='')
+        raw_email = self.kodi_helper.show_email_dialog()
+        raw_password = self.kodi_helper.show_password_dialog()
+        encoded_email = self.kodi_helper.encode(raw=raw_email)
+        encoded_password = self.kodi_helper.encode(raw=raw_password)
+        self.kodi_helper.set_setting(key='email', value=encoded_email)
+        self.kodi_helper.set_setting(key='password', value=encoded_password)
+        account = {
+            'email': raw_email,
+            'password': raw_password,
+        }
+        if self.establish_session(account=account) != True:
+            self.kodi_helper.set_setting(key='email', value='')
+            self.kodi_helper.set_setting(key='password', value='')            
+            return self.kodi_helper.show_login_failed_notification()
+        return True
+
     @log
-    def before_routing_action (self, params):
+    def before_routing_action(self, params):
         """Executes actions before the actual routing takes place:
 
             - Check if account data has been stored, if not, asks for it
@@ -479,7 +512,7 @@ class Navigation:
             self.establish_session(account=credentials)
         return options
 
-    def check_for_designated_profile_change (self, params):
+    def check_for_designated_profile_change(self, params):
         """Checks if the profile needs to be switched
 
         Parameters
@@ -505,7 +538,7 @@ class Navigation:
         self.kodi_helper.show_request_error_notification()
         return False
 
-    def parse_paramters (self, paramstring):
+    def parse_paramters(self, paramstring):
         """Tiny helper to convert a url paramstring into a dictionary
 
         Parameters
@@ -520,7 +553,7 @@ class Navigation:
         """
         return dict(parse_qsl(paramstring))
 
-    def _is_expired_session (self, response):
+    def _is_expired_session(self, response):
         """Checks if a response error is based on an invalid session
 
         Parameters
@@ -535,7 +568,7 @@ class Navigation:
         """
         return 'error' in response and 'code' in response and str(response['code']) == '401'
 
-    def _check_response (self, response):
+    def _check_response(self, response):
         """Checks if a response contains an error & if the error is based on an invalid session, it tries a relogin
 
         Parameters
@@ -574,7 +607,7 @@ class Navigation:
         """
         return self.base_url + '?' + urllib.urlencode(query)
 
-    def get_netflix_service_url (self):
+    def get_netflix_service_url(self):
         """Returns URL & Port of the internal Netflix HTTP Proxy service
 
         Returns
@@ -584,7 +617,7 @@ class Navigation:
         """
         return 'http://127.0.0.1:' + str(self.kodi_helper.get_addon().getSetting('netflix_service_port'))
 
-    def call_netflix_service (self, params):
+    def call_netflix_service(self, params):
         """Makes a GET request to the internal Netflix HTTP proxy and returns the result
 
         Parameters

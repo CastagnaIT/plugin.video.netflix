@@ -3,7 +3,11 @@
 # Module: utils
 # Created on: 13.01.2017
 
+import time
+import hashlib
 import platform
+import xbmc
+
 
 # Takes everything, does nothing, classic no operation function
 def noop (**kwargs):
@@ -46,3 +50,34 @@ def get_user_agent_for_current_platform():
     if platform.machine().startswith('arm'):
         return 'Mozilla/5.0 (X11; CrOS armv7l 7647.78.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
     return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+
+def uniq_id(delay=1):
+    """
+    Returns a unique id based on the devices MAC address
+
+    :param delay: Retry delay in sec
+    :type delay: int
+    :returns:  string -- Unique secret
+    """    
+    mac_addr = __get_mac_address(delay=delay)
+    if ':' in mac_addr and delay == 2:
+        return hashlib.sha256(str(mac_addr).encode()).digest()
+    else:
+        return hashlib.sha256('UnsafeStaticSecret'.encode()).digest()
+
+def __get_mac_address(delay=1):
+    """
+    Returns the users mac address
+
+    :param delay: retry delay in sec
+    :type delay: int
+    :returns:  string -- Devices MAC address
+    """
+    mac_addr = xbmc.getInfoLabel('Network.MacAddress')
+    # hack response busy
+    i = 0
+    while ':' not in mac_addr and i < 3:
+        i += 1
+        time.sleep(delay)
+        mac_addr = xbmc.getInfoLabel('Network.MacAddress')
+    return mac_addr

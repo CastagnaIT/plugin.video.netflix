@@ -9,13 +9,17 @@ import xbmc
 import json
 import base64
 import re
+import hashlib
+from Cryptodome import Random
+from Cryptodome.Cipher import AES
+from Cryptodome.Util import Padding
 from MSL import MSL
 from os import remove
 from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
-from utils import get_user_agent_for_current_platform
+from utils import get_user_agent_for_current_platform, uniq_id
 from UniversalAnalytics import Tracker
 try:
    import cPickle as pickle
@@ -58,6 +62,8 @@ class KodiHelper:
         self.custom_export_name = addon.getSetting('customexportname')
         self.show_update_db = addon.getSetting('show_update_db')
         self.default_fanart = addon.getAddonInfo('fanart')
+        self.bs = 32
+        self.crypt_key = uniq_id()
         self.library = None
         self.setup_memcache()
 
@@ -263,6 +269,18 @@ class KodiHelper:
         dialog = xbmcgui.Dialog()
         dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
         return True
+        
+    def show_autologin_enabled (self):
+        """Shows notification that auto login is enabled
+
+        Returns
+        -------
+        bool
+            Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
+        return True
 
     def set_setting (self, key, value):
         """Public interface for the addons setSetting method
@@ -274,6 +292,15 @@ class KodiHelper:
         """
         return self.get_addon().setSetting(key, value)
 
+    def get_setting (self, key):
+        """Public interface to the addons getSetting method
+
+        Returns
+        -------
+        Returns setting key
+        """
+        return self.get_addon().getSetting(key)
+
     def get_credentials (self):
         """Returns the users stored credentials
 
@@ -282,10 +309,58 @@ class KodiHelper:
         :obj:`dict` of :obj:`str`
             The users stored account data
         """
+        addon = self.get_addon()
+        email = addon.getSetting('email')
+        password = addon.getSetting('password')
+
+        # soft migration for existing credentials
+        # base64 can't contain `@` chars
+        if '@' in email:
+            addon.setSetting('email', self.encode(raw=email))
+            addon.setSetting('password', self.encode(raw=password))
+            return {
+                'email': self.get_addon().getSetting('email'),
+                'password': self.get_addon().getSetting('password')
+            }
+        
+        # if everything is fine, we decode the values
+        if '' != email or '' != password:
+            return {
+                'email': self.decode(enc=email),
+                'password': self.decode(enc=password)
+            }
+
+        # if email is empty, we return an empty map
         return {
-            'email': self.get_addon().getSetting('email'),
-            'password': self.get_addon().getSetting('password')
+            'email': '',
+            'password': ''                
         }
+
+    def encode(self, raw):
+        """
+        Encodes data
+
+        :param data: Data to be encoded
+        :type data: str
+        :returns:  string -- Encoded data
+        """
+        raw = Padding.pad(data_to_pad=raw, block_size=self.bs)
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
+        return base64.b64encode(iv + cipher.encrypt(raw))
+
+    def decode(self, enc):
+        """
+        Decodes data
+
+        :param data: Data to be decoded
+        :type data: str
+        :returns:  string -- Decoded data
+        """
+        enc = base64.b64decode(enc)
+        iv = enc[:AES.block_size]
+        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
+        return Padding.unpad(padded_data=cipher.decrypt(enc[AES.block_size:]), block_size=self.bs).decode('utf-8')
 
     def get_esn(self):
         """
@@ -318,9 +393,24 @@ class KodiHelper:
     def get_dolby_setting(self):
         """
         Returns if the dolby sound is enabled
-        :return: True|False
+        :return: bool - Dolby Sourrind profile setting is enabled
         """
-        return self.get_addon().getSetting('enable_dolby_sound') == 'true'
+        use_dolby = False
+        setting = self.get_addon().getSetting('enable_dolby_sound')
+        if setting == 'true' or setting == 'True':
+            use_dolby = True
+        return use_dolby      
+
+    def use_hevc(self):
+        """
+        Checks if HEVC profiles should be used
+        :return: bool - HEVC profile setting is enabled
+        """
+        use_hevc = False
+        setting = self.get_addon().getSetting('enable_hevc_profiles')
+        if setting == 'true' or setting == 'True':
+            use_hevc = True
+        return use_hevc        
 
     def get_custom_library_settings (self):
         """Returns the settings in regards to the custom library folder(s)
@@ -424,6 +514,24 @@ class KodiHelper:
             if view != -1:
                 xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
 
+    def save_autologin_data(self, autologin_user, autologin_id):
+        """Write autologin data to settings
+
+        Parameters
+        ----------
+        autologin_user : :obj:`str`
+            Profile name from netflix
+
+        autologin_id : :obj:`str`
+            Profile id from netflix
+        """
+        self.set_setting ('autologin_user', autologin_user)
+        self.set_setting ('autologin_id', autologin_id)
+        self.set_setting ('autologin_enable', 'True')
+        self.show_autologin_enabled()
+        self.invalidate_memcache()
+        xbmc.executebuiltin('Container.Refresh')
+
     def build_profiles_listing (self, profiles, action, build_url):
         """Builds the profiles list Kodi screen
 
@@ -445,8 +553,10 @@ class KodiHelper:
         """
         for profile in profiles:
             url = build_url({'action': action, 'profile_id': profile['id']})
+            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['id'], 'autologin_user': profile['profileName']})
             li = xbmcgui.ListItem(label=profile['profileName'], iconImage=profile['avatar'])
             li.setProperty('fanart_image', self.default_fanart)
+            li.addContextMenuItems([(self.get_local_string(30053), 'RunPlugin('+url_save_autologin+')',)])
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
             xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.endOfDirectory(self.plugin_handle)

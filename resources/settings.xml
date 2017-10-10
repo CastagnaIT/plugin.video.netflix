@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="30014">
-    <setting id="email" type="text" label="30005" default=""/>
-    <setting id="password" type="text" option="hidden" label="30004" default=""/>
+    <setting id="email" type="text" visible="false" default=""/>
+    <setting id="password" type="text" visible="false" default=""/>
+    <setting id="switch_account" type="action" label="30059c" action="RunPlugin(plugin://plugin.video.netflix/?action=switch_account)" option="close"/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
     <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" option="close"/>
   </category>
@@ -22,6 +23,7 @@
   </category>
   <category label="30023">
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
+    <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>    
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
@@ -30,5 +32,11 @@
     <setting id="msl_service_port" value="8000" visible="false"/>
     <setting id="netflix_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
+  </category>
+  <category label="30053">
+    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
+    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
   </category>
 </settings>
