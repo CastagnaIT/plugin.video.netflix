@@ -1106,8 +1106,10 @@ class KodiHelper:
             if entry['mediatype'] == 'movie' or entry['mediatype'] == 'episode':
                 li.setProperty('IsPlayable', 'true')
                 infos.update({'mediatype': entry['mediatype']})
-        if 'watched' in entry_keys:
-            infos.update({'playcount': (1, 0)[entry['watched']]})
+        if 'watched' in entry_keys and entry.get('watched') is True:
+            infos.update({'playcount': 1})
+        else:
+            del infos['playcount']
         if 'index' in entry_keys:
             infos.update({'episode': entry['index']})
         if 'episode' in entry_keys:

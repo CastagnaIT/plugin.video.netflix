@@ -785,7 +785,7 @@ class NetflixSession:
                 'in_my_list': video['queue']['inQueue'],
                 'year': video['releaseYear'],
                 'runtime': self.parse_runtime_for_video(video=video),
-                'watched': video['watched'],
+                'watched': video.get('watched', None),
                 'tags': self.parse_tags_for_video(video=video),
                 'genres': self.parse_genres_for_video(video=video, genres=genres),
                 'quality': self.parse_quality_for_video(video=video),
