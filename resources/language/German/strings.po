@@ -248,3 +248,7 @@ msgstr "Accounts wechseln"
 msgctxt "#30060"
 msgid "Enable HEVC profiles (f.e. 4k for Android)"
 msgstr "Aktiviere HEVC profile (z.b. für 4k in Android)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "In Bibliothek aktualisieren"

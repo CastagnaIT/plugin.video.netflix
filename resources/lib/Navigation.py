@@ -114,10 +114,18 @@ class Navigation:
         elif params['action'] == 'export':
             # adds a title to the users list on Netflix
             alt_title = self.kodi_helper.show_add_to_library_title_dialog(original_title=urllib.unquote(params['title']).decode('utf8'))
-            return self.export_to_library(video_id=params['id'], alt_title=alt_title)
+            self.export_to_library(video_id=params['id'], alt_title=alt_title)
+            return self.kodi_helper.refresh()
         elif params['action'] == 'remove':
             # adds a title to the users list on Netflix
-            return self.remove_from_library(video_id=params['id'])
+            self.remove_from_library(video_id=params['id'])
+            return self.kodi_helper.refresh()
+        elif params['action'] == 'update':
+            # adds a title to the users list on Netflix
+            self.remove_from_library(video_id=params['id'])
+            alt_title = self.kodi_helper.show_add_to_library_title_dialog(original_title=urllib.unquote(params['title']).decode('utf8'))
+            self.export_to_library(video_id=params['id'], alt_title=alt_title)
+            return self.kodi_helper.refresh()
         elif params['action'] == 'removeexported':
             # adds a title to the users list on Netflix
             term = self.kodi_helper.show_finally_remove(title=params['title'], type=params['type'], year=params['year'])
@@ -401,7 +409,7 @@ class Navigation:
                     for episode in season['episodes']:
                         episodes.append({'season': season['seq'], 'episode': episode['seq'], 'id': episode['id']})
                 self.library.add_show(title=video['title'], alt_title=alt_title, episodes=episodes, build_url=self.build_url)
-            return self.kodi_helper.refresh()
+            return True
         self.kodi_helper.show_no_metadata_notification()
         return False
 
@@ -421,7 +429,7 @@ class Navigation:
                 self.library.remove_movie(title=video['title'], year=video['year'])
             if video['type'] == 'show':
                 self.library.remove_show(title=video['title'])
-            return self.kodi_helper.refresh()
+            return True
         self.kodi_helper.show_no_metadata_notification()
         return False
 
