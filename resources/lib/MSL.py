@@ -184,7 +184,7 @@ class MSL:
             manifest_request_data['profiles'].append('hevc-hdr-main10-L41-dash-cenc-prk')
             manifest_request_data['profiles'].append('hevc-hdr-main10-L50-dash-cenc-prk')
             manifest_request_data['profiles'].append('hevc-hdr-main10-L51-dash-cenc-prk')
-s
+
         # Check if dolby sound is enabled and add to profles
         if self.kodi_helper.get_dolby_setting():
             manifest_request_data['profiles'].append('ddplus-2.0-dash')
