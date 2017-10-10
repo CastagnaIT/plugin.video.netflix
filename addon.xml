@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.11.25" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.12.0" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -29,15 +29,19 @@
     <license>MIT</license>
     <forum>http://www.kodinerds.net/index.php/Thread/55607-Inputstream-Agile-Betatest-Netflix/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
-    <news>v0.11.25 (2017-09-28)
-- Polish, Hebrew, German translation - update
-- Export improments
-- Better missing/disabled Inputstream addon detection
-- Fixed no search result notification
-- Metadata caching
-- Background service improvements
-- Netflic API fixes
-
+    <news>v0.12.0 (2017-10-10)
+- Polish, English, German transaltion update
+- Added setting to enable adult pin
+- Adds ability to update exported library items
+- Adds setting to enable HEVC profiles (4k on Android)
+- Adds default encryption for account data
+- Adds inputstream.adaptive as default dependency
+- Adds metadata for exported items
+- Adds setting to set default profile
+- Fixes error when malformed search results appear
+- Fixes problems with invalid cache items
+- Fixes watchcount override
+- Fixes issues with unicode chars in export folders
     </news>
   </extension>
 </addon>
