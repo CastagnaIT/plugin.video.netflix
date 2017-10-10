@@ -22,6 +22,7 @@
   </category>
   <category label="30023">
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
+    <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>    
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>

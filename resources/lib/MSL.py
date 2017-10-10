@@ -96,67 +96,11 @@ class MSL:
             'lookupType': 'PREPARE',
             'viewableIds': [viewable_id],
             'profiles': [
+                # Video
                 "playready-h264bpl30-dash",
                 "playready-h264mpl30-dash",
                 "playready-h264mpl31-dash",
                 "playready-h264mpl40-dash",
-                # "hevc-main-L30-dash-cenc",
-                # "hevc-main-L31-dash-cenc",
-                # "hevc-main-L40-dash-cenc",
-                # "hevc-main-L41-dash-cenc",
-                # "hevc-main-L50-dash-cenc",
-                # "hevc-main-L51-dash-cenc",
-                # "hevc-main10-L30-dash-cenc",
-                # "hevc-main10-L31-dash-cenc",
-                # "hevc-main10-L40-dash-cenc",
-                # "hevc-main10-L41-dash-cenc",
-                # "hevc-main10-L50-dash-cenc",
-                # "hevc-main10-L51-dash-cenc",
-                # "hevc-main10-L30-dash-cenc-prk",
-                # "hevc-main10-L31-dash-cenc-prk",
-                # "hevc-main10-L40-dash-cenc-prk",
-                # "hevc-main10-L41-dash-cenc-prk",
-                # "hevc-main-L30-L31-dash-cenc-tl",
-                # "hevc-main-L31-L40-dash-cenc-tl",
-                # "hevc-main-L40-L41-dash-cenc-tl",
-                # "hevc-main-L50-L51-dash-cenc-tl",
-                # "hevc-main10-L30-L31-dash-cenc-tl",
-                # "hevc-main10-L31-L40-dash-cenc-tl",
-                # "hevc-main10-L40-L41-dash-cenc-tl",
-                # "hevc-main10-L50-L51-dash-cenc-tl",
-                # "hevc-dv-main10-L30-dash-cenc",
-                # "hevc-dv-main10-L31-dash-cenc",
-                # "hevc-dv-main10-L40-dash-cenc",
-                # "hevc-dv-main10-L41-dash-cenc",
-                # "hevc-dv-main10-L50-dash-cenc",
-                # "hevc-dv-main10-L51-dash-cenc",
-                # "hevc-dv5-main10-L30-dash-cenc-prk",
-                # "hevc-dv5-main10-L31-dash-cenc-prk",
-                # "hevc-dv5-main10-L40-dash-cenc-prk",
-                # "hevc-dv5-main10-L41-dash-cenc-prk",
-                # "hevc-dv5-main10-L50-dash-cenc-prk",
-                # "hevc-dv5-main10-L51-dash-cenc-prk",
-                # "hevc-hdr-main10-L30-dash-cenc",
-                # "hevc-hdr-main10-L31-dash-cenc",
-                # "hevc-hdr-main10-L40-dash-cenc",
-                # "hevc-hdr-main10-L41-dash-cenc",
-                # "hevc-hdr-main10-L50-dash-cenc",
-                # "hevc-hdr-main10-L51-dash-cenc",
-                # "hevc-hdr-main10-L30-dash-cenc-prk",
-                # "hevc-hdr-main10-L31-dash-cenc-prk",
-                # "hevc-hdr-main10-L40-dash-cenc-prk",
-                # "hevc-hdr-main10-L41-dash-cenc-prk",
-                # "hevc-hdr-main10-L50-dash-cenc-prk",
-                # "hevc-hdr-main10-L51-dash-cenc-prk"
-
-               # 'playready-h264mpl30-dash',
-                #'playready-h264mpl31-dash',
-                #'playready-h264mpl40-dash',
-                #'hevc-main10-L41-dash-cenc',
-                #'hevc-main10-L50-dash-cenc',
-                #'hevc-main10-L51-dash-cenc',
-
-
 
                 # Audio
                 'heaac-2-dash',
@@ -186,7 +130,61 @@ class MSL:
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
-
+        
+        # add hevc profiles if setting is set
+        if self.kodi_helper.use_hevc() is True:
+            manifest_request_data['profiles'].append('hevc-main10-L41-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L50-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L51-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L30-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L31-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L40-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L41-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L50-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main-L51-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L30-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L31-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L40-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L41-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L50-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L51-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-main10-L30-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-main10-L31-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-main10-L40-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-main10-L41-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-main-L30-L31-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main-L31-L40-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main-L40-L41-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main-L50-L51-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main10-L30-L31-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main10-L31-L40-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main10-L40-L41-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-main10-L50-L51-dash-cenc-tl')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L30-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L31-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L40-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L41-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L50-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv-main10-L51-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L30-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L31-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L40-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L41-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L50-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-dv5-main10-L51-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L30-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L31-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L40-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L41-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L50-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L51-dash-cenc')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L30-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L31-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L40-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L41-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L50-dash-cenc-prk')
+            manifest_request_data['profiles'].append('hevc-hdr-main10-L51-dash-cenc-prk')
+s
         # Check if dolby sound is enabled and add to profles
         if self.kodi_helper.get_dolby_setting():
             manifest_request_data['profiles'].append('ddplus-2.0-dash')
@@ -440,9 +438,9 @@ class MSL:
         }
 
         # Serialize the given Data
-        serialized_data = json.dumps(data)
-        serialized_data = serialized_data.replace('"', '\\"')
-        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"' + serialized_data + '"},"query":""}]\n'
+       serialized_data = json.dumps(data)
+       serialized_data = serialized_data.replace('"', '\\"')
+     serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13'"payload":{"data":"' + serialized_data + '"},"query":""}]\n'
 
         compressed_data = self.__compress_data(serialized_data)
 

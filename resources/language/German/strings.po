@@ -240,3 +240,7 @@ msgstr "Wähle Profil in der Übersicht -> Kontextemnü"
 msgctxt "#30058"
 msgid "Auto Login enabled!"
 msgstr "Automatische Anmeldung aktiviert!"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Aktiviere HEVC profile (z.b. für 4k in Android)"
