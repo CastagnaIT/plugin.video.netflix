@@ -387,14 +387,20 @@ class KodiHelper:
 
     def setup_memcache (self):
         """Sets up the memory cache if not existant"""
-        cached_items = xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache')
-        # no cache setup yet, create one
-        if len(cached_items) < 1:
-            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+        try:
+            cached_items = xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache')
+            # no cache setup yet, create one
+            if len(cached_items) < 1:
+                xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+        except EOFError:
+            pass
 
     def invalidate_memcache (self):
         """Invalidates the memory cache"""
-        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+        try:
+            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+        except EOFError:
+            pass
 
     def get_cached_item (self, cache_id):
         """Returns an item from the in memory cache
@@ -409,9 +415,13 @@ class KodiHelper:
         mixed
             Contents of the requested cache item or none
         """
-        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
-
-        return cached_items.get(cache_id)
+        ret = None
+        try:
+            cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
+            ret = cached_items.get(cache_id)
+        except EOFError:
+            ret = None
+        return ret
 
     def add_cached_item (self, cache_id, contents):
         """Adds an item to the in memory cache
@@ -424,9 +434,12 @@ class KodiHelper:
         contents : mixed
             Cache entry contents
         """
-        cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
-        cached_items.update({cache_id: contents})
-        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps(cached_items))
+        try:
+            cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
+            cached_items.update({cache_id: contents})
+            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps(cached_items))
+        except EOFError:
+            pass
 
     def set_custom_view(self, content):
         """Set the view mode
