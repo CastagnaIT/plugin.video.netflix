@@ -155,7 +155,7 @@ class NetflixSession:
             self.log(msg='Sloppy inline data parsing successfull')
             return inline_data
         self.log(msg='Sloppy inline parser failed, trying JS parser')
-        return self._accurate_parse_inline_data(scripts=scripts)
+        return False
 
     def is_logged_in (self, account):
         """Determines if a user is already logged in (with a valid cookie),
@@ -183,6 +183,8 @@ class NetflixSession:
             only_script_tags = SoupStrainer('script')
             page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
             netflix_page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
+            if netflix_page_data is None:
+                return False
             # parse profile data
             self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
 
@@ -245,7 +247,9 @@ class NetflixSession:
             # we know that the login was successfull if we find an HTML element with the class of 'profile-name'
             if login_soup.find(attrs={'class' : 'profile-name'}) or login_soup.find(attrs={'class' : 'profile-icon'}):
                 # parse the needed inline information & store cookies for later requests
-                self._parse_page_contents(page_soup=login_soup)
+                page_data = self._parse_page_contents(page_soup=login_soup)
+                if page_data is None:
+                    return False
                 account_hash = self._generate_account_hash(account=account)
                 self._save_cookies(filename=self.cookie_path + '_' + account_hash)
                 self._save_data(filename=self.data_path + '_' + account_hash)
@@ -1587,6 +1591,8 @@ class NetflixSession:
             only_script_tags = SoupStrainer('script')
             page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
             page_data = self._parse_page_contents(page_soup=page_soup)
+            if page_data is None:
+                return False
             account_hash = self._generate_account_hash(account=account)
             self._save_data(filename=self.data_path + '_' + account_hash)
             return True
@@ -2130,43 +2136,6 @@ class NetflixSession:
                 inline_data.update(avatars)
         return inline_data
 
-    def _accurate_parse_inline_data (self, scripts):
-        """Uses a proper JS parser to fetch all the api, iser & profile data from within the inline JS
-
-        Note: This is slow but accurate
-
-        Parameters
-        ----------
-        scripts : :obj:`list` of :obj:`BeautifoulSoup`
-            Script tags & contents from the Netflix browse page
-
-        Returns
-        -------
-            :obj:`list` of :obj:`dict`
-                List containing dicts of user, api & profile data
-        """
-        inline_data = []
-        from pyjsparser import PyJsParser
-        parser = PyJsParser()
-        for script in scripts:
-            data = {}
-            # unicode escape that incoming script stuff
-            contents = self._to_unicode(str(script.contents[0]))
-            # parse the JS & load the declarations we´re interested in
-            parsed = parser.parse(contents)
-            if len(parsed['body']) > 1 and parsed['body'][1]['expression']['right'].get('properties', None) != None:
-                declarations = parsed['body'][1]['expression']['right']['properties']
-                for declaration in declarations:
-                    for key in declaration:
-                        # we found the correct path if the declaration is a dict & of type 'ObjectExpression'
-                        if type(declaration[key]) is dict:
-                            if declaration[key]['type'] == 'ObjectExpression':
-                                # add all static data recursivly
-                                for expression in declaration[key]['properties']:
-                                    data[expression['key']['value']] = self._parse_rec(expression['value'])
-                    inline_data.append(data)
-        return inline_data
-
     def _parse_rec (self, node):
         """Iterates over a JavaScript AST and return values found
 
@@ -2388,6 +2357,8 @@ class NetflixSession:
             Instance of an BeautifulSoup document or node containing the complete page contents
         """
         netflix_page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
+        if netflix_page_data is None:
+            return None       
         self.user_data = self._parse_user_data(netflix_page_data=netflix_page_data)
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)

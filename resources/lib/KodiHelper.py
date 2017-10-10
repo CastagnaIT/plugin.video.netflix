@@ -22,9 +22,9 @@ from uuid import uuid4
 from utils import get_user_agent_for_current_platform, uniq_id
 from UniversalAnalytics import Tracker
 try:
-   import cPickle as pickle
+    import cPickle as pickle
 except:
-   import pickle
+    import pickle
 
 VIEW_FOLDER = 'folder'
 VIEW_MOVIE = 'movie'
