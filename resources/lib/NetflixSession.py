@@ -289,7 +289,7 @@ class NetflixSession:
         self.user_data['guid'] = profile_id;
         return self._save_data(filename=self.data_path + '_' + account_hash)
 
-    def send_adult_pin (self, pin):
+    def send_adult_pin(self, pin):
         """Send the adult pin to Netflix in case an adult rated video requests it
 
         Note: Once entered, it should last for the complete session (Not so sure about this)
@@ -309,16 +309,15 @@ class NetflixSession:
         """
         payload = {
             'pin': pin,
-            'authURL': self.user_data['authURL']
+            'authURL': self.user_data.get('authURL', '')
         }
-        response = self._session_get(component='adult_pin', params=payload)
+        response = self._session_post(component='adult_pin', type='api', data=payload)
         pin_response = self._process_response(response=response, component=self._get_api_url_for(component='adult_pin'))
-        keys = pin_response.keys()
-        if 'success' in keys:
-            return True
-        if 'error' in keys:
-            return pin_response
-        return False
+        if 'error' in pin_response.keys():
+            self.log(msg='Pin error')
+            self.log(msg=str(pin_response))
+            return False
+        return pin_response.get('success', False)
 
     def add_to_list (self, video_id):
         """Adds a video to "my list" on Netflix
@@ -1964,7 +1963,7 @@ class NetflixSession:
             :obj:`str`
                 Contents of the field to match
         """
-        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
+        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)             
         start = time()
         try:
             response = self.session.post(url=url, data=data, params=params, headers=headers, verify=self.verify_ssl)

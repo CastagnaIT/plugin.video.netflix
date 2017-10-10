@@ -264,3 +264,7 @@ msgstr ""
 msgctxt "#30061"
 msgid "Update inside library"
 msgstr ""
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr ""

@@ -252,3 +252,7 @@ msgstr "Aktiviere HEVC profile (z.b. für 4k in Android)"
 msgctxt "#30061"
 msgid "Update inside library"
 msgstr "In Bibliothek aktualisieren"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Kindersicherungs PIN Abfrage ein-/ausschalten. Aktiv:"

@@ -106,6 +106,29 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.numeric(heading=self.get_local_string(string_id=30019) + ' ' + self.get_local_string(string_id=30022), type=0)
 
+    def show_adult_pin_dialog (self):
+        """Asks the user for the adult pin
+
+        Returns
+        -------
+        :obj:`int`
+        4 digit adult pin needed for adult movies
+        """
+        dlg = xbmcgui.Dialog()
+        return dlg.input(self.get_local_string(string_id=30002), type=xbmcgui.INPUT_NUMERIC)
+
+    def show_wrong_adult_pin_notification (self):
+        """Shows notification that a wrong adult pin was given
+
+        Returns
+        -------
+        bool
+        Dialog shown
+        """
+        dialog = xbmcgui.Dialog()
+        dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return True
+
     def show_search_term_dialog (self):
         """Asks the user for a term to query the netflix search for
 
@@ -300,6 +323,17 @@ class KodiHelper:
         Returns setting key
         """
         return self.get_addon().getSetting(key)
+
+    def toggle_adult_pin(self):
+        """Toggles the adult pin setting"""
+        addon = self.get_addon()
+        adultpin_enabled = False
+        raw_adultpin_enabled = addon.getSetting('adultpin_enable')
+        if raw_adultpin_enabled == 'true' or raw_adultpin_enabled == 'True':
+            adultpin_enabled = True
+        if adultpin_enabled is False:
+            return addon.setSetting('adultpin_enable', 'True')
+        return addon.setSetting('adultpin_enable', 'False')        
 
     def get_credentials (self):
         """Returns the users stored credentials
@@ -707,14 +741,16 @@ class KodiHelper:
             li = self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video_list[video_list_id]['type'] == 'movie':
-                # itÂ´s a movie, so we need no subfolder & a route to play it
+                # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
-                url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos})
+                needs_pin = (True, False)[int(video['maturity']['level']) >= 1000]
+                url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos, 'pin': needs_pin})
                 view = VIEW_MOVIE
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
                 params = {'action': actions[video['type']], 'show_id': video_list_id}
+                params['pin'] = (True, False)[int(video['maturity']['level']) >= 1000]
                 if 'tvshowtitle' in infos:
                     params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
                 url = build_url(params)
