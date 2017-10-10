@@ -281,6 +281,22 @@ class NetflixHttpSubRessourceHandler:
         video_id = params.get('video_id', [''])[0]
         return self.netflix_session.fetch_metadata(id=video_id)
 
+    def send_adult_pin(self, params):
+        """Checks the adult pin
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+            Request params
+
+        Returns
+        -------
+        :obj:`Requests.Response`
+            Response of the remote call
+        """
+        pin = params.get('pin', [''])[0]
+        return self.netflix_session.send_adult_pin(pin=pin)
+
     def switch_profile (self, params):
         """Switch profile proxy function
 

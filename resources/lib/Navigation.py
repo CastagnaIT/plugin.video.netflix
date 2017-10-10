@@ -68,6 +68,13 @@ class Navigation:
                 if self.establish_session(account=account) != True:
                     return self.kodi_helper.show_login_failed_notification()
 
+        # switch user account
+        if 'action' in params.keys() and params['action'] == 'toggle_adult_pin':
+            adult_pin = self.kodi_helper.show_adult_pin_dialog()
+            if self._check_response(self.call_netflix_service({'method': 'send_adult_pin', 'pin': adult_pin})) != True:
+                return self.kodi_helper.show_wrong_adult_pin_notification()
+            return self.kodi_helper.toggle_adult_pin()
+
         # check if we need to execute any actions before the actual routing
         # gives back a dict of options routes might need
         options = self.before_routing_action(params=params)
@@ -145,6 +152,14 @@ class Navigation:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif params['action'] == 'play_video':
+            # play a video, check for adult pin if needed
+            adult_pin = None
+            ask_for_adult_pin = self.kodi_helper.get_setting('adultpin_enable').lower() == 'true'
+            if ask_for_adult_pin is True:
+                if self.check_for_adult_pin(params=params):
+                    adult_pin = self.kodi_helper.show_adult_pin_dialog()
+                    if self._check_response(self.call_netflix_service({'method': 'send_adult_pin', 'pin': adult_pin})) != True:
+                        return self.kodi_helper.show_wrong_adult_pin_notification()
             self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params.get('infoLabels', {}))
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
@@ -471,6 +486,21 @@ class Navigation:
             self.kodi_helper.set_setting(key='password', value='')            
             return self.kodi_helper.show_login_failed_notification()
         return True
+
+    def check_for_adult_pin (self, params):
+        """Checks if an adult pin is given in the query params
+
+        Parameters
+        ----------
+        params : :obj:`dict` of :obj:`str`
+        Url query params
+
+        Returns
+        -------
+        bool
+        Adult pin parameter exists or not
+        """
+        return (True, False)[params.get('pin') == 'True']
 
     @log
     def before_routing_action(self, params):
