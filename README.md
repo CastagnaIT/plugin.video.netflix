@@ -50,11 +50,11 @@ If something doesn't work for you, please:
 - Enable verbose logging in the plugin settings
 - Enable the Debug log in you Kodi settings
 - Open an issue with a titles that summarises your problems and include:
-	- Kodi version (git sha if possible)
-	- Inputstream.adaptive version (git sha if possible)
-	- Your OS and OS version
-	- Libwedevine version
-	- A Kodi debug log that represents your issue
+    - Kodi version (git sha if possible)
+    - Inputstream.adaptive version (git sha if possible)
+    - Your OS and OS version
+    - Libwedevine version
+    - A Kodi debug log that represents your issue
 
 Donate
 ------
@@ -66,4 +66,3 @@ Licence
 -------
 
 Licenced under The MIT License.
-Includes [pyjsparser](https://github.com/PiotrDabkowski/pyjsparser) by [Piotr Dabkowski](https://github.com/PiotrDabkowski)
