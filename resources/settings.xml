@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="30014">
-    <setting id="email" type="text" label="30005" default=""/>
-    <setting id="password" type="text" option="hidden" label="30004" default=""/>
+    <setting id="email" type="text" visible="false" default=""/>
+    <setting id="password" type="text" visible="false" default=""/>
+    <setting id="switch_account" type="action" label="30059c" action="RunPlugin(plugin://plugin.video.netflix/?action=switch_account)" option="close"/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
     <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" option="close"/>
   </category>
