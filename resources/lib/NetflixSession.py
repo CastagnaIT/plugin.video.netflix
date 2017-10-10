@@ -1040,10 +1040,11 @@ class NetflixSession:
         show = {}
         raw_show = response_data['value']['videos'][id]
         show.update({'synopsis': raw_show['regularSynopsis']})
-        if 'evidence' in raw_show:
-            show.update({'detail_text': raw_show['evidence']['value']['text']})
+
+        if 'evidence' in raw_show and raw_show.get('evidence') is not None and raw_show.get('evidence').get('value') is not None:
+            show.update({'detail_text': raw_show.get('evidence', {}).get('value', {}).get('text', '')})
         if 'seasonList' in raw_show:
-            show.update({'season_id': raw_show['seasonList']['current'][1]})
+            show.update({'season_id': raw_show.get('seasonList', {}).get('current', [])[1]})
         return show
 
     def parse_seasons (self, id, response_data):
