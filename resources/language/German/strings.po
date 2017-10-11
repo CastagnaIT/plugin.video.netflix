@@ -234,7 +234,7 @@ msgstr ""
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "Wähle Profil in der Übersicht -> Kontextemnü"
+msgstr "Wähle Profil in der Übersicht -> Kontextmenü"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
