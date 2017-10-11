@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -66,7 +66,7 @@ msgstr "Bitte die Anmeldedaten überprüfen"
 
 msgctxt "#30010"
 msgid "Genres"
-msgstr "Genres"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"
@@ -146,7 +146,7 @@ msgstr "Export Titel ändern"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "Tracking"
+msgstr ""
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
@@ -230,7 +230,7 @@ msgstr "Profil"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -110,7 +110,7 @@ msgstr "(mellan 0 & 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "Expert"
+msgstr ""
 
 msgctxt "#30024"
 msgid "SSL verification"

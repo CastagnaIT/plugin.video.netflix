@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -46,7 +46,7 @@ msgstr "Paswoord"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -66,7 +66,7 @@ msgstr "Controleer uw inloggegevens"
 
 msgctxt "#30010"
 msgid "Genres"
-msgstr "Genres"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"
@@ -82,7 +82,7 @@ msgstr "Geen overeenkomsten gevonden"
 
 msgctxt "#30014"
 msgid "Account"
-msgstr "Account"
+msgstr ""
 
 msgctxt "#30017"
 msgid "Logout"
@@ -98,7 +98,7 @@ msgstr "Op Netflix beoordelen"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Van 'Mijn lijst’ verwijderen”
+msgstr "Van 'Mijn lijst’ verwijderen"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
@@ -110,7 +110,7 @@ msgstr "(tussen 0 & 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "Expert"
+msgstr ""
 
 msgctxt "#30024"
 msgid "SSL verification"
@@ -146,7 +146,7 @@ msgstr "Titel bibliotheek aanpassen"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "Tracking"
+msgstr ""
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"

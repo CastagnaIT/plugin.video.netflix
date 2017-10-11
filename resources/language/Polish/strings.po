@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"

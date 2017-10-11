@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -46,7 +46,7 @@ msgstr "Heslo"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -110,7 +110,7 @@ msgstr "(od 0 do 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "Expert"
+msgstr ""
 
 msgctxt "#30024"
 msgid "SSL verification"

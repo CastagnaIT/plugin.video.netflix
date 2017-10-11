@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -43,11 +43,11 @@ msgstr "Termine di ricerca"
 
 msgctxt "#30004"
 msgid "Password"
-msgstr "Password"
+msgstr ""
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -83,11 +83,11 @@ msgstr "Nessuna corrispondenza trovata"
 
 msgctxt "#30014"
 msgid "Account"
-msgstr "Account"
+msgstr ""
 
 msgctxt "#30017"
 msgid "Logout"
-msgstr "Logout"
+msgstr ""
 
 msgctxt "#30018"
 msgid "Export to library"
@@ -147,7 +147,7 @@ msgstr "Modifica il titolo della libreria"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "Tracking"
+msgstr ""
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"

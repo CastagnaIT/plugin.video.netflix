@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -46,7 +46,7 @@ msgstr "Contraseña"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -146,7 +146,7 @@ msgstr "Cambiar el nombre en la colección de vídeo"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "Tracking"
+msgstr ""
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
