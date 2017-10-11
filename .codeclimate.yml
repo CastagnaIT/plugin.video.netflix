@@ -1,0 +1,35 @@
+---
+engines:
+  pep8:
+    enabled: true
+  radon:
+    enabled: true
+    config:
+      python_version: 2
+  markdownlint:
+    enabled: true
+ratings:
+  paths:
+    - "**.py"
+    - "**.md"
+exclude_paths:
+  - "docs"
+  - "resources/test/"
+  - "resources/lib/UniversalAnalytics/"
+  - "resources/language/"
+  - "resources/media/"
+  - "resources/fanart.jpg"
+  - "resources/icon.png"
+  - "resources/screenshot-01.jpg"
+  - "resources/screenshot-02.jpg"
+  - "resources/screenshot-03.jpg"
+  - "resources/settings.xml"
+  - "resources/__init__.py"
+  - "resources/lib/__init__.py"
+  - "__init__.py"
+  - "addon.xml"
+  - "LICENSE.txt"
+  - "makefile"
+  - "requirements.txt"
+  - "ISSUE_TEMPLATE.md"
+  - "PULL_REQUEST_TEMPLATE.md"
