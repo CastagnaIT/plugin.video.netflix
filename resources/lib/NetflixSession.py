@@ -2136,26 +2136,6 @@ class NetflixSession:
                 inline_data.update(avatars)
         return inline_data
 
-    def _parse_rec (self, node):
-        """Iterates over a JavaScript AST and return values found
-
-        Parameters
-        ----------
-        value : :obj:`dict`
-            JS AST Expression
-        Returns
-        -------
-        :obj:`dict` of :obj:`dict` or :obj:`str`
-            Parsed contents of the node
-        """
-        if node['type'] == 'ObjectExpression':
-            _ret = {}
-            for prop in node['properties']:
-                _ret.update({prop['key']['value']: self._parse_rec(prop['value'])})
-            return _ret
-        if node['type'] == 'Literal':
-            return node['value']
-
     def _parse_user_data (self, netflix_page_data):
         """Parse out the user data from the big chunk of dicts we got from
            parsing the JSON-ish data from the netflix homepage
@@ -2187,14 +2167,6 @@ class NetflixSession:
         if type(netflix_page_data) == dict:
             for important_field in important_fields:
                 user_data.update({important_field: netflix_page_data.get(important_field, '')})
-            return user_data
-
-        # values are stored in lists (returned from JS parser)
-        for item in netflix_page_data:
-            if 'memberContext' in dict(item).keys():
-                for important_field in important_fields:
-                    user_data.update({important_field: item['memberContext']['data']['userInfo'][important_field]})
-
         return user_data
 
     def _parse_profile_data (self, netflix_page_data):
@@ -2222,7 +2194,7 @@ class NetflixSession:
                 }
             }
         """
-        profiles = {};
+        profiles = {}
         important_fields = [
             'profileName',
             'isActive',
@@ -2243,21 +2215,6 @@ class NetflixSession:
                     avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
                     profile.update({'avatar': avatar, 'isFirstUse': False})
                     profiles.update({profile_id: profile})
-            return profiles
-
-        # values are stored in lists (returned from JS parser)
-        # TODO: get rid of this christmas tree of doom
-        for item in netflix_page_data:
-            if 'hasViewedRatingWelcomeModal' in dict(item).keys():
-                for profile_id in item:
-                    if self._is_size_key(key=profile_id) == False and type(item[profile_id]) == dict and item[profile_id].get('avatar', False) != False:
-                        profile = {'id': profile_id}
-                        for important_field in important_fields:
-                            profile.update({important_field: item[profile_id]['summary'][important_field]})
-                        avatar_base = item['nf'].get(item[profile_id]['summary']['avatarName'], False);
-                        avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
-                        profile.update({'avatar': avatar})
-                        profiles.update({profile_id: profile})
         return profiles
 
     def _parse_api_base_data (self, netflix_page_data):
@@ -2338,14 +2295,7 @@ class NetflixSession:
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
             return netflix_page_data.get('esn', '')
-
-        esn = ''
-
-        # values are stored in lists (returned from JS parser)
-        for item in netflix_page_data:
-            if 'esnGeneratorModel' in dict(item).keys():
-                esn = item['esnGeneratorModel']['data']['esn']
-        return esn
+        return ''
 
     def _parse_page_contents (self, page_soup):
         """Call all the parsers we need to extract all the session relevant data from the HTML page
