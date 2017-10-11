@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: MSLHttpRequestHandler
 # Created on: 26.01.2017
