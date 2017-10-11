@@ -1,8 +1,13 @@
 # Netflix Plugin for Kodi 18 (plugin.video.netflix)
 
 <span class="badge-bitcoin"><a href="https://blockchain.info/address/1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF" title="Donate to this project using Bitcoin"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg" alt="Bitcoin donate button" /></a></span>
+[![Build Status](https://travis-ci.org/asciidisco/plugin.video.netflix.svg?branch=master)](https://travis-ci.org/asciidisco/plugin.video.netflix)
+[![Test Coverage](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/coverage.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix/coverage)
+[![Issue Count](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/issue_count.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix)
 [![Code Climate](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/gpa.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix)
 [![GitHub release](https://img.shields.io/github/release/asciidisco/plugin.video.netflix.svg)](https://github.com/asciidisco/plugin.video.netflix/releases)
+[![Docs](https://media.readthedocs.org/static/projects/badges/passing.svg)](https://asciidisco.github.io/plugin.video.netflix/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Disclaimer
 
