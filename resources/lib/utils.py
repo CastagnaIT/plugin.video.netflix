@@ -1,23 +1,35 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Module: utils
 # Created on: 13.01.2017
 
+"""General utils"""
+
 import time
 import hashlib
 import platform
+from functools import wraps
 import xbmc
 
 
-# Takes everything, does nothing, classic no operation function
-def noop (**kwargs):
-    return True
+def noop(**kwargs):
+    """Takes everything, does nothing, classic no operation function"""
+    return kwargs
 
-# log decorator
-def log(f, name=None):
-    if name is None:
-        name = f.func_name
+
+def log(func):
+    """
+    Log decarator that is used to annotate methods & output everything to
+    the Kodi debug log
+
+    :param delay: retry delay in sec
+    :type delay: int
+    :returns:  string -- Devices MAC address
+    """
+    name = func.func_name
+
+    @wraps(func)
     def wrapped(*args, **kwargs):
+        """Wrapper function to maintain correct stack traces"""
         that = args[0]
         class_name = that.__class__.__name__
         arguments = ''
@@ -25,31 +37,44 @@ def log(f, name=None):
             if key != 'account' and key != 'credentials':
                 arguments += ":%s = %s:" % (key, value)
         if arguments != '':
-            that.log('"' + class_name + '::' + name + '" called with arguments ' + arguments)
+            that.log('"' + class_name + '::' + name +
+                     '" called with arguments ' + arguments)
         else:
             that.log('"' + class_name + '::' + name + '" called')
-        result = f(*args, **kwargs)
+        result = func(*args, **kwargs)
         that.log('"' + class_name + '::' + name + '" returned: ' + str(result))
         return result
-    wrapped.__doc__ = f.__doc__
+
+    wrapped.__doc__ = func.__doc__
     return wrapped
 
-def get_user_agent_for_current_platform():
-    """Determines the user agent string for the current platform (to retrieve a valid ESN)
 
-    Returns
-    -------
-    :obj:`str`
-        User Agent for platform
+def get_user_agent():
     """
+    Determines the user agent string for the current platform.
+    Needed to retrieve a valid ESN (except for Android, where the ESN can
+    be generated locally)
+
+    :returns: str -- User agent string
+    """
+    chrome_version = 'Chrome/59.0.3071.115'
+    base = 'Mozilla/5.0 '
+    base += '%PL% '
+    base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
+    base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
     system = platform.system()
+    # Mac OSX
     if system == 'Darwin':
-        return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_10_1)')
+    # Windows
     if system == 'Windows':
-        return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+        return base.replace('%PL%', '(Windows NT 6.1; WOW64)')
+    # ARM based Linux
     if platform.machine().startswith('arm'):
-        return 'Mozilla/5.0 (X11; CrOS armv7l 7647.78.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
-    return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+        return base.replace('%PL%', '(X11; CrOS armv7l 7647.78.0)')
+    # x86 Linux
+    return base.replace('%PL%', '(X11; Linux x86_64)')
+
 
 def uniq_id(delay=1):
     """
@@ -58,12 +83,13 @@ def uniq_id(delay=1):
     :param delay: Retry delay in sec
     :type delay: int
     :returns:  string -- Unique secret
-    """    
+    """
     mac_addr = __get_mac_address(delay=delay)
     if ':' in mac_addr and delay == 2:
         return hashlib.sha256(str(mac_addr).encode()).digest()
     else:
         return hashlib.sha256('UnsafeStaticSecret'.encode()).digest()
+
 
 def __get_mac_address(delay=1):
     """
