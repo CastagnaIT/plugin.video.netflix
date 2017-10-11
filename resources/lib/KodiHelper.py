@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: KodiHelper
 # Created on: 13.01.2017
@@ -19,7 +19,7 @@ from os.path import join, isfile
 from urllib import urlencode
 from xbmcaddon import Addon
 from uuid import uuid4
-from utils import get_user_agent_for_current_platform, uniq_id
+from utils import get_user_agent, uniq_id
 from UniversalAnalytics import Tracker
 try:
     import cPickle as pickle
@@ -333,7 +333,7 @@ class KodiHelper:
             adultpin_enabled = True
         if adultpin_enabled is False:
             return addon.setSetting('adultpin_enable', 'True')
-        return addon.setSetting('adultpin_enable', 'False')        
+        return addon.setSetting('adultpin_enable', 'False')
 
     def get_credentials (self):
         """Returns the users stored credentials
@@ -767,7 +767,7 @@ class KodiHelper:
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_GENRE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)    
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(view)
         return True
@@ -815,10 +815,10 @@ class KodiHelper:
                 'thumb': image
             })
             li.setArt(art)
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)     
+            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
 
         xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE) 
+        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -1074,7 +1074,7 @@ class KodiHelper:
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
-        play_item.setProperty(inputstream_addon + '.stream_headers', 'user-agent=' + get_user_agent_for_current_platform())        
+        play_item.setProperty(inputstream_addon + '.stream_headers', 'user-agent=' + get_user_agent())
         play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
         play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')
         play_item.setProperty(inputstream_addon + '.license_key', msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
@@ -1094,7 +1094,7 @@ class KodiHelper:
         play_item.setInfo('video', infoLabels)
 
         # check for content in kodi db
-        if str(infoLabels) != "None":     
+        if str(infoLabels) != "None":
             if infoLabels['mediatype'] == 'episode':
                 id = self.showtitle_to_id(title=infoLabels['tvshowtitle'])
                 details = self.get_show_content_by_id(showid=id, showseason=infoLabels['season'], showepisode=infoLabels['episode'])

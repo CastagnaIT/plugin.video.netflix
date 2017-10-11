@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: NetflixHttpRequestHandler
 # Created on: 07.03.2017

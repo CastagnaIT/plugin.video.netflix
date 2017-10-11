@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: LibraryExporter
 # Created on: 13.01.2017
@@ -504,7 +504,7 @@ class Library:
         self._update_local_db(filename=self.db_filepath, db=self.db)
         show_dir = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, folder))
         if xbmcvfs.exists(show_dir):
-            show_files = xbmcvfs.listdir(show_dir)[1]          
+            show_files = xbmcvfs.listdir(show_dir)[1]
             episode_count_total = len(show_files)
             step=round(100.0/episode_count_total,1)
             percent=100-step
@@ -621,7 +621,7 @@ class Library:
         return int(year)
 
     def updatedb_from_exported (self):
-        """Adds movies and shows from exported media to the local db 
+        """Adds movies and shows from exported media to the local db
 
         Returns
         -------

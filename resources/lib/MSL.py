@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: MSL
 # Created on: 26.01.2017
@@ -81,7 +81,7 @@ class MSL:
             self.__save_rsa_keys()
             if self.kodi_helper.get_esn():
                 self.__perform_key_handshake()
-    
+
     def perform_key_handshake(self):
         self.__perform_key_handshake()
 
@@ -130,7 +130,7 @@ class MSL:
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
-        
+
         # add hevc profiles if setting is set
         if self.kodi_helper.use_hevc() is True:
             manifest_request_data['profiles'].append('hevc-main10-L41-dash-cenc')

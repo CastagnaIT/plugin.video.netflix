@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: NetflixSession
 # Created on: 13.01.2017
@@ -11,7 +11,7 @@ from urllib import quote, unquote
 from time import time
 from base64 import urlsafe_b64encode
 from bs4 import BeautifulSoup, SoupStrainer
-from utils import noop, get_user_agent_for_current_platform
+from utils import noop, get_user_agent
 import HTMLParser
 try:
    import cPickle as pickle
@@ -1326,7 +1326,7 @@ class NetflixSession:
 
         response = self._session_get(component='video_list_ids', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='video_list_ids'))
- 
+
     def fetch_video_list_ids (self, list_from=0, list_to=50):
         """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
 
@@ -1797,7 +1797,7 @@ class NetflixSession:
         # start session, fake chrome on the current platform (so that we get a proper widevine esn) & enable gzip
         self.session = session()
         self.session.headers.update({
-            'User-Agent': get_user_agent_for_current_platform(),
+            'User-Agent': get_user_agent(),
             'Accept-Encoding': 'gzip'
         })
 
@@ -1964,7 +1964,7 @@ class NetflixSession:
             :obj:`str`
                 Contents of the field to match
         """
-        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)             
+        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
         start = time()
         try:
             response = self.session.post(url=url, data=data, params=params, headers=headers, verify=self.verify_ssl)
@@ -2308,7 +2308,7 @@ class NetflixSession:
         """
         netflix_page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
         if netflix_page_data is None:
-            return None       
+            return None
         self.user_data = self._parse_user_data(netflix_page_data=netflix_page_data)
         self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
         self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)

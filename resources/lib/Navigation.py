@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: Navigation
 # Created on: 13.01.2017
@@ -59,7 +59,7 @@ class Navigation:
 
         # switch user account
         if 'action' in params.keys() and params['action'] == 'switch_account':
-            return self.switch_account()       
+            return self.switch_account()
 
         # check login & try to relogin if necessary
         account = self.kodi_helper.get_credentials()
@@ -356,7 +356,7 @@ class Navigation:
         if profiles and len(profiles) != 0:
             return self.kodi_helper.build_profiles_listing(profiles=profiles.values(), action='video_lists', build_url=self.build_url)
         return self.kodi_helper.show_login_failed_notification()
-        
+
 
     @log
     def rate_on_netflix(self, video_id):
@@ -383,7 +383,7 @@ class Navigation:
             ID of the video list that should be displayed
         """
         result = self._check_response(self.call_netflix_service({'method': 'remove_from_list', 'video_id': video_id}))
-        if result:       
+        if result:
             return self.kodi_helper.refresh()
         return self.kodi_helper.show_request_error_notification()
 
@@ -483,7 +483,7 @@ class Navigation:
         }
         if self.establish_session(account=account) != True:
             self.kodi_helper.set_setting(key='email', value='')
-            self.kodi_helper.set_setting(key='password', value='')            
+            self.kodi_helper.set_setting(key='password', value='')
             return self.kodi_helper.show_login_failed_notification()
         return True
 
