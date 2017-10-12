@@ -400,8 +400,6 @@ class KodiHelper:
         """
         Returns the esn from settings
         """
-        self.log(msg='Is FILE: ' + str(isfile(self.msl_data_path + 'msl_data.json')))
-        self.log(msg=self.get_addon().getSetting('esn'))
         return self.get_addon().getSetting('esn')
 
     def set_esn(self, esn):
@@ -599,8 +597,8 @@ class KodiHelper:
             List could be build
         """
         for profile in profiles:
-            url = build_url({'action': action, 'profile_id': profile['id']})
-            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['id'], 'autologin_user': profile['profileName']})
+            url = build_url({'action': action, 'profile_id': profile['guid']})
+            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['guid'], 'autologin_user': profile['profileName']})
             li = xbmcgui.ListItem(label=profile['profileName'], iconImage=profile['avatar'])
             li.setProperty('fanart_image', self.default_fanart)
             li.addContextMenuItems([(self.get_local_string(30053), 'RunPlugin('+url_save_autologin+')',)])
