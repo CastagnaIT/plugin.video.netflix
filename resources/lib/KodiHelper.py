@@ -1374,21 +1374,25 @@ class KodiHelper:
         :obj:`tuple` of obj:`str` and bool, or None
             Inputstream addon and if it's enabled, or None
         """
-        type = 'inputstream.adaptive'
+        is_type = 'inputstream.adaptive'
+        is_enabled = False
         payload = {
             'jsonrpc': '2.0',
             'id': 1,
             'method': 'Addons.GetAddonDetails',
             'params': {
-                'addonid': type,
+                'addonid': is_type,
                 'properties': ['enabled']
             }
         }
         response = xbmc.executeJSONRPC(json.dumps(payload))
         data = json.loads(response)
         if not 'error' in data.keys():
-            return (type, data['result']['addon']['enabled'])
-        return None
+            if isinstance(data.get('result'), dict):
+                if isinstance(data.get('result').get('addon'), dict):
+                    is_enabled = data.get('result').get('addon').get('enabled')
+            return (is_type, is_enabled)
+        return (None, is_enabled)
 
     def movietitle_to_id(self, title):
         query = {
