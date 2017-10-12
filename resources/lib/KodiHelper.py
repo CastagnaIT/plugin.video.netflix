@@ -1388,7 +1388,7 @@ class KodiHelper:
         data = json.loads(response)
         if not 'error' in data.keys():
             return (type, data['result']['addon']['enabled'])
-        return None
+        return (type, False)
 
     def movietitle_to_id(self, title):
         query = {
