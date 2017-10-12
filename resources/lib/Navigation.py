@@ -61,12 +61,9 @@ class Navigation:
         if 'action' in params.keys() and params['action'] == 'switch_account':
             return self.switch_account()
 
-        # check login & try to relogin if necessary
-        account = self.kodi_helper.get_credentials()
-        if account['email'] != '' and account['password'] != '':
-            if self._check_response(self.call_netflix_service({'method': 'is_logged_in'})) == False:
-                if self.establish_session(account=account) != True:
-                    return self.kodi_helper.show_login_failed_notification()
+        # check if we need to execute any actions before the actual routing
+        # gives back a dict of options routes might need
+        options = self.before_routing_action(params=params)
 
         # switch user account
         if 'action' in params.keys() and params['action'] == 'toggle_adult_pin':
@@ -74,10 +71,6 @@ class Navigation:
             if self._check_response(self.call_netflix_service({'method': 'send_adult_pin', 'pin': adult_pin})) != True:
                 return self.kodi_helper.show_wrong_adult_pin_notification()
             return self.kodi_helper.toggle_adult_pin()
-
-        # check if we need to execute any actions before the actual routing
-        # gives back a dict of options routes might need
-        options = self.before_routing_action(params=params)
 
         # check if one of the before routing options decided to killthe routing
         if 'exit' in options:
@@ -531,6 +524,10 @@ class Navigation:
             password = self.kodi_helper.show_password_dialog()
             self.kodi_helper.set_setting(key='password', value=password)
             credentials['password'] = password
+        # check login & try to relogin if necessary
+        if self._check_response(self.call_netflix_service({'method': 'is_logged_in'})) == False:
+            if self.establish_session(account=credentials) != True:
+                self.kodi_helper.show_login_failed_notification()
         # persist & load main menu selection
         if 'type' in params:
             self.kodi_helper.set_main_menu_selection(type=params['type'])
@@ -545,9 +542,6 @@ class Navigation:
                     profile_id = user_data['guid']
             if profile_id:
                 self.call_netflix_service({'method': 'switch_profile', 'profile_id': profile_id})
-        # check login, in case of main menu
-        if 'action' not in params:
-            self.establish_session(account=credentials)
         return options
 
     def check_for_designated_profile_change(self, params):
