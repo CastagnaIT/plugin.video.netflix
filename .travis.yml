@@ -9,7 +9,7 @@ script:
   - pip install pycryptodomex
   - make all
   - touch ./_build/.nojekyll
-  - codeclimate-test-reporter
+  - if [ "$TRAVIS_BRANCH" == "master" ]; codeclimate-test-reporter; fi
 
 deploy:
   - provider: pages
