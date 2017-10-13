@@ -99,11 +99,11 @@ msgstr "Vota su Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Rimuovi dalla 'Mia lista'"
+msgstr "Rimuovi da 'La mia lista'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Aggiungi alla 'Mia lista'"
+msgstr "Aggiungi a 'La mia lista'"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -243,7 +243,7 @@ msgstr "Profilo"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
