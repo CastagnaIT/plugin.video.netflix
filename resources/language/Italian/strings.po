@@ -161,6 +161,42 @@ msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr "Configurazione dell'addon Inputstream..."
 
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Utilizza sempre il titolo originale"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Viste"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Abilita viste personalizzate"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Vista per le cartelle"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Vista per i film"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Vista per le serie"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Vista per le stagioni"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Vista per gli episodi"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Vista per i profili"
+
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- PAGINA SUCCESSIVA --[/B][/COLOR]"
