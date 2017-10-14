@@ -2,7 +2,6 @@
 <addon id="plugin.video.netflix" name="Netflix" version="0.12.0" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
-    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.requests" version="2.12.4"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="inputstream.adaptive" version="2.0.0"/>

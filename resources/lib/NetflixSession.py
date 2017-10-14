@@ -6,13 +6,12 @@
 import os
 import sys
 import json
-from requests import session, cookies
-from urllib import quote, unquote
 from time import time
+from urllib import quote, unquote
+from re import compile as recompile
 from base64 import urlsafe_b64encode
-from bs4 import BeautifulSoup, SoupStrainer
+from requests import session, cookies
 from utils import noop, get_user_agent
-import HTMLParser
 try:
    import cPickle as pickle
 except:
@@ -28,7 +27,7 @@ class NetflixSession:
 
     urls = {
         'login': '/login',
-        'browse': '/profiles/manage',
+        'browse': '/browse',
         'video_list_ids': '/preflight',
         'shakti': '/pathEvaluator',
         'profiles':  '/profiles/manage',
@@ -84,6 +83,18 @@ class NetflixSession:
     esn = ''
     """str: ESN - something like: NFCDCH-MC-D7D6F54LOPY8J416T72MQXX3RD20ME"""
 
+    page_items = [
+        'authURL',
+        'BUILD_IDENTIFIER',
+        'ICHNAEA_ROOT',
+        'API_ROOT',
+        'API_BASE_URL',
+        'esn',
+        'gpsModel',
+        'countryOfSignup',
+        'membershipStatus'
+    ]
+
     def __init__(self, cookie_path, data_path, verify_ssl=True, log_fn=noop):
         """Stores the cookie path for later use & instanciates a requests
            session with a proper user agent & stored cookies/data if available
@@ -103,61 +114,91 @@ class NetflixSession:
         self.data_path = data_path
         self.verify_ssl = verify_ssl
         self.log = log_fn
-
         self._init_session()
 
-    def parse_login_form_fields (self, form_soup):
-        """Fetches all the inputfields from the login form, so that we
-           can build a request with all the fields needed besides the known email & password ones
-
-        Parameters
-        ----------
-        form_soup : :obj:`BeautifulSoup`
-            Instance of an BeautifulSoup documet or node containing the login form
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str`
-                Dictionary of all input fields with their name as the key & the default
-                value from the form field
-        """
-        login_input_fields = {}
-        login_inputs = form_soup.find_all('input')
-        # gather all form fields, set an empty string as the default value
-        for item in login_inputs:
-            keys = dict(item.attrs).keys()
-            if 'name' in keys and 'value' not in keys:
-                login_input_fields[item['name']] = ''
-            elif 'name' in keys and 'value' in keys:
-                login_input_fields[item['name']] = item['value']
-        return login_input_fields
-
-    def extract_inline_netflix_page_data (self, page_soup):
-        """Extracts all <script/> tags from the given document and parses the contents of each one of `em.
+    def extract_inline_netflix_page_data(self, content='', items=None):
+        """Extract the essential data from the page contents
         The contents of the parsable tags looks something like this:
-            <script>window.netflix = window.netflix || {} ; netflix.notification = {"constants":{"sessionLength":30,"ownerToken":"ZDD...};</script>
-        We use a JS parser to generate an AST of the code given & then parse that AST into a python dict.
-        This should be okay, as we´re only interested in a few static values & put the rest aside
-
-        Parameters
-        ----------
-        page_soup : :obj:`BeautifulSoup`
-            Instance of an BeautifulSoup document or node containing the complete page contents
-        Returns
-        -------
-            :obj:`list` of :obj:`dict`
-                List of all the serialized data pulled out of the pagws <script/> tags
+            <script>
+            window.netflix = window.netflix || {} ;
+            netflix.notification = {
+                "constants":{"sessionLength":30,"ownerToken":"ZDD...};
+            </script>
+        :return: List
+        List of all the serialized data pulled out of the pages <script/> tags
         """
-        scripts = page_soup.find_all('script', attrs={'src': None})
-        self.log(msg='Trying sloppy inline data parser')
-        inline_data = self._sloppy_parse_inline_data(scripts=scripts)
-        if self._verfify_auth_and_profiles_data(data=inline_data) != False:
-            self.log(msg='Sloppy inline data parsing successfull')
-            return inline_data
-        self.log(msg='Sloppy inline parser failed, trying JS parser')
-        return False
+        self.log(msg='Parsing inline data...')
+        items = self.page_items if items is None else items
+        user_data = {'gpsModel': 'harris'}
+        content = content.encode('utf-8').decode('string_escape')
+        # find <script/> tag witch contains the 'reactContext' globals
+        react_context = recompile('reactContext(?s)(.*);').findall(content)
+        # iterate over all wanted item keys & try to fetch them
+        for item in items:
+            match = recompile(
+                '"' + item + '":(.*?)"(.+?)"').findall(react_context[0])
+            if len(match) > 0:
+                _match = match[0][1]
+                user_data.update({item: _match})
+        # fetch profiles & avatars
+        profiles = self.get_profiles(content=content)
+        # get guid of active user
+        for guid in profiles:
+            if profiles[guid].get('isActive', False) is True:
+                user_data['guid'] = guid
 
-    def is_logged_in (self, account):
+        # verify the data based on the authURL
+        if self._verfify_auth_and_profiles_data(data=user_data, profiles=profiles) is not False:
+            self.log(msg='Parsing inline data parsing successfull')
+            return (user_data, profiles)
+        self.log(msg='Parsing inline data failed')
+        return (user_data, profiles)
+
+    def get_profiles(self, content):
+        """ADD ME"""
+        profiles = {}
+        # find everything between the profiles and the profiles_list property
+        _pattern = '"profiles":(.*?)"profilesList'
+        _profiles = recompile(_pattern).findall(content)
+        # replace the last comma we found with nothing
+        if len(_profiles):
+            _profiles_string = _profiles[0][::-1].replace(',', '', 1)[::-1]
+            # check if the last character is a closing bracket
+            if _profiles_string[len(_profiles_string)-1] != '}':
+                # if not, fix that
+                _closing_pos = _profiles_string.rfind('}')+1
+                _profiles_string = _profiles_string[:_closing_pos]
+            _profiles_parsed = json.loads(_profiles_string)
+            avatars = self.get_avatars(content=content)
+            for guid in _profiles_parsed:
+                if 'size' not in guid:
+                    _profile = _profiles_parsed[guid].get('summary')
+                    _name = _profile.get('avatarName')
+                    _profile['avatar'] = avatars.get(_name)
+                    profiles.update({guid: _profile})
+        return profiles
+
+    @classmethod
+    def get_avatars(cls, content):
+        """ADD ME"""
+        avatars = {}
+        # find everything between the avatars and the profiles property
+        _pattern = '"avatars":(.*?)(.*)"profiles":'
+        _avatars = recompile(_pattern).findall(content)
+        # replace the last comma we found with nothing
+        if len(_avatars):
+            index = 1 if len(_avatars[0][0]) == 0 else 0
+            _avatar_string = _avatars[0][index][::-1].replace(',', '', 1)[::-1]
+            _avatars_parsed = json.loads(_avatar_string).get('nf')
+            for _ava_key in _avatars_parsed:
+                if 'size' not in _ava_key:
+                    _images = _avatars_parsed[_ava_key].get('images', {})
+                    _image = _images.get('byWidth', {}).get('320', {})
+                    _url = _image.get('value')
+                    avatars.update({_ava_key: _url})
+        return avatars
+
+    def is_logged_in(self, account):
         """Determines if a user is already logged in (with a valid cookie),
            by fetching the profile page with the current cookie & checking for profile(s)
 
@@ -180,21 +221,14 @@ class NetflixSession:
         response = self._session_get(component='profiles')
         if response:
             # parse out the needed inline information
-            only_script_tags = SoupStrainer('script')
-            page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
-            netflix_page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
-            if netflix_page_data is None:
-                return False
-            # parse profile data
-            self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
-
+            user_data, profiles = self.extract_inline_netflix_page_data(content=response.text)
+            self.profiles = profiles
             # if we have profiles, cookie is still valid
             if self.profiles:
                 return True
-
         return False
 
-    def logout (self):
+    def logout(self):
         """Delete all cookies and session data
 
         Parameters
@@ -206,58 +240,46 @@ class NetflixSession:
         self._delete_cookies(path=self.cookie_path)
         self._delete_data(path=self.data_path)
 
-    def login (self, account):
-        """Try to log in a user with its credentials & stores the cookies if the action is successfull
-
-           Note: It fetches the HTML of the login page to extract the fields of the login form,
-           again, this is dirty, but as the fields & their values could change at any time, this
-           should be the most reliable way of retrieving the information
-
+    def login(self, account):
+        """Try to log in a user with its credentials
+        Stores the cookies & session data if the action is successfull
         Parameters
         ----------
         account : :obj:`dict` of :obj:`str`
             Dict containing an email, country & a password property
-
         Returns
         -------
         bool
             User could be logged in or not
         """
-        # ensure clear session or exception will occur
-        self.logout()
-        response = self._session_get(component='login')
-        if (response == None or response.status_code != 200):
-            return False;
-
-        # collect all the login fields & their contents and add the user credentials
-        page_soup = BeautifulSoup(response.text, 'html.parser')
-        login_form = page_soup.find(attrs={'class' : 'ui-label-text'}).findPrevious('form')
-        login_payload = self.parse_login_form_fields(form_soup=login_form)
-        if 'email' in login_payload:
-            login_payload['email'] = account['email']
-        if 'emailOrPhoneNumber' in login_payload:
-            login_payload['emailOrPhoneNumber'] = account['email']
-        login_payload['password'] = account['password']
+        page = self._session_get(component='profiles')
+        user_data, profiles = self.extract_inline_netflix_page_data(
+            content=page.text)
+        login_payload = {
+            'email': account.get('email'),
+            'password': account.get('password'),
+            'rememberMe': 'true',
+            'flow': 'websiteSignUp',
+            'mode': 'login',
+            'action': 'loginAction',
+            'withFields': 'email,password,rememberMe,nextPage',
+            'authURL': user_data.get('authURL'),
+            'nextPage': ''
+        }
 
         # perform the login
         login_response = self._session_post(component='login', data=login_payload)
-        if login_response:
-            login_soup = BeautifulSoup(login_response.text, 'html.parser')
-
-            # we know that the login was successfull if we find an HTML element with the class of 'profile-name'
-            if login_soup.find(attrs={'class' : 'profile-name'}) or login_soup.find(attrs={'class' : 'profile-icon'}):
-                # parse the needed inline information & store cookies for later requests
-                page_data = self._parse_page_contents(page_soup=login_soup)
-                if page_data is None:
-                    return False
-                account_hash = self._generate_account_hash(account=account)
-                self._save_cookies(filename=self.cookie_path + '_' + account_hash)
-                self._save_data(filename=self.data_path + '_' + account_hash)
-                return True
-
+        user_data = self._parse_page_contents(content=login_response.text)
+        account_hash = self._generate_account_hash(account=account)
+        # we know that the login was successfull if we find ???
+        if user_data.get('membershipStatus') == 'CURRENT_MEMBER':
+            # store cookies for later requests
+            self._save_cookies(filename=self.cookie_path + '_' + account_hash)
+            self._save_data(filename=self.data_path + '_' + account_hash)
+            return True
         return False
 
-    def switch_profile (self, profile_id, account):
+    def switch_profile(self, profile_id, account):
         """Switch the user profile based on a given profile id
 
         Note: All available profiles & their ids can be found in the ´profiles´ property after a successfull login
@@ -319,7 +341,7 @@ class NetflixSession:
             return False
         return pin_response.get('success', False)
 
-    def add_to_list (self, video_id):
+    def add_to_list(self, video_id):
         """Adds a video to "my list" on Netflix
 
         Parameters
@@ -334,7 +356,7 @@ class NetflixSession:
         """
         return self._update_my_list(video_id=video_id, operation='add')
 
-    def remove_from_list (self, video_id):
+    def remove_from_list(self, video_id):
         """Removes a video from "my list" on Netflix
 
         Parameters
@@ -349,7 +371,7 @@ class NetflixSession:
         """
         return self._update_my_list(video_id=video_id, operation='remove')
 
-    def rate_video (self, video_id, rating):
+    def rate_video(self, video_id, rating):
         """Rate a video on Netflix
 
         Parameters
@@ -396,7 +418,7 @@ class NetflixSession:
 
         return False
 
-    def parse_video_list_ids (self, response_data):
+    def parse_video_list_ids(self, response_data):
         """Parse the list of video ids e.g. rip out the parts we need
 
         Parameters
@@ -471,7 +493,7 @@ class NetflixSession:
                     video_list_ids['user'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
         return video_list_ids
 
-    def parse_video_list_ids_entry (self, id, entry):
+    def parse_video_list_ids_entry(self, id, entry):
         """Parse a video id entry e.g. rip out the parts we need
 
         Parameters
@@ -505,7 +527,7 @@ class NetflixSession:
             }
         }
 
-    def parse_search_results (self, response_data):
+    def parse_search_results(self, response_data):
         """Parse the list of search results, rip out the parts we need
            and extend it with detailed show informations
 
@@ -544,7 +566,7 @@ class NetflixSession:
                 search_results.update(show)
         return search_results
 
-    def parse_show_list_entry (self, id, entry):
+    def parse_show_list_entry(self, id, entry):
         """Parse a show entry e.g. rip out the parts we need
 
         Parameters
@@ -578,7 +600,7 @@ class NetflixSession:
             }
         }
 
-    def parse_video_list (self, response_data):
+    def parse_video_list(self, response_data):
         """Parse a list of videos
 
         Parameters
@@ -695,7 +717,7 @@ class NetflixSession:
                 video_list.update(self.parse_video_list_entry(id=video_id, list_id=netflix_list_id, video=raw_video_list['videos'][video_id], persons=raw_video_list['person'], genres=raw_video_list['genres']))
         return video_list
 
-    def parse_video_list_entry (self, id, list_id, video, persons, genres):
+    def parse_video_list_entry(self, id, list_id, video, persons, genres):
         """Parse a video list entry e.g. rip out the parts we need
 
         Parameters
@@ -810,7 +832,7 @@ class NetflixSession:
             }
         }
 
-    def parse_creators_for_video (self, video, persons):
+    def parse_creators_for_video(self, video, persons):
         """Matches ids with person names to generate a list of creators
 
         Parameters
@@ -835,7 +857,7 @@ class NetflixSession:
                             creators.append(persons[person_key]['name'])
         return creators
 
-    def parse_directors_for_video (self, video, persons):
+    def parse_directors_for_video(self, video, persons):
         """Matches ids with person names to generate a list of directors
 
         Parameters
@@ -860,7 +882,7 @@ class NetflixSession:
                             directors.append(persons[person_key]['name'])
         return directors
 
-    def parse_cast_for_video (self, video, persons):
+    def parse_cast_for_video(self, video, persons):
         """Matches ids with person names to generate a list of cast members
 
         Parameters
@@ -885,7 +907,7 @@ class NetflixSession:
                             cast.append(persons[person_key]['name'])
         return cast
 
-    def parse_genres_for_video (self, video, genres):
+    def parse_genres_for_video(self, video, genres):
         """Matches ids with genre names to generate a list of genres for a video
 
         Parameters
@@ -912,7 +934,7 @@ class NetflixSession:
 
         return video_genres
 
-    def parse_tags_for_video (self, video):
+    def parse_tags_for_video(self, video):
         """Parses a nested list of tags, removes the not needed meta information & returns a raw string list
 
         Parameters
@@ -931,7 +953,7 @@ class NetflixSession:
                 tags.append(video['tags'][tag_key]['name'])
         return tags
 
-    def parse_season_information_for_video (self, video):
+    def parse_season_information_for_video(self, video):
         """Checks if the fiven video is a show (series) and returns season & episode information
 
         Parameters
@@ -957,7 +979,7 @@ class NetflixSession:
             }
         return season_info
 
-    def parse_quality_for_video (self, video):
+    def parse_quality_for_video(self, video):
         """Transforms Netflix quality information in video resolution info
 
         Parameters
@@ -977,7 +999,7 @@ class NetflixSession:
             quality = '4000'
         return quality
 
-    def parse_runtime_for_video (self, video):
+    def parse_runtime_for_video(self, video):
         """Checks if the video is a movie & returns the runtime if given
 
         Parameters
@@ -995,7 +1017,7 @@ class NetflixSession:
             runtime = video['runtime']
         return runtime
 
-    def parse_netflix_list_id (self, video_list):
+    def parse_netflix_list_id(self, video_list):
         """Parse a video list and extract the list id
 
         Parameters
@@ -1015,7 +1037,7 @@ class NetflixSession:
                     netflix_list_id = video_id;
         return netflix_list_id
 
-    def parse_show_information (self, id, response_data):
+    def parse_show_information(self, id, response_data):
         """Parse extended show information (synopsis, seasons, etc.)
 
         Parameters
@@ -1046,7 +1068,7 @@ class NetflixSession:
             show.update({'season_id': raw_show.get('seasonList', {}).get('current', [])[1]})
         return show
 
-    def parse_seasons (self, id, response_data):
+    def parse_seasons(self, id, response_data):
         """Parse a list of seasons for a given show
 
         Parameters
@@ -1106,7 +1128,7 @@ class NetflixSession:
                 seasons.update(self._parse_season_entry(season=raw_seasons['seasons'][season], video=video, sorting=sorting))
         return seasons
 
-    def _parse_season_entry (self, season, video, sorting):
+    def _parse_season_entry(self, season, video, sorting):
         """Parse a season list entry e.g. rip out the parts we need
 
         Parameters
@@ -1146,7 +1168,7 @@ class NetflixSession:
             }
         }
 
-    def parse_episodes_by_season (self, response_data):
+    def parse_episodes_by_season(self, response_data):
         """Parse episodes for a given season/episode list
 
         Parameters
@@ -1216,7 +1238,7 @@ class NetflixSession:
                     episodes.update(self.parse_episode(episode=raw_episodes[episode_id], genres=response_data['value']['genres']))
         return episodes
 
-    def parse_episode (self, episode, genres=None):
+    def parse_episode(self, episode, genres=None):
         """Parse episode from an list of episodes by season
 
         Parameters
@@ -1284,50 +1306,7 @@ class NetflixSession:
             }
         }
 
-    def fetch_browse_list_contents (self):
-        """Fetches the HTML data for the lists on the landing page (browse page) of Netflix
-
-        Returns
-        -------
-        :obj:`BeautifulSoup`
-            Instance of an BeautifulSoup document containing the complete page contents
-        """
-        response = self._session_get(component='browse')
-        if response:
-            return BeautifulSoup(response.text, 'html.parser')
-        else:
-            return None
-
-    def fetch_video_list_ids_via_preflight (self, list_from=0, list_to=50):
-        """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
-           via the preflight (GET) request
-
-        Parameters
-        ----------
-        list_from : :obj:`int`
-            Start entry for pagination
-
-        list_to : :obj:`int`
-            Last entry for pagination
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`dict` of :obj:`str`
-            Raw Netflix API call response or api call error
-        """
-        payload = {
-            'fromRow': list_from,
-            'toRow': list_to,
-            'opaqueImageExtension': 'jpg',
-            'transparentImageExtension': 'png',
-            '_': int(time()),
-            'authURL': self.user_data['authURL']
-        }
-
-        response = self._session_get(component='video_list_ids', params=payload, type='api')
-        return self._process_response(response=response, component=self._get_api_url_for(component='video_list_ids'))
-
-    def fetch_video_list_ids (self, list_from=0, list_to=50):
+    def fetch_video_list_ids(self, list_from=0, list_to=50):
         """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
 
         Parameters
@@ -1350,7 +1329,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Video list ids')
 
-    def fetch_search_results (self, search_str, list_from=0, list_to=10):
+    def fetch_search_results(self, search_str, list_from=0, list_to=10):
         """Fetches the JSON which contains the results for the given search query
 
         Parameters
@@ -1383,7 +1362,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Search results')
 
-    def fetch_video_list (self, list_id, list_from=0, list_to=FETCH_VIDEO_REQUEST_COUNT):
+    def fetch_video_list(self, list_id, list_from=0, list_to=FETCH_VIDEO_REQUEST_COUNT):
         """Fetches the JSON which contains the contents of a given video list
 
         Parameters
@@ -1423,7 +1402,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Video list')
 
-    def fetch_video_list_information (self, video_ids):
+    def fetch_video_list_information(self, video_ids):
         """Fetches the JSON which contains the detail information of a list of given video ids
 
         Parameters
@@ -1457,7 +1436,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='fetch_video_list_information')
 
-    def fetch_metadata (self, id):
+    def fetch_metadata(self, id):
         """Fetches the JSON which contains the metadata for a given show/movie or season id
 
         Parameters
@@ -1478,7 +1457,7 @@ class NetflixSession:
         response = self._session_get(component='metadata', params=payload, type='api')
         return self._process_response(response=response, component=self._get_api_url_for(component='metadata'))
 
-    def fetch_show_information (self, id, type):
+    def fetch_show_information(self, id, type):
         """Fetches the JSON which contains the detailed contents of a show
 
         Parameters
@@ -1505,7 +1484,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Show information')
 
-    def fetch_seasons_for_show (self, id, list_from=0, list_to=30):
+    def fetch_seasons_for_show(self, id, list_from=0, list_to=30):
         """Fetches the JSON which contains the seasons of a given show
 
         Parameters
@@ -1535,7 +1514,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Seasons')
 
-    def fetch_episodes_by_season (self, season_id, list_from=-1, list_to=40):
+    def fetch_episodes_by_season(self, season_id, list_from=-1, list_to=40):
         """Fetches the JSON which contains the episodes of a given season
 
         TODO: Add more metadata
@@ -1576,7 +1555,7 @@ class NetflixSession:
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='fetch_episodes_by_season')
 
-    def refresh_session_data (self, account):
+    def refresh_session_data(self, account):
         """Reload the session data (profiles, user_data, api_data)
 
         Parameters
@@ -1588,9 +1567,7 @@ class NetflixSession:
         response = self._session_get(component='profiles')
         if response:
             # parse out the needed inline information
-            only_script_tags = SoupStrainer('script')
-            page_soup = BeautifulSoup(response.text, 'html.parser', parse_only=only_script_tags)
-            page_data = self._parse_page_contents(page_soup=page_soup)
+            page_data = self._parse_page_contents(content=response.text)
             if page_data is None:
                 return False
             account_hash = self._generate_account_hash(account=account)
@@ -1598,7 +1575,7 @@ class NetflixSession:
             return True
         return False
 
-    def _path_request (self, paths):
+    def _path_request(self, paths):
         """Executes a post request against the shakti endpoint with Falcor style payload
 
         Parameters
@@ -1626,13 +1603,11 @@ class NetflixSession:
         }
 
         response = self._session_post(component='shakti', type='api', params=params, headers=headers, data=data)
-
         if response:
             return response
-
         return None
 
-    def _is_size_key (self, key):
+    def _is_size_key(self, key):
         """Tiny helper that checks if a given key is called $size or size, as we need to check this often
 
         Parameters
@@ -1647,7 +1622,7 @@ class NetflixSession:
         """
         return key == '$size' or key == 'size'
 
-    def _get_api_url_for (self, component):
+    def _get_api_url_for(self, component):
         """Tiny helper that builds the url for a requested API endpoint component
 
         Parameters
@@ -1665,7 +1640,7 @@ class NetflixSession:
         else:
             return self.api_data['API_ROOT'] + self.api_data['API_BASE_URL'] + '/' + self.api_data['BUILD_IDENTIFIER'] + self.urls[component]
 
-    def _get_document_url_for (self, component):
+    def _get_document_url_for(self, component):
         """Tiny helper that builds the url for a requested document endpoint component
 
         Parameters
@@ -1680,7 +1655,7 @@ class NetflixSession:
         """
         return self.base_url + self.urls[component]
 
-    def _process_response (self, response, component):
+    def _process_response(self, response, component):
         """Tiny helper to check responses for API requests
 
         Parameters
@@ -1727,35 +1702,7 @@ class NetflixSession:
                 'code': '500'
             }
 
-    def _to_unicode(self, str):
-        '''Attempt to fix non uft-8 string into utf-8, using a limited set of encodings
-
-        Parameters
-        ----------
-        str : `str`
-            String to decode
-
-        Returns
-        -------
-        `str`
-            Decoded string
-        '''
-        # fuller list of encodings at http://docs.python.org/library/codecs.html#standard-encodings
-        if not str:  return u''
-        u = None
-        # we could add more encodings here, as warranted.
-        encodings = ('ascii', 'utf8', 'latin1')
-        for enc in encodings:
-            if u:  break
-            try:
-                u = unicode(str,enc)
-            except UnicodeDecodeError:
-                pass
-        if not u:
-            u = unicode(str, errors='replace')
-        return u
-
-    def _update_my_list (self, video_id, operation):
+    def _update_my_list(self, video_id, operation):
         """Tiny helper to add & remove items from "my list"
 
         Parameters
@@ -1786,7 +1733,6 @@ class NetflixSession:
 
         if response and response.status_code == 200:
             return True
-
         return False
 
     def _init_session(self):
@@ -1824,32 +1770,7 @@ class NetflixSession:
                 'profiles': self.profiles
             }, f)
 
-    def _load_data(self, filename):
-        """Tiny helper that loads session data into the active session from a given file
-
-        Parameters
-        ----------
-        filename : :obj:`str`
-            Complete path incl. filename that determines where to load the data from
-
-        Returns
-        -------
-        bool
-            Load procedure was successfull
-        """
-        if not os.path.isfile(filename):
-            return False
-
-        with open(filename) as f:
-            data = pickle.load(f)
-            if data:
-                self.profiles = data['profiles']
-                self.user_data = data['user_data']
-                self.api_data = data['api_data']
-            else:
-                return False
-
-    def _delete_data (self, path):
+    def _delete_data(self, path):
         """Tiny helper that deletes session data
 
         Parameters
@@ -1908,7 +1829,7 @@ class NetflixSession:
             else:
                 return False
 
-    def _delete_cookies (self, path):
+    def _delete_cookies(self, path):
         """Tiny helper that deletes cookie data
 
         Parameters
@@ -1924,7 +1845,7 @@ class NetflixSession:
                     os.remove(os.path.join(subdir, file))
         self._init_session()
 
-    def _generate_account_hash (self, account):
+    def _generate_account_hash(self, account):
         """Generates a has for the given account (used for cookie verification)
 
         Parameters
@@ -1939,7 +1860,7 @@ class NetflixSession:
         """
         return urlsafe_b64encode(account['email'])
 
-    def _session_post (self, component, type='document', data={}, headers={}, params={}):
+    def _session_post(self, component, type='document', data={}, headers={}, params={}):
         """Executes a get request using requests for the current session & measures the duration of that request
 
         Parameters
@@ -1976,7 +1897,7 @@ class NetflixSession:
         self.log(msg='[POST] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
-    def _session_get (self, component, type='document', params={}):
+    def _session_get(self, component, type='document', params={}):
         """Executes a get request using requests for the current session & measures the duration of that request
 
         Parameters
@@ -2007,258 +1928,18 @@ class NetflixSession:
         self.log(msg='[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
         return response
 
-    def _sloppy_parse_user_and_api_data (self, key, contents):
-        """Try to find the user & API data from the inline js by using a string parser
-
-        Parameters
-        ----------
-        key : :obj:`str`
-            Key to match in the inline js
-
-        contents : :obj:`str`
-            Inline JS contents
-
-        Returns
-        -------
-            :obj:`str`
-                Contents of the field to match
+    def _verfify_auth_and_profiles_data(self, data, profiles):
         """
-        key_start = contents.find(key + '"')
-        if int(key_start) == -1:
-            return None
-        sub_contents = contents[int(key_start):]
-        l = sub_contents.find('",')
-        return contents[(int(key_start)+len(key)+3):int(key_start)+l].decode('string_escape')
-
-    def _sloppy_parse_profiles (self, contents):
-        """Try to find the profile data from the inline js by using a string parser & parse/convert the result to JSON
-
-        Parameters
-        ----------
-        contents : :obj:`str`
-            Inline JS contents
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str` or None
-                Profile data
-        """
-        profile_start = contents.find('profiles":')
-        profile_list_start = contents.find('profilesList')
-        if int(profile_start) > -1 and int(profile_list_start) > -1:
-            try:
-                try:
-                    return json.loads('{"a":{"' + contents[profile_start:profile_list_start-2].decode('string_escape') + '}}').get('a').get('profiles')
-                except ValueError, e:
-                   return None
-            except TypeError, e:
-                return None
-        return None
-
-    def _sloppy_parse_avatars (self, contents):
-        """Try to find the avatar data from the inline js by using a string parser & parse/convert the result to JSON
-
-        Parameters
-        ----------
-        contents : :obj:`str`
-            Inline JS contents
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str` or None
-                Avatar data
-        """
-        avatars_start = contents.find('"nf":')
-        avatars_list_start = contents.find('"profiles"')
-        if int(avatars_start) > -1 and int(avatars_list_start) > -1:
-            try:
-                try:
-                    return json.loads('{' + contents[avatars_start:avatars_list_start-2].decode('string_escape') + '}')
-                except ValueError, e:
-                   return None
-            except TypeError, e:
-                return None
-        return None
-
-    def _verfify_auth_and_profiles_data (self, data):
-        """Checks if the authURL has at least a certain length & doesn't overrule a certain length & if the profiles dict exists
+        Checks if the authURL has at least a certain length &
+        doesn't overrule a certain length & if the profiles dict exists
         Simple validity check for the sloppy data parser
-
-        Parameters
-        ----------
-        data : :obj:`dict` of :obj:`str`
-            Parsed JS contents
-
-        Returns
-        -------
-            bool
-                Data is valid
         """
-        if type(data.get('profiles')) == dict:
+        if type(profiles) == dict:
             if len(str(data.get('authURL', ''))) > 10 and len(str(data.get('authURL', ''))) < 50:
                 return True
         return False
 
-    def _sloppy_parse_inline_data (self, scripts):
-        """Strips out all the needed user, api & profile data from the inline JS by string parsing
-        Might fail, so if this doesn't succeed, a proper JS parser will chime in
-
-        Note: This has been added for performance reasons only
-
-        Parameters
-        ----------
-        scripts : :obj:`list` of :obj:`BeautifoulSoup`
-            Script tags & contents from the Netflix browse page
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str`
-                Dict containijg user, api & profile data
-        """
-        inline_data = {};
-        for script in scripts:
-            contents = str(script.contents[0])
-            important_data = ['authURL', 'API_BASE_URL', 'API_ROOT', 'BUILD_IDENTIFIER', 'ICHNAEA_ROOT', 'gpsModel', 'guid', 'esn']
-            res = {}
-            for key in important_data:
-                _res = self._sloppy_parse_user_and_api_data(key, contents)
-                if _res != None:
-                    res.update({key: _res})
-            if res != {}:
-                inline_data.update(res)
-
-            # parse profiles
-            profiles = self._sloppy_parse_profiles(contents)
-            avatars = self._sloppy_parse_avatars(contents)
-            if profiles != None:
-                inline_data.update({'profiles': profiles})
-            if avatars != None:
-                inline_data.update(avatars)
-        return inline_data
-
-    def _parse_user_data (self, netflix_page_data):
-        """Parse out the user data from the big chunk of dicts we got from
-           parsing the JSON-ish data from the netflix homepage
-
-        Parameters
-        ----------
-        netflix_page_data : :obj:`list` of :obj:`dict`
-            List of all the JSON-ish data that has been extracted from the Netflix homepage
-            see: extract_inline_netflix_page_data
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str`
-
-            {
-                "guid": "72ERT45...",
-                "authURL": "145637....",
-                "gpsModel": "harris"
-            }
-        """
-        user_data = {};
-        important_fields = [
-            'authURL',
-            'gpsModel',
-            'guid'
-        ]
-
-        # values are accessible via dict (sloppy parsing successfull)
-        if type(netflix_page_data) == dict:
-            for important_field in important_fields:
-                user_data.update({important_field: netflix_page_data.get(important_field, '')})
-        return user_data
-
-    def _parse_profile_data (self, netflix_page_data):
-        """Parse out the profile data from the big chunk of dicts we got from
-           parsing the JSON-ish data from the netflix homepage
-
-        Parameters
-        ----------
-        netflix_page_data : :obj:`list` of :obj:`dict`
-            List of all the JSON-ish data that has been extracted from the Netflix homepage
-            see: extract_inline_netflix_page_data
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`dict
-
-            {
-                "72ERT45...": {
-                    "profileName": "username",
-                    "avatar": "http://..../avatar.png",
-                    "id": "72ERT45...",
-                    "isAccountOwner": False,
-                    "isActive": True,
-                    "isFirstUse": False
-                }
-            }
-        """
-        profiles = {}
-        important_fields = [
-            'profileName',
-            'isActive',
-            'isAccountOwner',
-            'isKids'
-        ]
-        # values are accessible via dict (sloppy parsing successfull)
-        if type(netflix_page_data) == dict:
-            for profile_id in netflix_page_data.get('profiles'):
-                if self._is_size_key(key=profile_id) == False and type(netflix_page_data['profiles'][profile_id]) == dict and netflix_page_data['profiles'][profile_id].get('avatar', False) != False:
-                    profile = {'id': profile_id}
-                    for important_field in important_fields:
-                        if important_field == 'profileName':
-                            profile.update({important_field: HTMLParser.HTMLParser().unescape(netflix_page_data['profiles'][profile_id]['summary'][important_field]).encode('utf8')})
-                        else:
-                            profile.update({important_field: netflix_page_data['profiles'][profile_id]['summary'][important_field]})
-                    avatar_base = netflix_page_data['nf'].get(netflix_page_data['profiles'][profile_id]['summary']['avatarName'], False);
-                    avatar = 'https://secure.netflix.com/ffe/profiles/avatars_v2/320x320/PICON_029.png' if avatar_base == False else avatar_base['images']['byWidth']['320']['value']
-                    profile.update({'avatar': avatar, 'isFirstUse': False})
-                    profiles.update({profile_id: profile})
-        return profiles
-
-    def _parse_api_base_data (self, netflix_page_data):
-        """Parse out the api url data from the big chunk of dicts we got from
-           parsing the JSOn-ish data from the netflix homepage
-
-        Parameters
-        ----------
-        netflix_page_data : :obj:`list` of :obj:`dict`
-            List of all the JSON-ish data that has been extracted from the Netflix homepage
-            see: extract_inline_netflix_page_data
-
-        Returns
-        -------
-            :obj:`dict` of :obj:`str
-
-            {
-                "API_BASE_URL": "/shakti",
-                "API_ROOT": "https://www.netflix.com/api",
-                "BUILD_IDENTIFIER": "113b89c9",
-                "ICHNAEA_ROOT": "/ichnaea"
-            }
-        """
-        api_data = {};
-        important_fields = [
-            'API_BASE_URL',
-            'API_ROOT',
-            'BUILD_IDENTIFIER',
-            'ICHNAEA_ROOT'
-        ]
-
-        # values are accessible via dict (sloppy parsing successfull)
-        if type(netflix_page_data) == dict:
-            for important_field in important_fields:
-                api_data.update({important_field: netflix_page_data.get(important_field, '')})
-            return api_data
-
-        for item in netflix_page_data:
-            if 'serverDefs' in dict(item).keys():
-                for important_field in important_fields:
-                    api_data.update({important_field: item['serverDefs']['data'][important_field]})
-        return api_data
-
-    def _parse_esn_data (self, netflix_page_data):
+    def _parse_esn_data(self, netflix_page_data):
         """Parse out the esn id data from the big chunk of dicts we got from
            parsing the JSOn-ish data from the netflix homepage
 
@@ -2297,21 +1978,25 @@ class NetflixSession:
             return netflix_page_data.get('esn', '')
         return ''
 
-    def _parse_page_contents (self, page_soup):
-        """Call all the parsers we need to extract all the session relevant data from the HTML page
-           Directly assigns it to the NetflixSession instance
-
-        Parameters
-        ----------
-        page_soup : :obj:`BeautifulSoup`
-            Instance of an BeautifulSoup document or node containing the complete page contents
+    def _parse_page_contents(self, content):
         """
-        netflix_page_data = self.extract_inline_netflix_page_data(page_soup=page_soup)
-        if netflix_page_data is None:
+        Call all the parsers we need to extract all
+        the session relevant data from the HTML page
+        Directly assigns it to the NetflixSession instance
+        """
+        user_data, profiles = self.extract_inline_netflix_page_data(content=content)
+        self.log(user_data)
+        self.log(profiles)
+        if user_data is None:
             return None
-        self.user_data = self._parse_user_data(netflix_page_data=netflix_page_data)
-        self.esn = self._parse_esn_data(netflix_page_data=netflix_page_data)
-        self.api_data = self._parse_api_base_data(netflix_page_data=netflix_page_data)
-        self.profiles = self._parse_profile_data(netflix_page_data=netflix_page_data)
+        self.user_data = user_data
+        self.esn = user_data.get('esn')
+        self.api_data = {
+            'API_BASE_URL': user_data.get('API_BASE_URL'),
+            'API_ROOT': user_data.get('API_ROOT'),
+            'BUILD_IDENTIFIER': user_data.get('BUILD_IDENTIFIER'),
+            'ICHNAEA_ROOT': user_data.get('ICHNAEA_ROOT'),
+        }
+        self.profiles = profiles
         self.log(msg='Found ESN "' + self.esn + '"')
-        return netflix_page_data
+        return user_data
