@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr "Netflix"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -243,7 +243,7 @@ msgstr "Profil"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
