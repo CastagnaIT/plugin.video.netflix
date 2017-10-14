@@ -711,16 +711,16 @@ class NetflixSession(object):
                     },
                     "quality": "540",
                     "rating": 3.1707757,
-                    "regular_synopsis": "Ein Spielzeughersteller erweckt aus Versehen die Seele der M\u00f6rderpuppe Chucky erneut zum Leben, die sich unmittelbar wieder ihren m\u00f6rderischen Aktivit\u00e4ten zuwendet.",
+                    "regular_synopsis": "Ein Spielzeughersteller e....",
                     "runtime": 5028,
                     "seasons_count": null,
                     "seasons_label": null,
-                    "synopsis": "Die allseits beliebte, von D\u00e4monen besessene M\u00f6rderpuppe ist wieder da und verbreitet erneut Horror und Schrecken.",
+                    "synopsis": "Die allseits beliebte, vo....",
                     "tags": [
                       "Brutal",
                       "Spannend"
                     ],
-                    "title": "Chucky 2 \u2013 Die M\u00f6rderpuppe ist wieder da",
+                    "title": "Chucky 2 \u2013 Die M\u00f6rderpuppe ist...",
                     "type": "movie",
                     "watched": false,
                     "year": 1990
@@ -728,8 +728,8 @@ class NetflixSession(object):
                 "80011356": {
                     "artwork": null,
                     "boxarts": {
-                      "big": "https://art-s.nflximg.net/7c10d/5dcc3fc8f08487e92507627068cfe26ef727c10d.jpg",
-                      "small": "https://art-s.nflximg.net/5bc0e/f3be361b8c594929062f90a8d9c6eb57fb75bc0e.jpg"
+                      "big": "https://art-s.nflximg.net/7c10d/5dc....jpg",
+                      "small": "https://art-s.nflximg.net/5bc0e/f3be3....jpg"
                     },
                     "cast": [
                       "Bjarne M\u00e4del"
@@ -746,7 +746,7 @@ class NetflixSession(object):
                     ],
                     "id": "80011356",
                     "in_my_list": true,
-                    "interesting_moment": "https://art-s.nflximg.net/0188e/19cd705a71ee08c8d2609ae01cd8a97a86c0188e.jpg",
+                    "interesting_moment": "https://art-s.nflximg.net/01....jpg",
                     "list_id": "9588df32-f957-40e4-9055-1f6f33b60103_46891306",
                     "maturity": {
                       "board": "FSF",
@@ -756,11 +756,11 @@ class NetflixSession(object):
                     },
                     "quality": "720",
                     "rating": 4.4394655,
-                    "regular_synopsis": "Comedy-Serie \u00fcber die Erlebnisse eines Tatortreinigers, der seine schmutzige Arbeit erst beginnen kann, wenn die Polizei die Tatortanalyse abgeschlossen hat.",
+                    "regular_synopsis": "Comedy-Serie \u00fcber...",
                     "runtime": null,
                     "seasons_count": 5,
                     "seasons_label": "5 Staffeln",
-                    "synopsis": "In den meisten Krimiserien werden Mordf\u00e4lle auf faszinierende und spannende Weise gel\u00f6st. Diese Serie ist anders.",
+                    "synopsis": "In den meisten Krimiserien werde...",
                     "tags": [
                       "Zynisch"
                     ],
@@ -772,11 +772,17 @@ class NetflixSession(object):
             }
         """
         video_list = {};
-        raw_video_list = response_data['value']
-        netflix_list_id = self.parse_netflix_list_id(video_list=raw_video_list);
-        for video_id in raw_video_list['videos']:
-            if self._is_size_key(key=video_id) == False:
-                video_list.update(self.parse_video_list_entry(id=video_id, list_id=netflix_list_id, video=raw_video_list['videos'][video_id], persons=raw_video_list['person'], genres=raw_video_list['genres']))
+        raw_video_list = response_data.get('value', {})
+        netflix_list_id = self.parse_netflix_list_id(video_list=raw_video_list)
+        for video_id in raw_video_list.get('videos', {}):
+            if self._is_size_key(key=video_id) is False:
+                video_list_entry = self.parse_video_list_entry(
+                    id=video_id,
+                    list_id=netflix_list_id,
+                    video=raw_video_list.get('videos', {}).get(video_id),
+                    persons=raw_video_list.get('person'),
+                    genres=raw_video_list.get('genres'))
+                video_list.update(video_list_entry)
         return video_list
 
     def parse_video_list_entry(self, id, list_id, video, persons, genres):
@@ -808,8 +814,8 @@ class NetflixSession(object):
               "372203": {
                 "artwork": null,
                 "boxarts": {
-                  "big": "https://art-s.nflximg.net/5e7d3/b3b48749843fd3a36db11c319ffa60f96b55e7d3.jpg",
-                  "small": "https://art-s.nflximg.net/57543/a039845c2eb9186dc26019576d895bf5a1957543.jpg"
+                  "big": "https://art-s.nflximg.net/5e7d3/b3b...b55e7d3.jpg",
+                  "small": "https://art-s.nflximg.net/57543/a039...957543.jpg"
                 },
                 "cast": [
                   "Christine Elise",
@@ -830,7 +836,7 @@ class NetflixSession(object):
                 ],
                 "id": "372203",
                 "in_my_list": true,
-                "interesting_moment": "https://art-s.nflximg.net/09544/ed4b3073394b4469fb6ec22b9df81a4f5cb09544.jpg",
+                "interesting_moment": "https://art-s.nflximg.net/095...9544.jpg",
                 "list_id": "9588df32-f957-40e4-9055-1f6f33b60103_46891306",
                 "maturity": {
                   "board": "FSK",
@@ -840,11 +846,11 @@ class NetflixSession(object):
                 },
                 "quality": "540",
                 "rating": 3.1707757,
-                "regular_synopsis": "Ein Spielzeughersteller erweckt aus Versehen die Seele der M\u00f6rderpuppe Chucky erneut zum Leben, die sich unmittelbar wieder ihren m\u00f6rderischen Aktivit\u00e4ten zuwendet.",
+                "regular_synopsis": "Ein Spielzeughersteller erweck...",
                 "runtime": 5028,
                 "seasons_count": null,
                 "seasons_label": null,
-                "synopsis": "Die allseits beliebte, von D\u00e4monen besessene M\u00f6rderpuppe ist wieder da und verbreitet erneut Horror und Schrecken.",
+                "synopsis": "Die allseits beliebte, von D\u00e4mone...",
                 "tags": [
                   "Brutal",
                   "Spannend"
@@ -861,11 +867,11 @@ class NetflixSession(object):
             id: {
                 'id': id,
                 'list_id': list_id,
-                'title': video['title'],
-                'synopsis': video['synopsis'],
-                'regular_synopsis': video['regularSynopsis'],
-                'type': video['summary']['type'],
-                'rating': video['userRating'].get('average', 0) if video['userRating'].get('average', None) != None else video['userRating'].get('predicted', 0),
+                'title': video.get('title'),
+                'synopsis': video.get('synopsis'),
+                'regular_synopsis': video.get('regularSynopsis'),
+                'type': video.get('summary', {}).get('type'),
+                'rating': video['userRating'].get('average', 0) if video['userRating'].get('average', None) is not None else video['userRating'].get('predicted', 0),
                 'episode_count': season_info['episode_count'],
                 'seasons_label': season_info['seasons_label'],
                 'seasons_count': season_info['seasons_count'],
@@ -874,11 +880,17 @@ class NetflixSession(object):
                 'runtime': self.parse_runtime_for_video(video=video),
                 'watched': video.get('watched', None),
                 'tags': self.parse_tags_for_video(video=video),
-                'genres': self.parse_genres_for_video(video=video, genres=genres),
+                'genres': self.parse_genres_for_video(
+                    video=video,
+                    genres=genres),
                 'quality': self.parse_quality_for_video(video=video),
                 'cast': self.parse_cast_for_video(video=video, persons=persons),
-                'directors': self.parse_directors_for_video(video=video, persons=persons),
-                'creators': self.parse_creators_for_video(video=video, persons=persons),
+                'directors': self.parse_directors_for_video(
+                    video=video,
+                    persons=persons),
+                'creators': self.parse_creators_for_video(
+                    video=video,
+                    persons=persons),
                 'maturity': {
                     'board': None if 'board' not in video['maturity']['rating'].keys() else video['maturity']['rating']['board'],
                     'value': None if 'value' not in video['maturity']['rating'].keys() else video['maturity']['rating']['value'],
@@ -912,9 +924,11 @@ class NetflixSession(object):
         """
         creators = []
         for person_key in dict(persons).keys():
-            if self._is_size_key(key=person_key) == False and person_key != 'summary':
+            is_size_key = self._is_size_key(key=person_key)
+            if is_size_key is False and person_key != 'summary':
                 for creator_key in dict(video['creators']).keys():
-                    if self._is_size_key(key=creator_key) == False and creator_key != 'summary':
+                    is_size_key = self._is_size_key(key=creator_key)
+                    if is_size_key == False and creator_key != 'summary':
                         if video['creators'][creator_key][1] == person_key:
                             creators.append(persons[person_key]['name'])
         return creators
@@ -937,9 +951,11 @@ class NetflixSession(object):
         """
         directors = []
         for person_key in dict(persons).keys():
-            if self._is_size_key(key=person_key) == False and person_key != 'summary':
+            is_size_key = self._is_size_key(key=person_key)
+            if is_size_key is False and person_key != 'summary':
                 for director_key in dict(video['directors']).keys():
-                    if self._is_size_key(key=director_key) == False and director_key != 'summary':
+                    is_size_key = self._is_size_key(key=director_key)
+                    if is_size_key is False and director_key != 'summary':
                         if video['directors'][director_key][1] == person_key:
                             directors.append(persons[person_key]['name'])
         return directors
@@ -962,9 +978,11 @@ class NetflixSession(object):
         """
         cast = []
         for person_key in dict(persons).keys():
-            if self._is_size_key(key=person_key) == False and person_key != 'summary':
+            is_size_key = self._is_size_key(key=person_key)
+            if is_size_key is False and person_key != 'summary':
                 for cast_key in dict(video['cast']).keys():
-                    if self._is_size_key(key=cast_key) == False and cast_key != 'summary':
+                    is_size_key = self._is_size_key(key=cast_key)
+                    if is_size_key is False and cast_key != 'summary':
                         if video['cast'][cast_key][1] == person_key:
                             cast.append(persons[person_key]['name'])
         return cast
@@ -987,13 +1005,12 @@ class NetflixSession(object):
         """
         video_genres = []
 
-        for video_genre_key, video_genre in video['genres'].iteritems():
-            if self._is_size_key(video_genre_key) == False and video_genre_key != 'summary':
+        for video_genre_key, video_genre in video.get('genres', {}).iteritems():
+            is_size_key = self._is_size_key(video_genre_key)
+            if is_size_key is False and video_genre_key != 'summary':
                 name = genres.get(video_genre[1], {}).get('name')
-
                 if name:
                     video_genres.append(name)
-
         return video_genres
 
     def parse_tags_for_video(self, video):
@@ -1016,7 +1033,9 @@ class NetflixSession(object):
         return tags
 
     def parse_season_information_for_video(self, video):
-        """Checks if the fiven video is a show (series) and returns season & episode information
+        """
+        Checks if the fiven video is a show (series) and
+        returns season & episode information
 
         Parameters
         ----------
@@ -1116,7 +1135,7 @@ class NetflixSession(object):
         Show information in the format:
             {
                 "season_id": "80113084",
-                "synopsis": "Aus verzweifelter Geldnot versucht sich der Familienvater und Drucker Jochen als Geldf\u00e4lscher und rutscht dabei immer mehr in die dunkle Welt des Verbrechens ab."
+                "synopsis": "Aus verzweifel..."
                 "detail_text": "I´m optional"
             }
         """
@@ -1151,20 +1170,20 @@ class NetflixSession(object):
                     "text": "Season 1",
                     "shortName": "St. 1",
                     "boxarts": {
-                      "big": "https://art-s.nflximg.net/5e7d3/b3b48749843fd3a36db11c319ffa60f96b55e7d3.jpg",
-                      "small": "https://art-s.nflximg.net/57543/a039845c2eb9186dc26019576d895bf5a1957543.jpg"
+                      "big": "https://art-s.nflximg.net/5e7d3/b3b4....jpg",
+                      "small": "https://art-s.nflximg.net/57543/a039....jpg"
                     },
-                    "interesting_moment": "https://art-s.nflximg.net/09544/ed4b3073394b4469fb6ec22b9df81a4f5cb09544.jpg"
+                    "interesting_moment": "https://art-s.nflximg.net/09....jpg"
                 },
                 "80113085": {
                     "id": 80113085,
                     "text": "Season 2",
                     "shortName": "St. 2",
                     "boxarts": {
-                      "big": "https://art-s.nflximg.net/5e7d3/b3b48749843fd3a36db11c319ffa60f96b55e7d3.jpg",
-                      "small": "https://art-s.nflximg.net/57543/a039845c2eb9186dc26019576d895bf5a1957543.jpg"
+                      "big": "https://art-s.nflximg.net/5e7d3/....jpg",
+                      "small": "https://art-s.nflximg.net/57543/a03....jpg"
                     },
-                    "interesting_moment": "https://art-s.nflximg.net/09544/ed4b3073394b4469fb6ec22b9df81a4f5cb09544.jpg"
+                    "interesting_moment": "https://art-s.nflximg....4.jpg"
                 }
             }
         """
@@ -1180,14 +1199,18 @@ class NetflixSession(object):
         # get season index
         sorting = {}
         for idx, season_list_entry in video['seasonList'].iteritems():
-            if self._is_size_key(key=idx) == False and idx != 'summary':
+            if self._is_size_key(key=idx) is False and idx != 'summary':
                 sorting[int(season_list_entry[1])] = int(idx)
 
         seasons = {}
 
         for season in raw_seasons['seasons']:
-            if self._is_size_key(key=season) == False:
-                seasons.update(self._parse_season_entry(season=raw_seasons['seasons'][season], video=video, sorting=sorting))
+            if self._is_size_key(key=season) is False:
+                season_entry = self._parse_season_entry(
+                    season=raw_seasons.get('seasons', {}).get(season),
+                    video=video,
+                    sorting=sorting)
+                seasons.update(season_entry)
         return seasons
 
     def _parse_season_entry(self, season, video, sorting):
@@ -1209,10 +1232,10 @@ class NetflixSession(object):
                     "text": "Season 1",
                     "shortName": "St. 1",
                     "boxarts": {
-                      "big": "https://art-s.nflximg.net/5e7d3/b3b48749843fd3a36db11c319ffa60f96b55e7d3.jpg",
-                      "small": "https://art-s.nflximg.net/57543/a039845c2eb9186dc26019576d895bf5a1957543.jpg"
+                      "big": "https://art-s.nflximg.net/5e7d3/b3b4....jpg",
+                      "small": "https://art-s.nflximg.net/57543/a0398....jpg"
                     },
-                    "interesting_moment": "https://art-s.nflximg.net/09544/ed4b3073394b4469fb6ec22b9df81a4f5cb09544.jpg"
+                    "interesting_moment": "https://art-s.nflximg.net/095...jpg"
                 }
             }
         """
@@ -1245,10 +1268,10 @@ class NetflixSession(object):
 
         {
           "70251729": {
-            "banner": "https://art-s.nflximg.net/63a36/c7fdfe6604ef2c22d085ac5dca5f69874e363a36.jpg",
+            "banner": "https://art-s.nflximg.net/63a36/c7fdfe66...jpg",
             "duration": 1387,
             "episode": 1,
-            "fanart": "https://art-s.nflximg.net/74e02/e7edcc5cc7dcda1e94d505df2f0a2f0d22774e02.jpg",
+            "fanart": "https://art-s.nflximg.net/74e02/e7edcc5cc7d....jpg",
             "genres": [
               "Serien",
               "Comedyserien"
@@ -1258,20 +1281,20 @@ class NetflixSession(object):
             "mpaa": "FSK 16",
             "my_list": false,
             "playcount": 0,
-            "plot": "Als die Griffins und andere Einwohner von Quahog in die Villa von James Woods eingeladen werden, muss pl\u00f6tzlich ein Mord aufgekl\u00e4rt werden.",
-            "poster": "https://art-s.nflximg.net/72fd6/57088715e8d436fdb6986834ab39124b0a972fd6.jpg",
+            "plot": "Als die Griffins und andere Einwohner von...",
+            "poster": "https://art-s.nflximg.net/72fd6/57088715e8d...jpg",
             "rating": 3.9111512,
             "season": 9,
-            "thumb": "https://art-s.nflximg.net/be686/07680670a68da8749eba607efb1ae37f9e3be686.jpg",
+            "thumb": "https://art-s.nflximg.net/be686/07680670a68d....jpg",
             "title": "Und dann gab es weniger (Teil 1)",
             "year": 2010,
             "bookmark": -1
           },
           "70251730": {
-            "banner": "https://art-s.nflximg.net/63a36/c7fdfe6604ef2c22d085ac5dca5f69874e363a36.jpg",
+            "banner": "https://art-s.nflximg.net/63a36/c7fdfe6604ef2c...jpg",
             "duration": 1379,
             "episode": 2,
-            "fanart": "https://art-s.nflximg.net/c472c/6c10f9578bf2c1d0a183c2ccb382931efcbc472c.jpg",
+            "fanart": "https://art-s.nflximg.net/c472c/6c10f9578bf2c....jpg",
             "genres": [
               "Serien",
               "Comedyserien"
@@ -1281,11 +1304,11 @@ class NetflixSession(object):
             "mpaa": "FSK 16",
             "my_list": false,
             "playcount": 1,
-            "plot": "Wer ist der M\u00f6rder? Nach zahlreichen Morden wird immer wieder jemand anderes verd\u00e4chtigt.",
-            "poster": "https://art-s.nflximg.net/72fd6/57088715e8d436fdb6986834ab39124b0a972fd6.jpg",
+            "plot": "Wer ist der M\u00f6rder? Nach zahlreichen...",
+            "poster": "https://art-s.nflximg.net/72fd6/5708...jpg",
             "rating": 3.9111512,
             "season": 9,
-            "thumb": "https://art-s.nflximg.net/15a08/857d59126641987bec302bb147a802a00d015a08.jpg",
+            "thumb": "https://art-s.nflximg.net/15a08/857d5912...jpg",
             "title": "Und dann gab es weniger (Teil 2)",
             "year": 2010,
             "bookmark": 1234
@@ -1295,9 +1318,12 @@ class NetflixSession(object):
         episodes = {}
         raw_episodes = response_data['value']['videos']
         for episode_id in raw_episodes:
-            if self._is_size_key(key=episode_id) == False:
+            if self._is_size_key(key=episode_id) is False:
                 if (raw_episodes[episode_id]['summary']['type'] == 'episode'):
-                    episodes.update(self.parse_episode(episode=raw_episodes[episode_id], genres=response_data['value']['genres']))
+                    episode_entry = self.parse_episode(
+                        episode=raw_episodes[episode_id],
+                        genres=response_data.get('value', {}).get('genres'))
+                    episodes.update(episode_entry)
         return episodes
 
     def parse_episode(self, episode, genres=None):
@@ -1315,10 +1341,10 @@ class NetflixSession(object):
 
         {
           "70251729": {
-            "banner": "https://art-s.nflximg.net/63a36/c7fdfe6604ef2c22d085ac5dca5f69874e363a36.jpg",
+            "banner": "https://art-s.nflximg.net/63a36/c7fdfe...6.jpg",
             "duration": 1387,
             "episode": 1,
-            "fanart": "https://art-s.nflximg.net/74e02/e7edcc5cc7dcda1e94d505df2f0a2f0d22774e02.jpg",
+            "fanart": "https://art-s.nflximg.net/74e02/e7edcc5cc7....jpg",
             "genres": [
               "Serien",
               "Comedyserien"
@@ -1328,11 +1354,11 @@ class NetflixSession(object):
             "mpaa": "FSK 16",
             "my_list": false,
             "playcount": 0,
-            "plot": "Als die Griffins und andere Einwohner von Quahog in die Villa von James Woods eingeladen werden, muss pl\u00f6tzlich ein Mord aufgekl\u00e4rt werden.",
-            "poster": "https://art-s.nflximg.net/72fd6/57088715e8d436fdb6986834ab39124b0a972fd6.jpg",
+            "plot": "Als die Griffins und andere Einwohner von Quahog...",
+            "poster": "https://art-s.nflximg.net/72fd6/57088715e8...jpg",
             "rating": 3.9111512,
             "season": 9,
-            "thumb": "https://art-s.nflximg.net/be686/07680670a68da8749eba607efb1ae37f9e3be686.jpg",
+            "thumb": "https://art-s.nflximg.net/be686/07680670a68...jpg",
             "title": "Und dann gab es weniger (Teil 1)",
             "year": 2010,
             "bookmark": 1234
@@ -1369,7 +1395,9 @@ class NetflixSession(object):
         }
 
     def fetch_video_list_ids(self, list_from=0, list_to=50):
-        """Fetches the JSON with detailed information based on the lists on the landing page (browse page) of Netflix
+        """
+        Fetches the JSON with detailed information based on the
+        lists on the landing page (browse page) of Netflix
 
         Parameters
         ----------
@@ -1385,14 +1413,21 @@ class NetflixSession(object):
             Raw Netflix API call response or api call error
         """
         paths = [
-            ['lolomo', {'from': list_from, 'to': list_to}, ['displayName', 'context', 'id', 'index', 'length']]
+            [
+                'lolomo',
+                {'from': list_from, 'to': list_to},
+                ['displayName', 'context', 'id', 'index', 'length']
+            ]
         ]
 
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='Video list ids')
+        return self._process_response(
+            response=response,
+            component='Video list ids')
 
     def fetch_search_results(self, search_str, list_from=0, list_to=10):
-        """Fetches the JSON which contains the results for the given search query
+        """
+        Fetches the JSON which contains the results for the given search query
 
         Parameters
         ----------
@@ -1422,7 +1457,9 @@ class NetflixSession(object):
             ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', ['id', 'length', 'name', 'trackIds', 'requestId']]
         ]
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='Search results')
+        return self._process_response(
+            response=response,
+            component='Search results')
 
     def fetch_video_list(self, list_id, list_from=0, list_to=FETCH_VIDEO_REQUEST_COUNT):
         """Fetches the JSON which contains the contents of a given video list
@@ -1465,7 +1502,9 @@ class NetflixSession(object):
         return self._process_response(response=response, component='Video list')
 
     def fetch_video_list_information(self, video_ids):
-        """Fetches the JSON which contains the detail information of a list of given video ids
+        """
+        Fetches the JSON which contains the detail information of a
+        list of given video ids
 
         Parameters
         ----------
@@ -1496,10 +1535,14 @@ class NetflixSession(object):
             paths.append(['videos', video_id, 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg'])
 
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='fetch_video_list_information')
+        return self._process_response(
+            response=response,
+            component='fetch_video_list_information')
 
     def fetch_metadata(self, id):
-        """Fetches the JSON which contains the metadata for a given show/movie or season id
+        """
+        Fetches the JSON which contains the metadata for a
+        given show/movie or season id
 
         Parameters
         ----------
@@ -1516,8 +1559,13 @@ class NetflixSession(object):
             'imageformat': 'jpg',
             '_': int(time())
         }
-        response = self._session_get(component='metadata', params=payload, type='api')
-        return self._process_response(response=response, component=self._get_api_url_for(component='metadata'))
+        response = self._session_get(
+            component='metadata',
+            params=payload,
+            type='api')
+        return self._process_response(
+            response=response,
+            component=self._get_api_url_for(component='metadata'))
 
     def fetch_show_information(self, id, type):
         """Fetches the JSON which contains the detailed contents of a show
@@ -1542,9 +1590,13 @@ class NetflixSession(object):
                 ['videos', id, 'seasonList', 'current', 'summary']
             ]
         else:
-            paths = [['videos', id, ['requestId', 'regularSynopsis', 'evidence']]]
+            paths = [
+                ['videos', id, ['requestId', 'regularSynopsis', 'evidence']]
+            ]
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='Show information')
+        return self._process_response(
+            response=response,
+            component='Show information')
 
     def fetch_seasons_for_show(self, id, list_from=0, list_to=30):
         """Fetches the JSON which contains the seasons of a given show
@@ -1615,7 +1667,9 @@ class NetflixSession(object):
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'boxarts', '_1280x720', 'jpg']
         ]
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='fetch_episodes_by_season')
+        return self._process_response(
+            response=response,
+            component='fetch_episodes_by_season')
 
     def refresh_session_data(self, account):
         """Reload the session data (profiles, user_data, api_data)
@@ -1638,7 +1692,9 @@ class NetflixSession(object):
         return False
 
     def _path_request(self, paths):
-        """Executes a post request against the shakti endpoint with Falcor style payload
+        """
+        Executes a post request against the shakti
+        endpoint with Falcor style payload
 
         Parameters
         ----------
@@ -1664,13 +1720,20 @@ class NetflixSession(object):
             'model': self.user_data['gpsModel']
         }
 
-        response = self._session_post(component='shakti', type='api', params=params, headers=headers, data=data)
+        response = self._session_post(
+            component='shakti',
+            type='api',
+            params=params,
+            headers=headers,
+            data=data)
         if response:
             return response
         return None
 
     def _is_size_key(self, key):
-        """Tiny helper that checks if a given key is called $size or size, as we need to check this often
+        """
+        Tiny helper that checks if a given key is called $size or size,
+        as we need to check this often
 
         Parameters
         ----------
@@ -1685,7 +1748,8 @@ class NetflixSession(object):
         return key == '$size' or key == 'size'
 
     def _get_api_url_for(self, component):
-        """Tiny helper that builds the url for a requested API endpoint component
+        """
+        Tiny helper that builds the url for a requested API endpoint component
 
         Parameters
         ----------
@@ -1703,7 +1767,9 @@ class NetflixSession(object):
             return self.api_data['API_ROOT'] + self.api_data['API_BASE_URL'] + '/' + self.api_data['BUILD_IDENTIFIER'] + self.urls[component]
 
     def _get_document_url_for(self, component):
-        """Tiny helper that builds the url for a requested document endpoint component
+        """
+        Tiny helper that builds the url for a
+        requested document endpoint component
 
         Parameters
         ----------
@@ -1791,7 +1857,11 @@ class NetflixSession(object):
             'authURL': self.user_data['authURL']
         })
 
-        response = self._session_post(component='update_my_list', type='api', headers=headers, data=payload)
+        response = self._session_post(
+            component='update_my_list',
+            type='api',
+            headers=headers,
+            data=payload)
 
         if response and response.status_code == 200:
             return True
@@ -1802,7 +1872,8 @@ class NetflixSession(object):
             self.session.close()
         except AttributeError:
             pass
-        # start session, fake chrome on the current platform (so that we get a proper widevine esn) & enable gzip
+        # start session, fake chrome on the current platform
+        # (so that we get a proper widevine esn) & enable gzip
         self.session = session()
         self.session.headers.update({
             'User-Agent': get_user_agent(),
@@ -1810,12 +1881,13 @@ class NetflixSession(object):
         })
 
     def _save_data(self, filename):
-        """Tiny helper that stores session data from the session in a given file
+        """
+        Tiny helper that stores session data from the session in a given file
 
         Parameters
         ----------
         filename : :obj:`str`
-            Complete path incl. filename that determines where to store the cookie
+            Complete path/filename that determines where to store the data
 
         Returns
         -------
@@ -1838,7 +1910,7 @@ class NetflixSession(object):
         Parameters
         ----------
         filename : :obj:`str`
-            Complete path incl. filename that determines where to delete the files
+            Complete path/filename that determines where to delete the files
 
         """
         head, tail = os.path.split(path)
@@ -1950,7 +2022,12 @@ class NetflixSession(object):
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
         start = time()
         try:
-            response = self.session.post(url=url, data=data, params=params, headers=headers, verify=self.verify_ssl)
+            response = self.session.post(
+                url=url,
+                data=data,
+                params=params,
+                headers=headers,
+                verify=self.verify_ssl)
         except:
             exc = sys.exc_info()
             self.log(msg='[POST] Error {} {}'.format(exc[0],exc[1]))
@@ -1960,7 +2037,9 @@ class NetflixSession(object):
         return response
 
     def _session_get(self, component, type='document', params={}):
-        """Executes a get request using requests for the current session & measures the duration of that request
+        """
+        Executes a get request using requests for the current session &
+        measures the duration of that request
 
         Parameters
         ----------
@@ -1981,7 +2060,10 @@ class NetflixSession(object):
         url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
         start = time()
         try:
-            response = self.session.get(url=url, verify=self.verify_ssl, params=params)
+            response = self.session.get(
+                url=url,
+                verify=self.verify_ssl,
+                params=params)
         except:
             exc = sys.exc_info()
             self.log(msg='[GET] Error {} {}'.format(exc[0],exc[1]))
@@ -2008,7 +2090,8 @@ class NetflixSession(object):
         Parameters
         ----------
         netflix_page_data : :obj:`list` of :obj:`dict`
-            List of all the JSON-ish data that has been extracted from the Netflix homepage
+            List of all the JSON-ish data that has been
+            extracted from the Netflix homepage
             see: extract_inline_netflix_page_data
 
         Returns
