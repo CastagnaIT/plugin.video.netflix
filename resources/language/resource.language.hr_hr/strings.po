@@ -1,0 +1,269 @@
+# Croatian translation for Kodi Media Center Netfilx addon
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: gogo\n"
+"Language-Team: Croatian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hr\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix dodatak za uslugu (VOD) videa na zahtjev"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Neki dijelovi ovog dodatka možda nisu legalni u vašoj zemlji ili kraju - provjerite vaše lokalne zakone prije instalacije."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Preporuke"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Pin sadržaja za odrasle"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Izraz pretrage"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Lozinka"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-pošta"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Neuspjela ovjera sadržaja za odrasle"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Provjerite svoj pin sadržaja za odrasle"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Neuspjela prijava"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Provjereite svoje podatke ovjere"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Žanrovi"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Pretraga"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Nema dostupnih sezona"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Nema pronađenih podudaranja"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Račun"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Odjava"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Izvezi u videoteku"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Ocjeni na Netflixu"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Ukloni s 'Moj popis'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Dodaj na 'Moj popis'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(između 0 i 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Stručno"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL ovjera"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Videoteka"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Omogući prilagođenu mapu videoteke"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Prilagođena putanja videoteke"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Greška reprodukcije"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Nedostaje dodatak ulaznog strujanja"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Ukloni iz videoteke"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Promijeni naslov videoteke"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Praćenje"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Koristi Dolby zvuk"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (postavi automatski, može se promijeniti ručno)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Postavke dodatka ulaznog strujanja..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Uvijek koristi izvorni naslov pri izvozu"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Prikazi"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Omogući prilagođene prikaze"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Prikaz mapa"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Prikaz filmova"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Prikaz serija"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Prikaz sezona"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Prikaz epizoda"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Prikaz profila"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- SLJEDEĆA STRANICA --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "Dodatak ulaznog strujanja nije omogućen"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Konačno ukloni?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Izvezeno"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Nadopuni bazu podataka"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Nadopuna uspješna"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Greška zahtjeva"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Nemoguće je trenutno završavanje zahtjeva"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Automatska prijava"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Omogući automatsku prijavu"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Odaberi profil u popisu profila -> sadržajni izbornik"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Automatska prijava omogućena!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Zamijeni račune"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Omogući HEVC profile (npr. 4k za Android)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Nadopuni unutar videoteke"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Omogući/Onemogući pin sadržaja za odrasle. Aktivan:"

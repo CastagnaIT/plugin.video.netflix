@@ -1,0 +1,160 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: Sebastian Golasch <public@asciidisco.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix VOD-tjänstetillägg"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Vissa delar av detta tillägg kanske inte är fullt lagliga att använda i ditt land - kontrollera dina lokala lagar innan du installerar."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Rekommendationer"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Barnskydd"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Sökord"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Lösenord"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-post"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Verifiering av barnskyddet misslyckades"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Kontrollera koden till barnskyddet"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Inloggningen misslyckades"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Kontrollera dina inloggninguppgifter"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Genrer"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Sök"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Inga säsonger tillgängliga"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Inga träffar"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Konto"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Logga ut"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Exportera till biblioteket"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Betygsätt på Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Ta bort från 'Min lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Lägg till 'Min lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(mellan 0 & 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr ""
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL-kontroll"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Bibliotek"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Aktivera anpassad biblioteksmapp"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Anpassad bibliotekssökväg"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Uppspelningsfel"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Saknar tillägget InputStream"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Ta bort från biblioteket"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Ändra bibliotekstiteln"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Spårning"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Använd Dolby Digital-ljud"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (ändra automatiskt, kan ändras manuellt)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Inställningar för tillägget InputStream..."

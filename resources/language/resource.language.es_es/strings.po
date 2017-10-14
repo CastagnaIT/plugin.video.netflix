@@ -1,0 +1,161 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: Sebastian Golasch <public@asciidisco.com>\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Addon para Netflix"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Algunas partes de este addon puede que no sean legales en tu país de residencia, por favor, consulta con tus autoridades locales antes de instalarlo."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Recomendaciones"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Pin del control parental"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Término de la búsqueda"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Contraseña"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "La comprobación del control parental ha fallado"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Por favor, comprueba que el pin del control parental es correcto"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Error al iniciar sesión"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Por favor, comprueba que el e-mail y la contraseña son correctos"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Géneros"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Buscar"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "No hay temporadas disponibles"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "No se encontraron coincidencias"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Cuenta"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Exportar a la colección de vídeo"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Valora en Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Quitar de 'Mi Lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Añadir a 'Mi Lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(entre 0 y 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Experto"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Verificación SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Colección de vídeo"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Activar un directorio para la colección de vídeo personalizada"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Ruta de la colección de vídeo personalizada"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Ocurrió un error en la reproducción"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "No se encuentra el addon Inputstream"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Eliminar de la colección de vídeo"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Cambiar el nombre en la colección de vídeo"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Usar sonido Dolby"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (generado automáticamente, pero se puede cambiar de forma manual)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Configuración del addon Inputstream..."

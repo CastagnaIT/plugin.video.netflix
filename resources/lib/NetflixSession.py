@@ -1,7 +1,11 @@
 # pylint: skip-file
 # -*- coding: utf-8 -*-
-# Module: NetflixSession
+# Author: asciidisco
+# Module: default
 # Created on: 13.01.2017
+# License: MIT https://goo.gl/5bMj3H
+
+"""Netflix API management"""
 
 import os
 import sys
@@ -17,9 +21,10 @@ try:
 except:
    import pickle
 
+
 FETCH_VIDEO_REQUEST_COUNT = 26
 
-class NetflixSession:
+class NetflixSession(object):
     """Helps with login/session management of Netflix users & API data fetching"""
 
     base_url = 'https://www.netflix.com'
@@ -38,10 +43,13 @@ class NetflixSession:
         'update_my_list': '/playlistop',
         'kids': '/Kids'
     }
-    """:obj:`dict` of :obj:`str` List of all static endpoints for HTML/JSON POST/GET requests"""
+    """:obj:`dict` of :obj:`str`
+    List of all static endpoints for HTML/JSON POST/GET requests"""
 
     video_list_keys = ['user', 'genres', 'recommendations']
-    """:obj:`list` of :obj:`str` Divide the users video lists into 3 different categories (for easier digestion)"""
+    """:obj:`list` of :obj:`str`
+    Divide the users video lists into
+    3 different categories (for easier digestion)"""
 
     profiles = {}
     """:obj:`dict`
@@ -150,7 +158,10 @@ class NetflixSession:
                 user_data['guid'] = guid
 
         # verify the data based on the authURL
-        if self._verfify_auth_and_profiles_data(data=user_data, profiles=profiles) is not False:
+        is_valid_user_data = self._verfify_auth_and_profiles_data(
+            data=user_data,
+            profiles=profiles)
+        if is_valid_user_data is not False:
             self.log(msg='Parsing inline data parsing successfull')
             return (user_data, profiles)
         self.log(msg='Parsing inline data failed')
@@ -201,8 +212,8 @@ class NetflixSession:
         return avatars
 
     def is_logged_in(self, account):
-        """Determines if a user is already logged in (with a valid cookie),
-           by fetching the profile page with the current cookie & checking for profile(s)
+        """
+        Determines if a user is already logged in (with a valid cookie)
 
         Parameters
         ----------
@@ -248,7 +259,8 @@ class NetflixSession:
         return False
 
     def logout(self):
-        """Delete all cookies and session data
+        """
+        Delete all cookies and session data
 
         Parameters
         ----------
@@ -260,7 +272,8 @@ class NetflixSession:
         self._delete_data(path=self.data_path)
 
     def login(self, account):
-        """Try to log in a user with its credentials
+        """
+        Try to log in a user with its credentials
         Stores the cookies & session data if the action is successfull
         Parameters
         ----------
@@ -301,9 +314,11 @@ class NetflixSession:
         return False
 
     def switch_profile(self, profile_id, account):
-        """Switch the user profile based on a given profile id
+        """
+        Switch the user profile based on a given profile id
 
-        Note: All available profiles & their ids can be found in the ´profiles´ property after a successfull login
+        Note: All available profiles & their ids can be found in
+        the ´profiles´ property after a successfull login
 
         Parameters
         ----------
@@ -336,9 +351,8 @@ class NetflixSession:
         return self._save_data(filename=self.data_path + '_' + account_hash)
 
     def send_adult_pin(self, pin):
-        """Send the adult pin to Netflix in case an adult rated video requests it
-
-        Note: Once entered, it should last for the complete session (Not so sure about this)
+        """
+        Send the adult pin to Netflix in case an adult rated video requests it
 
         Parameters
         ----------
@@ -440,7 +454,12 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         })
 
-        response = self._session_post(component='set_video_rating', type='api', params=params, headers=headers, data=payload)
+        response = self._session_post(
+            component='set_video_rating',
+            type='api',
+            params=params,
+            headers=headers,
+            data=payload)
 
         if response and response.status_code == 200:
             return True
@@ -505,21 +524,26 @@ class NetflixSession:
             video_list_ids[key] = {}
 
         # check if the list items are hidden behind a `value` sub key
-        # this is the case when we fetch the lists via POST, not via a GET preflight request
+        # this is the case when we fetch the lists via POST,
+        # not via a GET preflight request
         if 'value' in response_data.keys():
-            response_data = response_data['value']
+            response_data = response_data.get('value')
 
         # subcatogorize the lists by their context
-        video_lists = response_data['lists']
+        video_lists = response_data.get('lists', {})
         for video_list_id in video_lists.keys():
             video_list = video_lists[video_list_id]
-            if video_list.get('context', False) != False:
-                if video_list['context'] == 'genre':
-                    video_list_ids['genres'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
-                elif video_list['context'] == 'similars' or video_list['context'] == 'becauseYouAdded':
-                    video_list_ids['recommendations'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
+            if video_list.get('context', False) is not False:
+                ctx = video_list.get('context')
+                video_list_entry = self.parse_video_list_ids_entry(
+                    id=video_list_id,
+                    entry=video_list)
+                if ctx == 'genre':
+                    video_list_ids['genres'].update(video_list_entry)
+                elif ctx == 'similars' or ctx == 'becauseYouAdded':
+                    video_list_ids['recommendations'].update(video_list_entry)
                 else:
-                    video_list_ids['user'].update(self.parse_video_list_ids_entry(id=video_list_id, entry=video_list))
+                    video_list_ids['user'].update(video_list_entry)
         return video_list_ids
 
     def parse_video_list_ids_entry(self, id, entry):
@@ -572,11 +596,11 @@ class NetflixSession:
 
             {
                 "70136140": {
-                    "boxarts": "https://art-s.nflximg.net/0d7af/d5c72668c35d3da65ae031302bd4ae1bcc80d7af.jpg",
-                    "detail_text": "Die legend\u00e4re und mit 13 Emmys nominierte Serie von Gene Roddenberry inspirierte eine ganze Generation.",
+                    "boxarts": "https://art-s.nflximg....jpg",
+                    "detail_text": "Die legend\u00e4re und...",
                     "id": "70136140",
                     "season_id": "70109435",
-                    "synopsis": "Unter Befehl von Captain Kirk begibt sich die Besatzung des Raumschiffs Enterprise in die Tiefen des Weltraums, wo sie fremde Galaxien und neue Zivilisationen erforscht.",
+                    "synopsis": "Unter Befehl von...",
                     "title": "Star Trek",
                     "type": "show"
                 },
@@ -586,12 +610,21 @@ class NetflixSession:
             }
         """
         search_results = {}
-        raw_search_results = response_data['value']['videos']
+        raw_search_results = response_data.get('value', {}).get('videos', {})
         for entry_id in raw_search_results:
-            if self._is_size_key(key=entry_id) == False:
-                # fetch information about each show & build up a proper search results dictionary
-                show = self.parse_show_list_entry(id=entry_id, entry=raw_search_results[entry_id])
-                show[entry_id].update(self.parse_show_information(id=entry_id, response_data=self.fetch_show_information(id=entry_id, type=show[entry_id]['type'])))
+            if self._is_size_key(key=entry_id) is False:
+                # fetch information about each show & build up a
+                # proper search results dictionary
+                show = self.parse_show_list_entry(
+                    id=entry_id,
+                    entry=raw_search_results.get(entry_id))
+                response_data = self.fetch_show_information(
+                    id=entry_id,
+                    type=show.get(entry_id, {}).get('type'))
+                show_info = self.parse_show_information(
+                    id=entry_id,
+                    response_data=response_data)
+                show[entry_id].update(show_info)
                 search_results.update(show)
         return search_results
 
@@ -623,9 +656,9 @@ class NetflixSession:
         return {
             id: {
                 'id': id,
-                'title': entry['title'],
+                'title': entry.get('title'),
                 'boxarts': entry['boxarts']['_342x192']['jpg']['url'],
-                'type': entry['summary']['type']
+                'type': entry.get('summary', {}).get('type')
             }
         }
 
@@ -646,8 +679,8 @@ class NetflixSession:
                 "372203": {
                     "artwork": null,
                     "boxarts": {
-                      "big": "https://art-s.nflximg.net/5e7d3/b3b48749843fd3a36db11c319ffa60f96b55e7d3.jpg",
-                      "small": "https://art-s.nflximg.net/57543/a039845c2eb9186dc26019576d895bf5a1957543.jpg"
+                      "big": "https://art-s.nflximg.net/5e7d3/b....jpg",
+                      "small": "https://art-s.nflximg.net/57543/a....jpg"
                     },
                     "cast": [
                       "Christine Elise",
@@ -668,7 +701,7 @@ class NetflixSession:
                     ],
                     "id": "372203",
                     "in_my_list": true,
-                    "interesting_moment": "https://art-s.nflximg.net/09544/ed4b3073394b4469fb6ec22b9df81a4f5cb09544.jpg",
+                    "interesting_moment": "https://art-s.nflximg.net/0....jpg",
                     "list_id": "9588df32-f957-40e4-9055-1f6f33b60103_46891306",
                     "maturity": {
                       "board": "FSK",
