@@ -25,6 +25,12 @@ try:
     import cPickle as pickle
 except:
     import pickle
+try:
+    # Python 2.6-2.7
+    from HTMLParser import HTMLParser
+except ImportError:
+    # Python 3
+    from html.parser import HTMLParser
 
 VIEW_FOLDER = 'folder'
 VIEW_MOVIE = 'movie'
@@ -577,35 +583,57 @@ class KodiHelper:
         self.invalidate_memcache()
         xbmc.executebuiltin('Container.Refresh')
 
-    def build_profiles_listing (self, profiles, action, build_url):
-        """Builds the profiles list Kodi screen
-
-        Parameters
-        ----------
-        profiles : :obj:`list` of :obj:`dict` of :obj:`str`
-            List of user profiles
-
-        action : :obj:`str`
-            Action paramter to build the subsequent routes
-
-        build_url : :obj:`fn`
-            Function to build the subsequent routes
-
-        Returns
-        -------
-        bool
-            List could be build
+    def build_profiles_listing(self, profiles, action, build_url):
         """
+        Builds the profiles list Kodi screen
+
+        :param profiles: list of user profiles
+        :type profiles: list
+        :param action: action paramter to build the subsequent routes
+        :type action: str
+        :param build_url: function to build the subsequent routes
+        :type build_url: fn
+        :returns: bool -- List could be build
+        """
+        # init html parser for entity decoding
+        html_parser = HTMLParser()
+        # build menu items for every profile
         for profile in profiles:
-            url = build_url({'action': action, 'profile_id': profile['guid']})
-            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['guid'], 'autologin_user': profile['profileName'].encode('utf-8')})
-            li = xbmcgui.ListItem(label=profile['profileName'].encode('utf-8'), iconImage=profile['avatar'])
-            li.setProperty('fanart_image', self.default_fanart)
-            li.addContextMenuItems([(self.get_local_string(30053), 'RunPlugin('+url_save_autologin+')',)])
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
-            xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
-        return True
+            # load & encode profile data
+            enc_profile_name = profile.get('profileName', '').encode('utf-8')
+            unescaped_profile_name = html_parser.unescape(enc_profile_name)
+            profile_guid = profile.get('guid')
+
+            # build urls
+            url = build_url({'action': action, 'profile_id': profile_guid})
+            autologin_url = build_url({
+                'action': 'save_autologin',
+                'autologin_id': profile_guid,
+                'autologin_user': enc_profile_name})
+
+            # add list item
+            list_item = xbmcgui.ListItem(
+                label=unescaped_profile_name,
+                iconImage=profile.get('avatar'))
+            list_item.setProperty(
+                key='fanart_image',
+                value=self.default_fanart)
+            # add context menu options
+            auto_login = (
+                self.get_local_string(30053),
+                'RunPlugin(' + autologin_url + ')')
+            list_item.addContextMenuItems(items=[auto_login])
+
+            # add directory & sorting options
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=list_item,
+                isFolder=True)
+            xbmcplugin.addSortMethod(
+                handle=self.plugin_handle,
+                sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
 
     def build_main_menu_listing (self, video_list_ids, user_list_order, actions, build_url):
         """Builds the video lists (my list, continue watching, etc.) Kodi screen

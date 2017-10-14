@@ -214,8 +214,24 @@ class NetflixSession:
         """
         # load cookies
         account_hash = self._generate_account_hash(account=account)
-        if self._load_cookies(filename=self.cookie_path + '_' + account_hash) == False:
+        cookies = self._load_cookies(
+            filename=self.cookie_path + '_' + account_hash)
+        if cookies == False:
             return False
+
+        # find the earliest expiration date in the cookies
+        expires = 99999999999999999999
+        cur_stamp = int(time())
+        for domains in cookies:
+            for domain in cookies[domains].keys():
+                for cookie_key in cookies[domains][domain]:
+                    exp = int(cookies[domains][domain][cookie_key].expires)
+                    if expires > exp:
+                        expires = exp
+        if expires > cur_stamp:
+            self.log(
+                msg='Cookie expires: ' + str(expires) + ' / ' + str(cur_stamp))
+            return True
 
         # load the profiles page (to verify the user)
         response = self._session_get(component='profiles')
@@ -1826,6 +1842,7 @@ class NetflixSession:
                 jar = cookies.RequestsCookieJar()
                 jar._cookies = _cookies
                 self.session.cookies = jar
+                return _cookies
             else:
                 return False
 
@@ -1985,8 +2002,6 @@ class NetflixSession:
         Directly assigns it to the NetflixSession instance
         """
         user_data, profiles = self.extract_inline_netflix_page_data(content=content)
-        self.log(user_data)
-        self.log(profiles)
         if user_data is None:
             return None
         self.user_data = user_data
