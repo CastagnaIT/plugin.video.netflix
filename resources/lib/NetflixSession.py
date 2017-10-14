@@ -114,6 +114,8 @@ class NetflixSession:
         self.data_path = data_path
         self.verify_ssl = verify_ssl
         self.log = log_fn
+        self.parsed_cookies = {}
+        self.parsed_user_data = {}
         self._init_session()
 
     def extract_inline_netflix_page_data(self, content='', items=None):
@@ -222,10 +224,10 @@ class NetflixSession:
         # find the earliest expiration date in the cookies
         expires = 99999999999999999999
         cur_stamp = int(time())
-        for domains in cookies:
-            for domain in cookies[domains].keys():
-                for cookie_key in cookies[domains][domain]:
-                    exp = int(cookies[domains][domain][cookie_key].expires)
+        for domains in cookies[0]:
+            for domain in cookies[0][domains].keys():
+                for cookie_key in cookies[0][domains][domain]:
+                    exp = int(cookies[0][domains][domain][cookie_key].expires)
                     if expires > exp:
                         expires = exp
         if expires > cur_stamp:
@@ -237,7 +239,8 @@ class NetflixSession:
         response = self._session_get(component='profiles')
         if response:
             # parse out the needed inline information
-            user_data, profiles = self.extract_inline_netflix_page_data(content=response.text)
+            user_data, profiles = self.extract_inline_netflix_page_data(
+                content=response.text)
             self.profiles = profiles
             # if we have profiles, cookie is still valid
             if self.profiles:
@@ -284,7 +287,9 @@ class NetflixSession:
         }
 
         # perform the login
-        login_response = self._session_post(component='login', data=login_payload)
+        login_response = self._session_post(
+            component='login',
+            data=login_payload)
         user_data = self._parse_page_contents(content=login_response.text)
         account_hash = self._generate_account_hash(account=account)
         # we know that the login was successfull if we find ???
@@ -319,7 +324,10 @@ class NetflixSession:
             'authURL': self.user_data['authURL']
         }
 
-        response = self._session_get(component='switch_profiles', type='api', params=payload)
+        response = self._session_get(
+            component='switch_profiles',
+            type='api',
+            params=payload)
         if (response == None or response.status_code != 200):
             return False
 
@@ -349,8 +357,13 @@ class NetflixSession:
             'pin': pin,
             'authURL': self.user_data.get('authURL', '')
         }
-        response = self._session_post(component='adult_pin', type='api', data=payload)
-        pin_response = self._process_response(response=response, component=self._get_api_url_for(component='adult_pin'))
+        response = self._session_post(
+            component='adult_pin',
+            type='api',
+            data=payload)
+        pin_response = self._process_response(
+            response=response,
+            component=self._get_api_url_for(component='adult_pin'))
         if 'error' in pin_response.keys():
             self.log(msg='Pin error')
             self.log(msg=str(pin_response))
@@ -1802,59 +1815,63 @@ class NetflixSession:
                     os.remove(os.path.join(subdir, file))
 
     def _save_cookies(self, filename):
-        """Tiny helper that stores cookies from the session in a given file
+        """
+        Stores cookies from the session in a file & mememory
 
-        Parameters
-        ----------
-        filename : :obj:`str`
-            Complete path incl. filename that determines where to store the cookie
-
-        Returns
-        -------
-        bool
-            Storage procedure was successfull
+        :param filename: path incl. filename of the cookie file
+        :type filename: str
+        :returns: bool -- Storing procedure successfull
         """
         if not os.path.isdir(os.path.dirname(filename)):
             return False
-        with open(filename, 'w') as f:
-            f.truncate()
-            pickle.dump(self.session.cookies._cookies, f)
+        with open(filename, 'w') as file_handle:
+            _cookies = self.session.cookies._cookies
+            jar = self.session.cookies
+            file_handle.truncate()
+            pickle.dump(_cookies, file_handle)
+            self.parsed_cookies[filename] = (_cookies, jar)
 
     def _load_cookies(self, filename):
-        """Tiny helper that loads cookies into the active session from a given file
-
-        Parameters
-        ----------
-        filename : :obj:`str`
-            Complete path incl. filename that determines where to load the cookie from
-
-        Returns
-        -------
-        bool
-            Load procedure was successfull
         """
+        Loads cookies into the active session from a given file
+
+        :param filename: path incl. filename of the cookie file
+        :type filename: str
+        :returns: bool or tuple -- Loading didn't work or parsed cookie data
+        """
+        # check if we have in memory cookies to spare some file i/o
+        current_cookie = self.parsed_cookies.get(filename, None)
+        if current_cookie is not None:
+            self.log(msg='Loading cookies from memory')
+            self.session.cookies = current_cookie[1]
+            return current_cookie
+
+        # return if we haven't found a cookie file
         if not os.path.isfile(filename):
+            self.log(msg='No cookies found')
             return False
 
+        # open the cookies file & set the loaded cookies
         with open(filename) as f:
+            self.log(msg='Loading cookies from file')
             _cookies = pickle.load(f)
             if _cookies:
                 jar = cookies.RequestsCookieJar()
                 jar._cookies = _cookies
                 self.session.cookies = jar
-                return _cookies
+                self.parsed_cookies[filename] = (_cookies, jar)
+                return self.parsed_cookies.get(filename)
             else:
                 return False
 
     def _delete_cookies(self, path):
-        """Tiny helper that deletes cookie data
-
-        Parameters
-        ----------
-        filename : :obj:`str`
-            Complete path incl. filename that determines where to delete the files
-
         """
+        Deletes cookie data
+
+        :param path: path + filename for the cookie file
+        :type path: string
+        """
+        self.parsed_cookies[path] = None
         head, tail = os.path.split(path)
         for subdir, dirs, files in os.walk(head):
             for file in files:
@@ -1863,19 +1880,14 @@ class NetflixSession:
         self._init_session()
 
     def _generate_account_hash(self, account):
-        """Generates a has for the given account (used for cookie verification)
-
-        Parameters
-        ----------
-        account : :obj:`dict` of :obj:`str`
-            Dict containing an email, country & a password property
-
-        Returns
-        -------
-        :obj:`str`
-            Account data hash
         """
-        return urlsafe_b64encode(account['email'])
+        Generates a has for the given account (used for cookie/ud verification)
+
+        :param account: email & password
+        :type account: dict
+        :returns: str -- Account data hash
+        """
+        return urlsafe_b64encode(account.get('email', 'NoMail'))
 
     def _session_post(self, component, type='document', data={}, headers={}, params={}):
         """Executes a get request using requests for the current session & measures the duration of that request
@@ -1974,17 +1986,17 @@ class NetflixSession:
         # we generate an esn from device strings for android
         import subprocess
         try:
-            manufacturer = subprocess.check_output(["/system/bin/getprop", "ro.product.manufacturer"])
+            manufacturer = subprocess.check_output(['/system/bin/getprop', 'ro.product.manufacturer'])
             if manufacturer:
                 esn = 'NFANDROID1-PRV-'
-                input = subprocess.check_output(["/system/bin/getprop", "ro.nrdp.modelgroup"])
+                input = subprocess.check_output(['/system/bin/getprop', 'ro.nrdp.modelgroup'])
                 if not input:
-                    esn = esn + 'T-L3-'
+                    esn += 'T-L3-'
                 else:
-                    esn = esn + input.strip(' \t\n\r') + '-'
-                esn = esn + '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
-                input = subprocess.check_output(["/system/bin/getprop" ,"ro.product.model"])
-                esn = esn + input.strip(' \t\n\r').replace(' ', '=').upper()
+                    esn += input.strip(' \t\n\r') + '-'
+                esn += '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
+                input = subprocess.check_output(['/system/bin/getprop' ,'ro.product.model'])
+                esn += input.strip(' \t\n\r').replace(' ', '=').upper()
                 self.log(msg='Android generated ESN:' + esn)
                 return esn
         except OSError as e:
@@ -2001,7 +2013,8 @@ class NetflixSession:
         the session relevant data from the HTML page
         Directly assigns it to the NetflixSession instance
         """
-        user_data, profiles = self.extract_inline_netflix_page_data(content=content)
+        user_data, profiles = self.extract_inline_netflix_page_data(
+            content=content)
         if user_data is None:
             return None
         self.user_data = user_data
