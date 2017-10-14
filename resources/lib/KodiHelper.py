@@ -598,8 +598,8 @@ class KodiHelper:
         """
         for profile in profiles:
             url = build_url({'action': action, 'profile_id': profile['guid']})
-            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['guid'], 'autologin_user': profile['profileName']})
-            li = xbmcgui.ListItem(label=profile['profileName'], iconImage=profile['avatar'])
+            url_save_autologin = build_url({'action': 'save_autologin', 'autologin_id': profile['guid'], 'autologin_user': profile['profileName'].encode('utf-8')})
+            li = xbmcgui.ListItem(label=profile['profileName'].encode('utf-8'), iconImage=profile['avatar'])
             li.setProperty('fanart_image', self.default_fanart)
             li.addContextMenuItems([(self.get_local_string(30053), 'RunPlugin('+url_save_autologin+')',)])
             xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)

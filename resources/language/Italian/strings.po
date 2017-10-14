@@ -51,7 +51,7 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Verifica adulti fallita"
+msgstr "Controllo parentale fallito"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
@@ -99,11 +99,11 @@ msgstr "Vota su Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Rimuovi dalla 'Mia lista'"
+msgstr "Rimuovi da 'La mia lista'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Aggiungi alla 'Mia lista'"
+msgstr "Aggiungi a 'La mia lista'"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -155,12 +155,116 @@ msgstr "Utilizza l'audio Dolby"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (impostato automaticamente, può essere modificato manualmente)"
+msgstr "ESN"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr "Configurazione dell'addon Inputstream..."
 
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Utilizza sempre il titolo originale"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Viste"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Abilita viste personalizzate"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Vista per le cartelle"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Vista per i film"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Vista per le serie"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Vista per le stagioni"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Vista per gli episodi"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Vista per i profili"
+
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- PAGINA SUCCESSIVA --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "L'addon Inputstream Adaptive non è abilitato"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Vuoi rimuovere dalla libreria?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Libreria"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Aggiorna DB"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Aggiornamento avvenuto con successo"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Richiesta fallita"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Non è stato possibile completare la richiesta"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Login Automatico"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Abilita l'accesso automatico"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profilo"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Seleziona il profilo dalla lista profili -> menu contestuale"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Accesso automatico abilitato"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Cambia account"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Abilita HEVC (es: 4k per Android)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Aggiorna nella libreria"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Abilita/disabilita controllo parentale. Attivo:"
