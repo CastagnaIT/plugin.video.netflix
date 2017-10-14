@@ -38,10 +38,10 @@ VIEW_SHOW = 'show'
 VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
 
-class KodiHelper:
+class KodiHelper(object):
     """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
 
-    def __init__ (self, plugin_handle=None, base_url=None):
+    def __init__(self, plugin_handle=None, base_url=None):
         """Fetches all needed info from Kodi & configures the baseline of the plugin
 
         Parameters
@@ -73,11 +73,11 @@ class KodiHelper:
         self.library = None
         self.setup_memcache()
 
-    def get_addon (self):
+    def get_addon(self):
         """Returns a fresh addon instance"""
         return Addon()
 
-    def check_folder_path (self, path):
+    def check_folder_path(self, path):
         """Check if folderpath ends with path delimator - If not correct it (makes sure xbmcvfs.exists is working correct)
         """
         if isinstance(path, unicode):
@@ -97,11 +97,11 @@ class KodiHelper:
             path = path + '\\'
             return path
 
-    def refresh (self):
+    def refresh(self):
         """Refresh the current list"""
         return xbmc.executebuiltin('Container.Refresh')
 
-    def show_rating_dialog (self):
+    def show_rating_dialog(self):
         """Asks the user for a movie rating
 
         Returns
@@ -112,7 +112,7 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.numeric(heading=self.get_local_string(string_id=30019) + ' ' + self.get_local_string(string_id=30022), type=0)
 
-    def show_adult_pin_dialog (self):
+    def show_adult_pin_dialog(self):
         """Asks the user for the adult pin
 
         Returns
@@ -123,7 +123,7 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.input(self.get_local_string(string_id=30002), type=xbmcgui.INPUT_NUMERIC)
 
-    def show_wrong_adult_pin_notification (self):
+    def show_wrong_adult_pin_notification(self):
         """Shows notification that a wrong adult pin was given
 
         Returns
@@ -135,7 +135,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
-    def show_search_term_dialog (self):
+    def show_search_term_dialog(self):
         """Asks the user for a term to query the netflix search for
 
         Returns
@@ -149,7 +149,7 @@ class KodiHelper:
             term = None
         return term
 
-    def show_add_to_library_title_dialog (self, original_title):
+    def show_add_to_library_title_dialog(self, original_title):
         """Asks the user for an alternative title for the show/movie that gets exported to the local library
 
         Parameters
@@ -168,7 +168,7 @@ class KodiHelper:
         custom_title = dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM) or original_title
         return original_title or custom_title
 
-    def show_password_dialog (self):
+    def show_password_dialog(self):
         """Asks the user for its Netflix password
 
         Returns
@@ -179,7 +179,7 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.input(self.get_local_string(string_id=30004), type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)
 
-    def show_email_dialog (self):
+    def show_email_dialog(self):
         """Asks the user for its Netflix account email
 
         Returns
@@ -190,7 +190,7 @@ class KodiHelper:
         dlg = xbmcgui.Dialog()
         return dlg.input(self.get_local_string(string_id=30005), type=xbmcgui.INPUT_ALPHANUM)
 
-    def show_login_failed_notification (self):
+    def show_login_failed_notification(self):
         """Shows notification that the login failed
 
         Returns
@@ -202,7 +202,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30008), self.get_local_string(string_id=30009), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
-    def show_request_error_notification (self):
+    def show_request_error_notification(self):
         """Shows notification that a request error occured
 
         Returns
@@ -214,7 +214,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30051), self.get_local_string(string_id=30052), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
-    def show_missing_inputstream_addon_notification (self):
+    def show_missing_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon couldn't be found
 
         Returns
@@ -226,7 +226,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
         return True
 
-    def show_disabled_inputstream_addon_notification (self):
+    def show_disabled_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon isn't enabled.
         Returns
         -------
@@ -238,7 +238,7 @@ class KodiHelper:
         return True
 
 
-    def show_no_search_results_notification (self):
+    def show_no_search_results_notification(self):
         """Shows notification that no search results could be found
 
         Returns
@@ -250,7 +250,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30011), self.get_local_string(string_id=30013))
         return True
 
-    def show_no_seasons_notification (self):
+    def show_no_seasons_notification(self):
         """Shows notification that no seasons be found
 
         Returns
@@ -262,7 +262,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
         return True
 
-    def show_finally_remove (self, title, type, year):
+    def show_finally_remove(self, title, type, year):
         """Ask user for yes / no
 
         Returns
@@ -275,7 +275,7 @@ class KodiHelper:
             return dialog.yesno(self.get_local_string(string_id=30047),title)
         return dialog.yesno(self.get_local_string(string_id=30047),title+' ('+str(year)+')')
 
-    def show_local_db_updated (self):
+    def show_local_db_updated(self):
         """Shows notification that local db was updated
 
         Returns
@@ -287,7 +287,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
         return True
 
-    def show_no_metadata_notification (self):
+    def show_no_metadata_notification(self):
         """Shows notification that no metadata is available
 
         Returns
@@ -299,7 +299,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
         return True
 
-    def show_autologin_enabled (self):
+    def show_autologin_enabled(self):
         """Shows notification that auto login is enabled
 
         Returns
@@ -311,7 +311,7 @@ class KodiHelper:
         dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
         return True
 
-    def set_setting (self, key, value):
+    def set_setting(self, key, value):
         """Public interface for the addons setSetting method
 
         Returns
@@ -321,7 +321,7 @@ class KodiHelper:
         """
         return self.get_addon().setSetting(key, value)
 
-    def get_setting (self, key):
+    def get_setting(self, key):
         """Public interface to the addons getSetting method
 
         Returns
@@ -341,7 +341,7 @@ class KodiHelper:
             return addon.setSetting('adultpin_enable', 'True')
         return addon.setSetting('adultpin_enable', 'False')
 
-    def get_credentials (self):
+    def get_credentials(self):
         """Returns the users stored credentials
 
         Returns
@@ -450,7 +450,7 @@ class KodiHelper:
             use_hevc = True
         return use_hevc
 
-    def get_custom_library_settings (self):
+    def get_custom_library_settings(self):
         """Returns the settings in regards to the custom library folder(s)
 
         Returns
@@ -463,7 +463,7 @@ class KodiHelper:
             'customlibraryfolder': self.get_addon().getSetting('customlibraryfolder')
         }
 
-    def get_ssl_verification_setting (self):
+    def get_ssl_verification_setting(self):
         """Returns the setting that describes if we should verify the ssl transport when loading data
 
         Returns
@@ -473,7 +473,7 @@ class KodiHelper:
         """
         return self.get_addon().getSetting('ssl_verification') == 'true'
 
-    def set_main_menu_selection (self, type):
+    def set_main_menu_selection(self, type):
         """Persist the chosen main menu entry in memory
 
         Parameters
@@ -483,7 +483,7 @@ class KodiHelper:
         """
         xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('main_menu_selection', type)
 
-    def get_main_menu_selection (self):
+    def get_main_menu_selection(self):
         """Gets the persisted chosen main menu entry from memory
 
         Returns
@@ -493,7 +493,7 @@ class KodiHelper:
         """
         return xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('main_menu_selection')
 
-    def setup_memcache (self):
+    def setup_memcache(self):
         """Sets up the memory cache if not existant"""
         try:
             cached_items = xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache')
@@ -503,14 +503,14 @@ class KodiHelper:
         except EOFError:
             pass
 
-    def invalidate_memcache (self):
+    def invalidate_memcache(self):
         """Invalidates the memory cache"""
         try:
             xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
         except EOFError:
             pass
 
-    def get_cached_item (self, cache_id):
+    def get_cached_item(self, cache_id):
         """Returns an item from the in memory cache
 
         Parameters
@@ -531,7 +531,7 @@ class KodiHelper:
             ret = None
         return ret
 
-    def add_cached_item (self, cache_id, contents):
+    def add_cached_item(self, cache_id, contents):
         """Adds an item to the in memory cache
 
         Parameters
@@ -635,7 +635,7 @@ class KodiHelper:
                 sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
 
-    def build_main_menu_listing (self, video_list_ids, user_list_order, actions, build_url):
+    def build_main_menu_listing(self, video_list_ids, user_list_order, actions, build_url):
         """Builds the video lists (my list, continue watching, etc.) Kodi screen
 
         Parameters
@@ -734,7 +734,7 @@ class KodiHelper:
         self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_video_listing (self, video_list, actions, type, build_url, has_more=False, start=0, current_video_list_id=""):
+    def build_video_listing(self, video_list, actions, type, build_url, has_more=False, start=0, current_video_list_id=""):
         """Builds the video lists (my list, continue watching, etc.) contents Kodi screen
 
         Parameters
@@ -798,7 +798,7 @@ class KodiHelper:
         self.set_custom_view(view)
         return True
 
-    def build_video_listing_exported (self, content, build_url):
+    def build_video_listing_exported(self, content, build_url):
         """Build list of exported movies / shows
 
         Parameters
@@ -849,7 +849,7 @@ class KodiHelper:
         self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_search_result_folder (self, build_url, term):
+    def build_search_result_folder(self, build_url, term):
         """Add search result folder
 
         Parameters
@@ -875,7 +875,7 @@ class KodiHelper:
         self.set_custom_view(VIEW_FOLDER)
         return url_rec
 
-    def set_location (self, url, replace=False):
+    def set_location(self, url, replace=False):
         """Set URL location
 
         Parameters
@@ -893,7 +893,7 @@ class KodiHelper:
         """
         return xbmc.executebuiltin('Container.Update({},{})'.format(url,str(replace)))
 
-    def build_search_result_listing (self, video_list, actions, build_url):
+    def build_search_result_listing(self, video_list, actions, build_url):
         """Builds the search results list Kodi screen
 
         Parameters
@@ -914,7 +914,7 @@ class KodiHelper:
         """
         return self.build_video_listing(video_list=video_list, actions=actions, type='search', build_url=build_url)
 
-    def build_no_seasons_available (self):
+    def build_no_seasons_available(self):
         """Builds the season list screen if no seasons could be found
 
         Returns
@@ -926,7 +926,7 @@ class KodiHelper:
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
-    def build_no_search_results_available (self, build_url, action):
+    def build_no_search_results_available(self, build_url, action):
         """Builds the search results screen if no matches could be found
 
         Parameters
@@ -945,7 +945,7 @@ class KodiHelper:
         self.show_no_search_results_notification()
         return xbmcplugin.endOfDirectory(self.plugin_handle)
 
-    def build_user_sub_listing (self, video_list_ids, type, action, build_url):
+    def build_user_sub_listing(self, video_list_ids, type, action, build_url):
         """Builds the video lists screen for user subfolders (genres & recommendations)
 
         Parameters
@@ -1016,7 +1016,7 @@ class KodiHelper:
         self.set_custom_view(VIEW_SEASON)
         return True
 
-    def build_episode_listing (self, episodes_sorted, build_url):
+    def build_episode_listing(self, episodes_sorted, build_url):
         """Builds the episode list screen for a season of a show
 
         Parameters
@@ -1053,7 +1053,7 @@ class KodiHelper:
         self.set_custom_view(VIEW_EPISODE)
         return True
 
-    def play_item (self, esn, video_id, start_offset=-1, infoLabels={}):
+    def play_item(self, esn, video_id, start_offset=-1, infoLabels={}):
         """Plays a video
 
         Parameters
@@ -1136,7 +1136,7 @@ class KodiHelper:
 
         return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
 
-    def _generate_art_info (self, entry, li):
+    def _generate_art_info(self, entry, li):
         """Adds the art info from an entry to a Kodi list item
 
         Parameters
@@ -1187,7 +1187,7 @@ class KodiHelper:
         self.library.write_artdata_file(video_id=str(entry['id']), content=art)
         return li
 
-    def _generate_entry_info (self, entry, li, base_info={}):
+    def _generate_entry_info(self, entry, li, base_info={}):
         """Adds the item info from an entry to a Kodi list item
 
         Parameters
@@ -1290,7 +1290,7 @@ class KodiHelper:
         self.library.write_metadata_file(video_id=str(entry['id']), content=infos)
         return li, infos
 
-    def _generate_context_menu_items (self, entry, li):
+    def _generate_context_menu_items(self, entry, li):
         """Adds context menue items to a Kodi list item
 
         Parameters
@@ -1356,7 +1356,7 @@ class KodiHelper:
         li.addContextMenuItems(items)
         return li
 
-    def log (self, msg, level=xbmc.LOGDEBUG):
+    def log(self, msg, level=xbmc.LOGDEBUG):
         """Adds a log entry to the Kodi log
 
         Parameters
@@ -1371,7 +1371,7 @@ class KodiHelper:
             msg = msg.encode('utf-8')
         xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
 
-    def get_local_string (self, string_id):
+    def get_local_string(self, string_id):
         """Returns the localized version of a string
 
         Parameters
@@ -1390,7 +1390,7 @@ class KodiHelper:
             locString = locString.encode('utf-8')
         return locString
 
-    def get_inputstream_addon (self):
+    def get_inputstream_addon(self):
         """Checks if the inputstream addon is installed & enabled.
            Returns the type of the inputstream addon used and if it's enabled,
            or None if not found.
@@ -1547,7 +1547,7 @@ class KodiHelper:
         except Exception:
             return False
 
-    def set_library (self, library):
+    def set_library(self, library):
         """Adds an instance of the Library class
 
         Parameters
