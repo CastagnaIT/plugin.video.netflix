@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# plugin.video.telekom-sport documentation build configuration file, created by
+# plugin.video.netflix documentation build configuration file, created by
 # sphinx-quickstart on Wed Apr 26 16:27:25 2017.
 
 
@@ -18,42 +18,7 @@ sys.path.insert(0, ROOT_PATH)
 sys.path.insert(0, ROOT_PATH + 'resources' + os.path.sep)
 sys.path.insert(0, ROOT_PATH + 'resources' + os.path.sep + 'lib' + os.path.sep)
 
-def get_addon_data():
-    """Loads the Kodi plugin data from addon.xml"""
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    pathname = os.path.join(root_dir, 'addon.xml')
-    with open(pathname, 'rb') as addon_xml:
-        addon_xml_contents = addon_xml.read()
-        _id = re.search(
-            r'(?<!xml )id="(.+?)"',
-            addon_xml_contents).group(1)
-        author = re.search(
-            r'(?<!xml )provider-name="(.+?)"',
-            addon_xml_contents).group(1)
-        name = re.search(
-            r'(?<!xml )name="(.+?)"',
-            addon_xml_contents).group(1)
-        version = re.search(
-            r'(?<!xml )version="(.+?)"',
-            addon_xml_contents).group(1)
-        desc = re.search(
-            r'(?<!xml )description lang="en">(.+?)<',
-            addon_xml_contents).group(1)
-        email = re.search(
-            r'(?<!xml )email>(.+?)<',
-            addon_xml_contents).group(1)
-        source = re.search(
-            r'(?<!xml )source>(.+?)<',
-            addon_xml_contents).group(1)
-        return {
-            'id': _id,
-            'author': author,
-            'name': name,
-            'version': version,
-            'desc': desc,
-            'email': email,
-            'source': source,
-        }
+from setup import get_addon_data
 
 ADDON_DATA = get_addon_data()
 
