@@ -132,8 +132,7 @@ class KodiHelper(object):
         Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
+        return dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
 
     def show_search_term_dialog(self):
         """Asks the user for a term to query the netflix search for
@@ -199,8 +198,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30008), self.get_local_string(string_id=30009), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
+        return dialog.notification(self.get_local_string(string_id=30008), self.get_local_string(string_id=30009), xbmcgui.NOTIFICATION_ERROR, 5000)
 
     def show_request_error_notification(self):
         """Shows notification that a request error occured
@@ -211,8 +209,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30051), self.get_local_string(string_id=30052), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
+        return dialog.notification(self.get_local_string(string_id=30051), self.get_local_string(string_id=30052), xbmcgui.NOTIFICATION_ERROR, 5000)
 
     def show_missing_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon couldn't be found
@@ -223,8 +220,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
+        return dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
 
     def show_disabled_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon isn't enabled.
@@ -234,9 +230,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30046), xbmcgui.NOTIFICATION_ERROR, 5000)
-        return True
-
+        return dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30046), xbmcgui.NOTIFICATION_ERROR, 5000)
 
     def show_no_search_results_notification(self):
         """Shows notification that no search results could be found
@@ -247,8 +241,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30011), self.get_local_string(string_id=30013))
-        return True
+        return dialog.notification(self.get_local_string(string_id=30011), self.get_local_string(string_id=30013))
 
     def show_no_seasons_notification(self):
         """Shows notification that no seasons be found
@@ -259,8 +252,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
-        return True
+        return dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
 
     def show_finally_remove(self, title, type, year):
         """Ask user for yes / no
@@ -272,8 +264,8 @@ class KodiHelper(object):
         """
         dialog = xbmcgui.Dialog()
         if year == '0000':
-            return dialog.yesno(self.get_local_string(string_id=30047),title)
-        return dialog.yesno(self.get_local_string(string_id=30047),title+' ('+str(year)+')')
+            return dialog.yesno(self.get_local_string(string_id=30047), title)
+        return dialog.yesno(self.get_local_string(string_id=30047), title + ' (' + str(year) + ')')
 
     def show_local_db_updated(self):
         """Shows notification that local db was updated
@@ -284,8 +276,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
-        return True
+        return dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
 
     def show_no_metadata_notification(self):
         """Shows notification that no metadata is available
@@ -296,8 +287,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
-        return True
+        return dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
 
     def show_autologin_enabled(self):
         """Shows notification that auto login is enabled
@@ -308,8 +298,7 @@ class KodiHelper(object):
             Dialog shown
         """
         dialog = xbmcgui.Dialog()
-        dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
-        return True
+        return dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
 
     def set_setting(self, key, value):
         """Public interface for the addons setSetting method
