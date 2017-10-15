@@ -38,11 +38,15 @@ VIEW_SHOW = 'show'
 VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
 
+
 class KodiHelper(object):
-    """Consumes all the configuration data from Kodi as well as turns data into lists of folders and videos"""
+    """
+    Consumes all the configuration data from Kodi as well as
+    turns data into lists of folders and videos"""
 
     def __init__(self, plugin_handle=None, base_url=None):
-        """Fetches all needed info from Kodi & configures the baseline of the plugin
+        """
+        Fetches all needed info from Kodi & configures the baseline of the plugin
 
         Parameters
         ----------
@@ -78,7 +82,9 @@ class KodiHelper(object):
         return Addon()
 
     def check_folder_path(self, path):
-        """Check if folderpath ends with path delimator - If not correct it (makes sure xbmcvfs.exists is working correct)
+        """
+        Check if folderpath ends with path delimator
+        If not correct it (makes sure xbmcvfs.exists is working correct)
         """
         if isinstance(path, unicode):
             check = path.encode('ascii','ignore')
@@ -149,7 +155,9 @@ class KodiHelper(object):
         return term
 
     def show_add_to_library_title_dialog(self, original_title):
-        """Asks the user for an alternative title for the show/movie that gets exported to the local library
+        """
+        Asks the user for an alternative title for the show/movie that
+        gets exported to the local library
 
         Parameters
         ----------
@@ -389,7 +397,10 @@ class KodiHelper(object):
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
         cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
-        return Padding.unpad(padded_data=cipher.decrypt(enc[AES.block_size:]), block_size=self.bs).decode('utf-8')
+        decoded = Padding.unpad(
+            padded_data=cipher.decrypt(enc[AES.block_size:]),
+            block_size=self.bs).decode('utf-8')
+        return decoded
 
     def get_esn(self):
         """
@@ -447,13 +458,16 @@ class KodiHelper(object):
         :obj:`dict` of :obj:`str`
             The users library settings
         """
+        addon = self.get_addon()
         return {
-            'enablelibraryfolder': self.get_addon().getSetting('enablelibraryfolder'),
-            'customlibraryfolder': self.get_addon().getSetting('customlibraryfolder')
+            'enablelibraryfolder': addon.getSetting('enablelibraryfolder'),
+            'customlibraryfolder': addon.getSetting('customlibraryfolder')
         }
 
     def get_ssl_verification_setting(self):
-        """Returns the setting that describes if we should verify the ssl transport when loading data
+        """
+        Returns the setting that describes if we should
+        verify the ssl transport when loading data
 
         Returns
         -------
@@ -545,7 +559,8 @@ class KodiHelper(object):
         ----------
         content : :obj:`str`
 
-            Type of content in container (folder, movie, show, season, episode, login)
+            Type of content in container
+            (folder, movie, show, season, episode, login)
 
         """
         custom_view = self.get_addon().getSetting('customview')
@@ -625,7 +640,8 @@ class KodiHelper(object):
         return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
 
     def build_main_menu_listing(self, video_list_ids, user_list_order, actions, build_url):
-        """Builds the video lists (my list, continue watching, etc.) Kodi screen
+        """
+        Builds the video lists (my list, continue watching, etc.) Kodi screen
 
         Parameters
         ----------
@@ -633,7 +649,8 @@ class KodiHelper(object):
             List of video lists
 
         user_list_order : :obj:`list` of :obj:`str`
-            Ordered user lists, to determine what should be displayed in the main menue
+            Ordered user lists
+            to determine what should be displayed in the main menue
 
         actions : :obj:`dict` of :obj:`str`
             Dictionary of actions to build subsequent routes
@@ -664,7 +681,8 @@ class KodiHelper(object):
                     url = build_url({'action': action, 'video_list_id': video_list_id, 'type': category})
                     xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
 
-        # add recommendations/genres as subfolders (save us some space on the home page)
+        # add recommendations/genres as subfolders
+        # (save us some space on the home page)
         i18n_ids = {
             'recommendations': self.get_local_string(30001),
             'genres': self.get_local_string(30010)
@@ -724,7 +742,9 @@ class KodiHelper(object):
         return True
 
     def build_video_listing(self, video_list, actions, type, build_url, has_more=False, start=0, current_video_list_id=""):
-        """Builds the video lists (my list, continue watching, etc.) contents Kodi screen
+        """
+        Builds the video lists (my list, continue watching, etc.)
+        contents Kodi screen
 
         Parameters
         ----------
@@ -935,7 +955,9 @@ class KodiHelper(object):
         return xbmcplugin.endOfDirectory(self.plugin_handle)
 
     def build_user_sub_listing(self, video_list_ids, type, action, build_url):
-        """Builds the video lists screen for user subfolders (genres & recommendations)
+        """
+        Builds the video lists screen for user subfolders
+        (genres & recommendations)
 
         Parameters
         ----------
@@ -1089,12 +1111,24 @@ class KodiHelper(object):
         play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
-        play_item.setProperty(inputstream_addon + '.stream_headers', 'user-agent=' + get_user_agent())
-        play_item.setProperty(inputstream_addon + '.license_type', 'com.widevine.alpha')
-        play_item.setProperty(inputstream_addon + '.manifest_type', 'mpd')
-        play_item.setProperty(inputstream_addon + '.license_key', msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
-        play_item.setProperty(inputstream_addon + '.server_certificate', 'Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP0vrYimyYiBmk9GG+S0wB3CRITgweNE15cD33MQYyS3zpBd4z+sCJam2+jj1ZA4uijE2dxGC+gRBRnw9WoPyw7D8RuhGSJ95OEtzg3Ho+mEsxuE5xg9LM4+Zuro/9msz2bFgJUjQUVHo5j+k4qLWu4ObugFmc9DLIAohL58UR5k0XnvizulOHbMMxdzna9lwTw/4SALadEV/CZXBmswUtBgATDKNqjXwokohncpdsWSauH6vfS6FXwizQoZJ9TdjSGC60rUB2t+aYDm74cIuxAgMBAAE6EHRlc3QubmV0ZmxpeC5jb20SgAOE0y8yWw2Win6M2/bw7+aqVuQPwzS/YG5ySYvwCGQd0Dltr3hpik98WijUODUr6PxMn1ZYXOLo3eED6xYGM7Riza8XskRdCfF8xjj7L7/THPbixyn4mULsttSmWFhexzXnSeKqQHuoKmerqu0nu39iW3pcxDV/K7E6aaSr5ID0SCi7KRcL9BCUCz1g9c43sNj46BhMCWJSm0mx1XFDcoKZWhpj5FAgU4Q4e6f+S8eX39nf6D6SJRb4ap7Znzn7preIvmS93xWjm75I6UBVQGo6pn4qWNCgLYlGGCQCUm5tg566j+/g5jvYZkTJvbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw=')
-        play_item.setProperty('inputstreamaddon', inputstream_addon)
+        play_item.setProperty(
+            key=inputstream_addon + '.stream_headers',
+            value='user-agent=' + get_user_agent())
+        play_item.setProperty(
+            key=inputstream_addon + '.license_type',
+            value='com.widevine.alpha')
+        play_item.setProperty(
+            key=inputstream_addon + '.manifest_type',
+            value='mpd')
+        play_item.setProperty(
+            key=inputstream_addon + '.license_key',
+            value=msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
+        play_item.setProperty(
+            key=inputstream_addon + '.server_certificate',
+            value='Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP0vrYimyYiBmk9GG+S0wB3CRITgweNE15cD33MQYyS3zpBd4z+sCJam2+jj1ZA4uijE2dxGC+gRBRnw9WoPyw7D8RuhGSJ95OEtzg3Ho+mEsxuE5xg9LM4+Zuro/9msz2bFgJUjQUVHo5j+k4qLWu4ObugFmc9DLIAohL58UR5k0XnvizulOHbMMxdzna9lwTw/4SALadEV/CZXBmswUtBgATDKNqjXwokohncpdsWSauH6vfS6FXwizQoZJ9TdjSGC60rUB2t+aYDm74cIuxAgMBAAE6EHRlc3QubmV0ZmxpeC5jb20SgAOE0y8yWw2Win6M2/bw7+aqVuQPwzS/YG5ySYvwCGQd0Dltr3hpik98WijUODUr6PxMn1ZYXOLo3eED6xYGM7Riza8XskRdCfF8xjj7L7/THPbixyn4mULsttSmWFhexzXnSeKqQHuoKmerqu0nu39iW3pcxDV/K7E6aaSr5ID0SCi7KRcL9BCUCz1g9c43sNj46BhMCWJSm0mx1XFDcoKZWhpj5FAgU4Q4e6f+S8eX39nf6D6SJRb4ap7Znzn7preIvmS93xWjm75I6UBVQGo6pn4qWNCgLYlGGCQCUm5tg566j+/g5jvYZkTJvbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw=')
+        play_item.setProperty(
+            key='inputstreamaddon',
+            value=inputstream_addon)
 
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
@@ -1109,7 +1143,7 @@ class KodiHelper(object):
         play_item.setInfo('video', infoLabels)
 
         # check for content in kodi db
-        if str(infoLabels) != "None":
+        if str(infoLabels) != 'None':
             if infoLabels['mediatype'] == 'episode':
                 id = self.showtitle_to_id(title=infoLabels['tvshowtitle'])
                 details = self.get_show_content_by_id(showid=id, showseason=infoLabels['season'], showepisode=infoLabels['episode'])
@@ -1159,7 +1193,9 @@ class KodiHelper(object):
             })
             # Download image for exported listing
             if 'title' in entry:
-                self.library.download_image_file(title=entry['title'].encode('utf-8'), url=str(entry['boxarts']['big']))
+                self.library.download_image_file(
+                    title=entry['title'].encode('utf-8'),
+                    url=str(entry['boxarts']['big']))
 
         if 'interesting_moment' in dict(entry).keys():
             art.update({
