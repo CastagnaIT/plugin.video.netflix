@@ -38,13 +38,10 @@ def base64key_decode(payload):
     return base64.urlsafe_b64decode(payload.encode('utf-8'))
 
 
-class MSL:
+class MSL(object):
     handshake_performed = False  # Is a handshake already performed and the keys loaded
     last_drm_context = ''
     last_playback_context = ''
-    #esn = "NFCDCH-LX-CQE0NU6PA5714R25VPLXVU2A193T36"
-    #esn = "WWW-BROWSE-D7GW1G4NPXGR1F0X1H3EQGY3V1F5WE"
-    #esn = "NFCDIE-02-DCH84Q2EK3N6VFVQJ0NLRQ27498N0F"
     current_message_id = 0
     session = requests.session()
     rndm = random.SystemRandom()

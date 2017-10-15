@@ -21,8 +21,8 @@ try:
 except:
    import pickle
 
-
 FETCH_VIDEO_REQUEST_COUNT = 26
+
 
 class NetflixSession(object):
     """Helps with login/session management of Netflix users & API data fetching"""

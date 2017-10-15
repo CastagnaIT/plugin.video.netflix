@@ -3,17 +3,18 @@
 # Module: Navigation
 # Created on: 13.01.2017
 
+import ast
+import json
 import urllib
 import urllib2
-import json
-import ast
+from urlparse import parse_qsl, urlparse
 import xbmc
 from xbmcaddon import Addon
-import resources.lib.NetflixSession as Netflix
-from urlparse import parse_qsl,urlparse
+import NetflixSession as Netflix
 from utils import noop, log
 
-class Navigation:
+
+class Navigation(object):
     """Routes to the correct subfolder, dispatches actions & acts as a controller for the Kodi view & the Netflix model"""
 
     def __init__(self, kodi_helper, library, base_url, log_fn=noop):
