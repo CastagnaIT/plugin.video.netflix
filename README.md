@@ -30,7 +30,9 @@ so you know what you´re getting yourself into.
 
 ## Installation & Updates
 
-You can use [our repository](https://github.com/kodinerds/repo/raw/master/repository.netflix/repository.netflix-1.0.1.zip) to install plugin.
+You can use
+[our repository](https://github.com/kodinerds/repo/raw/master/repository.netflix/repository.netflix-1.0.1.zip)
+to install plugin.
 Using this, you´ll immediately receive updates once a
 new release has been drafted.
 
