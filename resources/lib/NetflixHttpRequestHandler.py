@@ -3,29 +3,33 @@
 # Module: NetflixHttpRequestHandler
 # Created on: 07.03.2017
 
+"""Oppionionated internal proxy that dispatches requests to Netflix"""
+
 import json
 import BaseHTTPServer
 from types import FunctionType
 from urlparse import urlparse, parse_qs
+from utils import get_class_methods
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.NetflixSession import NetflixSession
 from resources.lib.NetflixHttpSubRessourceHandler import NetflixHttpSubRessourceHandler
 
-kodi_helper = KodiHelper()
-
-netflix_session = NetflixSession(
-    cookie_path=kodi_helper.cookie_path,
-    data_path=kodi_helper.data_path,
-    verify_ssl=kodi_helper.get_ssl_verification_setting(),
-    log_fn=kodi_helper.log
+KODI_HELPER = KodiHelper()
+NETFLIX_SESSION = NetflixSession(
+    cookie_path=KODI_HELPER.cookie_path,
+    data_path=KODI_HELPER.data_path,
+    verify_ssl=KODI_HELPER.get_ssl_verification_setting(),
+    log_fn=KODI_HELPER.log
 )
 
 # get list of methods & instance form the sub ressource handler
-methods = [x for x, y in NetflixHttpSubRessourceHandler.__dict__.items() if type(y) == FunctionType]
-sub_res_handler = NetflixHttpSubRessourceHandler(kodi_helper=kodi_helper, netflix_session=netflix_session)
+METHODS = get_class_methods(class_item=NetflixHttpSubRessourceHandler)
+RES_HANDLER = NetflixHttpSubRessourceHandler(
+    kodi_helper=KODI_HELPER,
+    netflix_session=NETFLIX_SESSION)
 
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    """ Represents the callable internal server that dispatches requests to Netflix"""
+    """Oppionionated internal proxy that dispatches requests to Netflix"""
 
     def do_GET(self):
         """
@@ -42,18 +46,21 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             return
 
         # no existing method given
-        if method not in methods:
-            return self.send_error(404, 'Method "' + str(method) + '" not found. Available methods: ' + str(methods))
+        if method not in METHODS:
+            error_msg = 'Method "'
+            error_msg += str(method)
+            error_msg += '" not found. Available methods: '
+            error_msg += str(methods)
+            return self.send_error(404, error_msg)
 
         # call method & get the result
-        result = getattr(sub_res_handler, method)(params)
+        result = getattr(RES_HANDLER, method)(params)
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         return self.wfile.write(json.dumps({
             'method': method,
             'result': result}))
-
 
     def log_message(self, format, *args):
         """Disable the BaseHTTPServer Log"""

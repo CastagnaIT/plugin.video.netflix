@@ -3,15 +3,15 @@
 # Module: MSLHttpRequestHandler
 # Created on: 26.01.2017
 
-import BaseHTTPServer
 import base64
+import BaseHTTPServer
 from urlparse import urlparse, parse_qs
 from MSL import MSL
 from KodiHelper import KodiHelper
 
 kodi_helper = KodiHelper()
-
 msl = MSL(kodi_helper)
+
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 

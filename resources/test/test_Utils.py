@@ -8,8 +8,10 @@
 
 import unittest
 import mock
-from resources.lib.utils import get_user_agent, noop, uniq_id, __get_mac_address as gma
+from resources.lib.utils import get_user_agent, noop, uniq_id, get_class_methods, __get_mac_address as gma
+from mocks.MinimalClassMocks import MockClass
 from mocks.LoggerMocks import TestLoggerWithArgs, TestLoggerWithCredentialArgs, TestLoggerWithNoArgs
+
 
 class UtilsTestCase(unittest.TestCase):
     """Tests for the `Utils` module"""
@@ -19,7 +21,6 @@ class UtilsTestCase(unittest.TestCase):
         self.assertIn(
             container=get_user_agent(),
             member='Chrome/59.0.3071.115')
-
 
     @mock.patch('platform.system')
     def test_get_user_agent_Linux(self, mock_system):
@@ -129,3 +130,8 @@ class UtilsTestCase(unittest.TestCase):
                     second='"TestLoggerWithCredentialArgs::to_be_logged" called with arguments :a = b:')
         instTestLoggerWithCredentialArgs = TestLoggerWithCredentialArgs(logger_3=logger_3)
         instTestLoggerWithCredentialArgs.to_be_logged(credentials='foo', account='bar', a='b')
+
+    def test_get_class_methods(self):
+        self.assertEqual(
+            first=get_class_methods(class_item=MockClass),
+            second=['bar', 'foo', '__init__'])

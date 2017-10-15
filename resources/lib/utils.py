@@ -8,6 +8,7 @@ import time
 import hashlib
 import platform
 from functools import wraps
+from types import FunctionType
 import xbmc
 
 
@@ -107,3 +108,14 @@ def __get_mac_address(delay=1):
         time.sleep(delay)
         mac_addr = xbmc.getInfoLabel('Network.MacAddress')
     return mac_addr
+
+def get_class_methods(class_item=None):
+    """
+    Returns the class methods of agiven class object
+
+    :param class_item: Class item to introspect
+    :type class_item: object
+    :returns: list -- Class methods
+    """
+    _type = FunctionType
+    return [x for x, y in class_item.__dict__.items() if isinstance(y, _type)]
