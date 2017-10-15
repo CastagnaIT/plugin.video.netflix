@@ -639,9 +639,9 @@ class KodiHelper(object):
         autologin_id : :obj:`str`
             Profile id from netflix
         """
-        self.set_setting ('autologin_user', autologin_user)
-        self.set_setting ('autologin_id', autologin_id)
-        self.set_setting ('autologin_enable', 'True')
+        self.set_setting('autologin_user', autologin_user)
+        self.set_setting('autologin_id', autologin_id)
+        self.set_setting('autologin_enable', 'True')
         self.show_autologin_enabled()
         self.invalidate_memcache()
         xbmc.executebuiltin('Container.Refresh')
@@ -849,19 +849,43 @@ class KodiHelper(object):
                     params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
                 url = build_url(params)
                 view = VIEW_SHOW
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=isFolder)
 
         if has_more:
             li_more = xbmcgui.ListItem(label=self.get_local_string(30045))
-            more_url=build_url({"action":"video_list","type":type,"start":str(start),"video_list_id":current_video_list_id})
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=more_url, listitem=li_more, isFolder=True)
+            more_url = build_url({
+                "action": "video_list",
+                "type": type,
+                "start": str(start),
+                "video_list_id": current_video_list_id})
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=more_url,
+                listitem=li_more,
+                isFolder=True)
 
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_GENRE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_GENRE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(view)
         return True
@@ -882,11 +906,17 @@ class KodiHelper(object):
         action = ['remove_from_library', self.get_local_string(30030), 'remove']
         listing = content
         for video in listing[0]:
-            year = self.library.get_exported_movie_year (title=video)
-            li = xbmcgui.ListItem(label=str(video)+' ('+str(year)+')', iconImage=self.default_fanart)
+            year = self.library.get_exported_movie_year(title=video)
+            li = xbmcgui.ListItem(
+                label=str(video)+' ('+str(year)+')',
+                iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             isFolder = False
-            url = build_url({'action': 'removeexported', 'title': str(video), 'year': str(year), 'type': 'movie'})
+            url = build_url({
+                'action': 'removeexported',
+                'title': str(video),
+                'year': str(year),
+                'type': 'movie'})
             art = {}
             image = self.library.get_previewimage(video)
             art.update({
@@ -959,7 +989,7 @@ class KodiHelper(object):
         bool
             Window was activated
         """
-        return xbmc.executebuiltin('Container.Update({},{})'.format(url,str(replace)))
+        return xbmc.executebuiltin('Container.Update({},{})'.format(url, str(replace)))
 
     def build_search_result_listing(self, video_list, actions, build_url):
         """Builds the search results list Kodi screen
@@ -1048,7 +1078,7 @@ class KodiHelper(object):
         self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_season_listing (self, seasons_sorted, build_url):
+    def build_season_listing(self, seasons_sorted, build_url):
         """Builds the season list screen for a show
 
         Parameters
@@ -1148,7 +1178,7 @@ class KodiHelper(object):
         self.set_esn(esn)
         addon = self.get_addon()
         (inputstream_addon, inputstream_enabled) = self.get_inputstream_addon()
-        if inputstream_addon == None:
+        if inputstream_addon is None:
             self.show_missing_inputstream_addon_notification()
             self.log(msg='Inputstream addon not found')
             return False
@@ -1205,14 +1235,17 @@ class KodiHelper(object):
         if str(infoLabels) != 'None':
             if infoLabels['mediatype'] == 'episode':
                 id = self.showtitle_to_id(title=infoLabels['tvshowtitle'])
-                details = self.get_show_content_by_id(showid=id, showseason=infoLabels['season'], showepisode=infoLabels['episode'])
-                if details != False:
+                details = self.get_show_content_by_id(
+                    showid=id,
+                    showseason=infoLabels['season'],
+                    showepisode=infoLabels['episode'])
+                if details is not False:
                     play_item.setInfo('video', details[0])
                     play_item.setArt(details[1])
             if infoLabels['mediatype'] != 'episode':
                 id = self.movietitle_to_id(title=infoLabels['title'])
                 details = self.get_movie_content_by_id(movieid=id)
-                if details != False:
+                if details is not False:
                     play_item.setInfo('video', details[0])
                     play_item.setArt(details[1])
 
@@ -1235,7 +1268,7 @@ class KodiHelper(object):
             Kodi list item instance
         """
         art = {'fanart': self.default_fanart}
-        #Cleanup art
+        # Cleanup art
         art.update({
             'landscape': '',
             'thumb': '',
@@ -1497,7 +1530,7 @@ class KodiHelper(object):
         }
         response = xbmc.executeJSONRPC(json.dumps(payload))
         data = json.loads(response)
-        if not 'error' in data.keys():
+        if 'error' not in data.keys():
             if isinstance(data.get('result'), dict):
                 if isinstance(data.get('result').get('addon'), dict):
                     is_enabled = data.get('result').get('addon').get('enabled')
@@ -1506,13 +1539,13 @@ class KodiHelper(object):
 
     def movietitle_to_id(self, title):
         query = {
-                "jsonrpc": "2.0",
-                "method": "VideoLibrary.GetMovies",
-                "params": {
-                    "properties": ["title"]
-                },
-                "id": "libMovies"
-                }
+            "jsonrpc": "2.0",
+            "method": "VideoLibrary.GetMovies",
+            "params": {
+                "properties": ["title"]
+            },
+            "id": "libMovies"
+        }
         try:
             json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
             if 'result' in json_result and 'movies' in json_result['result']:
@@ -1520,12 +1553,12 @@ class KodiHelper(object):
                 for movie in json_result:
                     # Switch to ascii/lowercase and remove special chars and spaces
                     # to make sure best possible compare is possible
-                    titledb = movie['title'].encode('ascii','ignore')
-                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titledb).lower().replace('-','')
+                    titledb = movie['title'].encode('ascii', 'ignore')
+                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titledb).lower().replace('-','')
                     if '(' in titledb:
                         titledb = titledb.split('(')[0]
                     titlegiven = title.encode('ascii','ignore')
-                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titlegiven).lower().replace('-','')
+                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titlegiven).lower().replace('-','')
                     if '(' in titlegiven:
                         titlegiven = titlegiven.split('(')[0]
                     if titledb == titlegiven:
@@ -1536,33 +1569,34 @@ class KodiHelper(object):
 
     def showtitle_to_id(self, title):
         query = {
-                "jsonrpc": "2.0",
-                "method": "VideoLibrary.GetTVShows",
-                "params": {
-                    "properties": ["title","genre"]
-                },
-                "id": "libTvShows"
-                }
+            "jsonrpc": "2.0",
+            "method": "VideoLibrary.GetTVShows",
+            "params": {
+                "properties": ["title", "genre"]
+            },
+            "id": "libTvShows"
+        }
         try:
             json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
             if 'result' in json_result and 'tvshows' in json_result['result']:
                 json_result = json_result['result']['tvshows']
                 for tvshow in json_result:
-                    # Switch to ascii/lowercase and remove special chars and spaces
+                    # Switch to ascii/lowercase and
+                    # remove special chars and spaces
                     # to make sure best possible compare is possible
                     titledb = tvshow['label'].encode('ascii','ignore')
-                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titledb).lower().replace('-','')
+                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titledb).lower().replace('-','')
                     if '(' in titledb:
                         titledb = titledb.split('(')[0]
-                    titlegiven = title.encode('ascii','ignore')
-                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'',titlegiven).lower().replace('-','')
+                    titlegiven = title.encode('ascii', 'ignore')
+                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titlegiven).lower().replace('-','')
                     if '(' in titlegiven:
                         titlegiven = titlegiven.split('(')[0]
                     if titledb == titlegiven:
-                        return tvshow['tvshowid'],tvshow['genre']
-            return '-1',''
+                        return tvshow['tvshowid'], tvshow['genre']
+            return '-1', ''
         except Exception:
-            return '-1',''
+            return '-1', ''
 
     def get_show_content_by_id(self, showid, showseason, showepisode):
         showseason = int(showseason)
@@ -1626,7 +1660,7 @@ class KodiHelper(object):
                     art.update({'thumb': json_result['thumbnail']})
                 if 'art' in json_result and len(json_result['art']['poster']) > 0:
                     art.update({'poster': json_result['art']['poster']})
-                return infos,art
+                return infos, art
             return False
         except Exception:
             return False
@@ -1651,7 +1685,7 @@ class KodiHelper(object):
         # Check if tracking is enabled
         enable_tracking = (addon.getSetting('enable_tracking') == 'true')
         if enable_tracking:
-            #Get or Create Tracking id
+            # Get or Create Tracking id
             tracking_id = addon.getSetting('tracking_id')
             if tracking_id is '':
                 tracking_id = str(uuid4())
