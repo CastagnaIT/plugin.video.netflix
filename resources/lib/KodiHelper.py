@@ -865,7 +865,8 @@ class KodiHelper(object):
             if video_list[video_list_id]['type'] == 'movie':
                 # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
-                needs_pin = (True, False)[int(video['maturity']['level']) >= 1000]
+                maturity = video.get('maturity', {}).get('level', 999)
+                needs_pin = (True, False)[int() >= 100]
                 url = build_url({
                     'action': 'play_video',
                     'video_id': video_list_id,
@@ -1230,8 +1231,8 @@ class KodiHelper(object):
                 li=li,
                 base_info={'mediatype': 'episode'})
             li = self._generate_context_menu_items(entry=episode, li=li)
-            maturity = video.get('maturity', {}).get('level', 999)
-            needs_pin = (True, False)[int(maturity) >= 1000]
+            maturity = episode.get('maturity', {}).get('maturityLevel', 999)
+            needs_pin = (True, False)[int(maturity) >= 100]
             url = build_url({
                 'action': 'play_video',
                 'video_id': episode['id'],
