@@ -25,7 +25,7 @@ FETCH_VIDEO_REQUEST_COUNT = 26
 
 
 class NetflixSession(object):
-    """Helps with login/session management of Netflix users & API data fetching"""
+    """Helps with login/session management of Netflix users & API handling"""
 
     base_url = 'https://www.netflix.com'
     """str: Secure Netflix url"""
@@ -1014,7 +1014,9 @@ class NetflixSession(object):
         return video_genres
 
     def parse_tags_for_video(self, video):
-        """Parses a nested list of tags, removes the not needed meta information & returns a raw string list
+        """
+        Parses a nested list of tags, removes the not needed meta information
+        & returns a raw string list
 
         Parameters
         ----------
@@ -1761,10 +1763,16 @@ class NetflixSession(object):
         :obj:`str`
             API Url
         """
-        if self.api_data['API_ROOT'].find(self.api_data['API_BASE_URL']) > -1:
-            return self.api_data['API_ROOT'] + '/' + self.api_data['BUILD_IDENTIFIER'] + self.urls[component]
-        else:
-            return self.api_data['API_ROOT'] + self.api_data['API_BASE_URL'] + '/' + self.api_data['BUILD_IDENTIFIER'] + self.urls[component]
+        api_root = self.api_data.get('API_ROOT', '')
+        base_url = self.api_data.get('API_BASE_URL', '')
+        build_id = self.api_data.get('BUILD_IDENTIFIER', '')
+        url_component = self.urls.get(component, '')
+        has_base_url = api_root.find(base_url) > -1
+        api_url = api_root
+        api_url += '/' if has_base_url is True else base_url + '/'
+        api_url += build_id
+        api_url += url_component
+        return api_url
 
     def _get_document_url_for(self, component):
         """
@@ -1824,9 +1832,10 @@ class NetflixSession(object):
             return response.json()
         except:
             exc = sys.exc_info()
+            msg = 'Exception parsing JSON - {} {}'
             return {
                 'error': True,
-                'message': 'Exception parsing JSON - {} {}'.format(exc[0],exc[1]),
+                'message': msg.format(exc[0],exc[1]),
                 'code': '500'
             }
 
@@ -1854,7 +1863,7 @@ class NetflixSession(object):
         payload = json.dumps({
             'operation': operation,
             'videoId': int(video_id),
-            'authURL': self.user_data['authURL']
+            'authURL': self.user_data.get('authURL')
         })
 
         response = self._session_post(
@@ -1862,10 +1871,7 @@ class NetflixSession(object):
             type='api',
             headers=headers,
             data=payload)
-
-        if response and response.status_code == 200:
-            return True
-        return False
+        return response and response.status_code == 200
 
     def _init_session(self):
         try:
@@ -1995,7 +2001,9 @@ class NetflixSession(object):
         return urlsafe_b64encode(account.get('email', 'NoMail'))
 
     def _session_post(self, component, type='document', data={}, headers={}, params={}):
-        """Executes a get request using requests for the current session & measures the duration of that request
+        """
+        Executes a get request using requests for the
+        current session & measures the duration of that request
 
         Parameters
         ----------
@@ -2019,7 +2027,9 @@ class NetflixSession(object):
             :obj:`str`
                 Contents of the field to match
         """
-        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
+        url = self._get_document_url_for(component=component)
+        if type != 'document':
+            url = self._get_api_url_for(component=component)
         start = time()
         try:
             response = self.session.post(
@@ -2033,7 +2043,8 @@ class NetflixSession(object):
             self.log(msg='[POST] Error {} {}'.format(exc[0],exc[1]))
             return None
         end = time()
-        self.log(msg='[POST] Request for "' + url + '" took ' + str(end - start) + ' seconds')
+        msg = '[POST] Req. for "' + url + '" took ' + str(end - start) + ' sec'
+        self.log(msg=msg)
         return response
 
     def _session_get(self, component, type='document', params={}):
@@ -2057,7 +2068,9 @@ class NetflixSession(object):
             :obj:`str`
                 Contents of the field to match
         """
-        url = self._get_document_url_for(component=component) if type == 'document' else self._get_api_url_for(component=component)
+        url = self._get_document_url_for(component=component)
+        if type != 'document':
+            url = self._get_api_url_for(component=component)
         start = time()
         try:
             response = self.session.get(
@@ -2069,7 +2082,8 @@ class NetflixSession(object):
             self.log(msg='[GET] Error {} {}'.format(exc[0],exc[1]))
             return None
         end = time()
-        self.log(msg='[GET] Request for "' + url + '" took ' + str(end - start) + ' seconds')
+        msg = '[GET] Req. for "' + url + '" took ' + str(end - start) + ' sec'
+        self.log(msg=msg)
         return response
 
     def _verfify_auth_and_profiles_data(self, data, profiles):
@@ -2078,8 +2092,9 @@ class NetflixSession(object):
         doesn't overrule a certain length & if the profiles dict exists
         Simple validity check for the sloppy data parser
         """
+        auth_len = len(str(data.get('authURL', '')))
         if type(profiles) == dict:
-            if len(str(data.get('authURL', ''))) > 10 and len(str(data.get('authURL', ''))) < 50:
+            if auth_len > 10 and auth_len < 50:
                 return True
         return False
 
@@ -2102,16 +2117,19 @@ class NetflixSession(object):
         # we generate an esn from device strings for android
         import subprocess
         try:
-            manufacturer = subprocess.check_output(['/system/bin/getprop', 'ro.product.manufacturer'])
+            manufacturer = subprocess.check_output(
+                ['/system/bin/getprop', 'ro.product.manufacturer'])
             if manufacturer:
                 esn = 'NFANDROID1-PRV-'
-                input = subprocess.check_output(['/system/bin/getprop', 'ro.nrdp.modelgroup'])
+                input = subprocess.check_output(
+                    ['/system/bin/getprop', 'ro.nrdp.modelgroup'])
                 if not input:
                     esn += 'T-L3-'
                 else:
                     esn += input.strip(' \t\n\r') + '-'
                 esn += '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
-                input = subprocess.check_output(['/system/bin/getprop' ,'ro.product.model'])
+                input = subprocess.check_output(
+                    ['/system/bin/getprop' ,'ro.product.model'])
                 esn += input.strip(' \t\n\r').replace(' ', '=').upper()
                 self.log(msg='Android generated ESN:' + esn)
                 return esn
