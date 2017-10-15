@@ -1360,7 +1360,11 @@ class KodiHelper(object):
                     play_item.setInfo('video', details[0])
                     play_item.setArt(details[1])
 
-        return xbmcplugin.setResolvedUrl(self.plugin_handle, True, listitem=play_item)
+        resolved = xbmcplugin.setResolvedUrl(
+            handle=self.plugin_handle,
+            succeeded=True,
+            listitem=play_item)
+        return resolved
 
     def _generate_art_info(self, entry, li):
         """Adds the art info from an entry to a Kodi list item
@@ -1658,7 +1662,9 @@ class KodiHelper(object):
             "id": "libMovies"
         }
         try:
-            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            rpc_result = xbmc.executeJSONRPC(
+                jsonrpccommand=json.dumps(query, encoding='utf-8'))
+            json_result = json.loads(rpc_result)
             if 'result' in json_result and 'movies' in json_result['result']:
                 json_result = json_result['result']['movies']
                 for movie in json_result:
@@ -1688,7 +1694,9 @@ class KodiHelper(object):
             "id": "libTvShows"
         }
         try:
-            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            rpc_result = xbmc.executeJSONRPC(
+                jsonrpccommand=json.dumps(query, encoding='utf-8'))
+            json_result = json.loads(rpc_result)
             if 'result' in json_result and 'tvshows' in json_result['result']:
                 json_result = json_result['result']['tvshows']
                 for tvshow in json_result:
@@ -1696,11 +1704,17 @@ class KodiHelper(object):
                     # remove special chars and spaces
                     # to make sure best possible compare is possible
                     titledb = tvshow['label'].encode('ascii','ignore')
-                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titledb).lower().replace('-','')
+                    titledb = re.sub(
+                        pattern=r'[?|$|!|:|#|\.|\,|\'| ]',
+                        repl=r'',
+                        string=titledb).lower().replace('-','')
                     if '(' in titledb:
                         titledb = titledb.split('(')[0]
                     titlegiven = title.encode('ascii', 'ignore')
-                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titlegiven).lower().replace('-','')
+                    titlegiven = re.sub(
+                        pattern=r'[?|$|!|:|#|\.|\,|\'| ]',
+                        repl=r'',
+                        string=titlegiven).lower().replace('-','')
                     if '(' in titlegiven:
                         titlegiven = titlegiven.split('(')[0]
                     if titledb == titlegiven:
@@ -1722,7 +1736,9 @@ class KodiHelper(object):
                 "id": "1"
                 }
         try:
-            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            rpc_result = xbmc.executeJSONRPC(
+                jsonrpccommand=json.dumps(query, encoding='utf-8'))
+            json_result = json.loads(rpc_result)
             if 'result' in json_result and 'episodes' in json_result['result']:
                 json_result = json_result['result']['episodes']
                 for episode in json_result:
@@ -1756,7 +1772,9 @@ class KodiHelper(object):
                 "id": "libMovies"
                 }
         try:
-            json_result = json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+            rpc_result = xbmc.executeJSONRPC(
+                jsonrpccommand=json.dumps(query, encoding='utf-8'))
+            json_result = json.loads(rpc_result)
             if 'result' in json_result and 'moviedetails' in json_result['result']:
                 json_result = json_result['result']['moviedetails']
                 infos = {}
