@@ -179,3 +179,30 @@ class KodiHelperTestCase(unittest.TestCase):
         self.assertEqual(
             first=kodi_helper.refresh(),
             second=None)
+
+    def test_invalidate_memcache(self):
+        """ADD ME"""
+        cache = KodiHelper()
+        assert cache.invalidate_memcache() is None
+
+    def test_set_main_menu_selection(self):
+        """ADD ME"""
+        kodi_helper = KodiHelper()
+        assert kodi_helper.set_main_menu_selection('foo') is None
+        assert kodi_helper.get_main_menu_selection() == ''
+
+    def test_get_main_menu_selection(self):
+        """ADD ME"""
+        kodi_helper = KodiHelper()
+        kodi_helper.set_main_menu_selection('foo')
+        assert kodi_helper.get_main_menu_selection() == ''
+
+    def test_get_cached_item(self):
+        """ADD ME"""
+        kodi_helper = KodiHelper()
+        assert kodi_helper.get_cached_item('foo') is None
+
+    def test_add_cached_item(self):
+        """ADD ME"""
+        kodi_helper = KodiHelper()
+        assert kodi_helper.add_cached_item('foo', 'bar') is None
