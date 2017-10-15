@@ -109,6 +109,7 @@ def __get_mac_address(delay=1):
         mac_addr = xbmc.getInfoLabel('Network.MacAddress')
     return mac_addr
 
+
 def get_class_methods(class_item=None):
     """
     Returns the class methods of agiven class object
