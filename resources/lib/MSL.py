@@ -206,7 +206,7 @@ class MSL(object):
             resp = None
             exc = sys.exc_info()
             msg = '[MSL][POST] Error {} {}'
-            self.kodi_helper.log(msg=msg.format(exc[0],exc[1]))
+            self.kodi_helper.log(msg=msg.format(exc[0], exc[1]))
 
         if resp:
             try:
@@ -257,7 +257,7 @@ class MSL(object):
             resp = None
             exc = sys.exc_info()
             self.kodi_helper.log(
-                msg='[MSL][POST] Error {} {}'.format(exc[0],exc[1]))
+                msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp:
             try:
@@ -296,7 +296,6 @@ class MSL(object):
         data = json.JSONDecoder().decode(data)[1]['payload']['data']
         data = base64.standard_b64decode(data)
         return json.JSONDecoder().decode(data)
-
 
     def __tranform_to_dash(self, manifest):
 
@@ -452,7 +451,6 @@ class MSL(object):
                 base_url = self.__get_base_url(downloadable['urls'])
                 ET.SubElement(rep, 'BaseURL').text = base_url
 
-
         xml = ET.tostring(root, encoding='utf-8', method='xml')
         xml = xml.replace('\n', '').replace('\r', '')
         return xml
@@ -529,7 +527,6 @@ class MSL(object):
             f.write(data)
         return base64.standard_b64encode(out.getvalue())
 
-
     def __generate_msl_header(self, is_handshake=False, is_key_request=False, compressionalgo='GZIP', encrypt=True):
         """
         Function that generates a MSL header dict
@@ -584,8 +581,6 @@ class MSL(object):
 
         return json.dumps(header_data)
 
-
-
     def __encrypt(self, plaintext):
         """
         Encrypt the given Plaintext with the encryption key
@@ -609,7 +604,6 @@ class MSL(object):
         encryption_envelope['ciphertext'] = base64.standard_b64encode(citext)
         return json.dumps(encryption_envelope)
 
-
     def __sign(self, text):
         """
         Calculates the HMAC signature for the given
@@ -620,7 +614,6 @@ class MSL(object):
         """
         signature = HMAC.new(self.sign_key, text, SHA256).digest()
         return base64.standard_b64encode(signature)
-
 
     def __perform_key_handshake(self):
         header = self.__generate_msl_header(
@@ -651,7 +644,7 @@ class MSL(object):
             resp = None
             exc = sys.exc_info()
             self.kodi_helper.log(
-                msg='[MSL][POST] Error {} {}'.format(exc[0],exc[1]))
+                msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp and resp.status_code == 200:
             resp = resp.json()
@@ -713,7 +706,6 @@ class MSL(object):
         enc_key = msl_data['encryption_key']
         self.encryption_key = base64.standard_b64decode(enc_key)
         self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
-
 
     def save_msl_data(self):
         self.__save_msl_data()
