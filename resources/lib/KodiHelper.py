@@ -46,7 +46,8 @@ class KodiHelper(object):
 
     def __init__(self, plugin_handle=None, base_url=None):
         """
-        Fetches all needed info from Kodi & configures the baseline of the plugin
+        Fetches all needed info from Kodi &
+        configures the baseline of the plugin
 
         Parameters
         ----------
@@ -87,7 +88,7 @@ class KodiHelper(object):
         If not correct it (makes sure xbmcvfs.exists is working correct)
         """
         if isinstance(path, unicode):
-            check = path.encode('ascii','ignore')
+            check = path.encode('ascii', 'ignore')
             if '/' in check and not str(check).endswith('/'):
                 end = u'/'
                 path = path + end
@@ -116,7 +117,10 @@ class KodiHelper(object):
             Movie rating between 0 & 10
         """
         dlg = xbmcgui.Dialog()
-        return dlg.numeric(heading=self.get_local_string(string_id=30019) + ' ' + self.get_local_string(string_id=30022), type=0)
+        heading = self.get_local_string(string_id=30019)
+        heading += ' '
+        heading += self.get_local_string(string_id=30022)
+        return dlg.numeric(heading=heading, type=0)
 
     def show_adult_pin_dialog(self):
         """Asks the user for the adult pin
@@ -127,7 +131,10 @@ class KodiHelper(object):
         4 digit adult pin needed for adult movies
         """
         dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30002), type=xbmcgui.INPUT_NUMERIC)
+        dialog = dlg.input(
+            heading=self.get_local_string(string_id=30002),
+            type=xbmcgui.INPUT_NUMERIC)
+        return dialog
 
     def show_wrong_adult_pin_notification(self):
         """Shows notification that a wrong adult pin was given
@@ -137,8 +144,13 @@ class KodiHelper(object):
         bool
         Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30006), self.get_local_string(string_id=30007), xbmcgui.NOTIFICATION_ERROR, 5000)
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30006),
+            message=self.get_local_string(string_id=30007),
+            icon=xbmcgui.NOTIFICATION_ERROR,
+            time=5000)
+        return dialog
 
     def show_search_term_dialog(self):
         """Asks the user for a term to query the netflix search for
@@ -149,7 +161,9 @@ class KodiHelper(object):
             Term to search for
         """
         dlg = xbmcgui.Dialog()
-        term = dlg.input(self.get_local_string(string_id=30003), type=xbmcgui.INPUT_ALPHANUM)
+        term = dlg.input(
+            heading=self.get_local_string(string_id=30003),
+            type=xbmcgui.INPUT_ALPHANUM)
         if len(term) == 0:
             term = None
         return term
@@ -172,7 +186,10 @@ class KodiHelper(object):
         if self.custom_export_name == 'true':
             return original_title
         dlg = xbmcgui.Dialog()
-        custom_title = dlg.input(heading=self.get_local_string(string_id=30031), defaultt=original_title, type=xbmcgui.INPUT_ALPHANUM) or original_title
+        custom_title = dlg.input(
+            heading=self.get_local_string(string_id=30031),
+            defaultt=original_title,
+            type=xbmcgui.INPUT_ALPHANUM) or original_title
         return original_title or custom_title
 
     def show_password_dialog(self):
@@ -184,7 +201,11 @@ class KodiHelper(object):
             Netflix password
         """
         dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30004), type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)
+        dialog = dlg.input(
+            heading=self.get_local_string(string_id=30004),
+            type=xbmcgui.INPUT_ALPHANUM,
+            option=xbmcgui.ALPHANUM_HIDE_INPUT)
+        return dialog
 
     def show_email_dialog(self):
         """Asks the user for its Netflix account email
@@ -195,7 +216,10 @@ class KodiHelper(object):
             Netflix account email
         """
         dlg = xbmcgui.Dialog()
-        return dlg.input(self.get_local_string(string_id=30005), type=xbmcgui.INPUT_ALPHANUM)
+        dialog = dlg.input(
+            heading=self.get_local_string(string_id=30005),
+            type=xbmcgui.INPUT_ALPHANUM)
+        return dialog
 
     def show_login_failed_notification(self):
         """Shows notification that the login failed
@@ -205,8 +229,13 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30008), self.get_local_string(string_id=30009), xbmcgui.NOTIFICATION_ERROR, 5000)
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30008),
+            message=self.get_local_string(string_id=30009),
+            icon=xbmcgui.NOTIFICATION_ERROR,
+            time=5000)
+        return dialog
 
     def show_request_error_notification(self):
         """Shows notification that a request error occured
@@ -216,8 +245,13 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30051), self.get_local_string(string_id=30052), xbmcgui.NOTIFICATION_ERROR, 5000)
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30051),
+            message=self.get_local_string(string_id=30052),
+            icon=xbmcgui.NOTIFICATION_ERROR,
+            time=5000)
+        return dialog
 
     def show_missing_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon couldn't be found
@@ -227,8 +261,13 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30029), xbmcgui.NOTIFICATION_ERROR, 5000)
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30028),
+            message=self.get_local_string(string_id=30029),
+            icon=xbmcgui.NOTIFICATION_ERROR,
+            time=5000)
+        return dialog
 
     def show_disabled_inputstream_addon_notification(self):
         """Shows notification that the inputstream addon isn't enabled.
@@ -237,8 +276,13 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30028), self.get_local_string(string_id=30046), xbmcgui.NOTIFICATION_ERROR, 5000)
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30028),
+            message=self.get_local_string(string_id=30046),
+            icon=xbmcgui.NOTIFICATION_ERROR,
+            time=5000)
+        return dialog
 
     def show_no_search_results_notification(self):
         """Shows notification that no search results could be found
@@ -248,8 +292,11 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30011), self.get_local_string(string_id=30013))
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30011),
+            message=self.get_local_string(string_id=30013))
+        return dialog
 
     def show_no_seasons_notification(self):
         """Shows notification that no seasons be found
@@ -259,8 +306,11 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=30010), self.get_local_string(string_id=30012))
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=30010),
+            message=self.get_local_string(string_id=30012))
+        return dialog
 
     def show_finally_remove(self, title, type, year):
         """Ask user for yes / no
@@ -283,8 +333,11 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=15101), self.get_local_string(string_id=30050))
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=15101),
+            message=self.get_local_string(string_id=30050))
+        return dialog
 
     def show_no_metadata_notification(self):
         """Shows notification that no metadata is available
@@ -294,8 +347,11 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=195))
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=14116),
+            message=self.get_local_string(string_id=195))
+        return dialog
 
     def show_autologin_enabled(self):
         """Shows notification that auto login is enabled
@@ -305,8 +361,11 @@ class KodiHelper(object):
         bool
             Dialog shown
         """
-        dialog = xbmcgui.Dialog()
-        return dialog.notification(self.get_local_string(string_id=14116), self.get_local_string(string_id=30058))
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=self.get_local_string(string_id=14116),
+            message=self.get_local_string(string_id=30058))
+        return dialog
 
     def set_setting(self, key, value):
         """Public interface for the addons setSetting method
