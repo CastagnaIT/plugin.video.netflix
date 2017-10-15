@@ -10,9 +10,9 @@ import BaseHTTPServer
 from types import FunctionType
 from urlparse import urlparse, parse_qs
 from utils import get_class_methods
-from resources.lib.KodiHelper import KodiHelper
-from resources.lib.NetflixSession import NetflixSession
-from resources.lib.NetflixHttpSubRessourceHandler import NetflixHttpSubRessourceHandler
+from KodiHelper import KodiHelper
+from NetflixSession import NetflixSession
+from NetflixHttpSubRessourceHandler import NetflixHttpSubRessourceHandler
 
 KODI_HELPER = KodiHelper()
 NETFLIX_SESSION = NetflixSession(
@@ -28,6 +28,7 @@ RES_HANDLER = NetflixHttpSubRessourceHandler(
     kodi_helper=KODI_HELPER,
     netflix_session=NETFLIX_SESSION)
 
+
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Oppionionated internal proxy that dispatches requests to Netflix"""
 
@@ -41,7 +42,7 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         method = params.get('method', [None])[0]
 
         # not method given
-        if method == None:
+        if method is None:
             self.send_error(500, 'No method declared')
             return
 
