@@ -755,38 +755,64 @@ class KodiHelper(object):
                     action = actions[type]
                 # determine if the item should be selected
                 preselect_items.append((False, True)[type == self.get_main_menu_selection()])
-                li_rec = xbmcgui.ListItem(label=i18n_ids[type], iconImage=self.default_fanart)
+                li_rec = xbmcgui.ListItem(
+                    label=i18n_ids[type],
+                    iconImage=self.default_fanart)
                 li_rec.setProperty('fanart_image', self.default_fanart)
                 url_rec = build_url({'action': action, 'type': type})
-                xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+                xbmcplugin.addDirectoryItem(
+                    handle=self.plugin_handle,
+                    url=url_rec,
+                    listitem=li_rec,
+                    isFolder=True)
 
         # add search as subfolder
         action = actions['default']
         if 'search' in actions.keys():
             action = actions[type]
-        li_rec = xbmcgui.ListItem(label=self.get_local_string(30011), iconImage=self.default_fanart)
+        li_rec = xbmcgui.ListItem(
+            label=self.get_local_string(30011),
+            iconImage=self.default_fanart)
         li_rec.setProperty('fanart_image', self.default_fanart)
         url_rec = build_url({'action': action, 'type': 'search'})
-        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+        xbmcplugin.addDirectoryItem(
+            handle=self.plugin_handle,
+            url=url_rec,
+            listitem=li_rec,
+            isFolder=True)
 
         # add exported as subfolder
         action = actions['default']
         if 'exported' in actions.keys():
             action = actions[type]
-        li_rec = xbmcgui.ListItem(label=self.get_local_string(30048), iconImage=self.default_fanart)
+        li_rec = xbmcgui.ListItem(
+            label=self.get_local_string(30048),
+            iconImage=self.default_fanart)
         li_rec.setProperty('fanart_image', self.default_fanart)
         url_rec = build_url({'action': action, 'type': 'exported'})
-        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+        xbmcplugin.addDirectoryItem(
+            handle=self.plugin_handle,
+            url=url_rec,
+            listitem=li_rec,
+            isFolder=True)
 
         if self.show_update_db == 'true':
             # add updatedb as subfolder
-            li_rec = xbmcgui.ListItem(label=self.get_local_string(30049), iconImage=self.default_fanart)
+            li_rec = xbmcgui.ListItem(
+                label=self.get_local_string(30049),
+                iconImage=self.default_fanart)
             li_rec.setProperty('fanart_image', self.default_fanart)
             url_rec = build_url({'action': 'updatedb'})
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url_rec,
+                listitem=li_rec,
+                isFolder=True)
 
-        # no srting & close
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        # no sorting & close
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
 
         # (re)select the previously selected main menu entry
@@ -795,7 +821,7 @@ class KodiHelper(object):
             idx += 1
             preselected_list_item = idx if item else None
         preselected_list_item = idx + 1 if self.get_main_menu_selection() == 'search' else preselected_list_item
-        if preselected_list_item != None:
+        if preselected_list_item is not None:
             xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId()), str(preselected_list_item)))
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -827,7 +853,9 @@ class KodiHelper(object):
         view = VIEW_FOLDER
         for video_list_id in video_list:
             video = video_list[video_list_id]
-            li = xbmcgui.ListItem(label=video['title'], iconImage=self.default_fanart)
+            li = xbmcgui.ListItem(
+                label=video['title'],
+                iconImage=self.default_fanart)
             # add some art to the item
             li = self._generate_art_info(entry=video, li=li)
             # add list item info
@@ -924,14 +952,24 @@ class KodiHelper(object):
                 'thumb': image
             })
             li.setArt(art)
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=isFolder)
 
         for video in listing[2]:
-            li = xbmcgui.ListItem(label=str(video), iconImage=self.default_fanart)
+            li = xbmcgui.ListItem(
+                label=str(video),
+                iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             isFolder = False
             year = '0000'
-            url = build_url({'action': 'removeexported', 'title': str(str(video)), 'year': str(year), 'type': 'show'})
+            url = build_url({
+                'action': 'removeexported',
+                'title': str(str(video)),
+                'year': str(year),
+                'type': 'show'})
             art = {}
             image = self.library.get_previewimage(video)
             art.update({
@@ -939,10 +977,18 @@ class KodiHelper(object):
                 'thumb': image
             })
             li.setArt(art)
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=isFolder)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=isFolder)
 
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -964,11 +1010,19 @@ class KodiHelper(object):
             Search result folder URL
         """
         # add search result as subfolder
-        li_rec = xbmcgui.ListItem(label='({})'.format(term), iconImage=self.default_fanart)
+        li_rec = xbmcgui.ListItem(
+            label='({})'.format(term),
+            iconImage=self.default_fanart)
         li_rec.setProperty('fanart_image', self.default_fanart)
         url_rec = build_url({'action': 'search_result', 'term': term})
-        xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url_rec, listitem=li_rec, isFolder=True)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addDirectoryItem(
+            handle=self.plugin_handle,
+            url=url_rec,
+            listitem=li_rec,
+            isFolder=True)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return url_rec
@@ -1010,7 +1064,12 @@ class KodiHelper(object):
         bool
             List could be build
         """
-        return self.build_video_listing(video_list=video_list, actions=actions, type='search', build_url=build_url)
+        video_listing = self.build_video_listing(
+            video_list=video_list,
+            actions=actions,
+            type='search',
+            build_url=build_url)
+        return video_listing
 
     def build_no_seasons_available(self):
         """Builds the season list screen if no seasons could be found
@@ -1068,12 +1127,20 @@ class KodiHelper(object):
             List could be build
         """
         for video_list_id in video_list_ids:
-            li = xbmcgui.ListItem(video_list_ids[video_list_id]['displayName'], iconImage=self.default_fanart)
+            li = xbmcgui.ListItem(
+                label=video_list_ids[video_list_id]['displayName'],
+                iconImage=self.default_fanart)
             li.setProperty('fanart_image', self.default_fanart)
             url = build_url({'action': action, 'video_list_id': video_list_id})
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=True)
 
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -1099,19 +1166,36 @@ class KodiHelper(object):
             # add some art to the item
             li = self._generate_art_info(entry=season, li=li)
             # add list item info
-            li, infos = self._generate_entry_info(entry=season, li=li, base_info={'mediatype': 'season'})
+            li, infos = self._generate_entry_info(
+                entry=season,
+                li=li,
+                base_info={'mediatype': 'season'})
             li = self._generate_context_menu_items(entry=season, li=li)
             params = {'action': 'episode_list', 'season_id': season['id']}
             if 'tvshowtitle' in infos:
                 params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
             url = build_url(params)
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=True)
 
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_SEASON)
         return True
@@ -1137,18 +1221,43 @@ class KodiHelper(object):
             # add some art to the item
             li = self._generate_art_info(entry=episode, li=li)
             # add list item info
-            li, infos = self._generate_entry_info(entry=episode, li=li, base_info={'mediatype': 'episode'})
+            li, infos = self._generate_entry_info(
+                entry=episode,
+                li=li,
+                base_info={'mediatype': 'episode'})
             li = self._generate_context_menu_items(entry=episode, li=li)
-            url = build_url({'action': 'play_video', 'video_id': episode['id'], 'start_offset': episode['bookmark'], 'infoLabels': infos})
-            xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=False)
+            url = build_url({
+                'action': 'play_video',
+                'video_id': episode['id'],
+                'start_offset': episode['bookmark'],
+                'infoLabels': infos})
+            xbmcplugin.addDirectoryItem(
+                handle=self.plugin_handle,
+                url=url,
+                listitem=li,
+                isFolder=False)
 
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LABEL)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_TITLE)
-        xbmcplugin.addSortMethod(handle=self.plugin_handle, sortMethod=xbmcplugin.SORT_METHOD_DURATION)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(
+            handle=self.plugin_handle,
+            sortMethod=xbmcplugin.SORT_METHOD_DURATION)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_EPISODE)
         return True
@@ -1196,8 +1305,10 @@ class KodiHelper(object):
             addon.setSetting('esn', str(esn))
 
         # inputstream addon properties
-        msl_service_url = 'http://localhost:' + str(addon.getSetting('msl_service_port'))
-        play_item = xbmcgui.ListItem(path=msl_service_url + '/manifest?id=' + video_id)
+        port = str(addon.getSetting('msl_service_port')
+        msl_service_url = 'http://localhost:' + port)
+        play_item = xbmcgui.ListItem(
+            path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
         play_item.setProperty(
