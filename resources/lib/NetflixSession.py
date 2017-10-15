@@ -17,9 +17,9 @@ from base64 import urlsafe_b64encode
 from requests import session, cookies
 from utils import noop, get_user_agent
 try:
-   import cPickle as pickle
+    import cPickle as pickle
 except:
-   import pickle
+    import pickle
 
 FETCH_VIDEO_REQUEST_COUNT = 26
 
@@ -229,7 +229,7 @@ class NetflixSession(object):
         account_hash = self._generate_account_hash(account=account)
         cookies = self._load_cookies(
             filename=self.cookie_path + '_' + account_hash)
-        if cookies == False:
+        if cookies is False:
             return False
 
         # find the earliest expiration date in the cookies
@@ -343,11 +343,11 @@ class NetflixSession(object):
             component='switch_profiles',
             type='api',
             params=payload)
-        if (response == None or response.status_code != 200):
+        if response is None or response.status_code != 200:
             return False
 
         account_hash = self._generate_account_hash(account=account)
-        self.user_data['guid'] = profile_id;
+        self.user_data['guid'] = profile_id
         return self._save_data(filename=self.data_path + '_' + account_hash)
 
     def send_adult_pin(self, pin):
@@ -746,7 +746,7 @@ class NetflixSession(object):
                     ],
                     "id": "80011356",
                     "in_my_list": true,
-                    "interesting_moment": "https://art-s.nflximg.net/01....jpg",
+                    "interesting_moment": "https://art-s.nflximg.net/01...jpg",
                     "list_id": "9588df32-f957-40e4-9055-1f6f33b60103_46891306",
                     "maturity": {
                       "board": "FSF",
@@ -771,7 +771,7 @@ class NetflixSession(object):
                 },
             }
         """
-        video_list = {};
+        video_list = {}
         raw_video_list = response_data.get('value', {})
         netflix_list_id = self.parse_netflix_list_id(video_list=raw_video_list)
         for video_id in raw_video_list.get('videos', {}):
@@ -836,7 +836,7 @@ class NetflixSession(object):
                 ],
                 "id": "372203",
                 "in_my_list": true,
-                "interesting_moment": "https://art-s.nflximg.net/095...9544.jpg",
+                "interesting_moment": "https://art-s.nflximg.net/095...4.jpg",
                 "list_id": "9588df32-f957-40e4-9055-1f6f33b60103_46891306",
                 "maturity": {
                   "board": "FSK",
@@ -863,6 +863,32 @@ class NetflixSession(object):
             }
         """
         season_info = self.parse_season_information_for_video(video=video)
+
+        # determine rating
+        rating = 0
+        if video.get('userRating', {}).get('average', None) is not None:
+            rating = video.get('userRating').get('average', 0)
+        else:
+            rating = video.get('userRating').get('predicted', 0)
+
+        # determine maturity data
+        maturity = {}
+        maturity_rating = video.get('maturity', {}).get('rating', {})
+        maturity['board'] = maturity_rating.get('board', None)
+        maturity['value'] = maturity_rating.get('value', None)
+        maturity['description'] = maturity_rating.get('maturityDescription', None)
+        maturity['level'] = maturity_rating.get('maturityLevel', None)
+
+        # determine artwork
+        boxarts = video.get('boxarts', {})
+        bx_small = boxarts.get('_342x192', {}).get('jpg', {}).get('url')
+        bx_big = boxarts.get('_1280x720', {}).get('jpg', {}).get('url')
+        raw_moment = video.get('interestingMoment', {})
+        moment = raw_moment.get('_665x375', {}).get('jpg', {}).get('url')
+        raw_by_type = video.get('artWorkByType', {})
+        billboard = raw_by_type.get('BILLBOARD', {})
+        artwork = billboard.get('_1280x720', {}).get('jpg', {}).get('url')
+
         return {
             id: {
                 'id': id,
@@ -871,12 +897,12 @@ class NetflixSession(object):
                 'synopsis': video.get('synopsis'),
                 'regular_synopsis': video.get('regularSynopsis'),
                 'type': video.get('summary', {}).get('type'),
-                'rating': video['userRating'].get('average', 0) if video['userRating'].get('average', None) is not None else video['userRating'].get('predicted', 0),
-                'episode_count': season_info['episode_count'],
-                'seasons_label': season_info['seasons_label'],
-                'seasons_count': season_info['seasons_count'],
-                'in_my_list': video['queue']['inQueue'],
-                'year': video['releaseYear'],
+                'rating': rating,
+                'episode_count': season_info.get('episode_count'),
+                'seasons_label': season_info.get('seasons_label'),
+                'seasons_count': season_info.get('seasons_count'),
+                'in_my_list': video.get('queue', {}).get('inQueue'),
+                'year': video.get('releaseYear'),
                 'runtime': self.parse_runtime_for_video(video=video),
                 'watched': video.get('watched', None),
                 'tags': self.parse_tags_for_video(video=video),
@@ -884,25 +910,22 @@ class NetflixSession(object):
                     video=video,
                     genres=genres),
                 'quality': self.parse_quality_for_video(video=video),
-                'cast': self.parse_cast_for_video(video=video, persons=persons),
+                'cast': self.parse_cast_for_video(
+                    video=video,
+                    persons=persons),
                 'directors': self.parse_directors_for_video(
                     video=video,
                     persons=persons),
                 'creators': self.parse_creators_for_video(
                     video=video,
                     persons=persons),
-                'maturity': {
-                    'board': None if 'board' not in video['maturity']['rating'].keys() else video['maturity']['rating']['board'],
-                    'value': None if 'value' not in video['maturity']['rating'].keys() else video['maturity']['rating']['value'],
-                    'description': None if 'maturityDescription' not in video['maturity']['rating'].keys() else video['maturity']['rating']['maturityDescription'],
-                    'level': None if 'maturityLevel' not in video['maturity']['rating'].keys() else video['maturity']['rating']['maturityLevel']
-                },
+                'maturity': maturity,
                 'boxarts': {
-                    'small': video['boxarts']['_342x192']['jpg']['url'],
-                    'big': video['boxarts']['_1280x720']['jpg']['url']
+                    'small': bx_small,
+                    'big': bx_big
                 },
-                'interesting_moment': None if 'interestingMoment' not in video.keys() else video['interestingMoment']['_665x375']['jpg']['url'],
-                'artwork': video['artWorkByType']['BILLBOARD']['_1280x720']['jpg']['url'],
+                'interesting_moment': moment,
+                'artwork': artwork,
             }
         }
 
@@ -928,7 +951,7 @@ class NetflixSession(object):
             if is_size_key is False and person_key != 'summary':
                 for creator_key in dict(video['creators']).keys():
                     is_size_key = self._is_size_key(key=creator_key)
-                    if is_size_key == False and creator_key != 'summary':
+                    if is_size_key is False and creator_key != 'summary':
                         if video['creators'][creator_key][1] == person_key:
                             creators.append(persons[person_key]['name'])
         return creators
@@ -1005,9 +1028,9 @@ class NetflixSession(object):
         """
         video_genres = []
 
-        for video_genre_key, video_genre in video.get('genres', {}).iteritems():
-            is_size_key = self._is_size_key(video_genre_key)
-            if is_size_key is False and video_genre_key != 'summary':
+        for video_key, video_genre in video.get('genres', {}).iteritems():
+            is_size_key = self._is_size_key(key=video_key)
+            if is_size_key is False and video_key != 'summary':
                 name = genres.get(video_genre[1], {}).get('name')
                 if name:
                     video_genres.append(name)
@@ -1029,9 +1052,9 @@ class NetflixSession(object):
             List of tags
         """
         tags = []
-        for tag_key in dict(video['tags']).keys():
-            if self._is_size_key(key=tag_key) == False and tag_key != 'summary':
-                tags.append(video['tags'][tag_key]['name'])
+        for tag in video.get('tags', {}).keys():
+            if self._is_size_key(key=tag) is False and tag != 'summary':
+                tags.append(video.get('tags', {}).get(tag, {}).get('name'))
         return tags
 
     def parse_season_information_for_video(self, video):
@@ -1096,8 +1119,8 @@ class NetflixSession(object):
             Runtime of the video (in seconds)
         """
         runtime = None
-        if video['summary']['type'] != 'show':
-            runtime = video['runtime']
+        if video.get('summary', {}).get('type') != 'show':
+            runtime = video.get('runtime')
         return runtime
 
     def parse_netflix_list_id(self, video_list):
@@ -1115,8 +1138,8 @@ class NetflixSession(object):
         """
         netflix_list_id = None
         if 'lists' in video_list.keys():
-            for video_id in video_list['lists']:
-                if self._is_size_key(key=video_id) == False:
+            for video_id in video_list.get('lists', {}):
+                if self._is_size_key(key=video_id) is False:
                     netflix_list_id = video_id;
         return netflix_list_id
 
