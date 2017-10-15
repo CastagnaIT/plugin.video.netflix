@@ -4,22 +4,21 @@
 # Created on: 13.01.2017
 
 import os
-import xbmcgui
-import xbmcvfs
 import re
 import time
-import requests
 import threading
+import xbmcgui
+import xbmcvfs
+import requests
 from utils import noop
-from resources.lib.KodiHelper import KodiHelper
+from KodiHelper import KodiHelper
 try:
    import cPickle as pickle
 except:
    import pickle
 
-kodi_helper = KodiHelper()
 
-class Library:
+class Library(object):
     """Exports Netflix shows & movies to a local library folder"""
 
     series_label = 'shows'
@@ -35,10 +34,12 @@ class Library:
     """str: Label to identify imagecache"""
 
     db_filename = 'lib.ndb'
-    """str: (File)Name of the store for the database dump that contains all shows/movies added to the library"""
+    """str: (File)Name of the store for the database dump that contains
+    all shows/movies added to the library"""
 
-    def __init__ (self, root_folder, library_settings, log_fn=noop):
-        """Takes the instances & configuration options needed to drive the plugin
+    def __init__(self, root_folder, library_settings, log_fn=noop):
+        """
+        Takes the instances & configuration options needed to drive the plugin
 
         Parameters
         ----------
@@ -54,6 +55,7 @@ class Library:
         log_fn : :obj:`fn`
              optional log function
         """
+        self.kodi_helper = KodiHelper()
         self.base_data_path = root_folder
         self.enable_custom_library_folder = library_settings['enablelibraryfolder']
         self.custom_library_folder = library_settings['customlibraryfolder']
@@ -78,7 +80,7 @@ class Library:
         # load the local db
         self.db = self._load_local_db(filename=self.db_filepath)
 
-    def setup_local_netflix_library (self, source):
+    def setup_local_netflix_library(self, source):
         """Sets up the basic directories
 
         Parameters
@@ -87,7 +89,8 @@ class Library:
             Dicitionary with directories to be created
         """
         for label in source:
-            if not xbmcvfs.exists(kodi_helper.check_folder_path(source[label])):
+            if not xbmcvfs.exists(
+                path=self.kodi_helper.check_folder_path(source[label])):
                 xbmcvfs.mkdir(source[label])
 
     def write_strm_file(self, path, url, title_player):
@@ -342,10 +345,11 @@ class Library:
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
         folder = re.sub(r'[?|$|!|:|#]',r'',alt_title)
-        dirname = kodi_helper.check_folder_path(os.path.join(self.movie_path, folder))
+        dirname = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.movie_path, folder))
         filename = os.path.join(dirname, movie_meta + '.strm')
         progress=xbmcgui.DialogProgress()
-        progress.create(kodi_helper.get_local_string(650),movie_meta)
+        progress.create(self.kodi_helper.get_local_string(650),movie_meta)
         if xbmcvfs.exists(filename):
             return
         if not xbmcvfs.exists(dirname):
@@ -355,7 +359,8 @@ class Library:
             time.sleep(0.5)
             self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
             self._update_local_db(filename=self.db_filepath, db=self.db)
-        self.write_strm_file(path=filename, url=build_url({'action': 'play_video', 'video_id': video_id}), title_player=movie_meta)
+        url = build_url({'action': 'play_video', 'video_id': video_id})
+        self.write_strm_file(path=filename, url=url, title_player=movie_meta)
         progress.update(100)
         time.sleep(1)
         progress.close()
@@ -363,8 +368,8 @@ class Library:
     def add_show (self, title, alt_title, episodes, build_url):
         """Adds a show to the local db, generates & persists the strm files
 
-        Note: Can also used to store complete seasons or single episodes, it all depends on
-        what is present in the episodes dictionary
+        Note: Can also used to store complete seasons or single episodes,
+        it all depends on what is present in the episodes dictionary
 
         Parameters
         ----------
@@ -383,29 +388,48 @@ class Library:
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         show_meta = '%s' % (title)
         folder = re.sub(r'[?|$|!|:|#]',r'',alt_title.encode('utf-8'))
-        show_dir = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, folder))
+        show_dir = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.tvshow_path, folder))
         progress=xbmcgui.DialogProgress()
-        progress.create(kodi_helper.get_local_string(650),show_meta)
+        progress.create(self.kodi_helper.get_local_string(650),show_meta)
         count = 1
         if not xbmcvfs.exists(show_dir):
             xbmcvfs.mkdirs(show_dir)
-        if self.show_exists(title) == False:
-            self.db[self.series_label][show_meta] = {'seasons': [], 'episodes': [], 'alt_title': alt_title}
+        if self.show_exists(title) is False:
+            self.db[self.series_label][show_meta] = {
+                'seasons': [],
+                'episodes': [],
+                'alt_title': alt_title}
             episode_count_total = len(episodes)
             step=round(100.0/episode_count_total,1)
             percent=step
         for episode in episodes:
-            progress.update(int(percent), show_meta, kodi_helper.get_local_string(20373)+": "+str(episode['season']), kodi_helper.get_local_string(20359)+": "+str(episode['episode']))
-            self._add_episode(show_dir=show_dir, title=title, season=episode['season'], episode=episode['episode'], video_id=episode['id'], build_url=build_url)
-            percent=percent+step
+            desc = self.kodi_helper.get_local_string(20373) + ': '
+            desc += str(episode.get('season'))
+            long_desc = self.kodi_helper.get_local_string(20359) + ': '
+            long_desc += str(episode.get('episode'))
+            progress.update(
+                percent=int(percent),
+                line1=show_meta,
+                line2=desc,
+                line3=long_desc)
+            self._add_episode(
+                show_dir=show_dir,
+                title=title,
+                season=episode.get('season'),
+                episode=episode.get('episode'),
+                video_id=episode.get('id'),
+                build_url=build_url)
+            percent += step
             time.sleep(0.05)
         self._update_local_db(filename=self.db_filepath, db=self.db)
         time.sleep(1)
         progress.close()
         return show_dir
 
-    def _add_episode (self, title, show_dir, season, episode, video_id, build_url):
-        """Adds a single episode to the local DB, generates & persists the strm file
+    def _add_episode(self, title, show_dir, season, episode, video_id, build_url):
+        """
+        Adds a single episode to the local DB, generates & persists the strm file
 
         Parameters
         ----------
@@ -432,12 +456,16 @@ class Library:
         title=re.sub(r'[?|$|!|:|#]',r'',title)
 
         # add season
-        if self.season_exists(title=title, season=season) == False:
+        if self.season_exists(title=title, season=season) is False:
             self.db[self.series_label][title]['seasons'].append(season)
 
         # add episode
         episode_meta = 'S%02dE%02d' % (season, episode)
-        if self.episode_exists(title=title, season=season, episode=episode) == False:
+        episode_exists = self.episode_exists(
+            title=title,
+            season=season,
+            episode=episode)
+        if episode_exists is False:
             self.db[self.series_label][title]['episodes'].append(episode_meta)
 
         # create strm file
@@ -445,9 +473,13 @@ class Library:
         filepath = os.path.join(show_dir, filename)
         if xbmcvfs.exists(filepath):
             return
-        self.write_strm_file(path=filepath, url=build_url({'action': 'play_video', 'video_id': video_id}),title_player=title+' - '+episode_meta)
+        url = build_url({'action': 'play_video', 'video_id': video_id})
+        self.write_strm_file(
+            path=filepath,
+            url=url,
+            title_player=title + ' - ' + episode_meta)
 
-    def remove_movie (self, title, year):
+    def remove_movie(self, title, year):
         """Removes the DB entry & the strm file for the movie given
 
         Parameters
@@ -465,14 +497,18 @@ class Library:
         """
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         movie_meta = '%s (%d)' % (title, year)
-        folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.movies_label][movie_meta]['alt_title'])
+        folder = re.sub(
+            pattern=r'[?|$|!|:|#]',
+            repl=r'',
+            string=self.db[self.movies_label][movie_meta]['alt_title'])
         progress=xbmcgui.DialogProgress()
-        progress.create(kodi_helper.get_local_string(1210),movie_meta)
+        progress.create(self.kodi_helper.get_local_string(1210),movie_meta)
         progress.update(50)
         time.sleep(0.5)
         del self.db[self.movies_label][movie_meta]
         self._update_local_db(filename=self.db_filepath, db=self.db)
-        dirname = kodi_helper.check_folder_path(os.path.join(self.movie_path, folder))
+        dirname = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.movie_path, folder))
         filename = os.path.join(self.movie_path, folder, movie_meta + '.strm')
         if xbmcvfs.exists(dirname):
             xbmcvfs.delete(filename)
@@ -482,7 +518,7 @@ class Library:
         time.sleep(1)
         progress.close()
 
-    def remove_show (self, title):
+    def remove_show(self, title):
         """Removes the DB entry & the strm files for the show given
 
         Parameters
@@ -495,14 +531,19 @@ class Library:
         bool
             Delete successfull
         """
-        title=re.sub(r'[?|$|!|:|#]',r'',title)
-        folder = re.sub(r'[?|$|!|:|#]',r'',self.db[self.series_label][title]['alt_title'].encode('utf-8'))
+        title=re.sub(r'[?|$|!|:|#]', r'', title)
+        rep_str = self.db[self.series_label][title]['alt_title'].encode('utf-8')
+        folder = re.sub(
+            pattern=r'[?|$|!|:|#]',
+            repl=r'',
+            string=rep_str)
         progress=xbmcgui.DialogProgress()
-        progress.create(kodi_helper.get_local_string(1210),title)
+        progress.create(self.kodi_helper.get_local_string(1210),title)
         time.sleep(0.5)
         del self.db[self.series_label][title]
         self._update_local_db(filename=self.db_filepath, db=self.db)
-        show_dir = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, folder))
+        show_dir = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.tvshow_path, folder))
         if xbmcvfs.exists(show_dir):
             show_files = xbmcvfs.listdir(show_dir)[1]
             episode_count_total = len(show_files)
@@ -519,7 +560,7 @@ class Library:
         time.sleep(1)
         progress.close()
 
-    def remove_season (self, title, season):
+    def remove_season(self, title, season):
         """Removes the DB entry & the strm files for a season of a show given
 
         Parameters
@@ -544,7 +585,8 @@ class Library:
             if season_entry != season:
                 season_list.append(season_entry)
         self.db[self.series_label][show_meta]['seasons'] = season_list
-        show_dir = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, self.db[self.series_label][show_meta]['alt_title']))
+        show_dir = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.tvshow_path, self.db[self.series_label][show_meta]['alt_title']))
         if xbmcvfs.exists(show_dir):
             show_files = [f for f in xbmcvfs.listdir(show_dir) if xbmcvfs.exists(os.path.join(show_dir, f))]
             for filename in show_files:
@@ -556,7 +598,7 @@ class Library:
         self._update_local_db(filename=self.db_filepath, db=self.db)
         return True
 
-    def remove_episode (self, title, season, episode):
+    def remove_episode(self, title, season, episode):
         """Removes the DB entry & the strm files for an episode of a show given
 
         Parameters
@@ -579,7 +621,9 @@ class Library:
         episodes_list = []
         show_meta = '%s' % (title)
         episode_meta = 'S%02dE%02d' % (season, episode)
-        show_dir = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, self.db[self.series_label][show_meta]['alt_title']))
+        alt_title = self.db[self.series_label][show_meta]['alt_title']
+        show_dir = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.tvshow_path, alt_title))
         if xbmcvfs.exists(os.path.join(show_dir, episode_meta + '.strm')):
             xbmcvfs.delete(os.path.join(show_dir, episode_meta + '.strm'))
         for episode_entry in self.db[self.series_label][show_meta]['episodes']:
@@ -589,7 +633,7 @@ class Library:
         self._update_local_db(filename=self.db_filepath, db=self.db)
         return True
 
-    def list_exported_media (self):
+    def list_exported_media(self):
         """Return List of exported movies
 
         Returns
@@ -599,13 +643,13 @@ class Library:
         """
         movies = (['',''])
         shows = (['',''])
-        if xbmcvfs.exists(kodi_helper.check_folder_path(self.movie_path)):
+        if xbmcvfs.exists(self.kodi_helper.check_folder_path(self.movie_path)):
             movies = xbmcvfs.listdir(self.movie_path)
-        if xbmcvfs.exists(kodi_helper.check_folder_path(self.tvshow_path)):
+        if xbmcvfs.exists(self.kodi_helper.check_folder_path(self.tvshow_path)):
             shows = xbmcvfs.listdir(self.tvshow_path)
-        return movies+shows
+        return movies + shows
 
-    def get_exported_movie_year (self, title):
+    def get_exported_movie_year(self, title):
         """Return year of given exported movie
 
         Returns
@@ -614,13 +658,14 @@ class Library:
             year of given movie
         """
         year = '0000'
-        folder = kodi_helper.check_folder_path(os.path.join(self.movie_path, title))
+        folder = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.movie_path, title))
         if xbmcvfs.exists(folder):
             file = xbmcvfs.listdir(folder)
-            year = str(file[1]).split("(",1)[1].split(")",1)[0]
+            year = str(file[1]).split('(', 1)[1].split(')', 1)[0]
         return int(year)
 
-    def updatedb_from_exported (self):
+    def updatedb_from_exported(self):
         """Adds movies and shows from exported media to the local db
 
         Returns
@@ -628,7 +673,7 @@ class Library:
         bool
             Process finished
         """
-        if xbmcvfs.exists(kodi_helper.check_folder_path(self.movie_path)):
+        if xbmcvfs.exists(self.kodi_helper.check_folder_path(self.movie_path)):
             movies = xbmcvfs.listdir(self.movie_path)
             for video in movies[0]:
                 folder = os.path.join(self.movie_path, video)
@@ -638,27 +683,36 @@ class Library:
                 title = unicode(video.decode('utf-8'))
                 movie_meta = '%s (%d)' % (title, year)
                 if self.movie_exists(title=title, year=year) == False:
-                    self.db[self.movies_label][movie_meta] = {'alt_title': alt_title}
+                    self.db[self.movies_label][movie_meta] = {
+                        'alt_title': alt_title}
                     self._update_local_db(filename=self.db_filepath, db=self.db)
 
-        if xbmcvfs.exists(kodi_helper.check_folder_path(self.tvshow_path)):
+        if xbmcvfs.exists(self.kodi_helper.check_folder_path(self.tvshow_path)):
             shows = xbmcvfs.listdir(self.tvshow_path)
             for video in shows[0]:
                 show_dir = os.path.join(self.tvshow_path, video)
                 title = unicode(video.decode('utf-8'))
                 alt_title = unicode(video.decode('utf-8'))
                 show_meta = '%s' % (title)
-                if self.show_exists(title) == False:
-                    self.db[self.series_label][show_meta] = {'seasons': [], 'episodes': [], 'alt_title': alt_title}
+                if self.show_exists(title) is False:
+                    self.db[self.series_label][show_meta] = {
+                        'seasons': [],
+                        'episodes': [],
+                        'alt_title': alt_title}
                     episodes = xbmcvfs.listdir(show_dir)
                     for episode in episodes[1]:
                         file=str(episode).split(".")[0]
                         season=int(str(file).split("S")[1].split("E")[0])
                         episode=int(str(file).split("E")[1])
                         episode_meta = 'S%02dE%02d' % (season, episode)
-                        if self.episode_exists(title=title, season=season, episode=episode) == False:
+                        if self.episode_exists(
+                            title=title,
+                            season=season,
+                            episode=episode) is False:
                             self.db[self.series_label][title]['episodes'].append(episode_meta)
-                            self._update_local_db(filename=self.db_filepath, db=self.db)
+                            self._update_local_db(
+                                filename=self.db_filepath,
+                                db=self.db)
         return True
 
     def download_image_file(self, title, url):
@@ -680,8 +734,10 @@ class Library:
         title=re.sub(r'[?|$|!|:|#]',r'',title)
         imgfile = title+'.jpg'
         file = os.path.join(self.imagecache_path, imgfile)
-        folder_movies = kodi_helper.check_folder_path(os.path.join(self.movie_path, title))
-        folder_tvshows = kodi_helper.check_folder_path(os.path.join(self.tvshow_path, title))
+        folder_movies = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.movie_path, title))
+        folder_tvshows = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.tvshow_path, title))
         if not xbmcvfs.exists(file) and (xbmcvfs.exists(folder_movies) or xbmcvfs.exists(folder_tvshows)):
             thread = threading.Thread(target=self.fetch_url, args=(url,file))
             thread.start()
@@ -709,9 +765,9 @@ class Library:
         obj:`int`
             image of given title if exists
         """
-        title=re.sub(r'[?|$|!|:|#]',r'',title)
-        imgfile = title+'.jpg'
+        title=re.sub(r'[?|$|!|:|#]', r'', title)
+        imgfile = title + '.jpg'
         file = os.path.join(self.imagecache_path, imgfile)
         if xbmcvfs.exists(file):
             return file
-        return kodi_helper.default_fanart
+        return self.kodi_helper.default_fanart
