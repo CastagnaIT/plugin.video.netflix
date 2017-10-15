@@ -866,7 +866,11 @@ class KodiHelper(object):
                 # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
                 needs_pin = (True, False)[int(video['maturity']['level']) >= 1000]
-                url = build_url({'action': 'play_video', 'video_id': video_list_id, 'infoLabels': infos, 'pin': needs_pin})
+                url = build_url({
+                    'action': 'play_video',
+                    'video_id': video_list_id,
+                    'infoLabels': infos,
+                    'pin': needs_pin})
                 view = VIEW_MOVIE
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
@@ -1226,11 +1230,14 @@ class KodiHelper(object):
                 li=li,
                 base_info={'mediatype': 'episode'})
             li = self._generate_context_menu_items(entry=episode, li=li)
+            maturity = video.get('maturity', {}).get('level', 999)
+            needs_pin = (True, False)[int(maturity) >= 1000]
             url = build_url({
                 'action': 'play_video',
                 'video_id': episode['id'],
                 'start_offset': episode['bookmark'],
-                'infoLabels': infos})
+                'infoLabels': infos,
+                'pin': needs_pin})
             xbmcplugin.addDirectoryItem(
                 handle=self.plugin_handle,
                 url=url,

@@ -82,7 +82,9 @@ class Navigation(object):
             if self.kodi_helper.get_setting ('autologin_enable') == 'true':
                 profile_id = self.kodi_helper.get_setting ('autologin_id')
                 if profile_id != '':
-                    self.call_netflix_service({'method': 'switch_profile', 'profile_id': profile_id})
+                    self.call_netflix_service({
+                        'method': 'switch_profile',
+                        'profile_id': profile_id})
                     return self.show_video_lists()
             return self.show_profiles()
         elif params['action'] == 'save_autologin':
@@ -95,10 +97,17 @@ class Navigation(object):
             # show a list of shows/movies
             type = None if 'type' not in params.keys() else params['type']
             start = 0 if 'start' not in params.keys() else int(params['start'])
-            return self.show_video_list(video_list_id=params['video_list_id'], type=type, start=start)
+            video_list = self.show_video_list(
+                video_list_id=params.get('video_list_id'),
+                type=type,
+                start=start)
+            return video_list
         elif params['action'] == 'season_list':
             # list of seasons for a show
-            return self.show_seasons(show_id=params['show_id'], tvshowtitle=params['tvshowtitle'])
+            seasons = self.show_seasons(
+                show_id=params.get('show_id'),
+                tvshowtitle=params.get('tvshowtitle'))
+            return seasons
         elif params['action'] == 'episode_list':
             # list of episodes for a season
             return self.show_episode_list(season_id=params['season_id'], tvshowtitle=params['tvshowtitle'])
@@ -124,7 +133,8 @@ class Navigation(object):
         elif params['action'] == 'update':
             # adds a title to the users list on Netflix
             self.remove_from_library(video_id=params['id'])
-            alt_title = self.kodi_helper.show_add_to_library_title_dialog(original_title=urllib.unquote(params['title']).decode('utf8'))
+            alt_title = self.kodi_helper.show_add_to_library_title_dialog(
+                original_title=urllib.unquote(params['title']).decode('utf8'))
             self.export_to_library(video_id=params['id'], alt_title=alt_title)
             return self.kodi_helper.refresh()
         elif params['action'] == 'removeexported':
@@ -148,13 +158,17 @@ class Navigation(object):
         elif params['action'] == 'play_video':
             # play a video, check for adult pin if needed
             adult_pin = None
-            ask_for_adult_pin = self.kodi_helper.get_setting('adultpin_enable').lower() == 'true'
+            adult_setting = self.kodi_helper.get_setting('adultpin_enable')
+            ask_for_adult_pin = adult_setting.lower() == 'true'
             if ask_for_adult_pin is True:
                 if self.check_for_adult_pin(params=params):
                     adult_pin = self.kodi_helper.show_adult_pin_dialog()
                     if self._check_response(self.call_netflix_service({'method': 'send_adult_pin', 'pin': adult_pin})) != True:
                         return self.kodi_helper.show_wrong_adult_pin_notification()
-            self.play_video(video_id=params['video_id'], start_offset=params.get('start_offset', -1), infoLabels=params.get('infoLabels', {}))
+            self.play_video(
+                video_id=params['video_id'],
+                start_offset=params.get('start_offset', -1),
+                infoLabels=params.get('infoLabels', {}))
         elif params['action'] == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.show_search_term_dialog()
