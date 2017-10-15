@@ -1305,8 +1305,8 @@ class KodiHelper(object):
             addon.setSetting('esn', str(esn))
 
         # inputstream addon properties
-        port = str(addon.getSetting('msl_service_port')
-        msl_service_url = 'http://localhost:' + port)
+        port = str(addon.getSetting('msl_service_port'))
+        msl_service_url = 'http://localhost:' + port
         play_item = xbmcgui.ListItem(
             path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setContentLookup(False)
