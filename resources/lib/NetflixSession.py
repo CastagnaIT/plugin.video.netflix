@@ -866,18 +866,20 @@ class NetflixSession(object):
 
         # determine rating
         rating = 0
-        if video.get('userRating', {}).get('average', None) is not None:
-            rating = video.get('userRating').get('average', 0)
+        user_rating = video.get('userRating', {})
+        if user_rating.get('average', None) is not None:
+            rating = user_rating.get('average', 0)
         else:
-            rating = video.get('userRating').get('predicted', 0)
+            rating = user_rating.get('predicted', 0)
 
         # determine maturity data
-        maturity = {}
         maturity_rating = video.get('maturity', {}).get('rating', {})
-        maturity['board'] = maturity_rating.get('board', None)
-        maturity['value'] = maturity_rating.get('value', None)
-        maturity['description'] = maturity_rating.get('maturityDescription', None)
-        maturity['level'] = maturity_rating.get('maturityLevel', None)
+        maturity = {
+            'board': maturity_rating.get('board', None),
+            'value': maturity_rating.get('value', None),
+            'description': maturity_rating.get('maturityDescription', None),
+            'level': maturity_rating.get('maturityLevel', None),
+        }
 
         # determine artwork
         boxarts = video.get('boxarts', {})
@@ -1140,7 +1142,7 @@ class NetflixSession(object):
         if 'lists' in video_list.keys():
             for video_id in video_list.get('lists', {}):
                 if self._is_size_key(key=video_id) is False:
-                    netflix_list_id = video_id;
+                    netflix_list_id = video_id
         return netflix_list_id
 
     def parse_show_information(self, id, response_data):
@@ -1168,10 +1170,12 @@ class NetflixSession(object):
         raw_show = response_data['value']['videos'][id]
         show.update({'synopsis': raw_show['regularSynopsis']})
 
-        if 'evidence' in raw_show and raw_show.get('evidence') is not None and raw_show.get('evidence').get('value') is not None:
-            show.update({'detail_text': raw_show.get('evidence', {}).get('value', {}).get('text', '')})
+        if 'evidence' in raw_show:
+            evidence = raw_show.get('evidence', {}).get('value', {})
+            show.update({'detail_text': evidence.get('text', '')})
         if 'seasonList' in raw_show:
-            show.update({'season_id': raw_show.get('seasonList', {}).get('current', [])[1]})
+            season_list = raw_show.get('seasonList', {})
+            show.update({'season_id': season_list.get('current', ['', ''])[1]})
         return show
 
     def parse_seasons(self, id, response_data):
@@ -1264,6 +1268,8 @@ class NetflixSession(object):
                 }
             }
         """
+        raw_moment = video.get('interestingMoment', {})
+        moment = raw_moment.get('_665x375', {}).get('jpg', {}).get('url')
         return {
             season['summary']['id']: {
                 'idx': sorting[season['summary']['id']],
@@ -1274,7 +1280,7 @@ class NetflixSession(object):
                     'small': video['boxarts']['_342x192']['jpg']['url'],
                     'big': video['boxarts']['_1280x720']['jpg']['url']
                 },
-                'interesting_moment': video['interestingMoment']['_665x375']['jpg']['url'],
+                'interesting_moment': moment,
             }
         }
 
@@ -1390,10 +1396,16 @@ class NetflixSession(object):
           },
         }
         """
-        mpaa = ''
-        if episode.get('maturity', None) is not None:
-            if episode['maturity'].get('board', None) is not None and episode['maturity'].get('value', None) is not None:
-                mpaa = str(episode['maturity'].get('board', '').encode('utf-8')) + '-' + str(episode['maturity'].get('value', '').encode('utf-8'))
+        maturity = episode.get('maturity', {})
+        mpaa = str(maturity.get('board', '').encode('utf-8'))
+        mpaa += '-'
+        mpaa += str(maturity.get('value', '').encode('utf-8'))
+
+        rating = episode.get('userRating', {}).get('predicted', 0)
+        rating = episode.get('userRating', {}).get('average', rating)
+
+        raw_moment = episode.get('interestingMoment', {})
+        moment = raw_moment.get('_1280x720', {}).get('jpg', {}).get('url')
 
         return {
             episode['summary']['id']: {
@@ -1404,16 +1416,18 @@ class NetflixSession(object):
                 'duration': episode['info']['runtime'],
                 'title': episode['info']['title'],
                 'year': episode['info']['releaseYear'],
-                'genres': self.parse_genres_for_video(video=episode, genres=genres),
+                'genres': self.parse_genres_for_video(
+                    video=episode,
+                    genres=genres),
                 'mpaa': mpaa,
                 'maturity': episode['maturity'],
-                'playcount': (0, 1)[episode['watched']],
-                'rating': episode['userRating'].get('average', 0) if episode['userRating'].get('average', None) != None else episode['userRating'].get('predicted', 0),
+                'playcount': (0, 1)[episode.get('watched')],
+                'rating': rating,
                 'thumb': episode['info']['interestingMoments']['url'],
-                'fanart': episode['interestingMoment']['_1280x720']['jpg']['url'],
+                'fanart': moment,
                 'poster': episode['boxarts']['_1280x720']['jpg']['url'],
                 'banner': episode['boxarts']['_342x192']['jpg']['url'],
-                'mediatype': {'episode': 'episode', 'movie': 'movie'}[episode['summary']['type']],
+                'mediatype': episode.get('summary', {}).get('type', 'movie'),
                 'my_list': episode['queue']['inQueue'],
                 'bookmark': episode['bookmarkPosition']
             }
@@ -1474,19 +1488,63 @@ class NetflixSession(object):
         encoded_search_string = quote(search_str)
 
         paths = [
-            ['search', encoded_search_string, 'titles', {'from': list_from, 'to': list_to}, ['summary', 'title']],
-            ['search', encoded_search_string, 'titles', {'from': list_from, 'to': list_to}, 'boxarts', '_342x192', 'jpg'],
-            ['search', encoded_search_string, 'titles', ['id', 'length', 'name', 'trackIds', 'requestId']],
-            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', {'from': list_from, 'to': list_to}, ['summary', 'title']],
-            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', {'from': list_from, 'to': list_to}, 'boxarts', '_342x192', 'jpg'],
-            ['search', encoded_search_string, 'suggestions', 0, 'relatedvideos', ['id', 'length', 'name', 'trackIds', 'requestId']]
+            [
+                'search',
+                encoded_search_string,
+                'titles',
+                {'from': list_from, 'to': list_to},
+                ['summary', 'title']
+            ],
+            [
+                'search',
+                encoded_search_string,
+                'titles',
+                {'from': list_from, 'to': list_to},
+                'boxarts',
+                '_342x192',
+                'jpg'
+            ],
+            [
+                'search',
+                encoded_search_string,
+                'titles',
+                ['id', 'length', 'name', 'trackIds', 'requestId']
+            ],
+            [
+                'search',
+                encoded_search_string,
+                'suggestions',
+                0,
+                'relatedvideos',
+                {'from': list_from, 'to': list_to},
+                ['summary', 'title']
+            ],
+            [
+                'search',
+                encoded_search_string,
+                'suggestions',
+                0,
+                'relatedvideos',
+                {'from': list_from, 'to': list_to},
+                'boxarts',
+                '_342x192',
+                'jpg'
+            ],
+            [
+                'search',
+                encoded_search_string,
+                'suggestions',
+                0,
+                'relatedvideos',
+                ['id', 'length', 'name', 'trackIds', 'requestId']
+            ]
         ]
         response = self._path_request(paths=paths)
         return self._process_response(
             response=response,
             component='Search results')
 
-    def fetch_video_list(self, list_id, list_from=0, list_to=FETCH_VIDEO_REQUEST_COUNT):
+    def fetch_video_list(self, list_id, list_from=0, list_to=None):
         """Fetches the JSON which contains the contents of a given video list
 
         Parameters
@@ -1505,6 +1563,9 @@ class NetflixSession(object):
         :obj:`dict` of :obj:`dict` of :obj:`str`
             Raw Netflix API call response or api call error
         """
+        if list_to is None:
+            list_to = FETCH_VIDEO_REQUEST_COUNT
+
         paths = [
             ['lists', list_id, {'from': list_from, 'to': list_to}, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']],
             ['lists', list_id, {'from': list_from, 'to': list_to}, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
@@ -1524,7 +1585,10 @@ class NetflixSession(object):
         ]
 
         response = self._path_request(paths=paths)
-        return self._process_response(response=response, component='Video list')
+        processed_resp = self._process_response(
+            response=response,
+            component='Video list')
+        return processed_resp
 
     def fetch_video_list_information(self, video_ids):
         """
