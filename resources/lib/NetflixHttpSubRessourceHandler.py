@@ -40,8 +40,9 @@ class NetflixHttpSubRessourceHandler(object):
         password = self.credentials.get('password', '')
         if email != '' and password != '':
             if self.netflix_session.is_logged_in(account=self.credentials):
-                if self.netflix_session.refresh_session_data(
-                    account=self.credentials):
+                refresh_session = self.netflix_session.refresh_session_data(
+                    account=self.credentials)
+                if refresh_session:
                     self.profiles = self.netflix_session.profiles
             else:
                 if self.netflix_session.login(account=self.credentials):
@@ -153,7 +154,7 @@ class NetflixHttpSubRessourceHandler(object):
         """
         guid = self.netflix_session.user_data.get('guid')
         cached_list = self.video_list_cache.get(guid, None)
-        if cached_list != None:
+        if cached_list is not None:
             self.kodi_helper.log(msg='Serving cached list for user: ' + guid)
             return cached_list
         video_list_ids_raw = self.netflix_session.fetch_video_list_ids()
@@ -232,9 +233,10 @@ class NetflixHttpSubRessourceHandler(object):
             id=show_id)
         if 'error' in raw_season_list:
             return raw_season_list
-        # check if we have sesons, announced shows that are not available yet have none
+        # check if we have sesons,
+        # announced shows that are not available yet have none
         if 'seasons' not in raw_season_list.get('value', {}):
-              return []
+            return []
         seasons = self.netflix_session.parse_seasons(
             id=show_id,
             response_data=raw_season_list)
@@ -382,28 +384,28 @@ class NetflixHttpSubRessourceHandler(object):
         # determine if we found something
         if 'search' in raw_search_results['value']:
             for key in raw_search_results['value']['search'].keys():
-                if self.netflix_session._is_size_key(key=key) == False:
+                if self.netflix_session._is_size_key(key=key) is False:
                     has_search_results = raw_search_results['value']['search'][key]['titles']['length'] > 0
-                    if has_search_results == False:
-                        if raw_search_results['value']['search'][key].get('suggestions', False) != False:
+                    if has_search_results is False:
+                        if raw_search_results['value']['search'][key].get('suggestions', False) is not False:
                             for entry in raw_search_results['value']['search'][key]['suggestions']:
-                                if self.netflix_session._is_size_key(key=entry) == False:
+                                if self.netflix_session._is_size_key(key=entry) is False:
                                     if raw_search_results['value']['search'][key]['suggestions'][entry]['relatedvideos']['length'] > 0:
                                         has_search_results = True
 
         # display that we haven't found a thing
-        if has_search_results == False:
+        if has_search_results is False:
             return []
 
         # list the search results
         search_results = self.netflix_session.parse_search_results(
             response_data=raw_search_results)
         # add more menaingful data to the search results
-        raw_search_contents = self.netflix_session.fetch_video_list_information(
+        raw_contents = self.netflix_session.fetch_video_list_information(
             video_ids=search_results.keys())
         # check for any errors
-        if 'error' in raw_search_contents:
-            return raw_search_contents
+        if 'error' in raw_contents:
+            return raw_contents
         video_list = self.netflix_session.parse_video_list(
-            response_data=raw_search_contents)
+            response_data=raw_contents)
         return video_list
