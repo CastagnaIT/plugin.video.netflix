@@ -105,12 +105,12 @@ class MSL(object):
                 # Audio
                 'heaac-2-dash',
 
-                #subtiltes
-                #'dfxp-ls-sdh',
+                # Subtiltes
+                # 'dfxp-ls-sdh',
                 'simplesdh',
-                #'nflx-cmisc',
+                # 'nflx-cmisc',
 
-                #unkown
+                # Unkown
                 'BIF240',
                 'BIF320'
             ],
@@ -309,7 +309,7 @@ class MSL(object):
         self.last_playback_context = manifest['playbackContextId']
         self.last_drm_context = manifest['drmContextId']
 
-        #Check for pssh
+        # Check for pssh
         pssh = ''
         if 'psshb64' in manifest:
             if len(manifest['psshb64']) >= 1:
