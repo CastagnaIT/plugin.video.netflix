@@ -213,7 +213,8 @@ class MSL(object):
                 # if the json() does not fail we have an error because
                 # the manifest response is a chuncked json response
                 resp.json()
-                self.kodi_helper.log(msg='Error getting Manifest: ' + resp.text)
+                self.kodi_helper.log(
+                    msg='Error getting Manifest: ' + resp.text)
                 return False
             except ValueError:
                 # json() failed so parse the chunked response
@@ -410,11 +411,11 @@ class MSL(object):
                     mimeType='audio/mp4')
 
                 # AudioChannel Config
-                a_uri = 'urn:mpeg:dash:23003:3:audio_channel_configuration:2011'
+                uri = 'urn:mpeg:dash:23003:3:audio_channel_configuration:2011'
                 ET.SubElement(
                     parent=rep,
                     tag='AudioChannelConfiguration',
-                    schemeIdUri=a_uri,
+                    schemeIdUri=uri,
                     value=str(audio_track.get('channelsCount')))
 
                 # BaseURL
@@ -489,8 +490,9 @@ class MSL(object):
         self.__load_msl_data()
         header_encryption_envelope = self.__encrypt(
             plaintext=self.__generate_msl_header())
+        headerdata = base64.standard_b64encode(header_encryption_envelope)
         header = {
-            'headerdata': base64.standard_b64encode(header_encryption_envelope),
+            'headerdata': headerdata,
             'signature': self.__sign(header_encryption_envelope),
             'mastertoken': self.mastertoken,
         }
