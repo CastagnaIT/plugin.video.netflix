@@ -640,7 +640,7 @@ class KodiHelper(object):
         """
         custom_view = self.get_addon().getSetting('customview')
         if custom_view == 'true':
-            view = int(self.get_addon().getSetting('viewmode'+content))
+            view = int(self.get_addon().getSetting('viewmode' + content))
             if view != -1:
                 xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
 
@@ -892,7 +892,10 @@ class KodiHelper(object):
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
-                params = {'action': actions[video['type']], 'show_id': video_list_id}
+                params = {
+                    'action': actions[video['type']],
+                    'show_id': video_list_id
+                }
                 params['pin'] = (True, False)[int(video['maturity']['level']) >= 1000]
                 if 'tvshowtitle' in infos:
                     title = infos.get('tvshowtitle', '').encode('utf-8')
@@ -1754,11 +1757,12 @@ class KodiHelper(object):
     def get_show_content_by_id(self, showid, showseason, showepisode):
         showseason = int(showseason)
         showepisode = int(showepisode)
+        props = ["season", "episode", "plot", "fanart", "art"]
         query = {
                 "jsonrpc": "2.0",
                 "method": "VideoLibrary.GetEpisodes",
                 "params": {
-                    "properties": ["season", "episode", "plot", "fanart", "art"],
+                    "properties": props,
                     "tvshowid": int(showid[0])
                 },
                 "id": "1"
@@ -1771,7 +1775,9 @@ class KodiHelper(object):
             if result is not None and 'episodes' in result:
                 result = result['episodes']
                 for episode in result:
-                    if episode['season'] == showseason and episode['episode'] == showepisode:
+                    in_season = episode['season'] == showseason
+                    in_episode = episode['episode'] == showepisode
+                    if in_season and in_episode:
                         infos = {}
                         if 'plot' in episode and len(episode['plot']) > 0:
                             infos.update({
