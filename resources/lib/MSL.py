@@ -63,15 +63,24 @@ class MSL(object):
             pass
 
         if self.file_exists(self.kodi_helper.msl_data_path, 'msl_data.json'):
-            self.kodi_helper.log(msg='MSL Data exists. Use old Tokens.')
-            self.__load_msl_data()
-            self.handshake_performed = True
+            self.init_msl_data()
         elif self.file_exists(self.kodi_helper.msl_data_path, 'rsa_key.bin'):
-            self.kodi_helper.log(msg='RSA Keys do already exist load old ones')
-            self.__load_rsa_keys()
-            if self.kodi_helper.get_esn():
-                self.__perform_key_handshake()
+            self.init_rsa_keys()
         else:
+            self.init_generate_rsa_keys()
+
+    def init_msl_data(self):
+        self.kodi_helper.log(msg='MSL Data exists. Use old Tokens.')
+        self.__load_msl_data()
+        self.handshake_performed = True
+
+    def init_rsa_keys(self):
+        self.kodi_helper.log(msg='RSA Keys do already exist load old ones')
+        self.__load_rsa_keys()
+        if self.kodi_helper.get_esn():
+            self.__perform_key_handshake()
+
+    def init_generate_rsa_keys(self):
             self.kodi_helper.log(msg='Create new RSA Keys')
             # Create new Key Pair and save
             self.rsa_key = RSA.generate(2048)
