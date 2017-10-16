@@ -859,7 +859,7 @@ class Navigation(object):
                 cache_id=values)
 
             # Cache lookup successful?
-            if cached_value != None:
+            if cached_value is not None:
                 self.log(
                     msg='Fetched item from cache: (cache_id=' + values + ')')
                 return cached_value
