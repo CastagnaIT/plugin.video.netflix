@@ -320,8 +320,8 @@ class Library(object):
         bool
             Episode of show exists in DB
         """
-        title=re.sub(r'[?|$|!|:|#]',r'',title)
-        if self.show_exists(title) == False:
+        title = re.sub(r'[?|$|!|:|#]', r'', title)
+        if self.show_exists(title) is False:
             return False
         show_entry = self.db[self.series_label][title]
         episode_entry = 'S%02dE%02d' % (season, episode)
