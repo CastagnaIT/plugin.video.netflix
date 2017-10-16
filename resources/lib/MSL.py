@@ -498,19 +498,22 @@ class MSL(object):
         }
 
         # Serialize the given Data
-        serialized_data = json.dumps(data)
-        serialized_data = serialized_data.replace('"', '\\"')
-        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"' + serialized_data + '"},"query":""}]\n'
+        raw_marshalled_data = json.dumps(data)
+        marshalled_data = raw_marshalled_data.replace('"', '\\"')
+        serialized_data = '[{},{"headers":{},"path":"/cbp/cadmium-13"'
+        serialized_data += ',"payload":{"data":"'
+        serialized_data += marshalled_data
+        serialized_data += '"},"query":""}]\n'
 
         compressed_data = self.__compress_data(serialized_data)
 
         # Create FIRST Payload Chunks
         first_payload = {
-            "messageid": self.current_message_id,
-            "data": compressed_data,
-            "compressionalgo": "GZIP",
-            "sequencenumber": 1,
-            "endofmsg": True
+            'messageid': self.current_message_id,
+            'data': compressed_data,
+            'compressionalgo': 'GZIP',
+            'sequencenumber': 1,
+            'endofmsg': True
         }
         first_payload_encryption_envelope = self.__encrypt(
             plaintext=json.dumps(first_payload))

@@ -10,7 +10,7 @@ COVERAGE_FILE = ./.coverage
 COVERAGE_DIR = ./coverage
 REPORT_DIR = ./report
 DOCS_DIR = ./docs
-FLAKE_FILES = ./addon.py ./service.py ./setup.py ./resources/lib/utils.py ./resources/lib/MSLHttpRequestHandler.py ./resources/lib/NetflixHttpRequestHandler.py
+FLAKE_FILES = ./addon.py ./service.py ./setup.py ./resources/lib/utils.py ./resources/lib/MSLHttpRequestHandler.py ./resources/lib/NetflixHttpRequestHandler.py ./resources/lib/Navigation.py
 RADON_FILES = resources/lib/*.py ./addon.py ./service.py
 LINT_REPORT_FILE = ./report/lint.html
 TEST_OPTIONS = -s --cover-package=resources.lib.utils --cover-package=resources.lib.NetflixSession  --cover-package=resources.lib.Navigation --cover-package=resources.lib.MSL --cover-package=resources.lib.KodiHelper --cover-package=resources.lib.Library --cover-package=resources.lib.KodiHelper --cover-package=resources.lib.Library --cover-package=resources.lib.NetflixHttpRequestHandler --cover-package=resources.lib.NetflixHttpSubRessourceHandler --cover-erase --with-coverage --cover-branches

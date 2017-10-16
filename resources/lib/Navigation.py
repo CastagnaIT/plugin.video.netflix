@@ -1,7 +1,15 @@
 # pylint: skip-file
 # -*- coding: utf-8 -*-
+# Author: asciidisco
 # Module: Navigation
 # Created on: 13.01.2017
+# License: MIT https://goo.gl/5bMj3H
+
+"""
+Routes to the correct subfolder,
+dispatches actions & acts as a controller
+for the Kodi view & the Netflix model
+"""
 
 import ast
 import json
@@ -10,8 +18,8 @@ import urllib2
 from urlparse import parse_qsl, urlparse
 import xbmc
 from xbmcaddon import Addon
-import NetflixSession as Netflix
-from utils import noop, log
+import resources.lib.NetflixSession as Netflix
+from resources.lib.utils import noop, log
 
 
 class Navigation(object):
@@ -57,6 +65,7 @@ class Navigation(object):
         params = self.parse_paramters(paramstring=paramstring)
         action = params.get('action', None)
         p_type = params.get('action', None)
+        p_type_not_search_export = p_type != 'search' and p_type != 'exported'
 
         # open foreign settings dialog
         if 'mode' in params.keys() and params['mode'] == 'openSettings':
@@ -177,7 +186,7 @@ class Navigation(object):
             self.library.updatedb_from_exported()
             self.kodi_helper.show_local_db_updated()
             return True
-        elif action == 'user-items' and p_type != 'search' and p_type != 'exported':
+        elif action == 'user-items' and p_type_not_search_export:
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif action == 'play_video':
@@ -193,7 +202,8 @@ class Navigation(object):
                         'pin': adult_pin})
                     pin_correct = self._check_response(pin_response)
                     if pin_correct is not True:
-                        return self.kodi_helper.show_wrong_adult_pin_notification()
+                        self.kodi_helper.show_wrong_adult_pin_notification()
+                        return True
             self.play_video(
                 video_id=params['video_id'],
                 start_offset=params.get('start_offset', -1),
@@ -309,6 +319,7 @@ class Navigation(object):
                     type=type,
                     action='video_list',
                     build_url=self.build_url)
+                return sub_list
         return False
 
     def show_episode_list(self, season_id, tvshowtitle):
@@ -867,7 +878,7 @@ class Navigation(object):
         url = self.get_netflix_service_url()
         full_url = url + '?' + values
         # don't use proxy for localhost
-        if (urlparse(url).hostname in ('localhost', '127.0.0.1', '::1')):
+        if urlparse(url).hostname in ('localhost', '127.0.0.1', '::1'):
             opener = urllib2.build_opener(urllib2.ProxyHandler({}))
             urllib2.install_opener(opener)
         data = urllib2.urlopen(full_url).read(opener)
