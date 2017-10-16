@@ -19,7 +19,7 @@ from urlparse import parse_qsl, urlparse
 import xbmc
 from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import noop, log
+from resources.lib.utils import noop, log, retry
 
 
 class Navigation(object):
@@ -862,6 +862,7 @@ class Navigation(object):
         service_url += str(addon.getSetting('netflix_service_port'))
         return service_url
 
+    @retry(urllib2.URLError, tries=4, delay=1, backoff=2)
     def call_netflix_service(self, params):
         """
         Makes a GET request to the internal Netflix HTTP proxy
