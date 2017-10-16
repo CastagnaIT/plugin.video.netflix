@@ -1,7 +1,9 @@
 # pylint: skip-file
 # -*- coding: utf-8 -*-
-# Module: MSL
+# Author: trummerjo
+# Module: MSLHttpRequestHandler
 # Created on: 26.01.2017
+# License: MIT https://goo.gl/5bMj3H
 
 import os
 import sys
@@ -10,7 +12,6 @@ import gzip
 import json
 import time
 import base64
-import pprint
 import random
 from Cryptodome.Random import get_random_bytes
 from Cryptodome.Hash import HMAC, SHA256
@@ -22,8 +23,6 @@ from StringIO import StringIO
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
-
-pp = pprint.PrettyPrinter(indent=4)
 
 
 def base64key_decode(payload):
@@ -280,17 +279,24 @@ class MSL(object):
 
     def __decrypt_payload_chunk(self, payloadchunk):
         payloadchunk = json.JSONDecoder().decode(payloadchunk)
-        encryption_envelope = json.JSONDecoder().decode(base64.standard_b64decode(payloadchunk['payload']))
+        payload = payloadchunk.get('payload')
+        decoded_payload = base64.standard_b64decode(payload)
+        encryption_envelope = json.JSONDecoder().decode(decoded_payload)
         # Decrypt the text
-        cipher = AES.new(self.encryption_key, AES.MODE_CBC, base64.standard_b64decode(encryption_envelope['iv']))
-        plaintext = cipher.decrypt(base64.standard_b64decode(encryption_envelope['ciphertext']))
+        cipher = AES.new(
+            self.encryption_key,
+            AES.MODE_CBC,
+            base64.standard_b64decode(encryption_envelope['iv']))
+        ciphertext = encryption_envelope.get('ciphertext')
+        plaintext = cipher.decrypt(base64.standard_b64decode(ciphertext))
         # unpad the plaintext
         plaintext = json.JSONDecoder().decode(Padding.unpad(plaintext, 16))
-        data = plaintext['data']
+        data = plaintext.get('data')
 
         # uncompress data if compressed
-        if plaintext['compressionalgo'] == 'GZIP':
-            data = zlib.decompress(base64.standard_b64decode(data), 16 + zlib.MAX_WBITS)
+        if plaintext.get('compressionalgo') == 'GZIP':
+            decoded_data = base64.standard_b64decode(data)
+            data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
         else:
             data = base64.standard_b64decode(data)
 
@@ -540,23 +546,22 @@ class MSL(object):
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
         esn = self.kodi_helper.get_esn()
 
+        # Add compression algo if not empty
+        compression_algos = [compressionalgo] if compressionalgo != '' else []
+
         header_data = {
             'sender': esn,
             'handshake': is_handshake,
             'nonreplayable': False,
             'capabilities': {
-                'languages': ["en-US"],
-                'compressionalgos': []
+                'languages': ['en-US'],
+                'compressionalgos': compression_algos
             },
             'recipient': 'Netflix',
             'renewable': True,
             'messageid': self.current_message_id,
             'timestamp': 1467733923
         }
-
-        # Add compression algo if not empty
-        if compressionalgo != '':
-            header_data['capabilities']['compressionalgos'].append(compressionalgo)
 
         # If this is a keyrequest act diffrent then other requests
         if is_key_request:
