@@ -1787,7 +1787,8 @@ class KodiHelper(object):
                         if 'fanart' in episode and len(episode['fanart']) > 0:
                             art.update({'fanart': episode['fanart']})
                         if 'art' in episode and len(episode['art']['season.poster']) > 0:
-                            art.update({'thumb': episode['art']['season.poster']})
+                            art.update({
+                                'thumb': episode['art']['season.poster']})
                         return infos, art
             return False
         except Exception:
