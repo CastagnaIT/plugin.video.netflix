@@ -1679,11 +1679,11 @@ class KodiHelper(object):
                     # Switch to ascii/lowercase and remove special chars and spaces
                     # to make sure best possible compare is possible
                     titledb = movie['title'].encode('ascii', 'ignore')
-                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titledb).lower().replace('-','')
+                    titledb = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]', r'', titledb).lower().replace('-', '')
                     if '(' in titledb:
                         titledb = titledb.split('(')[0]
                     titlegiven = title.encode('ascii','ignore')
-                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]',r'', titlegiven).lower().replace('-','')
+                    titlegiven = re.sub(r'[?|$|!|:|#|\.|\,|\'| ]', r'', titlegiven).lower().replace('-', '')
                     if '(' in titlegiven:
                         titlegiven = titlegiven.split('(')[0]
                     if titledb == titlegiven:
@@ -1711,18 +1711,18 @@ class KodiHelper(object):
                     # Switch to ascii/lowercase and
                     # remove special chars and spaces
                     # to make sure best possible compare is possible
-                    titledb = tvshow['label'].encode('ascii','ignore')
+                    titledb = tvshow['label'].encode('ascii', 'ignore')
                     titledb = re.sub(
                         pattern=r'[?|$|!|:|#|\.|\,|\'| ]',
                         repl=r'',
-                        string=titledb).lower().replace('-','')
+                        string=titledb).lower().replace('-', '')
                     if '(' in titledb:
                         titledb = titledb.split('(')[0]
                     titlegiven = title.encode('ascii', 'ignore')
                     titlegiven = re.sub(
                         pattern=r'[?|$|!|:|#|\.|\,|\'| ]',
                         repl=r'',
-                        string=titlegiven).lower().replace('-','')
+                        string=titlegiven).lower().replace('-', '')
                     if '(' in titlegiven:
                         titlegiven = titlegiven.split('(')[0]
                     if titledb == titlegiven:
@@ -1747,19 +1747,22 @@ class KodiHelper(object):
             rpc_result = xbmc.executeJSONRPC(
                 jsonrpccommand=json.dumps(query, encoding='utf-8'))
             json_result = json.loads(rpc_result)
-            if 'result' in json_result and 'episodes' in json_result['result']:
-                json_result = json_result['result']['episodes']
-                for episode in json_result:
+            result = json_result.get('result', None)
+            if result is not None and 'episodes' in result:
+                result = result['episodes']
+                for episode in result:
                     if episode['season'] == showseason and episode['episode'] == showepisode:
                         infos = {}
                         if 'plot' in episode and len(episode['plot']) > 0:
-                            infos.update({'plot': episode['plot'], 'genre': showid[1]})
+                            infos.update({
+                                'plot': episode['plot'],
+                                'genre': showid[1]})
                         art = {}
                         if 'fanart' in episode and len(episode['fanart']) > 0:
                             art.update({'fanart': episode['fanart']})
                         if 'art' in episode and len(episode['art']['season.poster']) > 0:
                             art.update({'thumb': episode['art']['season.poster']})
-                        return infos,art
+                        return infos, art
             return False
         except Exception:
             return False
@@ -1778,25 +1781,26 @@ class KodiHelper(object):
                         "art"]
                 },
                 "id": "libMovies"
-                }
+            }
         try:
             rpc_result = xbmc.executeJSONRPC(
                 jsonrpccommand=json.dumps(query, encoding='utf-8'))
             json_result = json.loads(rpc_result)
-            if 'result' in json_result and 'moviedetails' in json_result['result']:
-                json_result = json_result['result']['moviedetails']
+            result = json_result.get('result', None)
+            if result is not None and 'moviedetails' in result:
+                result = result.get('moviedetails', {})
                 infos = {}
-                if 'genre' in json_result and len(json_result['genre']) > 0:
+                if 'genre' in result and len(result['genre']) > 0:
                     infos.update({'genre': json_result['genre']})
-                if 'plot' in json_result and len(json_result['plot']) > 0:
-                    infos.update({'plot': json_result['plot']})
+                if 'plot' in result and len(result['plot']) > 0:
+                    infos.update({'plot': result['plot']})
                 art = {}
-                if 'fanart' in json_result and len(json_result['fanart']) > 0:
-                    art.update({'fanart': json_result['fanart']})
-                if 'thumbnail' in json_result and len(json_result['thumbnail']) > 0:
-                    art.update({'thumb': json_result['thumbnail']})
-                if 'art' in json_result and len(json_result['art']['poster']) > 0:
-                    art.update({'poster': json_result['art']['poster']})
+                if 'fanart' in result and len(result['fanart']) > 0:
+                    art.update({'fanart': result['fanart']})
+                if 'thumbnail' in result and len(result['thumbnail']) > 0:
+                    art.update({'thumb': result['thumbnail']})
+                if 'art' in json_result and len(result['art']['poster']) > 0:
+                    art.update({'poster': result['art']['poster']})
                 return infos, art
             return False
         except Exception:
