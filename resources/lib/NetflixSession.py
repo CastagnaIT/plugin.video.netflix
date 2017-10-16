@@ -1894,7 +1894,7 @@ class NetflixSession(object):
         :obj:`dict` of :obj:`dict` of :obj:`str` or :obj:`dict` of :obj:`str`
             Raw Netflix API call response or api call error
         """
-        if response == None:
+        if response is None:
             return {
                 'error': True,
                 'message': 'No response',
@@ -1922,7 +1922,7 @@ class NetflixSession(object):
             msg = 'Exception parsing JSON - {} {}'
             return {
                 'error': True,
-                'message': msg.format(exc[0],exc[1]),
+                'message': msg.format(exc[0], exc[1]),
                 'code': '500'
             }
 
@@ -2127,7 +2127,7 @@ class NetflixSession(object):
                 verify=self.verify_ssl)
         except:
             exc = sys.exc_info()
-            self.log(msg='[POST] Error {} {}'.format(exc[0],exc[1]))
+            self.log(msg='[POST] Error {} {}'.format(exc[0], exc[1]))
             return None
         end = time()
         msg = '[POST] Req. for "' + url + '" took ' + str(end - start) + ' sec'
@@ -2166,7 +2166,7 @@ class NetflixSession(object):
                 params=params)
         except:
             exc = sys.exc_info()
-            self.log(msg='[GET] Error {} {}'.format(exc[0],exc[1]))
+            self.log(msg='[GET] Error {} {}'.format(exc[0], exc[1]))
             return None
         end = time()
         msg = '[GET] Req. for "' + url + '" took ' + str(end - start) + ' sec'
@@ -2216,7 +2216,7 @@ class NetflixSession(object):
                     esn += input.strip(' \t\n\r') + '-'
                 esn += '{:5}'.format(manufacturer.strip(' \t\n\r').upper())
                 input = subprocess.check_output(
-                    ['/system/bin/getprop' ,'ro.product.model'])
+                    ['/system/bin/getprop', 'ro.product.model'])
                 esn += input.strip(' \t\n\r').replace(' ', '=').upper()
                 self.log(msg='Android generated ESN:' + esn)
                 return esn
