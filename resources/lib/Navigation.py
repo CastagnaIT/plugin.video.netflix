@@ -86,12 +86,12 @@ class Navigation(object):
 
         # switch user account
         if action == 'toggle_adult_pin':
-            adult_pin = self.kodi_helper.show_adult_pin_dialog()
+            adult_pin = self.kodi_helper.dialogs.show_adult_pin_dialog()
             pin_correct = self._check_response(self.call_netflix_service({
                 'method': 'send_adult_pin',
                 'pin': adult_pin}))
             if pin_correct is not True:
-                return self.kodi_helper.show_wrong_adult_pin_notification()
+                return self.kodi_helper.dialogs.show_invalid_pin_notify()
             return self.kodi_helper.toggle_adult_pin()
 
         # check if one of the before routing options decided to killthe routing
@@ -151,7 +151,7 @@ class Navigation(object):
             return self.add_to_list(video_id=params['id'])
         elif action == 'export':
             # adds a title to the users list on Netflix
-            alt_title = self.kodi_helper.show_add_to_library_title_dialog(
+            alt_title = self.kodi_helper.dialogs.show_add_library_title_dialog(
                 original_title=urllib.unquote(params['title']).decode('utf8'))
             self.export_to_library(video_id=params['id'], alt_title=alt_title)
             return self.kodi_helper.refresh()
@@ -162,16 +162,15 @@ class Navigation(object):
         elif action == 'update':
             # adds a title to the users list on Netflix
             self.remove_from_library(video_id=params['id'])
-            alt_title = self.kodi_helper.show_add_to_library_title_dialog(
+            alt_title = self.kodi_helper.dialogs.show_add_library_title_dialog(
                 original_title=urllib.unquote(params['title']).decode('utf8'))
             self.export_to_library(video_id=params['id'], alt_title=alt_title)
             return self.kodi_helper.refresh()
         elif action == 'removeexported':
             # adds a title to the users list on Netflix
-            term = self.kodi_helper.show_finally_remove(
-                title=params['title'],
-                type=params['type'],
-                year=params['year'])
+            term = self.kodi_helper.show_finally_remove_modal(
+                title=params.get('title'),
+                year=params.get('year'))
             if params['type'] == 'movie' and str(term) == '1':
                 self.library.remove_movie(
                     title=params['title'].decode('utf-8'),
@@ -184,7 +183,7 @@ class Navigation(object):
         elif action == 'updatedb':
             # adds a title to the users list on Netflix
             self.library.updatedb_from_exported()
-            self.kodi_helper.show_local_db_updated()
+            self.kodi_helper.dialogs.show_db_updated_notify()
             return True
         elif action == 'user-items' and p_type_not_search_export:
             # display the lists (recommendations, genres, etc.)
@@ -196,13 +195,13 @@ class Navigation(object):
             ask_for_adult_pin = adult_setting.lower() == 'true'
             if ask_for_adult_pin is True:
                 if self.check_for_adult_pin(params=params):
-                    adult_pin = self.kodi_helper.show_adult_pin_dialog()
+                    pin = self.kodi_helper.dialogs.show_adult_pin_dialog()
                     pin_response = self.call_netflix_service({
                         'method': 'send_adult_pin',
-                        'pin': adult_pin})
+                        'pin': pin})
                     pin_correct = self._check_response(pin_response)
                     if pin_correct is not True:
-                        self.kodi_helper.show_wrong_adult_pin_notification()
+                        self.kodi_helper.dialogs.show_invalid_pin_notify()
                         return True
             self.play_video(
                 video_id=params['video_id'],
@@ -292,7 +291,7 @@ class Navigation(object):
                     actions=actions,
                     build_url=self.build_url)
                 return results
-        self.kodi_helper.show_no_search_results_notification()
+        self.kodi_helper.dialogs.show_no_search_results_notify()
         return False
 
     def show_user_list(self, type):
@@ -492,7 +491,7 @@ class Navigation(object):
                 action='video_lists',
                 build_url=self.build_url)
             return listing
-        return self.kodi_helper.show_login_failed_notification()
+        return self.kodi_helper.dialogs.show_login_failed_notify()
 
     @log
     def rate_on_netflix(self, video_id):
@@ -503,13 +502,13 @@ class Navigation(object):
         video_list_id : :obj:`str`
             ID of the video list that should be displayed
         """
-        rating = self.kodi_helper.show_rating_dialog()
+        rating = self.kodi_helper.dialogs.show_rating_dialog()
         result = self._check_response(self.call_netflix_service({
             'method': 'rate_video',
             'video_id': video_id,
             'rating': rating}))
         if result is False:
-            self.kodi_helper.show_request_error_notification()
+            self.kodi_helper.dialogs.show_request_error_notify()
         return result
 
     @log
@@ -526,7 +525,7 @@ class Navigation(object):
             'video_id': video_id}))
         if result:
             return self.kodi_helper.refresh()
-        return self.kodi_helper.show_request_error_notification()
+        return self.kodi_helper.dialogs.show_request_error_notify()
 
     @log
     def add_to_list(self, video_id):
@@ -542,7 +541,7 @@ class Navigation(object):
             'video_id': video_id}))
         if result:
             return self.kodi_helper.refresh()
-        return self.kodi_helper.show_request_error_notification()
+        return self.kodi_helper.dialogs.show_request_error_notify()
 
     @log
     def export_to_library(self, video_id, alt_title):
@@ -582,7 +581,7 @@ class Navigation(object):
                     episodes=episodes,
                     build_url=self.build_url)
             return True
-        self.kodi_helper.show_no_metadata_notification()
+        self.kodi_helper.dialogs.show_no_metadata_notify()
         return False
 
     @log
@@ -606,7 +605,7 @@ class Navigation(object):
             if video['type'] == 'show':
                 self.library.remove_show(title=video['title'])
             return True
-        self.kodi_helper.show_no_metadata_notification()
+        self.kodi_helper.dialogs.show_no_metadata_notify()
         return False
 
     @log
@@ -643,8 +642,8 @@ class Navigation(object):
         self._check_response(self.call_netflix_service({'method': 'logout'}))
         self.kodi_helper.set_setting(key='email', value='')
         self.kodi_helper.set_setting(key='password', value='')
-        raw_email = self.kodi_helper.show_email_dialog()
-        raw_password = self.kodi_helper.show_password_dialog()
+        raw_email = self.kodi_helper.dialogs.show_email_dialog()
+        raw_password = self.kodi_helper.dialogs.show_password_dialog()
         encoded_email = self.kodi_helper.encode(raw=raw_email)
         encoded_password = self.kodi_helper.encode(raw=raw_password)
         self.kodi_helper.set_setting(key='email', value=encoded_email)
@@ -656,7 +655,7 @@ class Navigation(object):
         if self.establish_session(account=account) is not True:
             self.kodi_helper.set_setting(key='email', value='')
             self.kodi_helper.set_setting(key='password', value='')
-            return self.kodi_helper.show_login_failed_notification()
+            return self.kodi_helper.dialogs.show_login_failed_notify()
         return True
 
     def check_for_adult_pin(self, params):
@@ -697,11 +696,11 @@ class Navigation(object):
         credentials = self.kodi_helper.get_credentials()
         # check if we have user settings, if not, set em
         if credentials['email'] == '':
-            email = self.kodi_helper.show_email_dialog()
+            email = self.kodi_helper.dialogs.show_email_dialog()
             self.kodi_helper.set_setting(key='email', value=email)
             credentials['email'] = email
         if credentials['password'] == '':
-            password = self.kodi_helper.show_password_dialog()
+            password = self.kodi_helper.dialogs.show_password_dialog()
             self.kodi_helper.set_setting(key='password', value=password)
             credentials['password'] = password
         # check login & try to relogin if necessary
@@ -709,7 +708,7 @@ class Navigation(object):
             'method': 'is_logged_in'}))
         if logged_in is False:
             if self.establish_session(account=credentials) is not True:
-                self.kodi_helper.show_login_failed_notification()
+                self.kodi_helper.dialogs.show_login_failed_notify()
         # persist & load main menu selection
         if 'type' in params:
             self.kodi_helper.set_main_menu_selection(type=params['type'])
@@ -756,7 +755,7 @@ class Navigation(object):
                 return True
             has_id = 'profile_id' in params
             return has_id and current_profile_id != params['profile_id']
-        self.kodi_helper.show_request_error_notification()
+        self.kodi_helper.dialogs.show_request_error_notify()
         return False
 
     def parse_paramters(self, paramstring):

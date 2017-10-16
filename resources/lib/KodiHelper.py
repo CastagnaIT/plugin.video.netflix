@@ -3,22 +3,23 @@
 # Module: KodiHelper
 # Created on: 13.01.2017
 
-import xbmcplugin
-import xbmcgui
-import xbmc
+import re
 import json
 import base64
-import re
 import hashlib
+from os import remove
+from uuid import uuid4
+from urllib import urlencode
 from Cryptodome import Random
+from os.path import join, isfile
 from Cryptodome.Cipher import AES
 from Cryptodome.Util import Padding
-from MSL import MSL
-from os import remove
-from os.path import join, isfile
-from urllib import urlencode
+import xbmc
+import xbmcgui
+import xbmcplugin
 from xbmcaddon import Addon
-from uuid import uuid4
+from resources.lib.MSL import MSL
+from resources.lib.kodihelper.Dialogs import Dialogs
 from utils import get_user_agent, uniq_id
 from UniversalAnalytics import Tracker
 try:
@@ -79,6 +80,9 @@ class KodiHelper(object):
         self.crypt_key = uniq_id()
         self.library = None
         self.setup_memcache()
+        self.dialogs = Dialogs(
+            get_local_string=self.get_local_string,
+            custom_export_name=self.custom_export_name)
 
     def get_addon(self):
         """Returns a fresh addon instance"""
@@ -109,268 +113,6 @@ class KodiHelper(object):
     def refresh(self):
         """Refresh the current list"""
         return xbmc.executebuiltin('Container.Refresh')
-
-    def show_rating_dialog(self):
-        """Asks the user for a movie rating
-
-        Returns
-        -------
-        :obj:`int`
-            Movie rating between 0 & 10
-        """
-        dlg = xbmcgui.Dialog()
-        heading = self.get_local_string(string_id=30019)
-        heading += ' '
-        heading += self.get_local_string(string_id=30022)
-        return dlg.numeric(heading=heading, type=0)
-
-    def show_adult_pin_dialog(self):
-        """Asks the user for the adult pin
-
-        Returns
-        -------
-        :obj:`int`
-        4 digit adult pin needed for adult movies
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.input(
-            heading=self.get_local_string(string_id=30002),
-            type=xbmcgui.INPUT_NUMERIC)
-        return dialog
-
-    def show_wrong_adult_pin_notification(self):
-        """Shows notification that a wrong adult pin was given
-
-        Returns
-        -------
-        bool
-        Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30006),
-            message=self.get_local_string(string_id=30007),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=5000)
-        return dialog
-
-    def show_search_term_dialog(self):
-        """Asks the user for a term to query the netflix search for
-
-        Returns
-        -------
-        :obj:`str`
-            Term to search for
-        """
-        dlg = xbmcgui.Dialog()
-        term = dlg.input(
-            heading=self.get_local_string(string_id=30003),
-            type=xbmcgui.INPUT_ALPHANUM)
-        if len(term) == 0:
-            term = None
-        return term
-
-    def show_add_to_library_title_dialog(self, original_title):
-        """
-        Asks the user for an alternative title for the show/movie that
-        gets exported to the local library
-
-        Parameters
-        ----------
-        original_title : :obj:`str`
-            Original title of the show (as suggested by the addon)
-
-        Returns
-        -------
-        :obj:`str`
-            Title to persist
-        """
-        if self.custom_export_name == 'true':
-            return original_title
-        dlg = xbmcgui.Dialog()
-        custom_title = dlg.input(
-            heading=self.get_local_string(string_id=30031),
-            defaultt=original_title,
-            type=xbmcgui.INPUT_ALPHANUM) or original_title
-        return original_title or custom_title
-
-    def show_password_dialog(self):
-        """Asks the user for its Netflix password
-
-        Returns
-        -------
-        :obj:`str`
-            Netflix password
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.input(
-            heading=self.get_local_string(string_id=30004),
-            type=xbmcgui.INPUT_ALPHANUM,
-            option=xbmcgui.ALPHANUM_HIDE_INPUT)
-        return dialog
-
-    def show_email_dialog(self):
-        """Asks the user for its Netflix account email
-
-        Returns
-        -------
-        term : :obj:`str`
-            Netflix account email
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.input(
-            heading=self.get_local_string(string_id=30005),
-            type=xbmcgui.INPUT_ALPHANUM)
-        return dialog
-
-    def show_login_failed_notification(self):
-        """Shows notification that the login failed
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30008),
-            message=self.get_local_string(string_id=30009),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=5000)
-        return dialog
-
-    def show_request_error_notification(self):
-        """Shows notification that a request error occured
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30051),
-            message=self.get_local_string(string_id=30052),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=5000)
-        return dialog
-
-    def show_missing_inputstream_addon_notification(self):
-        """Shows notification that the inputstream addon couldn't be found
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30028),
-            message=self.get_local_string(string_id=30029),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=5000)
-        return dialog
-
-    def show_disabled_inputstream_addon_notification(self):
-        """Shows notification that the inputstream addon isn't enabled.
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30028),
-            message=self.get_local_string(string_id=30046),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=5000)
-        return dialog
-
-    def show_no_search_results_notification(self):
-        """Shows notification that no search results could be found
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30011),
-            message=self.get_local_string(string_id=30013))
-        return dialog
-
-    def show_no_seasons_notification(self):
-        """Shows notification that no seasons be found
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30010),
-            message=self.get_local_string(string_id=30012))
-        return dialog
-
-    def show_finally_remove(self, title, type, year):
-        """Ask user for yes / no
-
-        Returns
-        -------
-        bool
-            Answer yes/no
-        """
-        dlg = xbmcgui.Dialog()
-        if year == '0000':
-            return dlg.yesno(self.get_local_string(string_id=30047), title)
-        dialog = dlg.yesno(
-            heading=self.get_local_string(string_id=30047),
-            line1=title + ' (' + str(year) + ')')
-        return dialog
-
-    def show_local_db_updated(self):
-        """Shows notification that local db was updated
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=15101),
-            message=self.get_local_string(string_id=30050))
-        return dialog
-
-    def show_no_metadata_notification(self):
-        """Shows notification that no metadata is available
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=14116),
-            message=self.get_local_string(string_id=195))
-        return dialog
-
-    def show_autologin_enabled(self):
-        """Shows notification that auto login is enabled
-
-        Returns
-        -------
-        bool
-            Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=14116),
-            message=self.get_local_string(string_id=30058))
-        return dialog
 
     def set_setting(self, key, value):
         """Public interface for the addons setSetting method
@@ -658,9 +400,9 @@ class KodiHelper(object):
         self.set_setting('autologin_user', autologin_user)
         self.set_setting('autologin_id', autologin_id)
         self.set_setting('autologin_enable', 'True')
-        self.show_autologin_enabled()
+        self.dialogs.show_autologin_enabled_notify()
         self.invalidate_memcache()
-        xbmc.executebuiltin('Container.Refresh')
+        self.refresh()
 
     def build_profiles_listing(self, profiles, action, build_url):
         """
@@ -1105,7 +847,7 @@ class KodiHelper(object):
         bool
             List could be build
         """
-        self.show_no_seasons_notification()
+        self.dialogs.show_no_seasons_notify()
         xbmcplugin.endOfDirectory(self.plugin_handle)
         return True
 
@@ -1125,7 +867,7 @@ class KodiHelper(object):
         bool
             List could be build
         """
-        self.show_no_search_results_notification()
+        self.dialogs.show_no_search_results_notify()
         return xbmcplugin.endOfDirectory(self.plugin_handle)
 
     def build_user_sub_listing(self, video_list_ids, type, action, build_url):
@@ -1318,11 +1060,11 @@ class KodiHelper(object):
         addon = self.get_addon()
         (inputstream_addon, inputstream_enabled) = self.get_inputstream_addon()
         if inputstream_addon is None:
-            self.show_missing_inputstream_addon_notification()
+            self.dialogs.show_is_missing_notify()
             self.log(msg='Inputstream addon not found')
             return False
         if not inputstream_enabled:
-            self.show_disabled_inputstream_addon_notification()
+            self.dialogs.show_is_inactive_notify()
             self.log(msg='Inputstream addon not enabled')
             return False
 
