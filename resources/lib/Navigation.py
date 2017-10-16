@@ -56,6 +56,7 @@ class Navigation(object):
         """
         params = self.parse_paramters(paramstring=paramstring)
         action = params.get('action', None)
+        p_type = params.get('action', None)
 
         # open foreign settings dialog
         if 'mode' in params.keys() and params['mode'] == 'openSettings':
@@ -90,8 +91,8 @@ class Navigation(object):
             return False
         if 'action' not in params.keys():
             # show the profiles
-            if self.kodi_helper.get_setting ('autologin_enable') == 'true':
-                profile_id = self.kodi_helper.get_setting ('autologin_id')
+            if self.kodi_helper.get_setting('autologin_enable') == 'true':
+                profile_id = self.kodi_helper.get_setting('autologin_id')
                 if profile_id != '':
                     self.call_netflix_service({
                         'method': 'switch_profile',
@@ -176,7 +177,7 @@ class Navigation(object):
             self.library.updatedb_from_exported()
             self.kodi_helper.show_local_db_updated()
             return True
-        elif action == 'user-items' and params['type'] != 'search' and params['type'] != 'exported':
+        elif action == 'user-items' and p_type != 'search' and p_type != 'exported':
             # display the lists (recommendations, genres, etc.)
             return self.show_user_list(type=params['type'])
         elif action == 'play_video':
@@ -240,7 +241,7 @@ class Navigation(object):
         try:
             infoLabels = ast.literal_eval(infoLabels)
         except:
-            infoLabels= {}
+            infoLabels = {}
         esn = self._check_response(self.call_netflix_service({
             'method': 'get_esn'}))
         if esn:
@@ -404,7 +405,7 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
-            for i in range(0,4):
+            for i in range(0, 4):
                 items = self._check_response(self.call_netflix_service({
                     'method': 'fetch_video_list',
                     'list_id': video_list_id,
@@ -412,7 +413,7 @@ class Navigation(object):
                     'list_to': end,
                     'guid': user_data['guid'],
                     'cache': True}))
-                if items == False and i == 0:
+                if items is False and i == 0:
                     self.kodi_helper.log('show_video_list response is dirty')
                     return False
                 elif len(items) == 0:
@@ -496,7 +497,7 @@ class Navigation(object):
             'method': 'rate_video',
             'video_id': video_id,
             'rating': rating}))
-        if result == False:
+        if result is False:
             self.kodi_helper.show_request_error_notification()
         return result
 
@@ -641,13 +642,13 @@ class Navigation(object):
             'email': raw_email,
             'password': raw_password,
         }
-        if self.establish_session(account=account) != True:
+        if self.establish_session(account=account) is not True:
             self.kodi_helper.set_setting(key='email', value='')
             self.kodi_helper.set_setting(key='password', value='')
             return self.kodi_helper.show_login_failed_notification()
         return True
 
-    def check_for_adult_pin (self, params):
+    def check_for_adult_pin(self, params):
         """Checks if an adult pin is given in the query params
 
         Parameters
@@ -707,7 +708,7 @@ class Navigation(object):
         if self.check_for_designated_profile_change(params=params):
             self.kodi_helper.invalidate_memcache()
             profile_id = params.get('profile_id', None)
-            if profile_id == None:
+            if profile_id is None:
                 user_data = self._check_response(self.call_netflix_service({
                     'method': 'get_user_data'}))
                 if user_data:
@@ -850,7 +851,7 @@ class Navigation(object):
         :obj:`dict`
             Netflix Service RPC result
         """
-        cache = params.pop('cache',None)
+        cache = params.pop('cache', None)
         values = urllib.urlencode(params)
         # check for cached items
         if cache:
@@ -866,13 +867,13 @@ class Navigation(object):
         url = self.get_netflix_service_url()
         full_url = url + '?' + values
         # don't use proxy for localhost
-        if (urlparse(url).hostname in ('localhost','127.0.0.1','::1')):
+        if (urlparse(url).hostname in ('localhost', '127.0.0.1', '::1')):
             opener = urllib2.build_opener(urllib2.ProxyHandler({}))
             urllib2.install_opener()
         data = urllib2.urlopen(full_url).read(opener)
         parsed_json = json.loads(data)
         if 'error' in parsed_json:
-            result = {'error':parsed_json.get('error')}
+            result = {'error': parsed_json.get('error')}
             return result
         result = parsed_json.get('result', None)
         if result and cache:
