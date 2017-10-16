@@ -58,6 +58,8 @@ class KodiHelper(object):
             Plugin base url
         """
         addon = self.get_addon()
+        raw_data_path = 'special://profile/addon_data/service.msl'
+        data_path = xbmc.translatePath(raw_data_path)
         self.plugin_handle = plugin_handle
         self.base_url = base_url
         self.plugin = addon.getAddonInfo('name')
@@ -68,7 +70,7 @@ class KodiHelper(object):
         self.cookie_path = self.base_data_path + 'COOKIE'
         self.data_path = self.base_data_path + 'DATA'
         self.config_path = join(self.base_data_path, 'config')
-        self.msl_data_path = xbmc.translatePath('special://profile/addon_data/service.msl').decode('utf-8') + '/'
+        self.msl_data_path = data_path.decode('utf-8') + '/'
         self.verb_log = addon.getSetting('logging') == 'true'
         self.custom_export_name = addon.getSetting('customexportname')
         self.show_update_db = addon.getSetting('show_update_db')
@@ -320,10 +322,13 @@ class KodiHelper(object):
         bool
             Answer yes/no
         """
-        dialog = xbmcgui.Dialog()
+        dlg = xbmcgui.Dialog()
         if year == '0000':
-            return dialog.yesno(self.get_local_string(string_id=30047), title)
-        return dialog.yesno(self.get_local_string(string_id=30047), title + ' (' + str(year) + ')')
+            return dlg.yesno(self.get_local_string(string_id=30047), title)
+        dialog = dlg.yesno(
+            heading=self.get_local_string(string_id=30047),
+            line1=title + ' (' + str(year) + ')')
+        return dialog
 
     def show_local_db_updated(self):
         """Shows notification that local db was updated
@@ -543,7 +548,8 @@ class KodiHelper(object):
         type : :obj:`str`
             Selected menu item
         """
-        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('main_menu_selection', type)
+        current_window = xbmcgui.getCurrentWindowId()
+        xbmcgui.Window(current_window).setProperty('main_menu_selection', type)
 
     def get_main_menu_selection(self):
         """Gets the persisted chosen main menu entry from memory
@@ -553,22 +559,28 @@ class KodiHelper(object):
         :obj:`str`
             The last chosen main menu entry
         """
-        return xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('main_menu_selection')
+        current_window = xbmcgui.getCurrentWindowId()
+        window = xbmcgui.Window(current_window)
+        return window.getProperty('main_menu_selection')
 
     def setup_memcache(self):
         """Sets up the memory cache if not existant"""
+        current_window = xbmcgui.getCurrentWindowId()
+        window = xbmcgui.Window(current_window)
         try:
-            cached_items = xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache')
+            cached_items = window.getProperty('memcache')
             # no cache setup yet, create one
             if len(cached_items) < 1:
-                xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+                window.setProperty('memcache', pickle.dumps({}))
         except EOFError:
             pass
 
     def invalidate_memcache(self):
         """Invalidates the memory cache"""
+        current_window = xbmcgui.getCurrentWindowId()
+        window = xbmcgui.Window(current_window)
         try:
-            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps({}))
+            window.setProperty('memcache', pickle.dumps({}))
         except EOFError:
             pass
 
@@ -586,8 +598,10 @@ class KodiHelper(object):
             Contents of the requested cache item or none
         """
         ret = None
+        current_window = xbmcgui.getCurrentWindowId()
+        window = xbmcgui.Window(current_window)
         try:
-            cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
+            cached_items = pickle.loads(window.getProperty('memcache'))
             ret = cached_items.get(cache_id)
         except EOFError:
             ret = None
@@ -604,10 +618,12 @@ class KodiHelper(object):
         contents : mixed
             Cache entry contents
         """
+        current_window = xbmcgui.getCurrentWindowId()
+        window = xbmcgui.Window(current_window)
         try:
-            cached_items = pickle.loads(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getProperty('memcache'))
+            cached_items = pickle.loads(window.getProperty('memcache'))
             cached_items.update({cache_id: contents})
-            xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('memcache', pickle.dumps(cached_items))
+            window.setProperty('memcache', pickle.dumps(cached_items))
         except EOFError:
             pass
 
@@ -879,7 +895,8 @@ class KodiHelper(object):
                 params = {'action': actions[video['type']], 'show_id': video_list_id}
                 params['pin'] = (True, False)[int(video['maturity']['level']) >= 1000]
                 if 'tvshowtitle' in infos:
-                    params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
+                    title = infos.get('tvshowtitle', '').encode('utf-8')
+                    params['tvshowtitle'] = base64.urlsafe_b64encode(title)
                 url = build_url(params)
                 view = VIEW_SHOW
             xbmcplugin.addDirectoryItem(
@@ -1048,7 +1065,8 @@ class KodiHelper(object):
         bool
             Window was activated
         """
-        return xbmc.executebuiltin('Container.Update({},{})'.format(url, str(replace)))
+        cmd = 'Container.Update({},{})'.format(url, str(replace))
+        return xbmc.executebuiltin(cmd)
 
     def build_search_result_listing(self, video_list, actions, build_url):
         """Builds the search results list Kodi screen
@@ -1178,7 +1196,8 @@ class KodiHelper(object):
             li = self._generate_context_menu_items(entry=season, li=li)
             params = {'action': 'episode_list', 'season_id': season['id']}
             if 'tvshowtitle' in infos:
-                params['tvshowtitle'] = base64.urlsafe_b64encode(infos.get('tvshowtitle', '').encode('utf-8'))
+                title = infos.get('tvshowtitle', '').encode('utf-8')
+                params['tvshowtitle'] = base64.urlsafe_b64encode(title)
             url = build_url(params)
             xbmcplugin.addDirectoryItem(
                 handle=self.plugin_handle,
@@ -1525,7 +1544,8 @@ class KodiHelper(object):
                 quality = {'width': '1920', 'height': '1080'}
             li.addStreamInfo('video', quality)
         if 'tvshowtitle' in entry_keys:
-            infos.update({'tvshowtitle': base64.urlsafe_b64decode(entry.get('tvshowtitle', '')).decode('utf-8')})
+            title = base64.urlsafe_b64decode(entry.get('tvshowtitle', ''))
+            infos.update({'tvshowtitle': title.decode('utf-8')})
         li.setInfo('video', infos)
         self.library.write_metadata_file(video_id=str(entry['id']), content=infos)
         return li, infos
