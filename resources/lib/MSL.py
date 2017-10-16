@@ -547,11 +547,12 @@ class MSL(object):
             f.write(data)
         return base64.standard_b64encode(out.getvalue())
 
-    def __generate_msl_header(self,
-                            is_handshake=False,
-                            is_key_request=False,
-                            compressionalgo='GZIP',
-                            encrypt=True):
+    def __generate_msl_header(
+            self,
+            is_handshake=False,
+            is_key_request=False,
+            compressionalgo='GZIP',
+            encrypt=True):
         """
         Function that generates a MSL header dict
         :return: The base64 encoded JSON String of the header
