@@ -467,7 +467,7 @@ class Navigation(object):
                     user_list_order=user_list_order,
                     actions=actions,
                     build_url=self.build_url)
-                return lisiting
+                return listing
         return False
 
     @log
@@ -703,7 +703,7 @@ class Navigation(object):
         if 'type' in params:
             self.kodi_helper.set_main_menu_selection(type=params['type'])
             main_menu = self.kodi_helper.get_main_menu_selection()
-        options['main_menu_selection'] = main_menu
+            options['main_menu_selection'] = main_menu
         # check and switch the profile if needed
         if self.check_for_designated_profile_change(params=params):
             self.kodi_helper.invalidate_memcache()
@@ -869,7 +869,7 @@ class Navigation(object):
         # don't use proxy for localhost
         if (urlparse(url).hostname in ('localhost', '127.0.0.1', '::1')):
             opener = urllib2.build_opener(urllib2.ProxyHandler({}))
-            urllib2.install_opener()
+            urllib2.install_opener(opener)
         data = urllib2.urlopen(full_url).read(opener)
         parsed_json = json.loads(data)
         if 'error' in parsed_json:

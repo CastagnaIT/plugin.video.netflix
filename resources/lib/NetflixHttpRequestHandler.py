@@ -1,18 +1,19 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
+# Author: asciidisco
 # Module: NetflixHttpRequestHandler
 # Created on: 07.03.2017
+# License: MIT https://goo.gl/5bMj3H
 
 """Oppionionated internal proxy that dispatches requests to Netflix"""
 
 import json
 import BaseHTTPServer
-from types import FunctionType
 from urlparse import urlparse, parse_qs
-from utils import get_class_methods
-from KodiHelper import KodiHelper
-from NetflixSession import NetflixSession
-from NetflixHttpSubRessourceHandler import NetflixHttpSubRessourceHandler
+from resources.lib.KodiHelper import KodiHelper
+from resources.lib.utils import get_class_methods
+from resources.lib.NetflixSession import NetflixSession
+from resources.lib.NetflixHttpSubRessourceHandler import \
+    NetflixHttpSubRessourceHandler
 
 KODI_HELPER = KodiHelper()
 NETFLIX_SESSION = NetflixSession(
@@ -32,6 +33,7 @@ RES_HANDLER = NetflixHttpSubRessourceHandler(
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Oppionionated internal proxy that dispatches requests to Netflix"""
 
+    # pylint: disable=invalid-name
     def do_GET(self):
         """
         GET request handler
@@ -51,7 +53,7 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             error_msg = 'Method "'
             error_msg += str(method)
             error_msg += '" not found. Available methods: '
-            error_msg += str(methods)
+            error_msg += str(METHODS)
             return self.send_error(404, error_msg)
 
         # call method & get the result
@@ -63,6 +65,6 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             'method': method,
             'result': result}))
 
-    def log_message(self, format, *args):
+    def log_message(self, *args):
         """Disable the BaseHTTPServer Log"""
-        return
+        pass
