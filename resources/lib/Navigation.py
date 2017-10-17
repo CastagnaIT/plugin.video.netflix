@@ -415,9 +415,10 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
-            self.kodi_helper.log('show_video_list list id for type ' +str(type) +' before refresh is ' + str(video_list_id))
-            video_list_id = self.refresh_list_id_for_type(type)
-            self.kodi_helper.log('show_video_list list id for type ' +str(type) +' after refresh is ' + str(video_list_id))
+            if type is not None:
+                self.kodi_helper.log('show_video_list list id for type ' +str(type) +' before refresh is ' + str(video_list_id))
+                video_list_id = self.refresh_list_id_for_type(type)
+                self.kodi_helper.log('show_video_list list id for type ' +str(type) +' after refresh is ' + str(video_list_id))
             for i in range(0, 4):
                 items = self._check_response(self.call_netflix_service({
                     'method': 'fetch_video_list',
