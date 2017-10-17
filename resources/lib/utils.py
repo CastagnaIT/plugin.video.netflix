@@ -49,7 +49,7 @@ def log(func):
     wrapped.__doc__ = func.__doc__
     return wrapped
 
-def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
+def retry(ExceptionToCheck, tries=4, delay=3, backoff=2):
     """Retry decorator calling the decorated function using an exponential backoff.
 
     http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
@@ -78,10 +78,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
                     return f(*args, **kwargs)
                 except ExceptionToCheck, e:
                     msg = "%s, Retrying in %d seconds..." % (str(e), mdelay)
-                    if logger:
-                        logger.warning(msg)
-                    else:
-                        print msg
+                    xbmc.log('%s' % msg, xbmc.LOGDEBUG)
                     time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
