@@ -49,6 +49,7 @@ def log(func):
     wrapped.__doc__ = func.__doc__
     return wrapped
 
+
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2):
     """Retry decorator calling the decorated function using an exponential backoff.
 
