@@ -13,6 +13,7 @@ import json
 import time
 import base64
 import random
+import re
 from Cryptodome.Random import get_random_bytes
 from Cryptodome.Hash import HMAC, SHA256
 from Cryptodome.Cipher import PKCS1_OAEP
@@ -231,7 +232,7 @@ class MSL(object):
                 resp = self.__parse_chunked_msl_response(resp.text)
                 self.kodi_helper.log(
                     msg='Parsed chunked Response: ' + json.dumps(resp))
-                data = self.__decrypt_payload_chunk(resp['payloads'][0])
+                data = self.__decrypt_payload_chunks(resp['payloads'])
                 return self.__tranform_to_dash(data)
         return False
 
@@ -277,7 +278,7 @@ class MSL(object):
             except ValueError:
                 # json() failed so we have a chunked json response
                 resp = self.__parse_chunked_msl_response(resp.text)
-                data = self.__decrypt_payload_chunk(resp['payloads'][0])
+                data = self.__decrypt_payload_chunks(resp['payloads'])
                 if data['success'] is True:
                     return data['result']['licenses'][0]['data']
                 else:
@@ -286,32 +287,35 @@ class MSL(object):
                     return False
         return False
 
-    def __decrypt_payload_chunk(self, payloadchunk):
-        payloadchunk = json.JSONDecoder().decode(payloadchunk)
-        payload = payloadchunk.get('payload')
-        decoded_payload = base64.standard_b64decode(payload)
-        encryption_envelope = json.JSONDecoder().decode(decoded_payload)
-        # Decrypt the text
-        cipher = AES.new(
-            self.encryption_key,
-            AES.MODE_CBC,
-            base64.standard_b64decode(encryption_envelope['iv']))
-        ciphertext = encryption_envelope.get('ciphertext')
-        plaintext = cipher.decrypt(base64.standard_b64decode(ciphertext))
-        # unpad the plaintext
-        plaintext = json.JSONDecoder().decode(Padding.unpad(plaintext, 16))
-        data = plaintext.get('data')
+    def __decrypt_payload_chunks(self, payloadchunks):
+        decrypted_payload = ''
+        for chunk in payloadchunks:
+            payloadchunk = json.JSONDecoder().decode(chunk)
+            payload = payloadchunk.get('payload')
+            decoded_payload = base64.standard_b64decode(payload)
+            encryption_envelope = json.JSONDecoder().decode(decoded_payload)
+            # Decrypt the text
+            cipher = AES.new(
+                self.encryption_key,
+                AES.MODE_CBC,
+                base64.standard_b64decode(encryption_envelope['iv']))
+            ciphertext = encryption_envelope.get('ciphertext')
+            plaintext = cipher.decrypt(base64.standard_b64decode(ciphertext))
+            # unpad the plaintext
+            plaintext = json.JSONDecoder().decode(Padding.unpad(plaintext, 16))
+            data = plaintext.get('data')
 
-        # uncompress data if compressed
-        if plaintext.get('compressionalgo') == 'GZIP':
-            decoded_data = base64.standard_b64decode(data)
-            data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
-        else:
-            data = base64.standard_b64decode(data)
+            # uncompress data if compressed
+            if plaintext.get('compressionalgo') == 'GZIP':
+                decoded_data = base64.standard_b64decode(data)
+                data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
+            else:
+                data = base64.standard_b64decode(data)
+            decrypted_payload += data
 
-        data = json.JSONDecoder().decode(data)[1]['payload']['data']
-        data = base64.standard_b64decode(data)
-        return json.JSONDecoder().decode(data)
+        decrypted_payload = json.JSONDecoder().decode(decrypted_payload)[1]['payload']['data']
+        decrypted_payload = base64.standard_b64decode(decrypted_payload)
+        return json.JSONDecoder().decode(decrypted_payload)
 
     def __tranform_to_dash(self, manifest):
 
@@ -476,25 +480,9 @@ class MSL(object):
             return urls[key]
 
     def __parse_chunked_msl_response(self, message):
-        i = 0
-        opencount = 0
-        closecount = 0
-        header = ""
-        payloads = []
-        old_end = 0
-
-        while i < len(message):
-            if message[i] == '{':
-                opencount = opencount + 1
-            if message[i] == '}':
-                closecount = closecount + 1
-            if opencount == closecount:
-                if header == "":
-                    header = message[:i]
-                    old_end = i + 1
-                else:
-                    payloads.append(message[old_end:i + 1])
-            i += 1
+        header = message.split('}}')[0] + '}}'
+        payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}', message.split('}}')[1])
+        payloads = [x + '}' for x in payloads][:-1]
 
         return {
             'header': header,
