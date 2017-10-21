@@ -238,9 +238,10 @@ class NetflixSession(object):
         for domains in cookies[0]:
             for domain in cookies[0][domains].keys():
                 for cookie_key in cookies[0][domains][domain]:
-                    exp = int(cookies[0][domains][domain][cookie_key].expires)
-                    if expires > exp:
-                        expires = exp
+                    if cookies[0][domains][domain][cookie_key].expires is not None:
+                        exp = int(cookies[0][domains][domain][cookie_key].expires)
+                        if expires > exp:
+                            expires = exp
         if expires > cur_stamp:
             self.log(
                 msg='Cookie expires: ' + str(expires) + ' / ' + str(cur_stamp))
