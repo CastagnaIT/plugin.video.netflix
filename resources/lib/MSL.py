@@ -629,7 +629,7 @@ class MSL(object):
 
     def __perform_key_handshake(self):
         header = self.__generate_msl_header(
-            id_key_request=True,
+            is_key_request=True,
             is_handshake=True,
             compressionalgo='',
             encrypt=False)
