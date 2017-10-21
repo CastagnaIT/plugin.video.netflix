@@ -1102,9 +1102,9 @@ class NetflixSession(object):
             Quality of the video
         """
         quality = '720'
-        if video['delivery']['hasHD']:
+        if video.get('delivery', {}).get('hasHD', None):
             quality = '1080'
-        if video['delivery']['hasUltraHD']:
+        if video.get('delivery', {}).get('hasUltraHD', None):
             quality = '4000'
         return quality
 
