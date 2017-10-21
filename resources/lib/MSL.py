@@ -5,7 +5,7 @@
 # Created on: 26.01.2017
 # License: MIT https://goo.gl/5bMj3H
 
-import os
+import re
 import sys
 import zlib
 import gzip
@@ -13,7 +13,6 @@ import json
 import time
 import base64
 import random
-import re
 from Cryptodome.Random import get_random_bytes
 from Cryptodome.Hash import HMAC, SHA256
 from Cryptodome.Cipher import PKCS1_OAEP
@@ -22,6 +21,7 @@ from Cryptodome.Util import Padding
 from Cryptodome.Cipher import AES
 from StringIO import StringIO
 from datetime import datetime
+import xbmcvfs
 import requests
 import xml.etree.ElementTree as ET
 
@@ -59,7 +59,7 @@ class MSL(object):
         """
         self.kodi_helper = kodi_helper
         try:
-            os.mkdir(self.kodi_helper.msl_data_path)
+            xbmcvfs.mkdir(path=self.kodi_helper.msl_data_path)
         except OSError:
             pass
 
@@ -769,7 +769,7 @@ class MSL(object):
         :param filename: The filename
         :return: True if so
         """
-        return os.path.isfile(msl_data_path + filename)
+        return xbmcvfs.exists(path=msl_data_path + filename)
 
     @staticmethod
     def save_file(msl_data_path, filename, content):
@@ -778,9 +778,10 @@ class MSL(object):
         :param filename: The filename
         :param content: The content of the file
         """
-        with open(msl_data_path + filename, 'w') as file_:
-            file_.write(content)
-            file_.flush()
+
+        file_handle = xbmcvfs.File(msl_data_path + filename, 'w', True)
+        file_content = file_handle.write(content)
+        file_handle.close()
 
     @staticmethod
     def load_file(msl_data_path, filename):
@@ -789,6 +790,7 @@ class MSL(object):
         :param filename: The file to load
         :return: The content of the file
         """
-        with open(msl_data_path + filename) as file_:
-            file_content = file_.read()
+        file_handle = xbmcvfs.File(msl_data_path + filename)
+        file_content = file_handle.read()
+        file_handle.close()
         return file_content
