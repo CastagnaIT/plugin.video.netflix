@@ -64,7 +64,7 @@ class NetflixHttpSubRessourceHandler(object):
         """
         email = self.credentials.get('email', '')
         password = self.credentials.get('password', '')
-        if email != '' and password != '':
+        if email == '' and password == '':
             return False
         return self.netflix_session.is_logged_in(account=self.credentials)
 

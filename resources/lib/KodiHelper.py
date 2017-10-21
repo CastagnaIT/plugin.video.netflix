@@ -19,7 +19,7 @@ import xbmcgui
 import xbmcplugin
 from xbmcaddon import Addon
 from resources.lib.MSL import MSL
-from resources.lib.kodihelper.Dialogs import Dialogs
+from resources.lib.kodi.Dialogs import Dialogs
 from utils import get_user_agent, uniq_id
 from UniversalAnalytics import Tracker
 try:

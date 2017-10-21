@@ -626,7 +626,7 @@ class Navigation(object):
         """
         is_logged_in = self._check_response(self.call_netflix_service({
             'method': 'is_logged_in'}))
-        if is_logged_in:
+        if is_logged_in is True:
             return True
         else:
             check = self._check_response(self.call_netflix_service({

@@ -779,7 +779,9 @@ class MSL(object):
         :param content: The content of the file
         """
 
-        file_handle = xbmcvfs.File(msl_data_path + filename, 'w', True)
+        file_handle = xbmcvfs.File(
+            filepath=msl_data_path + filename,
+            mode='w')
         file_content = file_handle.write(content)
         file_handle.close()
 
@@ -790,7 +792,8 @@ class MSL(object):
         :param filename: The file to load
         :return: The content of the file
         """
-        file_handle = xbmcvfs.File(msl_data_path + filename)
+        file_handle = xbmcvfs.File(
+            filepath=msl_data_path + filename)
         file_content = file_handle.read()
         file_handle.close()
         return file_content
