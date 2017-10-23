@@ -64,7 +64,7 @@ class Navigation(object):
         """
         params = self.parse_paramters(paramstring=paramstring)
         action = params.get('action', None)
-        p_type = params.get('action', None)
+        p_type = params.get('type', None)
         p_type_not_search_export = p_type != 'search' and p_type != 'exported'
 
         # open foreign settings dialog
@@ -209,7 +209,7 @@ class Navigation(object):
                 infoLabels=params.get('infoLabels', {}))
         elif action == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
-            term = self.kodi_helper.show_search_term_dialog()
+            term = self.kodi_helper.dialogs.show_search_term_dialog()
             if term:
                 result_folder = self.kodi_helper.build_search_result_folder(
                     build_url=self.build_url,
