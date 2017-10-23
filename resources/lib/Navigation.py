@@ -168,7 +168,7 @@ class Navigation(object):
             return self.kodi_helper.refresh()
         elif action == 'removeexported':
             # adds a title to the users list on Netflix
-            term = self.kodi_helper.show_finally_remove_modal(
+            term = self.kodi_helper.dialogs.show_finally_remove_modal(
                 title=params.get('title'),
                 year=params.get('year'))
             if params['type'] == 'movie' and str(term) == '1':
