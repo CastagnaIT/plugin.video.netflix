@@ -581,85 +581,6 @@ class NetflixSession(object):
             }
         }
 
-    def parse_search_results(self, response_data):
-        """Parse the list of search results, rip out the parts we need
-           and extend it with detailed show informations
-
-        Parameters
-        ----------
-        response_data : :obj:`dict` of :obj:`str`
-            Parsed response JSON from the `fetch_search_results` call
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`dict` of :obj:`str`
-            Search results in the format:
-
-            {
-                "70136140": {
-                    "boxarts": "https://art-s.nflximg....jpg",
-                    "detail_text": "Die legend\u00e4re und...",
-                    "id": "70136140",
-                    "season_id": "70109435",
-                    "synopsis": "Unter Befehl von...",
-                    "title": "Star Trek",
-                    "type": "show"
-                },
-                "70158329": {
-                    "boxarts": ...
-                }
-            }
-        """
-        search_results = {}
-        raw_search_results = response_data.get('value', {}).get('videos', {})
-        for entry_id in raw_search_results:
-            if self._is_size_key(key=entry_id) is False:
-                # fetch information about each show & build up a
-                # proper search results dictionary
-                show = self.parse_show_list_entry(
-                    id=entry_id,
-                    entry=raw_search_results.get(entry_id))
-                #show_info = self.parse_show_information(
-                #    id=entry_id,
-                #    response_data=raw_search_results.get(entry_id))
-                #show[entry_id].update(show_info)
-                search_results.update(show)
-        return search_results
-
-    def parse_show_list_entry(self, id, entry):
-        """Parse a show entry e.g. rip out the parts we need
-
-        Parameters
-        ----------
-        response_data : :obj:`dict` of :obj:`str`
-            Dictionary entry from the ´fetch_show_information´ call
-
-        id : :obj:`str`
-            Unique id of the video list
-
-        Returns
-        -------
-        entry : :obj:`dict` of :obj:`dict` of :obj:`str`
-            Show list entry in the format:
-
-            {
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382": {
-                    "id": "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382",
-                    "title": "Enterprise",
-                    "boxarts": "https://art-s.nflximg.net/.../smth.jpg",
-                    "type": "show"
-                }
-            }
-        """
-        return {
-            id: {
-                'id': id,
-                'title': entry.get('title'),
-                'boxarts': entry['boxarts']['_342x192']['jpg']['url'],
-                'type': entry.get('summary', {}).get('type')
-            }
-        }
-
     def parse_video_list(self, response_data):
         """Parse a list of videos
 
@@ -949,7 +870,7 @@ class NetflixSession(object):
         for person_key in dict(persons).keys():
             is_size_key = self._is_size_key(key=person_key)
             if is_size_key is False and person_key != 'summary':
-                for creator_key in dict(video['creators']).keys():
+                for creator_key in dict(video.get('creators', {})).keys():
                     is_size_key = self._is_size_key(key=creator_key)
                     if is_size_key is False and creator_key != 'summary':
                         if video['creators'][creator_key][1] == person_key:
@@ -976,7 +897,7 @@ class NetflixSession(object):
         for person_key in dict(persons).keys():
             is_size_key = self._is_size_key(key=person_key)
             if is_size_key is False and person_key != 'summary':
-                for director_key in dict(video['directors']).keys():
+                for director_key in dict(video.get('directors', {})).keys():
                     is_size_key = self._is_size_key(key=director_key)
                     if is_size_key is False and director_key != 'summary':
                         if video['directors'][director_key][1] == person_key:
@@ -1142,39 +1063,6 @@ class NetflixSession(object):
                 if self._is_size_key(key=video_id) is False:
                     netflix_list_id = video_id
         return netflix_list_id
-
-    def parse_show_information(self, id, response_data):
-        """Parse extended show information (synopsis, seasons, etc.)
-
-        Parameters
-        ----------
-        id : :obj:`str`
-            Video id
-
-        response_data : :obj:`dict` of :obj:`str`
-            Parsed response JSON from the `fetch_show_information` call
-
-        Returns
-        -------
-        entry : :obj:`dict` of :obj:`str`
-        Show information in the format:
-            {
-                "season_id": "80113084",
-                "synopsis": "Aus verzweifel..."
-                "detail_text": "I´m optional"
-            }
-        """
-        show = {}
-        raw_show = response_data['value']['videos'][id]
-        show.update({'synopsis': raw_show['regularSynopsis']})
-
-        if 'evidence' in raw_show:
-            evidence = raw_show.get('evidence', {}).get('value', {})
-            show.update({'detail_text': evidence.get('text', '')})
-        if 'seasonList' in raw_show:
-            season_list = raw_show.get('seasonList', {})
-            show.update({'season_id': season_list.get('current', ['', ''])[1]})
-        return show
 
     def parse_seasons(self, id, response_data):
         """Parse a list of seasons for a given show
@@ -1485,7 +1373,6 @@ class NetflixSession(object):
         # reusable query items
         item_path = ['search', 'byTerm', '|' + search_str]
         item_titles = ['titles', list_to]
-        item_suggestions = ['suggestions', list_to]
         item_pagination = [{'from': list_from, 'to': list_to}]
 
         paths = [
@@ -1496,9 +1383,13 @@ class NetflixSession(object):
             item_path + item_titles + item_pagination + ['reference', 'storyarts', '_1632x873', 'jpg'],
             item_path + item_titles + item_pagination + ['reference', 'interestingMoment', '_665x375', 'jpg'],
             item_path + item_titles + item_pagination + ['reference', 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg'],
-            item_path + item_titles + [['referenceId', 'id', 'length', 'name', 'trackIds', 'requestId', 'regularSynopsis', 'evidence']],
-            item_path + item_suggestions + item_pagination + ['summary', 'releaseYear', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery', 'seasonList', 'current'],
-            item_path + item_suggestions + [['length', 'referenceId', 'trackId']]]
+            item_path + item_titles + item_pagination + ['reference', 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
+            item_path + item_titles + item_pagination + ['reference', 'cast', 'summary'],
+            item_path + item_titles + item_pagination + ['reference', 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
+            item_path + item_titles + item_pagination + ['reference', 'genres', 'summary'],
+            item_path + item_titles + item_pagination + ['reference', 'tags', {'from': 0, 'to': 9}, ['id', 'name']],
+            item_path + item_titles + item_pagination + ['reference', 'tags', 'summary'],
+            item_path + item_titles + [['referenceId', 'id', 'length', 'name', 'trackIds', 'requestId', 'regularSynopsis', 'evidence']]]
 
         response = self._path_request(paths=paths)
         return self._process_response(
@@ -1551,44 +1442,6 @@ class NetflixSession(object):
             component='Video list')
         return processed_resp
 
-    def fetch_video_list_information(self, video_ids):
-        """
-        Fetches the JSON which contains the detail information of a
-        list of given video ids
-
-        Parameters
-        ----------
-        video_ids : :obj:`list` of :obj:`str`
-            List of video ids to fetch detail data for
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`dict` of :obj:`str`
-            Raw Netflix API call response or api call error
-        """
-        paths = []
-        for video_id in video_ids:
-            paths.append(['videos', video_id, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']])
-            paths.append(['videos', video_id, 'cast', {'from': 0, 'to': 15}, ['id', 'name']])
-            paths.append(['videos', video_id, 'cast', 'summary'])
-            paths.append(['videos', video_id, 'genres', {'from': 0, 'to': 5}, ['id', 'name']])
-            paths.append(['videos', video_id, 'genres', 'summary'])
-            paths.append(['videos', video_id, 'tags', {'from': 0, 'to': 9}, ['id', 'name']])
-            paths.append(['videos', video_id, 'tags', 'summary'])
-            paths.append(['videos', video_id, ['creators', 'directors'], {'from': 0, 'to': 49}, ['id', 'name']])
-            paths.append(['videos', video_id, ['creators', 'directors'], 'summary'])
-            paths.append(['videos', video_id, 'bb2OGLogo', '_400x90', 'png'])
-            paths.append(['videos', video_id, 'boxarts', '_342x192', 'jpg'])
-            paths.append(['videos', video_id, 'boxarts', '_1280x720', 'jpg'])
-            paths.append(['videos', video_id, 'storyarts', '_1632x873', 'jpg'])
-            paths.append(['videos', video_id, 'interestingMoment', '_665x375', 'jpg'])
-            paths.append(['videos', video_id, 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg'])
-
-        response = self._path_request(paths=paths)
-        return self._process_response(
-            response=response,
-            component='fetch_video_list_information')
-
     def fetch_metadata(self, id):
         """
         Fetches the JSON which contains the metadata for a
@@ -1617,7 +1470,6 @@ class NetflixSession(object):
             response=response,
             component=self._get_api_url_for(component='metadata'))
 
-    def fetch_show_information(self, id, type):
         """Fetches the JSON which contains the detailed contents of a show
 
         Parameters

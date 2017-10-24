@@ -383,6 +383,6 @@ class NetflixHttpSubRessourceHandler(object):
         if 'error' in raw_search_results or result_size == 0:
             return []
         # list the search results
-        search_results = self.netflix_session.parse_search_results(
+        search_results = self.netflix_session.parse_video_list(
             response_data=raw_search_results)
         return search_results

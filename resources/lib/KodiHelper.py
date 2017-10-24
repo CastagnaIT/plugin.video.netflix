@@ -1162,8 +1162,11 @@ class KodiHelper(object):
             'fanart': '',
             'poster': ''
         })
-
-        if 'boxarts' in dict(entry).keys() and  isinstance(entry.get('boxarts'), dict):
+        self.log(entry)
+        if 'boxarts' in dict(entry).keys() and not isinstance(entry.get('boxarts'), dict):
+            big = entry.get('boxarts', '')
+            small = big
+        if 'boxarts' in dict(entry).keys() and isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', {}).get('big')
             small = entry.get('boxarts', {}).get('small')
             art.update({
