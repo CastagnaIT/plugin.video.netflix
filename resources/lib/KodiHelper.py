@@ -638,7 +638,7 @@ class KodiHelper(object):
                     'action': actions[video['type']],
                     'show_id': video_list_id
                 }
-                params['pin'] = (True, False)[int(video['maturity']['level']) >= 1000]
+                params['pin'] = (True, False)[int(video.get('maturity', {}).get('level', 1001)) >= 1000]
                 if 'tvshowtitle' in infos:
                     title = infos.get('tvshowtitle', '').encode('utf-8')
                     params['tvshowtitle'] = base64.urlsafe_b64encode(title)
@@ -1163,18 +1163,20 @@ class KodiHelper(object):
             'poster': ''
         })
 
-        if 'boxarts' in dict(entry).keys():
+        if 'boxarts' in dict(entry).keys() and  isinstance(entry.get('boxarts'), dict):
+            big = entry.get('boxarts', {}).get('big')
+            small = entry.get('boxarts', {}).get('small')
             art.update({
-                'poster': entry['boxarts']['big'],
-                'landscape': entry['boxarts']['big'],
-                'thumb': entry['boxarts']['small'],
-                'fanart': entry['boxarts']['big']
+                'poster': big or small,
+                'landscape': big or small,
+                'thumb': big or small,
+                'fanart': big or small
             })
             # Download image for exported listing
             if 'title' in entry:
                 self.library.download_image_file(
                     title=entry['title'].encode('utf-8'),
-                    url=str(entry['boxarts']['big']))
+                    url=str(big))
 
         if 'interesting_moment' in dict(entry).keys():
             art.update({
@@ -1188,7 +1190,8 @@ class KodiHelper(object):
         if 'poster' in dict(entry).keys():
             art.update({'poster': entry['poster']})
         li.setArt(art)
-        self.library.write_artdata_file(video_id=str(entry['id']), content=art)
+        vid_id = entry.get('id', entry.get('summary', {}).get('id'))
+        self.library.write_artdata_file(video_id=str(vid_id), content=art)
         return li
 
     def _generate_entry_info(self, entry, li, base_info={}):
@@ -1244,7 +1247,7 @@ class KodiHelper(object):
                 infos.update({'mpaa': entry['mpaa']})
             else:
                 if entry.get('maturity', None) is not None:
-                    if entry['maturity']['board'] is not None and entry['maturity']['value'] is not None:
+                    if entry.get('maturity', {}).get('board') is not None and entry.get('maturity', {}).get('value') is not None:
                         infos.update({'mpaa': str(entry['maturity']['board'].encode('utf-8')) + '-' + str(entry['maturity']['value'].encode('utf-8'))})
         if 'rating' in entry_keys:
             infos.update({'rating': int(entry['rating']) * 2})
@@ -1344,7 +1347,7 @@ class KodiHelper(object):
         if 'type' in entry_keys:
             # add/remove movie
             if entry['type'] == 'movie':
-                action_type = 'remove_from_library' if self.library.movie_exists(title=entry['title'], year=entry['year']) else 'export_to_library'
+                action_type = 'remove_from_library' if self.library.movie_exists(title=entry['title'], year=entry.get('year', 0000)) else 'export_to_library'
                 items.append(action[action_type])
                 # Add update option
                 if action_type == 'remove_from_library':

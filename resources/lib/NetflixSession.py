@@ -619,13 +619,10 @@ class NetflixSession(object):
                 show = self.parse_show_list_entry(
                     id=entry_id,
                     entry=raw_search_results.get(entry_id))
-                response_data = self.fetch_show_information(
-                    id=entry_id,
-                    type=show.get(entry_id, {}).get('type'))
-                show_info = self.parse_show_information(
-                    id=entry_id,
-                    response_data=response_data)
-                show[entry_id].update(show_info)
+                #show_info = self.parse_show_information(
+                #    id=entry_id,
+                #    response_data=raw_search_results.get(entry_id))
+                #show[entry_id].update(show_info)
                 search_results.update(show)
         return search_results
 
@@ -1465,7 +1462,7 @@ class NetflixSession(object):
             response=response,
             component='Video list ids')
 
-    def fetch_search_results(self, search_str, list_from=0, list_to=10):
+    def fetch_search_results(self, search_str, list_from=0, list_to=48):
         """
         Fetches the JSON which contains the results for the given search query
 
@@ -1485,61 +1482,24 @@ class NetflixSession(object):
         :obj:`dict` of :obj:`dict` of :obj:`str`
             Raw Netflix API call response or api call error
         """
-        # properly encode the search string
-        encoded_search_string = quote(search_str)
+        # reusable query items
+        item_path = ['search', 'byTerm', '|' + search_str]
+        item_titles = ['titles', list_to]
+        item_suggestions = ['suggestions', list_to]
+        item_pagination = [{'from': list_from, 'to': list_to}]
 
         paths = [
-            [
-                'search',
-                encoded_search_string,
-                'titles',
-                {'from': list_from, 'to': list_to},
-                ['summary', 'title']
-            ],
-            [
-                'search',
-                encoded_search_string,
-                'titles',
-                {'from': list_from, 'to': list_to},
-                'boxarts',
-                '_342x192',
-                'jpg'
-            ],
-            [
-                'search',
-                encoded_search_string,
-                'titles',
-                ['id', 'length', 'name', 'trackIds', 'requestId']
-            ],
-            [
-                'search',
-                encoded_search_string,
-                'suggestions',
-                0,
-                'relatedvideos',
-                {'from': list_from, 'to': list_to},
-                ['summary', 'title']
-            ],
-            [
-                'search',
-                encoded_search_string,
-                'suggestions',
-                0,
-                'relatedvideos',
-                {'from': list_from, 'to': list_to},
-                'boxarts',
-                '_342x192',
-                'jpg'
-            ],
-            [
-                'search',
-                encoded_search_string,
-                'suggestions',
-                0,
-                'relatedvideos',
-                ['id', 'length', 'name', 'trackIds', 'requestId']
-            ]
-        ]
+            item_path + item_titles + item_pagination + ['reference', ['summary', 'releaseYear', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery', 'seasonList', 'current']],
+            item_path + item_titles + item_pagination + ['reference', 'bb2OGLogo', '_400x90', 'png'],
+            item_path + item_titles + item_pagination + ['reference', 'boxarts', '_342x192', 'jpg'],
+            item_path + item_titles + item_pagination + ['reference', 'boxarts', '_1280x720', 'jpg'],
+            item_path + item_titles + item_pagination + ['reference', 'storyarts', '_1632x873', 'jpg'],
+            item_path + item_titles + item_pagination + ['reference', 'interestingMoment', '_665x375', 'jpg'],
+            item_path + item_titles + item_pagination + ['reference', 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg'],
+            item_path + item_titles + [['referenceId', 'id', 'length', 'name', 'trackIds', 'requestId', 'regularSynopsis', 'evidence']],
+            item_path + item_suggestions + item_pagination + ['summary', 'releaseYear', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery', 'seasonList', 'current'],
+            item_path + item_suggestions + [['length', 'referenceId', 'trackId']]]
+
         response = self._path_request(paths=paths)
         return self._process_response(
             response=response,
@@ -2240,7 +2200,7 @@ class NetflixSession(object):
         if user_data is None:
             return None
         self.user_data = user_data
-        self.esn = user_data.get('esn')
+        self.esn = self._parse_esn_data(user_data)
         self.api_data = {
             'API_BASE_URL': user_data.get('API_BASE_URL'),
             'API_ROOT': user_data.get('API_ROOT'),

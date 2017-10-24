@@ -374,38 +374,15 @@ class NetflixHttpSubRessourceHandler(object):
             Transformed response of the remote call
         """
         term = params.get('term', [''])[0]
-        has_search_results = False
         raw_search_results = self.netflix_session.fetch_search_results(
             search_str=term)
-        # check for any errors
-        if 'error' in raw_search_results:
-            return raw_search_results
-
         # determine if we found something
-        if 'search' in raw_search_results['value']:
-            for key in raw_search_results['value']['search'].keys():
-                if self.netflix_session._is_size_key(key=key) is False:
-                    has_search_results = raw_search_results['value']['search'][key]['titles']['length'] > 0
-                    if has_search_results is False:
-                        if raw_search_results['value']['search'][key].get('suggestions', False) is not False:
-                            for entry in raw_search_results['value']['search'][key]['suggestions']:
-                                if self.netflix_session._is_size_key(key=entry) is False:
-                                    if raw_search_results['value']['search'][key]['suggestions'][entry]['relatedvideos']['length'] > 0:
-                                        has_search_results = True
-
-        # display that we haven't found a thing
-        if has_search_results is False:
+        videos = raw_search_results.get('value', {}).get('videos', {})
+        result_size = len(videos.keys())
+        # check for any errors
+        if 'error' in raw_search_results or result_size == 0:
             return []
-
         # list the search results
         search_results = self.netflix_session.parse_search_results(
             response_data=raw_search_results)
-        # add more menaingful data to the search results
-        raw_contents = self.netflix_session.fetch_video_list_information(
-            video_ids=search_results.keys())
-        # check for any errors
-        if 'error' in raw_contents:
-            return raw_contents
-        video_list = self.netflix_session.parse_video_list(
-            response_data=raw_contents)
-        return video_list
+        return search_results
