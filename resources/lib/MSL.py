@@ -405,7 +405,7 @@ class MSL(object):
         # Multiple Adaption Set for audio
         for audio_track in manifest['audioTracks']:
             impaired = 'false'
-            if audio_track.get('trackType') != 'ASSISTIVE':
+            if audio_track.get('trackType') == 'ASSISTIVE':
                 impaired = 'true'
             audio_adaption_set = ET.SubElement(
                 parent=period,
