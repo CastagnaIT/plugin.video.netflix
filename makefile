@@ -1,4 +1,4 @@
-.PHONY: all test clean docs clean-pyc clean-report clean-docs clean-coverage
+.PHONY: all test clean docs clean-pyc clean-report clean-docs clean-coverage rere
 .DEFAULT_GOAL := all
 
 SPHINXBUILD = sphinx-build
@@ -52,6 +52,8 @@ docs:
 test:
 		nosetests $(TEST_DIR) $(TEST_OPTIONS) --cover-html --cover-html-dir=$(COVERAGE_DIR)
 
+rere:
+	codeclimate-test-reporter
 
 help:
 		@echo "    clean-pyc"
