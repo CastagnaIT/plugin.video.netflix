@@ -1552,7 +1552,7 @@ class NetflixSession(object):
             Raw Netflix API call response or api call error
         """
         paths = [
-            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary','synopsis','title','runtime', 'releaseYear', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'delivery']],
+            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'delivery']],
             # ['videos', season_id, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
             # ['videos', season_id, 'cast', 'summary'],
             # ['videos', season_id, 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
