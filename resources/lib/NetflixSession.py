@@ -1298,10 +1298,10 @@ class NetflixSession(object):
                 'id': episode['summary']['id'],
                 'episode': episode['summary']['episode'],
                 'season': episode['summary']['season'],
-                'plot': episode['info']['synopsis'],
-                'duration': episode['info']['runtime'],
-                'title': episode['info']['title'],
-                'year': episode['info']['releaseYear'],
+                'plot': episode['synopsis'],
+                'duration': episode['runtime'],
+                'title': episode['title'],
+                'year': episode['releaseYear'],
                 'genres': self.parse_genres_for_video(
                     video=episode,
                     genres=genres),
@@ -1309,7 +1309,7 @@ class NetflixSession(object):
                 'maturity': episode['maturity'],
                 'playcount': (0, 1)[episode.get('watched')],
                 'rating': rating,
-                'thumb': episode['info']['interestingMoments']['url'],
+                'thumb': episode['interestingMoment']['_665x375']['jpg']['url'],
                 'fanart': moment,
                 'poster': episode['boxarts']['_1280x720']['jpg']['url'],
                 'banner': episode['boxarts']['_342x192']['jpg']['url'],
@@ -1552,7 +1552,7 @@ class NetflixSession(object):
             Raw Netflix API call response or api call error
         """
         paths = [
-            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'delivery']],
+            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, ['summary','synopsis','title','runtime', 'releaseYear', 'queue', 'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditOffset', 'watched', 'delivery']],
             # ['videos', season_id, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
             # ['videos', season_id, 'cast', 'summary'],
             # ['videos', season_id, 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
