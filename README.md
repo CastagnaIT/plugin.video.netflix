@@ -20,6 +20,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Inputstream.adaptive [>=v2.0.0](https://github.com/peak3d/inputstream.adaptive)
   (should be included in your Kodi 18 installation)
 - Libwidevine >=1.4.8.970 (for non Android devices)
+- Cryptdome python library (for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
 
 Note: The link to download the Widevine Libary for none ARM Systems can be
 found in the [Firefox Sources](https://hg.mozilla.org/mozilla-central/raw-file/31465a03c03d1eec31cd4dd5d6b803724dcb29cd/toolkit/content/gmp-sources/widevinecdm.json)
