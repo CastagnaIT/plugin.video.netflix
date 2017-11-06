@@ -51,6 +51,15 @@ class Navigation(object):
         self.library = library
         self.base_url = base_url
         self.log = log_fn
+        self.auto_login()
+
+    def auto_login(self):
+        if self.kodi_helper.get_setting('autologin_enable') == 'true':
+            profile_id = self.kodi_helper.get_setting('autologin_id')
+            if profile_id != '':
+                self.call_netflix_service({
+                    'method': 'switch_profile',
+                    'profile_id': profile_id})
 
     @log
     def router(self, paramstring):
@@ -101,13 +110,9 @@ class Navigation(object):
         if 'action' not in params.keys():
             # show the profiles
             if self.kodi_helper.get_setting('autologin_enable') == 'true':
-                profile_id = self.kodi_helper.get_setting('autologin_id')
-                if profile_id != '':
-                    self.call_netflix_service({
-                        'method': 'switch_profile',
-                        'profile_id': profile_id})
-                    return self.show_video_lists()
-            return self.show_profiles()
+                return self.show_video_lists()
+            else:
+                return self.show_profiles()
         elif action == 'save_autologin':
             # save profile id and name to settings for autologin
             autologin = self.kodi_helper.save_autologin_data(
