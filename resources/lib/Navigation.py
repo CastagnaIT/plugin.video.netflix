@@ -108,10 +108,11 @@ class Navigation(object):
             self.kodi_helper.log(msg='exit in options')
             return False
         if 'action' not in params.keys():
-            # show the profiles
             if self.kodi_helper.get_setting('autologin_enable') == 'true':
+                # skip profiles and go direct to video list
                 return self.show_video_lists()
             else:
+                # show the profiles
                 return self.show_profiles()
         elif action == 'save_autologin':
             # save profile id and name to settings for autologin
