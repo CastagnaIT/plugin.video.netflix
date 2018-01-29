@@ -17,6 +17,7 @@ from Cryptodome.Util import Padding
 import xbmc
 import xbmcgui
 import xbmcplugin
+import inputstreamhelper
 from xbmcaddon import Addon
 from resources.lib.MSL import MSL
 from resources.lib.kodi.Dialogs import Dialogs
@@ -1058,14 +1059,8 @@ class KodiHelper(object):
         """
         self.set_esn(esn)
         addon = self.get_addon()
-        (inputstream_addon, inputstream_enabled) = self.get_inputstream_addon()
-        if inputstream_addon is None:
-            self.dialogs.show_is_missing_notify()
-            self.log(msg='Inputstream addon not found')
-            return False
-        if not inputstream_enabled:
-            self.dialogs.show_is_inactive_notify()
-            self.log(msg='Inputstream addon not enabled')
+        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+        if not is_helper.check_inputstream():
             return False
 
         # track play event
@@ -1084,23 +1079,23 @@ class KodiHelper(object):
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
         play_item.setProperty(
-            key=inputstream_addon + '.stream_headers',
+            key=is_helper.inputstream_addon + '.stream_headers',
             value='user-agent=' + get_user_agent())
         play_item.setProperty(
-            key=inputstream_addon + '.license_type',
+            key=is_helper.inputstream_addon + '.license_type',
             value='com.widevine.alpha')
         play_item.setProperty(
-            key=inputstream_addon + '.manifest_type',
+            key=is_helper.inputstream_addon + '.manifest_type',
             value='mpd')
         play_item.setProperty(
-            key=inputstream_addon + '.license_key',
+            key=is_helper.inputstream_addon + '.license_key',
             value=msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
         play_item.setProperty(
-            key=inputstream_addon + '.server_certificate',
+            key=is_helper.inputstream_addon + '.server_certificate',
             value='Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP0vrYimyYiBmk9GG+S0wB3CRITgweNE15cD33MQYyS3zpBd4z+sCJam2+jj1ZA4uijE2dxGC+gRBRnw9WoPyw7D8RuhGSJ95OEtzg3Ho+mEsxuE5xg9LM4+Zuro/9msz2bFgJUjQUVHo5j+k4qLWu4ObugFmc9DLIAohL58UR5k0XnvizulOHbMMxdzna9lwTw/4SALadEV/CZXBmswUtBgATDKNqjXwokohncpdsWSauH6vfS6FXwizQoZJ9TdjSGC60rUB2t+aYDm74cIuxAgMBAAE6EHRlc3QubmV0ZmxpeC5jb20SgAOE0y8yWw2Win6M2/bw7+aqVuQPwzS/YG5ySYvwCGQd0Dltr3hpik98WijUODUr6PxMn1ZYXOLo3eED6xYGM7Riza8XskRdCfF8xjj7L7/THPbixyn4mULsttSmWFhexzXnSeKqQHuoKmerqu0nu39iW3pcxDV/K7E6aaSr5ID0SCi7KRcL9BCUCz1g9c43sNj46BhMCWJSm0mx1XFDcoKZWhpj5FAgU4Q4e6f+S8eX39nf6D6SJRb4ap7Znzn7preIvmS93xWjm75I6UBVQGo6pn4qWNCgLYlGGCQCUm5tg566j+/g5jvYZkTJvbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw=')
         play_item.setProperty(
             key='inputstreamaddon',
-            value=inputstream_addon)
+            value=is_helper.inputstream_addon)
 
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
@@ -1400,36 +1395,6 @@ class KodiHelper(object):
         if isinstance(locString, unicode):
             locString = locString.encode('utf-8')
         return locString
-
-    def get_inputstream_addon(self):
-        """Checks if the inputstream addon is installed & enabled.
-           Returns the type of the inputstream addon used and if it's enabled,
-           or None if not found.
-
-        Returns
-        -------
-        :obj:`tuple` of obj:`str` and bool, or None
-            Inputstream addon and if it's enabled, or None
-        """
-        is_type = 'inputstream.adaptive'
-        is_enabled = False
-        payload = {
-            'jsonrpc': '2.0',
-            'id': 1,
-            'method': 'Addons.GetAddonDetails',
-            'params': {
-                'addonid': is_type,
-                'properties': ['enabled']
-            }
-        }
-        response = xbmc.executeJSONRPC(json.dumps(payload))
-        data = json.loads(response)
-        if 'error' not in data.keys():
-            if isinstance(data.get('result'), dict):
-                if isinstance(data.get('result').get('addon'), dict):
-                    is_enabled = data.get('result').get('addon').get('enabled')
-            return (is_type, is_enabled)
-        return (None, is_enabled)
 
     def movietitle_to_id(self, title):
         query = {

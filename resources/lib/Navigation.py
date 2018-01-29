@@ -893,6 +893,5 @@ class Navigation(object):
 
     def open_settings(self, url):
         """Opens a foreign settings dialog"""
-        (is_addon, _) = self.kodi_helper.get_inputstream_addon()
-        url = is_addon if url == 'is' else url
+        url = 'inputstream.adaptive' if url == 'is' else url
         return Addon(url).openSettings()
