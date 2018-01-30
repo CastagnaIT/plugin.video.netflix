@@ -39,6 +39,11 @@ VIEW_SHOW = 'show'
 VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
 
+CONTENT_FOLDER = 'files'
+CONTENT_MOVIE = 'movies'
+CONTENT_SHOW = 'tvshows'
+CONTENT_SEASON = 'seasons'
+CONTENT_EPISODE = 'episodes'
 
 class KodiHelper(object):
     """
@@ -454,6 +459,11 @@ class KodiHelper(object):
             xbmcplugin.addSortMethod(
                 handle=self.plugin_handle,
                 sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_FOLDER)
+
         return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
 
     def build_main_menu_listing(self, video_list_ids, user_list_order, actions, build_url):
@@ -571,6 +581,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
 
         # (re)select the previously selected main menu entry
@@ -609,6 +622,7 @@ class KodiHelper(object):
             List could be build
         """
         view = VIEW_FOLDER
+        content = CONTENT_FOLDER
         for video_list_id in video_list:
             video = video_list[video_list_id]
             li = xbmcgui.ListItem(
@@ -631,6 +645,7 @@ class KodiHelper(object):
                     'infoLabels': infos,
                     'pin': needs_pin})
                 view = VIEW_MOVIE
+                content = CONTENT_MOVIE
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
                 isFolder = True
@@ -644,6 +659,7 @@ class KodiHelper(object):
                     params['tvshowtitle'] = base64.urlsafe_b64encode(title)
                 url = build_url(params)
                 view = VIEW_SHOW
+                content = CONTENT_SHOW
             xbmcplugin.addDirectoryItem(
                 handle=self.plugin_handle,
                 url=url,
@@ -681,6 +697,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=content)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(view)
         return True
@@ -756,6 +775,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -790,6 +812,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return url_rec
@@ -909,6 +934,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_FOLDER)
         return True
@@ -965,6 +993,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_SEASON)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_SEASON)
         return True
@@ -1030,6 +1061,9 @@ class KodiHelper(object):
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
             sortMethod=xbmcplugin.SORT_METHOD_DURATION)
+        xbmcplugin.setContent(
+            handle=self.plugin_handle,
+            content=CONTENT_EPISODE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
         self.set_custom_view(VIEW_EPISODE)
         return True
