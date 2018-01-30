@@ -45,6 +45,7 @@ CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
 
+
 class KodiHelper(object):
     """
     Consumes all the configuration data from Kodi as well as
