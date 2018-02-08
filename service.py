@@ -10,8 +10,8 @@
 import threading
 import socket
 from SocketServer import TCPServer
-from xbmc import Monitor
 from resources.lib.KodiHelper import KodiHelper
+from resources.lib.KodiMonitor import KodiMonitor
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
 from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
 
@@ -56,7 +56,7 @@ NS_SERVER.server_activate()
 NS_SERVER.timeout = 1
 
 if __name__ == '__main__':
-    MONITOR = Monitor()
+    MONITOR = KodiMonitor(KODI_HELPER)
 
     # start thread for MLS servie
     MSL_THREAD = threading.Thread(target=MSL_SERVER.serve_forever)
@@ -70,6 +70,8 @@ if __name__ == '__main__':
 
     # kill the services if kodi monitor tells us to
     while not MONITOR.abortRequested():
+        MONITOR.update_playback_progress()
+
         if MONITOR.waitForAbort(5):
             MSL_SERVER.shutdown()
             NS_SERVER.shutdown()
