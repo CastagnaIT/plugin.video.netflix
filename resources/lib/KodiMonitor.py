@@ -54,8 +54,15 @@ class KodiMonitor(xbmc.Monitor):
         )
 
         # wait for player to start playing video
-        xbmc.sleep(7500)
+        xbmc.sleep(3000)
         player_id = self.get_active_video_player()
+        retries = 0
+
+        while player_id is None and retries < 3:
+            # wait and retry up to three times if player is very slow
+            xbmc.sleep(3000)
+            player_id = self.get_active_video_player()
+            retries += 1
 
         if self.is_netflix_play() and player_id is not None:
             self.video_info = self.get_video_info(player_id, item)
@@ -121,6 +128,7 @@ class KodiMonitor(xbmc.Monitor):
                 'playcount',
                 'title',
                 'year',
+                'tvshowid',
                 'showtitle',
                 'season',
                 'episode'
@@ -128,6 +136,7 @@ class KodiMonitor(xbmc.Monitor):
         }
 
         resp = self.json_rpc(method, params)
+        item = None
 
         if 'result' in resp and 'item' in resp['result']:
             item = resp['result']['item']
@@ -156,7 +165,7 @@ class KodiMonitor(xbmc.Monitor):
                     self.kodi_helper.log(msg='Not playing an episode or movie')
                     return None
 
-        video_info = self.get_video_info_fallback(fallback_data)
+        video_info = self.get_video_info_fallback(item, fallback_data)
 
         if video_info is not None:
             self.kodi_helper.log(
@@ -170,12 +179,137 @@ class KodiMonitor(xbmc.Monitor):
 
         return video_info
 
-    def get_video_info_fallback(self, data):
-        self.kodi_helper.log(
-            msg='Using fallback lookup method for video info (BAD)',
-            level=xbmc.LOGWARNING
-        )
-        return None
+    def get_video_info_fallback(self, item, fallback_data):
+        """
+        Finds video info using a more inaccurate matching approach. Tries to
+        use as much info returned by the player in `item` to do the lookup.
+        If that fails, the most generic fallback is used by just matching
+        against titles / show names and season episode numbers."""
+
+        if (item is not None or
+                (fallback_data is not None and 'title' in fallback_data)):
+            self.kodi_helper.log(
+                msg='Using inaccurate fallback lookup method for video info',
+                level=xbmc.LOGWARNING
+            )
+
+            # Kinda weird way to prevent duplicate code, feel free to improve:
+            # If there's a dbtype given, we want to use the associated lookup
+            # function first, to save time. If it returns None, we still want
+            # the other one to be called.
+            dbtype = item.get('type', 'episode')
+            if dbtype not in ['episode', 'movie']:
+                # Coerce into known value
+                dbtype = 'episode'
+            other_dbtype = ['episode', 'movie']
+            other_dbtype.remove(dbtype)
+            other_dbtype = other_dbtype[0]
+            self.kodi_helper.log(
+                msg='Lookup priority: 1) {} 2) {}'.format(dbtype, other_dbtype)
+            )
+            lookup_functions = {
+                'episode': self.find_episode_info,
+                'movie': self.find_movie_info
+            }
+
+            return (
+                lookup_functions[dbtype](item, fallback_data) or
+                lookup_functions[other_dbtype](item, fallback_data)
+            )
+        else:
+            return None
+
+    def find_episode_info(self, item, fallback_data):
+        method = 'VideoLibrary.GetEpisodes'
+        params = {
+            'properties': [
+                'playcount',
+                'tvshowid',
+                'showtitle',
+                'season',
+                'episode'
+            ]
+        }
+
+        showtitle = None
+        tvshowid = None
+        season = None
+        episode = None
+        title = None
+
+        if item is not None:
+            if 'tvshowid' in item and item['tvshowid'] > 0:
+                tvshowid = item['tvshowid']
+                params['tvshowid'] = tvshowid
+            if 'showtitle' in item and item['showtitle']:
+                showtitle = item['showtitle']
+            if 'season' in item and item['season'] > 0:
+                season = item['season']
+                params['season'] = season
+            if 'episode' in item and item['episode'] > 0:
+                episode = item['episode']
+            if 'label' in item and item['label']:
+                title = item['label']
+            elif fallback_data is not None:
+                title = fallback_data.get('title', '')
+
+        resp = self.json_rpc(method, params)
+
+        if 'result' in resp and 'episodes' in resp['result']:
+            for episode in resp['result']['episodes']:
+                episode_meta = 'S%02dE%02d' % (
+                    episode['season'],
+                    episode['episode']
+                )
+
+                if ((tvshowid == episode['tvshowid'] or
+                        showtitle == episode['showtitle']) and
+                    season == episode['season'] and
+                    episode == episode['episode'] or
+                    (episode_meta in title and
+                        episode['showtitle'] in title)):
+                    return {
+                        'dbtype': 'episode',
+                        'dbid': episode['episodeid'],
+                        'playcount': episode['playcount']
+                    }
+        else:
+            return None
+
+    def find_movie_info(self, item, fallback_data):
+        method = 'VideoLibrary.GetMovies'
+        params = {
+            'properties': ['playcount', 'year', 'title']
+        }
+
+        title = ''
+
+        if item is not None:
+            title = item.get(
+                'title',
+                fallback_data.get(
+                    'title',
+                    ''
+                ) if fallback_data is not None else ''
+            )
+
+            if 'year' in item:
+                params['filter'] = {'year': item['year']}
+
+        resp = self.json_rpc(method, params)
+
+        if 'result' in resp and 'movies' in resp['result']:
+            for movie in resp['result']['movies']:
+                movie_meta = '%s (%d)' % (movie['label'], movie['year'])
+                self.kodi_helper.log(u'Matching {}'.format(movie_meta))
+                if movie_meta == title or movie['label'] in title:
+                    return {
+                        'dbtype': 'movie',
+                        'dbid': movie['movieid'],
+                        'playcount': movie['playcount']
+                    }
+        else:
+            return None
 
     def is_netflix_play(self):
         return xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).getProperty(
@@ -191,13 +325,13 @@ class KodiMonitor(xbmc.Monitor):
         }
 
         jsonrequest = json.dumps(req)
-        self.kodi_helper.log(msg='Sending request: {}'.format(jsonrequest))
+        self.kodi_helper.log(msg=u'Sending request: {}'.format(jsonrequest))
 
         jsonresponse = unicode(
             xbmc.executeJSONRPC(jsonrequest),
             'utf-8',
             errors='ignore'
         )
-        self.kodi_helper.log(msg='Received response: {}'.format(jsonresponse))
+        self.kodi_helper.log(msg=u'Received response: {}'.format(jsonresponse))
 
         return json.loads(jsonresponse)
