@@ -51,6 +51,10 @@ class KodiHelper(object):
     Consumes all the configuration data from Kodi as well as
     turns data into lists of folders and videos"""
 
+    TAGGED_WINDOW_ID = 10000
+    PROP_NETFLIX_PLAY = 'netflix_playback'
+    PROP_PLAYBACK_INIT = 'initialized'
+
     def __init__(self, plugin_handle=None, base_url=None):
         """
         Fetches all needed info from Kodi &
@@ -1171,6 +1175,13 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             succeeded=True,
             listitem=play_item)
+
+        # set window property to enable recognition of playbacks
+        xbmcgui.Window(self.TAGGED_WINDOW_ID).setProperty(
+            self.PROP_NETFLIX_PLAY,
+            self.PROP_PLAYBACK_INIT
+        )
+
         return resolved
 
     def _generate_art_info(self, entry, li):
@@ -1561,7 +1572,7 @@ class KodiHelper(object):
                     in_season = episode['season'] == showseason
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
-                        infos = {}
+                        infos = {'mediatype': 'episode', 'dbid': episode['episodeid']}
                         if 'plot' in episode and len(episode['plot']) > 0:
                             infos.update({
                                 'plot': episode['plot'],
@@ -1599,7 +1610,7 @@ class KodiHelper(object):
             result = json_result.get('result', None)
             if result is not None and 'moviedetails' in result:
                 result = result.get('moviedetails', {})
-                infos = {}
+                infos = {'mediatype': 'movie', 'dbid': movieid}
                 if 'genre' in result and len(result['genre']) > 0:
                     infos.update({'genre': json_result['genre']})
                 if 'plot' in result and len(result['plot']) > 0:
