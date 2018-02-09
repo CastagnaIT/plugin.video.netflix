@@ -10,6 +10,8 @@ import json
 
 class KodiMonitor(xbmc.Monitor):
 
+    PROP_PLAYBACK_TRACKING = 'tracking'
+
     def __init__(self, kodi_helper):
         super(KodiMonitor, self).__init__()
         self.kodi_helper = kodi_helper
@@ -64,16 +66,23 @@ class KodiMonitor(xbmc.Monitor):
             player_id = self.get_active_video_player()
             retries += 1
 
-        if self.is_netflix_play() and player_id is not None:
+        if self.is_initialized_playback() and player_id is not None:
             self.video_info = self.get_video_info(player_id, item)
             self.progress = 0
+            xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
+                self.kodi_helper.PROP_NETFLIX_PLAY,
+                self.PROP_PLAYBACK_TRACKING
+            )
         else:
+            # Clean up remnants from unproperly stopped previous playbacks
+            xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
+                self.kodi_helper.PROP_NETFLIX_PLAY, 'notnetflix')
             self.kodi_helper.log(
                 msg='Playback is not from Netflix or it suddenly stopped'
             )
 
     def on_playback_stopped(self, ended):
-        if self.video_info is not None and self.is_netflix_play():
+        if self.video_info is not None and self.is_tracking_playback():
             self.kodi_helper.log(msg='Netflix playback stopped')
 
             if self.progress >= 90:
@@ -89,6 +98,8 @@ class KodiMonitor(xbmc.Monitor):
         else:
             self.kodi_helper.log(msg='Playback was not from Netflix')
 
+        xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
+            self.kodi_helper.PROP_NETFLIX_PLAY, 'stopped')
         self.video_info = None
         self.progress = 0
 
@@ -311,10 +322,16 @@ class KodiMonitor(xbmc.Monitor):
         else:
             return None
 
-    def is_netflix_play(self):
+    def is_initialized_playback(self):
+        return self.is_playback_status(self.kodi_helper.PROP_PLAYBACK_INIT)
+
+    def is_tracking_playback(self):
+        return self.is_playback_status(self.PROP_PLAYBACK_TRACKING)
+
+    def is_playback_status(self, status):
         return xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).getProperty(
             self.kodi_helper.PROP_NETFLIX_PLAY
-        ) is not None
+        ) == status
 
     def json_rpc(self, method, params=None):
         req = {

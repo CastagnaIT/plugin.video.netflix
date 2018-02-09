@@ -46,7 +46,8 @@ class KodiHelper(object):
     turns data into lists of folders and videos"""
 
     TAGGED_WINDOW_ID = 10000
-    PROP_NETFLIX_PLAY = 'is_netflix_play'
+    PROP_NETFLIX_PLAY = 'netflix_playback'
+    PROP_PLAYBACK_INIT = 'initialized'
 
     def __init__(self, plugin_handle=None, base_url=None):
         """
@@ -1140,8 +1141,11 @@ class KodiHelper(object):
             succeeded=True,
             listitem=play_item)
 
-        #set window property to enable recognition of playbacks initiated by this addon
-        xbmcgui.Window(self.TAGGED_WINDOW_ID).setProperty(self.PROP_NETFLIX_PLAY, 'true')
+        # set window property to enable recognition of playbacks
+        xbmcgui.Window(self.TAGGED_WINDOW_ID).setProperty(
+            self.PROP_NETFLIX_PLAY,
+            self.PROP_PLAYBACK_INIT
+        )
 
         return resolved
 
