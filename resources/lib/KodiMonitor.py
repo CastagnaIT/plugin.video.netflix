@@ -26,7 +26,7 @@ class KodiMonitor(xbmc.Monitor):
                 method = 'Player.GetProperties'
                 params = {
                     'playerid': player_id,
-                    'properties': ['percentage']
+                    'properties': ['percentage', 'time']
                 }
 
                 response = self.json_rpc(method, params)
@@ -37,6 +37,23 @@ class KodiMonitor(xbmc.Monitor):
                         msg='Current playback progress is {}%'.format(
                             self.progress)
                     )
+                    time = response['result']['time']
+                    playtime_seconds = time['hours'] * 3600 + \
+                        time['minutes'] * 60 + time['seconds']
+                    if self.save_resume_bookmark(
+                        playtime_seconds,
+                        self.video_info['dbtype'],
+                        self.video_info['dbid']
+                    ):
+                        self.kodi_helper.log(
+                            msg='Saved bookmark at {} seconds'.format(
+                                playtime_seconds)
+                        )
+                    else:
+                        self.kodi_helper.log(
+                            msg='Could not save bookmark',
+                            level=xbmc.LOGWARNING
+                        )
                 else:
                     self.kodi_helper.log(
                         msg='Could not update playback progress'
@@ -118,7 +135,16 @@ class KodiMonitor(xbmc.Monitor):
             'playcount': new_playcount
         }
 
-        return self.json_rpc(method, params)
+        return self.is_ok(self.json_rpc(method, params))
+
+    def save_resume_bookmark(self, time, dbtype, dbid):
+        method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
+        params = {
+            '{}id'.format(dbtype): dbid,
+            'resume': {'position': time}
+        }
+
+        return self.is_ok(self.json_rpc(method, params))
 
     def get_active_video_player(self):
         method = 'Player.GetActivePlayers'
@@ -352,3 +378,9 @@ class KodiMonitor(xbmc.Monitor):
         self.kodi_helper.log(msg=u'Received response: {}'.format(jsonresponse))
 
         return json.loads(jsonresponse)
+
+    def is_ok(self, jsonrpc_response):
+        return (
+            'result' in jsonrpc_response and
+            jsonrpc_response['result'] == 'OK'
+        )
