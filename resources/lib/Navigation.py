@@ -19,7 +19,7 @@ from urlparse import parse_qsl, urlparse
 import xbmc
 from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import noop, log
+from resources.lib.utils import noop, log, retry
 
 
 class Navigation(object):
@@ -51,6 +51,15 @@ class Navigation(object):
         self.library = library
         self.base_url = base_url
         self.log = log_fn
+        self.auto_login()
+
+    def auto_login(self):
+        if self.kodi_helper.get_setting('autologin_enable') == 'true':
+            profile_id = self.kodi_helper.get_setting('autologin_id')
+            if profile_id != '':
+                self.call_netflix_service({
+                    'method': 'switch_profile',
+                    'profile_id': profile_id})
 
     @log
     def router(self, paramstring):
@@ -99,15 +108,12 @@ class Navigation(object):
             self.kodi_helper.log(msg='exit in options')
             return False
         if 'action' not in params.keys():
-            # show the profiles
             if self.kodi_helper.get_setting('autologin_enable') == 'true':
-                profile_id = self.kodi_helper.get_setting('autologin_id')
-                if profile_id != '':
-                    self.call_netflix_service({
-                        'method': 'switch_profile',
-                        'profile_id': profile_id})
-                    return self.show_video_lists()
-            return self.show_profiles()
+                # skip profiles and go direct to video list
+                return self.show_video_lists()
+            else:
+                # show the profiles
+                return self.show_profiles()
         elif action == 'save_autologin':
             # save profile id and name to settings for autologin
             autologin = self.kodi_helper.save_autologin_data(
@@ -415,6 +421,12 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
+            if type is not None:
+                log_part_1 = 'show_video_list list id for type ' + str(type)
+                log_part_2 = 'refresh is ' + str(video_list_id)
+                self.kodi_helper.log(log_part_1 + ' before ' + log_part_2)
+                video_list_id = self.refresh_list_id_for_type(type)
+                self.kodi_helper.log(log_part_1 + ' after ' + log_part_2)
             for i in range(0, 4):
                 items = self._check_response(self.call_netflix_service({
                     'method': 'fetch_video_list',
@@ -479,6 +491,22 @@ class Navigation(object):
                     build_url=self.build_url)
                 return listing
         return False
+
+    def refresh_list_id_for_type(self, type):
+        """The list_ids are not static so may need refreshed
+
+        For example when stored as a widget
+        """
+        user_data = self._check_response(self.call_netflix_service({
+            'method': 'get_user_data'}))
+        video_list_ids = self._check_response(self.call_netflix_service({
+            'method': 'fetch_video_list_ids',
+            'guid': user_data['guid'],
+            'cache': True}))
+        if video_list_ids:
+            for video_list_id in video_list_ids['user']:
+                if video_list_ids['user'][video_list_id]['name'] == type:
+                    return video_list_id
 
     @log
     def show_profiles(self):
@@ -846,6 +874,7 @@ class Navigation(object):
         service_url += str(addon.getSetting('netflix_service_port'))
         return service_url
 
+    @retry(urllib2.URLError, tries=4, delay=1, backoff=2)
     def call_netflix_service(self, params):
         """
         Makes a GET request to the internal Netflix HTTP proxy
