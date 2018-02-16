@@ -415,9 +415,10 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
-            user_list = ['queue', 'topTen', 'netflixOriginals', 'trendingNow', 'newRelease', 'popularTitles']
-            if str(type) in user_list and video_list_id == None:
-                video_list_id = self.refresh_list_id_for_type(type)
+            user_list = ['queue', 'topTen', 'netflixOriginals',
+                         'trendingNow', 'newRelease', 'popularTitles']
+            if str(type) in user_list and video_list_id is None:
+                video_list_id = self.list_id_for_type(type)
             for i in range(0, 4):
                 items = self._check_response(self.call_netflix_service({
                     'method': 'fetch_video_list',
@@ -484,8 +485,8 @@ class Navigation(object):
         return False
 
     @log
-    def refresh_list_id_for_type(self,type):
-        """The list_ids are not static so may need refreshed for example when stored as a widget"""
+    def list_id_for_type(self, type):
+        """Get the list_ids for a given type"""
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         video_list_ids = self._check_response(self.call_netflix_service({
