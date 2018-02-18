@@ -6,19 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
-"POT-Creation-Date: 2017-01-01 12:00+0000\n"
-"PO-Revision-Date: 2017-05-14 19:55+0000\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2018-02-18 19:19+0100\n"
 "Last-Translator: Matej Moško <matej.mosko@gmail.com>\n"
 "Language-Team: Slovak\n"
+"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sk\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -46,7 +46,7 @@ msgstr "Heslo"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -110,7 +110,7 @@ msgstr "(od 0 do 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr ""
+msgstr "Rozšírené"
 
 msgctxt "#30024"
 msgid "SSL verification"
@@ -159,3 +159,111 @@ msgstr "ESN (nastavené automaticky, môžete to ručne zmeniť)"
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
 msgstr "Nastavenia doplnku Inputstream..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Pri exporte vždy použiť orignálny názov"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Zobrazenia"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Povoliť vlastné zobrazenia"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Zobrazenie pre priečinky"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Zobrazenie pre filmy"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Zobrazenie pre seriály"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Zobrazenie pre série"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Zobrazenie pre epizódy"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Zobrazenie pre profily"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- ĎALŠIA STRANA --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "Inpustream je vypnutý"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Naozaj odstrániť?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Exportované"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Aktualizovať DB"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Aktualizácia úšpešná"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Chyba požiadavky"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Tentokrát sa požiadavku nepodarilo dokončiť"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Automatické prihlasovanie"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Povoliť automatické prihlasovanie"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Profil si vyberiete v zozname profilov -> kontextové menu"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Automatické prihlasovanie zapnuté!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Prepnúť účty"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Povoliť HEVC profily (napr. 4k pre Android)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Aktualizovať záznam v knižnici"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Povoliť/zakázať rodičovský zámok. Aktívny:"
