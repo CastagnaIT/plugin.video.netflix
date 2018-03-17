@@ -1419,21 +1419,21 @@ class NetflixSession(object):
             list_to = FETCH_VIDEO_REQUEST_COUNT
 
         paths = [
-            ['lists', list_id, {'from': list_from, 'to': list_to}, ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'cast', 'summary'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'genres', 'summary'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'tags', {'from': 0, 'to': 9}, ['id', 'name']],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'tags', 'summary'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, ['creators', 'directors'], {'from': 0, 'to': 49}, ['id', 'name']],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, ['creators', 'directors'], 'summary'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'bb2OGLogo', '_400x90', 'png'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'boxarts', '_342x192', 'jpg'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'boxarts', '_1280x720', 'jpg'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'storyarts', '_1632x873', 'jpg'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'interestingMoment', '_665x375', 'jpg'],
-            ['lists', list_id, {'from': list_from, 'to': list_to}, 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg']
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", ['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'watched', 'delivery']],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'cast', 'summary'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'genres', 'summary'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'tags', {'from': 0, 'to': 9}, ['id', 'name']],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'tags', 'summary'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", ['creators', 'directors'], {'from': 0, 'to': 49}, ['id', 'name']],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", ['creators', 'directors'], 'summary'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'bb2OGLogo', '_400x90', 'png'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'boxarts', '_342x192', 'jpg'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'boxarts', '_1280x720', 'jpg'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'storyarts', '_1632x873', 'jpg'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'interestingMoment', '_665x375', 'jpg'],
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'artWorkByType', 'BILLBOARD', '_1280x720', 'jpg']
         ]
 
         response = self._path_request(paths=paths)
