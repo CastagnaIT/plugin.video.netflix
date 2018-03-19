@@ -1126,15 +1126,17 @@ class KodiHelper(object):
                     showid=id,
                     showseason=infoLabels['season'],
                     showepisode=infoLabels['episode'])
-                if details is not False:
-                    play_item.setInfo('video', details[0])
-                    play_item.setArt(details[1])
             if infoLabels['mediatype'] != 'episode':
                 id = self.movietitle_to_id(title=infoLabels['title'])
                 details = self.get_movie_content_by_id(movieid=id)
-                if details is not False:
-                    play_item.setInfo('video', details[0])
-                    play_item.setArt(details[1])
+
+            if details is not False:
+                play_item.setInfo('video', details[0])
+                play_item.setArt(details[1])
+                resume_point = details[0].get('resume')
+                if resume_point is not None:
+                    play_item.setProperty(
+                        'StartOffset', str(resume_point) + '.0')
 
         resolved = xbmcplugin.setResolvedUrl(
             handle=self.plugin_handle,
@@ -1516,7 +1518,7 @@ class KodiHelper(object):
     def get_show_content_by_id(self, showid, showseason, showepisode):
         showseason = int(showseason)
         showepisode = int(showepisode)
-        props = ["season", "episode", "plot", "fanart", "art"]
+        props = ["season", "episode", "plot", "fanart", "art", "resume"]
         query = {
                 "jsonrpc": "2.0",
                 "method": "VideoLibrary.GetEpisodes",
@@ -1538,6 +1540,8 @@ class KodiHelper(object):
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
                         infos = {'mediatype': 'episode', 'dbid': episode['episodeid']}
+                        if 'resume' in episode:
+                            infos.update('resume', episode['resume'])
                         if 'plot' in episode and len(episode['plot']) > 0:
                             infos.update({
                                 'plot': episode['plot'],
@@ -1564,7 +1568,8 @@ class KodiHelper(object):
                         "plot",
                         "fanart",
                         "thumbnail",
-                        "art"]
+                        "art",
+                        "resume"]
                 },
                 "id": "libMovies"
             }
@@ -1576,6 +1581,8 @@ class KodiHelper(object):
             if result is not None and 'moviedetails' in result:
                 result = result.get('moviedetails', {})
                 infos = {'mediatype': 'movie', 'dbid': movieid}
+                if 'resume' in result:
+                    infos.update('resume', result['resume'])
                 if 'genre' in result and len(result['genre']) > 0:
                     infos.update({'genre': json_result['genre']})
                 if 'plot' in result and len(result['plot']) > 0:
