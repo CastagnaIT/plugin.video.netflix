@@ -277,12 +277,10 @@ class KodiMonitor(xbmc.Monitor):
         if item is not None:
             if 'tvshowid' in item and item['tvshowid'] > 0:
                 tvshowid = item['tvshowid']
-                params['tvshowid'] = tvshowid
             if 'showtitle' in item and item['showtitle']:
                 showtitle = item['showtitle']
             if 'season' in item and item['season'] > 0:
                 season = item['season']
-                params['season'] = season
             if 'episode' in item and item['episode'] > 0:
                 episode = item['episode']
             if 'label' in item and item['label']:
