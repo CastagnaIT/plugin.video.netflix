@@ -1131,12 +1131,12 @@ class KodiHelper(object):
                 details = self.get_movie_content_by_id(movieid=id)
 
             if details is not False:
+                if 'resume' in details[0]:
+                    resume_point = details[0].pop('resume')
+                    play_item.setProperty(
+                        'StartOffset', str(resume_point))
                 play_item.setInfo('video', details[0])
                 play_item.setArt(details[1])
-                resume_point = details[0].get('resume')
-                if resume_point is not None:
-                    play_item.setProperty(
-                        'StartOffset', str(resume_point) + '.0')
 
         resolved = xbmcplugin.setResolvedUrl(
             handle=self.plugin_handle,
@@ -1540,8 +1540,8 @@ class KodiHelper(object):
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
                         infos = {'mediatype': 'episode', 'dbid': episode['episodeid']}
-                        if 'resume' in episode:
-                            infos.update('resume', episode['resume'])
+                        if 'resume' in episode and episode['resume']['position'] > 0:
+                            infos['resume'] = episode['resume']['position']
                         if 'plot' in episode and len(episode['plot']) > 0:
                             infos.update({
                                 'plot': episode['plot'],
