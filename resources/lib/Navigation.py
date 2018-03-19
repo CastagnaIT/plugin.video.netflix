@@ -570,6 +570,25 @@ class Navigation(object):
             if video['type'] == 'show':
                 episodes = []
                 for season in video['seasons']:
+                    user_data = (
+                        self._check_response(
+                            self.call_netflix_service(
+                                {'method': 'get_user_data'})))
+                    episode_list = (
+                        self._check_response(
+                            self.call_netflix_service({
+                                'method': 'fetch_episodes_by_season',
+                                'season_id': season['id'],
+                                'guid': user_data['guid'],
+                                'cache': True})))
+                    if episode_list:
+                        for episode in episode_list.itervalues():
+                            episode['tvshowtitle'] = video['title']
+                            self.log(msg='EPISODE: {}'.format(episode))
+                            self.kodi_helper._generate_art_info(entry=episode)
+                            self.kodi_helper._generate_entry_info(
+                                entry=episode,
+                                base_info={'mediatype': 'episode'})
                     for episode in season['episodes']:
                         episodes.append({
                             'season': season['seq'],

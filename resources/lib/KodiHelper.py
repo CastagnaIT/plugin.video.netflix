@@ -630,9 +630,9 @@ class KodiHelper(object):
                 label=video['title'],
                 iconImage=self.default_fanart)
             # add some art to the item
-            li = self._generate_art_info(entry=video, li=li)
+            li.setArt(self._generate_art_info(entry=video))
             # add list item info
-            li, infos = self._generate_entry_info(entry=video, li=li)
+            li, infos = self._generate_listitem_info(entry=video, li=li)
             li = self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video_list[video_list_id]['type'] == 'movie':
@@ -961,9 +961,9 @@ class KodiHelper(object):
         for season in seasons_sorted:
             li = xbmcgui.ListItem(label=season['text'])
             # add some art to the item
-            li = self._generate_art_info(entry=season, li=li)
+            li.setArt(self._generate_art_info(entry=season))
             # add list item info
-            li, infos = self._generate_entry_info(
+            li, infos = self._generate_listitem_info(
                 entry=season,
                 li=li,
                 base_info={'mediatype': 'season'})
@@ -1020,9 +1020,9 @@ class KodiHelper(object):
         for episode in episodes_sorted:
             li = xbmcgui.ListItem(label=episode['title'])
             # add some art to the item
-            li = self._generate_art_info(entry=episode, li=li)
+            li.setArt(self._generate_art_info(entry=episode))
             # add list item info
-            li, infos = self._generate_entry_info(
+            li, infos = self._generate_listitem_info(
                 entry=episode,
                 li=li,
                 base_info={'mediatype': 'episode'})
@@ -1173,21 +1173,18 @@ class KodiHelper(object):
             listitem=play_item)
         return resolved
 
-    def _generate_art_info(self, entry, li):
+    def _generate_art_info(self, entry):
         """Adds the art info from an entry to a Kodi list item
 
         Parameters
         ----------
         entry : :obj:`dict` of :obj:`str`
-            Entry that should be turned into a list item
-
-        li : :obj:`XMBC.ListItem`
-            Kodi list item instance
+            Entry that art dict should be generated for
 
         Returns
         -------
-        :obj:`XMBC.ListItem`
-            Kodi list item instance
+        :obj:`dict` of :obj:`str`
+            Dictionary containing art info
         """
         art = {'fanart': self.default_fanart}
         # Cleanup art
@@ -1197,7 +1194,6 @@ class KodiHelper(object):
             'fanart': '',
             'poster': ''
         })
-        self.log(entry)
         if 'boxarts' in dict(entry).keys() and not isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', '')
             small = big
@@ -1227,31 +1223,36 @@ class KodiHelper(object):
             art.update({'fanart': entry['fanart']})
         if 'poster' in dict(entry).keys():
             art.update({'poster': entry['poster']})
-        li.setArt(art)
         vid_id = entry.get('id', entry.get('summary', {}).get('id'))
         self.library.write_artdata_file(video_id=str(vid_id), content=art)
-        return li
+        return art
 
-    def _generate_entry_info(self, entry, li, base_info={}):
+    def _generate_listitem_info(self, entry, li, base_info={}):
+        infos, li_infos = self._generate_entry_info(entry, base_info)
+        li.setInfo('video', infos)
+        if li_infos.get('is_playable'):
+            li.setProperty('IsPlayable', 'true')
+        li.addStreamInfo('video', li_infos['quality'])
+        return li, infos
+
+    def _generate_entry_info(self, entry, base_info={}):
         """Adds the item info from an entry to a Kodi list item
 
         Parameters
         ----------
         entry : :obj:`dict` of :obj:`str`
-            Entry that should be turned into a list item
-
-        li : :obj:`XMBC.ListItem`
-            Kodi list item instance
+            Entry that info dict should be generated for
 
         base_info : :obj:`dict` of :obj:`str`
             Additional info that overrules the entry info
 
         Returns
         -------
-        :obj:`XMBC.ListItem`
-            Kodi list item instance
+        :obj:`dict` of :obj:`str`
+            Dictionary containing info labels
         """
         infos = base_info
+        li_infos = {}
         entry_keys = entry.keys()
         # Cleanup item info
         infos.update({
@@ -1268,8 +1269,7 @@ class KodiHelper(object):
             'mediatype': '',
             'playcount': '',
             'episode': '',
-            'year': '',
-            'tvshowtitle': ''
+            'year': ''
         })
 
         if 'cast' in entry_keys and len(entry['cast']) > 0:
@@ -1305,12 +1305,13 @@ class KodiHelper(object):
             infos.update({'title': entry['title']})
         if 'type' in entry_keys:
             if entry['type'] == 'movie' or entry['type'] == 'episode':
-                li.setProperty('IsPlayable', 'true')
+                li_infos['is_playable'] = True
             elif entry['type'] == 'show':
                 infos.update({'tvshowtitle': entry['title']})
         if 'mediatype' in entry_keys:
-            if entry['mediatype'] == 'movie' or entry['mediatype'] == 'episode':
-                li.setProperty('IsPlayable', 'true')
+            if (entry['mediatype'] == 'movie' or
+                    entry['mediatype'] == 'episode'):
+                li_infos['is_playable'] = True
                 infos.update({'mediatype': entry['mediatype']})
         if 'watched' in entry_keys and entry.get('watched') is True:
             infos.update({'playcount': 1})
@@ -1328,13 +1329,15 @@ class KodiHelper(object):
                 quality = {'width': '1280', 'height': '720'}
             if entry['quality'] == '1080':
                 quality = {'width': '1920', 'height': '1080'}
-            li.addStreamInfo('video', quality)
+            li_infos['quality'] = quality
         if 'tvshowtitle' in entry_keys:
-            title = base64.urlsafe_b64decode(entry.get('tvshowtitle', ''))
-            infos.update({'tvshowtitle': title.decode('utf-8')})
-        li.setInfo('video', infos)
-        self.library.write_metadata_file(video_id=str(entry['id']), content=infos)
-        return li, infos
+            title = entry.get('tvshowtitle', '')
+            if not isinstance(title, unicode):
+                title = base64.urlsafe_b64decode(title).decode('utf-8')
+            infos.update({'tvshowtitle': title})
+        self.library.write_metadata_file(
+            video_id=str(entry['id']), content=infos)
+        return infos, li_infos
 
     def _generate_context_menu_items(self, entry, li):
         """Adds context menue items to a Kodi list item
