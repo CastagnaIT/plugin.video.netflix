@@ -584,7 +584,6 @@ class Navigation(object):
                     if episode_list:
                         for episode in episode_list.itervalues():
                             episode['tvshowtitle'] = video['title']
-                            self.log(msg='EPISODE: {}'.format(episode))
                             self.kodi_helper._generate_art_info(entry=episode)
                             self.kodi_helper._generate_entry_info(
                                 entry=episode,
