@@ -56,7 +56,7 @@ NS_SERVER.server_activate()
 NS_SERVER.timeout = 1
 
 if __name__ == '__main__':
-    MONITOR = KodiMonitor(KODI_HELPER)
+    MONITOR = KodiMonitor(KODI_HELPER, KODI_HELPER.log)
 
     # start thread for MLS servie
     MSL_THREAD = threading.Thread(target=MSL_SERVER.serve_forever)

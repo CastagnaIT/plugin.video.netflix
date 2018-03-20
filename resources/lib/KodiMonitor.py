@@ -1,384 +1,227 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
-# Module: KodiHelper
-# Created on: 13.01.2017
+# Author: caphm
+# Module: KodiMonitor
+# Created on: 08.02.2018
+# License: MIT https://goo.gl/5bMj3H
 
+"""Playback tracking & update of associated item properties in Kodi library"""
+
+import json
 import xbmc
 import xbmcgui
-import json
+
+from resources.lib.utils import noop, log
+
+
+def _get_safe_with_fallback(item, fallback, itemkey='title',
+                            fallbackkey='title', default=''):
+    try:
+        return item.get(itemkey) or fallback.get(fallbackkey)
+    except AttributeError:
+        return default
 
 
 class KodiMonitor(xbmc.Monitor):
+    """
+    Tracks status and progress of video playbacks initiated by the addon and
+    saves bookmarks and watched state for the associated items into the Kodi
+    library.
+    """
 
     PROP_PLAYBACK_TRACKING = 'tracking'
 
-    def __init__(self, kodi_helper):
+    def __init__(self, kodi_helper, log_fn=noop):
         super(KodiMonitor, self).__init__()
         self.kodi_helper = kodi_helper
         self.video_info = None
         self.progress = 0
+        self.log = log_fn
+
+    def is_initialized_playback(self):
+        """
+        Indicates if a playback was initiated by the netflix addon by
+        checking the appropriate window property set by KodiHelper.
+        """
+        return self._is_playback_status(self.kodi_helper.PROP_PLAYBACK_INIT)
+
+    def is_tracking_playback(self):
+        """
+        Indicates if an ongoing playback is actively tracked by an
+        instance of this class.
+        """
+        return (self.video_info is not None and
+                self._is_playback_status(self.PROP_PLAYBACK_TRACKING))
 
     def update_playback_progress(self):
-        if self.video_info is not None:
-            player_id = self.get_active_video_player()
+        """
+        Updates the internal progress status of a tracked playback
+        and saves bookmarks to Kodi library.
+        """
+        if not self.is_tracking_playback():
+            return
 
-            if player_id is not None:
-                method = 'Player.GetProperties'
-                params = {
-                    'playerid': player_id,
-                    'properties': ['percentage', 'time']
-                }
-
-                response = self.json_rpc(method, params)
-
-                if 'result' in response:
-                    self.progress = response['result']['percentage']
-                    self.kodi_helper.log(
-                        msg='Current playback progress is {}%'.format(
-                            self.progress)
-                    )
-                    time = response['result']['time']
-                    playtime_seconds = time['hours'] * 3600 + \
-                        time['minutes'] * 60 + time['seconds']
-                    if self.save_resume_bookmark(
-                        playtime_seconds,
-                        self.video_info['dbtype'],
-                        self.video_info['dbid']
-                    ):
-                        self.kodi_helper.log(
-                            msg='Saved bookmark at {} seconds'.format(
-                                playtime_seconds)
-                        )
-                    else:
-                        self.kodi_helper.log(
-                            msg='Could not save bookmark',
-                            level=xbmc.LOGWARNING
-                        )
-                else:
-                    self.kodi_helper.log(
-                        msg='Could not update playback progress'
-                    )
+        player_id = self._get_active_video_player()
+        try:
+            progress = self._json_rpc('Player.GetProperties', {
+                'playerid': player_id,
+                'properties': ['percentage', 'time']
+            })
+        except IOError:
+            return
+        playtime_seconds = (progress['time']['hours'] * 3600 +
+                            progress['time']['minutes'] * 60 +
+                            progress['time']['seconds'])
+        self._update_item_details({'resume': {'position': playtime_seconds}})
+        self.progress = progress['percentage']
 
     def onNotification(self, sender, method, data):
+        """
+        Callback for Kodi notifications that handles and dispatches playback
+        started and playback stopped events.
+        """
+        # pylint: disable=unused-argument, invalid-name
         data = json.loads(unicode(data, 'utf-8', errors='ignore'))
-
         if method == 'Player.OnPlay':
-            self.on_playback_started(data.get('item', None))
+            self._on_playback_started(data.get('item', None))
         elif method == 'Player.OnStop':
-            self.on_playback_stopped(data['end'])
+            self._on_playback_stopped()
 
-    def on_playback_started(self, item):
-        self.kodi_helper.log(
-            msg='Playback started, waiting for player - item: {}'.format(item)
-        )
-
-        # wait for player to start playing video
-        xbmc.sleep(3000)
-        player_id = self.get_active_video_player()
-        retries = 0
-
-        while player_id is None and retries < 3:
-            # wait and retry up to three times if player is very slow
+    @log
+    def _on_playback_started(self, item):
+        for _ in range(1, 5):
             xbmc.sleep(3000)
-            player_id = self.get_active_video_player()
-            retries += 1
+            player_id = self._get_active_video_player()
+            if player_id is not None:
+                break
 
-        if self.is_initialized_playback() and player_id is not None:
-            self.video_info = self.get_video_info(player_id, item)
+        if player_id is not None and self.is_initialized_playback():
+            self.video_info = self._get_video_info(player_id, item)
             self.progress = 0
             xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
                 self.kodi_helper.PROP_NETFLIX_PLAY,
-                self.PROP_PLAYBACK_TRACKING
-            )
+                self.PROP_PLAYBACK_TRACKING)
+            self.log('Tracking playback of {}'.format(self.video_info))
         else:
-            # Clean up remnants from unproperly stopped previous playbacks
+            # Clean up remnants from improperly stopped previous playbacks.
+            # Clearing the window property does not work as expected, thus
+            # we overwrite it with an arbitrary value
             xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
                 self.kodi_helper.PROP_NETFLIX_PLAY, 'notnetflix')
-            self.kodi_helper.log(
-                msg='Playback is not from Netflix or it suddenly stopped'
-            )
+            reason = ('Playback not initiated by netflix plugin'
+                      if self.is_initialized_playback() else
+                      'Unable to obtain active video player')
+            self.log('Not tracking playback: {}'.format(reason))
 
-    def on_playback_stopped(self, ended):
-        if self.video_info is not None and self.is_tracking_playback():
-            self.kodi_helper.log(msg='Netflix playback stopped')
-
+    @log
+    def _on_playback_stopped(self):
+        if self.is_tracking_playback():
             if self.progress >= 90:
-                self.increment_playcount(
-                    self.video_info['dbtype'],
-                    self.video_info['dbid'],
-                    self.video_info['playcount']
-                )
+                new_playcount = self.video_info.get('playcount', 0) + 1
+                self._update_item_details({'playcount': new_playcount})
+                action = 'marking {} as watched.'.format(self.video_info)
             else:
-                self.kodi_helper.log(
-                    msg='Progress insufficient, not marking as watched'
-                )
-        else:
-            self.kodi_helper.log(msg='Playback was not from Netflix')
+                action = ('not marking {} as watched, progress too little'
+                          .format(self.video_info))
+            self.log('Tracked playback stopped: {}'.format(action))
 
         xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
             self.kodi_helper.PROP_NETFLIX_PLAY, 'stopped')
         self.video_info = None
         self.progress = 0
 
-    def increment_playcount(self, dbtype, dbid, playcount=0):
-        new_playcount = playcount + 1
+    def _get_active_video_player(self):
+        return next((player['playerid']
+                     for player in self._json_rpc('Player.GetActivePlayers')
+                     if player['type'] == 'video'), None)
 
-        self.kodi_helper.log(
-            msg='Incrementing playcount of {} with dbid {} to {}'.format(
-                dbtype, dbid, new_playcount),
-            level=xbmc.LOGNOTICE
-        )
+    @log
+    def _get_video_info(self, player_id, fallback_data):
+        info = self._json_rpc('Player.GetItem',
+                              {
+                                  'playerid': player_id,
+                                  'properties': ['playcount', 'title', 'year',
+                                                 'tvshowid', 'showtitle',
+                                                 'season', 'episode']
+                              }).get('item', {})
+        try:
+            return {'dbtype': info['type'], 'dbid': info['id'],
+                    'playcount': info.get('playcount', 0)}
+        except KeyError:
+            video_info = (self._guess_episode(info, fallback_data) or
+                          self._guess_movie(info, fallback_data))
+            if video_info is not None:
+                self.log('Obtained video info by guessing: {}'
+                         .format(video_info))
+            else:
+                self.log('Unable to obtain video info.', xbmc.LOGERROR)
+            return video_info
 
-        method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-        params = {
-            '{}id'.format(dbtype): dbid,
-            'playcount': new_playcount
-        }
+    @log
+    def _guess_episode(self, item, fallback_data):
+        title = _get_safe_with_fallback(item, fallback_data, itemkey='label')
+        resp = self._json_rpc('VideoLibrary.GetEpisodes',
+                              {'properties': ['playcount', 'tvshowid',
+                                              'showtitle', 'season',
+                                              'episode']})
+        for episode in resp.get('episodes', []):
+            try:
+                matches_show = (item.get('tvshowid') == episode['tvshowid'] or
+                                item.get('showtitle') == episode['showtitle'])
+                matches_season = item.get('season') == episode['season']
+                matches_episode = item.get('episode') == episode['episode']
+                matches_explicitly = (matches_show and matches_season and
+                                      matches_episode)
+            except AttributeError:
+                matches_explicitly = False
 
-        return self.is_ok(self.json_rpc(method, params))
+            episode_meta = 'S%02dE%02d' % (episode['season'],
+                                           episode['episode'])
+            matches_meta = (episode['showtitle'] in title and
+                            episode_meta in title)
 
-    def save_resume_bookmark(self, time, dbtype, dbid):
-        method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-        params = {
-            '{}id'.format(dbtype): dbid,
-            'resume': {'position': time}
-        }
-
-        return self.is_ok(self.json_rpc(method, params))
-
-    def get_active_video_player(self):
-        method = 'Player.GetActivePlayers'
-        resp = self.json_rpc(method)
-
-        if 'result' in resp:
-            for player in resp['result']:
-                if player['type'] == 'video':
-                    return player['playerid']
-
+            if matches_explicitly or matches_meta:
+                return {'dbtype': 'episode', 'dbid': episode['episodeid'],
+                        'playcount': episode['playcount']}
         return None
 
-    def get_video_info(self, player_id, fallback_data):
-        method = 'Player.GetItem'
-        params = {
-            'playerid': player_id,
-            'properties': [
-                'playcount',
-                'title',
-                'year',
-                'tvshowid',
-                'showtitle',
-                'season',
-                'episode'
-            ]
-        }
+    @log
+    def _guess_movie(self, item, fallback_data):
+        title = _get_safe_with_fallback(item, fallback_data)
+        params = {'properties': ['playcount', 'year', 'title']}
+        try:
+            params['filter'] = {'year': item['year']}
+        except (TypeError, KeyError):
+            pass
+        resp = self._json_rpc('VideoLibrary.GetMovies', params)
+        for movie in resp.get('movies', []):
+            movie_meta = '%s (%d)' % (movie['label'], movie['year'])
+            if movie_meta == title or movie['label'] in title:
+                return {'dbtype': 'movie', 'dbid': movie['movieid'],
+                        'playcount': movie['playcount']}
+        return None
 
-        resp = self.json_rpc(method, params)
-        item = None
+    def _update_item_details(self, properties):
+        method = ('VideoLibrary.Set{}Details'
+                  .format(self.video_info['dbtype'].capitalize()))
+        params = {'{}id'.format(self.video_info['dbtype']):
+                  self.video_info['dbid']}
+        params.update(properties)
+        self._json_rpc(method, params)
 
-        if 'result' in resp and 'item' in resp['result']:
-            item = resp['result']['item']
-
-            self.kodi_helper.log(
-                msg=u'Got info from player: {}'.format(item)
-            )
-
-            dbid = item.get('id', None)
-            dbtype = item.get('type', None)
-
-            if dbtype is not None and dbid is not None:
-                playcount = item['playcount']
-                video_info = {
-                    'dbtype': dbtype,
-                    'dbid': dbid,
-                    'playcount': playcount
-                }
-                self.kodi_helper.log(
-                    msg='Found video info from player: {}'.format(video_info)
-                )
-
-                if video_info['dbtype'] in ['episode', 'movie']:
-                    return video_info
-                else:
-                    self.kodi_helper.log(msg='Not playing an episode or movie')
-                    return None
-
-        video_info = self.get_video_info_fallback(item, fallback_data)
-
-        if video_info is not None:
-            self.kodi_helper.log(
-                msg='Found video info by fallback: {}'.format(video_info)
-            )
-        else:
-            self.kodi_helper.log(
-                msg='Could not get video info',
-                level=xbmc.LOGERROR
-            )
-
-        return video_info
-
-    def get_video_info_fallback(self, item, fallback_data):
-        """
-        Finds video info using a more inaccurate matching approach. Tries to
-        use as much info returned by the player in `item` to do the lookup.
-        If that fails, the most generic fallback is used by just matching
-        against titles / show names and season episode numbers."""
-
-        if (item is not None or
-                (fallback_data is not None and 'title' in fallback_data)):
-            self.kodi_helper.log(
-                msg='Using inaccurate fallback lookup method for video info',
-                level=xbmc.LOGWARNING
-            )
-
-            # Kinda weird way to prevent duplicate code, feel free to improve:
-            # If there's a dbtype given, we want to use the associated lookup
-            # function first, to save time. If it returns None, we still want
-            # the other one to be called.
-            dbtype = item.get('type', 'episode')
-            if dbtype not in ['episode', 'movie']:
-                # Coerce into known value
-                dbtype = 'episode'
-            other_dbtype = ['episode', 'movie']
-            other_dbtype.remove(dbtype)
-            other_dbtype = other_dbtype[0]
-            self.kodi_helper.log(
-                msg='Lookup priority: 1) {} 2) {}'.format(dbtype, other_dbtype)
-            )
-            lookup_functions = {
-                'episode': self.find_episode_info,
-                'movie': self.find_movie_info
-            }
-
-            return (
-                lookup_functions[dbtype](item, fallback_data) or
-                lookup_functions[other_dbtype](item, fallback_data)
-            )
-        else:
-            return None
-
-    def find_episode_info(self, item, fallback_data):
-        method = 'VideoLibrary.GetEpisodes'
-        params = {
-            'properties': [
-                'playcount',
-                'tvshowid',
-                'showtitle',
-                'season',
-                'episode'
-            ]
-        }
-
-        showtitle = None
-        tvshowid = None
-        season = None
-        episode = None
-        title = None
-
-        if item is not None:
-            if 'tvshowid' in item and item['tvshowid'] > 0:
-                tvshowid = item['tvshowid']
-            if 'showtitle' in item and item['showtitle']:
-                showtitle = item['showtitle']
-            if 'season' in item and item['season'] > 0:
-                season = item['season']
-            if 'episode' in item and item['episode'] > 0:
-                episode = item['episode']
-            if 'label' in item and item['label']:
-                title = item['label']
-            elif fallback_data is not None:
-                title = fallback_data.get('title', '')
-
-        resp = self.json_rpc(method, params)
-
-        if 'result' in resp and 'episodes' in resp['result']:
-            for episode in resp['result']['episodes']:
-                episode_meta = 'S%02dE%02d' % (
-                    episode['season'],
-                    episode['episode']
-                )
-
-                if ((tvshowid == episode['tvshowid'] or
-                        showtitle == episode['showtitle']) and
-                    season == episode['season'] and
-                    episode == episode['episode'] or
-                    (episode_meta in title and
-                        episode['showtitle'] in title)):
-                    return {
-                        'dbtype': 'episode',
-                        'dbid': episode['episodeid'],
-                        'playcount': episode['playcount']
-                    }
-        else:
-            return None
-
-    def find_movie_info(self, item, fallback_data):
-        method = 'VideoLibrary.GetMovies'
-        params = {
-            'properties': ['playcount', 'year', 'title']
-        }
-
-        title = ''
-
-        if item is not None:
-            title = item.get(
-                'title',
-                fallback_data.get(
-                    'title',
-                    ''
-                ) if fallback_data is not None else ''
-            )
-
-            if 'year' in item:
-                params['filter'] = {'year': item['year']}
-
-        resp = self.json_rpc(method, params)
-
-        if 'result' in resp and 'movies' in resp['result']:
-            for movie in resp['result']['movies']:
-                movie_meta = '%s (%d)' % (movie['label'], movie['year'])
-                self.kodi_helper.log(u'Matching {}'.format(movie_meta))
-                if movie_meta == title or movie['label'] in title:
-                    return {
-                        'dbtype': 'movie',
-                        'dbid': movie['movieid'],
-                        'playcount': movie['playcount']
-                    }
-        else:
-            return None
-
-    def is_initialized_playback(self):
-        return self.is_playback_status(self.kodi_helper.PROP_PLAYBACK_INIT)
-
-    def is_tracking_playback(self):
-        return self.is_playback_status(self.PROP_PLAYBACK_TRACKING)
-
-    def is_playback_status(self, status):
+    def _is_playback_status(self, status):
         return xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).getProperty(
-            self.kodi_helper.PROP_NETFLIX_PLAY
-        ) == status
+            self.kodi_helper.PROP_NETFLIX_PLAY) == status
 
-    def json_rpc(self, method, params=None):
-        req = {
-            'jsonrpc': '2.0',
-            'method': method,
-            'id': 1,
-            'params': params or {}
-        }
-
-        jsonrequest = json.dumps(req)
-        self.kodi_helper.log(msg=u'Sending request: {}'.format(jsonrequest))
-
-        jsonresponse = unicode(
-            xbmc.executeJSONRPC(jsonrequest),
-            'utf-8',
-            errors='ignore'
-        )
-        self.kodi_helper.log(msg=u'Received response: {}'.format(jsonresponse))
-
-        return json.loads(jsonresponse)
-
-    def is_ok(self, jsonrpc_response):
-        return (
-            'result' in jsonrpc_response and
-            jsonrpc_response['result'] == 'OK'
-        )
+    def _json_rpc(self, method, params=None):
+        request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
+                        'params': params or {}}
+        request = json.dumps(request_data)
+        self.log(u'Sending request: {}'.format(request))
+        response = json.loads(unicode(xbmc.executeJSONRPC(request), 'utf-8',
+                                      errors='ignore'))
+        self.log(u'Received response: {}'.format(response))
+        if 'error' in response:
+            raise IOError('JSONRPC-Error {}: {}'
+                          .format(response['error']['code'],
+                                  response['error']['message']))
+        return response['result']
