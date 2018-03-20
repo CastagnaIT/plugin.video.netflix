@@ -255,3 +255,11 @@ msgstr "In Bibliothek aktualisieren"
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Kindersicherungs PIN Abfrage ein-/ausschalten. Aktiv:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "neue Folgen zur Bilbiothek hinzugefügt"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Neue Folgen der Bibliothek hinzufügen"

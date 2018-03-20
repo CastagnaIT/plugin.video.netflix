@@ -7,6 +7,7 @@ import os
 import re
 import time
 import threading
+import xbmc
 import xbmcgui
 import xbmcvfs
 import requests
@@ -370,7 +371,8 @@ class Library(object):
         time.sleep(1)
         progress.close()
 
-    def add_show(self, title, alt_title, episodes, build_url):
+    def add_show(self, netflix_id, title, alt_title, episodes, build_url,
+                 in_background=False):
         """Adds a show to the local db, generates & persists the strm files
 
         Note: Can also used to store complete seasons or single episodes,
@@ -395,19 +397,23 @@ class Library(object):
         folder = re.sub(r'[?|$|!|:|#]', r'', alt_title.encode('utf-8'))
         show_dir = self.kodi_helper.check_folder_path(
             path=os.path.join(self.tvshow_path, folder))
-        progress = xbmcgui.DialogProgress()
+        progress = self._create_progress_dialog(in_background)
         progress.create(self.kodi_helper.get_local_string(650), show_meta)
-        count = 1
         if not xbmcvfs.exists(show_dir):
             xbmcvfs.mkdirs(show_dir)
         if self.show_exists(title) is False:
             self.db[self.series_label][show_meta] = {
+                'netflix_id': netflix_id,
                 'seasons': [],
                 'episodes': [],
                 'alt_title': alt_title}
-            episode_count_total = len(episodes)
-            step = round(100.0 / episode_count_total, 1)
-            percent = step
+        episodes = [episode for episode in episodes
+                    if not self.episode_exists(title, episode['season'],
+                                               episode['episode'])]
+        if len(episodes) == 0:
+            return False
+        step = round(100.0 / len(episodes), 1)
+        percent = step
         for episode in episodes:
             desc = self.kodi_helper.get_local_string(20373) + ': '
             desc += str(episode.get('season'))
@@ -430,7 +436,25 @@ class Library(object):
         self._update_local_db(filename=self.db_filepath, db=self.db)
         time.sleep(1)
         progress.close()
+        if in_background:
+            self.kodi_helper.dialogs.show_episodes_added_notify(
+                title, len(episodes), self.kodi_helper.icon)
         return show_dir
+
+    def _create_progress_dialog(self, is_noop):
+        if is_noop:
+            class NoopDialog():
+                def create(self, title, subtitle):
+                    return noop()
+
+                def update(self, **kwargs):
+                    return noop()
+
+                def close(self):
+                    return noop()
+
+            return NoopDialog()
+        return xbmcgui.DialogProgress()
 
     def _add_episode(self, title, show_dir, season, episode, video_id, build_url):
         """
@@ -658,6 +682,9 @@ class Library(object):
         if xbmcvfs.exists(self.kodi_helper.check_folder_path(tvshow_path)):
             shows = xbmcvfs.listdir(tvshow_path)
         return movies + shows
+
+    def list_exported_shows(self):
+        return self.db[self.series_label]
 
     def get_exported_movie_year(self, title):
         """Return year of given exported movie

@@ -180,6 +180,8 @@ class Navigation(object):
                 self.library.remove_show(title=params['title'].decode('utf-8'))
                 self.kodi_helper.refresh()
             return True
+        elif action == 'export-new-episodes':
+            return self.export_new_episodes()
         elif action == 'updatedb':
             # adds a title to the users list on Netflix
             self.library.updatedb_from_exported()
@@ -544,7 +546,7 @@ class Navigation(object):
         return self.kodi_helper.dialogs.show_request_error_notify()
 
     @log
-    def export_to_library(self, video_id, alt_title):
+    def export_to_library(self, video_id, alt_title, in_background=False):
         """Adds an item to the local library
 
         Parameters
@@ -576,10 +578,12 @@ class Navigation(object):
                             'episode': episode['seq'],
                             'id': episode['id']})
                 self.library.add_show(
+                    netflix_id=video_id,
                     title=video['title'],
                     alt_title=alt_title,
                     episodes=episodes,
-                    build_url=self.build_url)
+                    build_url=self.build_url,
+                    in_background=in_background)
             return True
         self.kodi_helper.dialogs.show_no_metadata_notify()
         return False
@@ -607,6 +611,25 @@ class Navigation(object):
             return True
         self.kodi_helper.dialogs.show_no_metadata_notify()
         return False
+
+    @log
+    def export_new_episodes(self):
+        no_errors = True
+        for title, meta in self.library.list_exported_shows().iteritems():
+            try:
+                self.log('Exporting new episodes of {} (id={})'
+                         .format(title, meta['netflix_id']))
+                self.export_to_library(
+                    video_id=meta['netflix_id'], alt_title=title,
+                    in_background=params.get('inbackground', False))
+            except KeyError:
+                no_errors = False
+                self.log(
+                    ('Missing netflix_id for {}. Remove and re-add to '
+                     'library to fix this.').format(title), xbmc.LOGERROR)
+        xbmc.executebuiltin(
+            'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
+        return no_errors
 
     @log
     def establish_session(self, account):
