@@ -1232,7 +1232,8 @@ class KodiHelper(object):
         li.setInfo('video', infos)
         if li_infos.get('is_playable'):
             li.setProperty('IsPlayable', 'true')
-        li.addStreamInfo('video', li_infos['quality'])
+        if 'quality' in li_infos:
+            li.addStreamInfo('video', li_infos['quality'])
         return li, infos
 
     def _generate_entry_info(self, entry, base_info={}):
