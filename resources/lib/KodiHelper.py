@@ -1540,18 +1540,22 @@ class KodiHelper(object):
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
                         infos = {'mediatype': 'episode', 'dbid': episode['episodeid']}
-                        if 'resume' in episode and episode['resume']['position'] > 0:
+                        if episode['resume']['position'] > 0:
                             infos['resume'] = episode['resume']['position']
-                        if 'plot' in episode and len(episode['plot']) > 0:
-                            infos.update({
-                                'plot': episode['plot'],
-                                'genre': showid[1]})
+                        infos.update({'plot': episode['plot'],
+                                      'genre': showid[1]}
+                                     if episode.get('plot') else {})
+
                         art = {}
-                        if 'fanart' in episode and len(episode['fanart']) > 0:
-                            art.update({'fanart': episode['fanart']})
-                        if 'art' in episode and len(episode['art']['season.poster']) > 0:
-                            art.update({
-                                'thumb': episode['art']['season.poster']})
+                        art.update({'fanart': episode['fanart']}
+                                   if episode.get('fanart') else {})
+                        if 'art' in episode:
+                            if episode['art'].get('thumb'):
+                                art.update({'thumb': episode['art']['thumb']})
+                            if episode['art'].get('tvshow.poster'):
+                                art.update({'poster': episode['art']['tvshow.poster']})
+                            if episode['art'].get('tvshow.banner'):
+                                art.update({'banner': episode['art']['tvshow.banner']})
                         return infos, art
             return False
         except Exception:

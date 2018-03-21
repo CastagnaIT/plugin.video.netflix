@@ -117,7 +117,8 @@ class KodiMonitor(xbmc.Monitor):
         if self.is_tracking_playback():
             if self.progress >= 90:
                 new_playcount = self.video_info.get('playcount', 0) + 1
-                self._update_item_details({'playcount': new_playcount})
+                self._update_item_details({'playcount': new_playcount,
+                                           'resume': {'position': 0}})
                 action = 'marking {} as watched.'.format(self.video_info)
             else:
                 action = ('not marking {} as watched, progress too little'
