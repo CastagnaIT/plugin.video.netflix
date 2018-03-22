@@ -1523,7 +1523,8 @@ class KodiHelper(object):
     def get_show_content_by_id(self, showid, showseason, showepisode):
         showseason = int(showseason)
         showepisode = int(showepisode)
-        props = ["season", "episode", "plot", "fanart", "art", "resume"]
+        props = ["title", "showtitle", "season", "episode", "plot", "fanart",
+                 "art", "resume"]
         query = {
                 "jsonrpc": "2.0",
                 "method": "VideoLibrary.GetEpisodes",
@@ -1545,7 +1546,9 @@ class KodiHelper(object):
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
                         infos = {'mediatype': 'episode',
-                                 'dbid': episode['episodeid']}
+                                 'dbid': episode['episodeid'],
+                                 'tvshowtitle': episode['showtitle'],
+                                 'title': episode['title']}
                         if episode['resume']['position'] > 0:
                             infos['resume'] = episode['resume']['position']
                         infos.update({'plot': episode['plot'],
@@ -1579,6 +1582,7 @@ class KodiHelper(object):
                 "params": {
                     "movieid": movieid,
                     "properties": [
+                        "title",
                         "genre",
                         "plot",
                         "fanart",
@@ -1595,7 +1599,8 @@ class KodiHelper(object):
             result = json_result.get('result', None)
             if result is not None and 'moviedetails' in result:
                 result = result.get('moviedetails', {})
-                infos = {'mediatype': 'movie', 'dbid': movieid}
+                infos = {'mediatype': 'movie', 'dbid': movieid,
+                         'title': result['title']}
                 if 'resume' in result:
                     infos.update('resume', result['resume'])
                 if 'genre' in result and len(result['genre']) > 0:
