@@ -570,24 +570,12 @@ class Navigation(object):
             if video['type'] == 'show':
                 episodes = []
                 for season in video['seasons']:
-                    user_data = (
-                        self._check_response(
-                            self.call_netflix_service(
-                                {'method': 'get_user_data'})))
-                    episode_list = (
-                        self._check_response(
-                            self.call_netflix_service({
-                                'method': 'fetch_episodes_by_season',
-                                'season_id': season['id'],
-                                'guid': user_data['guid'],
-                                'cache': True})))
-                    if episode_list:
-                        for episode in episode_list.itervalues():
-                            episode['tvshowtitle'] = video['title']
-                            self.kodi_helper._generate_art_info(entry=episode)
-                            self.kodi_helper._generate_entry_info(
-                                entry=episode,
-                                base_info={'mediatype': 'episode'})
+                    if not self._download_episode_metadata(
+                            season['id'], video['title']):
+                        self.log(msg=('Failed to download episode metadata '
+                                      'for {} season {}')
+                                 .format(video['title'], season['id']),
+                                 level=xbmc.LOGERROR)
                     for episode in season['episodes']:
                         episodes.append({
                             'season': season['seq'],
@@ -600,6 +588,28 @@ class Navigation(object):
                     build_url=self.build_url)
             return True
         self.kodi_helper.dialogs.show_no_metadata_notify()
+        return False
+
+    def _download_episode_metadata(self, season_id, tvshowtitle):
+        user_data = (
+            self._check_response(
+                self.call_netflix_service(
+                    {'method': 'get_user_data'})))
+        episode_list = (
+            self._check_response(
+                self.call_netflix_service({
+                    'method': 'fetch_episodes_by_season',
+                    'season_id': season_id,
+                    'guid': user_data['guid'],
+                    'cache': True})))
+        if episode_list:
+            for episode in episode_list.itervalues():
+                episode['tvshowtitle'] = tvshowtitle
+                self.kodi_helper._generate_art_info(entry=episode)
+                self.kodi_helper._generate_entry_info(
+                    entry=episode,
+                    base_info={'mediatype': 'episode'})
+            return True
         return False
 
     @log
