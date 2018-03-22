@@ -40,6 +40,11 @@ VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
 
 
+def _update_if_present(source_dict, source_att, target_dict, target_att):
+    if source_dict.get(source_att):
+        target_dict.update({target_att: source_dict[source_att]})
+
+
 class KodiHelper(object):
     """
     Consumes all the configuration data from Kodi as well as
@@ -1539,23 +1544,29 @@ class KodiHelper(object):
                     in_season = episode['season'] == showseason
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
-                        infos = {'mediatype': 'episode', 'dbid': episode['episodeid']}
+                        infos = {'mediatype': 'episode',
+                                 'dbid': episode['episodeid']}
                         if episode['resume']['position'] > 0:
                             infos['resume'] = episode['resume']['position']
                         infos.update({'plot': episode['plot'],
                                       'genre': showid[1]}
                                      if episode.get('plot') else {})
-
                         art = {}
                         art.update({'fanart': episode['fanart']}
                                    if episode.get('fanart') else {})
                         if 'art' in episode:
-                            if episode['art'].get('thumb'):
-                                art.update({'thumb': episode['art']['thumb']})
-                            if episode['art'].get('tvshow.poster'):
-                                art.update({'poster': episode['art']['tvshow.poster']})
-                            if episode['art'].get('tvshow.banner'):
-                                art.update({'banner': episode['art']['tvshow.banner']})
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='thumb',
+                                               target_dict=art,
+                                               target_att='thumb')
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='tvshow.poster',
+                                               target_dict=art,
+                                               target_att='poster')
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='tvshow.banner',
+                                               target_dict=art,
+                                               target_att='banner')
                         return infos, art
             return False
         except Exception:
