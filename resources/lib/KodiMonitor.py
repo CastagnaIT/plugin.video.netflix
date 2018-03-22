@@ -52,34 +52,12 @@ def _get_active_video_player():
                 None)
 
 
-def _match_episode(item, episode, fallback_data):
-    title = _get_safe_with_fallback(item, fallback_data, itemkey='label')
-    try:
-        matches_show = (item.get('tvshowid') == episode['tvshowid'] or
-                        item.get('showtitle') == episode['showtitle'])
-        matches_season = item.get('season') == episode['season']
-        matches_episode = item.get('episode') == episode['episode']
-        matches_explicitly = (matches_show and matches_season and
-                              matches_episode)
-    except AttributeError:
-        matches_explicitly = False
-
-    episode_meta = 'S%02dE%02d' % (episode['season'],
-                                   episode['episode'])
-    matches_meta = (episode['showtitle'] in title and
-                    episode_meta in title)
-    return matches_explicitly or matches_meta
-
-
-def _guess_episode(item, fallback_data):
-    resp = _json_rpc('VideoLibrary.GetEpisodes',
-                     {'properties': ['playcount', 'tvshowid',
-                                     'showtitle', 'season',
-                                     'episode']})
-    return next(({'dbtype': 'episode', 'dbid': episode['episodeid'],
-                  'playcount': episode['playcount']}
-                 for episode in resp.get('episodes', [])
-                 if _match_episode(item, episode, fallback_data)),
+def _first_match_or_none(mediatype, item, candidates, item_fb, match_fn):
+    return next(({'dbtype': mediatype,
+                  'dbid': candidate['{}id'.format(mediatype)],
+                  'playcount': candidate['playcount']}
+                 for candidate in candidates
+                 if match_fn(item, candidate, item_fb)),
                 None)
 
 
@@ -89,18 +67,47 @@ def _match_movie(item, movie, fallback_data):
     return movie_meta == title or movie['label'] in title
 
 
-def _guess_movie(item, fallback_data):
+def _match_episode_explicitly(item, candidate):
+    try:
+        matches_show = (item.get('tvshowid') == candidate['tvshowid'] or
+                        item.get('showtitle') == candidate['showtitle'])
+        matches_season = item.get('season') == candidate['season']
+        matches_episode = item.get('episode') == candidate['episode']
+        return matches_show and matches_season and matches_episode
+    except AttributeError:
+        return False
+
+
+def _match_episode_by_title(title, candidate):
+    episode_meta = 'S%02dE%02d' % (candidate['season'],
+                                   candidate['episode'])
+    return candidate['showtitle'] in title and episode_meta in title
+
+
+def _match_episode(item, candidate, item_fb):
+    title = _get_safe_with_fallback(item, item_fb, itemkey='label')
+    return (_match_episode_explicitly(item, candidate) or
+            _match_episode_by_title(title, candidate))
+
+
+def _guess_episode(item, item_fb):
+    resp = _json_rpc('VideoLibrary.GetEpisodes',
+                     {'properties': ['playcount', 'tvshowid',
+                                     'showtitle', 'season',
+                                     'episode']})
+    return _first_match_or_none('episode', item, resp.get('episodes', []),
+                                item_fb, _match_episode)
+
+
+def _guess_movie(item, item_fb):
     params = {'properties': ['playcount', 'year', 'title']}
     try:
         params['filter'] = {'year': item['year']}
     except (TypeError, KeyError):
         pass
     resp = _json_rpc('VideoLibrary.GetMovies', params)
-    return next(({'dbtype': 'movie', 'dbid': movie['movieid'],
-                  'playcount': movie['playcount']}
-                 for movie in resp.get('movies', [])
-                 if _match_movie(item, movie, fallback_data)),
-                None)
+    return _first_match_or_none('movie', item, resp.get('movies', []),
+                                item_fb, _match_movie)
 
 
 class KodiMonitor(xbmc.Monitor):
@@ -134,13 +141,14 @@ class KodiMonitor(xbmc.Monitor):
         return (self.video_info is not None and
                 self._is_playback_status(self.PROP_PLAYBACK_TRACKING))
 
+    @log
     def update_playback_progress(self):
         """
         Updates the internal progress status of a tracked playback
         and saves bookmarks to Kodi library.
         """
         if not self.is_tracking_playback():
-            return
+            return None
 
         player_id = _get_active_video_player()
         try:
@@ -149,12 +157,12 @@ class KodiMonitor(xbmc.Monitor):
                 'properties': ['percentage', 'time']
             })
         except IOError:
-            return
-        playtime_seconds = (progress['time']['hours'] * 3600 +
-                            progress['time']['minutes'] * 60 +
-                            progress['time']['seconds'])
-        self._update_item_details({'resume': {'position': playtime_seconds}})
+            return None
+        elapsed = (progress['time']['hours'] * 3600 +
+                   progress['time']['minutes'] * 60 +
+                   progress['time']['seconds'])
         self.progress = progress['percentage']
+        return self._update_item_details({'resume': {'position': elapsed}})
 
     def onNotification(self, sender, method, data):
         """
@@ -221,17 +229,10 @@ class KodiMonitor(xbmc.Monitor):
             return {'dbtype': info['type'], 'dbid': info['id'],
                     'playcount': info.get('playcount', 0)}
         except KeyError:
-            video_info = (self._guess_episode(info, fallback_data) or
-                          self._guess_movie(info, fallback_data))
-            if video_info is None:
-                self.log('Unable to obtain video info (fallback_data={})'
-                         .format(fallback_data),
-                         xbmc.LOGERROR)
-            else:
-                self.log('Obtained video info by guessing ({})'
-                         .format(video_info),
-                         xbmc.LOGWARNING)
-            return video_info
+            self.log('Guessing video info (fallback={})'.format(fallback_data),
+                     xbmc.LOGWARNING)
+            return (self._guess_episode(info, fallback_data) or
+                    self._guess_movie(info, fallback_data))
 
     @log
     def _update_item_details(self, properties):
@@ -240,7 +241,7 @@ class KodiMonitor(xbmc.Monitor):
         params = {'{}id'.format(self.video_info['dbtype']):
                   self.video_info['dbid']}
         params.update(properties)
-        _json_rpc(method, params)
+        return _json_rpc(method, params)
 
     def _is_playback_status(self, status):
         return xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).getProperty(
