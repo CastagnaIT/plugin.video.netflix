@@ -275,3 +275,43 @@ msgstr ""
 msgctxt "#30064"
 msgid "Export new episodes"
 msgstr ""
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr ""
+
+msgctxt "#30066"
+msgid "never"
+msgstr ""
+
+msgctxt "#30067"
+msgid "daily"
+msgstr ""
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr ""
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr ""
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr ""
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr ""
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr ""
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr ""

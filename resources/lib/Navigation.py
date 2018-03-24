@@ -16,6 +16,7 @@ import json
 import urllib
 import urllib2
 from urlparse import parse_qsl, urlparse
+from datetime import datetime
 import xbmc
 from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
@@ -181,7 +182,7 @@ class Navigation(object):
                 self.kodi_helper.refresh()
             return True
         elif action == 'export-new-episodes':
-            return self.export_new_episodes()
+            return self.export_new_episodes(params.get('inbackground', False))
         elif action == 'updatedb':
             # adds a title to the users list on Netflix
             self.library.updatedb_from_exported()
@@ -613,22 +614,27 @@ class Navigation(object):
         return False
 
     @log
-    def export_new_episodes(self):
+    def export_new_episodes(self, in_background):
         no_errors = True
+        update_started_at = datetime.today().strftime('%Y-%m-%d %H:%M')
+        self.kodi_helper.set_setting('update_running', update_started_at)
         for title, meta in self.library.list_exported_shows().iteritems():
             try:
                 self.log('Exporting new episodes of {} (id={})'
                          .format(title, meta['netflix_id']))
                 self.export_to_library(
                     video_id=meta['netflix_id'], alt_title=title,
-                    in_background=params.get('inbackground', False))
+                    in_background=in_background)
             except KeyError:
                 no_errors = False
                 self.log(
-                    ('Missing netflix_id for {}. Remove and re-add to '
-                     'library to fix this.').format(title), xbmc.LOGERROR)
+                    ('Cannot export new episodes for {}, missing netflix_id. '
+                     'Remove and re-add to library to fix this.')
+                    .format(title), xbmc.LOGERROR)
         xbmc.executebuiltin(
             'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
+        self.kodi_helper.set_setting('update_running', 'false')
+        self.kodi_helper.set_setting('last_update', update_started_at[0:10])
         return no_errors
 
     @log
