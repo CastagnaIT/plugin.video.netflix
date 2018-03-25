@@ -22,7 +22,7 @@
     <setting id="viewmodeshow" type="number" label="30041" enable="eq(-4,true)" default="504"/>
     <setting id="viewmodeseason" type="number" label="30042" enable="eq(-5,true)" default="504"/>
     <setting id="viewmodeepisode" type="number" label="30043" enable="eq(-6,true)" default="55"/>
-    <setting id="viewmodeexported" type="number" label="30065" enable="eq(-7,true)" default="504"/>
+    <setting id="viewmodeexported" type="number" label="30074" enable="eq(-7,true)" default="504"/>
   </category>
   <category label="30023">
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>

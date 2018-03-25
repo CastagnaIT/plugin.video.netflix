@@ -268,7 +268,7 @@ msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr ""
 
-msgctxt "#30065"
+msgctxt "#30074"
 msgid "View for exported"
 msgstr ""
 
