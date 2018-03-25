@@ -114,10 +114,12 @@ class Library(object):
             Video fallback title for m3u
 
         """
+        self.log('Writing {}'.format(path))
         f = xbmcvfs.File(path, 'w')
         f.write('#EXTINF:-1,'+title_player.encode('utf-8')+'\n')
         f.write(url)
         f.close()
+        self.log('Successfully wrote {}'.format(path))
 
     def write_metadata_file(self, video_id, content):
         """Writes the metadata file that caches grabbed content from netflix
@@ -400,17 +402,24 @@ class Library(object):
         progress = self._create_progress_dialog(in_background)
         progress.create(self.kodi_helper.get_local_string(650), show_meta)
         if not xbmcvfs.exists(show_dir):
+            self.log('Created show folder {}'.format(show_dir))
             xbmcvfs.mkdirs(show_dir)
         if self.show_exists(title) is False:
+            self.log('Show does not exists, adding entry to internal library')
             self.db[self.series_label][show_meta] = {
                 'netflix_id': netflix_id,
                 'seasons': [],
                 'episodes': [],
                 'alt_title': alt_title}
+        else:
+            self.log('Show is present in internal library: {}'
+                     .format(self.db[self.series_label][show_meta]))
         episodes = [episode for episode in episodes
                     if not self.episode_exists(title, episode['season'],
                                                episode['episode'])]
+        self.log('Episodes to export: {}'.format(episodes))
         if len(episodes) == 0:
+            self.log('No episodes to export, exiting')
             return False
         step = round(100.0 / len(episodes), 1)
         percent = step
@@ -485,8 +494,14 @@ class Library(object):
         episode = int(episode)
         title = re.sub(r'[?|$|!|:|#]', r'', title)
 
+        self.log('Adding S{}E{} (id={}) of {} (dest={})'
+                 .format(season, episode, video_id, title, show_dir))
+
         # add season
         if self.season_exists(title=title, season=season) is False:
+            self.log(
+                'Season {} does not exist, adding entry to internal library.'
+                .format(season))
             self.db[self.series_label][title]['seasons'].append(season)
 
         # add episode
@@ -496,12 +511,17 @@ class Library(object):
             season=season,
             episode=episode)
         if episode_exists is False:
+            self.log(
+                'S{}E{} does not exist, adding entry to internal library.'
+                .format(season, episode))
             self.db[self.series_label][title]['episodes'].append(episode_meta)
 
         # create strm file
         filename = episode_meta + '.strm'
         filepath = os.path.join(show_dir, filename)
         if xbmcvfs.exists(filepath):
+            self.log('strm file {} already exists, not writing it'
+                     .format(filepath))
             return
         url = build_url({'action': 'play_video', 'video_id': video_id})
         self.write_strm_file(
