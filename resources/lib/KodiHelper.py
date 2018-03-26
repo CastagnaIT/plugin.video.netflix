@@ -726,7 +726,7 @@ class KodiHelper(object):
             url=build_url({'action': 'export-new-episodes',
                            'inbackground': True}),
             listitem=xbmcgui.ListItem(
-                label=self.get_local_string(30030),
+                label=self.get_local_string(30064),
                 iconImage=self.default_fanart),
             isFolder=False)
         listing = content

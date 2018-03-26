@@ -495,7 +495,8 @@ class Library(object):
         title = re.sub(r'[?|$|!|:|#]', r'', title)
 
         self.log('Adding S{}E{} (id={}) of {} (dest={})'
-                 .format(season, episode, video_id, title, show_dir))
+                 .format(season, episode, video_id, title.encode('utf-8'),
+                         show_dir))
 
         # add season
         if self.season_exists(title=title, season=season) is False:
