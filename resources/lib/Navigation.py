@@ -621,7 +621,7 @@ class Navigation(object):
         for title, meta in self.library.list_exported_shows().iteritems():
             try:
                 self.log('Exporting new episodes of {} (id={})'
-                         .format(title, meta['netflix_id']))
+                         .format(title.encode('utf-8'), meta['netflix_id']))
                 self.export_to_library(
                     video_id=meta['netflix_id'], alt_title=title,
                     in_background=in_background)
@@ -630,7 +630,7 @@ class Navigation(object):
                 self.log(
                     ('Cannot export new episodes for {}, missing netflix_id. '
                      'Remove and re-add to library to fix this.')
-                    .format(title), xbmc.LOGERROR)
+                    .format(title.encode('utf-8')), xbmc.LOGERROR)
         xbmc.executebuiltin(
             'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
         self.kodi_helper.set_setting('update_running', 'false')
