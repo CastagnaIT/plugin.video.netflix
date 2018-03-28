@@ -414,6 +414,12 @@ class Library(object):
         else:
             self.log('Show is present in internal library: {}'
                      .format(self.db[self.series_label][show_meta]))
+        if 'netflix_id' not in self.db[self.series_label][show_meta]:
+            self.db[self.series_label][show_meta]['netflix_id'] = netflix_id
+            self._update_local_db(filename=self.db_filepath, db=self.db)
+            self.log('Added missing netflix_id={} for {} to internal library.'
+                     .format(netflix_id, title.encode('utf-8')),
+                     xbmc.LOGNOTICE)
         episodes = [episode for episode in episodes
                     if not self.episode_exists(title, episode['season'],
                                                episode['episode'])]

@@ -12,12 +12,15 @@ for the Kodi view & the Netflix model
 """
 
 import ast
+import re
+import os
 import json
 import urllib
 import urllib2
 from urlparse import parse_qsl, urlparse
 from datetime import datetime
 import xbmc
+import xbmcvfs
 from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
 from resources.lib.utils import noop, log
@@ -615,27 +618,47 @@ class Navigation(object):
 
     @log
     def export_new_episodes(self, in_background):
-        no_errors = True
         update_started_at = datetime.today().strftime('%Y-%m-%d %H:%M')
         self.kodi_helper.set_setting('update_running', update_started_at)
         for title, meta in self.library.list_exported_shows().iteritems():
             try:
-                self.log('Exporting new episodes of {} (id={})'
-                         .format(title.encode('utf-8'), meta['netflix_id']))
-                self.export_to_library(
-                    video_id=meta['netflix_id'], alt_title=title,
-                    in_background=in_background)
+                netflix_id = meta.get('netflix_id',
+                                      self._get_netflix_id(meta['alt_title']))
             except KeyError:
-                no_errors = False
                 self.log(
-                    ('Cannot export new episodes for {}, missing netflix_id. '
+                    ('Cannot determine netflix id for {}. '
                      'Remove and re-add to library to fix this.')
                     .format(title.encode('utf-8')), xbmc.LOGERROR)
+                continue
+            self.log('Exporting new episodes of {} (id={})'
+                     .format(title.encode('utf-8'), netflix_id))
+            self.export_to_library(video_id=netflix_id, alt_title=title,
+                                   in_background=in_background)
         xbmc.executebuiltin(
             'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
         self.kodi_helper.set_setting('update_running', 'false')
         self.kodi_helper.set_setting('last_update', update_started_at[0:10])
-        return no_errors
+        return True
+
+    def _get_netflix_id(self, showtitle):
+        show_dir = self.kodi_helper.check_folder_path(
+            path=os.path.join(self.library.tvshow_path, showtitle))
+        try:
+            filepath = next(os.path.join(show_dir, fn)
+                            for fn in xbmcvfs.listdir(show_dir)[1]
+                            if 'strm' in fn)
+        except StopIteration:
+            raise KeyError
+
+        self.log('Reading contents of {}'.format(filepath.encode('utf-8')))
+        f = xbmcvfs.File(filepath)
+        buf = f.read()
+        f.close()
+        episode_id = re.search(r'video_id=(\d+)', buf).group(1)
+        show_metadata = self._check_response(self.call_netflix_service({
+            'method': 'fetch_metadata',
+            'video_id': episode_id}))
+        return show_metadata['video']['id']
 
     @log
     def establish_session(self, account):
