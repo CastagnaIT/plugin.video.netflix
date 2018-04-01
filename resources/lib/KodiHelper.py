@@ -721,13 +721,14 @@ class KodiHelper(object):
         """
         action = ['remove_from_library', self.get_local_string(30030), 'remove']
 
+        li = xbmcgui.ListItem(
+            label=self.get_local_string(30064),
+            iconImage=self.default_fanart)
+        li.setProperty('fanart_image', self.default_fanart)
         xbmcplugin.addDirectoryItem(
             handle=self.plugin_handle,
-            url=build_url({'action': 'export-new-episodes',
-                           'inbackground': True}),
-            listitem=xbmcgui.ListItem(
-                label=self.get_local_string(30064),
-                iconImage=self.default_fanart),
+            url=build_url({'action': 'export-new-episodes','inbackground': True}),
+            listitem=li,
             isFolder=False)
         listing = content
         for video in listing[0]:
