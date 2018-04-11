@@ -7,7 +7,7 @@
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/?action=logout)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/?action=toggle_adult_pin)"/>
     <setting type="sep"/>
-    <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" option="close"/>
+    <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/?mode=openSettings&url=is)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
   </category>
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
