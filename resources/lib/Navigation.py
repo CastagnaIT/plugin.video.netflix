@@ -421,6 +421,10 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
+            user_list = ['queue', 'topTen', 'netflixOriginals',
+                         'trendingNow', 'newRelease', 'popularTitles']
+            if str(type) in user_list and video_list_id is None:
+                video_list_id = self.list_id_for_type(type)
             for i in range(0, 4):
                 items = self._check_response(self.call_netflix_service({
                     'method': 'fetch_video_list',
@@ -485,6 +489,20 @@ class Navigation(object):
                     build_url=self.build_url)
                 return listing
         return False
+
+    @log
+    def list_id_for_type(self, type):
+        """Get the list_ids for a given type"""
+        user_data = self._check_response(self.call_netflix_service({
+            'method': 'get_user_data'}))
+        video_list_ids = self._check_response(self.call_netflix_service({
+            'method': 'fetch_video_list_ids',
+            'guid': user_data['guid'],
+            'cache': True}))
+        if video_list_ids:
+            for video_list_id in video_list_ids['user']:
+                if video_list_ids['user'][video_list_id]['name'] == type:
+                    return str(video_list_ids['user'][video_list_id]['id'])
 
     @log
     def show_profiles(self):
@@ -576,6 +594,12 @@ class Navigation(object):
             if video['type'] == 'show':
                 episodes = []
                 for season in video['seasons']:
+                    if not self._download_episode_metadata(
+                            season['id'], video['title']):
+                        self.log(msg=('Failed to download episode metadata '
+                                      'for {} season {}')
+                                 .format(video['title'], season['id']),
+                                 level=xbmc.LOGERROR)
                     for episode in season['episodes']:
                         episodes.append({
                             'season': season['seq'],
@@ -590,6 +614,28 @@ class Navigation(object):
                     in_background=in_background)
             return True
         self.kodi_helper.dialogs.show_no_metadata_notify()
+        return False
+
+    def _download_episode_metadata(self, season_id, tvshowtitle):
+        user_data = (
+            self._check_response(
+                self.call_netflix_service(
+                    {'method': 'get_user_data'})))
+        episode_list = (
+            self._check_response(
+                self.call_netflix_service({
+                    'method': 'fetch_episodes_by_season',
+                    'season_id': season_id,
+                    'guid': user_data['guid'],
+                    'cache': True})))
+        if episode_list:
+            for episode in episode_list.itervalues():
+                episode['tvshowtitle'] = tvshowtitle
+                self.kodi_helper._generate_art_info(entry=episode)
+                self.kodi_helper._generate_entry_info(
+                    entry=episode,
+                    base_info={'mediatype': 'episode'})
+            return True
         return False
 
     @log
@@ -945,6 +991,5 @@ class Navigation(object):
 
     def open_settings(self, url):
         """Opens a foreign settings dialog"""
-        (is_addon, _) = self.kodi_helper.get_inputstream_addon()
-        url = is_addon if url == 'is' else url
+        url = 'inputstream.adaptive' if url == 'is' else url
         return Addon(url).openSettings()

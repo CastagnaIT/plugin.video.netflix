@@ -299,3 +299,7 @@ msgstr "Nur nach 5 Minuten vorherigem Leerlauf starten"
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
 msgstr "Prüfe alle X Minuten ob Startzeitpunkt erreicht"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Ansicht für Exportiert"

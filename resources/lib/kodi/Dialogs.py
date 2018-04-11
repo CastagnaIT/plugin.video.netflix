@@ -133,34 +133,6 @@ class Dialogs(object):
             time=self.notify_time)
         return dialog
 
-    def show_is_missing_notify(self):
-        """
-        Shows notification that the inputstream addon couldn't be found
-
-        :returns: bool - Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30028),
-            message=self.get_local_string(string_id=30029),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=self.notify_time)
-        return dialog
-
-    def show_is_inactive_notify(self):
-        """
-        Shows notification that the inputstream addon isn't enabled.
-
-        :returns: bool - Dialog shown
-        """
-        dlg = xbmcgui.Dialog()
-        dialog = dlg.notification(
-            heading=self.get_local_string(string_id=30028),
-            message=self.get_local_string(string_id=30046),
-            icon=xbmcgui.NOTIFICATION_ERROR,
-            time=self.notify_time)
-        return dialog
-
     def show_invalid_pin_notify(self):
         """
         Shows notification that a wrong adult pin was given

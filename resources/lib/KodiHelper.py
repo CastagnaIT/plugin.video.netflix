@@ -17,6 +17,7 @@ from Cryptodome.Util import Padding
 import xbmc
 import xbmcgui
 import xbmcplugin
+import inputstreamhelper
 from xbmcaddon import Addon
 from resources.lib.MSL import MSL
 from resources.lib.kodi.Dialogs import Dialogs
@@ -38,6 +39,7 @@ VIEW_MOVIE = 'movie'
 VIEW_SHOW = 'show'
 VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
+VIEW_EXPORTED = 'exported'
 
 CONTENT_FOLDER = 'files'
 CONTENT_MOVIE = 'movies'
@@ -384,7 +386,7 @@ class KodiHelper(object):
         content : :obj:`str`
 
             Type of content in container
-            (folder, movie, show, season, episode, login)
+            (folder, movie, show, season, episode, login, exported)
 
         """
         custom_view = self.get_addon().getSetting('customview')
@@ -631,9 +633,9 @@ class KodiHelper(object):
                 label=video['title'],
                 iconImage=self.default_fanart)
             # add some art to the item
-            li = self._generate_art_info(entry=video, li=li)
+            li.setArt(self._generate_art_info(entry=video))
             # add list item info
-            li, infos = self._generate_entry_info(entry=video, li=li)
+            li, infos = self._generate_listitem_info(entry=video, li=li)
             li = self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video_list[video_list_id]['type'] == 'movie':
@@ -791,7 +793,7 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_FOLDER)
+        self.set_custom_view(VIEW_EXPORTED)
         return True
 
     def build_search_result_folder(self, build_url, term):
@@ -972,9 +974,9 @@ class KodiHelper(object):
         for season in seasons_sorted:
             li = xbmcgui.ListItem(label=season['text'])
             # add some art to the item
-            li = self._generate_art_info(entry=season, li=li)
+            li.setArt(self._generate_art_info(entry=season))
             # add list item info
-            li, infos = self._generate_entry_info(
+            li, infos = self._generate_listitem_info(
                 entry=season,
                 li=li,
                 base_info={'mediatype': 'season'})
@@ -1031,9 +1033,9 @@ class KodiHelper(object):
         for episode in episodes_sorted:
             li = xbmcgui.ListItem(label=episode['title'])
             # add some art to the item
-            li = self._generate_art_info(entry=episode, li=li)
+            li.setArt(self._generate_art_info(entry=episode))
             # add list item info
-            li, infos = self._generate_entry_info(
+            li, infos = self._generate_listitem_info(
                 entry=episode,
                 li=li,
                 base_info={'mediatype': 'episode'})
@@ -1104,14 +1106,8 @@ class KodiHelper(object):
         """
         self.set_esn(esn)
         addon = self.get_addon()
-        (inputstream_addon, inputstream_enabled) = self.get_inputstream_addon()
-        if inputstream_addon is None:
-            self.dialogs.show_is_missing_notify()
-            self.log(msg='Inputstream addon not found')
-            return False
-        if not inputstream_enabled:
-            self.dialogs.show_is_inactive_notify()
-            self.log(msg='Inputstream addon not enabled')
+        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+        if not is_helper.check_inputstream():
             return False
 
         # track play event
@@ -1130,23 +1126,23 @@ class KodiHelper(object):
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
         play_item.setProperty(
-            key=inputstream_addon + '.stream_headers',
+            key=is_helper.inputstream_addon + '.stream_headers',
             value='user-agent=' + get_user_agent())
         play_item.setProperty(
-            key=inputstream_addon + '.license_type',
+            key=is_helper.inputstream_addon + '.license_type',
             value='com.widevine.alpha')
         play_item.setProperty(
-            key=inputstream_addon + '.manifest_type',
+            key=is_helper.inputstream_addon + '.manifest_type',
             value='mpd')
         play_item.setProperty(
-            key=inputstream_addon + '.license_key',
+            key=is_helper.inputstream_addon + '.license_key',
             value=msl_service_url + '/license?id=' + video_id + '||b{SSM}!b{SID}|')
         play_item.setProperty(
-            key=inputstream_addon + '.server_certificate',
+            key=is_helper.inputstream_addon + '.server_certificate',
             value='Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP0vrYimyYiBmk9GG+S0wB3CRITgweNE15cD33MQYyS3zpBd4z+sCJam2+jj1ZA4uijE2dxGC+gRBRnw9WoPyw7D8RuhGSJ95OEtzg3Ho+mEsxuE5xg9LM4+Zuro/9msz2bFgJUjQUVHo5j+k4qLWu4ObugFmc9DLIAohL58UR5k0XnvizulOHbMMxdzna9lwTw/4SALadEV/CZXBmswUtBgATDKNqjXwokohncpdsWSauH6vfS6FXwizQoZJ9TdjSGC60rUB2t+aYDm74cIuxAgMBAAE6EHRlc3QubmV0ZmxpeC5jb20SgAOE0y8yWw2Win6M2/bw7+aqVuQPwzS/YG5ySYvwCGQd0Dltr3hpik98WijUODUr6PxMn1ZYXOLo3eED6xYGM7Riza8XskRdCfF8xjj7L7/THPbixyn4mULsttSmWFhexzXnSeKqQHuoKmerqu0nu39iW3pcxDV/K7E6aaSr5ID0SCi7KRcL9BCUCz1g9c43sNj46BhMCWJSm0mx1XFDcoKZWhpj5FAgU4Q4e6f+S8eX39nf6D6SJRb4ap7Znzn7preIvmS93xWjm75I6UBVQGo6pn4qWNCgLYlGGCQCUm5tg566j+/g5jvYZkTJvbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw=')
         play_item.setProperty(
             key='inputstreamaddon',
-            value=inputstream_addon)
+            value=is_helper.inputstream_addon)
 
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
@@ -1184,21 +1180,18 @@ class KodiHelper(object):
             listitem=play_item)
         return resolved
 
-    def _generate_art_info(self, entry, li):
+    def _generate_art_info(self, entry):
         """Adds the art info from an entry to a Kodi list item
 
         Parameters
         ----------
         entry : :obj:`dict` of :obj:`str`
-            Entry that should be turned into a list item
-
-        li : :obj:`XMBC.ListItem`
-            Kodi list item instance
+            Entry that art dict should be generated for
 
         Returns
         -------
-        :obj:`XMBC.ListItem`
-            Kodi list item instance
+        :obj:`dict` of :obj:`str`
+            Dictionary containing art info
         """
         art = {'fanart': self.default_fanart}
         # Cleanup art
@@ -1208,7 +1201,6 @@ class KodiHelper(object):
             'fanart': '',
             'poster': ''
         })
-        self.log(entry)
         if 'boxarts' in dict(entry).keys() and not isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', '')
             small = big
@@ -1238,31 +1230,37 @@ class KodiHelper(object):
             art.update({'fanart': entry['fanart']})
         if 'poster' in dict(entry).keys():
             art.update({'poster': entry['poster']})
-        li.setArt(art)
         vid_id = entry.get('id', entry.get('summary', {}).get('id'))
         self.library.write_artdata_file(video_id=str(vid_id), content=art)
-        return li
+        return art
 
-    def _generate_entry_info(self, entry, li, base_info={}):
+    def _generate_listitem_info(self, entry, li, base_info={}):
+        infos, li_infos = self._generate_entry_info(entry, base_info)
+        li.setInfo('video', infos)
+        if li_infos.get('is_playable'):
+            li.setProperty('IsPlayable', 'true')
+        if 'quality' in li_infos:
+            li.addStreamInfo('video', li_infos['quality'])
+        return li, infos
+
+    def _generate_entry_info(self, entry, base_info={}):
         """Adds the item info from an entry to a Kodi list item
 
         Parameters
         ----------
         entry : :obj:`dict` of :obj:`str`
-            Entry that should be turned into a list item
-
-        li : :obj:`XMBC.ListItem`
-            Kodi list item instance
+            Entry that info dict should be generated for
 
         base_info : :obj:`dict` of :obj:`str`
             Additional info that overrules the entry info
 
         Returns
         -------
-        :obj:`XMBC.ListItem`
-            Kodi list item instance
+        :obj:`dict` of :obj:`str`
+            Dictionary containing info labels
         """
         infos = base_info
+        li_infos = {}
         entry_keys = entry.keys()
         # Cleanup item info
         infos.update({
@@ -1279,8 +1277,7 @@ class KodiHelper(object):
             'mediatype': '',
             'playcount': '',
             'episode': '',
-            'year': '',
-            'tvshowtitle': ''
+            'year': ''
         })
 
         if 'cast' in entry_keys and len(entry['cast']) > 0:
@@ -1316,12 +1313,13 @@ class KodiHelper(object):
             infos.update({'title': entry['title']})
         if 'type' in entry_keys:
             if entry['type'] == 'movie' or entry['type'] == 'episode':
-                li.setProperty('IsPlayable', 'true')
+                li_infos['is_playable'] = True
             elif entry['type'] == 'show':
                 infos.update({'tvshowtitle': entry['title']})
         if 'mediatype' in entry_keys:
-            if entry['mediatype'] == 'movie' or entry['mediatype'] == 'episode':
-                li.setProperty('IsPlayable', 'true')
+            if (entry['mediatype'] == 'movie' or
+                    entry['mediatype'] == 'episode'):
+                li_infos['is_playable'] = True
                 infos.update({'mediatype': entry['mediatype']})
         if 'watched' in entry_keys and entry.get('watched') is True:
             infos.update({'playcount': 1})
@@ -1339,13 +1337,15 @@ class KodiHelper(object):
                 quality = {'width': '1280', 'height': '720'}
             if entry['quality'] == '1080':
                 quality = {'width': '1920', 'height': '1080'}
-            li.addStreamInfo('video', quality)
+            li_infos['quality'] = quality
         if 'tvshowtitle' in entry_keys:
-            title = base64.urlsafe_b64decode(entry.get('tvshowtitle', ''))
-            infos.update({'tvshowtitle': title.decode('utf-8')})
-        li.setInfo('video', infos)
-        self.library.write_metadata_file(video_id=str(entry['id']), content=infos)
-        return li, infos
+            title = entry.get('tvshowtitle', '')
+            if not isinstance(title, unicode):
+                title = base64.urlsafe_b64decode(title).decode('utf-8')
+            infos.update({'tvshowtitle': title})
+        self.library.write_metadata_file(
+            video_id=str(entry['id']), content=infos)
+        return infos, li_infos
 
     def _generate_context_menu_items(self, entry, li):
         """Adds context menue items to a Kodi list item
@@ -1446,36 +1446,6 @@ class KodiHelper(object):
         if isinstance(locString, unicode):
             locString = locString.encode('utf-8')
         return locString
-
-    def get_inputstream_addon(self):
-        """Checks if the inputstream addon is installed & enabled.
-           Returns the type of the inputstream addon used and if it's enabled,
-           or None if not found.
-
-        Returns
-        -------
-        :obj:`tuple` of obj:`str` and bool, or None
-            Inputstream addon and if it's enabled, or None
-        """
-        is_type = 'inputstream.adaptive'
-        is_enabled = False
-        payload = {
-            'jsonrpc': '2.0',
-            'id': 1,
-            'method': 'Addons.GetAddonDetails',
-            'params': {
-                'addonid': is_type,
-                'properties': ['enabled']
-            }
-        }
-        response = xbmc.executeJSONRPC(json.dumps(payload))
-        data = json.loads(response)
-        if 'error' not in data.keys():
-            if isinstance(data.get('result'), dict):
-                if isinstance(data.get('result').get('addon'), dict):
-                    is_enabled = data.get('result').get('addon').get('enabled')
-            return (is_type, is_enabled)
-        return (None, is_enabled)
 
     def movietitle_to_id(self, title):
         query = {
