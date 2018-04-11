@@ -255,3 +255,7 @@ msgstr "In Bibliothek aktualisieren"
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Kindersicherungs PIN Abfrage ein-/ausschalten. Aktiv:"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Ansicht für Exportiert"

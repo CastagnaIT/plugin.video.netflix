@@ -38,6 +38,7 @@ VIEW_MOVIE = 'movie'
 VIEW_SHOW = 'show'
 VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
+VIEW_EXPORTED = 'exported'
 
 CONTENT_FOLDER = 'files'
 CONTENT_MOVIE = 'movies'
@@ -383,7 +384,7 @@ class KodiHelper(object):
         content : :obj:`str`
 
             Type of content in container
-            (folder, movie, show, season, episode, login)
+            (folder, movie, show, season, episode, login, exported)
 
         """
         custom_view = self.get_addon().getSetting('customview')
@@ -780,7 +781,7 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_FOLDER)
+        self.set_custom_view(VIEW_EXPORTED)
         return True
 
     def build_search_result_folder(self, build_url, term):
