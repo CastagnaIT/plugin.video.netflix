@@ -13,6 +13,13 @@
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
     <setting id="customexportname" type="bool" label="30036" default="false"/>
+    <setting label="30065" type="lsep"/>
+    <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
+    <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
+    <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
+    <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
+    <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
+    <setting id="update_running" type="text" visible="false" default="false"/>
   </category>
   <category label="30037">
     <setting id="customview" type="bool" label="30038" default="false"/>

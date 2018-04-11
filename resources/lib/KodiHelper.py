@@ -84,6 +84,7 @@ class KodiHelper(object):
         self.custom_export_name = addon.getSetting('customexportname')
         self.show_update_db = addon.getSetting('show_update_db')
         self.default_fanart = addon.getAddonInfo('fanart')
+        self.icon = addon.getAddonInfo('icon')
         self.bs = 32
         self.crypt_key = uniq_id()
         self.library = None
@@ -721,6 +722,16 @@ class KodiHelper(object):
             List could be build
         """
         action = ['remove_from_library', self.get_local_string(30030), 'remove']
+
+        li = xbmcgui.ListItem(
+            label=self.get_local_string(30064),
+            iconImage=self.default_fanart)
+        li.setProperty('fanart_image', self.default_fanart)
+        xbmcplugin.addDirectoryItem(
+            handle=self.plugin_handle,
+            url=build_url({'action': 'export-new-episodes','inbackground': True}),
+            listitem=li,
+            isFolder=False)
         listing = content
         for video in listing[0]:
             year = self.library.get_exported_movie_year(title=video)

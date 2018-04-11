@@ -203,6 +203,21 @@ class Dialogs(object):
             time=self.notify_time)
         return dialog
 
+    def show_episodes_added_notify(self, showtitle, episodes, icon):
+        """
+        Shows notification that new episodes were added to the library
+
+        :returns: bool - Dialog shown
+        """
+        dlg = xbmcgui.Dialog()
+        dialog = dlg.notification(
+            heading=showtitle,
+            message='{} {}'.format(episodes,
+                                   self.get_local_string(string_id=30063)),
+            icon=icon,
+            time=self.notify_time)
+        return dialog
+
     def show_autologin_enabled_notify(self):
         """
         Shows notification that auto login is enabled

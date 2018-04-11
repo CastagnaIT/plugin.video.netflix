@@ -256,6 +256,50 @@ msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Kindersicherungs PIN Abfrage ein-/ausschalten. Aktiv:"
 
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "neue Folgen zur Bilbiothek hinzugefügt"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Neue Folgen der Bibliothek hinzufügen"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Automatische Aktualisierung"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "niemals"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "täglich"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "alle zwei Tage"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "alle 5 Tage"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "wöchentlich"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Uhrzeit"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Nur nach 5 Minuten vorherigem Leerlauf starten"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Prüfe alle X Minuten ob Startzeitpunkt erreicht"
+
 msgctxt "#30074"
 msgid "View for exported"
 msgstr "Ansicht für Exportiert"
