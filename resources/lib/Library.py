@@ -114,12 +114,12 @@ class Library(object):
             Video fallback title for m3u
 
         """
-        self.log('Writing {}'.format(path.encode('utf-8')))
+        self.log('Writing {}'.format(path.decode('ascii','ignore')))
         f = xbmcvfs.File(path, 'w')
         f.write('#EXTINF:-1,'+title_player.encode('utf-8')+'\n')
         f.write(url)
         f.close()
-        self.log('Successfully wrote {}'.format(path.encode('utf-8')))
+        self.log('Successfully wrote {}'.format(path.decode('ascii','ignore')))
 
     def write_metadata_file(self, video_id, content):
         """Writes the metadata file that caches grabbed content from netflix
