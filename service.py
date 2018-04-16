@@ -13,6 +13,7 @@ from SocketServer import TCPServer
 from datetime import datetime, timedelta
 import xbmc
 from resources.lib.KodiHelper import KodiHelper
+from resources.lib.KodiMonitor import KodiMonitor
 from resources.lib.MSLHttpRequestHandler import MSLHttpRequestHandler
 from resources.lib.NetflixHttpRequestHandler import NetflixHttpRequestHandler
 
@@ -144,8 +145,9 @@ class NetflixService(object):
         Main loop. Runs until xbmc.Monitor requests abort
         """
         self._start_servers()
-        monitor = xbmc.Monitor()
+        monitor = KodiMonitor(self.kodi_helper, self.kodi_helper.log)
         while not monitor.abortRequested():
+            monitor.update_playback_progress()
             try:
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()

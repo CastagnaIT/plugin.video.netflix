@@ -48,10 +48,19 @@ CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
 
 
+def _update_if_present(source_dict, source_att, target_dict, target_att):
+    if source_dict.get(source_att):
+        target_dict.update({target_att: source_dict[source_att]})
+
+
 class KodiHelper(object):
     """
     Consumes all the configuration data from Kodi as well as
     turns data into lists of folders and videos"""
+
+    TAGGED_WINDOW_ID = 10000
+    PROP_NETFLIX_PLAY = 'netflix_playback'
+    PROP_PLAYBACK_INIT = 'initialized'
 
     def __init__(self, plugin_handle=None, base_url=None):
         """
@@ -1164,20 +1173,29 @@ class KodiHelper(object):
                     showid=id,
                     showseason=infoLabels['season'],
                     showepisode=infoLabels['episode'])
-                if details is not False:
-                    play_item.setInfo('video', details[0])
-                    play_item.setArt(details[1])
             if infoLabels['mediatype'] != 'episode':
                 id = self.movietitle_to_id(title=infoLabels['title'])
                 details = self.get_movie_content_by_id(movieid=id)
-                if details is not False:
-                    play_item.setInfo('video', details[0])
-                    play_item.setArt(details[1])
+
+            if details is not False:
+                if 'resume' in details[0]:
+                    resume_point = details[0].pop('resume')
+                    play_item.setProperty(
+                        'StartOffset', str(resume_point))
+                play_item.setInfo('video', details[0])
+                play_item.setArt(details[1])
 
         resolved = xbmcplugin.setResolvedUrl(
             handle=self.plugin_handle,
             succeeded=True,
             listitem=play_item)
+
+        # set window property to enable recognition of playbacks
+        xbmcgui.Window(self.TAGGED_WINDOW_ID).setProperty(
+            self.PROP_NETFLIX_PLAY,
+            self.PROP_PLAYBACK_INIT
+        )
+
         return resolved
 
     def _generate_art_info(self, entry):
@@ -1521,7 +1539,8 @@ class KodiHelper(object):
     def get_show_content_by_id(self, showid, showseason, showepisode):
         showseason = int(showseason)
         showepisode = int(showepisode)
-        props = ["season", "episode", "plot", "fanart", "art"]
+        props = ["title", "showtitle", "season", "episode", "plot", "fanart",
+                 "art", "resume"]
         query = {
                 "jsonrpc": "2.0",
                 "method": "VideoLibrary.GetEpisodes",
@@ -1542,17 +1561,31 @@ class KodiHelper(object):
                     in_season = episode['season'] == showseason
                     in_episode = episode['episode'] == showepisode
                     if in_season and in_episode:
-                        infos = {}
-                        if 'plot' in episode and len(episode['plot']) > 0:
-                            infos.update({
-                                'plot': episode['plot'],
-                                'genre': showid[1]})
+                        infos = {'mediatype': 'episode',
+                                 'dbid': episode['episodeid'],
+                                 'tvshowtitle': episode['showtitle'],
+                                 'title': episode['title']}
+                        if episode['resume']['position'] > 0:
+                            infos['resume'] = episode['resume']['position']
+                        infos.update({'plot': episode['plot'],
+                                      'genre': showid[1]}
+                                     if episode.get('plot') else {})
                         art = {}
-                        if 'fanart' in episode and len(episode['fanart']) > 0:
-                            art.update({'fanart': episode['fanart']})
-                        if 'art' in episode and len(episode['art']['season.poster']) > 0:
-                            art.update({
-                                'thumb': episode['art']['season.poster']})
+                        art.update({'fanart': episode['fanart']}
+                                   if episode.get('fanart') else {})
+                        if 'art' in episode:
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='thumb',
+                                               target_dict=art,
+                                               target_att='thumb')
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='tvshow.poster',
+                                               target_dict=art,
+                                               target_att='poster')
+                            _update_if_present(source_dict=episode['art'],
+                                               source_att='tvshow.banner',
+                                               target_dict=art,
+                                               target_att='banner')
                         return infos, art
             return False
         except Exception:
@@ -1565,11 +1598,13 @@ class KodiHelper(object):
                 "params": {
                     "movieid": movieid,
                     "properties": [
+                        "title",
                         "genre",
                         "plot",
                         "fanart",
                         "thumbnail",
-                        "art"]
+                        "art",
+                        "resume"]
                 },
                 "id": "libMovies"
             }
@@ -1580,7 +1615,10 @@ class KodiHelper(object):
             result = json_result.get('result', None)
             if result is not None and 'moviedetails' in result:
                 result = result.get('moviedetails', {})
-                infos = {}
+                infos = {'mediatype': 'movie', 'dbid': movieid,
+                         'title': result['title']}
+                if 'resume' in result:
+                    infos.update('resume', result['resume'])
                 if 'genre' in result and len(result['genre']) > 0:
                     infos.update({'genre': json_result['genre']})
                 if 'plot' in result and len(result['plot']) > 0:
