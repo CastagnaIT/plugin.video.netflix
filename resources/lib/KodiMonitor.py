@@ -131,7 +131,7 @@ class KodiMonitor(xbmc.Monitor):
         Indicates if a playback was initiated by the netflix addon by
         checking the appropriate window property set by KodiHelper.
         """
-        return self._is_playback_status(self.nx_common.PROP_PLAYBACK_INIT)
+        return self._is_playback_status(PROP_PLAYBACK_INIT)
 
     def is_tracking_playback(self):
         """
