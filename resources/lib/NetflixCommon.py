@@ -28,11 +28,11 @@ class NetflixCommon(object):
         """Return the current addon instance"""
         return self.addon.getAddonInfo(name)
 
-    def set_setting(self, name, value):
-        return self.addon.setSetting(name, value)
+    def set_setting(self, key, value):
+        return self.addon.setSetting(key, value)
 
-    def get_setting(self, name):
-        return self.addon.getSetting(name)
+    def get_setting(self, key):
+        return self.addon.getSetting(key)
 
     def flush_settings(self):
         self.addon = Addon()

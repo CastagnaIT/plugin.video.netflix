@@ -115,7 +115,7 @@ class Library(object):
             Video fallback title for m3u
 
         """
-        self.log('Writing {}'.format(path.decode('ascii','ignore')))
+        self.log('Writing {}'.format(path.encode('ascii','ignore')))
         f = xbmcvfs.File(path, 'w')
         f.write('#EXTINF:-1,'+title_player.encode('utf-8')+'\n')
         f.write(url)
