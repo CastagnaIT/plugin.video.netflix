@@ -13,29 +13,23 @@ import json
 import time
 import base64
 import random
-from Cryptodome.Random import get_random_bytes
-from Cryptodome.Hash import HMAC, SHA256
-from Cryptodome.Cipher import PKCS1_OAEP
-from Cryptodome.PublicKey import RSA
-from Cryptodome.Util import Padding
-from Cryptodome.Cipher import AES
 from StringIO import StringIO
 from datetime import datetime
-import xbmcvfs
 import requests
 import xml.etree.ElementTree as ET
 
+#check if we are on Android
+import subprocess
+try:
+    sdkversion = int(subprocess.check_output(
+        ['/system/bin/getprop', 'ro.build.version.sdk']))
+except:
+    sdkversion = 0 
 
-def base64key_decode(payload):
-    l = len(payload) % 4
-    if l == 2:
-        payload += '=='
-    elif l == 3:
-        payload += '='
-    elif l != 0:
-        raise ValueError('Invalid base64 string')
-    return base64.urlsafe_b64decode(payload.encode('utf-8'))
-
+if sdkversion >= 18:
+  from MSLMediaDrm import MSLMediaDrmCrypto as MSLHandler
+else:
+  from MSLCrypto import MSLCrypto as MSLHandler
 
 class MSL(object):
     # Is a handshake already performed and the keys loaded
@@ -52,47 +46,23 @@ class MSL(object):
         'license': base_url + 'license'
     }
 
-    def __init__(self, kodi_helper):
-        """
-        The Constructor checks for already existing crypto Keys.
-        If they exist it will load the existing keys
-        """
-        self.kodi_helper = kodi_helper
-        try:
-            xbmcvfs.mkdir(path=self.kodi_helper.msl_data_path)
-        except OSError:
-            pass
+    def __init__(self, nx_common):
 
-        if self.file_exists(self.kodi_helper.msl_data_path, 'msl_data.json'):
-            self.init_msl_data()
-        elif self.file_exists(self.kodi_helper.msl_data_path, 'rsa_key.bin'):
-            self.init_rsa_keys()
-        else:
-            self.init_generate_rsa_keys()
+      """
+      The Constructor checks for already existing crypto Keys.
+      If they exist it will load the existing keys
+      """
+      self.nx_common = nx_common
 
-    def init_msl_data(self):
-        self.kodi_helper.log(msg='MSL Data exists. Use old Tokens.')
-        self.__load_msl_data()
-        self.handshake_performed = True
+      self.crypto = MSLHandler(nx_common)
 
-    def init_rsa_keys(self):
-        self.kodi_helper.log(msg='RSA Keys do already exist load old ones')
-        self.__load_rsa_keys()
-        if self.kodi_helper.get_esn():
-            self.__perform_key_handshake()
+      if self.nx_common.file_exists(self.nx_common.data_path, 'msl_data.json'):
+          self.init_msl_data()
+      else:
+          self.crypto.fromDict(None)
+          self.__perform_key_handshake()
 
-    def init_generate_rsa_keys(self):
-            self.kodi_helper.log(msg='Create new RSA Keys')
-            # Create new Key Pair and save
-            self.rsa_key = RSA.generate(2048)
-            self.__save_rsa_keys()
-            if self.kodi_helper.get_esn():
-                self.__perform_key_handshake()
-
-    def perform_key_handshake(self):
-        self.__perform_key_handshake()
-
-    def load_manifest(self, viewable_id):
+    def load_manifest(self, viewable_id, dolby, hevc):
         """
         Loads the manifets for the given viewable_id and
         returns a mpd-XML-Manifest
@@ -141,7 +111,7 @@ class MSL(object):
         }
 
         # add hevc profiles if setting is set
-        if self.kodi_helper.use_hevc() is True:
+        if hevc is True:
             hevc = 'hevc-main-'
             main10 = 'hevc-main10-'
             prk = 'dash-cenc-prk'
@@ -203,7 +173,7 @@ class MSL(object):
             manifest_request_data['profiles'].append(hdr + 'L51-' + prk)
 
         # Check if dolby sound is enabled and add to profles
-        if self.kodi_helper.get_dolby_setting():
+        if dolby:
             manifest_request_data['profiles'].append('ddplus-2.0-dash')
             manifest_request_data['profiles'].append('ddplus-5.1-dash')
 
@@ -215,23 +185,23 @@ class MSL(object):
             resp = None
             exc = sys.exc_info()
             msg = '[MSL][POST] Error {} {}'
-            self.kodi_helper.log(msg=msg.format(exc[0], exc[1]))
+            self.nx_common.log(msg=msg.format(exc[0], exc[1]))
 
         if resp:
             try:
                 # if the json() does not fail we have an error because
                 # the manifest response is a chuncked json response
                 resp.json()
-                self.kodi_helper.log(
+                self.nx_common.log(
                     msg='Error getting Manifest: ' + resp.text)
                 return False
             except ValueError:
                 # json() failed so parse the chunked response
-                self.kodi_helper.log(
-                    msg='Got chunked Manifest Response: ' + resp.text)
+                #self.nx_common.log(
+                #    msg='Got chunked Manifest Response: ' + resp.text)
                 resp = self.__parse_chunked_msl_response(resp.text)
-                self.kodi_helper.log(
-                    msg='Parsed chunked Response: ' + json.dumps(resp))
+                #self.nx_common.log(
+                #    msg='Parsed chunked Response: ' + json.dumps(resp))
                 data = self.__decrypt_payload_chunks(resp['payloads'])
                 return self.__tranform_to_dash(data)
         return False
@@ -266,14 +236,14 @@ class MSL(object):
         except:
             resp = None
             exc = sys.exc_info()
-            self.kodi_helper.log(
+            self.nx_common.log(
                 msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp:
             try:
                 # If is valid json the request for the licnese failed
                 resp.json()
-                self.kodi_helper.log(msg='Error getting license: '+resp.text)
+                self.nx_common.log(msg='Error getting license: '+resp.text)
                 return False
             except ValueError:
                 # json() failed so we have a chunked json response
@@ -282,7 +252,7 @@ class MSL(object):
                 if data['success'] is True:
                     return data['result']['licenses'][0]['data']
                 else:
-                    self.kodi_helper.log(
+                    self.nx_common.log(
                         msg='Error getting license: ' + json.dumps(data))
                     return False
         return False
@@ -295,14 +265,10 @@ class MSL(object):
             decoded_payload = base64.standard_b64decode(payload)
             encryption_envelope = json.JSONDecoder().decode(decoded_payload)
             # Decrypt the text
-            cipher = AES.new(
-                self.encryption_key,
-                AES.MODE_CBC,
-                base64.standard_b64decode(encryption_envelope['iv']))
-            ciphertext = encryption_envelope.get('ciphertext')
-            plaintext = cipher.decrypt(base64.standard_b64decode(ciphertext))
+            plaintext = self.crypto.decrypt(base64.standard_b64decode(encryption_envelope['iv']),
+              base64.standard_b64decode(encryption_envelope.get('ciphertext')))
             # unpad the plaintext
-            plaintext = json.JSONDecoder().decode(Padding.unpad(plaintext, 16))
+            plaintext = json.JSONDecoder().decode(plaintext)
             data = plaintext.get('data')
 
             # uncompress data if compressed
@@ -319,8 +285,8 @@ class MSL(object):
 
     def __tranform_to_dash(self, manifest):
 
-        self.save_file(
-            msl_data_path=self.kodi_helper.msl_data_path,
+        self.nx_common.save_file(
+            data_path=self.nx_common.data_path,
             filename='manifest.json',
             content=json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
@@ -416,12 +382,12 @@ class MSL(object):
                 impaired=impaired)
             for downloadable in audio_track['downloadables']:
                 codec = 'aac'
-                self.kodi_helper.log(msg=downloadable)
+                #self.nx_common.log(msg=downloadable)
                 is_dplus2 = downloadable['contentProfile'] == 'ddplus-2.0-dash'
                 is_dplus5 = downloadable['contentProfile'] == 'ddplus-5.1-dash'
                 if is_dplus2 or is_dplus5:
                     codec = 'ec-3'
-                self.kodi_helper.log(msg='codec is: ' + codec)
+                #self.nx_common.log(msg='codec is: ' + codec)
                 rep = ET.SubElement(
                     parent=audio_adaption_set,
                     tag='Representation',
@@ -473,6 +439,12 @@ class MSL(object):
 
         xml = ET.tostring(root, encoding='utf-8', method='xml')
         xml = xml.replace('\n', '').replace('\r', '')
+
+        self.nx_common.save_file(
+            data_path=self.nx_common.data_path,
+            filename='manifest.mpd',
+            content=xml)
+
         return xml
 
     def __get_base_url(self, urls):
@@ -490,7 +462,7 @@ class MSL(object):
         }
 
     def __generate_msl_request_data(self, data):
-        self.__load_msl_data()
+        #self.__load_msl_data()
         header_encryption_envelope = self.__encrypt(
             plaintext=self.__generate_msl_header())
         headerdata = base64.standard_b64encode(header_encryption_envelope)
@@ -546,7 +518,7 @@ class MSL(object):
         :return: The base64 encoded JSON String of the header
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
-        esn = self.kodi_helper.get_esn()
+        esn = self.nx_common.get_esn()
 
         # Add compression algo if not empty
         compression_algos = [compressionalgo] if compressionalgo != '' else []
@@ -567,21 +539,12 @@ class MSL(object):
 
         # If this is a keyrequest act diffrent then other requests
         if is_key_request:
-            raw_key = self.rsa_key.publickey().exportKey(format='DER')
-            public_key = base64.standard_b64encode(raw_key)
-            header_data['keyrequestdata'] = [{
-                'scheme': 'ASYMMETRIC_WRAPPED',
-                'keydata': {
-                    'publickey': public_key,
-                    'mechanism': 'JWK_RSA',
-                    'keypairid': 'superKeyPair'
-                }
-            }]
+            header_data['keyrequestdata'] = self.crypto.get_key_request()
         else:
             if 'usertoken' in self.tokens:
                 pass
             else:
-                account = self.kodi_helper.get_credentials()
+                account = self.nx_common.get_credentials()
                 # Auth via email and password
                 header_data['userauthdata'] = {
                     'scheme': 'EMAIL_PASSWORD',
@@ -594,27 +557,7 @@ class MSL(object):
         return json.dumps(header_data)
 
     def __encrypt(self, plaintext):
-        """
-        Encrypt the given Plaintext with the encryption key
-        :param plaintext:
-        :return: Serialized JSON String of the encryption Envelope
-        """
-        esn = self.kodi_helper.get_esn()
-
-        iv = get_random_bytes(16)
-        encryption_envelope = {
-            'ciphertext': '',
-            'keyid': esn + '_' + str(self.sequence_number),
-            'sha256': 'AA==',
-            'iv': base64.standard_b64encode(iv)
-        }
-        # Padd the plaintext
-        plaintext = Padding.pad(plaintext, 16)
-        # Encrypt the text
-        cipher = AES.new(self.encryption_key, AES.MODE_CBC, iv)
-        citext = cipher.encrypt(plaintext)
-        encryption_envelope['ciphertext'] = base64.standard_b64encode(citext)
-        return json.dumps(encryption_envelope)
+        return json.dumps(self.crypto.encrypt(plaintext, self.nx_common.get_esn(), self.sequence_number))
 
     def __sign(self, text):
         """
@@ -624,16 +567,18 @@ class MSL(object):
         :param text:
         :return: Base64 encoded signature
         """
-        signature = HMAC.new(self.sign_key, text, SHA256).digest()
-        return base64.standard_b64encode(signature)
+        return base64.standard_b64encode(self.crypto.sign(text))
 
     def __perform_key_handshake(self):
+        esn = self.nx_common.get_esn()
+        if not esn:
+          return False
+
         header = self.__generate_msl_header(
             is_key_request=True,
             is_handshake=True,
             compressionalgo='',
             encrypt=False)
-        esn = self.kodi_helper.get_esn()
 
         request = {
             'entityauthdata': {
@@ -645,8 +590,8 @@ class MSL(object):
             'headerdata': base64.standard_b64encode(header),
             'signature': '',
         }
-        self.kodi_helper.log(msg='Key Handshake Request:')
-        self.kodi_helper.log(msg=json.dumps(request))
+        #self.nx_common.log(msg='Key Handshake Request:')
+        #self.nx_common.log(msg=json.dumps(request))
 
         try:
             resp = self.session.post(
@@ -655,48 +600,34 @@ class MSL(object):
         except:
             resp = None
             exc = sys.exc_info()
-            self.kodi_helper.log(
+            self.nx_common.log(
                 msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp and resp.status_code == 200:
             resp = resp.json()
             if 'errordata' in resp:
-                self.kodi_helper.log(msg='Key Exchange failed')
-                self.kodi_helper.log(
+                self.nx_common.log(msg='Key Exchange failed')
+                self.nx_common.log(
                     msg=base64.standard_b64decode(resp['errordata']))
                 return False
             base_head = base64.standard_b64decode(resp['headerdata'])
-            self.__parse_crypto_keys(
-                headerdata=json.JSONDecoder().decode(base_head))
+
+            headerdata=json.JSONDecoder().decode(base_head)
+            self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
+            self.crypto.parse_key_response(headerdata)
+            self.__save_msl_data()
         else:
-            self.kodi_helper.log(msg='Key Exchange failed')
-            self.kodi_helper.log(msg=resp.text)
+            self.nx_common.log(msg='Key Exchange failed')
+            self.nx_common.log(msg=resp.text)
 
-    def __parse_crypto_keys(self, headerdata):
-        self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
-        # Init Decryption
-        enc_key = headerdata['keyresponsedata']['keydata']['encryptionkey']
-        hmac_key = headerdata['keyresponsedata']['keydata']['hmackey']
-        encrypted_encryption_key = base64.standard_b64decode(enc_key)
-        encrypted_sign_key = base64.standard_b64decode(hmac_key)
-        cipher_rsa = PKCS1_OAEP.new(self.rsa_key)
-
-        # Decrypt encryption key
-        cipher_raw = cipher_rsa.decrypt(encrypted_encryption_key)
-        encryption_key_data = json.JSONDecoder().decode(cipher_raw)
-        self.encryption_key = base64key_decode(encryption_key_data['k'])
-
-        # Decrypt sign key
-        sign_key_raw = cipher_rsa.decrypt(encrypted_sign_key)
-        sign_key_data = json.JSONDecoder().decode(sign_key_raw)
-        self.sign_key = base64key_decode(sign_key_data['k'])
-
-        self.__save_msl_data()
+    def init_msl_data(self):
+        self.nx_common.log(msg='MSL Data exists. Use old Tokens.')
+        self.__load_msl_data()
         self.handshake_performed = True
 
     def __load_msl_data(self):
-        raw_msl_data = self.load_file(
-            msl_data_path=self.kodi_helper.msl_data_path,
+        raw_msl_data = self.nx_common.load_file(
+            data_path=self.nx_common.data_path,
             filename='msl_data.json')
         msl_data = json.JSONDecoder().decode(raw_msl_data)
         # Check expire date of the token
@@ -707,17 +638,14 @@ class MSL(object):
         valid_until = datetime.utcfromtimestamp(exp)
         present = datetime.now()
         difference = valid_until - present
-        difference = difference.total_seconds() / 60 / 60
         # If token expires in less then 10 hours or is expires renew it
-        if difference < 10:
-            self.__load_rsa_keys()
+        self.nx_common.log(msg='Expiration time: Key:' + str(valid_until) + ', Now:' + str(present) + ', Diff:' + str(difference.total_seconds()))
+        difference = difference.total_seconds() / 60 / 60
+        if difference < 10 or self.crypto.fromDict(msl_data):
             self.__perform_key_handshake()
             return
 
         self.__set_master_token(msl_data['tokens']['mastertoken'])
-        enc_key = msl_data['encryption_key']
-        self.encryption_key = base64.standard_b64decode(enc_key)
-        self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
 
     def save_msl_data(self):
         self.__save_msl_data()
@@ -728,15 +656,15 @@ class MSL(object):
         :return:
         """
         data = {
-            "encryption_key": base64.standard_b64encode(self.encryption_key),
-            'sign_key': base64.standard_b64encode(self.sign_key),
             'tokens': {
                 'mastertoken': self.mastertoken
             }
         }
+        data.update(self.crypto.toDict())
+
         serialized_data = json.JSONEncoder().encode(data)
-        self.save_file(
-            msl_data_path=self.kodi_helper.msl_data_path,
+        self.nx_common.save_file(
+            data_path=self.nx_common.data_path,
             filename='msl_data.json',
             content=serialized_data)
 
@@ -746,54 +674,3 @@ class MSL(object):
         base_token = base64.standard_b64decode(raw_token)
         decoded_token = json.JSONDecoder().decode(base_token)
         self.sequence_number = decoded_token.get('sequencenumber')
-
-    def __load_rsa_keys(self):
-        loaded_key = self.load_file(
-            msl_data_path=self.kodi_helper.msl_data_path,
-            filename='rsa_key.bin')
-        self.rsa_key = RSA.importKey(loaded_key)
-
-    def __save_rsa_keys(self):
-        self.kodi_helper.log(msg='Save RSA Keys')
-        # Get the DER Base64 of the keys
-        encrypted_key = self.rsa_key.exportKey()
-        self.save_file(
-            msl_data_path=self.kodi_helper.msl_data_path,
-            filename='rsa_key.bin',
-            content=encrypted_key)
-
-    @staticmethod
-    def file_exists(msl_data_path, filename):
-        """
-        Checks if a given file exists
-        :param filename: The filename
-        :return: True if so
-        """
-        return xbmcvfs.exists(path=msl_data_path + filename)
-
-    @staticmethod
-    def save_file(msl_data_path, filename, content):
-        """
-        Saves the given content under given filename
-        :param filename: The filename
-        :param content: The content of the file
-        """
-
-        file_handle = xbmcvfs.File(
-            filepath=msl_data_path + filename,
-            mode='w')
-        file_content = file_handle.write(content)
-        file_handle.close()
-
-    @staticmethod
-    def load_file(msl_data_path, filename):
-        """
-        Loads the content of a given filename
-        :param filename: The file to load
-        :return: The content of the file
-        """
-        file_handle = xbmcvfs.File(
-            filepath=msl_data_path + filename)
-        file_content = file_handle.read()
-        file_handle.close()
-        return file_content

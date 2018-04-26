@@ -8,7 +8,7 @@
 
 
 import sys
-from resources.lib.KodiHelper import KodiHelper
+from resources.lib.NetflixCommon import NetflixCommon
 from resources.lib.Navigation import Navigation
 from resources.lib.Library import Library
 
@@ -19,24 +19,19 @@ BASE_URL = sys.argv[0]
 REQUEST_PARAMS = sys.argv[2][1:]
 
 # init plugin libs
-KODI_HELPER = KodiHelper(
+NETFLIX_COMMON = NetflixCommon(
     plugin_handle=PLUGIN_HANDLE,
     base_url=BASE_URL
 )
-LIBRARY = Library(
-    root_folder=KODI_HELPER.base_data_path,
-    library_settings=KODI_HELPER.get_custom_library_settings(),
-    log_fn=KODI_HELPER.log
-)
+
+LIBRARY = Library(nx_common=NETFLIX_COMMON)
+
 NAVIGATION = Navigation(
-    kodi_helper=KODI_HELPER,
+    nx_common=NETFLIX_COMMON,
     library=LIBRARY,
-    base_url=BASE_URL,
-    log_fn=KODI_HELPER.log
 )
-KODI_HELPER.set_library(library=LIBRARY)
 
 if __name__ == '__main__':
     # Call the router function and pass the plugin call parameters to it.
-    KODI_HELPER.log('Started (Version ' + KODI_HELPER.version + ')')
+    NETFLIX_COMMON.log('Started (Version ' + NETFLIX_COMMON.version + ')')
     NAVIGATION.router(paramstring=REQUEST_PARAMS)

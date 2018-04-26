@@ -8,26 +8,16 @@
 
 import json
 import BaseHTTPServer
+from SocketServer import TCPServer
 from urlparse import urlparse, parse_qs
-from resources.lib.KodiHelper import KodiHelper
 from resources.lib.utils import get_class_methods
 from resources.lib.NetflixSession import NetflixSession
 from resources.lib.NetflixHttpSubRessourceHandler import \
     NetflixHttpSubRessourceHandler
 
-KODI_HELPER = KodiHelper()
-NETFLIX_SESSION = NetflixSession(
-    cookie_path=KODI_HELPER.cookie_path,
-    data_path=KODI_HELPER.data_path,
-    verify_ssl=KODI_HELPER.get_ssl_verification_setting(),
-    log_fn=KODI_HELPER.log
-)
 
 # get list of methods & instance form the sub ressource handler
 METHODS = get_class_methods(class_item=NetflixHttpSubRessourceHandler)
-RES_HANDLER = NetflixHttpSubRessourceHandler(
-    kodi_helper=KODI_HELPER,
-    netflix_session=NETFLIX_SESSION)
 
 
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -57,7 +47,7 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             return self.send_error(404, error_msg)
 
         # call method & get the result
-        result = getattr(RES_HANDLER, method)(params)
+        result = getattr(self.server.res_handler, method)(params)
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
@@ -68,3 +58,24 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message(self, *args):
         """Disable the BaseHTTPServer Log"""
         pass
+
+
+##################################
+
+
+class NetflixTCPServer(TCPServer):
+
+    def __init__(self, server_address, nx_common):
+        nx_common.log(msg='Constructing netflixTCPServer')
+
+        netflix_session = NetflixSession(
+            cookie_path=nx_common.cookie_path,
+            data_path=nx_common.data_path,
+            verify_ssl=(nx_common.get_setting('ssl_verification') == 'true'),
+            nx_common=nx_common)
+
+        self.res_handler = NetflixHttpSubRessourceHandler(
+            nx_common=nx_common,
+            netflix_session=netflix_session)
+
+        TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)

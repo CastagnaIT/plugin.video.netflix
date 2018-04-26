@@ -20,10 +20,9 @@ import urllib2
 from urlparse import parse_qsl, urlparse
 from datetime import datetime
 import xbmc
-import xbmcvfs
-from xbmcaddon import Addon
 import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import noop, log
+from resources.lib.utils import log
+from resources.lib.KodiHelper import KodiHelper
 
 
 class Navigation(object):
@@ -33,7 +32,7 @@ class Navigation(object):
     for the Kodi view & the Netflix model
     """
 
-    def __init__(self, kodi_helper, library, base_url, log_fn=noop):
+    def __init__(self, nx_common, library):
         """
         Takes the instances & configuration options needed to drive the plugin
 
@@ -51,10 +50,13 @@ class Navigation(object):
         log_fn : :obj:`fn`
              optional log function
         """
-        self.kodi_helper = kodi_helper
+        self.nx_common = nx_common
+        self.kodi_helper = KodiHelper(
+            nx_common=nx_common,
+            library=library)
         self.library = library
-        self.base_url = base_url
-        self.log = log_fn
+        self.base_url = self.nx_common.base_url
+        self.log = self.nx_common.log
 
     @log
     def router(self, paramstring):
@@ -100,12 +102,12 @@ class Navigation(object):
 
         # check if one of the before routing options decided to killthe routing
         if 'exit' in options:
-            self.kodi_helper.log(msg='exit in options')
+            self.nx_common.log(msg='exit in options')
             return False
         if 'action' not in params.keys():
             # show the profiles
-            if self.kodi_helper.get_setting('autologin_enable') == 'true':
-                profile_id = self.kodi_helper.get_setting('autologin_id')
+            if self.nx_common.get_setting('autologin_enable') == 'true':
+                profile_id = self.nx_common.get_setting('autologin_id')
                 if profile_id != '':
                     self.call_netflix_service({
                         'method': 'switch_profile',
@@ -197,7 +199,7 @@ class Navigation(object):
         elif action == 'play_video':
             # play a video, check for adult pin if needed
             adult_pin = None
-            adult_setting = self.kodi_helper.get_setting('adultpin_enable')
+            adult_setting = self.nx_common.get_setting('adultpin_enable')
             ask_for_adult_pin = adult_setting.lower() == 'true'
             if ask_for_adult_pin is True:
                 if self.check_for_adult_pin(params=params):
@@ -257,16 +259,12 @@ class Navigation(object):
             infoLabels = ast.literal_eval(infoLabels)
         except:
             infoLabels = {}
-        esn = self._check_response(self.call_netflix_service({
-            'method': 'get_esn'}))
-        if esn:
-            play = self.kodi_helper.play_item(
-                esn=esn,
-                video_id=video_id,
-                start_offset=start_offset,
-                infoLabels=infoLabels)
-            return play
-        return False
+
+        play = self.kodi_helper.play_item(
+            video_id=video_id,
+            start_offset=start_offset,
+            infoLabels=infoLabels)
+        return play
 
     @log
     def show_search_results(self, term):
@@ -434,11 +432,11 @@ class Navigation(object):
                     'guid': user_data['guid'],
                     'cache': True}))
                 if items is False and i == 0:
-                    self.kodi_helper.log('show_video_list response is dirty')
+                    self.nx_common.log('show_video_list response is dirty')
                     return False
                 elif len(items) == 0:
                     if i == 0:
-                        self.kodi_helper.log('show_video_list items=0')
+                        self.nx_common.log('show_video_list items=0')
                         return False
                     break
                 req_count = Netflix.FETCH_VIDEO_REQUEST_COUNT
@@ -691,15 +689,13 @@ class Navigation(object):
             path=os.path.join(self.library.tvshow_path, showtitle))
         try:
             filepath = next(os.path.join(show_dir, fn)
-                            for fn in xbmcvfs.listdir(show_dir)[1]
+                            for fn in self.nx_common.list_dir(show_dir)[1]
                             if 'strm' in fn)
         except StopIteration:
             raise KeyError
 
         self.log('Reading contents of {}'.format(filepath.encode('utf-8')))
-        f = xbmcvfs.File(filepath)
-        buf = f.read()
-        f.close()
+        buf = self.nx_common.load_file(data_path='', filename=filepath)
         episode_id = re.search(r'video_id=(\d+)', buf).group(1)
         show_metadata = self._check_response(self.call_netflix_service({
             'method': 'fetch_metadata',
@@ -738,21 +734,18 @@ class Navigation(object):
         Deletes all current account data & prompts with dialogs for new ones
         """
         self._check_response(self.call_netflix_service({'method': 'logout'}))
-        self.kodi_helper.set_setting(key='email', value='')
-        self.kodi_helper.set_setting(key='password', value='')
+        self.nx_common.set_credentials('', '')
+
         raw_email = self.kodi_helper.dialogs.show_email_dialog()
         raw_password = self.kodi_helper.dialogs.show_password_dialog()
-        encoded_email = self.kodi_helper.encode(raw=raw_email)
-        encoded_password = self.kodi_helper.encode(raw=raw_password)
-        self.kodi_helper.set_setting(key='email', value=encoded_email)
-        self.kodi_helper.set_setting(key='password', value=encoded_password)
+        self.nx_common.set_credentials(raw_email, raw_password)
+
         account = {
             'email': raw_email,
             'password': raw_password,
         }
         if self.establish_session(account=account) is not True:
-            self.kodi_helper.set_setting(key='email', value='')
-            self.kodi_helper.set_setting(key='password', value='')
+            self.nx_common.set_credentials('', '')
             return self.kodi_helper.dialogs.show_login_failed_notify()
         return True
 
@@ -791,20 +784,21 @@ class Navigation(object):
             used later in the routing process
         """
         options = {}
-        credentials = self.kodi_helper.get_credentials()
-        # check if we have user settings, if not, set em
-        if credentials['email'] == '':
-            email = self.kodi_helper.dialogs.show_email_dialog()
-            self.kodi_helper.set_setting(key='email', value=email)
-            credentials['email'] = email
-        if credentials['password'] == '':
-            password = self.kodi_helper.dialogs.show_password_dialog()
-            self.kodi_helper.set_setting(key='password', value=password)
-            credentials['password'] = password
         # check login & try to relogin if necessary
         logged_in = self._check_response(self.call_netflix_service({
             'method': 'is_logged_in'}))
         if logged_in is False:
+            credentials = self.nx_common.get_credentials()
+            # check if we have user settings, if not, set em
+            if credentials['email'] == '':
+                email = self.kodi_helper.dialogs.show_email_dialog()
+                self.nx_common.set_setting(key='email', value=email)
+                credentials['email'] = email
+            if credentials['password'] == '':
+                password = self.kodi_helper.dialogs.show_password_dialog()
+                self.nx_common.set_setting(key='password', value=password)
+                credentials['password'] = password
+
             if self.establish_session(account=credentials) is not True:
                 self.kodi_helper.dialogs.show_login_failed_notify()
         # persist & load main menu selection
@@ -908,7 +902,7 @@ class Navigation(object):
             # check if we do not have a valid session,
             # in case that happens: (re)login
             if self._is_expired_session(response=response):
-                account = self.kodi_helper.get_credentials()
+                account = self.nx_common.get_credentials()
                 self.establish_session(account=account)
             message = response['message'] if 'message' in response else ''
             code = response['code'] if 'code' in response else ''
@@ -939,10 +933,8 @@ class Navigation(object):
         str
             Url + Port
         """
-        addon = self.kodi_helper.get_addon()
-        service_url = 'http://127.0.0.1:'
-        service_url += str(addon.getSetting('netflix_service_port'))
-        return service_url
+        return ('http://127.0.0.1:' +
+                self.nx_common.get_setting('netflix_service_port'))
 
     def call_netflix_service(self, params):
         """
@@ -992,4 +984,5 @@ class Navigation(object):
     def open_settings(self, url):
         """Opens a foreign settings dialog"""
         url = 'inputstream.adaptive' if url == 'is' else url
+        from xbmcaddon import Addon
         return Addon(url).openSettings()
