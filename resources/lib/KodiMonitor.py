@@ -231,8 +231,8 @@ class KodiMonitor(xbmc.Monitor):
         except KeyError:
             self.log('Guessing video info (fallback={})'.format(fallback_data),
                      xbmc.LOGWARNING)
-            return (self._guess_episode(info, fallback_data) or
-                    self._guess_movie(info, fallback_data))
+            return (_guess_episode(info, fallback_data) or
+                    _guess_movie(info, fallback_data))
 
     @log
     def _update_item_details(self, properties):
