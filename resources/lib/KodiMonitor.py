@@ -12,6 +12,8 @@ import xbmcgui
 
 from resources.lib.utils import noop, log
 
+from resources.lib.KodiHelper import TAGGED_WINDOW_ID, \
+    PROP_NETFLIX_PLAY, PROP_PLAYBACK_INIT, PROP_PLAYBACK_TRACKING
 
 def _get_safe_with_fallback(item, fallback, **kwargs):
     itemkey = kwargs.get('itemkey', 'title')
@@ -117,11 +119,9 @@ class KodiMonitor(xbmc.Monitor):
     library.
     """
 
-    PROP_PLAYBACK_TRACKING = 'tracking'
-
-    def __init__(self, kodi_helper, log_fn=noop):
+    def __init__(self, nx_common, log_fn=noop):
         super(KodiMonitor, self).__init__()
-        self.kodi_helper = kodi_helper
+        self.nx_common = nx_common
         self.video_info = None
         self.progress = 0
         self.log = log_fn
@@ -131,7 +131,7 @@ class KodiMonitor(xbmc.Monitor):
         Indicates if a playback was initiated by the netflix addon by
         checking the appropriate window property set by KodiHelper.
         """
-        return self._is_playback_status(self.kodi_helper.PROP_PLAYBACK_INIT)
+        return self._is_playback_status(self.nx_common.PROP_PLAYBACK_INIT)
 
     def is_tracking_playback(self):
         """
@@ -139,7 +139,7 @@ class KodiMonitor(xbmc.Monitor):
         instance of this class.
         """
         return (self.video_info is not None and
-                self._is_playback_status(self.PROP_PLAYBACK_TRACKING))
+                self._is_playback_status(PROP_PLAYBACK_TRACKING))
 
     @log
     def update_playback_progress(self):
@@ -183,16 +183,16 @@ class KodiMonitor(xbmc.Monitor):
         if player_id is not None and self.is_initialized_playback():
             self.video_info = self._get_video_info(player_id, item)
             self.progress = 0
-            xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
-                self.kodi_helper.PROP_NETFLIX_PLAY,
-                self.PROP_PLAYBACK_TRACKING)
+            xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
+                PROP_NETFLIX_PLAY,
+                PROP_PLAYBACK_TRACKING)
             self.log('Tracking playback of {}'.format(self.video_info))
         else:
             # Clean up remnants from improperly stopped previous playbacks.
             # Clearing the window property does not work as expected, thus
             # we overwrite it with an arbitrary value
-            xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
-                self.kodi_helper.PROP_NETFLIX_PLAY, 'notnetflix')
+            xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
+                PROP_NETFLIX_PLAY, 'notnetflix')
             self.log('Not tracking playback: {}'
                      .format('Playback not initiated by netflix plugin'
                              if self.is_initialized_playback() else
@@ -211,8 +211,8 @@ class KodiMonitor(xbmc.Monitor):
                           .format(self.video_info))
             self.log('Tracked playback stopped: {}'.format(action))
 
-        xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).setProperty(
-            self.kodi_helper.PROP_NETFLIX_PLAY, 'stopped')
+        xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
+            PROP_NETFLIX_PLAY, 'stopped')
         self.video_info = None
         self.progress = 0
 
@@ -231,8 +231,8 @@ class KodiMonitor(xbmc.Monitor):
         except KeyError:
             self.log('Guessing video info (fallback={})'.format(fallback_data),
                      xbmc.LOGWARNING)
-            return (self._guess_episode(info, fallback_data) or
-                    self._guess_movie(info, fallback_data))
+            return (_guess_episode(info, fallback_data) or
+                    _guess_movie(info, fallback_data))
 
     @log
     def _update_item_details(self, properties):
@@ -244,5 +244,5 @@ class KodiMonitor(xbmc.Monitor):
         return _json_rpc(method, params)
 
     def _is_playback_status(self, status):
-        return xbmcgui.Window(self.kodi_helper.TAGGED_WINDOW_ID).getProperty(
-            self.kodi_helper.PROP_NETFLIX_PLAY) == status
+        return xbmcgui.Window(TAGGED_WINDOW_ID).getProperty(
+            PROP_NETFLIX_PLAY) == status

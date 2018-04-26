@@ -10,18 +10,12 @@ import hashlib
 from os import remove
 from uuid import uuid4
 from urllib import urlencode
-from Cryptodome import Random
-from os.path import join, isfile
-from Cryptodome.Cipher import AES
-from Cryptodome.Util import Padding
 import xbmc
 import xbmcgui
 import xbmcplugin
 import inputstreamhelper
-from xbmcaddon import Addon
-from resources.lib.MSL import MSL
 from resources.lib.kodi.Dialogs import Dialogs
-from utils import get_user_agent, uniq_id
+from utils import get_user_agent
 from UniversalAnalytics import Tracker
 try:
     import cPickle as pickle
@@ -47,6 +41,10 @@ CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
 
+TAGGED_WINDOW_ID = 10000
+PROP_NETFLIX_PLAY = 'netflix_playback'
+PROP_PLAYBACK_INIT = 'initialized'
+PROP_PLAYBACK_TRACKING = 'tracking'
 
 def _update_if_present(source_dict, source_att, target_dict, target_att):
     if source_dict.get(source_att):
@@ -58,247 +56,35 @@ class KodiHelper(object):
     Consumes all the configuration data from Kodi as well as
     turns data into lists of folders and videos"""
 
-    TAGGED_WINDOW_ID = 10000
-    PROP_NETFLIX_PLAY = 'netflix_playback'
-    PROP_PLAYBACK_INIT = 'initialized'
-
-    def __init__(self, plugin_handle=None, base_url=None):
+    def __init__(self, nx_common, library):
         """
-        Fetches all needed info from Kodi &
-        configures the baseline of the plugin
-
-        Parameters
-        ----------
-        plugin_handle : :obj:`int`
-            Plugin handle
-
-        base_url : :obj:`str`
-            Plugin base url
+        Provides helpers for addon side (not service side)
         """
-        addon = self.get_addon()
-        raw_data_path = 'special://profile/addon_data/service.msl'
-        data_path = xbmc.translatePath(raw_data_path)
-        self.plugin_handle = plugin_handle
-        self.base_url = base_url
-        self.plugin = addon.getAddonInfo('name')
-        self.version = addon.getAddonInfo('version')
-        self.base_data_path = xbmc.translatePath(addon.getAddonInfo('profile'))
-        self.home_path = xbmc.translatePath('special://home')
-        self.plugin_path = addon.getAddonInfo('path')
-        self.cookie_path = self.base_data_path + 'COOKIE'
-        self.data_path = self.base_data_path + 'DATA'
-        self.config_path = join(self.base_data_path, 'config')
-        self.msl_data_path = data_path.decode('utf-8') + '/'
-        self.verb_log = addon.getSetting('logging') == 'true'
-        self.custom_export_name = addon.getSetting('customexportname')
-        self.show_update_db = addon.getSetting('show_update_db')
-        self.default_fanart = addon.getAddonInfo('fanart')
-        self.icon = addon.getAddonInfo('icon')
-        self.bs = 32
-        self.crypt_key = uniq_id()
-        self.library = None
+        self.nx_common = nx_common
+        self.plugin_handle = nx_common.plugin_handle
+        self.base_url = nx_common.base_url
+        self.library = library
+        self.custom_export_name = nx_common.get_setting('customexportname')
+        self.show_update_db = nx_common.get_setting('show_update_db')
+        self.default_fanart = nx_common.get_addon_info('fanart')
         self.setup_memcache()
         self.dialogs = Dialogs(
             get_local_string=self.get_local_string,
             custom_export_name=self.custom_export_name)
 
-    def get_addon(self):
-        """Returns a fresh addon instance"""
-        return Addon()
-
-    def check_folder_path(self, path):
-        """
-        Check if folderpath ends with path delimator
-        If not correct it (makes sure xbmcvfs.exists is working correct)
-        """
-        if isinstance(path, unicode):
-            check = path.encode('ascii', 'ignore')
-            if '/' in check and not str(check).endswith('/'):
-                end = u'/'
-                path = path + end
-                return path
-            if '\\' in check and not str(check).endswith('\\'):
-                end = u'\\'
-                path = path + end
-                return path
-        if '/' in path and not str(path).endswith('/'):
-            path = path + '/'
-            return path
-        if '\\' in path and not str(path).endswith('\\'):
-            path = path + '\\'
-            return path
-
     def refresh(self):
         """Refresh the current list"""
         return xbmc.executebuiltin('Container.Refresh')
 
-    def set_setting(self, key, value):
-        """Public interface for the addons setSetting method
-
-        Returns
-        -------
-        bool
-            Setting could be set or not
-        """
-        return self.get_addon().setSetting(key, value)
-
-    def get_setting(self, key):
-        """Public interface to the addons getSetting method
-
-        Returns
-        -------
-        Returns setting key
-        """
-        return self.get_addon().getSetting(key)
-
     def toggle_adult_pin(self):
         """Toggles the adult pin setting"""
-        addon = self.get_addon()
         adultpin_enabled = False
-        raw_adultpin_enabled = addon.getSetting('adultpin_enable')
+        raw_adultpin_enabled = self.nx_common.get_setting('adultpin_enable')
         if raw_adultpin_enabled == 'true' or raw_adultpin_enabled == 'True':
             adultpin_enabled = True
         if adultpin_enabled is False:
-            return addon.setSetting('adultpin_enable', 'True')
-        return addon.setSetting('adultpin_enable', 'False')
-
-    def get_credentials(self):
-        """Returns the users stored credentials
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`str`
-            The users stored account data
-        """
-        addon = self.get_addon()
-        email = addon.getSetting('email')
-        password = addon.getSetting('password')
-
-        # soft migration for existing credentials
-        # base64 can't contain `@` chars
-        if '@' in email:
-            addon.setSetting('email', self.encode(raw=email))
-            addon.setSetting('password', self.encode(raw=password))
-            return {
-                'email': self.get_addon().getSetting('email'),
-                'password': self.get_addon().getSetting('password')
-            }
-
-        # if everything is fine, we decode the values
-        if '' != email or '' != password:
-            return {
-                'email': self.decode(enc=email),
-                'password': self.decode(enc=password)
-            }
-
-        # if email is empty, we return an empty map
-        return {
-            'email': '',
-            'password': ''
-        }
-
-    def encode(self, raw):
-        """
-        Encodes data
-
-        :param data: Data to be encoded
-        :type data: str
-        :returns:  string -- Encoded data
-        """
-        raw = Padding.pad(data_to_pad=raw, block_size=self.bs)
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw))
-
-    def decode(self, enc):
-        """
-        Decodes data
-
-        :param data: Data to be decoded
-        :type data: str
-        :returns:  string -- Decoded data
-        """
-        enc = base64.b64decode(enc)
-        iv = enc[:AES.block_size]
-        cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
-        decoded = Padding.unpad(
-            padded_data=cipher.decrypt(enc[AES.block_size:]),
-            block_size=self.bs).decode('utf-8')
-        return decoded
-
-    def get_esn(self):
-        """
-        Returns the esn from settings
-        """
-        return self.get_addon().getSetting('esn')
-
-    def set_esn(self, esn):
-        """
-        Returns the esn from settings
-        """
-        stored_esn = self.get_esn()
-        if not stored_esn and esn:
-            self.set_setting('esn', esn)
-            self.delete_manifest_data()
-            return esn
-        return stored_esn
-
-    def delete_manifest_data(self):
-        if isfile(self.msl_data_path + 'msl_data.json'):
-            remove(self.msl_data_path + 'msl_data.json')
-        if isfile(self.msl_data_path + 'manifest.json'):
-            remove(self.msl_data_path + 'manifest.json')
-        msl = MSL(kodi_helper=self)
-        msl.perform_key_handshake()
-        msl.save_msl_data()
-
-    def get_dolby_setting(self):
-        """
-        Returns if the dolby sound is enabled
-        :return: bool - Dolby Sourrind profile setting is enabled
-        """
-        use_dolby = False
-        setting = self.get_addon().getSetting('enable_dolby_sound')
-        if setting == 'true' or setting == 'True':
-            use_dolby = True
-        return use_dolby
-
-    def use_hevc(self):
-        """
-        Checks if HEVC profiles should be used
-        :return: bool - HEVC profile setting is enabled
-        """
-        use_hevc = False
-        setting = self.get_addon().getSetting('enable_hevc_profiles')
-        if setting == 'true' or setting == 'True':
-            use_hevc = True
-        return use_hevc
-
-    def get_custom_library_settings(self):
-        """Returns the settings in regards to the custom library folder(s)
-
-        Returns
-        -------
-        :obj:`dict` of :obj:`str`
-            The users library settings
-        """
-        addon = self.get_addon()
-        return {
-            'enablelibraryfolder': addon.getSetting('enablelibraryfolder'),
-            'customlibraryfolder': addon.getSetting('customlibraryfolder')
-        }
-
-    def get_ssl_verification_setting(self):
-        """
-        Returns the setting that describes if we should
-        verify the ssl transport when loading data
-
-        Returns
-        -------
-        bool
-            Verify or not
-        """
-        return self.get_addon().getSetting('ssl_verification') == 'true'
+            return self.nx_common.set_setting('adultpin_enable', 'True')
+        return self.nx_common.set_setting('adultpin_enable', 'False')
 
     def set_main_menu_selection(self, type):
         """Persist the chosen main menu entry in memory
@@ -398,9 +184,9 @@ class KodiHelper(object):
             (folder, movie, show, season, episode, login, exported)
 
         """
-        custom_view = self.get_addon().getSetting('customview')
+        custom_view = self.nx_common.get_setting('customview')
         if custom_view == 'true':
-            view = int(self.get_addon().getSetting('viewmode' + content))
+            view = int(self.nx_common.get_setting('viewmode' + content))
             if view != -1:
                 xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
 
@@ -1091,14 +877,11 @@ class KodiHelper(object):
         self.set_custom_view(VIEW_EPISODE)
         return True
 
-    def play_item(self, esn, video_id, start_offset=-1, infoLabels={}):
+    def play_item(self, video_id, start_offset=-1, infoLabels={}):
         """Plays a video
 
         Parameters
         ----------
-        esn : :obj:`str`
-            ESN needed for Widevine/Inputstream
-
         video_id : :obj:`str`
             ID of the video that should be played
 
@@ -1113,8 +896,6 @@ class KodiHelper(object):
         bool
             List could be build
         """
-        self.set_esn(esn)
-        addon = self.get_addon()
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
         if not is_helper.check_inputstream():
             return False
@@ -1122,14 +903,13 @@ class KodiHelper(object):
         # track play event
         self.track_event('playVideo')
 
-        # check esn in settings
-        settings_esn = str(addon.getSetting('esn'))
-        if len(settings_esn) == 0:
-            addon.setSetting('esn', str(esn))
-
         # inputstream addon properties
-        port = str(addon.getSetting('msl_service_port'))
+        port = str(self.nx_common.get_setting('msl_service_port'))
         msl_service_url = 'http://localhost:' + port
+        msl_manifest_url = msl_service_url + '/manifest?id=' + video_id
+        msl_manifest_url += '&dolby=' + self.nx_common.get_setting('enable_dolby_sound')
+        msl_manifest_url += '&hevc=' +  self.nx_common.get_setting('enable_hevc_profiles')
+
         play_item = xbmcgui.ListItem(
             path=msl_service_url + '/manifest?id=' + video_id)
         play_item.setContentLookup(False)
@@ -1191,9 +971,9 @@ class KodiHelper(object):
             listitem=play_item)
 
         # set window property to enable recognition of playbacks
-        xbmcgui.Window(self.TAGGED_WINDOW_ID).setProperty(
-            self.PROP_NETFLIX_PLAY,
-            self.PROP_PLAYBACK_INIT
+        xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
+            PROP_NETFLIX_PLAY,
+            PROP_PLAYBACK_INIT
         )
 
         return resolved
@@ -1292,7 +1072,7 @@ class KodiHelper(object):
             'season': '',
             'title': '',
             'tvshowtitle': '',
-            'mediatype': '',
+            'mediatype': 'movie',
             'playcount': '',
             'episode': '',
             'year': ''
@@ -1430,40 +1210,6 @@ class KodiHelper(object):
         # add it to the item
         li.addContextMenuItems(items)
         return li
-
-    def log(self, msg, level=xbmc.LOGDEBUG):
-        """Adds a log entry to the Kodi log
-
-        Parameters
-        ----------
-        msg : :obj:`str`
-            Entry that should be turned into a list item
-
-        level : :obj:`int`
-            Kodi log level
-        """
-        if isinstance(msg, unicode):
-            msg = msg.encode('utf-8')
-        xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
-
-    def get_local_string(self, string_id):
-        """Returns the localized version of a string
-
-        Parameters
-        ----------
-        string_id : :obj:`int`
-            ID of the string that shoudl be fetched
-
-        Returns
-        -------
-        :obj:`str`
-            Requested string or empty string
-        """
-        src = xbmc if string_id < 30000 else self.get_addon()
-        locString = src.getLocalizedString(string_id)
-        if isinstance(locString, unicode):
-            locString = locString.encode('utf-8')
-        return locString
 
     def movietitle_to_id(self, title):
         query = {
@@ -1635,15 +1381,24 @@ class KodiHelper(object):
         except Exception:
             return False
 
-    def set_library(self, library):
-        """Adds an instance of the Library class
+    def get_local_string(self, string_id):
+        """Returns the localized version of a string
 
         Parameters
         ----------
-        library : :obj:`Library`
-            instance of the Library class
+        string_id : :obj:`int`
+            ID of the string that shoudl be fetched
+
+        Returns
+        -------
+        :obj:`str`
+            Requested string or empty string
         """
-        self.library = library
+        src = xbmc if string_id < 30000 else self.nx_common.get_addon()
+        locString = src.getLocalizedString(string_id)
+        if isinstance(locString, unicode):
+            locString = locString.encode('utf-8')
+        return locString
 
     def track_event(self, event):
         """
@@ -1651,15 +1406,14 @@ class KodiHelper(object):
         :param event: the string idetifier of the event
         :return: None
         """
-        addon = self.get_addon()
         # Check if tracking is enabled
-        enable_tracking = (addon.getSetting('enable_tracking') == 'true')
+        enable_tracking = (self.nx_common.get_setting('enable_tracking') == 'true')
         if enable_tracking:
             # Get or Create Tracking id
-            tracking_id = addon.getSetting('tracking_id')
+            tracking_id = self.nx_common.get_setting('tracking_id')
             if tracking_id is '':
                 tracking_id = str(uuid4())
-                addon.setSetting('tracking_id', tracking_id)
+                self.nx_common.set_setting('tracking_id', tracking_id)
             # Send the tracking event
             tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)
             tracker.send('event', event)

@@ -10,7 +10,7 @@ class NetflixHttpSubRessourceHandler(object):
     translates/executes them to requests for Netflix
     """
 
-    def __init__(self, kodi_helper, netflix_session):
+    def __init__(self, nx_common, netflix_session):
         """Sets up credentials & video_list_cache cache
         Assigns the netflix_session/kodi_helper instacnes
         Does the initial login if we have user data
@@ -23,9 +23,9 @@ class NetflixHttpSubRessourceHandler(object):
         netflix_session : :obj:`NetflixSession`
             instance of the NetflixSession class
         """
-        self.kodi_helper = kodi_helper
+        self.nx_common = nx_common
         self.netflix_session = netflix_session
-        self.credentials = self.kodi_helper.get_credentials()
+        self.credentials = self.nx_common.get_credentials()
         self.profiles = []
         self.video_list_cache = {}
         self.prefetch_login()
@@ -47,7 +47,7 @@ class NetflixHttpSubRessourceHandler(object):
             else:
                 if self.netflix_session.login(account=self.credentials):
                     self.profiles = self.netflix_session.profiles
-        self.kodi_helper.set_esn(self.netflix_session.esn)
+        self.nx_common.set_esn(self.netflix_session.esn)
 
     def is_logged_in(self, params):
         """Existing login proxy function
@@ -83,8 +83,7 @@ class NetflixHttpSubRessourceHandler(object):
         """
         self.profiles = []
         self.credentials = {'email': '', 'password': ''}
-        # delete esn data
-        self.kodi_helper.delete_manifest_data()
+
         return self.netflix_session.logout()
 
     def login(self, params):
@@ -155,7 +154,7 @@ class NetflixHttpSubRessourceHandler(object):
         guid = self.netflix_session.user_data.get('guid')
         cached_list = self.video_list_cache.get(guid, None)
         if cached_list is not None:
-            self.kodi_helper.log(msg='Serving cached list for user: ' + guid)
+            self.nx_common.log(msg='Serving cached list for user: ' + guid)
             return cached_list
         video_list_ids_raw = self.netflix_session.fetch_video_list_ids()
 

@@ -9,11 +9,9 @@
 import base64
 import BaseHTTPServer
 from urlparse import urlparse, parse_qs
-from resources.lib.MSL import MSL as Msl
-from resources.lib.KodiHelper import KodiHelper
 
-KODI_HELPER = KodiHelper()
-MSL = Msl(kodi_helper=KODI_HELPER)
+from SocketServer import TCPServer
+from resources.lib.MSL import MSL
 
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -34,17 +32,17 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if len(data) is 2:
             challenge = data[0]
             sid = base64.standard_b64decode(data[1])
-            b64license = MSL.get_license(challenge, sid)
+            b64license = self.server.Msl.get_license(challenge, sid)
             if b64license is not '':
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(base64.standard_b64decode(b64license))
                 self.finish()
             else:
-                KODI_HELPER.log(msg='Error getting License')
+                self.server.nx_common.log(msg='Error getting License')
                 self.send_response(400)
         else:
-            KODI_HELPER.log(msg='Error in License Request')
+            self.server.nx_common.log(msg='Error in License Request')
             self.send_response(400)
 
     # pylint: disable=invalid-name
@@ -52,11 +50,22 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """Loads the XML manifest for the requested resource"""
         url = urlparse(self.path)
         params = parse_qs(url.query)
-        if 'id' not in params:
+        if 'action' in params:
+            if params['action'][0] is 'reset':
+                self.server.Msl.__perform_key_handshake()
+                self.send_response(200)
+        elif 'id' not in params:
             self.send_response(400, 'No id')
         else:
             # Get the manifest with the given id
-            data = MSL.load_manifest(int(params['id'][0]))
+            dolby = (True if 'dolby' in params and
+                     params['dolby'][0].lower() == 'true' else 'false')
+            hevc = (True if 'hevc' in params and
+                    params['hevc'][0].lower() == 'true' else 'false')
+
+            data = self.server.Msl.load_manifest(int(params['id'][0]),
+                                                 dolby, hevc)
+
             self.send_response(200)
             self.send_header('Content-type', 'application/xml')
             self.end_headers()
@@ -65,3 +74,15 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message(self, *args):
         """Disable the BaseHTTPServer Log"""
         pass
+
+
+##################################
+
+
+class MSLTCPServer(TCPServer):
+
+    def __init__(self, server_address, nx_common):
+        nx_common.log(msg='Constructing MSLTCPServer')
+        self.nx_common = nx_common
+        self.Msl = MSL(nx_common)
+        TCPServer.__init__(self, server_address, MSLHttpRequestHandler)

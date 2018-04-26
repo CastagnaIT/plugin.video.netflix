@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.12.9" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.13.0" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -37,6 +37,9 @@
 - Grab metadate for episodes on export
 - Auto export new episodes for exported shows
 - Auto update watched status inside kodi library
+
+v0.13.0 (2018-04-26)
+- Android support WIDEVINE Cryptosession for MSL
     </news>
   </extension>
 </addon>
