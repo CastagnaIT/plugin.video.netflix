@@ -102,14 +102,14 @@ class NetflixService(object):
 
     def _start_servers(self):
         # start thread for MLS servie
-        self.msl_thread = threading.Thread(target=self.msl_server.serve_forever)
-        #self.msl_thread.daemon = True
+        self.msl_thread = threading.Thread(
+            target=self.msl_server.serve_forever)
         self.msl_thread.start()
         self.nx_common.log(msg='[MSL] Thread started')
 
         # start thread for Netflix HTTP service
-        self.ns_thread = threading.Thread(target=self.ns_server.serve_forever)
-        #self.ns_thread.daemon = True
+        self.ns_thread = threading.Thread(
+          target=self.ns_server.serve_forever)
         self.ns_thread.start()
         self.nx_common.log(msg='[NS] Thread started')
 
