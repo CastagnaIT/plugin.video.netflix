@@ -401,7 +401,7 @@ class Library(object):
         show_dir = self.nx_common.check_folder_path(
             path=os.path.join(self.tvshow_path, folder))
         progress = self._create_progress_dialog(in_background)
-        progress.create(self.kodi_helper.get_local_string(650), show_meta)
+        progress.create(self.nx_common.get_local_string(650), show_meta)
         if not xbmcvfs.exists(show_dir):
             self.log('Created show folder {}'.format(show_dir))
             xbmcvfs.mkdirs(show_dir)
