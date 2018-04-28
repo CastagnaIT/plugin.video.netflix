@@ -201,10 +201,10 @@ class KodiHelper(object):
         autologin_id : :obj:`str`
             Profile id from netflix
         """
-        self.set_setting('autologin_user', autologin_user)
-        self.set_setting('autologin_id', autologin_id)
-        self.set_setting('autologin_enable', 'True')
-        self.dialogs.show_autologin_enabled_notify()
+        self.nx_common.set_setting('autologin_user', autologin_user)
+        self.nx_common.set_setting('autologin_id', autologin_id)
+        self.nx_common.set_setting('autologin_enable', 'True')
+        self.nx_common.dialogs.show_autologin_enabled_notify()
         self.invalidate_memcache()
         self.refresh()
 

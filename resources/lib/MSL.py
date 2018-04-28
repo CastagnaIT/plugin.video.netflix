@@ -13,6 +13,7 @@ import json
 import time
 import base64
 import random
+import uuid
 from StringIO import StringIO
 from datetime import datetime
 import requests
@@ -296,9 +297,13 @@ class MSL(object):
 
         # Check for pssh
         pssh = ''
+        keyid = None
         if 'psshb64' in manifest:
             if len(manifest['psshb64']) >= 1:
                 pssh = manifest['psshb64'][0]
+                psshbytes = base64.standard_b64decode(pssh)
+                if len(psshbytes) == 52:
+                    keyid = psshbytes[36:]
 
         seconds = manifest['runtime']/1000
         init_length = seconds / 2 * 12 + 20*1000
@@ -318,7 +323,16 @@ class MSL(object):
                 tag='AdaptationSet',
                 mimeType='video/mp4',
                 contentType="video")
+
             # Content Protection
+            if keyid:
+                protection = ET.SubElement(
+                    parent=video_adaption_set,
+                    tag='ContentProtection',
+                    value='cenc',
+                    schemeIdUri='urn:mpeg:dash:mp4protection:2011')
+                protection.set('cenc:default_KID', str(uuid.UUID(bytes=keyid)))
+
             protection = ET.SubElement(
                 parent=video_adaption_set,
                 tag='ContentProtection',
