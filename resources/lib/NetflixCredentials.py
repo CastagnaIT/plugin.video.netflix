@@ -23,8 +23,8 @@ class NetflixCredentials(object):
         # if everything is fine, we encode the values
         if '' != email or '' != password:
             return {
-                'email': self.encode(enc=email),
-                'password': self.encode(enc=password)
+                'email': self.encode(raw=email),
+                'password': self.encode(raw=password)
             }
 
         # if email is empty, we return an empty map

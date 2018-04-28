@@ -102,28 +102,32 @@ class NetflixService(object):
 
     def _start_servers(self):
         # start thread for MLS servie
-        msl_thread = threading.Thread(target=self.msl_server.serve_forever)
-        msl_thread.daemon = True
-        msl_thread.start()
+        self.msl_thread = threading.Thread(target=self.msl_server.serve_forever)
+        #self.msl_thread.daemon = True
+        self.msl_thread.start()
+        self.nx_common.log(msg='[MSL] Thread started')
 
         # start thread for Netflix HTTP service
-        ns_thread = threading.Thread(target=self.ns_server.serve_forever)
-        ns_thread.daemon = True
-        ns_thread.start()
+        self.ns_thread = threading.Thread(target=self.ns_server.serve_forever)
+        #self.ns_thread.daemon = True
+        self.ns_thread.start()
+        self.nx_common.log(msg='[NS] Thread started')
 
     def _shutdown(self):
         # MSL service shutdown sequence
         self.msl_server.server_close()
-        self.msl_server.socket.close()
         self.msl_server.shutdown()
+        self.msl_thread.join()
         self.msl_server = None
+        self.msl_thread = None
         self.nx_common.log(msg='Stopped MSL Service')
 
         # Netflix service shutdown sequence
         self.ns_server.server_close()
-        self.ns_server.socket.close()
         self.ns_server.shutdown()
+        self.ns_thread.join()
         self.ns_server = None
+        self.ns_thread = None
         self.nx_common.log(msg='Stopped HTTP Service')
 
     def _is_idle(self):
