@@ -32,7 +32,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if len(data) is 2:
             challenge = data[0]
             sid = base64.standard_b64decode(data[1])
-            b64license = self.server.Msl.get_license(challenge, sid)
+            b64license = self.server.MslHandler.get_license(challenge, sid)
             if b64license is not '':
                 self.send_response(200)
                 self.end_headers()
@@ -50,11 +50,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """Loads the XML manifest for the requested resource"""
         url = urlparse(self.path)
         params = parse_qs(url.query)
-        if 'action' in params:
-            if params['action'][0] is 'reset':
-                self.server.Msl.__perform_key_handshake()
-                self.send_response(200)
-        elif 'id' not in params:
+        if 'id' not in params:
             self.send_response(400, 'No id')
         else:
             # Get the manifest with the given id
@@ -63,8 +59,9 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             hevc = (True if 'hevc' in params and
                     params['hevc'][0].lower() == 'true' else 'false')
 
-            data = self.server.Msl.load_manifest(int(params['id'][0]),
-                                                 dolby, hevc)
+            data = self.server.MslHandler.load_manifest(
+                int(params['id'][0]),
+                dolby, hevc)
 
             self.send_response(200)
             self.send_header('Content-type', 'application/xml')
@@ -84,5 +81,8 @@ class MSLTCPServer(TCPServer):
     def __init__(self, server_address, nx_common):
         nx_common.log(msg='Constructing MSLTCPServer')
         self.nx_common = nx_common
-        self.Msl = MSL(nx_common)
+        self.MslHandler = MSL(nx_common)
         TCPServer.__init__(self, server_address, MSLHttpRequestHandler)
+
+    def reset_msl_data(self):
+        self.MslHandler.perform_key_handshake()

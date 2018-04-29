@@ -91,21 +91,26 @@ class NetflixService(object):
         # configure the MSL Server
         self.msl_server = MSLTCPServer(('127.0.0.1', msl_port),
                                        self.nx_common)
-        self.msl_server.server_activate()
-        self.msl_server.timeout = 1
 
         # configure the Netflix Data Server
         self.ns_server = NetflixTCPServer(('127.0.0.1', ns_port),
                                           self.nx_common)
-        self.ns_server.server_activate()
-        self.ns_server.timeout = 1
+
+        if self.ns_server.esn_changed():
+            self.msl_server.reset_msl_data()
 
     def _start_servers(self):
+        self.msl_server.server_activate()
+        self.msl_server.timeout = 1
+
         # start thread for MLS servie
         self.msl_thread = threading.Thread(
             target=self.msl_server.serve_forever)
         self.msl_thread.start()
         self.nx_common.log(msg='[MSL] Thread started')
+
+        self.ns_server.server_activate()
+        self.ns_server.timeout = 1
 
         # start thread for Netflix HTTP service
         self.ns_thread = threading.Thread(

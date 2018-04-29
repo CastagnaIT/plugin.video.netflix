@@ -79,3 +79,7 @@ class NetflixTCPServer(TCPServer):
             netflix_session=netflix_session)
 
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)
+
+    def esn_changed(self):
+        return self.res_handler.nx_common.set_esn(
+            self.res_handler.netflix_session.esn)

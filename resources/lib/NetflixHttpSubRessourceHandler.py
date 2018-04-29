@@ -47,7 +47,6 @@ class NetflixHttpSubRessourceHandler(object):
             else:
                 if self.netflix_session.login(account=self.credentials):
                     self.profiles = self.netflix_session.profiles
-        self.nx_common.set_esn(self.netflix_session.esn)
 
     def is_logged_in(self, params):
         """Existing login proxy function

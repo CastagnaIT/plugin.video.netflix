@@ -583,8 +583,13 @@ class MSL(object):
         """
         return base64.standard_b64encode(self.crypto.sign(text))
 
+    def perform_key_handshake(self):
+        self.__perform_key_handshake()
+
     def __perform_key_handshake(self):
         esn = self.nx_common.get_esn()
+        self.nx_common.log(msg='perform_key_handshake: esn:' + esn)
+
         if not esn:
           return False
 

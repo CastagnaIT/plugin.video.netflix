@@ -59,6 +59,7 @@ class Library(object):
 
         enable_custom_folder = nx_common.get_setting('enablelibraryfolder')
         self.nx_common = nx_common
+        self.kodi_helper = None
         self.base_data_path = nx_common.data_path
         self.enable_custom_library_folder = enable_custom_folder
         self.custom_library_folder = nx_common.get_setting('customlibraryfolder')
@@ -85,6 +86,9 @@ class Library(object):
 
         # load the local db
         self.db = self._load_local_db(filename=self.db_filepath)
+
+    def set_kodi_helper(self, kodi_helper):
+        self.kodi_helper = kodi_helper
 
     def setup_local_netflix_library(self, source):
         """Sets up the basic directories
@@ -115,12 +119,18 @@ class Library(object):
             Video fallback title for m3u
 
         """
-        self.log('Writing {}'.format(path.encode('ascii','ignore')))
+        if isinstance(path, str):
+            logpath = path.decode('ascii', 'ignore').encode('ascii')
+        elif isinstance(path, unicode):
+            logpath = path.encode('ascii', 'ignore')
+
+        self.log('Writing {}'.format(logpath))
+
         f = xbmcvfs.File(path, 'w')
         f.write('#EXTINF:-1,'+title_player.encode('utf-8')+'\n')
         f.write(url)
         f.close()
-        self.log('Successfully wrote {}'.format(path.decode('ascii','ignore')))
+        self.log('Successfully wrote {}'.format(logpath))
 
     def write_metadata_file(self, video_id, content):
         """Writes the metadata file that caches grabbed content from netflix
@@ -358,7 +368,7 @@ class Library(object):
             path=os.path.join(self.movie_path, folder))
         filename = os.path.join(dirname, movie_meta + '.strm')
         progress = xbmcgui.DialogProgress()
-        progress.create(self.nx_common.get_local_string(650), movie_meta)
+        progress.create(self.kodi_helper.get_local_string(650), movie_meta)
         if xbmcvfs.exists(filename):
             return
         if not xbmcvfs.exists(dirname):
@@ -401,7 +411,7 @@ class Library(object):
         show_dir = self.nx_common.check_folder_path(
             path=os.path.join(self.tvshow_path, folder))
         progress = self._create_progress_dialog(in_background)
-        progress.create(self.nx_common.get_local_string(650), show_meta)
+        progress.create(self.kodi_helper.get_local_string(650), show_meta)
         if not xbmcvfs.exists(show_dir):
             self.log('Created show folder {}'.format(show_dir))
             xbmcvfs.mkdirs(show_dir)
@@ -431,9 +441,9 @@ class Library(object):
         step = round(100.0 / len(episodes), 1)
         percent = step
         for episode in episodes:
-            desc = self.nx_common.get_local_string(20373) + ': '
+            desc = self.kodi_helper.get_local_string(20373) + ': '
             desc += str(episode.get('season'))
-            long_desc = self.nx_common.get_local_string(20359) + ': '
+            long_desc = self.kodi_helper.get_local_string(20359) + ': '
             long_desc += str(episode.get('episode'))
             progress.update(
                 percent=int(percent),
@@ -560,7 +570,7 @@ class Library(object):
             repl=r'',
             string=self.db[self.movies_label][movie_meta]['alt_title'])
         progress = xbmcgui.DialogProgress()
-        progress.create(self.nx_common.get_local_string(1210), movie_meta)
+        progress.create(self.kodi_helper.get_local_string(1210), movie_meta)
         progress.update(50)
         time.sleep(0.5)
         del self.db[self.movies_label][movie_meta]
@@ -597,7 +607,7 @@ class Library(object):
             repl=r'',
             string=rep_str)
         progress = xbmcgui.DialogProgress()
-        progress.create(self.nx_common.get_local_string(1210), title)
+        progress.create(self.kodi_helper.get_local_string(1210), title)
         time.sleep(0.5)
         del self.db[self.series_label][title]
         self._update_local_db(filename=self.db_filepath, db=self.db)

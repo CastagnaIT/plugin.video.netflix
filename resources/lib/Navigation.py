@@ -23,6 +23,7 @@ import xbmc
 import resources.lib.NetflixSession as Netflix
 from resources.lib.utils import log
 from resources.lib.KodiHelper import KodiHelper
+from resources.lib.Library import Library
 
 
 class Navigation(object):
@@ -32,7 +33,7 @@ class Navigation(object):
     for the Kodi view & the Netflix model
     """
 
-    def __init__(self, nx_common, library):
+    def __init__(self, nx_common):
         """
         Takes the instances & configuration options needed to drive the plugin
 
@@ -51,10 +52,14 @@ class Navigation(object):
              optional log function
         """
         self.nx_common = nx_common
+        self.library = Library(nx_common=nx_common)
+
         self.kodi_helper = KodiHelper(
             nx_common=nx_common,
-            library=library)
-        self.library = library
+            library=self.library)
+
+        self.library.set_kodi_helper(kodi_helper=self.kodi_helper)
+
         self.base_url = self.nx_common.base_url
         self.log = self.nx_common.log
 
@@ -663,7 +668,7 @@ class Navigation(object):
     @log
     def export_new_episodes(self, in_background):
         update_started_at = datetime.today().strftime('%Y-%m-%d %H:%M')
-        self.kodi_helper.set_setting('update_running', update_started_at)
+        self.nx_common.set_setting('update_running', update_started_at)
         for title, meta in self.library.list_exported_shows().iteritems():
             try:
                 netflix_id = meta.get('netflix_id',
@@ -680,12 +685,12 @@ class Navigation(object):
                                    in_background=in_background)
         xbmc.executebuiltin(
             'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
-        self.kodi_helper.set_setting('update_running', 'false')
-        self.kodi_helper.set_setting('last_update', update_started_at[0:10])
+        self.nx_common.set_setting('update_running', 'false')
+        self.nx_common.set_setting('last_update', update_started_at[0:10])
         return True
 
     def _get_netflix_id(self, showtitle):
-        show_dir = self.kodi_helper.check_folder_path(
+        show_dir = self.nx_common.check_folder_path(
             path=os.path.join(self.library.tvshow_path, showtitle))
         try:
             filepath = next(os.path.join(show_dir, fn)
