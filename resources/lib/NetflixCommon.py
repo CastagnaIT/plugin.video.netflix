@@ -45,14 +45,13 @@ class NetflixCommon(object):
 
     def set_esn(self, esn):
         """
-        Returns the esn from settings
+        Returns True if MSL reset is required
         """
         stored_esn = self.get_esn()
         if not stored_esn and esn:
             self.set_setting('esn', esn)
-            self.delete_manifest_data()
-            return esn
-        return stored_esn
+            return True
+        return False
 
     def get_credentials(self):
         from NetflixCredentials import NetflixCredentials

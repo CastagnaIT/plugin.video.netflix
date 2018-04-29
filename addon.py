@@ -10,7 +10,6 @@
 import sys
 from resources.lib.NetflixCommon import NetflixCommon
 from resources.lib.Navigation import Navigation
-from resources.lib.Library import Library
 
 # Setup plugin
 PLUGIN_HANDLE = int(sys.argv[1])
@@ -24,11 +23,8 @@ NETFLIX_COMMON = NetflixCommon(
     base_url=BASE_URL
 )
 
-LIBRARY = Library(nx_common=NETFLIX_COMMON)
-
 NAVIGATION = Navigation(
-    nx_common=NETFLIX_COMMON,
-    library=LIBRARY,
+    nx_common=NETFLIX_COMMON
 )
 
 if __name__ == '__main__':

@@ -204,7 +204,7 @@ class KodiHelper(object):
         self.nx_common.set_setting('autologin_user', autologin_user)
         self.nx_common.set_setting('autologin_id', autologin_id)
         self.nx_common.set_setting('autologin_enable', 'True')
-        self.nx_common.dialogs.show_autologin_enabled_notify()
+        self.dialogs.show_autologin_enabled_notify()
         self.invalidate_memcache()
         self.refresh()
 
