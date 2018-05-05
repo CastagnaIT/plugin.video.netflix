@@ -64,8 +64,10 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 class NetflixTCPServer(TCPServer):
+    """Override TCPServer to allow shared struct sharing"""
 
     def __init__(self, server_address, nx_common):
+        """Initializes NetflixTCPServer"""
         nx_common.log(msg='Constructing netflixTCPServer')
 
         netflix_session = NetflixSession(
@@ -81,5 +83,6 @@ class NetflixTCPServer(TCPServer):
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)
 
     def esn_changed(self):
+        """Return if the esn has changed on Session initialization"""
         return self.res_handler.nx_common.set_esn(
             self.res_handler.netflix_session.esn)

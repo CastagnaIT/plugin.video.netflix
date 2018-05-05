@@ -9,10 +9,10 @@
 
 import threading
 import socket
-
 import sys
-import xbmc
 from datetime import datetime, timedelta
+
+import xbmc
 from resources.lib.NetflixCommon import NetflixCommon
 from resources.lib.KodiMonitor import KodiMonitor
 from resources.lib.MSLHttpRequestHandler import MSLTCPServer
@@ -96,6 +96,12 @@ class NetflixService(object):
         self.ns_server = NetflixTCPServer(('127.0.0.1', ns_port),
                                           self.nx_common)
 
+        self.msl_thread = threading.Thread(
+            target=self.msl_server.serve_forever)
+
+        self.ns_thread = threading.Thread(
+            target=self.ns_server.serve_forever)
+
         if self.ns_server.esn_changed():
             self.msl_server.reset_msl_data()
 
@@ -104,8 +110,6 @@ class NetflixService(object):
         self.msl_server.timeout = 1
 
         # start thread for MLS servie
-        self.msl_thread = threading.Thread(
-            target=self.msl_server.serve_forever)
         self.msl_thread.start()
         self.nx_common.log(msg='[MSL] Thread started')
 
@@ -113,8 +117,6 @@ class NetflixService(object):
         self.ns_server.timeout = 1
 
         # start thread for Netflix HTTP service
-        self.ns_thread = threading.Thread(
-          target=self.ns_server.serve_forever)
         self.ns_thread.start()
         self.nx_common.log(msg='[NS] Thread started')
 
