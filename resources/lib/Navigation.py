@@ -220,6 +220,7 @@ class Navigation(object):
                 video_id=params['video_id'],
                 start_offset=params.get('start_offset', -1),
                 infoLabels=params.get('infoLabels', {}))
+            return True
         elif action == 'user-items' and params['type'] == 'search':
             # if the user requested a search, ask for the term
             term = self.kodi_helper.dialogs.show_search_term_dialog()
