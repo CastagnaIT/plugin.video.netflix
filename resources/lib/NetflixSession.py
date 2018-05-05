@@ -170,46 +170,35 @@ class NetflixSession(object):
     def get_profiles(self, content):
         """ADD ME"""
         profiles = {}
-        # find everything between the profiles and the profiles_list property
-        _pattern = '"profiles":(.*?)"profilesList'
-        _profiles = recompile(_pattern).findall(content)
-        # replace the last comma we found with nothing
-        if len(_profiles):
-            _profiles_string = _profiles[0][::-1].replace(',', '', 1)[::-1]
-            # check if the last character is a closing bracket
-            if _profiles_string[len(_profiles_string)-1] != '}':
-                # if not, fix that
-                _closing_pos = _profiles_string.rfind('}')+1
-                _profiles_string = _profiles_string[:_closing_pos]
-            _profiles_parsed = json.loads(_profiles_string)
-            avatars = self.get_avatars(content=content)
-            for guid in _profiles_parsed:
-                if 'size' not in guid:
-                    _profile = _profiles_parsed[guid].get('summary')
-                    _name = _profile.get('avatarName')
-                    _profile['avatar'] = avatars.get(_name)
-                    profiles.update({guid: _profile})
+        # find falkor cache
+        falkorCache = content[content.find('netflix.falkorCache = '):]
+        # Extract JSON
+        falkorCache = recompile(r"\{([^)]+)\}").findall(falkorCache)
+        if not falkorCache:
+            return profiles
+        falkorDict = json.loads('{' + falkorCache[0] + '}')
+        _profiles = falkorDict['profiles']
+
+        for guid in _profiles:
+            if not isinstance(_profiles[guid], dict):
+                continue
+            _profile = _profiles[guid]['summary']
+            if 'value' in _profile:
+                _profile = _profile['value']
+            _avatar_path = _profiles[guid]['avatar']
+            if 'value' in _avatar_path:
+                _avatar_path = _avatar_path['value']
+            _avatar_path.extend([u'images', u'byWidth', u'320', u'value'])
+            _profile['avatar'] = self.__recursive_dict(_avatar_path, falkorDict)
+            profiles.update({guid: _profile})
+
         return profiles
 
-    @classmethod
-    def get_avatars(cls, content):
-        """ADD ME"""
-        avatars = {}
-        # find everything between the avatars and the profiles property
-        _pattern = '"avatars":(.*?)(.*)"profiles":'
-        _avatars = recompile(_pattern).findall(content)
-        # replace the last comma we found with nothing
-        if len(_avatars):
-            index = 1 if len(_avatars[0][0]) == 0 else 0
-            _avatar_string = _avatars[0][index][::-1].replace(',', '', 1)[::-1]
-            _avatars_parsed = json.loads(_avatar_string).get('nf')
-            for _ava_key in _avatars_parsed:
-                if 'size' not in _ava_key:
-                    _images = _avatars_parsed[_ava_key].get('images', {})
-                    _image = _images.get('byWidth', {}).get('320', {})
-                    _url = _image.get('value')
-                    avatars.update({_ava_key: _url})
-        return avatars
+    @staticmethod
+    def __recursive_dict(search, dict, index=0):
+        if (index + 1 == len(search)):
+            return dict[search[index]]
+        return NetflixSession.__recursive_dict(search, dict[search[index]], index + 1)
 
     def is_logged_in(self, account):
         """
@@ -299,9 +288,10 @@ class NetflixSession(object):
             'flow': 'websiteSignUp',
             'mode': 'login',
             'action': 'loginAction',
-            'withFields': 'email,password,rememberMe,nextPage',
+            'withFields': 'email,password,rememberMe,nextPage,showPassword',
             'authURL': user_data.get('authURL'),
-            'nextPage': ''
+            'nextPage': '',
+            'showPassword': ''
         }
 
         # perform the login
@@ -1600,12 +1590,12 @@ class NetflixSession(object):
     def _path_request(self, paths):
         """
         Executes a post request against the shakti
-        endpoint with Falcor style payload
+        endpoint with falkor style payload
 
         Parameters
         ----------
         paths : :obj:`list` of :obj:`list`
-            Payload with path querys for the Netflix Shakti API in Falcor style
+            Payload with path querys for the Netflix Shakti API in falkor style
 
         Returns
         -------

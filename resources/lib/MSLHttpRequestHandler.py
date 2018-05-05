@@ -32,7 +32,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if len(data) is 2:
             challenge = data[0]
             sid = base64.standard_b64decode(data[1])
-            b64license = self.server.MslHandler.get_license(challenge, sid)
+            b64license = self.server.msl_handler.get_license(challenge, sid)
             if b64license is not '':
                 self.send_response(200)
                 self.end_headers()
@@ -59,7 +59,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             hevc = (True if 'hevc' in params and
                     params['hevc'][0].lower() == 'true' else 'false')
 
-            data = self.server.MslHandler.load_manifest(
+            data = self.server.msl_handler.load_manifest(
                 int(params['id'][0]),
                 dolby, hevc)
 
@@ -77,12 +77,15 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 class MSLTCPServer(TCPServer):
+    """Override TCPServer to allow usage of shared members"""
 
     def __init__(self, server_address, nx_common):
+        """Initialization of MSLTCPServer"""
         nx_common.log(msg='Constructing MSLTCPServer')
         self.nx_common = nx_common
-        self.MslHandler = MSL(nx_common)
+        self.msl_handler = MSL(nx_common)
         TCPServer.__init__(self, server_address, MSLHttpRequestHandler)
 
     def reset_msl_data(self):
-        self.MslHandler.perform_key_handshake()
+        """Initialization of MSLTCPServerResets MSL data (perform handshake)"""
+        self.msl_handler.perform_key_handshake()

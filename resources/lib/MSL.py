@@ -660,7 +660,7 @@ class MSL(object):
         # If token expires in less then 10 hours or is expires renew it
         self.nx_common.log(msg='Expiration time: Key:' + str(valid_until) + ', Now:' + str(present) + ', Diff:' + str(difference.total_seconds()))
         difference = difference.total_seconds() / 60 / 60
-        if difference < 10 or self.crypto.fromDict(msl_data):
+        if self.crypto.fromDict(msl_data) or difference < 10:
             self.__perform_key_handshake()
             return
 
