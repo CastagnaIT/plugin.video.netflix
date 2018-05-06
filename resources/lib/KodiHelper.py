@@ -910,8 +910,7 @@ class KodiHelper(object):
         msl_manifest_url += '&dolby=' + self.nx_common.get_setting('enable_dolby_sound')
         msl_manifest_url += '&hevc=' +  self.nx_common.get_setting('enable_hevc_profiles')
 
-        play_item = xbmcgui.ListItem(
-            path=msl_service_url + '/manifest?id=' + video_id)
+        play_item = xbmcgui.ListItem(path=msl_manifest_url)
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
         play_item.setProperty(
