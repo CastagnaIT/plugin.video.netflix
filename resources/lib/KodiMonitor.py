@@ -141,7 +141,7 @@ class KodiMonitor(xbmc.Monitor):
         return (self.video_info is not None and
                 self._is_playback_status(PROP_PLAYBACK_TRACKING))
 
-    @log
+    # @log
     def update_playback_progress(self):
         """
         Updates the internal progress status of a tracked playback
@@ -176,7 +176,7 @@ class KodiMonitor(xbmc.Monitor):
         elif method == 'Player.OnStop':
             self._on_playback_stopped()
 
-    @log
+    # @log
     def _on_playback_started(self, item):
         player_id = _retry(_get_active_video_player, 5)
 
@@ -198,7 +198,7 @@ class KodiMonitor(xbmc.Monitor):
                              if self.is_initialized_playback() else
                              'Unable to obtain active video player'))
 
-    @log
+    # @log
     def _on_playback_stopped(self):
         if self.is_tracking_playback():
             if self.progress >= 90:
@@ -216,7 +216,7 @@ class KodiMonitor(xbmc.Monitor):
         self.video_info = None
         self.progress = 0
 
-    @log
+    # @log
     def _get_video_info(self, player_id, fallback_data):
         info = _json_rpc('Player.GetItem',
                          {
@@ -234,7 +234,7 @@ class KodiMonitor(xbmc.Monitor):
             return (_guess_episode(info, fallback_data) or
                     _guess_movie(info, fallback_data))
 
-    @log
+    # @log
     def _update_item_details(self, properties):
         method = ('VideoLibrary.Set{}Details'
                   .format(self.video_info['dbtype'].capitalize()))

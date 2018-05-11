@@ -27,7 +27,6 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """Loads the licence for the requested resource"""
         length = int(self.headers.get('content-length'))
         post = self.rfile.read(length)
-        print post
         data = post.split('!')
         if len(data) is 2:
             challenge = data[0]
