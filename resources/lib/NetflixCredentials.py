@@ -62,7 +62,7 @@ class NetflixCredentials(object):
         :type data: str
         :returns:  string -- Encoded data
         """
-        raw = Padding.pad(data_to_pad=raw, block_size=self.bs)
+        raw = bytes(Padding.pad(data_to_pad=raw, block_size=self.bs))
         iv = Random.new().read(AES.block_size)
         cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
         return base64.b64encode(iv + cipher.encrypt(raw))

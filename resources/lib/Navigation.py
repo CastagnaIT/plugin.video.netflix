@@ -798,15 +798,17 @@ class Navigation(object):
             # check if we have user settings, if not, set em
             if credentials['email'] == '':
                 email = self.kodi_helper.dialogs.show_email_dialog()
-                self.nx_common.set_setting(key='email', value=email)
                 credentials['email'] = email
             if credentials['password'] == '':
                 password = self.kodi_helper.dialogs.show_password_dialog()
-                self.nx_common.set_setting(key='password', value=password)
                 credentials['password'] = password
 
+            self.nx_common.set_credentials(credentials['email'], credentials['password'])
+
             if self.establish_session(account=credentials) is not True:
+                self.nx_common.set_credentials('', '')
                 self.kodi_helper.dialogs.show_login_failed_notify()
+
         # persist & load main menu selection
         if 'type' in params:
             self.kodi_helper.set_main_menu_selection(type=params['type'])
