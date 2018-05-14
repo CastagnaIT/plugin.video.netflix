@@ -191,9 +191,11 @@ class NetflixService(object):
             timedelta(minutes=self.schedule_check_interval))
 
         if not self.freq or now <= next_schedule_check:
+            '''
             self.nx_common.log('Auto-update disabled or schedule check '
                                'interval not complete yet ({} / {}).'
                                .format(now, next_schedule_check))
+            '''
             return False
 
         self.last_schedule_check = now
