@@ -16,6 +16,7 @@ from re import compile as recompile
 from base64 import urlsafe_b64encode
 from requests import session, cookies
 from utils import noop, get_user_agent
+from collections import OrderedDict
 try:
     import cPickle as pickle
 except:
@@ -575,7 +576,7 @@ class NetflixSession(object):
             }
         }
 
-    def parse_video_list(self, response_data):
+    def parse_video_list(self, response_data, term=None):
         """Parse a list of videos
 
         Parameters
@@ -684,18 +685,33 @@ class NetflixSession(object):
                 },
             }
         """
-        video_list = {}
+        video_ids = []
         raw_video_list = response_data.get('value', {})
+        # search results have sorting given in references
+        if term and 'search' in raw_video_list:
+           try:
+               reference = raw_video_list.get('search').get('byTerm').get('|'+term).get('titles').get('48')[2]
+               references = raw_video_list.get('search').get('byReference').get(reference)
+               for reference_id in range (0, 48):
+                   video_ids.append(references.get(str(reference_id)).get('reference')[1])
+           except:
+               return {}
+        else:
+            for video_id in raw_video_list.get('videos', {}):
+                if self._is_size_key(key=video_id) is False:
+                    video_ids.append(video_id);
+
+        video_list = OrderedDict()
         netflix_list_id = self.parse_netflix_list_id(video_list=raw_video_list)
-        for video_id in raw_video_list.get('videos', {}):
-            if self._is_size_key(key=video_id) is False:
-                video_list_entry = self.parse_video_list_entry(
-                    id=video_id,
-                    list_id=netflix_list_id,
-                    video=raw_video_list.get('videos', {}).get(video_id),
-                    persons=raw_video_list.get('person'),
-                    genres=raw_video_list.get('genres'))
-                video_list.update(video_list_entry)
+        for video_id in video_ids:
+            video_list_entry = self.parse_video_list_entry(
+                id=video_id,
+                list_id=netflix_list_id,
+                video=raw_video_list.get('videos', {}).get(video_id),
+                persons=raw_video_list.get('person'),
+                genres=raw_video_list.get('genres'))
+            video_list.update(video_list_entry)
+
         return video_list
 
     def parse_video_list_entry(self, id, list_id, video, persons, genres):

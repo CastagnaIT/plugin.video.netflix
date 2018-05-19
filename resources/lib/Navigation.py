@@ -19,6 +19,8 @@ import urllib
 import urllib2
 from urlparse import parse_qsl, urlparse
 from datetime import datetime
+from collections import OrderedDict
+
 import xbmc
 import resources.lib.NetflixSession as Netflix
 from resources.lib.utils import log
@@ -979,7 +981,7 @@ class Navigation(object):
             opener = urllib2.build_opener(urllib2.ProxyHandler({}))
             urllib2.install_opener(opener)
         data = urllib2.urlopen(full_url).read(opener)
-        parsed_json = json.loads(data)
+        parsed_json = json.loads(data, object_pairs_hook=OrderedDict)
         if 'error' in parsed_json:
             result = {'error': parsed_json.get('error')}
             return result

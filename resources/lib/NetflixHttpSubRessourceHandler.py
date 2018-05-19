@@ -382,5 +382,6 @@ class NetflixHttpSubRessourceHandler(object):
             return []
         # list the search results
         search_results = self.netflix_session.parse_video_list(
-            response_data=raw_search_results)
+            response_data=raw_search_results,
+            term=term)
         return search_results
