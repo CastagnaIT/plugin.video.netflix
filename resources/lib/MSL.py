@@ -377,23 +377,31 @@ class MSL(object):
                     tag='SegmentBase',
                     indexRange='0-' + str(init_length),
                     indexRangeExact='true')
-                ET.SubElement(
-                    parent=segment_base,
-                    tag='Initialization',
-                    range='0-' + str(init_length))
 
         # Multiple Adaption Set for audio
+        language = None
         for audio_track in manifest['audioTracks']:
             impaired = 'false'
+            original = 'false'
+            default = 'false'
+
             if audio_track.get('trackType') == 'ASSISTIVE':
                 impaired = 'true'
+            elif not language or language == audio_track.get('language'):
+                language = audio_track.get('language')
+                default = 'true'
+            if audio_track.get('language').find('[') > 0:
+                original = 'true'
+
             audio_adaption_set = ET.SubElement(
                 parent=period,
                 tag='AdaptationSet',
                 lang=audio_track['bcp47'],
                 contentType='audio',
                 mimeType='audio/mp4',
-                impaired=impaired)
+                impaired=impaired,
+                original=original,
+                default=default)
             for downloadable in audio_track['downloadables']:
                 codec = 'aac'
                 #self.nx_common.log(msg=downloadable)
@@ -426,10 +434,6 @@ class MSL(object):
                     tag='SegmentBase',
                     indexRange='0-' + str(init_length),
                     indexRangeExact='true')
-                ET.SubElement(
-                    parent=segment_base,
-                    tag='Initialization',
-                    range='0-' + str(init_length))
 
         # Multiple Adaption Sets for subtiles
         for text_track in manifest.get('textTracks'):
