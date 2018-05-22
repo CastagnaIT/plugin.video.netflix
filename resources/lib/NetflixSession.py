@@ -141,9 +141,9 @@ class NetflixSession(object):
         self.nx_common.log(msg='Parsing inline data...')
         items = self.page_items if items is None else items
         user_data = {'gpsModel': 'harris'}
-        content = content.encode('utf-8').decode('string_escape')
+        content = content.replace('\"', '\\"').encode('utf-8').decode('string_escape')
         # find <script/> tag witch contains the 'reactContext' globals
-        react_context = recompile('reactContext(?s)(.*);').findall(content)
+        react_context = recompile(r"netflix\.reactContext\s*=\s*(.*?);\s*</script>").findall(content)
         # iterate over all wanted item keys & try to fetch them
         for item in items:
             match = recompile(
@@ -171,13 +171,11 @@ class NetflixSession(object):
     def get_profiles(self, content):
         """ADD ME"""
         profiles = {}
-        # find falkor cache
-        falkorCache = content[content.find('netflix.falkorCache = '):]
-        # Extract JSON
-        falkorCache = recompile(r"\{([^)]+)\}").findall(falkorCache)
+        # find falkor cache and extract JSON text
+        falkorCache = recompile(r"netflix\.falkorCache\s*=\s*(.*?);\s*</script>").findall(content)
         if not falkorCache:
             return profiles
-        falkorDict = json.loads('{' + falkorCache[0] + '}')
+        falkorDict = json.loads(falkorCache[0])
         _profiles = falkorDict['profiles']
 
         for guid in _profiles:
