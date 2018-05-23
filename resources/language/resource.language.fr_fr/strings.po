@@ -30,7 +30,7 @@ msgstr "Certaines parties de cette extension peuvent ne pas être légales dans 
 
 msgctxt "#30001"
 msgid "Recommendations"
-msgstr "Recommendations"
+msgstr "Recommandations"
 
 msgctxt "#30002"
 msgid "Adult Pin"
