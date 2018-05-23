@@ -71,6 +71,7 @@ class KodiHelper(object):
         self.dialogs = Dialogs(
             get_local_string=self.get_local_string,
             custom_export_name=self.custom_export_name)
+        self._context_menu_actions = None
 
     def refresh(self):
         """Refresh the current list"""
@@ -422,6 +423,7 @@ class KodiHelper(object):
         """
         view = VIEW_FOLDER
         content = CONTENT_FOLDER
+        listItems = list()
         for video_list_id in video_list:
             video = video_list[video_list_id]
             li = xbmcgui.ListItem(
@@ -430,10 +432,10 @@ class KodiHelper(object):
             # add some art to the item
             li.setArt(self._generate_art_info(entry=video))
             # add list item info
-            li, infos = self._generate_listitem_info(entry=video, li=li)
-            li = self._generate_context_menu_items(entry=video, li=li)
+            infos = self._generate_listitem_info(entry=video, li=li)
+            self._generate_context_menu_items(entry=video, li=li)
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
-            if video_list[video_list_id]['type'] == 'movie':
+            if video['type'] == 'movie':
                 # it´s a movie, so we need no subfolder & a route to play it
                 isFolder = False
                 maturity = video.get('maturity', {}).get('level', 999)
@@ -459,11 +461,7 @@ class KodiHelper(object):
                 url = build_url(params)
                 view = VIEW_SHOW
                 content = CONTENT_SHOW
-            xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
-                url=url,
-                listitem=li,
-                isFolder=isFolder)
+            listItems.append((url, li, isFolder))
 
         if has_more:
             li_more = xbmcgui.ListItem(label=self.get_local_string(30045))
@@ -472,11 +470,9 @@ class KodiHelper(object):
                 "type": type,
                 "start": str(start),
                 "video_list_id": current_video_list_id})
-            xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
-                url=more_url,
-                listitem=li_more,
-                isFolder=True)
+            listItems.append((more_url, li_more, True))
+
+        xbmcplugin.addDirectoryItems(self.plugin_handle, listItems, len(listItems))
 
         xbmcplugin.addSortMethod(
             handle=self.plugin_handle,
@@ -499,8 +495,11 @@ class KodiHelper(object):
         xbmcplugin.setContent(
             handle=self.plugin_handle,
             content=content)
+
         xbmcplugin.endOfDirectory(self.plugin_handle)
+
         self.set_custom_view(view)
+
         return True
 
     def build_video_listing_exported(self, content, build_url):
@@ -771,11 +770,11 @@ class KodiHelper(object):
             # add some art to the item
             li.setArt(self._generate_art_info(entry=season))
             # add list item info
-            li, infos = self._generate_listitem_info(
+            infos = self._generate_listitem_info(
                 entry=season,
                 li=li,
                 base_info={'mediatype': 'season'})
-            li = self._generate_context_menu_items(entry=season, li=li)
+            self._generate_context_menu_items(entry=season, li=li)
             params = {'action': 'episode_list', 'season_id': season['id']}
             if 'tvshowtitle' in infos:
                 title = infos.get('tvshowtitle', '').encode('utf-8')
@@ -830,11 +829,11 @@ class KodiHelper(object):
             # add some art to the item
             li.setArt(self._generate_art_info(entry=episode))
             # add list item info
-            li, infos = self._generate_listitem_info(
+            infos = self._generate_listitem_info(
                 entry=episode,
                 li=li,
                 base_info={'mediatype': 'episode'})
-            li = self._generate_context_menu_items(entry=episode, li=li)
+            self._generate_context_menu_items(entry=episode, li=li)
             maturity = episode.get('maturity', {}).get('maturityLevel', 999)
             needs_pin = (True, False)[int(maturity) >= 100]
             url = build_url({
@@ -1038,9 +1037,9 @@ class KodiHelper(object):
             li.setProperty('IsPlayable', 'true')
         if 'quality' in li_infos:
             li.addStreamInfo('video', li_infos['quality'])
-        return li, infos
+        return infos
 
-    def _generate_entry_info(self, entry, base_info={}):
+    def _generate_entry_info(self, entry, base_info):
         """Adds the item info from an entry to a Kodi list item
 
         Parameters
@@ -1166,17 +1165,19 @@ class KodiHelper(object):
         # action item templates
         encoded_title = urlencode({'title': entry['title'].encode('utf-8')}) if 'title' in entry else ''
         url_tmpl = 'XBMC.RunPlugin(' + self.base_url + '?action=%action%&id=' + str(entry['id']) + '&' + encoded_title + ')'
-        actions = [
-            ['export_to_library', self.get_local_string(30018), 'export'],
-            ['remove_from_library', self.get_local_string(30030), 'remove'],
-            ['update_the_library', self.get_local_string(30061), 'update'],
-            ['rate_on_netflix', self.get_local_string(30019), 'rating'],
-            ['remove_from_my_list', self.get_local_string(30020), 'remove_from_list'],
-            ['add_to_my_list', self.get_local_string(30021), 'add_to_list']
-        ]
+
+        if not self._context_menu_actions:
+            self._context_menu_actions = [
+                ['export_to_library', self.get_local_string(30018), 'export'],
+                ['remove_from_library', self.get_local_string(30030), 'remove'],
+                ['update_the_library', self.get_local_string(30061), 'update'],
+                ['rate_on_netflix', self.get_local_string(30019), 'rating'],
+                ['remove_from_my_list', self.get_local_string(30020), 'remove_from_list'],
+                ['add_to_my_list', self.get_local_string(30021), 'add_to_list']
+            ]
 
         # build concrete action items
-        for action_item in actions:
+        for action_item in self._context_menu_actions:
             action.update({action_item[0]: [action_item[1], url_tmpl.replace('%action%', action_item[2])]})
 
         # add or remove the movie/show/season/episode from & to the users "My List"
@@ -1208,7 +1209,7 @@ class KodiHelper(object):
                     items.append(action[action_type])
         # add it to the item
         li.addContextMenuItems(items)
-        return li
+        #return li
 
     def movietitle_to_id(self, title):
         query = {
