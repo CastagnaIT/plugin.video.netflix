@@ -267,3 +267,51 @@ msgstr "Mettre à jour la bibliothèque"
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Activer/Désactiver le code PIN adulte. Actif:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "Nouveaux épisodes ajoutés à la bibliothèque"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Exporter les nouveaux épisodes"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Mise à jour automatique"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "jamais"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "quotidien"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "tous les autres jours"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "tous les 5 jours"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "hebdomadaire"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Heure du jour"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Démarrer après 5 minutes d'inactivité"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Vérifier toutes les X minutes si mise à jour programmée"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Vue pour les exports"

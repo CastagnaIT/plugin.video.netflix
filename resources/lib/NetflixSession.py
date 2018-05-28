@@ -439,7 +439,7 @@ class NetflixSession(object):
         """
 
         # dirty rating validation
-        ratun = int(rating)
+        rating = int(rating)
         if rating > 10 or rating < 0:
             return False
 
