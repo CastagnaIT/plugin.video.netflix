@@ -154,7 +154,7 @@ msgstr "Käytä Dolby-ääniä"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (luotu automaattisesti, voi vaihtaa itse)"
+msgstr "ESN (luotu automaattisesti, käyttäjän muokattavissa)"
 
 msgctxt "#30035"
 msgid "Inputstream Addon Settings..."
@@ -210,7 +210,7 @@ msgstr "Poistetaanko kirjastosta?"
 
 msgctxt "#30048"
 msgid "Exported"
-msgstr "Kirjastoon lisätyt"
+msgstr "Kirjastoon viedyt"
 
 msgctxt "#30049"
 msgid "Update DB"
@@ -246,7 +246,7 @@ msgstr "ID-numero"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "Avaa sisältövalikko profiililistassa ja valitse 'Automaattinen kirjautuminen'"
+msgstr "Valitse 'Automaattinen kirjautuminen' profiililistan sisältövalikosta"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
@@ -258,7 +258,7 @@ msgstr "Vaihda käyttäjätiliä"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Käytä HEVC-pakkausta (esim. 4K-tarkkuus Androidilla)"
+msgstr "Käytä HEVC-pakkausta (mahdollistaa 4K-laadun Androidilla)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -266,4 +266,52 @@ msgstr "Päivitä kirjastossa"
 
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
-msgstr "Käytä/poista käytöstä lapsilukon PIN-koodi. Tila:"
+msgstr "Lapsilukon PIN-koodin määritys. Tila:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "uutta jaksoa lisätty kirjastoon"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Vie uudet jaksot"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Automaattinen päivitys"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "ei koskaan"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "päivittäin"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "joka toinen päivä"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "joka viides päivä"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "viikoittain"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Kellonaika"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Aloita, kun laite on ollut 5 minuuttia käyttämättä"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Tarkista X minuutin välein, onko päivitystä ajastettu"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Kirjastoon lisättyjen näkymä"
