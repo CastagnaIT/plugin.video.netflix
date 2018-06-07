@@ -980,7 +980,7 @@ class Navigation(object):
         if urlparse(url).hostname in ('localhost', '127.0.0.1', '::1'):
             opener = urllib2.build_opener(urllib2.ProxyHandler({}))
             urllib2.install_opener(opener)
-        data = urllib2.urlopen(full_url).read(opener)
+        data = urllib2.urlopen(full_url).read()
         parsed_json = json.loads(data, object_pairs_hook=OrderedDict)
         if 'error' in parsed_json:
             result = {'error': parsed_json.get('error')}
