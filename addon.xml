@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.13.7" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.13.8" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -40,6 +40,13 @@
 
 v0.13.0 (2018-04-26)
 - Android support WIDEVINE Cryptosession for MSL
+
+v0.13.7 (2018-05-28)
+- rework of login info parsing
+
+v0.13.8 (2018-06-07)
+- fix proxy communication
+- fix folder definition for image resources
     </news>
   </extension>
 </addon>
