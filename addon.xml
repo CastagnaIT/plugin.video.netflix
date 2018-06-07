@@ -18,11 +18,11 @@
     <description lang="en_GB">Netflix VOD Services Addon</description>
     <disclaimer lang="en_GB">Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing.</disclaimer>
     <assets>
-      <icon>resources\icon.png</icon>
-      <fanart>resources\fanart.jpg</fanart>
-      <screenshot>resources\screenshot-01.jpg</screenshot>
-      <screenshot>resources\screenshot-02.jpg</screenshot>
-      <screenshot>resources\screenshot-03.jpg</screenshot>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.jpg</fanart>
+      <screenshot>resources/screenshot-01.jpg</screenshot>
+      <screenshot>resources/screenshot-02.jpg</screenshot>
+      <screenshot>resources/screenshot-03.jpg</screenshot>
     </assets>
     <language>en de es he hr it nl pl pt sk sv</language>
     <platform>all</platform>
