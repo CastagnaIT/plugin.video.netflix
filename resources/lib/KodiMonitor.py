@@ -9,11 +9,13 @@
 import json
 import xbmc
 import xbmcgui
+from xbmcaddon import Addon
 
 from resources.lib.utils import noop, log
 
 from resources.lib.KodiHelper import TAGGED_WINDOW_ID, \
-    PROP_NETFLIX_PLAY, PROP_PLAYBACK_INIT, PROP_PLAYBACK_TRACKING
+    PROP_NETFLIX_PLAY, PROP_PLAYBACK_INIT, PROP_PLAYBACK_TRACKING, \
+    PROP_METADATA
 
 def _get_safe_with_fallback(item, fallback, **kwargs):
     itemkey = kwargs.get('itemkey', 'title')
@@ -112,6 +114,18 @@ def _guess_movie(item, item_fb):
                                 item_fb, _match_movie)
 
 
+def _seek(player_id, milliseconds):
+    return _json_rpc('Player.Seek', {
+        'playerid': player_id,
+        'value': {
+            'hours': (milliseconds / (1000 * 60 * 60)) % 24,
+            'minutes': (milliseconds / (1000 * 60)) % 60,
+            'seconds': (milliseconds / 1000) % 60,
+            'milliseconds': (milliseconds) % 1000
+        }
+    })
+
+
 class KodiMonitor(xbmc.Monitor):
     """
     Tracks status and progress of video playbacks initiated by the addon and
@@ -125,6 +139,7 @@ class KodiMonitor(xbmc.Monitor):
         self.video_info = None
         self.progress = 0
         self.log = log_fn
+        self.credit_markers = None
 
     def is_initialized_playback(self):
         """
@@ -183,6 +198,12 @@ class KodiMonitor(xbmc.Monitor):
         if player_id is not None and self.is_initialized_playback():
             self.video_info = self._get_video_info(player_id, item)
             self.progress = 0
+            try:
+                metadata = xbmcgui.Window(TAGGED_WINDOW_ID).getProperty(PROP_METADATA)
+                metadata = json.loads(metadata)
+            except:
+                metadata = {}
+            self.credit_markers = metadata.get('video', {}).get('creditMarkers', None)
             xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
                 PROP_NETFLIX_PLAY,
                 PROP_PLAYBACK_TRACKING)
@@ -193,6 +214,7 @@ class KodiMonitor(xbmc.Monitor):
             # we overwrite it with an arbitrary value
             xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
                 PROP_NETFLIX_PLAY, 'notnetflix')
+            self.credit_markers = None
             self.log('Not tracking playback: {}'
                      .format('Playback not initiated by netflix plugin'
                              if self.is_initialized_playback() else
@@ -209,6 +231,7 @@ class KodiMonitor(xbmc.Monitor):
             else:
                 action = ('not marking {} as watched, progress too little'
                           .format(self.video_info))
+            self.credit_markers = None
             self.log('Tracked playback stopped: {}'.format(action))
 
         xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
@@ -246,3 +269,35 @@ class KodiMonitor(xbmc.Monitor):
     def _is_playback_status(self, status):
         return xbmcgui.Window(TAGGED_WINDOW_ID).getProperty(
             PROP_NETFLIX_PLAY) == status
+
+    def check_skip_intro(self):
+        player_id = _get_active_video_player()
+        if player_id > 0 and self.credit_markers:
+            try:
+                progress = _json_rpc('Player.GetProperties', {
+                    'playerid': player_id,
+                    'properties': ['percentage', 'time']
+                })
+            except IOError:
+                return None
+            elapsed = (progress['time']['hours'] * 3600 +
+                       progress['time']['minutes'] * 60 +
+                       progress['time']['seconds']) * 1000
+            recap = self.credit_markers.get('recap', None)
+            if recap:
+                if elapsed >= recap.get('start', 0) and elapsed < recap.get('end'):
+                    if xbmcgui.Dialog().yesno('Netflix', Addon().getLocalizedString(30076),
+                                              autoclose=recap.get('end') - elapsed):
+                        _seek(player_id, recap.get('end'))
+                    else:
+                        del self.credit_markers['recap']
+            credit = self.credit_markers.get('credit', None)
+            if credit:
+                if elapsed >= credit.get('start', 0) and elapsed < credit.get('end'):
+                    if xbmcgui.Dialog().yesno('Netflix', Addon().getLocalizedString(30077),
+                                              autoclose=credit.get('end') - elapsed):
+                        _seek(player_id, credit.get('end'))
+                    else:
+                        del self.credit_markers['credit']
+        else:
+            return False

@@ -45,6 +45,7 @@ TAGGED_WINDOW_ID = 10000
 PROP_NETFLIX_PLAY = 'netflix_playback'
 PROP_PLAYBACK_INIT = 'initialized'
 PROP_PLAYBACK_TRACKING = 'tracking'
+PROP_METADATA = 'netflix_metadata'
 
 def _update_if_present(source_dict, source_att, target_dict, target_att):
     if source_dict.get(source_att):
@@ -876,7 +877,7 @@ class KodiHelper(object):
         self.set_custom_view(VIEW_EPISODE)
         return True
 
-    def play_item(self, video_id, start_offset=-1, infoLabels={}):
+    def play_item(self, video_id, start_offset=-1, infoLabels={}, metadata={}):
         """Plays a video
 
         Parameters
@@ -967,6 +968,12 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             succeeded=True,
             listitem=play_item)
+
+        # set window property to store metadata (skip intro, etc...)
+        xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
+            PROP_METADATA,
+            json.dumps(metadata)
+        )
 
         # set window property to enable recognition of playbacks
         xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
