@@ -427,7 +427,7 @@ class Navigation(object):
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
         if user_data:
-            user_list = ['queue', 'topTen', 'netflixOriginals',
+            user_list = ['queue', 'topTen', 'netflixOriginals', 'continueWatching',
                          'trendingNow', 'newRelease', 'popularTitles']
             if str(type) in user_list and video_list_id is None:
                 video_list_id = self.list_id_for_type(type)
