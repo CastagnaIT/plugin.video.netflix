@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.13.8" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.13.9" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -47,6 +47,9 @@ v0.13.7 (2018-05-28)
 v0.13.8 (2018-06-07)
 - fix proxy communication
 - fix folder definition for image resources
+
+v0.13.9 (2018-06-14)
+- fix login issues after typo fix in netflix login page
     </news>
   </extension>
 </addon>
