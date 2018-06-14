@@ -188,7 +188,7 @@ class NetflixSession(object):
     def get_profiles(self, content):
         """ADD ME"""
         profiles = {}
-        falkor_cache = self.extract_json(content, 'falkorCache')
+        falkor_cache = self.extract_json(content, 'falcorCache')
         _profiles = falkor_cache.get('profiles', {})
 
         for guid in _profiles:
