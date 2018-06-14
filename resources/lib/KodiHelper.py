@@ -995,16 +995,19 @@ class KodiHelper(object):
             'landscape': '',
             'thumb': '',
             'fanart': '',
-            'poster': ''
+            'poster': '',
+            'clearlogo': ''
         })
         if 'boxarts' in dict(entry).keys() and not isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', '')
             small = big
+            poster = big
         if 'boxarts' in dict(entry).keys() and isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', {}).get('big')
             small = entry.get('boxarts', {}).get('small')
+            poster = entry.get('boxarts', {}).get('poster')
             art.update({
-                'poster': big or small,
+                'poster': poster,
                 'landscape': big or small,
                 'thumb': big or small,
                 'fanart': big or small
@@ -1016,10 +1019,18 @@ class KodiHelper(object):
                     url=str(big))
 
         if 'interesting_moment' in dict(entry).keys():
+            if entry.get('type') == 'episode':
+                art.update({'thumb': entry['interesting_moment'],
+                            'landscape': entry['interesting_moment']})
             art.update({
-                'poster': entry['interesting_moment'],
                 'fanart': entry['interesting_moment']
             })
+        if 'artwork' in dict(entry).keys():
+            art.update({
+                'fanart': entry['artwork']
+            })
+        if 'clearlogo' in dict(entry).keys():
+            art.update({'clearlogo': entry['clearlogo']})
         if 'thumb' in dict(entry).keys():
             art.update({'thumb': entry['thumb']})
         if 'fanart' in dict(entry).keys():
