@@ -54,7 +54,7 @@ msgstr "A validação de controlo parental falhou"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr "Por favor, verifique o seu pin de controlo parental está correcto"
+msgstr "Por favor, verifique se o pin de controlo parental está correcto"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -62,7 +62,7 @@ msgstr "Erro ao inicar sessão"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Por favor verifique as suas credenciais de acesso"
+msgstr "Por favor, verifique as suas credenciais de acesso"
 
 msgctxt "#30010"
 msgid "Genres"
@@ -98,7 +98,7 @@ msgstr "Avaliar no Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Remover de 'Minha Lista'"
+msgstr "Remover da 'Minha Lista'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
@@ -146,7 +146,7 @@ msgstr "Alterar título"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "Rastreamento"
+msgstr "Rastreio"
 
 msgctxt "#30033"
 msgid "Use Dolby Sound"
@@ -162,7 +162,7 @@ msgstr "Configurações do addon Inputstream"
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
-msgstr "Utilizar siempre o título original para exportar"
+msgstr "Utilizar sempre o título original para exportar"
 
 msgctxt "#30037"
 msgid "Views"
@@ -250,7 +250,7 @@ msgstr "Seleccionar perfil na lista de perfis -> menu de contexto"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr "Início de sesión automático activado!"
+msgstr "Início de sessão automático activado!"
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -266,7 +266,7 @@ msgstr "Actualizar dentro da biblioteca"
 
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
-msgstr "Activar / desactivar o pin de controlo parental. Activo:"
+msgstr "Activar / desactivar o pin de controlo parental. Activo: "
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -278,7 +278,7 @@ msgstr "Exportar novos episódios"
 
 msgctxt "#30065"
 msgid "Auto-update"
-msgstr "Actualizar automáticamente"
+msgstr "Actualizar automaticamente"
 
 msgctxt "#30066"
 msgid "never"
