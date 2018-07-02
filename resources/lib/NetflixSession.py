@@ -2000,6 +2000,9 @@ class NetflixSession(object):
                 params=params,
                 headers=headers,
                 verify=self.verify_ssl)
+        except SystemExit:
+            self.nx_common.log(msg='[POST] system error arrived -> exiting')
+            raise
         except:
             exc = sys.exc_info()
             self.nx_common.log(msg='[POST] Error {} {}'.format(exc[0], exc[1]))
@@ -2039,6 +2042,9 @@ class NetflixSession(object):
                 url=url,
                 verify=self.verify_ssl,
                 params=params)
+        except SystemExit:
+            self.nx_common.log(msg='[GET] system error arrived -> exiting')
+            raise
         except:
             exc = sys.exc_info()
             self.nx_common.log(msg='[GET] Error {} {}'.format(exc[0], exc[1]))
