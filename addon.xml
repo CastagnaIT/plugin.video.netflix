@@ -11,6 +11,7 @@
   </extension>
   <extension point="xbmc.service" library="service.py" start="login" />
   <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
     <summary lang="de_DE">Netflix</summary>
     <description lang="de_DE">Addon für Netflix VOD Services</description>
     <disclaimer lang="de_DE">Möglicherweise sind einge Teile dieses Addons in Ihrem Land illegal, Sie sollten dies unbedingt vor der Installation überprüfen.</disclaimer>
