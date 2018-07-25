@@ -268,10 +268,19 @@ class Navigation(object):
         except:
             infoLabels = {}
 
+        try:
+            metadata = self._check_response(self.call_netflix_service({
+                'method': 'fetch_metadata',
+                'video_id': video_id
+            }))
+        except:
+            metadata = {}
+
         play = self.kodi_helper.play_item(
             video_id=video_id,
             start_offset=start_offset,
-            infoLabels=infoLabels)
+            infoLabels=infoLabels,
+            metadata=metadata)
         return play
 
     @log
