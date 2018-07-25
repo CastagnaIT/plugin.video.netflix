@@ -246,6 +246,25 @@ class Navigation(object):
         xbmc.executebuiltin('Container.Refresh')
         return True
 
+    def _get_credit_markers_for_episode(self, metadata, episode_id):
+        if not (metadata and
+                'video' in metadata and
+                metadata['video'].get('type') == 'show'):
+            return {}
+
+        for season in metadata['video']['seasons']:
+            for episode in season['episodes']:
+                self.nx_common.log('Looking at S{}E{}: episode[id]={} <=> {}'.format(season['seq'], episode['seq'], episode['id'], episode_id))
+                if str(episode['id']) == episode_id:
+                    return {
+                        'end_credits_offset': episode.get('creditsOffset'),
+                        'watched_to_end_offset': episode.get('watchedToEndOffset'),
+                        'credit_markers': episode.get('creditMarkers')
+                    }
+
+        self.nx_common.log('Could not find metadata for episode')
+        return {}
+
     @log
     def play_video(self, video_id, start_offset, infoLabels):
         """Starts video playback
@@ -268,19 +287,18 @@ class Navigation(object):
         except:
             infoLabels = {}
 
-        try:
-            metadata = self._check_response(self.call_netflix_service({
-                'method': 'fetch_metadata',
-                'video_id': video_id
-            }))
-        except:
-            metadata = {}
+        metadata = self._check_response(self.call_netflix_service({
+            'method': 'fetch_metadata',
+            'video_id': video_id
+        }))
+
+        timeline_markers = self._get_credit_markers_for_episode(metadata, video_id)
 
         play = self.kodi_helper.play_item(
             video_id=video_id,
             start_offset=start_offset,
             infoLabels=infoLabels,
-            metadata=metadata)
+            timeline_markers=timeline_markers)
         return play
 
     @log

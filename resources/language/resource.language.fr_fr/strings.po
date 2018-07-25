@@ -315,15 +315,3 @@ msgstr "Vérifier toutes les X minutes si mise à jour programmée"
 msgctxt "#30074"
 msgid "View for exported"
 msgstr "Vue pour les exports"
-
-msgctxt "#30075"
-msgid "Ask to skip credits"
-msgstr "Proposer de passer les crédits"
-
-msgctxt "#30076"
-msgid "Skip back"
-msgstr "Ignorer le récap"
-
-msgctxt "#30077"
-msgid "Skip intro"
-msgstr "Ignorer l'introduction"

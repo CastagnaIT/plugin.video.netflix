@@ -317,13 +317,25 @@ msgid "View for exported"
 msgstr ""
 
 msgctxt "#30075"
-msgid "Ask to skip credits"
+msgid "Ask to skip intro and recap"
 msgstr ""
 
 msgctxt "#30076"
-msgid "Skip back"
+msgid "Skip intro"
 msgstr ""
 
 msgctxt "#30077"
-msgid "Skip intro"
+msgid "Skip recap"
+msgstr ""
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr ""
+
+msgctxt "#30080"
+msgid "Don't pause when skipping"
 msgstr ""

@@ -169,21 +169,14 @@ class NetflixService(object):
         """
         self._start_servers()
         monitor = KodiMonitor(self.nx_common, self.nx_common.log)
-        counter = 0
         while not monitor.abortRequested():
-            counter += 1  # increment the counter
-            # every 1 seconds
-            if self.nx_common.get_addon().getSetting('showskipcredits') == 'true':
-                monitor.check_skip_intro()
-            if counter % 5 == 0:  # every 5 seconds only
-                counter = 0  # reset counter
-                monitor.update_playback_progress()
-                try:
-                    if self.library_update_scheduled() and self._is_idle():
-                        self.update_library()
-                except RuntimeError as exc:
-                    self.nx_common.log(
-                        'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
+            monitor.on_playback_tick()
+            try:
+                if self.library_update_scheduled() and self._is_idle():
+                    self.update_library()
+            except RuntimeError as exc:
+                self.nx_common.log(
+                    'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
             if monitor.waitForAbort(1):
                 break
         self._shutdown()

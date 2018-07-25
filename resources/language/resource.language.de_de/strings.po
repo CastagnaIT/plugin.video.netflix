@@ -303,3 +303,27 @@ msgstr "Prüfe alle X Minuten ob Startzeitpunkt erreicht"
 msgctxt "#30074"
 msgid "View for exported"
 msgstr "Ansicht für Exportiert"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Aktiviere Intro und Recap überspringen Funktion"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Intro überspringen"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Recap überspringen"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Wiedergabe"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Automatisch überspringen"
+
+msgctxt "#30080"
+msgid "Don't pause when skipping"
+msgstr "Beim Weiterspringen nicht pausieren"
