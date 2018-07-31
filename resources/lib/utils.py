@@ -7,6 +7,7 @@
 import time
 import hashlib
 import platform
+import json
 from functools import wraps
 from types import FunctionType
 import xbmc
@@ -120,3 +121,25 @@ def get_class_methods(class_item=None):
     """
     _type = FunctionType
     return [x for x, y in class_item.__dict__.items() if isinstance(y, _type)]
+
+
+def json_rpc(method, params=None):
+    """
+    Executes a JSON-RPC in Kodi
+
+    :param method: The JSON-RPC method to call
+    :type method: string
+    :param params: The parameters of the method call (optional)
+    :type params: dict
+    :returns: dict -- Method call result
+    """
+    request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
+                    'params': params or {}}
+    request = json.dumps(request_data)
+    response = json.loads(unicode(xbmc.executeJSONRPC(request), 'utf-8',
+                                  errors='ignore'))
+    if 'error' in response:
+        raise IOError('JSONRPC-Error {}: {}'
+                      .format(response['error']['code'],
+                              response['error']['message']))
+    return response['result']
