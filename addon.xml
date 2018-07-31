@@ -5,6 +5,7 @@
     <import addon="script.module.requests" version="2.12.4"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.inputstreamhelper" version="0.3.3"/>
+    <import addon="script.module.addon.signals" version="0.0.3"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>

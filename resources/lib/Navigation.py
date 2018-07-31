@@ -289,14 +289,14 @@ class Navigation(object):
             if metadata[marker] is not None
         }
 
-        markers['creditMarkers'] = {
+        markers.update({
             section: {
-                'start': metadata['creditMarkers'][section]['start'] / 1000,
-                'end': metadata['creditMarkers'][section]['end'] / 1000
+                'start': int(metadata['creditMarkers'][section]['start'] / 1000),
+                'end': int(metadata['creditMarkers'][section]['end'] / 1000)
             }
-            for section in SKIPPABLE_SECTIONS
+            for section in SKIPPABLE_SECTIONS.keys()
             if None not in metadata['creditMarkers'][section].values()
-        }
+        })
 
         return markers
 

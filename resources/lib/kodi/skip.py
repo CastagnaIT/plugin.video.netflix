@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init
+# pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init,import-error
 from platform import machine
 
 import xbmc
@@ -15,7 +15,6 @@ class Skip(xbmcgui.WindowXMLDialog):
     """
     def __init__(self, *args, **kwargs):
         self.skip_to = kwargs['skip_to']
-        self.section = kwargs['section']
         self.label = kwargs['label']
         if OS_MACHINE[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)

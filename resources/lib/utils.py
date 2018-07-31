@@ -145,6 +145,13 @@ def json_rpc(method, params=None):
     return response['result']
 
 
+def update_library_item_details(dbtype, dbid, details):
+    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
+    params = {'{}id'.format(dbtype): dbid}
+    params.update(details)
+    return json_rpc(method, params)
+
+
 def retry(func, max_tries, sleep_time=3000):
     """
     Retry an operation max_tries times and wait sleep_time milliseconds

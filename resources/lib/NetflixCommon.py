@@ -3,6 +3,11 @@ from xbmcaddon import Addon
 import xbmcvfs
 import json
 
+
+class Signals(object):
+    PLAYBACK_INITIATED = 'playback_initiated'
+
+
 class NetflixCommon(object):
     """
     Stuff shared between / used from service and addon"""
