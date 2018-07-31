@@ -55,50 +55,19 @@ class KodiMonitor(xbmc.Monitor):
 
     AUTOCLOSE_COMMAND = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
                         '{:02d}:{:02d},silent)'
+    SKIPPABLE_SECTIONS = ['recap', 'credit']
 
     def __init__(self, nx_common, log_fn=noop):
         super(KodiMonitor, self).__init__()
         self.nx_common = nx_common
+        self.active_player_id = None
         self.video_info = None
         self.progress = 0
         self.elapsed = 0
         self.log = log_fn
         self.timeline_markers = {}
-
-    # @log
-    def on_playback_tick(self):
-        """
-        Updates the internal progress status of a tracked playback
-        and saves bookmarks to Kodi library.
-        """
-        if not is_netflix_playback():
-            return
-
-        player_id = get_active_video_player()
-        try:
-            progress = json_rpc('Player.GetProperties', {
-                'playerid': player_id,
-                'properties': ['percentage', 'time']
-            })
-        except IOError:
-            return
-        self.elapsed = (progress['time']['hours'] * 3600 +
-                        progress['time']['minutes'] * 60 +
-                        progress['time']['seconds'])
-        self.progress = progress['percentage']
-
-        if self.nx_common.get_addon().getSetting('skip_credits') == 'true':
-            for section in ['recap', 'credit']:
-                section_markers = self.timeline_markers['credit_markers'].get(
-                    section)
-                if (section_markers and
-                        self.elapsed >= section_markers['start'] and
-                        self.elapsed < section_markers['end']):
-                    self._skip(section)
-                    del self.timeline_markers['credit_markers'][section]
-
-        if self.video_info:
-            self._update_item_details({'resume': {'position': self.elapsed}})
+        self.skipping_enabled = (
+            self.nx_common.get_addon().getSetting('skip_credits') == 'true')
 
     def onNotification(self, sender, method, data):
         """
@@ -114,10 +83,10 @@ class KodiMonitor(xbmc.Monitor):
 
     # @log
     def _on_playback_started(self, item):
-        player_id = retry(get_active_video_player, 5)
+        self.active_player_id = retry(get_active_video_player, 5)
 
-        if player_id is not None and is_initialized_playback():
-            self.video_info = self._get_video_info(player_id, item)
+        if self.active_player_id is not None and is_initialized_playback():
+            self.video_info = self._get_video_info(item)
             self.progress = 0
             self.elapsed = 0
             self._grab_timeline_markers()
@@ -162,47 +131,94 @@ class KodiMonitor(xbmc.Monitor):
         self.elapsed = 0
         self.timeline_markers = {}
 
-    def _skip(self, section):
+    def on_playback_tick(self):
+        """
+        Update the internal progress tracking of a playback and check if
+        sections need to be skipped
+        """
+        if is_netflix_playback():
+            self._update_progress()
+            self._check_skips()
+
+    def _update_progress(self):
+        try:
+            player_props = json_rpc('Player.GetProperties', {
+                'playerid': self.active_player_id,
+                'properties': ['percentage', 'time']
+            })
+        except IOError:
+            return
+
+        self.progress = player_props['percentage']
+        self.elapsed = (player_props['time']['hours'] * 3600 +
+                        player_props['time']['minutes'] * 60 +
+                        player_props['time']['seconds'])
+
+        if self.video_info:
+            self._save_bookmark()
+
+    def _check_skips(self):
+        if self.skipping_enabled:
+            for section in KodiMonitor.SKIPPABLE_SECTIONS:
+                self._check_skip(section)
+
+    def _check_skip(self, section):
+        section_markers = self.timeline_markers['credit_markers'].get(
+            section)
+        if (section_markers is not None and
+                self.elapsed >= section_markers['start'] and
+                self.elapsed < section_markers['end']):
+            self._skip_section(section)
+            del self.timeline_markers['credit_markers'][section]
+
+    def _skip_section(self, section):
         addon = self.nx_common.get_addon()
-        label_code = 30076 if section == 'credit' else 30077
-        label = addon.getLocalizedString(label_code)
+        label = addon.getLocalizedString(
+            30076 if section == 'credit' else 30077)
         if addon.getSetting('auto_skip_credits') == 'true':
-            player = xbmc.Player()
-            dlg = xbmcgui.Dialog()
-            dlg.notification('Netflix', '{}...'.format(label),
-                             xbmcgui.NOTIFICATION_INFO, 5000)
-            if addon.getSetting('skip_enabled_no_pause') == 'true':
-                player.seekTime(
-                    self.timeline_markers['credit_markers'][section]['end'])
-            else:
-                player.pause()
-                xbmc.sleep(1)  # give kodi the chance to execute
-                player.seekTime(
-                    self.timeline_markers['credit_markers'][section]['end'])
-                xbmc.sleep(1)  # give kodi the chance to execute
-                player.pause()  # unpause playback at seek position
+            pause_on_skip = addon.getSetting('skip_enabled_no_pause') == 'true'
+            self._auto_skip(section, label, pause_on_skip)
         else:
-            dlg = Skip("plugin-video-netflix-Skip.xml",
-                       self.nx_common.get_addon().getAddonInfo('path'),
-                       "default", "1080i", section=section,
-                       skip_to=self.timeline_markers['credit_markers']
-                       [section]['end'],
-                       label=label)
-            # close skip intro dialog after time
-            dialog_duration = (
-                self.timeline_markers['credit_markers'][section]['end'] -
-                self.timeline_markers['credit_markers'][section]['start'])
-            seconds = dialog_duration % 60
-            minutes = (dialog_duration - seconds) / 60
-            xbmc.executebuiltin(KodiMonitor.AUTOCLOSE_COMMAND
-                                .format(minutes, seconds))
-            dlg.doModal()
+            self._ask_to_skip(section, label)
+
+    def _auto_skip(self, section, label, pause_on_skip):
+        player = xbmc.Player()
+        dlg = xbmcgui.Dialog()
+        dlg.notification('Netflix', '{}...'.format(label),
+                         xbmcgui.NOTIFICATION_INFO, 5000)
+        if not pause_on_skip:
+            player.seekTime(
+                self.timeline_markers['credit_markers'][section]['end'])
+        else:
+            player.pause()
+            xbmc.sleep(1)  # give kodi the chance to execute
+            player.seekTime(
+                self.timeline_markers['credit_markers'][section]['end'])
+            xbmc.sleep(1)  # give kodi the chance to execute
+            player.pause()  # unpause playback at seek position
+
+    def _ask_to_skip(self, section, label):
+        dlg = Skip("plugin-video-netflix-Skip.xml",
+                   self.nx_common.get_addon().getAddonInfo('path'),
+                   "default", "1080i", section=section,
+                   skip_to=self.timeline_markers['credit_markers']
+                   [section]['end'],
+                   label=label)
+        # close skip intro dialog after time
+        dialog_duration = (
+            self.timeline_markers['credit_markers'][section]['end'] -
+            self.timeline_markers['credit_markers'][section]['start'])
+        seconds = dialog_duration % 60
+        minutes = (dialog_duration - seconds) / 60
+        xbmc.executebuiltin(KodiMonitor.AUTOCLOSE_COMMAND
+                            .format(minutes, seconds))
+        dlg.doModal()
 
     # @log
-    def _get_video_info(self, player_id, fallback_data):
+    def _get_video_info(self, fallback_data):
         info = json_rpc('Player.GetItem',
                         {
-                            'playerid': player_id,
+                            'playerid': self.active_player_id,
                             'properties': ['playcount', 'title', 'year',
                                            'tvshowid', 'showtitle',
                                            'season', 'episode']
@@ -216,13 +232,15 @@ class KodiMonitor(xbmc.Monitor):
             return (guess_episode(info, fallback_data) or
                     guess_movie(info, fallback_data))
 
-    # @log
-    def _update_item_details(self, properties):
+    def _save_bookmark(self):
         method = ('VideoLibrary.Set{}Details'
                   .format(self.video_info['dbtype'].capitalize()))
-        params = {'{}id'.format(self.video_info['dbtype']):
-                  self.video_info['dbid']}
-        params.update(properties)
+        params = {
+            '{}id'.format(self.video_info['dbtype']): self.video_info['dbid'],
+            'resume': {
+                'position': self.elapsed
+            }
+        }
         return json_rpc(method, params)
 
     def _grab_timeline_markers(self):
