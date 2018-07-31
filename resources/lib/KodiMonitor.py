@@ -3,7 +3,7 @@
 # Module: KodiMonitor
 # Created on: 08.02.2018
 # License: MIT https://goo.gl/5bMj3H
-# pylint: disable=line-too-long
+# pylint: disable=import-error
 
 """Playback tracking & update of associated item properties in Kodi library"""
 
@@ -18,45 +18,17 @@ import xbmc
 import xbmcgui
 
 from resources.lib.library_matching import guess_movie, guess_episode
-from resources.lib.utils import json_rpc, noop
+from resources.lib.utils import json_rpc, retry, get_active_video_player, noop
 from resources.lib.kodi.skip import Skip
 
-from resources.lib.KodiHelper import TAGGED_WINDOW_ID, \
-    PROP_NETFLIX_PLAY, PROP_PLAYBACK_INIT, PROP_PLAYBACK_TRACKING, \
-    PROP_TIMELINE_MARKERS
-
-
-def _retry(func, max_tries):
-    for _ in range(1, max_tries):
-        xbmc.sleep(3000)
-        retval = func()
-        if retval is not None:
-            return retval
-    return None
-
-
-def _get_active_video_player():
-    return next((player['playerid']
-                 for player in json_rpc('Player.GetActivePlayers')
-                 if player['type'] == 'video'),
-                None)
+from resources.lib.KodiHelper import (
+    TAGGED_WINDOW_ID, PROP_NETFLIX_PLAY, PROP_PLAYBACK_INIT,
+    PROP_PLAYBACK_TRACKING, PROP_TIMELINE_MARKERS)
 
 
 def _is_playback_status(status):
     return xbmcgui.Window(TAGGED_WINDOW_ID).getProperty(
         PROP_NETFLIX_PLAY) == status
-
-
-def _seek(player_id, milliseconds):
-    return json_rpc('Player.Seek', {
-        'playerid': player_id,
-        'value': {
-            'hours': (milliseconds / (1000 * 60 * 60)) % 24,
-            'minutes': (milliseconds / (1000 * 60)) % 60,
-            'seconds': (milliseconds / 1000) % 60,
-            'milliseconds': (milliseconds) % 1000
-        }
-    })
 
 
 def is_initialized_playback():
@@ -81,6 +53,9 @@ class KodiMonitor(xbmc.Monitor):
     library.
     """
 
+    AUTOCLOSE_COMMAND = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
+                        '{:02d}:{:02d},silent)'
+
     def __init__(self, nx_common, log_fn=noop):
         super(KodiMonitor, self).__init__()
         self.nx_common = nx_common
@@ -99,7 +74,7 @@ class KodiMonitor(xbmc.Monitor):
         if not is_netflix_playback():
             return
 
-        player_id = _get_active_video_player()
+        player_id = get_active_video_player()
         try:
             progress = json_rpc('Player.GetProperties', {
                 'playerid': player_id,
@@ -139,7 +114,7 @@ class KodiMonitor(xbmc.Monitor):
 
     # @log
     def _on_playback_started(self, item):
-        player_id = _retry(_get_active_video_player, 5)
+        player_id = retry(get_active_video_player, 5)
 
         if player_id is not None and is_initialized_playback():
             self.video_info = self._get_video_info(player_id, item)
@@ -219,9 +194,8 @@ class KodiMonitor(xbmc.Monitor):
                 self.timeline_markers['credit_markers'][section]['start'])
             seconds = dialog_duration % 60
             minutes = (dialog_duration - seconds) / 60
-            xbmc.executebuiltin(
-                'AlarmClock(closedialog,Dialog.Close(all,true),{:02d}:{:02d},silent)'
-                .format(minutes, seconds))
+            xbmc.executebuiltin(KodiMonitor.AUTOCLOSE_COMMAND
+                                .format(minutes, seconds))
             dlg.doModal()
 
     # @log
@@ -256,6 +230,7 @@ class KodiMonitor(xbmc.Monitor):
         try:
             timeline_markers = pickle.loads(xbmcgui.Window(
                 TAGGED_WINDOW_ID).getProperty(PROP_TIMELINE_MARKERS))
+        # pylint: disable=bare-except
         except:
             self.nx_common.log('No timeline markers found')
             return

@@ -143,3 +143,31 @@ def json_rpc(method, params=None):
                       .format(response['error']['code'],
                               response['error']['message']))
     return response['result']
+
+
+def retry(func, max_tries, sleep_time=3000):
+    """
+    Retry an operation max_tries times and wait sleep_time milliseconds
+    inbetween. Silently ignores exceptions.
+    """
+    for _ in range(1, max_tries):
+        try:
+            result = func()
+            if result is not None:
+                return result
+        # pylint: disable=bare-except
+        except:
+            pass
+        xbmc.sleep(sleep_time)
+    return None
+
+
+def get_active_video_player():
+    """
+    Return the id of the currently active Kodi video player or None
+    if there's no active player.
+    """
+    return next((player['playerid']
+                 for player in json_rpc('Player.GetActivePlayers')
+                 if player['type'] == 'video'),
+                None)
