@@ -189,9 +189,8 @@ def find_episode(episode_id, seasons):
     metadata dict.
     Returns an empty dict if the episode could not be found.
     """
-    episodes = (e for season_episodes in (s['episodes'] for s in seasons)
-                for e in season_episodes)
-    return next((episode
-                 for episode in episodes
-                 if str(episode['id']) == episode_id),
-                {})
+    for season in seasons:
+        for episode in season['episodes']:
+            if str(episode['id']) == episode_id:
+                return episode
+    return {}

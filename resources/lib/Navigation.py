@@ -30,6 +30,26 @@ from resources.lib.section_skipping import (
     SKIPPABLE_SECTIONS, OFFSET_CREDITS, OFFSET_WATCHED_TO_END)
 
 
+def _get_offset_markers(metadata):
+    return {
+        marker: metadata[marker]
+        for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
+        if metadata[marker] is not None
+    }
+
+
+def _get_section_markers(metadata):
+    return {
+        section: {
+            'start': int(metadata['creditMarkers'][section]['start'] /
+                         1000),
+            'end': int(metadata['creditMarkers'][section]['end'] / 1000)
+        }
+        for section in SKIPPABLE_SECTIONS
+        if None not in metadata['creditMarkers'][section].values()
+    }
+
+
 class Navigation(object):
     """
     Routes to the correct subfolder,
@@ -283,21 +303,8 @@ class Navigation(object):
         except KeyError:
             return {}
 
-        markers = {
-            marker: metadata[marker]
-            for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
-            if metadata[marker] is not None
-        }
-
-        markers.update({
-            section: {
-                'start': int(metadata['creditMarkers'][section]['start'] /
-                             1000),
-                'end': int(metadata['creditMarkers'][section]['end'] / 1000)
-            }
-            for section in SKIPPABLE_SECTIONS.keys()
-            if None not in metadata['creditMarkers'][section].values()
-        })
+        markers = _get_offset_markers(metadata)
+        markers.update(_get_section_markers(metadata))
 
         return markers
 

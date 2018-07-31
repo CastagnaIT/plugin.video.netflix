@@ -1,5 +1,5 @@
-# pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init,
-# pylint: disable=import-error
+# pylint: disable=invalid-name,missing-docstring
+# pylint: disable=attribute-defined-outside-init,import-error
 from platform import machine
 
 import xbmc
