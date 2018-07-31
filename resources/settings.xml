@@ -34,7 +34,7 @@
   <category label="30078">
     <setting id="skip_credits" type="bool" label="30075" default="true"/>
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="skip_enabled_no_pause" type="bool" label="30080" default="true" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
   </category>
   <category label="30023">
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>

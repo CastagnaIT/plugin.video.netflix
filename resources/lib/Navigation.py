@@ -23,9 +23,11 @@ from collections import OrderedDict
 
 import xbmc
 import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import log
+from resources.lib.utils import log, find_episode
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.Library import Library
+from resources.lib.section_skipping import (
+    SKIPPABLE_SECTIONS, OFFSET_CREDITS, OFFSET_WATCHED_TO_END)
 
 
 class Navigation(object):
@@ -246,25 +248,6 @@ class Navigation(object):
         xbmc.executebuiltin('Container.Refresh')
         return True
 
-    def _get_credit_markers_for_episode(self, metadata, episode_id):
-        if not (metadata and
-                'video' in metadata and
-                metadata['video'].get('type') == 'show'):
-            return {}
-
-        for season in metadata['video']['seasons']:
-            for episode in season['episodes']:
-                self.nx_common.log('Looking at S{}E{}: episode[id]={} <=> {}'.format(season['seq'], episode['seq'], episode['id'], episode_id))
-                if str(episode['id']) == episode_id:
-                    return {
-                        'end_credits_offset': episode.get('creditsOffset'),
-                        'watched_to_end_offset': episode.get('watchedToEndOffset'),
-                        'credit_markers': episode.get('creditMarkers')
-                    }
-
-        self.nx_common.log('Could not find metadata for episode')
-        return {}
-
     @log
     def play_video(self, video_id, start_offset, infoLabels):
         """Starts video playback
@@ -287,19 +270,49 @@ class Navigation(object):
         except:
             infoLabels = {}
 
-        metadata = self._check_response(self.call_netflix_service({
-            'method': 'fetch_metadata',
-            'video_id': video_id
-        }))
-
-        timeline_markers = self._get_credit_markers_for_episode(metadata, video_id)
-
-        play = self.kodi_helper.play_item(
+        return self.kodi_helper.play_item(
             video_id=video_id,
             start_offset=start_offset,
             infoLabels=infoLabels,
-            timeline_markers=timeline_markers)
-        return play
+            timeline_markers=self._get_timeline_markers(video_id))
+
+    @log
+    def _get_timeline_markers(self, video_id):
+        try:
+            metadata = self._get_single_metadata(video_id)
+        except KeyError:
+            return {}
+
+        markers = {
+            marker: metadata[marker]
+            for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
+            if metadata[marker] is not None
+        }
+
+        markers['creditMarkers'] = {
+            section: {
+                'start': metadata['creditMarkers'][section]['start'] / 1000,
+                'end': metadata['creditMarkers'][section]['end'] / 1000
+            }
+            for section in SKIPPABLE_SECTIONS
+            if None not in metadata['creditMarkers'][section].values()
+        }
+
+        return markers
+
+    @log
+    def _get_single_metadata(self, video_id):
+        metadata = (
+            self._check_response(
+                self.call_netflix_service({
+                    'method': 'fetch_metadata',
+                    'video_id': video_id
+                })
+            ) or {}
+        )['video']
+        return (find_episode(video_id, metadata['seasons'])
+                if metadata['type'] == 'show'
+                else metadata)
 
     @log
     def show_search_results(self, term):

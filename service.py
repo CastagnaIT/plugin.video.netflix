@@ -6,6 +6,7 @@
 
 """Kodi plugin for Netflix (https://netflix.com)"""
 
+# pylint: disable=import-error
 
 import threading
 import socket
@@ -168,15 +169,19 @@ class NetflixService(object):
         Main loop. Runs until xbmc.Monitor requests abort
         """
         self._start_servers()
-        monitor = KodiMonitor(self.nx_common, self.nx_common.log)
+        monitor = KodiMonitor(self.nx_common)
+        player = xbmc.Player()
         while not monitor.abortRequested():
-            monitor.on_playback_tick()
+            if player.isPlayingVideo():
+                monitor.on_playback_tick()
+
             try:
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()
             except RuntimeError as exc:
                 self.nx_common.log(
                     'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
+
             if monitor.waitForAbort(1):
                 break
         self._shutdown()

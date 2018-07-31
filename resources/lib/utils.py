@@ -171,3 +171,15 @@ def get_active_video_player():
                  for player in json_rpc('Player.GetActivePlayers')
                  if player['type'] == 'video'),
                 None)
+
+def find_episode(episode_id, seasons):
+    """
+    Return metadata for a specific episode from within a nested
+    metadata dict.
+    Returns an empty dict if the episode could not be found.
+    """
+    for season in seasons:
+        for episode in season['episodes']:
+            if str(episode['id']) == episode_id:
+                return episode
+    return {}
