@@ -291,7 +291,8 @@ class Navigation(object):
 
         markers.update({
             section: {
-                'start': int(metadata['creditMarkers'][section]['start'] / 1000),
+                'start': int(metadata['creditMarkers'][section]['start'] /
+                             1000),
                 'end': int(metadata['creditMarkers'][section]['end'] / 1000)
             }
             for section in SKIPPABLE_SECTIONS.keys()
