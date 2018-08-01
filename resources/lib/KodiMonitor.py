@@ -7,14 +7,15 @@
 
 """Playback tracking & update of associated item properties in Kodi library"""
 
+from json import loads
+
 import AddonSignals
-from xbmc import Monitor, LOGERROR
+from xbmc import Monitor
 
 from resources.lib.NetflixCommon import Signals
 from resources.lib.section_skipping import (
     SectionSkipper, OFFSET_WATCHED_TO_END)
-from resources.lib.utils import (
-    json_rpc, get_active_video_player, update_library_item_details)
+from resources.lib.utils import json_rpc, update_library_item_details
 
 
 class KodiMonitor(Monitor):
@@ -55,7 +56,8 @@ class KodiMonitor(Monitor):
         """
         if self.tracking:
             if method == 'Player.OnAVStart':
-                self._on_playback_started()
+                data = loads(unicode(data, 'utf-8', errors='ignore'))
+                self.active_player_id = data['player']['playerid']
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
 
@@ -89,14 +91,6 @@ class KodiMonitor(Monitor):
         update_library_item_details(
             self.dbinfo['dbtype'], self.dbinfo['dbid'],
             {'resume': {'position': self.elapsed}})
-
-    def _on_playback_started(self):
-        self.active_player_id = get_active_video_player()
-
-        if self.active_player_id is None:
-            self.log('Cannot obtain active player, not tracking playback',
-                     level=LOGERROR)
-            self._on_playback_stopped()
 
     def _on_playback_stopped(self):
         if self.tracking and self.dbinfo and self._watched_to_end():

@@ -14,7 +14,7 @@
 					<width>180</width>
 					<height>80</height>
 					<font>font12</font>
-					<label>to be overwritten</label>
+					<label></label>
 					<textcolor>FFededed</textcolor>
 					<focusedcolor>FFededed</focusedcolor>
 					<selectedcolor>FFededed</selectedcolor>

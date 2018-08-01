@@ -172,17 +172,6 @@ def retry(func, max_tries, sleep_time=3000):
     return None
 
 
-def get_active_video_player():
-    """
-    Return the id of the currently active Kodi video player or None
-    if there's no active player.
-    """
-    return next((player['playerid']
-                 for player in json_rpc('Player.GetActivePlayers')
-                 if player['type'] == 'video'),
-                None)
-
-
 def find_episode(episode_id, seasons):
     """
     Return metadata for a specific episode from within a nested
