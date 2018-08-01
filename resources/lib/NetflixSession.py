@@ -24,9 +24,10 @@ except:
 
 FETCH_VIDEO_REQUEST_COUNT = 26
 
-# Fanart: lower quality than 1080, but provides more variance
-# (1080 is usually the same as interestingMoment)
-ART_FANART_SIZE = '720'
+ART_FANART_SIZE = '1080'
+# Lower quality for episodes than 1080, because it provides more variance
+# (1080 is usually the same as interestingMoment for episodes)
+ART_FANART_SIZE_EPISODE = '720'
 ART_MOMENT_SIZE_SMALL = '_665x375'
 ART_MOMENT_SIZE_LARGE = '_1920x1080'
 ART_BOX_SIZE_POSTER = '_342x684'
@@ -1338,7 +1339,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = episode.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = episode.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
+        artwork = episode.get('BGImages', {}).get(ART_FANART_SIZE_EPISODE, {}).get('jpg', [{}])[0].get('url')
         logo = episode.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
@@ -1630,7 +1631,7 @@ class NetflixSession(object):
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'boxarts', ART_BOX_SIZE_LARGE, 'jpg'],
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'boxarts', ART_BOX_SIZE_POSTER, 'jpg'],
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'bb2OGLogo', ART_LOGO_SIZE, 'png'],
-            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'BGImages', ART_FANART_SIZE, 'jpg']
+            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'BGImages', ART_FANART_SIZE_EPISODE, 'jpg']
         ]
         response = self._path_request(paths=paths)
         return self._process_response(
