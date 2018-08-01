@@ -24,13 +24,15 @@ except:
 
 FETCH_VIDEO_REQUEST_COUNT = 26
 
-ART_FANART_SIZE = '1080'
+# Fanart: lower quality than 1080, but provides more variance
+# (1080 is usually the same as interestingMoment)
+ART_FANART_SIZE = '720'
 ART_MOMENT_SIZE_SMALL = '_665x375'
 ART_MOMENT_SIZE_LARGE = '_1920x1080'
 ART_BOX_SIZE_POSTER = '_342x684'
 ART_BOX_SIZE_SMALL = '_665x375'
 ART_BOX_SIZE_LARGE = '_1920x1080'
-ART_LOGO_SIZE = '_400x90'
+ART_LOGO_SIZE = '_550x124'
 
 
 class NetflixSession(object):
@@ -835,7 +837,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', {}).get('url')
+        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
@@ -1190,7 +1192,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', {}).get('url')
+        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
         return {
             season['summary']['id']: {
@@ -1336,7 +1338,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = episode.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = episode.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', {}).get('url')
+        artwork = episode.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
         logo = episode.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
