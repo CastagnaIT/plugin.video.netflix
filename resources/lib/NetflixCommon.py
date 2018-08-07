@@ -3,6 +3,8 @@ from xbmcaddon import Addon
 import xbmcvfs
 import json
 
+from resources.lib.storage import PersistentStorage
+
 
 class Signals(object):
     PLAYBACK_INITIATED = 'playback_initiated'
@@ -41,6 +43,9 @@ class NetflixCommon(object):
 
     def flush_settings(self):
         self.addon = Addon()
+
+    def get_storage(self, storage_id):
+        return PersistentStorage(storage_id, self)
 
     def get_esn(self):
         """

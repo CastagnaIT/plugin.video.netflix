@@ -963,9 +963,12 @@ class KodiHelper(object):
                 play_item.setInfo('video', details[0])
                 play_item.setArt(details[1])
                 signal_data.update({
-                   'dbid': details[0]['dbid'],
-                   'dbtype': details[0]['mediatype'],
-                   'playcount': details[0]['playcount']})
+                    'dbinfo': {
+                        'dbid': details[0]['dbid'],
+                        'dbtype': details[0]['mediatype'],
+                        'playcount': details[0]['playcount']}})
+                if infoLabels['mediatype'] == 'episode':
+                    signal_data['dbinfo'].update({'tvshowid': id[0]})
 
         AddonSignals.sendSignal(Signals.PLAYBACK_INITIATED, signal_data)
 

@@ -15,9 +15,13 @@ from datetime import datetime, timedelta
 
 import xbmc
 from resources.lib.NetflixCommon import NetflixCommon
-from resources.lib.KodiMonitor import KodiMonitor
 from resources.lib.MSLHttpRequestHandler import MSLTCPServer
 from resources.lib.NetflixHttpRequestHandler import NetflixTCPServer
+from resources.lib.playback_controlling import PlaybackController
+from resources.lib.playback_controlling.bookmarks import BookmarkManager
+from resources.lib.playback_controlling.stream_continuity import (
+    StreamContinuityManager)
+from resources.lib.playback_controlling.section_skipping import SectionSkipper
 
 
 def select_unused_port():
@@ -169,11 +173,16 @@ class NetflixService(object):
         Main loop. Runs until xbmc.Monitor requests abort
         """
         self._start_servers()
-        monitor = KodiMonitor(self.nx_common)
+        controller = PlaybackController(self.nx_common)
+        controller.action_managers = [
+            BookmarkManager(self.nx_common),
+            SectionSkipper(self.nx_common),
+            StreamContinuityManager(self.nx_common)
+        ]
         player = xbmc.Player()
-        while not monitor.abortRequested():
+        while not controller.abortRequested():
             if player.isPlayingVideo():
-                monitor.on_playback_tick()
+                controller.on_playback_tick()
 
             try:
                 if self.library_update_scheduled() and self._is_idle():
@@ -182,7 +191,7 @@ class NetflixService(object):
                 self.nx_common.log(
                     'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
 
-            if monitor.waitForAbort(1):
+            if controller.waitForAbort(1):
                 break
         self._shutdown()
 

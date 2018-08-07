@@ -7,10 +7,24 @@
 import time
 import hashlib
 import platform
-import json
 from functools import wraps
 from types import FunctionType
 import xbmc
+
+
+class LoggingComponent(object):
+    """
+    Prepends log statements with the calling class' name
+    """
+    # pylint: disable=too-few-public-methods
+    def __init__(self, nx_common):
+        self._log = nx_common.log
+
+    def log(self, msg, level=xbmc.LOGDEBUG):
+        """
+        Log a message
+        """
+        self._log('{}: {}'.format(self.__class__.__name__, msg), level)
 
 
 def noop(**kwargs):
@@ -121,55 +135,6 @@ def get_class_methods(class_item=None):
     """
     _type = FunctionType
     return [x for x, y in class_item.__dict__.items() if isinstance(y, _type)]
-
-
-def json_rpc(method, params=None):
-    """
-    Executes a JSON-RPC in Kodi
-
-    :param method: The JSON-RPC method to call
-    :type method: string
-    :param params: The parameters of the method call (optional)
-    :type params: dict
-    :returns: dict -- Method call result
-    """
-    request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
-                    'params': params or {}}
-    request = json.dumps(request_data)
-    response = json.loads(unicode(xbmc.executeJSONRPC(request), 'utf-8',
-                                  errors='ignore'))
-    if 'error' in response:
-        raise IOError('JSONRPC-Error {}: {}'
-                      .format(response['error']['code'],
-                              response['error']['message']))
-    return response['result']
-
-
-def update_library_item_details(dbtype, dbid, details):
-    """
-    Update properties of an item in the Kodi library
-    """
-    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-    params = {'{}id'.format(dbtype): dbid}
-    params.update(details)
-    return json_rpc(method, params)
-
-
-def retry(func, max_tries, sleep_time=3000):
-    """
-    Retry an operation max_tries times and wait sleep_time milliseconds
-    inbetween. Silently ignores exceptions.
-    """
-    for _ in range(1, max_tries):
-        try:
-            result = func()
-            if result is not None:
-                return result
-        # pylint: disable=bare-except
-        except:
-            pass
-        xbmc.sleep(sleep_time)
-    return None
 
 
 def find_episode(episode_id, seasons):
