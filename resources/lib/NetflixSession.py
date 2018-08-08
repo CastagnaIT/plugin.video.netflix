@@ -302,13 +302,13 @@ class NetflixSession(object):
         user_data, profiles = self.extract_inline_netflix_page_data(
             content=page.content)
         login_payload = {
-            'email': account.get('email'),
+            'userLoginId': account.get('email'),
             'password': account.get('password'),
             'rememberMe': 'true',
             'flow': 'websiteSignUp',
             'mode': 'login',
             'action': 'loginAction',
-            'withFields': 'email,password,rememberMe,nextPage,showPassword',
+            'withFields': 'rememberMe,nextPage,userLoginId,password',
             'authURL': user_data.get('authURL'),
             'nextPage': '',
             'showPassword': ''
