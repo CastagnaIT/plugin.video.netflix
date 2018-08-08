@@ -7,7 +7,7 @@
 
 """Save bookmarks for library items and mark them as watched"""
 
-from resources.lib.playback_controlling import PlaybackActionManager, json_rpc
+from resources.lib.playback import PlaybackActionManager, json_rpc
 
 OFFSET_WATCHED_TO_END = 'watchedToEndOffset'
 

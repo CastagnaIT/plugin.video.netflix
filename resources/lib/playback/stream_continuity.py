@@ -11,9 +11,8 @@ episodes of a tv show
 """
 import xbmc
 
-from resources.lib.playback_controlling import PlaybackActionManager
-from resources.lib.kodi import show_modal_dialog
-from resources.lib.kodi.save_stream_settings import SaveStreamSettings
+import resources.lib.ui as ui
+from resources.lib.playback import PlaybackActionManager
 
 STREAMS = {
     'audio': {
@@ -91,11 +90,11 @@ class StreamContinuityManager(PlaybackActionManager):
         self.log('Asking to save {} stream #{}'.format(stype, index))
         stream_settings = self.storage.get(self.current_show, {})
         stream_settings[stype] = index
-        show_modal_dialog(SaveStreamSettings,
-                          "plugin-video-netflix-SaveStreamSettings.xml",
-                          self.addon.getAddonInfo('path'),
-                          minutes=0,
-                          seconds=5,
-                          stream_settings=stream_settings,
-                          tvshowid=self.current_show,
-                          storage=self.storage)
+        ui.show_modal_dialog(ui.xmldialogs.SaveStreamSettings,
+                             "plugin-video-netflix-SaveStreamSettings.xml",
+                             self.addon.getAddonInfo('path'),
+                             minutes=0,
+                             seconds=5,
+                             stream_settings=stream_settings,
+                             tvshowid=self.current_show,
+                             storage=self.storage)

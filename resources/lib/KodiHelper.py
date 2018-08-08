@@ -15,7 +15,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import inputstreamhelper
-from resources.lib.kodi.Dialogs import Dialogs
+from resources.lib.ui.Dialogs import Dialogs
 from resources.lib.NetflixCommon import Signals
 from utils import get_user_agent
 from UniversalAnalytics import Tracker

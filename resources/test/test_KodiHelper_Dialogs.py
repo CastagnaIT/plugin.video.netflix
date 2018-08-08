@@ -9,7 +9,7 @@
 import unittest
 import mock
 from resources.lib.KodiHelper import KodiHelper
-from resources.lib.kodi.Dialogs import Dialogs
+from resources.lib.ui.Dialogs import Dialogs
 
 
 class KodiHelperDialogsTestCase(unittest.TestCase):

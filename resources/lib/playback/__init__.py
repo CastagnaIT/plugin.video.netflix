@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: caphm
-# Package: playback_controlling
+# Package: playback
 # Created on: 08.02.2018
 # License: MIT https://goo.gl/5bMj3H
 # pylint: disable=import-error
