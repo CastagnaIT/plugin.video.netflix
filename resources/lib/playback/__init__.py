@@ -60,7 +60,10 @@ class PlaybackController(xbmc.Monitor, LoggingComponent):
         Callback for addon signal when this addon has initiated a playback
         """
         self.tracking = True
-        self._notify_all(PlaybackActionManager.initialize, data)
+        try:
+            self._notify_all(PlaybackActionManager.initialize, data)
+        except RuntimeError as exc:
+            self.log('RuntimeError: {}'.format(exc), xbmc.LOGERROR)
 
     def onNotification(self, sender, method, data):
         # pylint: disable=unused-argument, invalid-name
@@ -69,11 +72,14 @@ class PlaybackController(xbmc.Monitor, LoggingComponent):
         started and playback stopped events.
         """
         if self.tracking:
-            if method == 'Player.OnAVStart':
-                self._on_playback_started(
-                    json.loads(unicode(data, 'utf-8', errors='ignore')))
-            elif method == 'Player.OnStop':
-                self._on_playback_stopped()
+            try:
+                if method == 'Player.OnAVStart':
+                    self._on_playback_started(
+                        json.loads(unicode(data, 'utf-8', errors='ignore')))
+                elif method == 'Player.OnStop':
+                    self._on_playback_stopped()
+            except RuntimeError as exc:
+                self.log('RuntimeError: {}'.format(exc), xbmc.LOGERROR)
 
     def on_playback_tick(self):
         """

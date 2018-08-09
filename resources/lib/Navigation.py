@@ -26,8 +26,8 @@ import resources.lib.NetflixSession as Netflix
 from resources.lib.utils import log, find_episode
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.Library import Library
-from resources.lib.section_skipping import (
-    SKIPPABLE_SECTIONS, OFFSET_CREDITS, OFFSET_WATCHED_TO_END)
+from resources.lib.playback.section_skipping import SKIPPABLE_SECTIONS, OFFSET_CREDITS
+from resources.lib.playback.bookmarks import OFFSET_WATCHED_TO_END
 
 
 def _get_offset_markers(metadata):

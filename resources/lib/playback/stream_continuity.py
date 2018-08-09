@@ -11,17 +11,21 @@ episodes of a tv show
 """
 import xbmc
 
-import resources.lib.ui as ui
+from resources.lib.ui import xmldialogs, show_modal_dialog
 from resources.lib.playback import PlaybackActionManager
 
 STREAMS = {
     'audio': {
-        'attribute_current': 'currentaudiostream',
-        'setter': xbmc.Player.setAudioStream
+        'current': 'currentaudiostream',
+        'setter': xbmc.Player.setAudioStream,
     },
     'subtitle': {
-        'attribute_current': 'currentsubtitle',
-        'setter': xbmc.Player.setSubtitleStream
+        'current': 'currentsubtitle',
+        'setter': xbmc.Player.setSubtitleStream,
+    },
+    'subtitleenabled': {
+        'current': 'subtitleenabled',
+        'setter': xbmc.Player.showSubtitles
     }
 }
 
@@ -39,22 +43,22 @@ class StreamContinuityManager(PlaybackActionManager):
         self.player = xbmc.Player()
         self.did_restore = False
 
-    def __str__(self):
-        return ('enabled={}, current_show={}'
-                .format(self.enabled, self.current_show))
+    @property
+    def show_settings(self):
+        """Stored stream settings for the current show"""
+        return self.storage.get(self.current_show, {})
 
     def _initialize(self, data):
         self.did_restore = False
+        # let this throw a KeyError to disable this instance if the playback is
+        # not a TV show
         self.current_show = data['dbinfo']['tvshowid']
 
     def _on_playback_started(self, player_state):
-        for stype, stream in STREAMS.iteritems():
-            current_player_stream = player_state[stream['attribute_current']]
-            if current_player_stream:
-                self.current_streams.update({
-                    stype: current_player_stream['index']
-                })
-            self._restore_stream(stype, stream['setter'])
+        xbmc.sleep(1000)
+        for stype in STREAMS:
+            self._set_current_stream(stype, player_state)
+            self._restore_stream(stype)
         self.did_restore = True
 
     def _on_tick(self, player_state):
@@ -62,39 +66,48 @@ class StreamContinuityManager(PlaybackActionManager):
             self.log('Did not restore streams yet, ignoring tick')
             return
 
-        for stype in self.current_streams:
-            stream = STREAMS[stype]
-            current_player_stream = player_state[stream['attribute_current']]
-            if (self.current_streams[stype] !=
-                    current_player_stream['index']):
-                self.log('{} stream has changed from {} to {}'
-                         .format(stype,
-                                 self.current_streams[stype],
-                                 current_player_stream))
-                self._ask_to_save(
-                    stype, current_player_stream['index'])
-                self.current_streams[stype] = current_player_stream['index']
+        for stype in STREAMS:
+            current_stream = self.current_streams[stype]
+            player_stream = player_state.get(STREAMS[stype]['current'])
+            if player_stream != current_stream:
+                self.log('{} has changed from {} to {}'
+                         .format(stype, current_stream, player_stream))
+                self._set_current_stream(stype, player_state)
+                self._ask_to_save(stype, player_stream)
 
-    def _restore_stream(self, stype, stream_setter):
+    def _set_current_stream(self, stype, player_state):
+        self.current_streams.update({
+            stype: player_state.get(STREAMS[stype]['current'])
+        })
+
+    def _restore_stream(self, stype):
         self.log('Trying to restore {}...'.format(stype))
-        stored_streams = self.storage.get(self.current_show, {})
-        if (stype in stored_streams and
-                (stored_streams[stype] != self.current_streams[stype] or
-                 stype not in self.current_streams)):
-            self.current_streams[stype] = stored_streams[stype]
-            getattr(self.player, stream_setter.__name__)(
-                self.current_streams[stype])
-            self.log('Restored {}'.format(stype))
+        set_stream = STREAMS[stype]['setter']
+        stored_stream = self.show_settings.get(stype)
+        if (stored_stream is not None and
+                self.current_streams[stype] != stored_stream):
+            # subtitleenabled is boolean and not a dict
+            set_stream(self.player, (stored_stream['index']
+                                     if isinstance(stored_stream, dict)
+                                     else stored_stream))
+            self.current_streams[stype] = stored_stream
+            self.log('Restored {} to {}'.format(stype, stored_stream))
 
-    def _ask_to_save(self, stype, index):
-        self.log('Asking to save {} stream #{}'.format(stype, index))
-        stream_settings = self.storage.get(self.current_show, {})
-        stream_settings[stype] = index
-        ui.show_modal_dialog(ui.xmldialogs.SaveStreamSettings,
-                             "plugin-video-netflix-SaveStreamSettings.xml",
-                             self.addon.getAddonInfo('path'),
-                             minutes=0,
-                             seconds=5,
-                             stream_settings=stream_settings,
-                             tvshowid=self.current_show,
-                             storage=self.storage)
+    def _ask_to_save(self, stype, stream):
+        self.log('Asking to save {} for {}'.format(stream, stype))
+        new_show_settings = self.show_settings.copy()
+        new_show_settings[stype] = stream
+        show_modal_dialog(
+            xmldialogs.SaveStreamSettings,
+            "plugin-video-netflix-SaveStreamSettings.xml",
+            self.addon.getAddonInfo('path'),
+            minutes=0,
+            seconds=5,
+            new_show_settings=new_show_settings,
+            tvshowid=self.current_show,
+            storage=self.storage)
+
+
+    def __str__(self):
+        return ('enabled={}, current_show={}'
+                .format(self.enabled, self.current_show))

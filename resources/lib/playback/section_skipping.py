@@ -9,7 +9,7 @@
 import xbmc
 import xbmcgui
 
-import resources.lib.ui as ui
+from resources.lib.ui import xmldialogs, show_modal_dialog
 from resources.lib.playback import PlaybackActionManager
 
 SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}
@@ -75,10 +75,10 @@ class SectionSkipper(PlaybackActionManager):
                            self.markers[section]['start'])
         seconds = dialog_duration % 60
         minutes = (dialog_duration - seconds) / 60
-        ui.show_modal_dialog(ui.xmldialogs.Skip,
-                             "plugin-video-netflix-Skip.xml",
-                             self.addon.getAddonInfo('path'),
-                             minutes=minutes,
-                             seconds=seconds,
-                             skip_to=self.markers[section]['end'],
-                             label=label)
+        show_modal_dialog(xmldialogs.Skip,
+                          "plugin-video-netflix-Skip.xml",
+                          self.addon.getAddonInfo('path'),
+                          minutes=minutes,
+                          seconds=seconds,
+                          skip_to=self.markers[section]['end'],
+                          label=label)

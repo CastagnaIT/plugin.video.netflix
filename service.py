@@ -17,11 +17,10 @@ import xbmc
 from resources.lib.NetflixCommon import NetflixCommon
 from resources.lib.MSLHttpRequestHandler import MSLTCPServer
 from resources.lib.NetflixHttpRequestHandler import NetflixTCPServer
-from resources.lib.playback_controlling import PlaybackController
-from resources.lib.playback_controlling.bookmarks import BookmarkManager
-from resources.lib.playback_controlling.stream_continuity import (
-    StreamContinuityManager)
-from resources.lib.playback_controlling.section_skipping import SectionSkipper
+from resources.lib.playback import PlaybackController
+from resources.lib.playback.bookmarks import BookmarkManager
+from resources.lib.playback.stream_continuity import StreamContinuityManager
+from resources.lib.playback.section_skipping import SectionSkipper
 
 
 def select_unused_port():
@@ -181,10 +180,9 @@ class NetflixService(object):
         ]
         player = xbmc.Player()
         while not controller.abortRequested():
-            if player.isPlayingVideo():
-                controller.on_playback_tick()
-
             try:
+                if player.isPlayingVideo():
+                    controller.on_playback_tick()
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()
             except RuntimeError as exc:
