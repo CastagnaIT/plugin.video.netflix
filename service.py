@@ -102,9 +102,6 @@ class NetflixService(object):
         self.ns_thread = threading.Thread(
             target=self.ns_server.serve_forever)
 
-        if self.ns_server.esn_changed():
-            self.msl_server.reset_msl_data()
-
     def _start_servers(self):
         self.msl_server.server_activate()
         self.msl_server.timeout = 1
@@ -171,6 +168,8 @@ class NetflixService(object):
         monitor = KodiMonitor(self.nx_common, self.nx_common.log)
         while not monitor.abortRequested():
             monitor.update_playback_progress()
+            if self.ns_server.esn_changed():
+                self.msl_server.reset_msl_data()
             try:
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()
