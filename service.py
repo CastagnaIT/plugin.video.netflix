@@ -187,7 +187,7 @@ class NetflixService(object):
                     self.update_library()
             except RuntimeError as exc:
                 self.nx_common.log(
-                    'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
+                    'RuntimeError in main loop: {}'.format(exc), xbmc.LOGERROR)
 
             if controller.waitForAbort(1):
                 break

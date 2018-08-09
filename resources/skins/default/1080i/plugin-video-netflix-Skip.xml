@@ -11,7 +11,7 @@
 			<control type="group">
 				<control type="button" id="6012">
 					<description>Skip intro</description>
-					<width>180</width>
+					<width>250</width>
 					<height>80</height>
 					<font>font12</font>
 					<label></label>

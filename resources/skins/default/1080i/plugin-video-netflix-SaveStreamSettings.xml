@@ -11,10 +11,10 @@
 			<control type="group">
 				<control type="button" id="6012">
 					<description>Save stream settings</description>
-					<width>180</width>
+					<width>400</width>
 					<height>80</height>
 					<font>font12</font>
-					<label>Save these settings?</label>
+					<label>$ADDON[plugin.video.netflix 30081]</label>
 					<textcolor>FFededed</textcolor>
 					<focusedcolor>FFededed</focusedcolor>
 					<selectedcolor>FFededed</selectedcolor>

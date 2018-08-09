@@ -339,3 +339,15 @@ msgstr ""
 msgctxt "#30080"
 msgid "Don't pause when skipping"
 msgstr ""
+
+msgctxt "#30081"
+msgid "Save audio/subtitle preferences for this show"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Save audio / subtitle settings for TV shows"
+msgstr ""
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr ""
