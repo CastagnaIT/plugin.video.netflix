@@ -54,7 +54,7 @@ msgstr "성인인증 실패"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr "당신의 성인인증코드를 확인하십시오."
+msgstr "성인인증코드를 확인하십시오."
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -98,11 +98,11 @@ msgstr "평점주기"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "내가 찜한 것들에서 삭제"
+msgstr "찜한 것들에서 삭제"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "내가 찜한 것들에 추가"
+msgstr "찜한 것들에 추가"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -306,11 +306,11 @@ msgstr "실행 시간"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "5분이상 빈둥거리면 시작"
+msgstr "5분이상 빈둥거리면 시작합니다."
 
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
-msgstr "새로 고칠 때 X분 마다 확인"
+msgstr "새로 고칠 때 몇분 마다 확인할까요?"
 
 msgctxt "#30074"
 msgid "View for exported"
