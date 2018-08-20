@@ -20,6 +20,7 @@ import urllib2
 from urlparse import parse_qsl, urlparse
 from datetime import datetime
 from collections import OrderedDict
+from distutils.util import strtobool
 
 import xbmc
 import resources.lib.NetflixSession as Netflix
@@ -102,6 +103,7 @@ class Navigation(object):
         action = params.get('action', None)
         p_type = params.get('type', None)
         p_type_not_search_export = p_type != 'search' and p_type != 'exported'
+        widget_display = bool(strtobool(params.get('widget_display', 'false')))
 
         # open foreign settings dialog
         if 'mode' in params.keys() and params['mode'] == 'openSettings':
@@ -142,7 +144,7 @@ class Navigation(object):
                     self.call_netflix_service({
                         'method': 'switch_profile',
                         'profile_id': profile_id})
-                    return self.show_video_lists()
+                    return self.show_video_lists(widget_display)
             return self.show_profiles()
         elif action == 'save_autologin':
             # save profile id and name to settings for autologin
@@ -153,7 +155,7 @@ class Navigation(object):
         elif action == 'video_lists':
             # list lists that contain other lists
             # (starting point with recommendations, search, etc.)
-            return self.show_video_lists()
+            return self.show_video_lists(widget_display=widget_display)
         elif action == 'video_list':
             # show a list of shows/movies
             type = None if 'type' not in params.keys() else params['type']
@@ -161,19 +163,22 @@ class Navigation(object):
             video_list = self.show_video_list(
                 video_list_id=params.get('video_list_id'),
                 type=type,
-                start=start)
+                start=start,
+                widget_display=widget_display)
             return video_list
         elif action == 'season_list':
             # list of seasons for a show
             seasons = self.show_seasons(
                 show_id=params.get('show_id'),
-                tvshowtitle=params.get('tvshowtitle'))
+                tvshowtitle=params.get('tvshowtitle'),
+                widget_display=widget_display)
             return seasons
         elif action == 'episode_list':
             # list of episodes for a season
             episode_list = self.show_episode_list(
                 season_id=params.get('season_id'),
-                tvshowtitle=params.get('tvshowtitle'))
+                tvshowtitle=params.get('tvshowtitle'),
+                widget_display=widget_display)
             return episode_list
         elif action == 'rating':
             return self.rate_on_netflix(video_id=params['id'])
@@ -225,7 +230,8 @@ class Navigation(object):
             return True
         elif action == 'user-items' and p_type_not_search_export:
             # display the lists (recommendations, genres, etc.)
-            return self.show_user_list(type=params['type'])
+            return self.show_user_list(type=params['type'],
+                                       widget_display=widget_display)
         elif action == 'play_video':
             # play a video, check for adult pin if needed
             adult_pin = None
@@ -252,7 +258,8 @@ class Navigation(object):
             if term:
                 result_folder = self.kodi_helper.build_search_result_folder(
                     build_url=self.build_url,
-                    term=term)
+                    term=term,
+                    widget_display=widget_display)
                 return self.kodi_helper.set_location(url=result_folder)
         elif action == 'search_result':
             return self.show_search_results(params.get('term'))
@@ -262,7 +269,8 @@ class Navigation(object):
             # list exported movies/shows
             exported = self.kodi_helper.build_video_listing_exported(
                 content=self.library.list_exported_media(),
-                build_url=self.build_url)
+                build_url=self.build_url,
+                widget_display=widget_display)
             return exported
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
@@ -355,7 +363,7 @@ class Navigation(object):
         self.kodi_helper.dialogs.show_no_search_results_notify()
         return False
 
-    def show_user_list(self, type):
+    def show_user_list(self, type, widget_display=False):
         """
         List the users lists for shows/movies for
         recommendations/genres based on the given type
@@ -378,11 +386,12 @@ class Navigation(object):
                     video_list_ids=video_list_ids[type],
                     type=type,
                     action='video_list',
-                    build_url=self.build_url)
+                    build_url=self.build_url,
+                    widget_display=widget_display)
                 return sub_list
         return False
 
-    def show_episode_list(self, season_id, tvshowtitle):
+    def show_episode_list(self, season_id, tvshowtitle, widget_display=False):
         """Lists all episodes for a given season
 
         Parameters
@@ -412,11 +421,12 @@ class Navigation(object):
                 # list the episodes
                 episodes_list = self.kodi_helper.build_episode_listing(
                     episodes_sorted=episodes_sorted,
-                    build_url=self.build_url)
+                    build_url=self.build_url,
+                    widget_display=widget_display)
                 return episodes_list
         return False
 
-    def show_seasons(self, show_id, tvshowtitle):
+    def show_seasons(self, show_id, tvshowtitle, widget_display=False):
         """Lists all seasons for a given show
 
         Parameters
@@ -453,11 +463,13 @@ class Navigation(object):
                     season['tvshowtitle'] = tvshowtitle
                 season_list = self.kodi_helper.build_season_listing(
                     seasons_sorted=seasons_sorted,
-                    build_url=self.build_url)
+                    build_url=self.build_url,
+                    widget_display=widget_display)
                 return season_list
         return False
 
-    def show_video_list(self, video_list_id, type, start=0):
+    def show_video_list(self, video_list_id, type, start=0,
+                        widget_display=False):
         """List shows/movies based on the given video list id
 
         Parameters
@@ -509,11 +521,12 @@ class Navigation(object):
                 build_url=self.build_url,
                 has_more=has_more,
                 start=start,
-                current_video_list_id=video_list_id)
+                current_video_list_id=video_list_id,
+                widget_display=widget_display)
             return listing
         return False
 
-    def show_video_lists(self):
+    def show_video_lists(self, widget_display=False):
         """List the users video lists (recommendations, my list, etc.)"""
         user_data = self._check_response(self.call_netflix_service({
             'method': 'get_user_data'}))
@@ -541,7 +554,8 @@ class Navigation(object):
                     video_list_ids=video_list_ids,
                     user_list_order=user_list_order,
                     actions=actions,
-                    build_url=self.build_url)
+                    build_url=self.build_url,
+                    widget_display=widget_display)
                 return listing
         return False
 

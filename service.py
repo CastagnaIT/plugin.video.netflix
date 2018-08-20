@@ -106,9 +106,6 @@ class NetflixService(object):
         self.ns_thread = threading.Thread(
             target=self.ns_server.serve_forever)
 
-        if self.ns_server.esn_changed():
-            self.msl_server.reset_msl_data()
-
     def _start_servers(self):
         self.msl_server.server_activate()
         self.msl_server.timeout = 1
@@ -172,6 +169,7 @@ class NetflixService(object):
         Main loop. Runs until xbmc.Monitor requests abort
         """
         self._start_servers()
+
         controller = PlaybackController(self.nx_common)
         controller.action_managers = [
             BookmarkManager(self.nx_common),
@@ -180,6 +178,9 @@ class NetflixService(object):
         ]
         player = xbmc.Player()
         while not controller.abortRequested():
+            if self.ns_server.esn_changed():
+                self.msl_server.reset_msl_data()
+
             try:
                 if player.isPlayingVideo():
                     controller.on_playback_tick()

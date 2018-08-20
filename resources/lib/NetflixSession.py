@@ -24,13 +24,16 @@ except:
 
 FETCH_VIDEO_REQUEST_COUNT = 26
 
-ART_BILLBOARD_SIZE = '_1920x1080'
+ART_FANART_SIZE = '1080'
+# Lower quality for episodes than 1080, because it provides more variance
+# (1080 is usually the same as interestingMoment for episodes)
+ART_FANART_SIZE_EPISODE = '720'
 ART_MOMENT_SIZE_SMALL = '_665x375'
 ART_MOMENT_SIZE_LARGE = '_1920x1080'
 ART_BOX_SIZE_POSTER = '_342x684'
 ART_BOX_SIZE_SMALL = '_665x375'
 ART_BOX_SIZE_LARGE = '_1920x1080'
-ART_LOGO_SIZE = '_400x90'
+ART_LOGO_SIZE = '_550x124'
 
 
 class NetflixSession(object):
@@ -302,13 +305,14 @@ class NetflixSession(object):
         user_data, profiles = self.extract_inline_netflix_page_data(
             content=page.content)
         login_payload = {
+            'userLoginId': account.get('email'),
             'email': account.get('email'),
             'password': account.get('password'),
             'rememberMe': 'true',
             'flow': 'websiteSignUp',
             'mode': 'login',
             'action': 'loginAction',
-            'withFields': 'email,password,rememberMe,nextPage,showPassword',
+            'withFields': 'rememberMe,nextPage,userLoginId,password,email',
             'authURL': user_data.get('authURL'),
             'nextPage': '',
             'showPassword': ''
@@ -835,7 +839,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('artWorkByType', {}).get('BILLBOARD', {}).get(ART_BILLBOARD_SIZE, {}).get('jpg', {}).get('url')
+        artwork = next(iter(video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])), {}).get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
@@ -1190,7 +1194,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('artWorkByType', {}).get('BILLBOARD', {}).get(ART_BILLBOARD_SIZE, {}).get('jpg', {}).get('url')
+        artwork = next(iter(video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])), {}).get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
         return {
             season['summary']['id']: {
@@ -1336,7 +1340,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = episode.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = episode.get('artWorkByType', {}).get('BILLBOARD', {}).get(ART_BILLBOARD_SIZE, {}).get('jpg', {}).get('url')
+        artwork = next(iter(episode.get('BGImages', {}).get(ART_FANART_SIZE_EPISODE, {}).get('jpg', [{}])), {}).get('url')
         logo = episode.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
@@ -1435,7 +1439,7 @@ class NetflixSession(object):
             item_path + item_titles + item_pagination + ['reference', 'storyarts', '_1632x873', 'jpg'],
             item_path + item_titles + item_pagination + ['reference', 'interestingMoment', ART_MOMENT_SIZE_SMALL, 'jpg'],
             item_path + item_titles + item_pagination + ['reference', 'interestingMoment', ART_MOMENT_SIZE_LARGE, 'jpg'],
-            item_path + item_titles + item_pagination + ['reference', 'artWorkByType', 'BILLBOARD', ART_BILLBOARD_SIZE, 'jpg'],
+            item_path + item_titles + item_pagination + ['reference', 'BGImages', ART_FANART_SIZE, 'jpg'],
             item_path + item_titles + item_pagination + ['reference', 'cast', {'from': 0, 'to': 15}, ['id', 'name']],
             item_path + item_titles + item_pagination + ['reference', 'cast', 'summary'],
             item_path + item_titles + item_pagination + ['reference', 'genres', {'from': 0, 'to': 5}, ['id', 'name']],
@@ -1488,7 +1492,7 @@ class NetflixSession(object):
             ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'storyarts', '_1632x873', 'jpg'],
             ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'interestingMoment', ART_MOMENT_SIZE_SMALL, 'jpg'],
             ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'interestingMoment', ART_MOMENT_SIZE_LARGE, 'jpg'],
-            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'artWorkByType', 'BILLBOARD', ART_BILLBOARD_SIZE, 'jpg']
+            ['lists', [list_id], {'from': list_from, 'to': list_to}, "reference", 'BGImages', ART_FANART_SIZE, 'jpg']
         ]
 
         response = self._path_request(paths=paths)
@@ -1584,7 +1588,7 @@ class NetflixSession(object):
             ['videos', id, 'bb2OGLogo', ART_LOGO_SIZE, 'png'],
             ['videos', id, 'interestingMoment', ART_MOMENT_SIZE_SMALL, 'jpg'],
             ['videos', id, 'interestingMoment', ART_MOMENT_SIZE_LARGE, 'jpg'],
-            ['videos', id, 'artWorkByType', 'BILLBOARD', ART_BILLBOARD_SIZE, 'jpg']
+            ['videos', id, 'BGImages', ART_FANART_SIZE, 'jpg']
         ]
         response = self._path_request(paths=paths)
         return self._process_response(response=response, component='Seasons')
@@ -1628,7 +1632,7 @@ class NetflixSession(object):
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'boxarts', ART_BOX_SIZE_LARGE, 'jpg'],
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'boxarts', ART_BOX_SIZE_POSTER, 'jpg'],
             ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'bb2OGLogo', ART_LOGO_SIZE, 'png'],
-            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'artWorkByType', 'BILLBOARD', ART_BILLBOARD_SIZE, 'jpg']
+            ['seasons', season_id, 'episodes', {'from': list_from, 'to': list_to}, 'BGImages', ART_FANART_SIZE_EPISODE, 'jpg']
         ]
         response = self._path_request(paths=paths)
         return self._process_response(
