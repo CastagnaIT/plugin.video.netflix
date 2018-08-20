@@ -266,7 +266,8 @@ class KodiHelper(object):
 
         return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
 
-    def build_main_menu_listing(self, video_list_ids, user_list_order, actions, build_url):
+    def build_main_menu_listing(self, video_list_ids, user_list_order, actions,
+                                build_url, widget_display=False):
         """
         Builds the video lists (my list, continue watching, etc.) Kodi screen
 
@@ -394,10 +395,13 @@ class KodiHelper(object):
         preselected_list_item = idx + 1 if self.get_main_menu_selection() == 'search' else preselected_list_item
         if preselected_list_item is not None:
             xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId()), str(preselected_list_item)))
-        self.set_custom_view(VIEW_FOLDER)
+        if not widget_display:
+            self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_video_listing(self, video_list, actions, type, build_url, has_more=False, start=0, current_video_list_id=""):
+    def build_video_listing(self, video_list, actions, type, build_url,
+                            has_more=False, start=0, current_video_list_id="",
+                            widget_display=False):
         """
         Builds the video lists (my list, continue watching, etc.)
         contents Kodi screen
@@ -498,11 +502,12 @@ class KodiHelper(object):
 
         xbmcplugin.endOfDirectory(self.plugin_handle)
 
-        self.set_custom_view(view)
+        if not widget_display:
+            self.set_custom_view(view)
 
         return True
 
-    def build_video_listing_exported(self, content, build_url):
+    def build_video_listing_exported(self, content, build_url, widget_display=False):
         """Build list of exported movies / shows
 
         Parameters
@@ -587,10 +592,11 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_EXPORTED)
+        if not widget_display:
+            self.set_custom_view(VIEW_EXPORTED)
         return True
 
-    def build_search_result_folder(self, build_url, term):
+    def build_search_result_folder(self, build_url, term, widget_display=False):
         """Add search result folder
 
         Parameters
@@ -624,7 +630,8 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_FOLDER)
+        if not widget_display:
+            self.set_custom_view(VIEW_FOLDER)
         return url_rec
 
     def set_location(self, url, replace=False):
@@ -703,7 +710,8 @@ class KodiHelper(object):
         self.dialogs.show_no_search_results_notify()
         return xbmcplugin.endOfDirectory(self.plugin_handle)
 
-    def build_user_sub_listing(self, video_list_ids, type, action, build_url):
+    def build_user_sub_listing(self, video_list_ids, type, action, build_url,
+                               widget_display=False):
         """
         Builds the video lists screen for user subfolders
         (genres & recommendations)
@@ -746,10 +754,11 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_FOLDER)
+        if not widget_display:
+            self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_season_listing(self, seasons_sorted, build_url):
+    def build_season_listing(self, seasons_sorted, build_url, widget_display=False):
         """Builds the season list screen for a show
 
         Parameters
@@ -805,10 +814,11 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_SEASON)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_SEASON)
+        if not widget_display:
+            self.set_custom_view(VIEW_SEASON)
         return True
 
-    def build_episode_listing(self, episodes_sorted, build_url):
+    def build_episode_listing(self, episodes_sorted, build_url, widget_display=False):
         """Builds the episode list screen for a season of a show
 
         Parameters
@@ -873,7 +883,8 @@ class KodiHelper(object):
             handle=self.plugin_handle,
             content=CONTENT_EPISODE)
         xbmcplugin.endOfDirectory(self.plugin_handle)
-        self.set_custom_view(VIEW_EPISODE)
+        if not widget_display:
+            self.set_custom_view(VIEW_EPISODE)
         return True
 
     def play_item(self, video_id, start_offset=-1, infoLabels={}):
