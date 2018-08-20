@@ -1,0 +1,317 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
+"Language-Team: Korean\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix VOD 애드온"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "추천"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "성인인증코드"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "검색어"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "암호"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "성인인증 실패"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "성인인증코드를 확인하십시오."
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "로그인 실패"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "로그인 암호를 확인하십시오."
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "장르"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "검색"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "볼 수 있는 시즌이 없습니다."
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "일치하는 것이 없습니다."
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "계정"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "로그아웃"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "라이브러리로 보내기"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "평점주기"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "찜한 것들에서 삭제"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "찜한 것들에 추가"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(0-10 사이)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "고급설정"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL인증"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "라이브러리"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "개인라이브러리를 사용합니다."
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "개인라이브러리 위치"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "재생 오류"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Inputstream 애드온이 없군요."
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "라이브러리에서 지우기"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "라이브러리 이름 바꾸기"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "추적"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "돌비사운드 사용"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN(자동 설정, 수동변경 가능)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Inpustream 애드온 설정"
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "내보낼 때 항상 원래 제목 사용하기"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "보기"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "사용자 설정"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr ""
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr ""
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr ""
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr ""
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr ""
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr ""
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- 다음 --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "Inpustream addon을 설치 혹은 켜십시오."
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "정말로 지울까요?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "내보낸 것들"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "DB 새로고침"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "새로고침 성공"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "요청오류"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "실패했습니다."
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "자동로그인"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "자동로그인 켬"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "프로파일"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr ""
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "자동 로그인이 켜졌습니다!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "다른 계정으로"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "라이브러리 새로 고침"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "성인인증코드 사용/사용안함"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "새 에피소드가 라이브러리에 추가되었습니다."
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "새 에피소드를 내보냅니다."
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "자동으로 새로 고칩니다."
+
+msgctxt "#30066"
+msgid "never"
+msgstr "안함"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "매일"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "이틀에 한번"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "닷새에 한번"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "매주"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "실행 시간"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "5분이상 빈둥거리면 시작합니다."
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "새로 고칠 때 몇분 마다 확인할까요?"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "내보낸 것들 보기"
