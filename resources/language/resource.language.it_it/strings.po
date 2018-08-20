@@ -174,27 +174,27 @@ msgstr "Abilita viste personalizzate"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "Vista per le cartelle"
+msgstr "Vista per cartelle"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "Vista per i film"
+msgstr "Vista per film"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vista per le serie"
+msgstr "Vista per serie"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "Vista per le stagioni"
+msgstr "Vista per stagioni"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "Vista per gli episodi"
+msgstr "Vista per episodi"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "Vista per i profili"
+msgstr "Vista per profili"
 
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
@@ -206,11 +206,11 @@ msgstr "L'addon Inputstream Adaptive non è abilitato"
 
 msgctxt "#30047"
 msgid "Finally remove?"
-msgstr "Vuoi rimuovere dalla libreria?"
+msgstr "Rimuovere in modo permanente?"
 
 msgctxt "#30048"
 msgid "Exported"
-msgstr "Libreria"
+msgstr "Esportati"
 
 msgctxt "#30049"
 msgid "Update DB"
@@ -250,7 +250,7 @@ msgstr "Seleziona il profilo dalla lista profili -> menu contestuale"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr "Accesso automatico abilitato"
+msgstr "Accesso automatico abilitato!"
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -267,3 +267,51 @@ msgstr "Aggiorna nella libreria"
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Abilita/disabilita controllo parentale. Attivo:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "nuovi episodi aggiunti alla libreria"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Esporta nuovi episodi"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Aggiornamento automatico"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "mai"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "quotidianamente"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "ogni altro giorno"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "ogni 5 giorni"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "settimanalmente"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Ora del Giorno"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Avvia solo dopo 5 minuti di inattività"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Controlla ogni X minuti se l'aggiornamento è schedulato"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Vista per esportati"
