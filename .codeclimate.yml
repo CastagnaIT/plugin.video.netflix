@@ -18,6 +18,7 @@ exclude_paths:
   - "resources/lib/UniversalAnalytics/"
   - "resources/language/"
   - "resources/media/"
+  - "resources/skins/"
   - "resources/fanart.jpg"
   - "resources/icon.png"
   - "resources/screenshot-01.jpg"

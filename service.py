@@ -6,6 +6,7 @@
 
 """Kodi plugin for Netflix (https://netflix.com)"""
 
+# pylint: disable=import-error
 
 import threading
 import socket
@@ -14,9 +15,12 @@ from datetime import datetime, timedelta
 
 import xbmc
 from resources.lib.NetflixCommon import NetflixCommon
-from resources.lib.KodiMonitor import KodiMonitor
 from resources.lib.MSLHttpRequestHandler import MSLTCPServer
 from resources.lib.NetflixHttpRequestHandler import NetflixTCPServer
+from resources.lib.playback import PlaybackController
+from resources.lib.playback.bookmarks import BookmarkManager
+from resources.lib.playback.stream_continuity import StreamContinuityManager
+from resources.lib.playback.section_skipping import SectionSkipper
 
 
 def select_unused_port():
@@ -165,18 +169,28 @@ class NetflixService(object):
         Main loop. Runs until xbmc.Monitor requests abort
         """
         self._start_servers()
-        monitor = KodiMonitor(self.nx_common, self.nx_common.log)
-        while not monitor.abortRequested():
-            monitor.update_playback_progress()
+
+        controller = PlaybackController(self.nx_common)
+        controller.action_managers = [
+            BookmarkManager(self.nx_common),
+            SectionSkipper(self.nx_common),
+            StreamContinuityManager(self.nx_common)
+        ]
+        player = xbmc.Player()
+        while not controller.abortRequested():
             if self.ns_server.esn_changed():
                 self.msl_server.reset_msl_data()
+
             try:
+                if player.isPlayingVideo():
+                    controller.on_playback_tick()
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()
             except RuntimeError as exc:
                 self.nx_common.log(
-                    'RuntimeError: {}'.format(exc), xbmc.LOGERROR)
-            if monitor.waitForAbort(5):
+                    'RuntimeError in main loop: {}'.format(exc), xbmc.LOGERROR)
+
+            if controller.waitForAbort(1):
                 break
         self._shutdown()
 

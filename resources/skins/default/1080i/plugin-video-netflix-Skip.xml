@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">6012</defaultcontrol>
+	<zorder>0</zorder>
+	<controls>
+		<control type="group">
+			<right>30</right>
+			<bottom>60</bottom>
+			<height>80</height>
+			<width>180</width>
+			<control type="group">
+				<control type="button" id="6012">
+					<description>Skip intro</description>
+					<width>250</width>
+					<height>80</height>
+					<font>font12</font>
+					<label></label>
+					<textcolor>FFededed</textcolor>
+					<focusedcolor>FFededed</focusedcolor>
+					<selectedcolor>FFededed</selectedcolor>
+					<shadowcolor>66000000</shadowcolor>
+					<textoffsetx>20</textoffsetx>
+					<aligny>center</aligny>
+					<align>center</align>
+					<texturefocus border="10" colordiffuse="ff222326">smallbutton.png</texturefocus>
+					<texturenofocus border="10" colordiffuse="ff222326">smallbutton.png</texturenofocus>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

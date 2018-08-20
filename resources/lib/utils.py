@@ -12,6 +12,21 @@ from types import FunctionType
 import xbmc
 
 
+class LoggingComponent(object):
+    """
+    Prepends log statements with the calling class' name
+    """
+    # pylint: disable=too-few-public-methods
+    def __init__(self, nx_common):
+        self._log = nx_common.log
+
+    def log(self, msg, level=xbmc.LOGDEBUG):
+        """
+        Log a message
+        """
+        self._log('{}: {}'.format(self.__class__.__name__, msg), level)
+
+
 def noop(**kwargs):
     """Takes everything, does nothing, classic no operation function"""
     return kwargs
@@ -120,3 +135,16 @@ def get_class_methods(class_item=None):
     """
     _type = FunctionType
     return [x for x, y in class_item.__dict__.items() if isinstance(y, _type)]
+
+
+def find_episode(episode_id, seasons):
+    """
+    Return metadata for a specific episode from within a nested
+    metadata dict.
+    Returns an empty dict if the episode could not be found.
+    """
+    for season in seasons:
+        for episode in season['episodes']:
+            if str(episode['id']) == episode_id:
+                return episode
+    return {}

@@ -10,11 +10,13 @@ import hashlib
 from os import remove
 from uuid import uuid4
 from urllib import urlencode
+import AddonSignals
 import xbmc
 import xbmcgui
 import xbmcplugin
 import inputstreamhelper
-from resources.lib.kodi.Dialogs import Dialogs
+from resources.lib.ui.Dialogs import Dialogs
+from resources.lib.NetflixCommon import Signals
 from utils import get_user_agent
 from UniversalAnalytics import Tracker
 try:
@@ -41,10 +43,6 @@ CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
 
-TAGGED_WINDOW_ID = 10000
-PROP_NETFLIX_PLAY = 'netflix_playback'
-PROP_PLAYBACK_INIT = 'initialized'
-PROP_PLAYBACK_TRACKING = 'tracking'
 
 def _update_if_present(source_dict, source_att, target_dict, target_att):
     if source_dict.get(source_att):
@@ -887,7 +885,7 @@ class KodiHelper(object):
             self.set_custom_view(VIEW_EPISODE)
         return True
 
-    def play_item(self, video_id, start_offset=-1, infoLabels={}):
+    def play_item(self, video_id, start_offset=-1, infoLabels={}, timeline_markers={}):
         """Plays a video
 
         Parameters
@@ -954,6 +952,8 @@ class KodiHelper(object):
             play_item.setArt(art)
         play_item.setInfo('video', infoLabels)
 
+        signal_data = {'timeline_markers': timeline_markers}
+
         # check for content in kodi db
         if str(infoLabels) != 'None':
             if infoLabels['mediatype'] == 'episode':
@@ -962,7 +962,7 @@ class KodiHelper(object):
                     showid=id,
                     showseason=infoLabels['season'],
                     showepisode=infoLabels['episode'])
-            if infoLabels['mediatype'] != 'episode':
+            else:
                 id = self.movietitle_to_id(title=infoLabels['title'])
                 details = self.get_movie_content_by_id(movieid=id)
 
@@ -973,19 +973,20 @@ class KodiHelper(object):
                         'StartOffset', str(resume_point))
                 play_item.setInfo('video', details[0])
                 play_item.setArt(details[1])
+                signal_data.update({
+                    'dbinfo': {
+                        'dbid': details[0]['dbid'],
+                        'dbtype': details[0]['mediatype'],
+                        'playcount': details[0]['playcount']}})
+                if infoLabels['mediatype'] == 'episode':
+                    signal_data['dbinfo'].update({'tvshowid': id[0]})
 
-        resolved = xbmcplugin.setResolvedUrl(
+        AddonSignals.sendSignal(Signals.PLAYBACK_INITIATED, signal_data)
+
+        return xbmcplugin.setResolvedUrl(
             handle=self.plugin_handle,
             succeeded=True,
             listitem=play_item)
-
-        # set window property to enable recognition of playbacks
-        xbmcgui.Window(TAGGED_WINDOW_ID).setProperty(
-            PROP_NETFLIX_PLAY,
-            PROP_PLAYBACK_INIT
-        )
-
-        return resolved
 
     def _generate_art_info(self, entry):
         """Adds the art info from an entry to a Kodi list item
@@ -1308,7 +1309,7 @@ class KodiHelper(object):
         showseason = int(showseason)
         showepisode = int(showepisode)
         props = ["title", "showtitle", "season", "episode", "plot", "fanart",
-                 "art", "resume"]
+                 "art", "resume", "playcount"]
         query = {
                 "jsonrpc": "2.0",
                 "method": "VideoLibrary.GetEpisodes",
@@ -1335,7 +1336,8 @@ class KodiHelper(object):
                                  'title': episode['title']}
                         if episode['resume']['position'] > 0:
                             infos['resume'] = episode['resume']['position']
-                        infos.update({'plot': episode['plot'],
+                        infos.update({'playcount': episode.get('playcount', 0),
+                                      'plot': episode['plot'],
                                       'genre': showid[1]}
                                      if episode.get('plot') else {})
                         art = {}
@@ -1372,7 +1374,8 @@ class KodiHelper(object):
                         "fanart",
                         "thumbnail",
                         "art",
-                        "resume"]
+                        "resume",
+                        "playcount"]
                 },
                 "id": "libMovies"
             }
@@ -1384,7 +1387,8 @@ class KodiHelper(object):
             if result is not None and 'moviedetails' in result:
                 result = result.get('moviedetails', {})
                 infos = {'mediatype': 'movie', 'dbid': movieid,
-                         'title': result['title']}
+                         'title': result['title'],
+                         'playcount': episode.get('playcount', 0)}
                 if 'resume' in result:
                     infos.update('resume', result['resume'])
                 if 'genre' in result and len(result['genre']) > 0:

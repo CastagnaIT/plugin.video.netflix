@@ -24,9 +24,32 @@ from distutils.util import strtobool
 
 import xbmc
 import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import log
+from resources.lib.utils import log, find_episode
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.Library import Library
+from resources.lib.playback.section_skipping import SKIPPABLE_SECTIONS, OFFSET_CREDITS
+from resources.lib.playback.bookmarks import OFFSET_WATCHED_TO_END
+
+
+def _get_offset_markers(metadata):
+    return {
+        marker: metadata[marker]
+        for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
+        if metadata[marker] is not None
+    }
+
+
+def _get_section_markers(metadata):
+    return {
+        section: {
+            'start': int(metadata['creditMarkers'][section]['start'] /
+                         1000),
+            'end': int(metadata['creditMarkers'][section]['end'] / 1000)
+        }
+        for section in SKIPPABLE_SECTIONS
+        if (None not in metadata['creditMarkers'][section].values() and
+            any(i > 0 for i in metadata['creditMarkers'][section].values()))
+    }
 
 
 class Navigation(object):
@@ -276,11 +299,37 @@ class Navigation(object):
         except:
             infoLabels = {}
 
-        play = self.kodi_helper.play_item(
+        return self.kodi_helper.play_item(
             video_id=video_id,
             start_offset=start_offset,
-            infoLabels=infoLabels)
-        return play
+            infoLabels=infoLabels,
+            timeline_markers=self._get_timeline_markers(video_id))
+
+    @log
+    def _get_timeline_markers(self, video_id):
+        try:
+            metadata = self._get_single_metadata(video_id)
+        except KeyError:
+            return {}
+
+        markers = _get_offset_markers(metadata)
+        markers.update(_get_section_markers(metadata))
+
+        return markers
+
+    @log
+    def _get_single_metadata(self, video_id):
+        metadata = (
+            self._check_response(
+                self.call_netflix_service({
+                    'method': 'fetch_metadata',
+                    'video_id': video_id
+                })
+            ) or {}
+        )['video']
+        return (find_episode(video_id, metadata['seasons'])
+                if metadata['type'] == 'show'
+                else metadata)
 
     @log
     def show_search_results(self, term):

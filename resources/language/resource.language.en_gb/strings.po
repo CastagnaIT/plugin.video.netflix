@@ -315,3 +315,39 @@ msgstr ""
 msgctxt "#30074"
 msgid "View for exported"
 msgstr ""
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr ""
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr ""
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr ""
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr ""
+
+msgctxt "#30080"
+msgid "Don't pause when skipping"
+msgstr ""
+
+msgctxt "#30081"
+msgid "Save audio/subtitle preferences for this show"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Save audio / subtitle settings for TV shows"
+msgstr ""
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr ""
