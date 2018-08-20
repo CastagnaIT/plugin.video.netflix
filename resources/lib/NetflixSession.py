@@ -838,7 +838,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
+        artwork = next(iter(video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])), {}).get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
@@ -1193,7 +1193,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = video.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])[0].get('url')
+        artwork = next(iter(video.get('BGImages', {}).get(ART_FANART_SIZE, {}).get('jpg', [{}])), {}).get('url')
         logo = video.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
         return {
             season['summary']['id']: {
@@ -1339,7 +1339,7 @@ class NetflixSession(object):
         bx_big = boxarts.get(ART_BOX_SIZE_LARGE, {}).get('jpg', {}).get('url')
         bx_poster = boxarts.get(ART_BOX_SIZE_POSTER, {}).get('jpg', {}).get('url')
         moment = episode.get('interestingMoment', {}).get(ART_MOMENT_SIZE_LARGE, {}).get('jpg', {}).get('url')
-        artwork = episode.get('BGImages', {}).get(ART_FANART_SIZE_EPISODE, {}).get('jpg', [{}])[0].get('url')
+        artwork = next(iter(episode.get('BGImages', {}).get(ART_FANART_SIZE_EPISODE, {}).get('jpg', [{}])), {}).get('url')
         logo = episode.get('bb2OGLogo', {}).get(ART_LOGO_SIZE, {}).get('png', {}).get('url')
 
         return {
