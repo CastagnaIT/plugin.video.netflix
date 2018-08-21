@@ -35,7 +35,7 @@ def _get_offset_markers(metadata):
     return {
         marker: metadata[marker]
         for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
-        if metadata[marker] is not None
+        if metadata.get(marker) is not None
     }
 
 
