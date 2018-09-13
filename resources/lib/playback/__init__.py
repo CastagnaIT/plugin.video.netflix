@@ -154,7 +154,7 @@ class PlaybackActionManager(LoggingComponent):
         """
         if self._enabled is None:
             self.log('Loading enabled setting from store')
-            self._enabled = self.addon.getSetting(
+            self._enabled = self.addon.getSettingBool(
                 '{}_enabled'.format(self.__class__.__name__))
 
         return self._enabled
