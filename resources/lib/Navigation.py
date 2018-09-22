@@ -299,21 +299,26 @@ class Navigation(object):
         except:
             infoLabels = {}
 
+        try:
+            metadata, tvshow_video_id = self._get_single_metadata(video_id)
+        except KeyError:
+            metadata = {}
+            tvshow_video_id = None
+
         return self.kodi_helper.play_item(
             video_id=video_id,
             start_offset=start_offset,
             infoLabels=infoLabels,
-            timeline_markers=self._get_timeline_markers(video_id))
+            tvshow_video_id=tvshow_video_id,
+            timeline_markers=self._get_timeline_markers(metadata))
 
     @log
-    def _get_timeline_markers(self, video_id):
+    def _get_timeline_markers(self, metadata):
         try:
-            metadata = self._get_single_metadata(video_id)
+            markers = _get_offset_markers(metadata)
+            markers.update(_get_section_markers(metadata))
         except KeyError:
             return {}
-
-        markers = _get_offset_markers(metadata)
-        markers.update(_get_section_markers(metadata))
 
         return markers
 
@@ -327,9 +332,11 @@ class Navigation(object):
                 })
             ) or {}
         )['video']
-        return (find_episode(video_id, metadata['seasons'])
-                if metadata['type'] == 'show'
-                else metadata)
+
+        if metadata['type'] == 'show':
+            return find_episode(video_id, metadata['seasons']), metadata['id']
+
+        return metadata, None
 
     @log
     def show_search_results(self, term):

@@ -885,7 +885,7 @@ class KodiHelper(object):
             self.set_custom_view(VIEW_EPISODE)
         return True
 
-    def play_item(self, video_id, start_offset=-1, infoLabels={}, timeline_markers={}):
+    def play_item(self, video_id, start_offset=-1, infoLabels={}, tvshow_video_id=None, timeline_markers={}):
         """Plays a video
 
         Parameters
@@ -953,6 +953,9 @@ class KodiHelper(object):
         play_item.setInfo('video', infoLabels)
 
         signal_data = {'timeline_markers': timeline_markers}
+
+        if tvshow_video_id is not None:
+            signal_data.update({'tvshow_video_id': tvshow_video_id})
 
         # check for content in kodi db
         if str(infoLabels) != 'None':
