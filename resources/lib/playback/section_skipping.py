@@ -59,7 +59,8 @@ class SectionSkipper(PlaybackActionManager):
         self.log('Auto-skipping {}'.format(section))
         player = xbmc.Player()
         xbmcgui.Dialog().notification(
-            'Netflix', '{}...'.format(label), xbmcgui.NOTIFICATION_INFO, 5000)
+            'Netflix', '{}...'.format(label.encode('utf-8')),
+            xbmcgui.NOTIFICATION_INFO, 5000)
         if self.pause_on_skip:
             player.pause()
             xbmc.sleep(1000)  # give kodi the chance to execute
