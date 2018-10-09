@@ -17,7 +17,7 @@ except ImportError:
 
 import xbmcvfs
 
-from resources.lib.utils import LoggingComponent
+from resources.lib.common.utils import LoggingComponent
 
 
 class PersistentStorage(LoggingComponent):

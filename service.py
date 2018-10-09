@@ -14,9 +14,9 @@ import sys
 from datetime import datetime, timedelta
 
 import xbmc
-from resources.lib.NetflixCommon import NetflixCommon
-from resources.lib.MSLHttpRequestHandler import MSLTCPServer
-from resources.lib.NetflixHttpRequestHandler import NetflixTCPServer
+from resources.lib.common.NetflixCommon import NetflixCommon
+from resources.lib.services.msl.MSLHttpRequestHandler import MSLTCPServer
+from resources.lib.services.session.NetflixHttpRequestHandler import NetflixTCPServer
 from resources.lib.playback import PlaybackController
 from resources.lib.playback.bookmarks import BookmarkManager
 from resources.lib.playback.stream_continuity import StreamContinuityManager

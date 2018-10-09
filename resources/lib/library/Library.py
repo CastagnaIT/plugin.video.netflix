@@ -1,4 +1,3 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: LibraryExporter
 # Created on: 13.01.2017
@@ -11,8 +10,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import requests
-from utils import noop
-from KodiHelper import KodiHelper
+from resources.lib.common.utils import noop
+from resources.lib.kodi.KodiHelper import KodiHelper
 try:
     import cPickle as pickle
 except:

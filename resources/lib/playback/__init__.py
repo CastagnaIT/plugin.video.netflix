@@ -12,8 +12,8 @@ import json
 import xbmc
 import AddonSignals
 
-from resources.lib.NetflixCommon import Signals
-from resources.lib.utils import LoggingComponent
+from resources.lib.common.NetflixCommon import Signals
+from resources.lib.common.utils import LoggingComponent
 
 
 def json_rpc(method, params=None):

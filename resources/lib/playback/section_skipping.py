@@ -9,7 +9,7 @@
 import xbmc
 import xbmcgui
 
-from resources.lib.ui import xmldialogs, show_modal_dialog
+from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
 from resources.lib.playback import PlaybackActionManager
 
 SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}

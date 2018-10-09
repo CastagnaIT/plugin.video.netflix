@@ -10,9 +10,9 @@ import json
 import BaseHTTPServer
 from SocketServer import TCPServer
 from urlparse import urlparse, parse_qs
-from resources.lib.utils import get_class_methods
-from resources.lib.NetflixSession import NetflixSession
-from resources.lib.NetflixHttpSubRessourceHandler import \
+from resources.lib.common.utils import get_class_methods
+from resources.lib.services.session.NetflixSession import NetflixSession
+from resources.lib.services.session.NetflixHttpSubRessourceHandler import \
     NetflixHttpSubRessourceHandler
 
 

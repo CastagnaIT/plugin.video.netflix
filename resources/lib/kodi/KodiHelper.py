@@ -1,4 +1,3 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: KodiHelper
 # Created on: 13.01.2017
@@ -15,10 +14,10 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import inputstreamhelper
-from resources.lib.ui.Dialogs import Dialogs
-from resources.lib.NetflixCommon import Signals
-from utils import get_user_agent
-from UniversalAnalytics import Tracker
+from resources.lib.kodi.ui.Dialogs import Dialogs
+from resources.lib.common.NetflixCommon import Signals
+from resources.lib.common.utils import get_user_agent
+from resources.lib.UniversalAnalytics import Tracker
 try:
     import cPickle as pickle
 except:

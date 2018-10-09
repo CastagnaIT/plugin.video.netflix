@@ -11,7 +11,7 @@ import BaseHTTPServer
 from urlparse import urlparse, parse_qs
 
 from SocketServer import TCPServer
-from resources.lib.MSL import MSL
+from resources.lib.services.msl.MSL import MSL
 
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):

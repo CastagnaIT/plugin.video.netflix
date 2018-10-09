@@ -2,7 +2,7 @@ import base64
 from Cryptodome import Random
 from Cryptodome.Cipher import AES
 from Cryptodome.Util import Padding
-from utils import uniq_id
+from resources.lib.common.utils import uniq_id
 
 class NetflixCredentials(object):
     """
