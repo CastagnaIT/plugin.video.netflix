@@ -11,7 +11,7 @@ import BaseHTTPServer
 from urlparse import urlparse, parse_qs
 
 from SocketServer import TCPServer
-from resources.lib.MSLv2 import MSL
+from resources.lib.services.msl.MSL import MSL
 
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -54,15 +54,15 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             # Get the manifest with the given id
             dolby = (True if 'dolby' in params and
-                     params['dolby'][0].lower() == 'true' else False)
+                     params['dolby'][0].lower() == 'true' else 'false')
             hevc = (True if 'hevc' in params and
-                    params['hevc'][0].lower() == 'true' else False)
+                    params['hevc'][0].lower() == 'true' else 'false')
             hdr = (True if 'hdr' in params and
-                    params['hdr'][0].lower() == 'true' else False)
+                    params['hdr'][0].lower() == 'true' else 'false')
             dolbyvision = (True if 'dolbyvision' in params and
-                    params['dolbyvision'][0].lower() == 'true' else False)
+                    params['dolbyvision'][0].lower() == 'true' else 'false')
             vp9 = (True if 'vp9' in params and
-                    params['vp9'][0].lower() == 'true' else False)
+                    params['vp9'][0].lower() == 'true' else 'false')
 
             data = self.server.msl_handler.load_manifest(
                 int(params['id'][0]),

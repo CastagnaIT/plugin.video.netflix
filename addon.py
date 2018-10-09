@@ -8,7 +8,7 @@
 
 
 import sys
-from resources.lib.NetflixCommon import NetflixCommon
+from resources.lib.common.NetflixCommon import NetflixCommon
 from resources.lib.Navigation import Navigation
 
 # Setup plugin

@@ -1,4 +1,3 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Author: asciidisco
 # Module: Navigation
@@ -23,10 +22,10 @@ from collections import OrderedDict
 from distutils.util import strtobool
 
 import xbmc
-import resources.lib.NetflixSession as Netflix
-from resources.lib.utils import log, find_episode
-from resources.lib.KodiHelper import KodiHelper
-from resources.lib.Library import Library
+import resources.lib.services.session.NetflixSession as Netflix
+from resources.lib.util.utils import log, find_episode
+from resources.lib.kodi.KodiHelper import KodiHelper
+from resources.lib.library.Library import Library
 from resources.lib.playback.section_skipping import SKIPPABLE_SECTIONS, OFFSET_CREDITS
 from resources.lib.playback.bookmarks import OFFSET_WATCHED_TO_END
 

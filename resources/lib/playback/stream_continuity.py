@@ -11,7 +11,7 @@ episodes of a tv show
 """
 import xbmc
 
-from resources.lib.ui import xmldialogs, show_modal_dialog
+from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
 from resources.lib.playback import PlaybackActionManager
 
 STREAMS = {
