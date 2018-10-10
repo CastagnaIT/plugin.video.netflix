@@ -1,29 +1,30 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Author: trummerjo
 # Module: MSLHttpRequestHandler
 # Created on: 26.01.2017
 # License: MIT https://goo.gl/5bMj3H
+from __future__ import unicode_literals
 
+import json
+import base64
 from Cryptodome.Random import get_random_bytes
 from Cryptodome.Hash import HMAC, SHA256
 from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Util import Padding
 from Cryptodome.Cipher import AES
-import json
-import base64
+
+import resources.lib.common as common
 
 
 class MSLCrypto():
 
-    def __init__(self, kodi_helper):
-        self.kodi_helper = kodi_helper
+    def __init__(self):
         self.encryption_key = None
         self.sign_key = None
 
     def __init_generate_rsa_keys(self):
-        self.kodi_helper.log(msg='Create new RSA Keys')
+        common.log('Create new RSA Keys')
         # Create new Key Pair and save
         self.rsa_key = RSA.generate(2048)
 
@@ -39,7 +40,7 @@ class MSLCrypto():
         return base64.urlsafe_b64decode(payload.encode('utf-8'))
 
     def toDict(self):
-        self.kodi_helper.log(msg='Provide RSA Keys to dict')
+        common.log('Provide RSA Keys to dict')
         # Get the DER Base64 of the keys
         encrypted_key = self.rsa_key.exportKey()
 
@@ -55,7 +56,7 @@ class MSLCrypto():
         rsa_key = None
 
         try:
-            self.kodi_helper.log(msg='Parsing RSA Keys from Dict')
+            common.log('Parsing RSA Keys from Dict')
             self.encryption_key = base64.standard_b64decode(msl_data['encryption_key'])
             self.sign_key = base64.standard_b64decode(msl_data['sign_key'])
             rsa_key = base64.standard_b64decode(msl_data['rsa_key'])

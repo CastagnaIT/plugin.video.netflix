@@ -5,19 +5,20 @@
 # License: MIT https://goo.gl/5bMj3H
 
 """Oppionionated internal proxy that dispatches requests to Netflix"""
+from __future__ import unicode_literals
 
 import json
 import BaseHTTPServer
 from SocketServer import TCPServer
 from urlparse import urlparse, parse_qs
-from resources.lib.common.utils import get_class_methods
+import resources.lib.common as common
 from resources.lib.services.session.NetflixSession import NetflixSession
 from resources.lib.services.session.NetflixHttpSubRessourceHandler import \
     NetflixHttpSubRessourceHandler
 
 
 # get list of methods & instance form the sub ressource handler
-METHODS = get_class_methods(class_item=NetflixHttpSubRessourceHandler)
+METHODS = common.get_class_methods(class_item=NetflixHttpSubRessourceHandler)
 
 
 class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -66,23 +67,13 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 class NetflixTCPServer(TCPServer):
     """Override TCPServer to allow shared struct sharing"""
 
-    def __init__(self, server_address, nx_common):
+    def __init__(self, server_address):
         """Initializes NetflixTCPServer"""
-        nx_common.log(msg='Constructing netflixTCPServer')
-
-        netflix_session = NetflixSession(
-            cookie_path=nx_common.cookie_path,
-            data_path=nx_common.data_path,
-            verify_ssl=(nx_common.get_setting('ssl_verification') == 'true'),
-            nx_common=nx_common)
-
-        self.res_handler = NetflixHttpSubRessourceHandler(
-            nx_common=nx_common,
-            netflix_session=netflix_session)
+        common.log('Constructing netflixTCPServer')
+        self.res_handler = NetflixHttpSubRessourceHandler(NetflixSession())
 
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)
 
     def esn_changed(self):
         """Return if the esn has changed on Session initialization"""
-        return self.res_handler.nx_common.set_esn(
-            self.res_handler.netflix_session.esn)
+        return common.set_esn(self.res_handler.netflix_session.esn)

@@ -1,5 +1,8 @@
-# pylint: disable=invalid-name,missing-docstring
-# pylint: disable=attribute-defined-outside-init,import-error
+# -*- coding: utf-8 -*-
+# pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init
+"""XML based dialogs"""
+from __future__ import unicode_literals
+
 from platform import machine
 
 import xbmcgui

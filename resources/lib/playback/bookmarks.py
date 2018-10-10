@@ -1,25 +1,12 @@
 # -*- coding: utf-8 -*-
-# Author: caphm
-# Package: bookmarking
-# Created on: 02.08.2018
-# License: MIT https://goo.gl/5bMj3H
-# pylint: disable=import-error
 
 """Save bookmarks for library items and mark them as watched"""
+from __future__ import unicode_literals
 
-from resources.lib.playback import PlaybackActionManager, json_rpc
+import resources.lib.common as common
 
-OFFSET_WATCHED_TO_END = 'watchedToEndOffset'
-
-
-def update_library_item_details(dbtype, dbid, details):
-    """
-    Update properties of an item in the Kodi library
-    """
-    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-    params = {'{}id'.format(dbtype): dbid}
-    params.update(details)
-    return json_rpc(method, params)
+from .action_manager import PlaybackActionManager
+from .markers import OFFSET_WATCHED_TO_END
 
 
 class BookmarkManager(PlaybackActionManager):
@@ -27,8 +14,8 @@ class BookmarkManager(PlaybackActionManager):
     Saves bookmarks on each playback tick if the played item exists in the
     Kodi library and marks it as watched after playback.
     """
-    def __init__(self, nx_common):
-        super(BookmarkManager, self).__init__(nx_common)
+    def __init__(self):
+        super(BookmarkManager, self).__init__()
         self.dbinfo = None
         self.markers = None
         self.progress = 0
@@ -55,9 +42,9 @@ class BookmarkManager(PlaybackActionManager):
             self._save_bookmark()
 
     def _save_bookmark(self):
-        self.log('Saving bookmark for {} at {}s'.format(self.dbinfo,
-                                                        self.elapsed))
-        update_library_item_details(
+        common.log('Saving bookmark for {} at {}s'.format(self.dbinfo,
+                                                          self.elapsed))
+        common.update_library_item_details(
             self.dbinfo['dbtype'], self.dbinfo['dbid'],
             {'resume': {'position': self.elapsed}})
 
@@ -69,8 +56,8 @@ class BookmarkManager(PlaybackActionManager):
              self.progress >= 90))
 
     def _mark_as_watched(self):
-        self.log('Marking {} as watched'.format(self.dbinfo))
-        update_library_item_details(
+        common.log('Marking {} as watched'.format(self.dbinfo))
+        common.update_library_item_details(
             self.dbinfo['dbtype'], self.dbinfo['dbid'],
             {'playcount': self.dbinfo.get('playcount', 0) + 1,
              'resume': {'position': 0}})

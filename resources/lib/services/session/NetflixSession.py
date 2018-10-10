@@ -1,4 +1,3 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Author: asciidisco
 # Module: default
@@ -6,21 +5,21 @@
 # License: MIT https://goo.gl/5bMj3H
 
 """Netflix API management"""
+from __future__ import unicode_literals
 
 import os
 import sys
 import json
 from time import time
-from urllib import quote, unquote
 from re import compile as recompile, DOTALL
 from base64 import urlsafe_b64encode
-from requests import session, cookies
-from utils import noop, get_user_agent
 from collections import OrderedDict
+from requests import session, cookies
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
+import resources.lib.common as common
 
 FETCH_VIDEO_REQUEST_COUNT = 26
 
@@ -116,7 +115,7 @@ class NetflixSession(object):
         'models/memberContext/data/geo/preferredLocale'
     ]
 
-    def __init__(self, cookie_path, data_path, verify_ssl, nx_common):
+    def __init__(self):
         """Stores the cookie path for later use & instanciates a requests
            session with a proper user agent & stored cookies/data if available
 
@@ -131,12 +130,13 @@ class NetflixSession(object):
         log_fn : :obj:`fn`
              optional log function
         """
-        self.cookie_path = cookie_path
-        self.data_path = data_path
-        self.verify_ssl = verify_ssl
-        self.nx_common = nx_common
+        self.cookie_path = common.COOKIE_PATH
+        self.data_path = common.DATA_PATH
+        self.verify_ssl = bool(common.ADDON.getSettingBool('ssl_verification'))
+        common.log('Verify SSL: {}'.format(self.verify_ssl.__repr__()))
         self.parsed_cookies = {}
         self.parsed_user_data = {}
+        self.session = None
         self._init_session()
 
     def extract_json(self, content, name):
@@ -166,7 +166,7 @@ class NetflixSession(object):
         # USE IT ONLY FOR DEBUGGING
         # with open(self.data_path + 'raw_content', "wb") as f:
         #     f.write(content)
-        self.nx_common.log(msg='Parsing inline data...')
+        common.log('Parsing inline data...')
         items = self.page_items if items is None else items
         user_data = {'gpsModel': 'harris'}
         react_context = self.extract_json(content, 'reactContext')
@@ -192,9 +192,9 @@ class NetflixSession(object):
             data=user_data,
             profiles=profiles)
         if is_valid_user_data is not False:
-            self.nx_common.log(msg='Parsing inline data parsing successfull')
+            common.log('Parsing inline data parsing successfull')
             return (user_data, profiles)
-        self.nx_common.log(msg='Parsing inline data failed')
+        common.log('Parsing inline data failed')
         return (user_data, profiles)
 
     def get_profiles(self, content):
@@ -256,8 +256,7 @@ class NetflixSession(object):
                         if expires > exp:
                             expires = exp
         if expires > cur_stamp:
-            self.nx_common.log(
-                msg='Cookie expires: ' + str(expires) + ' / ' + str(cur_stamp))
+            common.log('Cookie expires on {}, now is {}'.format(expires, cur_stamp))
             return True
 
         # load the profiles page (to verify the user)
@@ -287,7 +286,7 @@ class NetflixSession(object):
 
         if mslResetCmd:
             response = session().get(url=mslResetCmd)
-            self.nx_common.log(msg='MSL reset return code:' + response)
+            common.log('MSL reset return code:' + response)
 
     def login(self, account):
         """
@@ -399,8 +398,8 @@ class NetflixSession(object):
             response=response,
             component=self._get_api_url_for(component='adult_pin'))
         if 'error' in pin_response.keys():
-            self.nx_common.log(msg='Pin error')
-            self.nx_common.log(msg=str(pin_response))
+            common.log('Pin error')
+            common.log(str(pin_response))
             return False
         return pin_response.get('success', False)
 
@@ -1450,6 +1449,7 @@ class NetflixSession(object):
             item_path + item_titles + [['referenceId', 'id', 'length', 'name', 'trackIds', 'requestId', 'regularSynopsis', 'evidence']]]
 
         response = self._path_request(paths=paths)
+        common.log(response)
         return self._process_response(
             response=response,
             component='Search results')
@@ -1849,7 +1849,7 @@ class NetflixSession(object):
         # (so that we get a proper widevine esn) & enable gzip
         self.session = session()
         self.session.headers.update({
-            'User-Agent': get_user_agent(),
+            'User-Agent': common.get_user_agent(),
             'Accept-Encoding': 'gzip'
         })
 
@@ -1920,18 +1920,18 @@ class NetflixSession(object):
         # check if we have in memory cookies to spare some file i/o
         current_cookie = self.parsed_cookies.get(filename, None)
         if current_cookie is not None:
-            self.nx_common.log(msg='Loading cookies from memory')
+            common.log('Loading cookies from memory')
             self.session.cookies = current_cookie[1]
             return current_cookie
 
         # return if we haven't found a cookie file
         if not os.path.isfile(filename):
-            self.nx_common.log(msg='No cookies found')
+            common.log('No cookies found')
             return False
 
         # open the cookies file & set the loaded cookies
         with open(filename) as f:
-            self.nx_common.log(msg='Loading cookies from file')
+            common.log('Loading cookies from file')
             _cookies = pickle.load(f)
             if _cookies:
                 jar = cookies.RequestsCookieJar()
@@ -2006,15 +2006,15 @@ class NetflixSession(object):
                 headers=headers,
                 verify=self.verify_ssl)
         except SystemExit:
-            self.nx_common.log(msg='[POST] system error arrived -> exiting')
+            common.log('[POST] system error arrived -> exiting')
             raise
         except:
             exc = sys.exc_info()
-            self.nx_common.log(msg='[POST] Error {} {}'.format(exc[0], exc[1]))
+            common.log('[POST] Error {} {}'.format(exc[0], exc[1]))
             return None
         end = time()
         msg = '[POST] Req. for "' + url + '" took ' + str(end - start) + ' sec'
-        self.nx_common.log(msg=msg)
+        common.log(msg)
         return response
 
     def _session_get(self, component, type='document', params={}):
@@ -2048,15 +2048,15 @@ class NetflixSession(object):
                 verify=self.verify_ssl,
                 params=params)
         except SystemExit:
-            self.nx_common.log(msg='[GET] system error arrived -> exiting')
+            common.log('[GET] system error arrived -> exiting')
             raise
         except:
             exc = sys.exc_info()
-            self.nx_common.log(msg='[GET] Error {} {}'.format(exc[0], exc[1]))
+            common.log('[GET] Error {} {}\n{}'.format(exc[0], exc[1], exc))
             return None
         end = time()
         msg = '[GET] Req. for "' + url + '" took ' + str(end - start) + ' sec'
-        self.nx_common.log(msg=msg)
+        common.log(msg)
         return response
 
     def _verfify_auth_and_profiles_data(self, data, profiles):
@@ -2109,10 +2109,10 @@ class NetflixSession(object):
                     ['/system/bin/getprop', 'ro.product.model'])
                 esn += input.strip(' \t\n\r').replace(' ', '=').upper()
                 esn = re.sub(r'[^A-Za-z0-9=-]', '=', esn)
-                self.nx_common.log(msg='Android generated ESN:' + esn)
+                common.log('Android generated ESN:' + esn)
                 return esn
         except OSError as e:
-            self.nx_common.log(msg='Ignoring exception for non Android devices')
+            common.log('Ignoring exception for non Android devices')
 
         # values are accessible via dict (sloppy parsing successfull)
         if type(netflix_page_data) == dict:
@@ -2141,5 +2141,5 @@ class NetflixSession(object):
             'ICHNAEA_ROOT': user_data.get('ICHNAEA_ROOT'),
         }
         self.profiles = profiles
-        self.nx_common.log(msg='Found ESN "' + self.esn + '"')
+        common.log('Found ESN "' + self.esn + '"')
         return user_data

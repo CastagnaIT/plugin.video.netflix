@@ -5,8 +5,7 @@
 # License: MIT https://goo.gl/5bMj3H
 
 """Kodi plugin for Netflix (https://netflix.com)"""
-
-# pylint: disable=import-error
+from __future__ import unicode_literals
 
 import threading
 import socket
@@ -14,13 +13,12 @@ import sys
 from datetime import datetime, timedelta
 
 import xbmc
-from resources.lib.common.NetflixCommon import NetflixCommon
+import resources.lib.common as common
 from resources.lib.services.msl.MSLHttpRequestHandler import MSLTCPServer
 from resources.lib.services.session.NetflixHttpRequestHandler import NetflixTCPServer
-from resources.lib.playback import PlaybackController
-from resources.lib.playback.bookmarks import BookmarkManager
-from resources.lib.playback.stream_continuity import StreamContinuityManager
-from resources.lib.playback.section_skipping import SectionSkipper
+from resources.lib.playback import (
+    PlaybackController, BookmarkManager, StreamContinuityManager,
+    SectionSkipper)
 
 
 def select_unused_port():
@@ -34,11 +32,6 @@ def select_unused_port():
     _, port = sock.getsockname()
     sock.close()
     return port
-
-
-# Setup plugin
-BASE_URL = sys.argv[0]
-PLUGIN_HANDLE = None
 
 
 def strp(value, form):
@@ -63,42 +56,36 @@ def strp(value, form):
 
 class NetflixService(object):
     """
-    Netflix addon service
+    Netflix common.ADDON service
     """
     def __init__(self):
-        # init kodi helper (for logging)
-        self.nx_common = NetflixCommon(plugin_handle=PLUGIN_HANDLE,
-                                       base_url=BASE_URL)
-
         self.last_schedule_check = datetime.now()
-        self.schedule_check_interval = int(self.nx_common.get_setting(
+        self.schedule_check_interval = int(common.ADDON.getSetting(
             'schedule_check_interval'))
         self.startidle = 0
-        self.freq = int('0' + self.nx_common.get_setting('auto_update'))
+        self.freq = int('0' + common.ADDON.getSetting('auto_update'))
 
         # pick & store a port for the MSL service
         msl_port = select_unused_port()
-        self.nx_common.set_setting('msl_service_port', str(msl_port))
-        self.nx_common.log(msg='[MSL] Picked Port: ' + str(msl_port))
+        common.ADDON.setSetting('msl_service_port', str(msl_port))
+        common.log('[MSL] Picked Port: {mslport}'.format(mslport=msl_port))
 
         # pick & store a port for the internal Netflix HTTP proxy service
         ns_port = select_unused_port()
-        self.nx_common.set_setting('netflix_service_port', str(ns_port))
-        self.nx_common.log(msg='[NS] Picked Port: ' + str(ns_port))
+        common.ADDON.setSetting('netflix_service_port', str(ns_port))
+        common.log('[NS] Picked Port: {nsport}'.format(nsport=ns_port))
 
-        self.nx_common.flush_settings()
+        common.flush_settings()
 
         # server defaults
         MSLTCPServer.allow_reuse_address = True
         NetflixTCPServer.allow_reuse_address = True
 
         # configure the MSL Server
-        self.msl_server = MSLTCPServer(('127.0.0.1', msl_port),
-                                       self.nx_common)
+        self.msl_server = MSLTCPServer(('127.0.0.1', msl_port))
 
         # configure the Netflix Data Server
-        self.ns_server = NetflixTCPServer(('127.0.0.1', ns_port),
-                                          self.nx_common)
+        self.ns_server = NetflixTCPServer(('127.0.0.1', ns_port))
 
         self.msl_thread = threading.Thread(
             target=self.msl_server.serve_forever)
@@ -112,14 +99,14 @@ class NetflixService(object):
 
         # start thread for MLS servie
         self.msl_thread.start()
-        self.nx_common.log(msg='[MSL] Thread started')
+        common.log('[MSL] Thread started', common.LOGINFO)
 
         self.ns_server.server_activate()
         self.ns_server.timeout = 1
 
         # start thread for Netflix HTTP service
         self.ns_thread.start()
-        self.nx_common.log(msg='[NS] Thread started')
+        common.log('[NS] Thread started', common.LOGINFO)
 
     def _shutdown(self):
         # MSL service shutdown sequence
@@ -128,7 +115,7 @@ class NetflixService(object):
         self.msl_thread.join()
         self.msl_server = None
         self.msl_thread = None
-        self.nx_common.log(msg='Stopped MSL Service')
+        common.log('Stopped MSL Service')
 
         # Netflix service shutdown sequence
         self.ns_server.server_close()
@@ -136,10 +123,10 @@ class NetflixService(object):
         self.ns_thread.join()
         self.ns_server = None
         self.ns_thread = None
-        self.nx_common.log(msg='Stopped HTTP Service')
+        common.log('Stopped HTTP Service')
 
     def _is_idle(self):
-        if self.nx_common.get_setting('wait_idle') != 'true':
+        if not common.ADDON.getSettingBool('wait_idle'):
             return True
 
         lastidle = xbmc.getGlobalIdleTime()
@@ -151,16 +138,16 @@ class NetflixService(object):
         return idletime >= 300
 
     def _update_running(self):
-        update = self.nx_common.get_setting('update_running') or 'false'
+        update = common.ADDON.getSetting('update_running') or 'false'
         if update != 'false':
             starttime = strp(update, '%Y-%m-%d %H:%M')
             if (starttime + timedelta(hours=6)) <= datetime.now():
-                self.nx_common.set_setting('update_running', 'false')
-                self.nx_common.log(
+                common.ADDON.setSetting('update_running', 'false')
+                common.log(
                     'Canceling previous library update - duration > 6 hours',
-                    xbmc.LOGWARNING)
+                    common.LOGWARNING)
             else:
-                self.nx_common.log('DB Update already running')
+                common.log('DB Update already running')
                 return True
         return False
 
@@ -170,12 +157,8 @@ class NetflixService(object):
         """
         self._start_servers()
 
-        controller = PlaybackController(self.nx_common)
-        controller.action_managers = [
-            BookmarkManager(self.nx_common),
-            SectionSkipper(self.nx_common),
-            StreamContinuityManager(self.nx_common)
-        ]
+        controller = PlaybackController([BookmarkManager(), SectionSkipper(),
+                                         StreamContinuityManager()])
         player = xbmc.Player()
         while not controller.abortRequested():
             if self.ns_server.esn_changed():
@@ -187,7 +170,7 @@ class NetflixService(object):
                 if self.library_update_scheduled() and self._is_idle():
                     self.update_library()
             except RuntimeError as exc:
-                self.nx_common.log(
+                common.log(
                     'RuntimeError in main loop: {}'.format(exc), xbmc.LOGERROR)
 
             if controller.waitForAbort(1):
@@ -205,15 +188,15 @@ class NetflixService(object):
 
         if not self.freq or now <= next_schedule_check:
             '''
-            self.nx_common.log('Auto-update disabled or schedule check '
+            common.log('Auto-update disabled or schedule check '
                                'interval not complete yet ({} / {}).'
                                .format(now, next_schedule_check))
             '''
             return False
 
         self.last_schedule_check = now
-        time = self.nx_common.get_setting('update_time') or '00:00'
-        lastrun_date = (self.nx_common.get_setting('last_update') or
+        time = common.ADDON.getSetting('update_time') or '00:00'
+        lastrun_date = (common.ADDON.getSetting('last_update') or
                         '1970-01-01')
 
         lastrun_full = lastrun_date + ' ' + time[0:5]
@@ -221,7 +204,7 @@ class NetflixService(object):
         freqdays = [0, 1, 2, 5, 7][self.freq]
         nextrun = lastrun + timedelta(days=freqdays)
 
-        self.nx_common.log(
+        common.log(
             'It\'s currently {}, next run is scheduled for {}'
             .format(now, nextrun))
 
@@ -232,11 +215,11 @@ class NetflixService(object):
         Triggers an update of the local Kodi library
         """
         if not self._update_running():
-            self.nx_common.log('Triggering library update', xbmc.LOGNOTICE)
+            common.log('Triggering library update', xbmc.LOGNOTICE)
             xbmc.executebuiltin(
                 ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
                  '&inbackground=True)')
-                .format(self.nx_common.get_addon().getAddonInfo('id')))
+                .format(common.ADDON.getcommon.ADDONInfo('id')))
 
 
 if __name__ == '__main__':

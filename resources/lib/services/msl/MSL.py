@@ -1,9 +1,10 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Author: trummerjo
 # Module: MSLHttpRequestHandler
 # Created on: 26.01.2017
 # License: MIT https://goo.gl/5bMj3H
+"""Proxy service to convert manifest and provide license data"""
+from __future__ import unicode_literals
 
 import re
 import sys
@@ -19,7 +20,7 @@ from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
 
-import xbmcaddon
+import resources.lib.common as common
 
 #check if we are on Android
 import subprocess
@@ -49,17 +50,15 @@ class MSL(object):
         'license': base_url + 'license'
     }
 
-    def __init__(self, nx_common):
+    def __init__(self):
 
       """
       The Constructor checks for already existing crypto Keys.
       If they exist it will load the existing keys
       """
-      self.nx_common = nx_common
+      self.crypto = MSLHandler()
 
-      self.crypto = MSLHandler(nx_common)
-
-      if self.nx_common.file_exists(self.nx_common.data_path, 'msl_data.json'):
+      if common.file_exists(common.DATA_PATH, 'msl_data.json'):
           self.init_msl_data()
       else:
           self.crypto.fromDict(None)
@@ -204,22 +203,22 @@ class MSL(object):
             resp = None
             exc = sys.exc_info()
             msg = '[MSL][POST] Error {} {}'
-            self.nx_common.log(msg=msg.format(exc[0], exc[1]))
+            common.log(msg.format(exc[0], exc[1]))
 
         if resp:
             try:
                 # if the json() does not fail we have an error because
                 # the manifest response is a chuncked json response
                 resp.json()
-                self.nx_common.log(
+                common.log(
                     msg='Error getting Manifest: ' + resp.text)
                 return False
             except ValueError:
                 # json() failed so parse the chunked response
-                #self.nx_common.log(
+                #common.log(
                 #    msg='Got chunked Manifest Response: ' + resp.text)
                 resp = self.__parse_chunked_msl_response(resp.text)
-                #self.nx_common.log(
+                #common.log(
                 #    msg='Parsed chunked Response: ' + json.dumps(resp))
                 data = self.__decrypt_payload_chunks(resp['payloads'])
                 return self.__tranform_to_dash(data)
@@ -255,14 +254,14 @@ class MSL(object):
         except:
             resp = None
             exc = sys.exc_info()
-            self.nx_common.log(
+            common.log(
                 msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp:
             try:
                 # If is valid json the request for the licnese failed
                 resp.json()
-                self.nx_common.log(msg='Error getting license: '+resp.text)
+                common.log('Error getting license: '+resp.text)
                 return False
             except ValueError:
                 # json() failed so we have a chunked json response
@@ -271,7 +270,7 @@ class MSL(object):
                 if data['success'] is True:
                     return data['result']['licenses'][0]['data']
                 else:
-                    self.nx_common.log(
+                    common.log(
                         msg='Error getting license: ' + json.dumps(data))
                     return False
         return False
@@ -303,11 +302,7 @@ class MSL(object):
         return json.JSONDecoder().decode(decrypted_payload)
 
     def __tranform_to_dash(self, manifest):
-
-        self.nx_common.save_file(
-            data_path=self.nx_common.data_path,
-            filename='manifest.json',
-            content=json.dumps(manifest))
+        common.save_file(filename='manifest.json', content=json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
 
         self.last_playback_context = manifest['playbackContextId']
@@ -426,12 +421,12 @@ class MSL(object):
                 default=default)
             for downloadable in audio_track['downloadables']:
                 codec = 'aac'
-                #self.nx_common.log(msg=downloadable)
+                #common.log(downloadable)
                 is_dplus2 = downloadable['contentProfile'] == 'ddplus-2.0-dash'
                 is_dplus5 = downloadable['contentProfile'] == 'ddplus-5.1-dash'
                 if is_dplus2 or is_dplus5:
                     codec = 'ec-3'
-                #self.nx_common.log(msg='codec is: ' + codec)
+                #common.log('codec is: ' + codec)
                 rep = ET.SubElement(
                     parent=audio_adaption_set,
                     tag='Representation',
@@ -487,10 +482,7 @@ class MSL(object):
         xml = ET.tostring(root, encoding='utf-8', method='xml')
         xml = xml.replace('\n', '').replace('\r', '')
 
-        self.nx_common.save_file(
-            data_path=self.nx_common.data_path,
-            filename='manifest.mpd',
-            content=xml)
+        common.save_file(filename='manifest.mpd', content=xml)
 
         return xml
 
@@ -565,7 +557,7 @@ class MSL(object):
         :return: The base64 encoded JSON String of the header
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
-        esn = self.nx_common.get_esn()
+        esn = common.get_esn()
 
         # Add compression algo if not empty
         compression_algos = [compressionalgo] if compressionalgo != '' else []
@@ -591,7 +583,7 @@ class MSL(object):
             if 'usertoken' in self.tokens:
                 pass
             else:
-                account = self.nx_common.get_credentials()
+                account = common.get_credentials()
                 # Auth via email and password
                 header_data['userauthdata'] = {
                     'scheme': 'EMAIL_PASSWORD',
@@ -604,7 +596,7 @@ class MSL(object):
         return json.dumps(header_data)
 
     def __encrypt(self, plaintext):
-        return json.dumps(self.crypto.encrypt(plaintext, self.nx_common.get_esn(), self.sequence_number))
+        return json.dumps(self.crypto.encrypt(plaintext, common.get_esn(), self.sequence_number))
 
     def __sign(self, text):
         """
@@ -620,8 +612,8 @@ class MSL(object):
         self.__perform_key_handshake()
 
     def __perform_key_handshake(self):
-        esn = self.nx_common.get_esn()
-        self.nx_common.log(msg='perform_key_handshake: esn:' + esn)
+        esn = common.get_esn()
+        common.log('perform_key_handshake: esn:' + esn)
 
         if not esn:
           return False
@@ -642,8 +634,8 @@ class MSL(object):
             'headerdata': base64.standard_b64encode(header),
             'signature': '',
         }
-        #self.nx_common.log(msg='Key Handshake Request:')
-        #self.nx_common.log(msg=json.dumps(request))
+        #common.log('Key Handshake Request:')
+        #common.log(json.dumps(request))
 
         try:
             resp = self.session.post(
@@ -652,14 +644,14 @@ class MSL(object):
         except:
             resp = None
             exc = sys.exc_info()
-            self.nx_common.log(
+            common.log(
                 msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
         if resp and resp.status_code == 200:
             resp = resp.json()
             if 'errordata' in resp:
-                self.nx_common.log(msg='Key Exchange failed')
-                self.nx_common.log(
+                common.log('Key Exchange failed')
+                common.log(
                     msg=base64.standard_b64decode(resp['errordata']))
                 return False
             base_head = base64.standard_b64decode(resp['headerdata'])
@@ -669,18 +661,16 @@ class MSL(object):
             self.crypto.parse_key_response(headerdata)
             self.__save_msl_data()
         else:
-            self.nx_common.log(msg='Key Exchange failed')
-            self.nx_common.log(msg=resp.text)
+            common.log('Key Exchange failed')
+            common.log(resp.text)
 
     def init_msl_data(self):
-        self.nx_common.log(msg='MSL Data exists. Use old Tokens.')
+        common.log('MSL Data exists. Use old Tokens.')
         self.__load_msl_data()
         self.handshake_performed = True
 
     def __load_msl_data(self):
-        raw_msl_data = self.nx_common.load_file(
-            data_path=self.nx_common.data_path,
-            filename='msl_data.json')
+        raw_msl_data = common.load_file('msl_data.json')
         msl_data = json.JSONDecoder().decode(raw_msl_data)
         # Check expire date of the token
         raw_token = msl_data['tokens']['mastertoken']['tokendata']
@@ -691,7 +681,7 @@ class MSL(object):
         present = datetime.now()
         difference = valid_until - present
         # If token expires in less then 10 hours or is expires renew it
-        self.nx_common.log(msg='Expiration time: Key:' + str(valid_until) + ', Now:' + str(present) + ', Diff:' + str(difference.total_seconds()))
+        common.log('Expiration time: Key:' + str(valid_until) + ', Now:' + str(present) + ', Diff:' + str(difference.total_seconds()))
         difference = difference.total_seconds() / 60 / 60
         if self.crypto.fromDict(msl_data) or difference < 10:
             self.__perform_key_handshake()
@@ -715,8 +705,7 @@ class MSL(object):
         data.update(self.crypto.toDict())
 
         serialized_data = json.JSONEncoder().encode(data)
-        self.nx_common.save_file(
-            data_path=self.nx_common.data_path,
+        common.save_file(
             filename='msl_data.json',
             content=serialized_data)
 
