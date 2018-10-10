@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-# Author: caphm
-# Package: kodi
-# Created on: 06.08.2018
-# License: MIT https://goo.gl/5bMj3H
-# pylint: disable=import-error
 
 """Kodi GUI stuff"""
+from __future__ import unicode_literals
 
 import xbmc
 
@@ -19,7 +15,7 @@ def show_modal_dialog(dlg_class, xml, path, **kwargs):
     Pass kwargs minutes and/or seconds tohave the dialog automatically
     close after the specified time.
     """
-    dlg = dlg_class(xml, path, "default", "1080i", **kwargs)
+    dlg = dlg_class(xml, path, 'default', '1080i', **kwargs)
     minutes = kwargs.get('minutes', 0)
     seconds = kwargs.get('seconds', 0)
     if minutes > 0 or seconds > 0:

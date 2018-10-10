@@ -5,6 +5,7 @@
 # License: MIT https://goo.gl/5bMj3H
 
 """Handles & translates requests from Inputstream to Netflix"""
+from __future__ import unicode_literals
 
 import base64
 import BaseHTTPServer
@@ -12,6 +13,7 @@ from urlparse import urlparse, parse_qs
 
 from SocketServer import TCPServer
 from resources.lib.services.msl.MSL import MSL
+import resources.lib.common as common
 
 
 class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -84,11 +86,10 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 class MSLTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
 
-    def __init__(self, server_address, nx_common):
+    def __init__(self, server_address):
         """Initialization of MSLTCPServer"""
-        nx_common.log(msg='Constructing MSLTCPServer')
-        self.nx_common = nx_common
-        self.msl_handler = MSL(nx_common)
+        common.log('Constructing MSLTCPServer')
+        self.msl_handler = MSL()
         TCPServer.__init__(self, server_address, MSLHttpRequestHandler)
 
     def reset_msl_data(self):

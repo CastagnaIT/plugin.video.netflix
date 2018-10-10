@@ -9,6 +9,7 @@ Routes to the correct subfolder,
 dispatches actions & acts as a controller
 for the Kodi view & the Netflix model
 """
+from __future__ import unicode_literals
 
 import ast
 import re
@@ -22,33 +23,11 @@ from collections import OrderedDict
 from distutils.util import strtobool
 
 import xbmc
+import resources.lib.common as common
 import resources.lib.services.session.NetflixSession as Netflix
-from resources.lib.util.utils import log, find_episode
 from resources.lib.kodi.KodiHelper import KodiHelper
 from resources.lib.library.Library import Library
-from resources.lib.playback.section_skipping import SKIPPABLE_SECTIONS, OFFSET_CREDITS
-from resources.lib.playback.bookmarks import OFFSET_WATCHED_TO_END
-
-
-def _get_offset_markers(metadata):
-    return {
-        marker: metadata[marker]
-        for marker in [OFFSET_CREDITS, OFFSET_WATCHED_TO_END]
-        if metadata.get(marker) is not None
-    }
-
-
-def _get_section_markers(metadata):
-    return {
-        section: {
-            'start': int(metadata['creditMarkers'][section]['start'] /
-                         1000),
-            'end': int(metadata['creditMarkers'][section]['end'] / 1000)
-        }
-        for section in SKIPPABLE_SECTIONS
-        if (None not in metadata['creditMarkers'][section].values() and
-            any(i > 0 for i in metadata['creditMarkers'][section].values()))
-    }
+from resources.lib.playback import get_section_markers, get_offset_markers
 
 
 class Navigation(object):
@@ -58,7 +37,7 @@ class Navigation(object):
     for the Kodi view & the Netflix model
     """
 
-    def __init__(self, nx_common):
+    def __init__(self):
         """
         Takes the instances & configuration options needed to drive the plugin
 
@@ -76,19 +55,11 @@ class Navigation(object):
         log_fn : :obj:`fn`
              optional log function
         """
-        self.nx_common = nx_common
-        self.library = Library(nx_common=nx_common)
+        self.library = Library()
+        self.kodi_helper = KodiHelper(library=self.library)
+        self.library.kodi_helper = self.kodi_helper
 
-        self.kodi_helper = KodiHelper(
-            nx_common=nx_common,
-            library=self.library)
-
-        self.library.set_kodi_helper(kodi_helper=self.kodi_helper)
-
-        self.base_url = self.nx_common.base_url
-        self.log = self.nx_common.log
-
-    @log
+    @common.logdetails
     def router(self, paramstring):
         """
         Route to the requested subfolder & dispatch actions along the way
@@ -133,12 +104,12 @@ class Navigation(object):
 
         # check if one of the before routing options decided to killthe routing
         if 'exit' in options:
-            self.nx_common.log(msg='exit in options')
+            common.log('exit in options')
             return False
         if 'action' not in params.keys():
             # show the profiles
-            if self.nx_common.get_setting('autologin_enable') == 'true':
-                profile_id = self.nx_common.get_setting('autologin_id')
+            if common.ADDON.getSettingBool('autologin_enable'):
+                profile_id = common.ADDON.getSetting('autologin_id')
                 if profile_id != '':
                     self.call_netflix_service({
                         'method': 'switch_profile',
@@ -234,7 +205,7 @@ class Navigation(object):
         elif action == 'play_video':
             # play a video, check for adult pin if needed
             adult_pin = None
-            adult_setting = self.nx_common.get_setting('adultpin_enable')
+            adult_setting = common.ADDON.getSetting('adultpin_enable')
             ask_for_adult_pin = adult_setting.lower() == 'true'
             if ask_for_adult_pin is True:
                 if self.check_for_adult_pin(params=params):
@@ -276,7 +247,7 @@ class Navigation(object):
         xbmc.executebuiltin('Container.Refresh')
         return True
 
-    @log
+    @common.logdetails
     def play_video(self, video_id, start_offset, infoLabels):
         """Starts video playback
 
@@ -311,17 +282,17 @@ class Navigation(object):
             tvshow_video_id=tvshow_video_id,
             timeline_markers=self._get_timeline_markers(metadata))
 
-    @log
+    @common.logdetails
     def _get_timeline_markers(self, metadata):
         try:
-            markers = _get_offset_markers(metadata)
-            markers.update(_get_section_markers(metadata))
+            markers = get_offset_markers(metadata)
+            markers.update(get_section_markers(metadata))
         except KeyError:
             return {}
 
         return markers
 
-    @log
+    @common.logdetails
     def _get_single_metadata(self, video_id):
         metadata = (
             self._check_response(
@@ -333,11 +304,11 @@ class Navigation(object):
         )['video']
 
         if metadata['type'] == 'show':
-            return find_episode(video_id, metadata['seasons']), metadata['id']
+            return common.find_episode(video_id, metadata['seasons']), metadata['id']
 
         return metadata, None
 
-    @log
+    @common.logdetails
     def show_search_results(self, term):
         """Display a list of search results
 
@@ -507,11 +478,11 @@ class Navigation(object):
                     'guid': user_data['guid'],
                     'cache': True}))
                 if items is False and i == 0:
-                    self.nx_common.log('show_video_list response is dirty')
+                    common.log('show_video_list response is dirty')
                     return False
                 elif len(items) == 0:
                     if i == 0:
-                        self.nx_common.log('show_video_list items=0')
+                        common.log('show_video_list items=0')
                         return False
                     break
                 req_count = Netflix.FETCH_VIDEO_REQUEST_COUNT
@@ -565,7 +536,7 @@ class Navigation(object):
                 return listing
         return False
 
-    @log
+    @common.logdetails
     def list_id_for_type(self, type):
         """Get the list_ids for a given type"""
         user_data = self._check_response(self.call_netflix_service({
@@ -579,7 +550,7 @@ class Navigation(object):
                 if video_list_ids['user'][video_list_id]['name'] == type:
                     return str(video_list_ids['user'][video_list_id]['id'])
 
-    @log
+    @common.logdetails
     def show_profiles(self):
         """List the profiles for the active account"""
         profiles = self._check_response(self.call_netflix_service({
@@ -592,7 +563,7 @@ class Navigation(object):
             return listing
         return self.kodi_helper.dialogs.show_login_failed_notify()
 
-    @log
+    @common.logdetails
     def rate_on_netflix(self, video_id):
         """Rate a show/movie/season/episode on Netflix
 
@@ -610,7 +581,7 @@ class Navigation(object):
             self.kodi_helper.dialogs.show_request_error_notify()
         return result
 
-    @log
+    @common.logdetails
     def remove_from_list(self, video_id):
         """Remove an item from 'My List' & refresh the view
 
@@ -626,7 +597,7 @@ class Navigation(object):
             return self.kodi_helper.refresh()
         return self.kodi_helper.dialogs.show_request_error_notify()
 
-    @log
+    @common.logdetails
     def add_to_list(self, video_id):
         """Add an item to 'My List' & refresh the view
 
@@ -642,7 +613,7 @@ class Navigation(object):
             return self.kodi_helper.refresh()
         return self.kodi_helper.dialogs.show_request_error_notify()
 
-    @log
+    @common.logdetails
     def export_to_library(self, video_id, alt_title, in_background=False):
         """Adds an item to the local library
 
@@ -671,10 +642,10 @@ class Navigation(object):
                 for season in video['seasons']:
                     if not self._download_episode_metadata(
                             season['id'], video['title']):
-                        self.log(msg=('Failed to download episode metadata '
-                                      'for {} season {}')
-                                 .format(video['title'], season['id']),
-                                 level=xbmc.LOGERROR)
+                        common.log(('Failed to download episode metadata '
+                                    'for {} season {}')
+                                   .format(video['title'], season['id']),
+                                   level=common.LOGERROR)
                     for episode in season['episodes']:
                         episodes.append({
                             'season': season['seq'],
@@ -713,7 +684,7 @@ class Navigation(object):
             return True
         return False
 
-    @log
+    @common.logdetails
     def remove_from_library(self, video_id, season=None, episode=None):
         """Removes an item from the local library
 
@@ -737,49 +708,49 @@ class Navigation(object):
         self.kodi_helper.dialogs.show_no_metadata_notify()
         return False
 
-    @log
+    @common.logdetails
     def export_new_episodes(self, in_background):
         update_started_at = datetime.today().strftime('%Y-%m-%d %H:%M')
-        self.nx_common.set_setting('update_running', update_started_at)
+        common.ADDON.setSetting('update_running', update_started_at)
         for title, meta in self.library.list_exported_shows().iteritems():
             try:
                 netflix_id = meta.get('netflix_id',
                                       self._get_netflix_id(meta['alt_title']))
             except KeyError:
-                self.log(
+                common.log(
                     ('Cannot determine netflix id for {}. '
                      'Remove and re-add to library to fix this.')
-                    .format(title.encode('utf-8')), xbmc.LOGERROR)
+                    .format(title.encode('utf-8')), common.LOGERROR)
                 continue
-            self.log('Exporting new episodes of {} (id={})'
+            common.log('Exporting new episodes of {} (id={})'
                      .format(title.encode('utf-8'), netflix_id))
             self.export_to_library(video_id=netflix_id, alt_title=title,
                                    in_background=in_background)
         xbmc.executebuiltin(
             'UpdateLibrary(video, {})'.format(self.library.tvshow_path))
-        self.nx_common.set_setting('update_running', 'false')
-        self.nx_common.set_setting('last_update', update_started_at[0:10])
+        common.ADDON.setSetting('update_running', 'false')
+        common.ADDON.setSetting('last_update', update_started_at[0:10])
         return True
 
     def _get_netflix_id(self, showtitle):
-        show_dir = self.nx_common.check_folder_path(
+        show_dir = common.check_folder_path(
             path=os.path.join(self.library.tvshow_path, showtitle))
         try:
             filepath = next(os.path.join(show_dir, fn)
-                            for fn in self.nx_common.list_dir(show_dir)[1]
+                            for fn in common.list_dir(show_dir)[1]
                             if 'strm' in fn)
         except StopIteration:
             raise KeyError
 
-        self.log('Reading contents of {}'.format(filepath.encode('utf-8')))
-        buf = self.nx_common.load_file(data_path='', filename=filepath)
+        common.log('Reading contents of {}'.format(filepath.encode('utf-8')))
+        buf = common.load_file(data_path='', filename=filepath)
         episode_id = re.search(r'video_id=(\d+)', buf).group(1)
         show_metadata = self._check_response(self.call_netflix_service({
             'method': 'fetch_metadata',
             'video_id': episode_id}))
         return show_metadata['video']['id']
 
-    @log
+    @common.logdetails
     def establish_session(self, account):
         """
         Checks if we have an cookie with an active sessions,
@@ -811,18 +782,18 @@ class Navigation(object):
         Deletes all current account data & prompts with dialogs for new ones
         """
         self._check_response(self.call_netflix_service({'method': 'logout'}))
-        self.nx_common.set_credentials('', '')
+        common.set_credentials('', '')
 
         raw_email = self.kodi_helper.dialogs.show_email_dialog()
         raw_password = self.kodi_helper.dialogs.show_password_dialog()
-        self.nx_common.set_credentials(raw_email, raw_password)
+        common.set_credentials(raw_email, raw_password)
 
         account = {
             'email': raw_email,
             'password': raw_password,
         }
         if self.establish_session(account=account) is not True:
-            self.nx_common.set_credentials('', '')
+            common.set_credentials('', '')
             return self.kodi_helper.dialogs.show_login_failed_notify()
         return True
 
@@ -841,7 +812,7 @@ class Navigation(object):
         """
         return (True, False)[params.get('pin') == 'True']
 
-    @log
+    @common.logdetails
     def before_routing_action(self, params):
         """Executes actions before the actual routing takes place:
 
@@ -865,7 +836,7 @@ class Navigation(object):
         logged_in = self._check_response(self.call_netflix_service({
             'method': 'is_logged_in'}))
         if logged_in is False:
-            credentials = self.nx_common.get_credentials()
+            credentials = common.get_credentials()
             # check if we have user settings, if not, set em
             if credentials['email'] == '':
                 email = self.kodi_helper.dialogs.show_email_dialog()
@@ -874,10 +845,10 @@ class Navigation(object):
                 password = self.kodi_helper.dialogs.show_password_dialog()
                 credentials['password'] = password
 
-            self.nx_common.set_credentials(credentials['email'], credentials['password'])
+            common.set_credentials(credentials['email'], credentials['password'])
 
             if self.establish_session(account=credentials) is not True:
-                self.nx_common.set_credentials('', '')
+                common.set_credentials('', '')
                 self.kodi_helper.dialogs.show_login_failed_notify()
 
         # persist & load main menu selection
@@ -981,11 +952,11 @@ class Navigation(object):
             # check if we do not have a valid session,
             # in case that happens: (re)login
             if self._is_expired_session(response=response):
-                account = self.nx_common.get_credentials()
+                account = common.get_credentials()
                 self.establish_session(account=account)
             message = response['message'] if 'message' in response else ''
             code = response['code'] if 'code' in response else ''
-            self.log(msg='[ERROR]: ' + message + '::' + str(code))
+            common.log('[ERROR]: ' + message + '::' + str(code))
             return False
         return response
 
@@ -1002,7 +973,7 @@ class Navigation(object):
         str
             Url + querystring based on the param
         """
-        return self.base_url + '?' + urllib.urlencode(query)
+        return common.BASE_URL + '?' + urllib.urlencode(query)
 
     def get_netflix_service_url(self):
         """Returns URL & Port of the internal Netflix HTTP Proxy service
@@ -1013,7 +984,7 @@ class Navigation(object):
             Url + Port
         """
         return ('http://127.0.0.1:' +
-                self.nx_common.get_setting('netflix_service_port'))
+                common.ADDON.getSetting('netflix_service_port'))
 
     def call_netflix_service(self, params):
         """
@@ -1039,7 +1010,7 @@ class Navigation(object):
 
             # Cache lookup successful?
             if cached_value is not None:
-                self.log(
+                common.log(
                     msg='Fetched item from cache: (cache_id=' + values + ')')
                 return cached_value
 
@@ -1056,7 +1027,7 @@ class Navigation(object):
             return result
         result = parsed_json.get('result', None)
         if result and cache:
-            self.log(msg='Adding item to cache: (cache_id=' + values + ')')
+            common.log('Adding item to cache: (cache_id=' + values + ')')
             self.kodi_helper.add_cached_item(cache_id=values, contents=result)
         return result
 

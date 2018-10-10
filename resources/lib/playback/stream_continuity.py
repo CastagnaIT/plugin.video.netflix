@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-# Author: caphm
-# Module: stream_continuity
-# Created on: 02.08.2018
-# License: MIT https://goo.gl/5bMj3H
-# pylint: disable=import-error
 
 """
 Remember and restore audio stream / subtitle settings between individual
 episodes of a tv show
 """
+from __future__ import unicode_literals
+
 import xbmc
 
+import resources.lib.common as common
 from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
-from resources.lib.playback import PlaybackActionManager
+
+from .action_manager import PlaybackActionManager
 
 STREAMS = {
     'audio': {
@@ -35,9 +34,9 @@ class StreamContinuityManager(PlaybackActionManager):
     Detects changes in audio / subtitle streams during playback, saves them
     for the currently playing show and restores them on subsequent episodes.
     """
-    def __init__(self, nx_common):
-        super(StreamContinuityManager, self).__init__(nx_common)
-        self.storage = nx_common.get_storage(__name__)
+    def __init__(self):
+        super(StreamContinuityManager, self).__init__()
+        self.storage = common.PersistentStorage(__name__)
         self.current_show = None
         self.current_streams = {}
         self.player = xbmc.Player()
@@ -63,15 +62,15 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _on_tick(self, player_state):
         if not self.did_restore:
-            self.log('Did not restore streams yet, ignoring tick')
+            common.log('Did not restore streams yet, ignoring tick')
             return
 
         for stype in STREAMS:
             current_stream = self.current_streams[stype]
             player_stream = player_state.get(STREAMS[stype]['current'])
             if player_stream != current_stream:
-                self.log('{} has changed from {} to {}'
-                         .format(stype, current_stream, player_stream))
+                common.log('{} has changed from {} to {}'
+                           .format(stype, current_stream, player_stream))
                 self._set_current_stream(stype, player_state)
                 self._ask_to_save(stype, player_stream)
 
@@ -81,7 +80,7 @@ class StreamContinuityManager(PlaybackActionManager):
         })
 
     def _restore_stream(self, stype):
-        self.log('Trying to restore {}...'.format(stype))
+        common.log('Trying to restore {}...'.format(stype))
         set_stream = STREAMS[stype]['setter']
         stored_stream = self.show_settings.get(stype)
         if (stored_stream is not None and
@@ -91,23 +90,22 @@ class StreamContinuityManager(PlaybackActionManager):
                                      if isinstance(stored_stream, dict)
                                      else stored_stream))
             self.current_streams[stype] = stored_stream
-            self.log('Restored {} to {}'.format(stype, stored_stream))
+            common.log('Restored {} to {}'.format(stype, stored_stream))
 
     def _ask_to_save(self, stype, stream):
-        self.log('Asking to save {} for {}'.format(stream, stype))
+        common.log('Asking to save {} for {}'.format(stream, stype))
         new_show_settings = self.show_settings.copy()
         new_show_settings[stype] = stream
         show_modal_dialog(
             xmldialogs.SaveStreamSettings,
             "plugin-video-netflix-SaveStreamSettings.xml",
-            self.addon.getAddonInfo('path'),
+            common.ADDON.getAddonInfo('path'),
             minutes=0,
             seconds=5,
             new_show_settings=new_show_settings,
             tvshowid=self.current_show,
             storage=self.storage)
 
-
-    def __str__(self):
+    def __repr__(self):
         return ('enabled={}, current_show={}'
                 .format(self.enabled, self.current_show))

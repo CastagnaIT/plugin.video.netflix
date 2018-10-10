@@ -2,25 +2,16 @@
 # Module: KodiHelper
 # Created on: 13.01.2017
 
+from __future__ import unicode_literals
+
 import re
 import json
 import base64
-import hashlib
-from os import remove
 from uuid import uuid4
 from urllib import urlencode
-import AddonSignals
-import xbmc
-import xbmcgui
-import xbmcplugin
-import inputstreamhelper
-from resources.lib.kodi.ui.Dialogs import Dialogs
-from resources.lib.common.NetflixCommon import Signals
-from resources.lib.common.utils import get_user_agent
-from resources.lib.UniversalAnalytics import Tracker
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
 try:
     # Python 2.6-2.7
@@ -28,6 +19,16 @@ try:
 except ImportError:
     # Python 3
     from html.parser import HTMLParser
+
+import xbmc
+import xbmcgui
+import xbmcplugin
+import AddonSignals
+import inputstreamhelper
+
+import resources.lib.common as common
+from resources.lib.kodi.ui.Dialogs import Dialogs
+from resources.lib.UniversalAnalytics import Tracker
 
 VIEW_FOLDER = 'folder'
 VIEW_MOVIE = 'movie'
@@ -53,17 +54,13 @@ class KodiHelper(object):
     Consumes all the configuration data from Kodi as well as
     turns data into lists of folders and videos"""
 
-    def __init__(self, nx_common, library):
+    def __init__(self, library):
         """
         Provides helpers for addon side (not service side)
         """
-        self.nx_common = nx_common
-        self.plugin_handle = nx_common.plugin_handle
-        self.base_url = nx_common.base_url
         self.library = library
-        self.custom_export_name = nx_common.get_setting('customexportname')
-        self.show_update_db = nx_common.get_setting('show_update_db')
-        self.default_fanart = nx_common.get_addon_info('fanart')
+        self.custom_export_name = common.ADDON.getSetting('customexportname')
+        self.show_update_db = common.ADDON.getSetting('show_update_db')
         self.setup_memcache()
         self.dialogs = Dialogs(
             get_local_string=self.get_local_string,
@@ -77,12 +74,12 @@ class KodiHelper(object):
     def toggle_adult_pin(self):
         """Toggles the adult pin setting"""
         adultpin_enabled = False
-        raw_adultpin_enabled = self.nx_common.get_setting('adultpin_enable')
+        raw_adultpin_enabled = common.ADDON.getSetting('adultpin_enable')
         if raw_adultpin_enabled == 'true' or raw_adultpin_enabled == 'True':
             adultpin_enabled = True
         if adultpin_enabled is False:
-            return self.nx_common.set_setting('adultpin_enable', 'True')
-        return self.nx_common.set_setting('adultpin_enable', 'False')
+            return common.ADDON.setSetting('adultpin_enable', 'True')
+        return common.ADDON.setSetting('adultpin_enable', 'False')
 
     def set_main_menu_selection(self, type):
         """Persist the chosen main menu entry in memory
@@ -182,9 +179,9 @@ class KodiHelper(object):
             (folder, movie, show, season, episode, login, exported)
 
         """
-        custom_view = self.nx_common.get_setting('customview')
+        custom_view = common.ADDON.getSetting('customview')
         if custom_view == 'true':
-            view = int(self.nx_common.get_setting('viewmode' + content))
+            view = int(common.ADDON.getSetting('viewmode' + content))
             if view != -1:
                 xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
 
@@ -199,9 +196,9 @@ class KodiHelper(object):
         autologin_id : :obj:`str`
             Profile id from netflix
         """
-        self.nx_common.set_setting('autologin_user', autologin_user)
-        self.nx_common.set_setting('autologin_id', autologin_id)
-        self.nx_common.set_setting('autologin_enable', 'True')
+        common.ADDON.setSetting('autologin_user', autologin_user)
+        common.ADDON.setSetting('autologin_id', autologin_id)
+        common.ADDON.setSetting('autologin_enable', 'True')
         self.dialogs.show_autologin_enabled_notify()
         self.invalidate_memcache()
         self.refresh()
@@ -240,7 +237,7 @@ class KodiHelper(object):
                 iconImage=profile.get('avatar'))
             list_item.setProperty(
                 key='fanart_image',
-                value=self.default_fanart)
+                value=common.DEFAULT_FANART)
             # add context menu options
             auto_login = (
                 self.get_local_string(30053),
@@ -249,19 +246,19 @@ class KodiHelper(object):
 
             # add directory & sorting options
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=list_item,
                 isFolder=True)
             xbmcplugin.addSortMethod(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 sortMethod=xbmcplugin.SORT_METHOD_LABEL)
 
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
 
-        return xbmcplugin.endOfDirectory(handle=self.plugin_handle)
+        return xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE)
 
     def build_main_menu_listing(self, video_list_ids, user_list_order, actions,
                                 build_url, widget_display=False):
@@ -295,8 +292,8 @@ class KodiHelper(object):
                     label = video_list_ids['user'][video_list_id]['displayName']
                     if category == 'netflixOriginals':
                         label = label.capitalize()
-                    li = xbmcgui.ListItem(label=label, iconImage=self.default_fanart)
-                    li.setProperty('fanart_image', self.default_fanart)
+                    li = xbmcgui.ListItem(label=label, iconImage=common.DEFAULT_FANART)
+                    li.setProperty('fanart_image', common.DEFAULT_FANART)
                     # determine action route
                     action = actions['default']
                     if category in actions.keys():
@@ -304,7 +301,7 @@ class KodiHelper(object):
                     # determine if the item should be selected
                     preselect_items.append((False, True)[category == self.get_main_menu_selection()])
                     url = build_url({'action': action, 'video_list_id': video_list_id, 'type': category})
-                    xbmcplugin.addDirectoryItem(handle=self.plugin_handle, url=url, listitem=li, isFolder=True)
+                    xbmcplugin.addDirectoryItem(handle=common.PLUGIN_HANDLE, url=url, listitem=li, isFolder=True)
 
         # add recommendations/genres as subfolders
         # (save us some space on the home page)
@@ -323,11 +320,11 @@ class KodiHelper(object):
                 preselect_items.append((False, True)[type == self.get_main_menu_selection()])
                 li_rec = xbmcgui.ListItem(
                     label=i18n_ids[type],
-                    iconImage=self.default_fanart)
-                li_rec.setProperty('fanart_image', self.default_fanart)
+                    iconImage=common.DEFAULT_FANART)
+                li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
                 url_rec = build_url({'action': action, 'type': type})
                 xbmcplugin.addDirectoryItem(
-                    handle=self.plugin_handle,
+                    handle=common.PLUGIN_HANDLE,
                     url=url_rec,
                     listitem=li_rec,
                     isFolder=True)
@@ -338,11 +335,11 @@ class KodiHelper(object):
             action = actions[type]
         li_rec = xbmcgui.ListItem(
             label=self.get_local_string(30011),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            iconImage=common.DEFAULT_FANART)
+        li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
         url_rec = build_url({'action': action, 'type': 'search'})
         xbmcplugin.addDirectoryItem(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             url=url_rec,
             listitem=li_rec,
             isFolder=True)
@@ -353,11 +350,11 @@ class KodiHelper(object):
             action = actions[type]
         li_rec = xbmcgui.ListItem(
             label=self.get_local_string(30048),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            iconImage=common.DEFAULT_FANART)
+        li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
         url_rec = build_url({'action': action, 'type': 'exported'})
         xbmcplugin.addDirectoryItem(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             url=url_rec,
             listitem=li_rec,
             isFolder=True)
@@ -366,23 +363,23 @@ class KodiHelper(object):
             # add updatedb as subfolder
             li_rec = xbmcgui.ListItem(
                 label=self.get_local_string(30049),
-                iconImage=self.default_fanart)
-            li_rec.setProperty('fanart_image', self.default_fanart)
+                iconImage=common.DEFAULT_FANART)
+            li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
             url_rec = build_url({'action': 'updatedb'})
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url_rec,
                 listitem=li_rec,
                 isFolder=True)
 
         # no sorting & close
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
 
         # (re)select the previously selected main menu entry
         idx = 1
@@ -429,8 +426,9 @@ class KodiHelper(object):
             video = video_list[video_list_id]
             li = xbmcgui.ListItem(
                 label=video['title'],
-                iconImage=self.default_fanart)
+                iconImage=common.DEFAULT_FANART)
             # add some art to the item
+            common.log(video)
             li.setArt(self._generate_art_info(entry=video))
             # add list item info
             infos = self._generate_listitem_info(entry=video, li=li)
@@ -473,31 +471,31 @@ class KodiHelper(object):
                 "video_list_id": current_video_list_id})
             listItems.append((more_url, li_more, True))
 
-        xbmcplugin.addDirectoryItems(self.plugin_handle, listItems, len(listItems))
+        xbmcplugin.addDirectoryItems(common.PLUGIN_HANDLE, listItems, len(listItems))
 
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_GENRE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=content)
 
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
 
         if not widget_display:
             self.set_custom_view(view)
@@ -521,24 +519,25 @@ class KodiHelper(object):
 
         li = xbmcgui.ListItem(
             label=self.get_local_string(30064),
-            iconImage=self.default_fanart)
-        li.setProperty('fanart_image', self.default_fanart)
+            iconImage=common.DEFAULT_FANART)
+        li.setProperty('fanart_image', common.DEFAULT_FANART)
         xbmcplugin.addDirectoryItem(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             url=build_url({'action': 'export-new-episodes','inbackground': True}),
             listitem=li,
             isFolder=False)
         listing = content
         for video in listing[0]:
+            video = video.decode('utf-8')
             year = self.library.get_exported_movie_year(title=video)
             li = xbmcgui.ListItem(
-                label=str(video)+' ('+str(year)+')',
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                label='{title} ({year})'.format(title=video, year=year),
+                iconImage=common.DEFAULT_FANART)
+            li.setProperty('fanart_image', common.DEFAULT_FANART)
             isFolder = False
             url = build_url({
                 'action': 'removeexported',
-                'title': str(video),
+                'title': video.encode('utf-8'),
                 'year': str(year),
                 'type': 'movie'})
             art = {}
@@ -549,21 +548,22 @@ class KodiHelper(object):
             })
             li.setArt(art)
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=li,
                 isFolder=isFolder)
 
         for video in listing[2]:
+            video = video.decode('utf-8')
             li = xbmcgui.ListItem(
-                label=str(video),
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                label=video,
+                iconImage=common.DEFAULT_FANART)
+            li.setProperty('fanart_image', common.DEFAULT_FANART)
             isFolder = False
             year = '0000'
             url = build_url({
                 'action': 'removeexported',
-                'title': str(str(video)),
+                'title': video.encode('utf-8'),
                 'year': str(year),
                 'type': 'show'})
             art = {}
@@ -574,21 +574,21 @@ class KodiHelper(object):
             })
             li.setArt(art)
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=li,
                 isFolder=isFolder)
 
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         if not widget_display:
             self.set_custom_view(VIEW_EXPORTED)
         return True
@@ -612,21 +612,21 @@ class KodiHelper(object):
         # add search result as subfolder
         li_rec = xbmcgui.ListItem(
             label='({})'.format(term),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            iconImage=common.DEFAULT_FANART)
+        li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
         url_rec = build_url({'action': 'search_result', 'term': term})
         xbmcplugin.addDirectoryItem(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             url=url_rec,
             listitem=li_rec,
             isFolder=True)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         if not widget_display:
             self.set_custom_view(VIEW_FOLDER)
         return url_rec
@@ -685,7 +685,7 @@ class KodiHelper(object):
             List could be build
         """
         self.dialogs.show_no_seasons_notify()
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         return True
 
     def build_no_search_results_available(self, build_url, action):
@@ -705,7 +705,7 @@ class KodiHelper(object):
             List could be build
         """
         self.dialogs.show_no_search_results_notify()
-        return xbmcplugin.endOfDirectory(self.plugin_handle)
+        return xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
 
     def build_user_sub_listing(self, video_list_ids, type, action, build_url,
                                widget_display=False):
@@ -735,22 +735,22 @@ class KodiHelper(object):
         for video_list_id in video_list_ids:
             li = xbmcgui.ListItem(
                 label=video_list_ids[video_list_id]['displayName'],
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                iconImage=common.DEFAULT_FANART)
+            li.setProperty('fanart_image', common.DEFAULT_FANART)
             url = build_url({'action': action, 'video_list_id': video_list_id})
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=li,
                 isFolder=True)
 
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         if not widget_display:
             self.set_custom_view(VIEW_FOLDER)
         return True
@@ -787,30 +787,30 @@ class KodiHelper(object):
                 params['tvshowtitle'] = base64.urlsafe_b64encode(title)
             url = build_url(params)
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=li,
                 isFolder=True)
 
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_SEASON)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         if not widget_display:
             self.set_custom_view(VIEW_SEASON)
         return True
@@ -850,36 +850,36 @@ class KodiHelper(object):
                 'infoLabels': infos,
                 'pin': needs_pin})
             xbmcplugin.addDirectoryItem(
-                handle=self.plugin_handle,
+                handle=common.PLUGIN_HANDLE,
                 url=url,
                 listitem=li,
                 isFolder=False)
 
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_LASTPLAYED)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             sortMethod=xbmcplugin.SORT_METHOD_DURATION)
         xbmcplugin.setContent(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             content=CONTENT_EPISODE)
-        xbmcplugin.endOfDirectory(self.plugin_handle)
+        xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
         if not widget_display:
             self.set_custom_view(VIEW_EPISODE)
         return True
@@ -911,21 +911,18 @@ class KodiHelper(object):
         self.track_event('playVideo')
 
         # inputstream addon properties
-        port = str(self.nx_common.get_setting('msl_service_port'))
+        port = str(common.ADDON.getSetting('msl_service_port'))
         msl_service_url = 'http://localhost:' + port
         msl_manifest_url = msl_service_url + '/manifest?id=' + video_id
-        msl_manifest_url += '&dolby=' + self.nx_common.get_setting('enable_dolby_sound')
-        msl_manifest_url += '&hevc=' +  self.nx_common.get_setting('enable_hevc_profiles')
-        msl_manifest_url += '&hdr=' +  self.nx_common.get_setting('enable_hdr_profiles')
-        msl_manifest_url += '&dolbyvision=' +  self.nx_common.get_setting('enable_dolbyvision_profiles')
-        msl_manifest_url += '&vp9=' +  self.nx_common.get_setting('enable_vp9_profiles')
+        msl_manifest_url += '&dolby=' + common.ADDON.getSetting('enable_dolby_sound')
+        msl_manifest_url += '&hevc=' +  common.ADDON.getSetting('enable_hevc_profiles')
 
         play_item = xbmcgui.ListItem(path=msl_manifest_url)
         play_item.setContentLookup(False)
         play_item.setMimeType('application/dash+xml')
         play_item.setProperty(
             key=is_helper.inputstream_addon + '.stream_headers',
-            value='user-agent=' + get_user_agent())
+            value='user-agent=' + common.get_user_agent())
         play_item.setProperty(
             key=is_helper.inputstream_addon + '.license_type',
             value='com.widevine.alpha')
@@ -960,7 +957,7 @@ class KodiHelper(object):
             signal_data.update({'tvshow_video_id': tvshow_video_id})
 
         # check for content in kodi db
-        if str(infoLabels) != 'None':
+        if unicode(infoLabels) != 'None':
             if infoLabels['mediatype'] == 'episode':
                 id = self.showtitle_to_id(title=infoLabels['tvshowtitle'])
                 details = self.get_show_content_by_id(
@@ -986,10 +983,10 @@ class KodiHelper(object):
                 if infoLabels['mediatype'] == 'episode':
                     signal_data['dbinfo'].update({'tvshowid': id[0]})
 
-        AddonSignals.sendSignal(Signals.PLAYBACK_INITIATED, signal_data)
+        AddonSignals.sendSignal(common.Signals.PLAYBACK_INITIATED, signal_data)
 
         return xbmcplugin.setResolvedUrl(
-            handle=self.plugin_handle,
+            handle=common.PLUGIN_HANDLE,
             succeeded=True,
             listitem=play_item)
 
@@ -1006,7 +1003,7 @@ class KodiHelper(object):
         :obj:`dict` of :obj:`str`
             Dictionary containing art info
         """
-        art = {'fanart': self.default_fanart}
+        art = {'fanart': common.DEFAULT_FANART}
         # Cleanup art
         art.update({
             'landscape': '',
@@ -1032,7 +1029,7 @@ class KodiHelper(object):
             # Download image for exported listing
             if 'title' in entry:
                 self.library.download_image_file(
-                    title=entry['title'].encode('utf-8'),
+                    title=entry['title'],
                     url=str(big))
 
         if 'interesting_moment' in dict(entry).keys():
@@ -1118,7 +1115,7 @@ class KodiHelper(object):
             else:
                 if entry.get('maturity', None) is not None:
                     if entry.get('maturity', {}).get('board') is not None and entry.get('maturity', {}).get('value') is not None:
-                        infos.update({'mpaa': str(entry['maturity']['board'].encode('utf-8')) + '-' + str(entry['maturity']['value'].encode('utf-8'))})
+                        infos.update({'mpaa': unicode(entry['maturity']['board']) + '-' + unicode(entry['maturity']['value'])})
         if 'rating' in entry_keys:
             infos.update({'rating': int(entry['rating']) * 2})
         if 'synopsis' in entry_keys:
@@ -1168,7 +1165,7 @@ class KodiHelper(object):
                 title = base64.urlsafe_b64decode(title).decode('utf-8')
             infos.update({'tvshowtitle': title})
         self.library.write_metadata_file(
-            video_id=str(entry['id']), content=infos)
+            video_id=unicode(entry['id']), content=infos)
         return infos, li_infos
 
     def _generate_context_menu_items(self, entry, li):
@@ -1192,7 +1189,7 @@ class KodiHelper(object):
 
         # action item templates
         encoded_title = urlencode({'title': entry['title'].encode('utf-8')}) if 'title' in entry else ''
-        url_tmpl = 'XBMC.RunPlugin(' + self.base_url + '?action=%action%&id=' + str(entry['id']) + '&' + encoded_title + ')'
+        url_tmpl = 'XBMC.RunPlugin(' + common.BASE_URL + '?action=%action%&id=' + str(entry['id']) + '&' + encoded_title + ')'
 
         if not self._context_menu_actions:
             self._context_menu_actions = [
@@ -1210,11 +1207,11 @@ class KodiHelper(object):
 
         # add or remove the movie/show/season/episode from & to the users "My List"
         if 'in_my_list' in entry_keys:
-            items.append(action['remove_from_my_list']) if entry['in_my_list'] else items.append(action['add_to_my_list'])
+            items.append(action['remove_from_my_list'] if entry['in_my_list'] else action['add_to_my_list'])
         elif 'queue' in entry_keys:
-            items.append(action['remove_from_my_list']) if entry['queue'] else items.append(action['add_to_my_list'])
+            items.append(action['remove_from_my_list'] if entry['queue'] else action['add_to_my_list'])
         elif 'my_list' in entry_keys:
-            items.append(action['remove_from_my_list']) if entry['my_list'] else items.append(action['add_to_my_list'])
+            items.append(action['remove_from_my_list'] if entry['my_list'] else action['add_to_my_list'])
         # rate the movie/show/season/episode on Netflix
         items.append(action['rate_on_netflix'])
 
@@ -1393,7 +1390,7 @@ class KodiHelper(object):
                 result = result.get('moviedetails', {})
                 infos = {'mediatype': 'movie', 'dbid': movieid,
                          'title': result['title'],
-                         'playcount': episode.get('playcount', 0)}
+                         'playcount': result.get('playcount', 0)}
                 if 'resume' in result:
                     infos.update('resume', result['resume'])
                 if 'genre' in result and len(result['genre']) > 0:
@@ -1425,11 +1422,8 @@ class KodiHelper(object):
         :obj:`str`
             Requested string or empty string
         """
-        src = xbmc if string_id < 30000 else self.nx_common.get_addon()
-        locString = src.getLocalizedString(string_id)
-        if isinstance(locString, unicode):
-            locString = locString.encode('utf-8')
-        return locString
+        src = xbmc if string_id < 30000 else common.ADDON
+        return src.getLocalizedString(string_id)
 
     def track_event(self, event):
         """
@@ -1438,13 +1432,13 @@ class KodiHelper(object):
         :return: None
         """
         # Check if tracking is enabled
-        enable_tracking = (self.nx_common.get_setting('enable_tracking') == 'true')
+        enable_tracking = (common.ADDON.getSetting('enable_tracking') == 'true')
         if enable_tracking:
             # Get or Create Tracking id
-            tracking_id = self.nx_common.get_setting('tracking_id')
+            tracking_id = common.ADDON.getSetting('tracking_id')
             if tracking_id is '':
                 tracking_id = str(uuid4())
-                self.nx_common.set_setting('tracking_id', tracking_id)
+                common.ADDON.setSetting('tracking_id', tracking_id)
             # Send the tracking event
             tracker = Tracker.create('UA-46081640-5', client_id=tracking_id)
             tracker.send('event', event)

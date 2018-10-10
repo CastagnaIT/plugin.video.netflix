@@ -5,6 +5,7 @@
 # License: MIT https://goo.gl/5bMj3H
 
 """Kodi UI Dialogs"""
+from __future__ import unicode_literals
 
 import xbmcgui
 
@@ -57,7 +58,7 @@ class Dialogs(object):
         term = dlg.input(
             heading=self.get_local_string(string_id=30003),
             type=xbmcgui.INPUT_ALPHANUM)
-        if len(term) == 0:
+        if not term:
             term = None
         return term
 

@@ -1,27 +1,24 @@
 # -*- coding: utf-8 -*-
-# Author: caphm
-# Module: section_skipping
-# Created on: 31.07.2018
-# License: MIT https://goo.gl/5bMj3H
-# pylint: disable=import-error
 
 """Skipping of video sections (recap, intro)"""
+from __future__ import unicode_literals
+
 import xbmc
 import xbmcgui
 
+import resources.lib.common as common
 from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
-from resources.lib.playback import PlaybackActionManager
 
-SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}
-OFFSET_CREDITS = 'creditsOffset'
+from .action_manager import PlaybackActionManager
+from .markers import SKIPPABLE_SECTIONS
 
 
 class SectionSkipper(PlaybackActionManager):
     """
     Checks if a skippable section has been reached and takes appropriate action
     """
-    def __init__(self, nx_common):
-        super(SectionSkipper, self).__init__(nx_common)
+    def __init__(self):
+        super(SectionSkipper, self).__init__()
         self.markers = {}
         self.auto_skip = False
         self.pause_on_skip = False
@@ -33,8 +30,8 @@ class SectionSkipper(PlaybackActionManager):
 
     def _initialize(self, data):
         self.markers = data['timeline_markers']
-        self.auto_skip = self.addon.getSetting('auto_skip_credits') == 'true'
-        self.pause_on_skip = self.addon.getSetting('pause_on_skip') == 'true'
+        self.auto_skip = common.ADDON.getSettingBool('auto_skip_credits')
+        self.pause_on_skip = common.ADDON.getSettingBool('pause_on_skip')
 
     def _on_tick(self, player_state):
         for section in SKIPPABLE_SECTIONS:
@@ -48,15 +45,15 @@ class SectionSkipper(PlaybackActionManager):
             del self.markers[section]
 
     def _skip_section(self, section):
-        self.log('Entered section {}'.format(section))
-        label = self.addon.getLocalizedString(SKIPPABLE_SECTIONS[section])
+        common.log('Entered section {}'.format(section))
+        label = common.ADDON.getLocalizedString(SKIPPABLE_SECTIONS[section])
         if self.auto_skip:
             self._auto_skip(section, label)
         else:
             self._ask_to_skip(section, label)
 
     def _auto_skip(self, section, label):
-        self.log('Auto-skipping {}'.format(section))
+        common.log('Auto-skipping {}'.format(section))
         player = xbmc.Player()
         xbmcgui.Dialog().notification(
             'Netflix', '{}...'.format(label.encode('utf-8')),
@@ -71,14 +68,14 @@ class SectionSkipper(PlaybackActionManager):
             player.seekTime(self.markers[section]['end'])
 
     def _ask_to_skip(self, section, label):
-        self.log('Asking to skip {}'.format(section))
+        common.log('Asking to skip {}'.format(section))
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         seconds = dialog_duration % 60
         minutes = (dialog_duration - seconds) / 60
         show_modal_dialog(xmldialogs.Skip,
                           "plugin-video-netflix-Skip.xml",
-                          self.addon.getAddonInfo('path'),
+                          common.ADDON.getAddonInfo('path'),
                           minutes=minutes,
                           seconds=seconds,
                           skip_to=self.markers[section]['end'],

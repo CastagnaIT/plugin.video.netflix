@@ -1,7 +1,9 @@
-# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Module: NetflixHttpSubRessourceHandler
 # Created on: 07.03.2017
+from __future__ import unicode_literals
+
+import resources.lib.common as common
 
 
 class NetflixHttpSubRessourceHandler(object):
@@ -10,7 +12,7 @@ class NetflixHttpSubRessourceHandler(object):
     translates/executes them to requests for Netflix
     """
 
-    def __init__(self, nx_common, netflix_session):
+    def __init__(self, netflix_session):
         """Sets up credentials & video_list_cache cache
         Assigns the netflix_session/kodi_helper instacnes
         Does the initial login if we have user data
@@ -23,9 +25,8 @@ class NetflixHttpSubRessourceHandler(object):
         netflix_session : :obj:`NetflixSession`
             instance of the NetflixSession class
         """
-        self.nx_common = nx_common
         self.netflix_session = netflix_session
-        self.credentials = self.nx_common.get_credentials()
+        self.credentials = common.get_credentials()
         self.profiles = []
         self.video_list_cache = {}
         self.prefetch_login()
@@ -153,7 +154,7 @@ class NetflixHttpSubRessourceHandler(object):
         guid = self.netflix_session.user_data.get('guid')
         cached_list = self.video_list_cache.get(guid, None)
         if cached_list is not None:
-            self.nx_common.log(msg='Serving cached list for user: ' + guid)
+            common.log('Serving cached list for user: {}'.format(guid))
             return cached_list
         video_list_ids_raw = self.netflix_session.fetch_video_list_ids()
 
