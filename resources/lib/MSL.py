@@ -63,7 +63,7 @@ class MSL(object):
           self.crypto.fromDict(None)
           self.__perform_key_handshake()
 
-    def load_manifest(self, viewable_id, dolby, hevc):
+    def load_manifest(self, viewable_id, dolby, hevc, hdr, dolbyvision):
         """
         Loads the manifets for the given viewable_id and
         returns a mpd-XML-Manifest
@@ -118,9 +118,6 @@ class MSL(object):
             prk = 'dash-cenc-prk'
             cenc = 'dash-cenc'
             ctl = 'dash-cenc-tl'
-            hdr = 'hevc-hdr-main10-'
-            dv = 'hevc-dv-main10-'
-            dv5 = 'hevc-dv5-main10-'
             manifest_request_data['profiles'].append(main10 + 'L41-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L50-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L51-' + cenc)
@@ -148,18 +145,9 @@ class MSL(object):
             manifest_request_data['profiles'].append(main10 + 'L31-L40-' + ctl)
             manifest_request_data['profiles'].append(main10 + 'L40-L41-' + ctl)
             manifest_request_data['profiles'].append(main10 + 'L50-L51-' + ctl)
-            manifest_request_data['profiles'].append(dv + 'L30-' + cenc)
-            manifest_request_data['profiles'].append(dv + 'L31-' + cenc)
-            manifest_request_data['profiles'].append(dv + 'L40-' + cenc)
-            manifest_request_data['profiles'].append(dv + 'L41-' + cenc)
-            manifest_request_data['profiles'].append(dv + 'L50-' + cenc)
-            manifest_request_data['profiles'].append(dv + 'L51-' + cenc)
-            manifest_request_data['profiles'].append(dv5 + 'L30-' + prk)
-            manifest_request_data['profiles'].append(dv5 + 'L31-' + prk)
-            manifest_request_data['profiles'].append(dv5 + 'L40-' + prk)
-            manifest_request_data['profiles'].append(dv5 + 'L41-' + prk)
-            manifest_request_data['profiles'].append(dv5 + 'L50-' + prk)
-            manifest_request_data['profiles'].append(dv5 + 'L51-' + prk)
+
+        if hdr is True:
+            hdr = 'hevc-hdr-main10-'
             manifest_request_data['profiles'].append(hdr + 'L30-' + cenc)
             manifest_request_data['profiles'].append(hdr + 'L31-' + cenc)
             manifest_request_data['profiles'].append(hdr + 'L40-' + cenc)
@@ -172,6 +160,23 @@ class MSL(object):
             manifest_request_data['profiles'].append(hdr + 'L41-' + prk)
             manifest_request_data['profiles'].append(hdr + 'L50-' + prk)
             manifest_request_data['profiles'].append(hdr + 'L51-' + prk)
+
+
+        if dolbyvision is True:
+            dv = 'hevc-dv-main10-'
+            dv5 = 'hevc-dv5-main10-'
+            manifest_request_data['profiles'].append(dv + 'L30-' + cenc)
+            manifest_request_data['profiles'].append(dv + 'L31-' + cenc)
+            manifest_request_data['profiles'].append(dv + 'L40-' + cenc)
+            manifest_request_data['profiles'].append(dv + 'L41-' + cenc)
+            manifest_request_data['profiles'].append(dv + 'L50-' + cenc)
+            manifest_request_data['profiles'].append(dv + 'L51-' + cenc)
+            manifest_request_data['profiles'].append(dv5 + 'L30-' + prk)
+            manifest_request_data['profiles'].append(dv5 + 'L31-' + prk)
+            manifest_request_data['profiles'].append(dv5 + 'L40-' + prk)
+            manifest_request_data['profiles'].append(dv5 + 'L41-' + prk)
+            manifest_request_data['profiles'].append(dv5 + 'L50-' + prk)
+            manifest_request_data['profiles'].append(dv5 + 'L51-' + prk)
 
         # Check if dolby sound is enabled and add to profles
         if dolby:

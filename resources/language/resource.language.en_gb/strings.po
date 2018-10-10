@@ -351,3 +351,11 @@ msgstr ""
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
 msgstr ""
+
+msgctxt "#30084"
+msgid "Enable HDR profiles"
+msgstr ""
+
+msgctxt "#30085"
+msgid "Enable DolbyVision profiles"
+msgstr ""
