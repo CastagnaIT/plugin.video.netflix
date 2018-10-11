@@ -11,6 +11,9 @@ import AddonSignals
 import resources.lib.common as common
 
 from .action_manager import PlaybackActionManager
+from .bookmarks import BookmarkManager
+from .section_skipping import SectionSkipper
+from .stream_continuity import StreamContinuityManager
 
 
 class PlaybackController(xbmc.Monitor):
@@ -19,28 +22,34 @@ class PlaybackController(xbmc.Monitor):
     saves bookmarks and watched state for the associated items into the Kodi
     library.
     """
-    def __init__(self, action_managers=None):
+    def __init__(self):
         xbmc.Monitor.__init__(self)
         self.tracking = False
         self.active_player_id = None
-        self.action_managers = action_managers or []
+        self.action_managers = None
 
         AddonSignals.registerSlot(
             common.ADDON.getAddonInfo('id'), common.Signals.PLAYBACK_INITIATED,
             self.initialize_playback)
 
     def initialize_playback(self, data):
+        # pylint: disable=broad-except
         """
         Callback for addon signal when this addon has initiated a playback
         """
         self.tracking = True
+        self.action_managers = [
+            BookmarkManager(),
+            SectionSkipper(),
+            StreamContinuityManager()
+        ]
         try:
             self._notify_all(PlaybackActionManager.initialize, data)
-        except RuntimeError as exc:
-            common.log('RuntimeError: {}'.format(exc), common.LOGERROR)
+        except Exception as exc:
+            common.log(exc)
 
     def onNotification(self, sender, method, data):
-        # pylint: disable=unused-argument, invalid-name
+        # pylint: disable=unused-argument, invalid-name, broad-except
         """
         Callback for Kodi notifications that handles and dispatches playback
         started and playback stopped events.
@@ -52,8 +61,8 @@ class PlaybackController(xbmc.Monitor):
                         json.loads(unicode(data, 'utf-8', errors='ignore')))
                 elif method == 'Player.OnStop':
                     self._on_playback_stopped()
-            except RuntimeError as exc:
-                common.log('RuntimeError: {}'.format(exc), common.LOGERROR)
+            except Exception as exc:
+                common.log(exc)
 
     def on_playback_tick(self):
         """
@@ -74,6 +83,7 @@ class PlaybackController(xbmc.Monitor):
         self.tracking = False
         self.active_player_id = None
         self._notify_all(PlaybackActionManager.on_playback_stopped)
+        self.action_managers = None
 
     def _notify_all(self, notification, data=None):
         common.log('Notifying all managers of {} (data={})'

@@ -6,8 +6,8 @@ from __future__ import unicode_literals
 import sys
 import os
 import json
-
 from functools import wraps
+from datetime import datetime, timedelta
 
 import xbmc
 from xbmc import LOGDEBUG, LOGINFO, LOGWARNING, LOGERROR
@@ -241,8 +241,17 @@ def flush_settings():
     global ADDON
     ADDON = xbmcaddon.Addon()
 
+def select_port(server):
+    """Select a port for a server and store it in the settings"""
+    port = select_unused_port()
+    ADDON.setSetting('{}_service_port'.format(server), str(port))
+    log('[{}] Picked Port: {}'.format(server.upper(), port))
+    return port
+
 def log(msg, level=LOGDEBUG):
     """Log a message to the Kodi logfile"""
+    if isinstance(msg, Exception):
+        level = LOGERROR
     xbmc.log(
         '[{identifier}] {msg}'.format(identifier=ADDON.getAddonInfo('id'),
                                       msg=msg),
@@ -420,3 +429,59 @@ def logdetails(func):
 
     wrapped.__doc__ = func.__doc__
     return wrapped
+
+def strp(value, form):
+    """
+    Helper function to safely create datetime objects from strings
+
+    :return: datetime - parsed datetime object
+    """
+    # pylint: disable=broad-except
+    from time import strptime
+    def_value = datetime.utcfromtimestamp(0)
+    try:
+        return datetime.strptime(value, form)
+    except TypeError:
+        try:
+            return datetime(*(strptime(value, form)[0:6]))
+        except ValueError:
+            return def_value
+    except Exception:
+        return def_value
+
+def _update_running():
+    update = ADDON.getSetting('update_running') or None
+    if update:
+        starttime = strp(update, '%Y-%m-%d %H:%M')
+        if (starttime + timedelta(hours=6)) <= datetime.now():
+            ADDON.setSetting('update_running', 'false')
+            log('Canceling previous library update - duration > 6 hours',
+                LOGWARNING)
+        else:
+            log('DB Update already running')
+            return True
+    return False
+
+def update_library():
+    """
+    Update the local Kodi library with new episodes of exported shows
+    """
+    if not _update_running():
+        log('Triggering library update', LOGINFO)
+        xbmc.executebuiltin(
+            ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
+             '&inbackground=True)')
+            .format(ADDON.getAddonInfo('id')))
+
+def select_unused_port():
+    """
+    Helper function to select an unused port on the host machine
+
+    :return: int - Free port
+    """
+    import socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('127.0.0.1', 0))
+    _, port = sock.getsockname()
+    sock.close()
+    return port
