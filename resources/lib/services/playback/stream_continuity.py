@@ -49,9 +49,11 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _initialize(self, data):
         self.did_restore = False
-        # let this throw a KeyError to disable this instance if the playback is
-        # not a TV show
-        self.current_show = data['tvshow_video_id']
+        try:
+            self.current_show = data['tvshow_video_id']
+        except KeyError:
+            # Not playing a tvshow
+            self.enabled = False
 
     def _on_playback_started(self, player_state):
         xbmc.sleep(1000)

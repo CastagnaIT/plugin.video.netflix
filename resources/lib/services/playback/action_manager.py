@@ -13,6 +13,10 @@ class PlaybackActionManager(object):
         self._enabled = None
 
     @property
+    def name(self):
+        return self.__class__.__name__
+
+    @property
     def enabled(self):
         """
         Indicates whether this instance is enabled or not.
@@ -33,12 +37,14 @@ class PlaybackActionManager(object):
         """
         Initialize the manager with data when the addon initiates a playback.
         """
-        # pylint: disable=bare-except
+        # pylint: disable=broad-except
         try:
             self._call_if_enabled(self._initialize, data=data)
-        except:
+        except Exception as exc:
             self.enabled = False
-        common.log('Initialiized ({})'.format(self))
+            common.log('{} disabled due to exception while initializing:\n{}'
+                       .format(self.name, exc), common.LOGERROR)
+        common.log('Initialiized {}: {}'.format(self.name, self))
 
     def on_playback_started(self, player_state):
         """

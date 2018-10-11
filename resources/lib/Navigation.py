@@ -27,7 +27,7 @@ import resources.lib.common as common
 import resources.lib.services.session.NetflixSession as Netflix
 from resources.lib.kodi.KodiHelper import KodiHelper
 from resources.lib.library.Library import Library
-from resources.lib.playback import get_section_markers, get_offset_markers
+from resources.lib.services.playback import get_section_markers, get_offset_markers
 
 
 class Navigation(object):
