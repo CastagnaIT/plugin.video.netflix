@@ -122,40 +122,16 @@ def __crypt_key():
         __CRYPT_KEY__ = __uniq_id()
     return __CRYPT_KEY__
 
-def __uniq_id(delay=1):
+def __uniq_id():
     """
     Returns a unique id based on the devices MAC address
-
-    :param delay: Retry delay in sec
-    :type delay: int
-    :returns:  string -- Unique secret
     """
-    import hashlib
-    mac_addr = __get_mac_address(delay=delay)
-    # Disable for now because Kodi can't reliably return the Mac address
-    # Somehow the return value seems to change over time...
-    # if ':' in mac_addr:
-    #     log('Using safe crypt key based on unique ID')
-    #     return hashlib.sha256(str(mac_addr).encode()).digest()
-    log('Using unsafe static secret to store credentials', LOGWARNING)
-    return hashlib.sha256('UnsafeStaticSecret'.encode()).digest()
-
-def __get_mac_address(delay=2):
-    """
-    Returns the users mac address
-
-    :param delay: retry delay in sec
-    :type delay: int
-    :returns:  string -- Devices MAC address
-    """
-    mac_addr = xbmc.getInfoLabel('Network.MacAddress').decode('utf-8')
-    # hack response busy
-    i = 0
-    while ':' not in mac_addr and i < 3:
-        mac_addr = xbmc.getInfoLabel('Network.MacAddress').decode('utf-8')
-        xbmc.sleep(delay)
-        i += 1
-    return mac_addr
+    import uuid
+    mac = uuid.getnode()
+    if (mac >> 40) % 2:
+        from platform import node
+        mac = node()
+    return uuid.uuid5(uuid.NAMESPACE_DNS, str(mac)).bytes
 
 def encrypt_credential(raw):
     """
