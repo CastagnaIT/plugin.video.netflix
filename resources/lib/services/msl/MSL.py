@@ -52,17 +52,21 @@ class MSL(object):
 
     def __init__(self):
 
-      """
-      The Constructor checks for already existing crypto Keys.
-      If they exist it will load the existing keys
-      """
-      self.crypto = MSLHandler()
+        """
+        The Constructor checks for already existing crypto Keys.
+        If they exist it will load the existing keys
+        """
+        self.crypto = MSLHandler()
 
-      if common.file_exists(common.DATA_PATH, 'msl_data.json'):
-          self.init_msl_data()
-      else:
-          self.crypto.fromDict(None)
-          self.__perform_key_handshake()
+        if common.file_exists(common.DATA_PATH, 'msl_data.json'):
+            self.init_msl_data()
+        else:
+            self.crypto.fromDict(None)
+            self.__perform_key_handshake()
+
+        common.register_slot(
+            signal=common.Signals.ESN_CHANGED,
+            callback=self.perform_key_handshake)
 
     def load_manifest(self, viewable_id, dolby, hevc, hdr, dolbyvision, vp9):
         """

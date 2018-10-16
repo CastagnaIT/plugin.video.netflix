@@ -2,13 +2,12 @@
 """Stateful Netflix session management"""
 from __future__ import unicode_literals
 
+import sys
 from time import time
 from base64 import urlsafe_b64encode
 from functools import wraps
 import json
 import requests
-
-import AddonSignals
 
 import resources.lib.common as common
 import resources.lib.api.website as website
@@ -26,7 +25,7 @@ URLS = {
     'metadata': {'endpoint': '/metadata', 'is_api_call': True},
     'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},
     'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
-    # Don't know what these could be used for...
+    # Don't know what these could be used for. Keeping for reference
     # 'browse': {'endpoint': '/browse', 'is_api_call': False},
     # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
     # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
@@ -34,11 +33,12 @@ URLS = {
 """List of all static endpoints for HTML/JSON POST/GET requests"""
 
 def needs_login(func):
-    """Ensure that a valid login is present when executing the method"""
+    """
+    Decorator to ensure that a valid login is present when calling a method
+    """
+    # pylint: disable=protected-access, missing-docstring
     @wraps(func)
     def ensure_login(*args, **kwargs):
-        """Wrapper function to ensure that a valid login is present"""
-        # pylint: disable=protected-access
         session = args[0]
         if not session._is_logged_in():
             session._login()
@@ -71,6 +71,7 @@ class NetflixSession(object):
         self._prefetch_login()
 
     def __del__(self):
+        """Unregister AddonSignals slots"""
         for slot in self.slots:
             common.unregister_slot(slot)
 
@@ -92,11 +93,11 @@ class NetflixSession(object):
 
     @property
     def auth_url(self):
-        """Valid authURL or None if it isn't known"""
+        """Valid authURL. Raises InvalidAuthURLError if it isn't known."""
         try:
             return self.session_data['user_data']['authURL']
-        except KeyError:
-            raise website.InvalidAuthURLError()
+        except (AttributeError, KeyError) as exc:
+            raise website.InvalidAuthURLError(exc)
 
     def _register_slots(self):
         self.slots = [
@@ -127,15 +128,13 @@ class NetflixSession(object):
 
     def _prefetch_login(self):
         """Check if we have stored credentials.
-        If so, do the login before the user requests it
-        """
+        If so, do the login before the user requests it"""
         try:
             common.get_credentials()
             if not self._is_logged_in():
                 self._login()
-                common.info('Login prefetch successful')
         except common.MissingCredentialsError:
-            common.debug(
+            common.info(
                 'Skipping login prefetch. No stored credentials are available')
 
     def _is_logged_in(self):
@@ -154,6 +153,7 @@ class NetflixSession(object):
                 # If we can get session data, cookies are still valid
                 self.session_data = website.extract_session_data(
                     self._get('profiles').content)
+                self._update_esn()
             except Exception:
                 common.info('Stored cookies are expired')
                 return False
@@ -171,16 +171,25 @@ class NetflixSession(object):
             common.debug('Extracting session data...')
             session_data = website.extract_session_data(login_response.content)
         except Exception as exc:
-            common.error('Login failed: {exc}', exc)
-            raise LoginFailedError(exc)
+            raise common.reraise(
+                exc, 'Login failed', LoginFailedError, sys.exc_info()[2])
 
         common.info('Login successful')
         self.session_data = session_data
         cookies.save(self.account_hash, self.session.cookies)
+        self._update_esn()
+
+    def _update_esn(self):
+        """Return True if the esn has changed on Session initialization"""
+        if common.set_esn(self.session_data['esn']):
+            common.send_signal(
+                signal=common.Signals.ESN_CHANGED,
+                data=self.session_data['esn'])
 
     @common.addonsignals_return_call
     def logout(self):
         """Logout of the current account and reset the session"""
+        common.debug('Logging out of current account')
         self._get('logout')
         cookies.delete(self.account_hash)
         self._init_session()
@@ -191,8 +200,8 @@ class NetflixSession(object):
         """Retrieve a list of all profiles in the user's account"""
         try:
             return self.session_data['profiles']
-        except (AttributeError, KeyError):
-            raise website.InvalidProfilesError()
+        except (AttributeError, KeyError) as exc:
+            raise website.InvalidProfilesError(exc)
 
     @common.addonsignals_return_call
     @needs_login
@@ -257,26 +266,24 @@ class NetflixSession(object):
             **kwargs)
 
     def _request(self, method, component, **kwargs):
-        common.debug('Constructing URL for component {}'.format(component))
         url = (_api_url(component, self.session_data['api_data'])
                if kwargs.get('req_type') == 'api'
                else _document_url(component))
-        common.debug('Executing {verb} request to {url}'.format(verb='GET' if method == self.session.get else 'POST', url=url))
-        try:
-            response = method(
-                url=url,
-                verify=self.verify_ssl,
-                headers=kwargs.get('headers'),
-                params=kwargs.get('params'),
-                data=kwargs.get('data'))
-        except:
-            common.error('REQUEST FAILED')
-        common.debug('Request executed with reponse {}'.format(response.status_code))
+        common.debug(
+            'Executing {verb} request to {url}'.format(
+                verb='GET' if method == self.session.get else 'POST', url=url))
+        response = method(
+            url=url,
+            verify=self.verify_ssl,
+            headers=kwargs.get('headers'),
+            params=kwargs.get('params'),
+            data=kwargs.get('data'))
+        common.debug(
+            'Request returned statuscode {}'.format(response.status_code))
         response.raise_for_status()
         return response
 
 def _login_payload(credentials, auth_url):
-    common.debug('Constructing login payload')
     return {
         'userLoginId': credentials['email'],
         'email': credentials['email'],

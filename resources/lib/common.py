@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import sys
 import os
 import json
+import traceback
 from functools import wraps
 from datetime import datetime, timedelta
 
@@ -45,6 +46,7 @@ class Signals(object):
     """Signal names for use with AddonSignals"""
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
+    ESN_CHANGED = 'esn_changed'
 
 class PersistentStorage(object):
     """
@@ -523,32 +525,44 @@ def get_path(search, search_space):
         return current_value
     return get_path(search[1:], current_value)
 
-def register_slot(callback):
+def register_slot(callback, signal=None):
     """Register a callback with AddonSignals for return calls"""
-    name = _signal_name(callback)
+    name = signal if signal else _signal_name(callback)
     AddonSignals.registerSlot(
         signaler_id=ADDON_ID,
         signal=name,
         callback=callback)
     debug('Registered AddonSignals slot {} to {}'.format(name, callback))
 
-def unregister_slot(callback):
+def unregister_slot(callback, signal=None):
     """Remove a registered callback from AddonSignals"""
+    name = signal if signal else _signal_name(callback)
     AddonSignals.unRegisterSlot(
         signaler_id=ADDON_ID,
-        signal=_signal_name(callback))
+        signal=name)
+    debug('Unregistered AddonSignals slot {}'.format(name))
+
+def send_signal(signal, data=None):
+    """Send a signal via AddonSignals"""
+    AddonSignals.sendSignal(
+        source_id=ADDON_ID,
+        signal=signal,
+        data=data)
 
 def make_call(func, data=None):
     """Make a call via AddonSignals and wait for it to return"""
-    debug('Making AddonSignals call: {func}({data})'.format(func=_signal_name(func), data=data))
+    callname = _signal_name(func)
+    debug('Making AddonSignals call {}'.format(callname))
     result = AddonSignals.makeCall(
         source_id=ADDON_ID,
-        signal=_signal_name(func),
+        signal=callname,
         data=data,
         timeout_ms=10000)
-    debug('Received return value via AddonSignals: {}'.format(result))
     if isinstance(result, dict) and 'error' in result:
-        raise Exception('{error}: {message}'.format(**result))
+        msg = ('AddonSignals call {callname} returned {error}: {message}'
+               .format(callname, **result))
+        error(msg)
+        raise Exception(msg)
     return result
 
 def addonsignals_return_call(func):
@@ -568,14 +582,25 @@ def addonsignals_return_call(func):
             else:
                 result = func(instance)
         except Exception as exc:
+            error('AddonSignals callback raised exception: {exc}', exc)
+            error(''.join(traceback.format_stack(sys.exc_info()[2])))
             result = {
                 'error': exc.__class__.__name__,
                 'message': exc.__unicode__()
             }
-        # Return anything but None or AddonSignals will keep waiting till timeout
-        AddonSignals.returnCall(signal=_signal_name(func),
-                                source_id=ADDON_ID, data=result if result is not None else False)
+        # Do not return None or AddonSignals will keep waiting till timeout
+        if result is None:
+            result = False
+        AddonSignals.returnCall(
+            signal=_signal_name(func), source_id=ADDON_ID, data=result)
     return make_return_call
 
 def _signal_name(func):
     return func.__name__
+
+def reraise(exc, msg, new_exception_cls, stacktrace):
+    """Log an error message with original stacktrace and return
+    as new exception type to be reraised"""
+    error('{msg}: {exc}'.format(msg=msg, exc=exc))
+    error(''.join(traceback.format_stack(stacktrace)))
+    return new_exception_cls(exc)
