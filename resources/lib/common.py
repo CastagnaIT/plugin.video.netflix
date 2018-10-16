@@ -9,19 +9,22 @@ import json
 from functools import wraps
 from datetime import datetime, timedelta
 
-import xbmc
-from xbmc import LOGDEBUG, LOGINFO, LOGWARNING, LOGERROR
-import xbmcaddon
-import xbmcvfs
-
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
+import xbmc
+import xbmcaddon
+import xbmcvfs
+import AddonSignals
+
+import resources.lib.kodi.ui.newdialogs as dialogs
+
 ADDON = xbmcaddon.Addon()
 PLUGIN = ADDON.getAddonInfo('name')
 VERSION = ADDON.getAddonInfo('version')
+ADDON_ID = ADDON.getAddonInfo('id')
 DEFAULT_FANART = ADDON.getAddonInfo('fanart')
 DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 COOKIE_PATH = DATA_PATH + 'COOKIE'
@@ -33,6 +36,10 @@ except IndexError:
 
 if not xbmcvfs.exists(DATA_PATH):
     xbmcvfs.mkdir(DATA_PATH)
+
+class MissingCredentialsError(Exception):
+    """There are no stored credentials to load"""
+    pass
 
 class Signals(object):
     """Signal names for use with AddonSignals"""
@@ -178,14 +185,10 @@ def get_credentials():
     """
     email = ADDON.getSetting('email')
     password = ADDON.getSetting('password')
-
-    if '@' in email:
-        set_credentials(email, password)
-        return {'email': email, 'password': password}
-
+    verify_credentials(email, password)
     return {
-        'email': decrypt_credential(email) if email and password else '',
-        'password': decrypt_credential(password) if email and password else ''
+        'email': decrypt_credential(email),
+        'password': decrypt_credential(password)
     }
 
 def set_credentials(email, password):
@@ -196,6 +199,24 @@ def set_credentials(email, password):
     if email and password:
         ADDON.setSetting('email', encrypt_credential(email))
         ADDON.setSetting('password', encrypt_credential(password))
+
+def ask_credentials():
+    """
+    Show some dialogs and ask the user for account credentials
+    """
+    email = dialogs.show_email_dialog()
+    password = dialogs.show_password_dialog()
+    verify_credentials(email, password)
+    set_credentials(email, password)
+    return {
+        'email': email,
+        'password': password
+    }
+
+def verify_credentials(email, password):
+    """Verify credentials for plausibility"""
+    if not email or not password:
+        raise MissingCredentialsError()
 
 def get_esn():
     """Get the ESN from settings"""
@@ -224,14 +245,48 @@ def select_port(server):
     log('[{}] Picked Port: {}'.format(server.upper(), port))
     return port
 
-def log(msg, level=LOGDEBUG):
+def log(msg, level=xbmc.LOGDEBUG):
     """Log a message to the Kodi logfile"""
-    if isinstance(msg, Exception):
-        level = LOGERROR
     xbmc.log(
         '[{identifier}] {msg}'.format(identifier=ADDON.getAddonInfo('id'),
                                       msg=msg),
         level)
+
+def debug(msg='{exc}', exc=None):
+    """
+    Log a debug message.
+    If msg contains a format placeholder for exc and exc is not none,
+    exc will be formatted into the message.
+    """
+    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
+        xbmc.LOGDEBUG)
+
+def info(msg='{exc}', exc=None):
+    """
+    Log an info message.
+    If msg contains a format placeholder for exc and exc is not none,
+    exc will be formatted into the message.
+    """
+    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
+        xbmc.LOGINFO)
+
+def warn(msg='{exc}', exc=None):
+    """
+    Log a warning message.
+    If msg contains a format placeholder for exc and exc is not none,
+    exc will be formatted into the message.
+    """
+    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
+        xbmc.LOGWARNING)
+
+def error(msg='{exc}', exc=None):
+    """
+    Log an error message.
+    If msg contains a format placeholder for exc and exc is not none,
+    exc will be formatted into the message.
+    """
+    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
+        xbmc.LOGERROR)
 
 def check_folder_path(path):
     """
@@ -431,8 +486,7 @@ def _update_running():
         starttime = strp(update, '%Y-%m-%d %H:%M')
         if (starttime + timedelta(hours=6)) <= datetime.now():
             ADDON.setSetting('update_running', 'false')
-            log('Canceling previous library update - duration > 6 hours',
-                LOGWARNING)
+            warn('Canceling previous library update - duration > 6 hours')
         else:
             log('DB Update already running')
             return True
@@ -443,7 +497,7 @@ def update_library():
     Update the local Kodi library with new episodes of exported shows
     """
     if not _update_running():
-        log('Triggering library update', LOGINFO)
+        info('Triggering library update')
         xbmc.executebuiltin(
             ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
              '&inbackground=True)')
@@ -461,3 +515,67 @@ def select_unused_port():
     _, port = sock.getsockname()
     sock.close()
     return port
+
+def get_path(search, search_space):
+    """Retrieve a value from a nested dict by following the path"""
+    current_value = search_space[search[0]]
+    if len(search) == 1:
+        return current_value
+    return get_path(search[1:], current_value)
+
+def register_slot(callback):
+    """Register a callback with AddonSignals for return calls"""
+    name = _signal_name(callback)
+    AddonSignals.registerSlot(
+        signaler_id=ADDON_ID,
+        signal=name,
+        callback=callback)
+    debug('Registered AddonSignals slot {} to {}'.format(name, callback))
+
+def unregister_slot(callback):
+    """Remove a registered callback from AddonSignals"""
+    AddonSignals.unRegisterSlot(
+        signaler_id=ADDON_ID,
+        signal=_signal_name(callback))
+
+def make_call(func, data=None):
+    """Make a call via AddonSignals and wait for it to return"""
+    debug('Making AddonSignals call: {func}({data})'.format(func=_signal_name(func), data=data))
+    result = AddonSignals.makeCall(
+        source_id=ADDON_ID,
+        signal=_signal_name(func),
+        data=data,
+        timeout_ms=10000)
+    debug('Received return value via AddonSignals: {}'.format(result))
+    if isinstance(result, dict) and 'error' in result:
+        raise Exception('{error}: {message}'.format(**result))
+    return result
+
+def addonsignals_return_call(func):
+    """Makes func return callable through AddonSignals and
+    handles catching, conversion and forwarding of exceptions"""
+    func.addonsignals_return_call = True
+    @wraps(func)
+    def make_return_call(instance, data):
+        """Makes func return callable through AddonSignals and
+        handles catching, conversion and forwarding of exceptions"""
+        # pylint: disable=broad-except
+        try:
+            if isinstance(data, dict):
+                result = func(instance, **data)
+            elif data is not None:
+                result = func(instance, data)
+            else:
+                result = func(instance)
+        except Exception as exc:
+            result = {
+                'error': exc.__class__.__name__,
+                'message': exc.__unicode__()
+            }
+        # Return anything but None or AddonSignals will keep waiting till timeout
+        AddonSignals.returnCall(signal=_signal_name(func),
+                                source_id=ADDON_ID, data=result if result is not None else False)
+    return make_return_call
+
+def _signal_name(func):
+    return func.__name__

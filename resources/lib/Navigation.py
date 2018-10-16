@@ -3,6 +3,7 @@
 # Module: Navigation
 # Created on: 13.01.2017
 # License: MIT https://goo.gl/5bMj3H
+# pylint: disable=missing-docstring
 
 """
 Routes to the correct subfolder,
@@ -28,6 +29,8 @@ import resources.lib.services.session.NetflixSession as Netflix
 from resources.lib.kodi.KodiHelper import KodiHelper
 from resources.lib.library.Library import Library
 from resources.lib.services.playback import get_section_markers, get_offset_markers
+
+import resources.lib.api.shakti as api
 
 
 class Navigation(object):
@@ -61,29 +64,61 @@ class Navigation(object):
 
     @common.logdetails
     def router(self, paramstring):
-        """
-        Route to the requested subfolder & dispatch actions along the way
-
-        Parameters
-        ----------
-        paramstring : :obj:`str`
-            Url query params
-        """
         params = self.parse_paramters(paramstring=paramstring)
-        action = params.get('action', None)
-        p_type = params.get('type', None)
-        p_type_not_search_export = p_type != 'search' and p_type != 'exported'
-        widget_display = bool(strtobool(params.get('widget_display', 'false')))
 
-        # open foreign settings dialog
-        if 'mode' in params.keys() and params['mode'] == 'openSettings':
-            return self.open_settings(params['url'])
+        profile_id = params.pop('profile_id', None)
+        if profile_id:
+            api.activate_profile(profile_id)
 
+        if params.pop('mode', None) == 'openSettings' and 'url' in params:
+            self.open_settings(params['url'])
+        else:
+            widget_display = bool(strtobool(params.pop('widget_display', 'false')))
+            target = self.__getattribute__(params.pop('action', 'default'))
+            target(widget_display=widget_display, **params)
+
+    def default(self, widget_display):
+        autologin = common.ADDON.getSettingBool('autologin_enable')
+        profile_id = common.ADDON.getSetting('autologin_id')
+        if autologin and profile_id:
+            api.activate_profile(profile_id)
+            self.video_lists(widget_display)
+        else:
+            self.profiles()
+
+    def logout(self):
+        api.logout()
+
+    def profiles(self):
+        self.kodi_helper.build_profiles_listing(
+            profiles=api.profiles(),
+            action='video_lists',
+            build_url=self.build_url)
+
+    def video_lists(self, widget_display):
+        user_list_order = [
+            'queue', 'continueWatching', 'topTen',
+            'netflixOriginals', 'trendingNow',
+            'newRelease', 'popularTitles']
+        # define where to route the user
+        actions = {
+            'recommendations': 'user-items',
+            'genres': 'user-items',
+            'search': 'user-items',
+            'exported': 'user-items',
+            'default': 'video_list'
+        }
+        self.kodi_helper.build_main_menu_listing(
+            video_list_ids=api.root_lists(),
+            user_list_order=user_list_order,
+            actions=actions,
+            build_url=self.build_url,
+            widget_display=widget_display)
+
+    def oldrouter(self, paramstring):
         # log out the user
         if action == 'logout':
-            logout = self._check_response(self.call_netflix_service({
-                'method': 'logout'}))
-            return logout
+            pass
         # switch user account
         if action == 'switch_account':
             return self.switch_account()
@@ -91,6 +126,7 @@ class Navigation(object):
         # check if we need to execute any actions before the actual routing
         # gives back a dict of options routes might need
         options = self.before_routing_action(params=params)
+
 
         # switch user account
         if action == 'toggle_adult_pin':
@@ -110,10 +146,8 @@ class Navigation(object):
             # show the profiles
             if common.ADDON.getSettingBool('autologin_enable'):
                 profile_id = common.ADDON.getSetting('autologin_id')
-                if profile_id != '':
-                    self.call_netflix_service({
-                        'method': 'switch_profile',
-                        'profile_id': profile_id})
+                if profile_id:
+                    common.make_call(NetflixSession.activate_profile, profile_id)
                     return self.show_video_lists(widget_display)
             return self.show_profiles()
         elif action == 'save_autologin':
@@ -831,74 +865,17 @@ class Navigation(object):
             Options that can be provided by this hook &
             used later in the routing process
         """
+        if 'profile_id' in params:
+            common.make_call(
+                NetflixSession.activate_profile, params['profile_id'])
         options = {}
-        # check login & try to relogin if necessary
-        logged_in = self._check_response(self.call_netflix_service({
-            'method': 'is_logged_in'}))
-        if logged_in is False:
-            credentials = common.get_credentials()
-            # check if we have user settings, if not, set em
-            if credentials['email'] == '':
-                email = self.kodi_helper.dialogs.show_email_dialog()
-                credentials['email'] = email
-            if credentials['password'] == '':
-                password = self.kodi_helper.dialogs.show_password_dialog()
-                credentials['password'] = password
-
-            common.set_credentials(credentials['email'], credentials['password'])
-
-            if self.establish_session(account=credentials) is not True:
-                common.set_credentials('', '')
-                self.kodi_helper.dialogs.show_login_failed_notify()
-
         # persist & load main menu selection
         if 'type' in params:
             self.kodi_helper.set_main_menu_selection(type=params['type'])
             main_menu = self.kodi_helper.get_main_menu_selection()
             options['main_menu_selection'] = main_menu
         # check and switch the profile if needed
-        if self.check_for_designated_profile_change(params=params):
-            self.kodi_helper.invalidate_memcache()
-            profile_id = params.get('profile_id', None)
-            if profile_id is None:
-                user_data = self._check_response(self.call_netflix_service({
-                    'method': 'get_user_data'}))
-                if user_data:
-                    profile_id = user_data['guid']
-            if profile_id:
-                self.call_netflix_service({
-                    'method': 'switch_profile',
-                    'profile_id': profile_id})
         return options
-
-    def check_for_designated_profile_change(self, params):
-        """Checks if the profile needs to be switched
-
-        Parameters
-        ----------
-        params : :obj:`dict` of :obj:`str`
-            Url query params
-
-        Returns
-        -------
-        bool
-            Profile should be switched or not
-        """
-        # check if we need to switch the user
-        user_data = self._check_response(self.call_netflix_service({
-            'method': 'get_user_data'}))
-        profiles = self._check_response(self.call_netflix_service({
-            'method': 'list_profiles'}))
-        if user_data and profiles:
-            if 'guid' not in user_data:
-                return False
-            current_profile_id = user_data['guid']
-            if profiles.get(current_profile_id).get('isKids', False) is True:
-                return True
-            has_id = 'profile_id' in params
-            return has_id and current_profile_id != params['profile_id']
-        self.kodi_helper.dialogs.show_request_error_notify()
-        return False
 
     def parse_paramters(self, paramstring):
         """Tiny helper to convert a url paramstring into a dictionary

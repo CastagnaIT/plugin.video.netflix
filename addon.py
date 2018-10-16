@@ -16,5 +16,5 @@ REQUEST_PARAMS = sys.argv[2][1:]
 
 if __name__ == '__main__':
     # Call the router function and pass the plugin call parameters to it.
-    common.log('Started (Version {})'.format(common.VERSION), common.LOGINFO)
+    common.info('Started (Version {})'.format(common.VERSION))
     Navigation().router(paramstring=REQUEST_PARAMS)

@@ -218,7 +218,7 @@ class KodiHelper(object):
         # init html parser for entity decoding
         html_parser = HTMLParser()
         # build menu items for every profile
-        for profile in profiles:
+        for _, profile in profiles.items():
             # load & encode profile data
             enc_profile_name = profile.get('profileName', '').encode('utf-8')
             unescaped_profile_name = html_parser.unescape(enc_profile_name)
