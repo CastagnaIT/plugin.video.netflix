@@ -13,10 +13,11 @@ import xbmc
 
 import resources.lib.common as common
 import resources.lib.services as services
+from resources.lib.services.nfsession import NetflixSession
 
 SERVERS = {
     'msl': services.MSLTCPServer,
-    'ns': services.NetflixTCPServer
+    #'ns': services.NetflixTCPServer
 }
 
 class NetflixService(object):
@@ -25,7 +26,8 @@ class NetflixService(object):
     """
     def __init__(self):
         self.servers = {}
-        for name, server_class in SERVERS.iteritems():
+        self.session = None
+        for name, server_class in SERVERS.items():
             server_class.allow_reuse_address = True
             instance = server_class(('127.0.0.1', common.select_port(name)))
             thread = threading.Thread(target=instance.serve_forever)
@@ -35,22 +37,24 @@ class NetflixService(object):
         """
         Start the background services
         """
-        for name, components in self.servers:
+        self.session = NetflixSession()
+        for name, components in self.servers.items():
             components['instance'].server_activate()
             components['instance'].timeout = 1
             components['thread'].start()
-            common.log('[{}] Thread started'.format(name), common.LOGINFO)
+            common.info('[{}] Thread started'.format(name))
 
     def shutdown(self):
         """
         Stop the background services
         """
+        del self.session
         for name, components in self.servers:
             components['instance'].server_close()
             components['instance'].shutdown()
             components['thread'].join()
             del self.servers['name']
-            common.log('Stopped {} Service'.format(name.upper()))
+            common.info('Stopped {} Service'.format(name.upper()))
 
     def run(self):
         """
@@ -64,8 +68,8 @@ class NetflixService(object):
         while not controller.abortRequested():
             # pylint: disable=broad-except
             try:
-                if self.servers['ns']['instance'].esn_changed():
-                    self.servers['msl']['instance'].reset_msl_data()
+                # if self.servers['ns']['instance'].esn_changed():
+                #     self.servers['msl']['instance'].reset_msl_data()
                 if player.isPlayingVideo():
                     controller.on_playback_tick()
                 library_updater.on_tick()
