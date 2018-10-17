@@ -228,8 +228,9 @@ class KodiHelper(object):
         # build menu items for every profile
         for _, profile in profiles.items():
             # load & encode profile data
-            enc_profile_name = profile.get('profileName', '').encode('utf-8')
-            unescaped_profile_name = html_parser.unescape(enc_profile_name)
+            profile_name = profile.get('profileName', '')
+            unescaped_profile_name = html_parser.unescape(profile_name)
+            enc_profile_name = profile_name.encode('utf-8')
             profile_guid = profile.get('guid')
 
             # build urls
