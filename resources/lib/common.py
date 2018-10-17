@@ -9,6 +9,8 @@ import json
 import traceback
 from functools import wraps
 from datetime import datetime, timedelta
+from urlparse import urlparse, parse_qs
+from urllib import urlencode
 
 try:
     import cPickle as pickle
@@ -22,21 +24,61 @@ import AddonSignals
 
 import resources.lib.kodi.ui.newdialogs as dialogs
 
-ADDON = xbmcaddon.Addon()
-PLUGIN = ADDON.getAddonInfo('name')
-VERSION = ADDON.getAddonInfo('version')
-ADDON_ID = ADDON.getAddonInfo('id')
-DEFAULT_FANART = ADDON.getAddonInfo('fanart')
-DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-COOKIE_PATH = DATA_PATH + 'COOKIE'
-BASE_URL = sys.argv[0]
-try:
-    PLUGIN_HANDLE = int(sys.argv[1])
-except IndexError:
-    PLUGIN_HANDLE = None
+# Global vars are initialized in init_globals
+# Commonly used addon attributes from Kodi
+ADDON = None
+ADDON_ID = None
+PLUGIN = None
+VERSION = None
+DEFAULT_FANART = None
+DATA_PATH = None
+COOKIE_PATH = None
 
-if not xbmcvfs.exists(DATA_PATH):
-    xbmcvfs.mkdir(DATA_PATH)
+# Information about the current plugin instance
+URL = None
+PLUGIN_HANDLE = None
+BASE_URL = None
+PATH = None
+PARAM_STRING = None
+REQUEST_PARAMS = None
+
+MODE_DIRECTORY = 'directory'
+MODE_HUB = 'hub'
+MODE_ACTION = 'action'
+
+def init_globals(argv):
+    """Initialized globally used module variables.
+    Needs to be called at start of each plugin instance!
+    This is an ugly hack because Kodi doesn't execute statements defined on module
+    level if reusing a language invoker."""
+    # pylint: disable=global-statement
+    global ADDON, ADDON_ID, PLUGIN, VERSION, DEFAULT_FANART, DATA_PATH, COOKIE_PATH
+    ADDON = xbmcaddon.Addon()
+    ADDON_ID = ADDON.getAddonInfo('id')
+    PLUGIN = ADDON.getAddonInfo('name')
+    VERSION = ADDON.getAddonInfo('version')
+    DEFAULT_FANART = ADDON.getAddonInfo('fanart')
+    DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo('profile'))
+    COOKIE_PATH = DATA_PATH + 'COOKIE'
+
+    global URL, PLUGIN_HANDLE, BASE_URL, PATH, PARAM_STRING, REQUEST_PARAMS
+    URL = urlparse(argv[0])
+    try:
+        PLUGIN_HANDLE = int(argv[1])
+    except IndexError:
+        PLUGIN_HANDLE = 0
+    BASE_URL = '{scheme}://{netloc}'.format(scheme=URL[0], netloc=URL[1])
+    PATH = URL[2][1:]
+    try:
+        PARAM_STRING = argv[2][1:]
+    except IndexError:
+        PARAM_STRING = ''
+    REQUEST_PARAMS = parse_qs(PARAM_STRING)
+
+    if not xbmcvfs.exists(DATA_PATH):
+        xbmcvfs.mkdir(DATA_PATH)
+
+init_globals(sys.argv)
 
 class MissingCredentialsError(Exception):
     """There are no stored credentials to load"""
@@ -240,11 +282,11 @@ def flush_settings():
     global ADDON
     ADDON = xbmcaddon.Addon()
 
-def select_port(server):
+def select_port():
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
-    ADDON.setSetting('{}_service_port'.format(server), str(port))
-    log('[{}] Picked Port: {}'.format(server.upper(), port))
+    ADDON.setSetting('msl_service_port', str(port))
+    log('[MSL] Picked Port: {}'.format(port))
     return port
 
 def log(msg, level=xbmc.LOGDEBUG):
@@ -604,3 +646,15 @@ def reraise(exc, msg, new_exception_cls, stacktrace):
     error('{msg}: {exc}'.format(msg=msg, exc=exc))
     error(''.join(traceback.format_stack(stacktrace)))
     return new_exception_cls(exc)
+
+def build_directory_url(pathitems, params=None):
+    """Build a plugin URL for directory mode"""
+    return build_url(pathitems, params, MODE_DIRECTORY)
+
+def build_url(pathitems, params=None, mode=MODE_DIRECTORY):
+    """Build a plugin URL from pathitems and query parameters"""
+    pathitems.insert(0, mode)
+    return '{netloc}/{path}{qs}'.format(
+        netloc=BASE_URL,
+        path='/'.join(pathitems),
+        qs='?' + urlencode(params if params else ''))
