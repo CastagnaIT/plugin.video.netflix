@@ -35,6 +35,13 @@ def root_lists():
                 ]
             ]))
 
+def video_list_id_for_type(video_list_type):
+    video_lists = root_lists()
+    for video_list_id in video_lists['user']:
+        if video_lists['user'][video_list_id]['name'] == video_list_type:
+            return str(video_lists['user'][video_list_id]['id'])
+    return {}
+
 def video_list(video_list_id):
     """Retrieve a single video list"""
     pass

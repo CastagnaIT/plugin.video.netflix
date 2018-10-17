@@ -9,6 +9,7 @@ import json
 import base64
 from uuid import uuid4
 from urllib import urlencode
+from functools import wraps, partial
 try:
     import cPickle as pickle
 except ImportError:
@@ -23,7 +24,6 @@ except ImportError:
 import xbmc
 import xbmcgui
 import xbmcplugin
-import AddonSignals
 import inputstreamhelper
 
 import resources.lib.common as common
@@ -37,11 +37,35 @@ VIEW_SEASON = 'season'
 VIEW_EPISODE = 'episode'
 VIEW_EXPORTED = 'exported'
 
+VIEWTYPES = [VIEW_FOLDER, VIEW_MOVIE, VIEW_SHOW, VIEW_SEASON,
+             VIEW_EPISODE, VIEW_EXPORTED]
+
 CONTENT_FOLDER = 'files'
 CONTENT_MOVIE = 'movies'
 CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
+
+def custom_viewmode(viewtype):
+    """Decorator that sets a custom viewmode if currently in
+    a listing of the plugin"""
+    # pylint: disable=missing-docstring
+    def decorate_viewmode(func):
+        @wraps(func)
+        def set_custom_viewmode(*args, **kwargs):
+            viewtype_override = func(*args, **kwargs)
+            view = (viewtype_override
+                    if viewtype_override in VIEWTYPES
+                    else viewtype)
+            if (('plugin://{}'.format(common.ADDON_ID) in
+                 xbmc.getInfoLabel('Container.FolderPath')) and
+                    common.ADDON.getSettingBool('customview')):
+                view_id = common.ADDON.getSettingInt('viewmode' + view)
+                if view_id != -1:
+                    xbmc.executebuiltin(
+                        'Container.SetViewMode({})'.format(view_id))
+        return set_custom_viewmode
+    return decorate_viewmode
 
 
 def _update_if_present(source_dict, source_att, target_dict, target_att):
@@ -168,23 +192,6 @@ class KodiHelper(object):
         except EOFError:
             pass
 
-    def set_custom_view(self, content):
-        """Set the view mode
-
-        Parameters
-        ----------
-        content : :obj:`str`
-
-            Type of content in container
-            (folder, movie, show, season, episode, login, exported)
-
-        """
-        custom_view = common.ADDON.getSetting('customview')
-        if custom_view == 'true':
-            view = int(common.ADDON.getSetting('viewmode' + content))
-            if view != -1:
-                xbmc.executebuiltin('Container.SetViewMode(%s)' % view)
-
     def save_autologin_data(self, autologin_user, autologin_id):
         """Write autologin data to settings
 
@@ -203,7 +210,8 @@ class KodiHelper(object):
         self.invalidate_memcache()
         self.refresh()
 
-    def build_profiles_listing(self, profiles, action, build_url):
+    @custom_viewmode(VIEW_FOLDER)
+    def build_profiles_listing(self, profiles):
         """
         Builds the profiles list Kodi screen
 
@@ -225,11 +233,11 @@ class KodiHelper(object):
             profile_guid = profile.get('guid')
 
             # build urls
-            url = build_url({'action': action, 'profile_id': profile_guid})
-            autologin_url = build_url({
-                'action': 'save_autologin',
-                'autologin_id': profile_guid,
-                'autologin_user': enc_profile_name})
+            url = common.build_directory_url(['home'], {'profile_id': profile_guid})
+            autologin_url = common.build_url(
+                pathitems=['save_autologin', profile_guid],
+                params={'autologin_user': enc_profile_name},
+                mode='action')
 
             # add list item
             list_item = xbmcgui.ListItem(
@@ -260,8 +268,9 @@ class KodiHelper(object):
 
         return xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE)
 
+    @custom_viewmode(VIEW_FOLDER)
     def build_main_menu_listing(self, video_list_ids, user_list_order, actions,
-                                build_url, widget_display=False):
+                                build_url):
         """
         Builds the video lists (my list, continue watching, etc.) Kodi screen
 
@@ -300,7 +309,10 @@ class KodiHelper(object):
                         action = actions[category]
                     # determine if the item should be selected
                     preselect_items.append((False, True)[category == self.get_main_menu_selection()])
-                    url = build_url({'action': action, 'video_list_id': video_list_id, 'type': category})
+                    from resources.lib.navigation.directory import VIDEO_LIST_TYPES
+                    if category in VIDEO_LIST_TYPES:
+                        video_list_id = category
+                    url = common.build_url(['video_list', video_list_id])
                     xbmcplugin.addDirectoryItem(handle=common.PLUGIN_HANDLE, url=url, listitem=li, isFolder=True)
 
         # add recommendations/genres as subfolders
@@ -322,7 +334,7 @@ class KodiHelper(object):
                     label=i18n_ids[type],
                     iconImage=common.DEFAULT_FANART)
                 li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
-                url_rec = build_url({'action': action, 'type': type})
+                url_rec = common.build_url(['video_list', type])
                 xbmcplugin.addDirectoryItem(
                     handle=common.PLUGIN_HANDLE,
                     url=url_rec,
@@ -337,7 +349,7 @@ class KodiHelper(object):
             label=self.get_local_string(30011),
             iconImage=common.DEFAULT_FANART)
         li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
-        url_rec = build_url({'action': action, 'type': 'search'})
+        url_rec = common.build_url(['search'])
         xbmcplugin.addDirectoryItem(
             handle=common.PLUGIN_HANDLE,
             url=url_rec,
@@ -352,7 +364,7 @@ class KodiHelper(object):
             label=self.get_local_string(30048),
             iconImage=common.DEFAULT_FANART)
         li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
-        url_rec = build_url({'action': action, 'type': 'exported'})
+        url_rec = common.build_directory_url(['exported'])
         xbmcplugin.addDirectoryItem(
             handle=common.PLUGIN_HANDLE,
             url=url_rec,
@@ -365,7 +377,7 @@ class KodiHelper(object):
                 label=self.get_local_string(30049),
                 iconImage=common.DEFAULT_FANART)
             li_rec.setProperty('fanart_image', common.DEFAULT_FANART)
-            url_rec = build_url({'action': 'updatedb'})
+            url_rec = common.build_url(['updatedb'])
             xbmcplugin.addDirectoryItem(
                 handle=common.PLUGIN_HANDLE,
                 url=url_rec,
@@ -389,13 +401,10 @@ class KodiHelper(object):
         preselected_list_item = idx + 1 if self.get_main_menu_selection() == 'search' else preselected_list_item
         if preselected_list_item is not None:
             xbmc.executebuiltin('ActivateWindowAndFocus(%s, %s)' % (str(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId()), str(preselected_list_item)))
-        if not widget_display:
-            self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_video_listing(self, video_list, actions, type, build_url,
-                            has_more=False, start=0, current_video_list_id="",
-                            widget_display=False):
+    @custom_viewmode(VIEW_SHOW)
+    def build_video_listing(self, video_list):
         """
         Builds the video lists (my list, continue watching, etc.)
         contents Kodi screen
@@ -419,59 +428,42 @@ class KodiHelper(object):
         bool
             List could be build
         """
-        view = VIEW_FOLDER
-        content = CONTENT_FOLDER
-        listItems = list()
-        for video_list_id in video_list:
-            video = video_list[video_list_id]
+        list_items = []
+        for video_id, video in video_list.items():
             li = xbmcgui.ListItem(
                 label=video['title'],
                 iconImage=common.DEFAULT_FANART)
             # add some art to the item
-            common.log(video)
             li.setArt(self._generate_art_info(entry=video))
             # add list item info
             infos = self._generate_listitem_info(entry=video, li=li)
             self._generate_context_menu_items(entry=video, li=li)
+            needs_pin = (True, False)[int(video.get('maturity', {}).get('level', 1001)) >= 1000]
             # lists can be mixed with shows & movies, therefor we need to check if its a movie, so play it right away
             if video['type'] == 'movie':
                 # it´s a movie, so we need no subfolder & a route to play it
-                isFolder = False
-                maturity = video.get('maturity', {}).get('level', 999)
-                needs_pin = (True, False)[int() >= 100]
-                url = build_url({
-                    'action': 'play_video',
-                    'video_id': video_list_id,
-                    'infoLabels': infos,
-                    'pin': needs_pin})
+                is_folder = False
+                url = common.build_directory_url(
+                    pathitems=['play', video_id],
+                    params={'infoLabels': infos, 'pin': needs_pin})
                 view = VIEW_MOVIE
                 content = CONTENT_MOVIE
             else:
                 # it´s a show, so we need a subfolder & route (for seasons)
-                isFolder = True
-                params = {
-                    'action': actions[video['type']],
-                    'show_id': video_list_id
-                }
-                params['pin'] = (True, False)[int(video.get('maturity', {}).get('level', 1001)) >= 1000]
+                is_folder = True
+                params = {'pin': needs_pin}
                 if 'tvshowtitle' in infos:
-                    title = infos.get('tvshowtitle', '').encode('utf-8')
+                    title = infos['tvshowtitle'].encode('utf-8')
                     params['tvshowtitle'] = base64.urlsafe_b64encode(title)
-                url = build_url(params)
+                url = common.build_url(
+                    pathitems=['show', video_id],
+                    params=params)
                 view = VIEW_SHOW
                 content = CONTENT_SHOW
-            listItems.append((url, li, isFolder))
+            list_items.append((url, li, is_folder))
 
-        if has_more:
-            li_more = xbmcgui.ListItem(label=self.get_local_string(30045))
-            more_url = build_url({
-                "action": "video_list",
-                "type": type,
-                "start": str(start),
-                "video_list_id": current_video_list_id})
-            listItems.append((more_url, li_more, True))
-
-        xbmcplugin.addDirectoryItems(common.PLUGIN_HANDLE, listItems, len(listItems))
+        xbmcplugin.addDirectoryItems(
+            common.PLUGIN_HANDLE, list_items, len(list_items))
 
         xbmcplugin.addSortMethod(
             handle=common.PLUGIN_HANDLE,
@@ -494,15 +486,12 @@ class KodiHelper(object):
         xbmcplugin.setContent(
             handle=common.PLUGIN_HANDLE,
             content=content)
-
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
 
-        if not widget_display:
-            self.set_custom_view(view)
+        return view
 
-        return True
-
-    def build_video_listing_exported(self, content, build_url, widget_display=False):
+    @custom_viewmode(VIEW_EXPORTED)
+    def build_video_listing_exported(self, content, build_url):
         """Build list of exported movies / shows
 
         Parameters
@@ -589,11 +578,10 @@ class KodiHelper(object):
             handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
-        if not widget_display:
-            self.set_custom_view(VIEW_EXPORTED)
         return True
 
-    def build_search_result_folder(self, build_url, term, widget_display=False):
+    @custom_viewmode(VIEW_FOLDER)
+    def build_search_result_folder(self, build_url, term):
         """Add search result folder
 
         Parameters
@@ -627,8 +615,6 @@ class KodiHelper(object):
             handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
-        if not widget_display:
-            self.set_custom_view(VIEW_FOLDER)
         return url_rec
 
     def set_location(self, url, replace=False):
@@ -670,10 +656,7 @@ class KodiHelper(object):
             List could be build
         """
         video_listing = self.build_video_listing(
-            video_list=video_list,
-            actions=actions,
-            type='search',
-            build_url=build_url)
+            video_list=video_list)
         return video_listing
 
     def build_no_seasons_available(self):
@@ -707,8 +690,8 @@ class KodiHelper(object):
         self.dialogs.show_no_search_results_notify()
         return xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
 
-    def build_user_sub_listing(self, video_list_ids, type, action, build_url,
-                               widget_display=False):
+    @custom_viewmode(VIEW_FOLDER)
+    def build_user_sub_listing(self, video_list_ids, type, action, build_url):
         """
         Builds the video lists screen for user subfolders
         (genres & recommendations)
@@ -751,11 +734,10 @@ class KodiHelper(object):
             handle=common.PLUGIN_HANDLE,
             content=CONTENT_FOLDER)
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
-        if not widget_display:
-            self.set_custom_view(VIEW_FOLDER)
         return True
 
-    def build_season_listing(self, seasons_sorted, build_url, widget_display=False):
+    @custom_viewmode(VIEW_SEASON)
+    def build_season_listing(self, seasons_sorted, build_url):
         """Builds the season list screen for a show
 
         Parameters
@@ -811,11 +793,10 @@ class KodiHelper(object):
             handle=common.PLUGIN_HANDLE,
             content=CONTENT_SEASON)
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
-        if not widget_display:
-            self.set_custom_view(VIEW_SEASON)
         return True
 
-    def build_episode_listing(self, episodes_sorted, build_url, widget_display=False):
+    @custom_viewmode(VIEW_EPISODE)
+    def build_episode_listing(self, episodes_sorted, build_url):
         """Builds the episode list screen for a season of a show
 
         Parameters
@@ -880,8 +861,6 @@ class KodiHelper(object):
             handle=common.PLUGIN_HANDLE,
             content=CONTENT_EPISODE)
         xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE)
-        if not widget_display:
-            self.set_custom_view(VIEW_EPISODE)
         return True
 
     def play_item(self, video_id, start_offset=-1, infoLabels={}, tvshow_video_id=None, timeline_markers={}):
