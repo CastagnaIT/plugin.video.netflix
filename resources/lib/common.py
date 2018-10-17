@@ -605,6 +605,8 @@ def make_call(func, data=None):
                .format(callname, **result))
         error(msg)
         raise Exception(msg)
+    elif result is None:
+        raise Exception('AddonSignals call timed out')
     return result
 
 def addonsignals_return_call(func):
