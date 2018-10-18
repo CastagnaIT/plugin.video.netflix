@@ -64,7 +64,7 @@ def extract_profiles(content):
 
     try:
         falkor_cache = extract_json(content, 'falcorCache')
-        for guid, profile in falkor_cache.get('profiles', {}).items():
+        for guid, profile in falkor_cache.get('profiles', {}).iteritems():
             common.debug('Parsing profile {}'.format(guid))
             _profile = profile['summary']['value']
             _profile['avatar'] = _get_avatar(falkor_cache, profile)

@@ -4,14 +4,21 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 from resources.lib.services.nfsession import NetflixSession
+from .data_types import LoLoMo
+import cache
 
 VIDEO_LIST_KEYS = ['user', 'genres', 'recommendations']
 """:obj:`list` of :obj:`str`
 Divide the users video lists into
 3 different categories (for easier digestion)"""
 
+class InvalidVideoListTypeError(Exception):
+    """No video list of a given was available"""
+    pass
+
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
+    cache.invalidate()
     common.make_call(NetflixSession.activate_profile, profile_id)
 
 def logout():
@@ -22,25 +29,34 @@ def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call(NetflixSession.list_profiles)
 
+@cache.cache_output(cache.COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
-    return parse_video_list_ids(
-        common.make_call(
-            NetflixSession.path_request,
+    return LoLoMo(common.make_call(
+        NetflixSession.path_request,
+        [
             [
-                [
-                    'lolomo',
-                    {'from': 0, 'to': 40},
-                    ['displayName', 'context', 'id', 'index', 'length']
-                ]
-            ]))
+                'lolomo',
+                {'from': 0, 'to': 40},
+                ['displayName', 'context', 'id', 'index', 'length']
+            ]
+        ]))
 
+@cache.cache_output(cache.COMMON, 0, 'video_list_type')
 def video_list_id_for_type(video_list_type):
-    video_lists = root_lists()
-    for video_list_id in video_lists['user']:
-        if video_lists['user'][video_list_id]['name'] == video_list_type:
-            return str(video_lists['user'][video_list_id]['id'])
-    return {}
+    """Return the dynamic video list ID for a video list of known type"""
+    # pylint: disable=len-as-condition
+    lists_of_type = root_lists().lists_by_context(video_list_type)
+    if len(lists_of_type > 1):
+        common.warn(
+            'Found more than one video list of type {}.'
+            'Returning ID for the first one found.'
+            .format(video_list_type))
+    try:
+        return lists_of_type[0]['id']
+    except IndexError:
+        raise InvalidVideoListTypeError(
+            'No lists of type {} available.'.format(video_list_type))
 
 def video_list(video_list_id):
     """Retrieve a single video list"""
@@ -50,7 +66,7 @@ def seasons(tvshow_id):
     """Retrieve seasons of a TV show"""
     pass
 
-def episodes(season_id):
+def episodes(tvshowid, season_id):
     """Retrieve episodes of a season"""
     pass
 

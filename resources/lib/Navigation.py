@@ -423,7 +423,7 @@ class Navigation(object):
                 'cache': True}))
             if episode_list:
                 # Extract episode numbers and associated keys.
-                d = [(v['episode'], k) for k, v in episode_list.items()]
+                d = [(v['episode'], k) for k, v in episode_list.iteritems()]
                 # sort episodes by number
                 # (they´re coming back unsorted from the api)
                 episodes_sorted = [episode_list[k] for (_, k) in sorted(d)]
@@ -466,7 +466,7 @@ class Navigation(object):
                 if len(season_list) == 0:
                     return self.kodi_helper.build_no_seasons_available()
                 # Extract episode numbers and associated keys.
-                d = [(v['idx'], k) for k, v in season_list.items()]
+                d = [(v['idx'], k) for k, v in season_list.iteritems()]
                 # sort seasons by index by default
                 #  (they´re coming back unsorted from the api)
                 seasons_sorted = [season_list[k] for (_, k) in sorted(d)]

@@ -45,6 +45,10 @@ REQUEST_PARAMS = None
 MODE_DIRECTORY = 'directory'
 MODE_HUB = 'hub'
 MODE_ACTION = 'action'
+MODE_PLAY = 'play'
+
+KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals', 'continueWatching',
+                    'trendingNow', 'newRelease', 'popularTitles']
 
 def init_globals(argv):
     """Initialized globally used module variables.
@@ -423,7 +427,9 @@ def get_class_methods(class_item=None):
     """
     from types import FunctionType
     _type = FunctionType
-    return [x for x, y in class_item.__dict__.items() if isinstance(y, _type)]
+    return [x
+            for x, y in class_item.__dict__.iteritems()
+            if isinstance(y, _type)]
 
 def get_user_agent():
     """
@@ -653,10 +659,14 @@ def build_directory_url(pathitems, params=None):
     """Build a plugin URL for directory mode"""
     return build_url(pathitems, params, MODE_DIRECTORY)
 
+def build_play_url(pathitems, params=None):
+    """Build a plugin URL for directory mode"""
+    return build_url(pathitems, params, MODE_PLAY)
+
 def build_url(pathitems, params=None, mode=MODE_DIRECTORY):
     """Build a plugin URL from pathitems and query parameters"""
     pathitems.insert(0, mode)
     return '{netloc}/{path}{qs}'.format(
         netloc=BASE_URL,
         path='/'.join(pathitems),
-        qs='?' + urlencode(params if params else ''))
+        qs=('?' + urlencode(params)) if params else '')
