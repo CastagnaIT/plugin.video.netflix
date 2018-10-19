@@ -8,6 +8,11 @@ import xbmc
 CMD_AUTOCLOSE_DIALOG = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
                        '{:02d}:{:02d},silent)'
 
+def show_notification(msg, title='Netflix'):
+    """Show a notification"""
+    import resources.lib.common as common
+    xbmc.executebuiltin('Notification({}, {}, 3000, {})'
+                        .format(title, msg, common.ICON))
 
 def show_modal_dialog(dlg_class, xml, path, **kwargs):
     """

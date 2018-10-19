@@ -18,6 +18,7 @@ import resources.lib.navigation.directory as directory
 import resources.lib.navigation.hub as hub
 import resources.lib.api.shakti as api
 import resources.lib.api.cache as cache
+import resources.lib.kodi.ui as ui
 
 def open_settings(addon_id):
     """Open settings page of another addon"""
@@ -26,6 +27,7 @@ def open_settings(addon_id):
 
 def route(pathitems):
     """Route to the appropriate handler"""
+    common.debug('Routing navigation request')
     if not common.PATH or pathitems[0] == common.MODE_DIRECTORY:
         directory.build(pathitems[1:], common.REQUEST_PARAMS)
     elif pathitems[0] == common.MODE_HUB:
@@ -51,7 +53,9 @@ if __name__ == '__main__':
     try:
         route(common.PATH.split('/'))
     except Exception as exc:
-        common.error(exc)
+        import traceback
+        common.error(traceback.format_exc())
+        ui.show_notification(title='An error occurred', msg=exc)
         xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE, succeeded=False)
 
     cache.commit()

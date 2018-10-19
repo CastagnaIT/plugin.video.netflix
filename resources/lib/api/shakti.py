@@ -2,15 +2,16 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
+import json
+
 import resources.lib.common as common
 from resources.lib.services.nfsession import NetflixSession
-from .data_types import LoLoMo
-import cache
-
-VIDEO_LIST_KEYS = ['user', 'genres', 'recommendations']
-""":obj:`list` of :obj:`str`
-Divide the users video lists into
-3 different categories (for easier digestion)"""
+from .data_types import LoLoMo, VideoList, SeasonList, EpisodeList
+from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
+                    EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS)
+from .cache import (cache_output, invalidate_cache, CACHE_COMMON,
+                    CACHE_VIDEO_LIST, CACHE_SEASONS, CACHE_EPISODES,
+                    CACHE_METADATA)
 
 class InvalidVideoListTypeError(Exception):
     """No video list of a given was available"""
@@ -18,57 +19,74 @@ class InvalidVideoListTypeError(Exception):
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    cache.invalidate()
+    invalidate_cache()
     common.make_call(NetflixSession.activate_profile, profile_id)
 
 def logout():
     """Logout of the current account"""
+    invalidate_cache()
     common.make_call(NetflixSession.logout)
 
 def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call(NetflixSession.list_profiles)
 
-@cache.cache_output(cache.COMMON, fixed_identifier='root_lists')
+@cache_output(CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
+    common.debug('Requesting root lists from API')
     return LoLoMo(common.make_call(
         NetflixSession.path_request,
-        [
-            [
-                'lolomo',
-                {'from': 0, 'to': 40},
-                ['displayName', 'context', 'id', 'index', 'length']
-            ]
-        ]))
+        [['lolomo',
+          {'from': 0, 'to': 40},
+          ['displayName', 'context', 'id', 'index', 'length']]]))
 
-@cache.cache_output(cache.COMMON, 0, 'video_list_type')
-def video_list_id_for_type(video_list_type):
+@cache_output(CACHE_COMMON, 0, 'list_type')
+def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
-    # pylint: disable=len-as-condition
-    lists_of_type = root_lists().lists_by_context(video_list_type)
-    if len(lists_of_type > 1):
-        common.warn(
-            'Found more than one video list of type {}.'
-            'Returning ID for the first one found.'
-            .format(video_list_type))
     try:
-        return lists_of_type[0]['id']
-    except IndexError:
+        list_id = next(root_lists().lists_by_context(list_type))[0]
+    except StopIteration:
         raise InvalidVideoListTypeError(
-            'No lists of type {} available.'.format(video_list_type))
+            'No lists of type {} available'.format(list_type))
+    common.debug(
+        'Resolved list ID for {} to {}'.format(list_type, list_id))
+    return list_id
 
-def video_list(video_list_id):
+@cache_output(CACHE_VIDEO_LIST, 0, 'list_id')
+def video_list(list_id):
     """Retrieve a single video list"""
-    pass
+    common.debug('Requesting video list {}'.format(list_id))
+    return VideoList(common.make_call(
+        NetflixSession.path_request,
+        build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
+                    VIDEO_LIST_PARTIAL_PATHS)))
 
+@cache_output(CACHE_SEASONS, 0, 'tvshow_id')
 def seasons(tvshow_id):
     """Retrieve seasons of a TV show"""
-    pass
+    common.debug('Requesting season list for show {}'.format(tvshow_id))
+    return SeasonList(
+        tvshow_id,
+        common.make_call(
+            NetflixSession.path_request,
+            build_paths(['videos', tvshow_id],
+                        SEASONS_PARTIAL_PATHS)))
 
-def episodes(tvshowid, season_id):
+@cache_output(CACHE_EPISODES, 1, 'season_id')
+def episodes(tvshow_id, season_id):
     """Retrieve episodes of a season"""
-    pass
+    common.debug('Requesting episode list for show {}, season {}'
+                 .format(tvshow_id, season_id))
+    return EpisodeList(
+        tvshow_id,
+        season_id,
+        common.make_call(
+            NetflixSession.path_request,
+            build_paths(['seasons', season_id, 'episodes', {'from': 0, 'to': 40}],
+                        EPISODES_PARTIAL_PATHS) +
+            build_paths(['videos', tvshow_id],
+                        ART_PARTIAL_PATHS)))
 
 def browse_genre(genre_id):
     """Retrieve video lists for a genre"""
@@ -77,116 +95,9 @@ def browse_genre(genre_id):
 def metadata(video_id):
     """Retrieve additional metadata for a video"""
 
-def parse_video_list_ids(response_data):
-    """Parse the list of video ids e.g. rip out the parts we need
-
-    Parameters
-    ----------
-    response_data : :obj:`dict` of :obj:`str`
-        Parsed response JSON from the ´fetch_video_list_ids´ call
-
-    Returns
-    -------
-    :obj:`dict` of :obj:`dict`
-        Video list ids in the format:
-
-        {
-            "genres": {
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568367": {
-                    "displayName": "US-Serien",
-                    "id": "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568367",
-                    "index": 3,
-                    "name": "genre",
-                    "size": 38
-                },
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568368": {
-                    "displayName": ...
-                },
-            },
-            "user": {
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568364": {
-                    "displayName": "Meine Liste",
-                    "id": "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568364",
-                    "index": 0,
-                    "name": "queue",
-                    "size": 2
-                },
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568365": {
-                    "displayName": ...
-                },
-            },
-            "recommendations": {
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382": {
-                    "displayName": "Passend zu Family Guy",
-                    "id": "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382",
-                    "index": 18,
-                    "name": "similars",
-                    "size": 33
-                },
-                "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568397": {
-                    "displayName": ...
-                }
-            }
-        }
-    """
-    # prepare the return dictionary
-    video_list_ids = {}
-    for key in VIDEO_LIST_KEYS:
-        video_list_ids[key] = {}
-
-    # check if the list items are hidden behind a `value` sub key
-    # this is the case when we fetch the lists via POST,
-    # not via a GET preflight request
-    if 'value' in response_data.keys():
-        response_data = response_data.get('value')
-
-    # subcatogorize the lists by their context
-    video_lists = response_data.get('lists', {})
-    for video_list_id in video_lists.keys():
-        video_list = video_lists[video_list_id]
-        if video_list.get('context', False) is not False:
-            ctx = video_list.get('context')
-            video_list_entry = parse_video_list_ids_entry(
-                id=video_list_id,
-                entry=video_list)
-            if ctx == 'genre':
-                video_list_ids['genres'].update(video_list_entry)
-            elif ctx == 'similars' or ctx == 'becauseYouAdded':
-                video_list_ids['recommendations'].update(video_list_entry)
-            else:
-                video_list_ids['user'].update(video_list_entry)
-    return video_list_ids
-
-def parse_video_list_ids_entry(id, entry):
-    """Parse a video id entry e.g. rip out the parts we need
-
-    Parameters
-    ----------
-    response_data : :obj:`dict` of :obj:`str`
-        Dictionary entry from the ´fetch_video_list_ids´ call
-
-    Returns
-    -------
-    id : :obj:`str`
-        Unique id of the video list
-
-    entry : :obj:`dict` of :obj:`str`
-        Video list entry in the format:
-
-        "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382": {
-            "displayName": "Passend zu Family Guy",
-            "id": "3589e2c6-ca3b-48b4-a72d-34f2c09ffbf4_11568382",
-            "index": 18,
-            "name": "similars",
-            "size": 33
-        }
-    """
-    return {
-        id: {
-            'id': id,
-            'index': entry['index'],
-            'name': entry['context'],
-            'displayName': entry['displayName'],
-            'size': entry['length']
-        }
-    }
+def build_paths(base_path, partial_paths):
+    """Build a list of full paths by concatenating each partial path
+    with the base path"""
+    paths = [base_path + partial_path for partial_path in partial_paths]
+    common.debug(json.dumps(paths))
+    return paths
