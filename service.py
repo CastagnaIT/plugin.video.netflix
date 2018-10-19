@@ -7,13 +7,13 @@
 """Kodi plugin for Netflix (https://netflix.com)"""
 from __future__ import unicode_literals
 
-import sys
 import threading
 
 import xbmc
 
 import resources.lib.common as common
 import resources.lib.services as services
+import resources.lib.kodi.ui as ui
 from resources.lib.services.nfsession import NetflixSession
 
 class NetflixService(object):
@@ -41,6 +41,7 @@ class NetflixService(object):
         common.info('[MSL] Thread started')
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
+        ui.show_notification('Background services started')
 
     def shutdown(self):
         """

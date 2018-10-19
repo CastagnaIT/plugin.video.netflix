@@ -9,7 +9,7 @@ import json
 import traceback
 from functools import wraps
 from datetime import datetime, timedelta
-from urlparse import urlparse, parse_qs
+from urlparse import urlparse, parse_qsl
 from urllib import urlencode
 
 try:
@@ -31,8 +31,10 @@ ADDON_ID = None
 PLUGIN = None
 VERSION = None
 DEFAULT_FANART = None
+ICON = None
 DATA_PATH = None
 COOKIE_PATH = None
+CACHE_TTL = None
 
 # Information about the current plugin instance
 URL = None
@@ -49,21 +51,30 @@ MODE_PLAY = 'play'
 
 KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals', 'continueWatching',
                     'trendingNow', 'newRelease', 'popularTitles']
+MISC_CONTEXTS = {
+    'genres': {'label_id': 30010,
+               'contexts': 'genre'},
+    'recommendations': {'label_id': 30001,
+                        'contexts': ['similars', 'becauseYouAdded']}
+}
 
 def init_globals(argv):
     """Initialized globally used module variables.
     Needs to be called at start of each plugin instance!
-    This is an ugly hack because Kodi doesn't execute statements defined on module
-    level if reusing a language invoker."""
+    This is an ugly hack because Kodi doesn't execute statements defined on
+    module level if reusing a language invoker."""
     # pylint: disable=global-statement
-    global ADDON, ADDON_ID, PLUGIN, VERSION, DEFAULT_FANART, DATA_PATH, COOKIE_PATH
+    global ADDON, ADDON_ID, PLUGIN, VERSION, DEFAULT_FANART, ICON, DATA_PATH, \
+           COOKIE_PATH, CACHE_TTL
     ADDON = xbmcaddon.Addon()
     ADDON_ID = ADDON.getAddonInfo('id')
     PLUGIN = ADDON.getAddonInfo('name')
     VERSION = ADDON.getAddonInfo('version')
     DEFAULT_FANART = ADDON.getAddonInfo('fanart')
+    ICON = ADDON.getAddonInfo('icon')
     DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo('profile'))
     COOKIE_PATH = DATA_PATH + 'COOKIE'
+    CACHE_TTL = 600
 
     global URL, PLUGIN_HANDLE, BASE_URL, PATH, PARAM_STRING, REQUEST_PARAMS
     URL = urlparse(argv[0])
@@ -77,7 +88,7 @@ def init_globals(argv):
         PARAM_STRING = argv[2][1:]
     except IndexError:
         PARAM_STRING = ''
-    REQUEST_PARAMS = parse_qs(PARAM_STRING)
+    REQUEST_PARAMS = dict(parse_qsl(PARAM_STRING))
 
     if not xbmcvfs.exists(DATA_PATH):
         xbmcvfs.mkdir(DATA_PATH)
@@ -566,12 +577,41 @@ def select_unused_port():
     sock.close()
     return port
 
-def get_path(search, search_space):
-    """Retrieve a value from a nested dict by following the path"""
-    current_value = search_space[search[0]]
-    if len(search) == 1:
-        return current_value
-    return get_path(search[1:], current_value)
+def get_path(path, search_space, include_key=False):
+    """Retrieve a value from a nested dict by following the path.
+    Throws KeyError if any key along the path does not exist"""
+    current_value = search_space[path[0]]
+    if len(path) == 1:
+        return (path[0], current_value) if include_key else current_value
+    return get_path(path[1:], current_value, include_key)
+
+def get_path_safe(path, search_space, include_key=False, default=None):
+    """Retrieve a value from a nested dict by following the path.
+    Returns default if any key in the path does not exist."""
+    try:
+        return get_path(path, search_space, include_key)
+    except KeyError:
+        return default
+
+def get_multiple_paths(path, search_space, default=None):
+    """Retrieve multiple values from a nested dict by following the path.
+    The path may branch into multiple paths at any point.
+    A branch point is a list of different keys to follow down the path.
+    Returns a nested dict structure with nested dicts for each branch point in
+    the path. This essentially reduces the original nested dict by removing
+    those layers that only have one key and keys not specified in the branch
+    point. Keys specified in branch points that do not exist in the search
+    space are silently ignored"""
+    if not isinstance(search_space, (dict, list)):
+        return default
+    if isinstance(path[0], list):
+        return {k: get_multiple_paths([k] + path[1:], search_space, default)
+                for k in path[0]
+                if k in search_space}
+    current_value = search_space.get(path[0], default)
+    return (current_value
+            if len(path) == 1
+            else get_multiple_paths(path[1:], current_value, default))
 
 def register_slot(callback, signal=None):
     """Register a callback with AddonSignals for return calls"""
@@ -670,3 +710,16 @@ def build_url(pathitems, params=None, mode=MODE_DIRECTORY):
         netloc=BASE_URL,
         path='/'.join(pathitems),
         qs=('?' + urlencode(params)) if params else '')
+
+def is_numeric(string):
+    """Return true if string represents an integer, else false"""
+    try:
+        int(string)
+    except ValueError:
+        return False
+    return True
+
+def get_local_string(string_id):
+    """Retrieve a localized string by its id"""
+    src = xbmc if string_id < 30000 else ADDON
+    return src.getLocalizedString(string_id)

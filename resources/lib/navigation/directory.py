@@ -4,10 +4,8 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 import resources.lib.api.shakti as api
+import resources.lib.kodi.listings as listings
 from resources.lib.navigation import InvalidPathError
-
-from resources.lib.kodi.KodiHelper import KodiHelper
-from resources.lib.library.Library import Library
 
 BASE_PATH_ITEM = 'directory'
 
@@ -19,6 +17,8 @@ def build(pathitems, params):
     except AttributeError:
         raise InvalidPathError('Cannot route {}'.format('/'.join(pathitems)))
 
+    common.debug('Invoking directory handler {}'.format(builder.__name__))
+
     if len(pathitems) > 1:
         builder((pathitems[1:]))
     else:
@@ -28,9 +28,7 @@ class DirectoryBuilder(object):
     """Builds directory listings"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        self.library = Library()
-        self.kodi_helper = KodiHelper(library=self.library)
-        self.library.kodi_helper = self.kodi_helper
+        common.debug('Initializing directory builder: {}'.format(params))
 
         profile_id = params.get('profile_id')
         if profile_id:
@@ -40,40 +38,44 @@ class DirectoryBuilder(object):
         autologin = common.ADDON.getSettingBool('autologin_enable')
         profile_id = common.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
+            common.debug('Performing auto-login for selected profile {}'
+                         .format(profile_id))
             api.activate_profile(profile_id)
             self.home()
         else:
             self.profiles()
 
     def profiles(self):
-        self.kodi_helper.build_profiles_listing(api.profiles())
+        common.debug('Showing profiles listing')
+        listings.build_profiles_listing(api.profiles())
 
     def home(self):
-        self.kodi_helper.build_main_menu_listing(
+        common.debug('Showing root video lists')
+        listings.build_main_menu_listing(
             lolomo=api.root_lists())
 
     def video_list(self, pathitems):
         # Use predefined names instead of dynamic IDs for common video lists
         if pathitems[0] in common.KNOWN_LIST_TYPES:
-            video_list_id = api.video_list_id_for_type(pathitems[0])
+            list_id = api.list_id_for_type(pathitems[0])
         else:
-            video_list_id = pathitems[0]
+            list_id = pathitems[0]
 
-        self.kodi_helper.build_video_listing(
-            video_list=api.video_list(video_list_id))
+        listings.build_video_listing(
+            video_list=api.video_list(list_id))
 
     def show(self, pathitems):
         tvshowid = pathitems[0]
-        if len(pathitems > 2):
+        if len(pathitems) > 2:
             self.season(tvshowid, pathitems[2:])
         else:
-            self.kodi_helper.build_season_listing(
+            listings.build_season_listing(
                 tvshowid=tvshowid,
-                seasons=api.seasons(tvshowid))
+                season_list=api.seasons(tvshowid))
 
     def season(self, tvshowid, pathitems):
         seasonid = pathitems[0]
-        self.kodi_helper.build_episode_listing(
+        listings.build_episode_listing(
             tvshowid=tvshowid,
             seasonid=seasonid,
-            episodes=api.episodes(tvshowid, seasonid))
+            episode_list=api.episodes(tvshowid, seasonid))

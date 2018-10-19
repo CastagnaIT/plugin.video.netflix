@@ -12,6 +12,7 @@ import requests
 import resources.lib.common as common
 import resources.lib.api.website as website
 import resources.lib.services.cookies as cookies
+import resources.lib.kodi.ui as ui
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -175,6 +176,7 @@ class NetflixSession(object):
                 exc, 'Login failed', LoginFailedError, sys.exc_info()[2])
 
         common.info('Login successful')
+        ui.show_notification('Netflix', 'Login successful')
         self.session_data = session_data
         cookies.save(self.account_hash, self.session.cookies)
         self._update_esn()

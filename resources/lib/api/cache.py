@@ -16,13 +16,14 @@ import resources.lib.common as common
 
 WND = xbmcgui.Window(10000)
 
-COMMON = 'common'
-VIDEO_LIST = 'video_list'
-SEASONS = 'seasons'
-EPISODES = 'episodes'
-METADATA = 'metadata'
+CACHE_COMMON = 'cache_common'
+CACHE_VIDEO_LIST = 'cache_video_list'
+CACHE_SEASONS = 'cache_seasons'
+CACHE_EPISODES = 'cache_episodes'
+CACHE_METADATA = 'cache_metadata'
 
-BUCKET_NAMES = [COMMON, VIDEO_LIST, SEASONS, EPISODES, METADATA]
+BUCKET_NAMES = [CACHE_COMMON, CACHE_VIDEO_LIST, CACHE_SEASONS,
+                CACHE_EPISODES, CACHE_METADATA]
 BUCKETS = {}
 
 class CacheMiss(Exception):
@@ -36,11 +37,13 @@ class UnknownCacheBucketError(Exception):
 def cache_output(bucket, identifying_param_index=0,
                  identifying_param_name=None,
                  fixed_identifier=None):
-    """Cache the output of a function"""
+    """Decorator that ensures caching the output of a function"""
     # pylint: disable=missing-docstring
     def caching_decorator(func):
-        @wraps
+        common.debug('Decorating {} for caching'.format(func.__name__))
+        @wraps(func)
         def wrapper(*args, **kwargs):
+            common.debug('Calling {} with caching'.format(func.__name__))
             if fixed_identifier:
                 identifier = fixed_identifier
             else:
@@ -57,6 +60,7 @@ def cache_output(bucket, identifying_param_index=0,
             except CacheMiss:
                 output = func(*args, **kwargs)
                 add(bucket, identifier, output)
+                return output
         return wrapper
     return caching_decorator
 
@@ -70,22 +74,25 @@ def get_bucket(key):
         BUCKETS[key] = _load_bucket(key)
     return BUCKETS[key]
 
-def invalidate():
+def invalidate_cache():
     """Clear all cache buckets"""
     # pylint: disable=global-statement
     global BUCKETS
     for bucket in BUCKETS:
         _clear_bucket(bucket)
     BUCKETS = {}
+    common.info('Cache invalidated')
 
 def invalidate_entry(bucket, identifier):
     """Remove an item from a bucket"""
     del get_bucket(bucket)[identifier]
+    common.debug('Invalidated {} in {}'.format(identifier, bucket))
 
 def commit():
     """Persist cache contents in window properties"""
     for bucket, contents in BUCKETS.iteritems():
         _persist_bucket(bucket, contents)
+    common.debug('Successfully persisted cache to window properties')
 
 def get(bucket, identifier):
     """Retrieve an item from a cache bucket"""
@@ -96,16 +103,19 @@ def get(bucket, identifier):
                      .format(identifier, bucket))
         raise CacheMiss()
 
-    if cache_entry['eol'] >= int(time()):
-        common.debug('Cache entry {} in {} has expired'
+    if cache_entry['eol'] < int(time()):
+        common.debug('Cache entry {} in {} has expired => cache miss'
                      .format(identifier, bucket))
+        del get_bucket(bucket)[identifier]
         raise CacheMiss()
 
+    common.debug('Cache hit on {} in {}. Entry valid until {}'
+                 .format(identifier, bucket, cache_entry['eol']))
     return cache_entry['content']
 
 def add(bucket, identifier, content):
     """Add an item to a cache bucket"""
-    eol = int(time() + 600)
+    eol = int(time() + common.CACHE_TTL)
     get_bucket(bucket).update(
         {identifier: {'eol': eol, 'content': content}})
 
@@ -116,8 +126,9 @@ def _load_bucket(bucket):
     # pylint: disable=broad-except
     try:
         return pickle.loads(WND.getProperty(_window_property(bucket)))
-    except Exception as exc:
-        common.debug('Failed to load cache bucket: {exc}', exc)
+    except Exception:
+        common.debug('Failed to load cache bucket {}. Returning empty bucket.'
+                     .format(bucket))
         return OrderedDict()
 
 def _persist_bucket(bucket, contents):
@@ -129,4 +140,3 @@ def _persist_bucket(bucket, contents):
 
 def _clear_bucket(bucket):
     WND.clearProperty(_window_property(bucket))
-    del BUCKETS[bucket]
