@@ -86,7 +86,8 @@ def episodes(tvshow_id, season_id):
             build_paths(['seasons', season_id, 'episodes', {'from': 0, 'to': 40}],
                         EPISODES_PARTIAL_PATHS) +
             build_paths(['videos', tvshow_id],
-                        ART_PARTIAL_PATHS)))
+                        ART_PARTIAL_PATHS +
+                        [['title']])))
 
 def browse_genre(genre_id):
     """Retrieve video lists for a genre"""
