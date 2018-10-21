@@ -7,6 +7,20 @@ SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}
 OFFSET_WATCHED_TO_END = 'watchedToEndOffset'
 OFFSET_CREDITS = 'creditsOffset'
 
+def get_timeline_markers(metadata):
+    """Extract all timeline markers from a set of metadata"""
+    markers = {}
+    try:
+        markers.update(get_offset_markers(metadata))
+    except KeyError:
+        pass
+    try:
+        markers.update(get_section_markers(metadata))
+    except KeyError:
+        pass
+
+    return markers
+
 def get_offset_markers(metadata):
     """Extract offset timeline markers from metadata if they exist"""
     return {

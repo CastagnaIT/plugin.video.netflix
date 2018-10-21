@@ -35,6 +35,7 @@ ICON = None
 DATA_PATH = None
 COOKIE_PATH = None
 CACHE_TTL = None
+CACHE_METADATA_TTL = None
 
 # Information about the current plugin instance
 URL = None
@@ -43,11 +44,6 @@ BASE_URL = None
 PATH = None
 PARAM_STRING = None
 REQUEST_PARAMS = None
-
-MODE_DIRECTORY = 'directory'
-MODE_HUB = 'hub'
-MODE_ACTION = 'action'
-MODE_PLAY = 'play'
 
 KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals', 'continueWatching',
                     'trendingNow', 'newRelease', 'popularTitles']
@@ -65,7 +61,7 @@ def init_globals(argv):
     module level if reusing a language invoker."""
     # pylint: disable=global-statement
     global ADDON, ADDON_ID, PLUGIN, VERSION, DEFAULT_FANART, ICON, DATA_PATH, \
-           COOKIE_PATH, CACHE_TTL
+           COOKIE_PATH, CACHE_TTL, CACHE_METADATA_TTL
     ADDON = xbmcaddon.Addon()
     ADDON_ID = ADDON.getAddonInfo('id')
     PLUGIN = ADDON.getAddonInfo('name')
@@ -74,7 +70,8 @@ def init_globals(argv):
     ICON = ADDON.getAddonInfo('icon')
     DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo('profile'))
     COOKIE_PATH = DATA_PATH + 'COOKIE'
-    CACHE_TTL = 600
+    CACHE_TTL = ADDON.getSettingInt('cache_ttl') * 60
+    CACHE_METADATA_TTL = ADDON.getSettingInt('cache_metadata_ttl') * 60
 
     global URL, PLUGIN_HANDLE, BASE_URL, PATH, PARAM_STRING, REQUEST_PARAMS
     URL = urlparse(argv[0])
@@ -638,7 +635,9 @@ def send_signal(signal, data=None):
         data=data)
 
 def make_call(func, data=None):
-    """Make a call via AddonSignals and wait for it to return"""
+    """Make a call via AddonSignals and wait for it to return.
+    The contents of data will be expanded to kwargs and passed into the target
+    function."""
     callname = _signal_name(func)
     debug('Making AddonSignals call {}'.format(callname))
     result = AddonSignals.makeCall(
@@ -666,8 +665,12 @@ def addonsignals_return_call(func):
         # pylint: disable=broad-except
         try:
             if isinstance(data, dict):
+                debug('Calling {} with kwargs={}'
+                      .format(func.__name__, data))
                 result = func(instance, **data)
             elif data is not None:
+                debug('Calling {} with first positional arg={}'
+                      .format(func.__name__, data))
                 result = func(instance, data)
             else:
                 result = func(instance)
@@ -697,15 +700,18 @@ def reraise(exc, msg, new_exception_cls, stacktrace):
 
 def build_directory_url(pathitems, params=None):
     """Build a plugin URL for directory mode"""
-    return build_url(pathitems, params, MODE_DIRECTORY)
+    import resources.lib.navigation as nav
+    return build_url(pathitems, params, nav.MODE_DIRECTORY)
 
 def build_play_url(pathitems, params=None):
     """Build a plugin URL for directory mode"""
-    return build_url(pathitems, params, MODE_PLAY)
+    import resources.lib.navigation as nav
+    return build_url(pathitems, params, nav.MODE_PLAY)
 
-def build_url(pathitems, params=None, mode=MODE_DIRECTORY):
+def build_url(pathitems, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters"""
-    pathitems.insert(0, mode)
+    if mode:
+        pathitems.insert(0, mode)
     return '{netloc}/{path}{qs}'.format(
         netloc=BASE_URL,
         path='/'.join(pathitems),

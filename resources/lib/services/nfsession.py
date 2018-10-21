@@ -253,14 +253,12 @@ class NetflixSession(object):
         return self._post(component, data, **kwargs)
 
     def _get(self, component, **kwargs):
-        common.debug('GET REQUEST')
         return self._request(
             method=self.session.get,
             component=component,
             **kwargs)
 
     def _post(self, component, data, **kwargs):
-        common.debug('POST REQUEST')
         return self._request(
             method=self.session.post,
             component=component,

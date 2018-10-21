@@ -9,7 +9,8 @@ import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
-import resources.lib.api.paths as paths
+
+from .infolabels import add_info, add_art
 
 VIEW_FOLDER = 'folder'
 VIEW_MOVIE = 'movie'
@@ -166,8 +167,8 @@ def build_video_listing(video_list):
     directory_items = []
     for video_id, video in video_list.videos.iteritems():
         list_item = create_list_item(video['title'])
-        add_info(list_item, video, video_list.data)
-        add_art(list_item, video)
+        add_info(list_item, video, video_id, video_list.data)
+        add_art(list_item, video, video_id)
         needs_pin = int(video.get('maturity', {})
                         .get('level', 1001)) >= 1000
         is_movie = video['summary']['type'] == 'movie'
@@ -203,8 +204,8 @@ def build_season_listing(tvshowid, season_list):
     directory_items = []
     for season_id, season in season_list.seasons.iteritems():
         list_item = create_list_item(season['summary']['name'])
-        add_info(list_item, season, season_list.data, tvshowid)
-        add_art(list_item, season_list.tvshow)
+        add_info(list_item, season, season_id, season_list.data, tvshowid)
+        add_art(list_item, season_list.tvshow, tvshowid)
         directory_items.append(
             (common.build_directory_url(
                 pathitems=['show', tvshowid, 'seasons', season_id]),
@@ -227,8 +228,8 @@ def build_episode_listing(tvshowid, seasonid, episode_list):
     directory_items = []
     for episode_id, episode in episode_list.episodes.iteritems():
         list_item = create_list_item(episode['title'])
-        add_info(list_item, episode, episode_list.data, tvshowid)
-        add_art(list_item, episode)
+        add_info(list_item, episode, episode_id, episode_list.data, tvshowid)
+        add_art(list_item, episode, episode_id)
         directory_items.append(
             (common.build_url(
                 pathitems=['play', 'show', tvshowid, 'seasons', seasonid,
@@ -244,105 +245,3 @@ def build_episode_listing(tvshowid, seasonid, episode_list):
                       xbmcplugin.SORT_METHOD_GENRE,
                       xbmcplugin.SORT_METHOD_LASTPLAYED],
         content_type=CONTENT_EPISODE)
-
-def add_info(list_item, item, raw_data, tvshowid=None):
-    """Add infolabels to the list_item"""
-    # Only season items don't have a type in their summary
-    mediatype = item['summary'].get('type', 'season')
-    if mediatype == 'show':
-        # Type from Netflix doesn't match Kodi's expectations
-        mediatype = 'tvshow'
-    infos = {
-        'mediatype': mediatype,
-    }
-
-    if mediatype == 'tvshow':
-        infos['tvshowtitle'] = item['title']
-    elif tvshowid and mediatype in ['season', 'episode']:
-        infos['tvshowtitle'] = raw_data['videos'][tvshowid]['title']
-
-    for target, source in paths.INFO_MAPPINGS.iteritems():
-        value = (common.get_path_safe(source, item)
-                 if isinstance(source, list)
-                 else item.get(source))
-        if isinstance(value, dict):
-            common.debug('Got a sentinel for {}: {}'.format(target, value))
-            value = None
-        if value is None:
-            common.debug('Cannot get {} from {}'.format(target, source))
-            continue
-        if target in paths.INFO_TRANSFORMATIONS:
-            value = paths.INFO_TRANSFORMATIONS[target](value)
-        infos[target] = value
-
-    for target, source in paths.REFERENCE_MAPPINGS.iteritems():
-        infos[target] = [
-            person['name']
-            for _, person
-            in paths.resolve_refs(item.get(source, {}), raw_data)]
-
-    infos['tag'] = [tagdef['name']
-                    for tagdef
-                    in item.get('tags', {}).itervalues()
-                    if isinstance(tagdef.get('name', {}), unicode)]
-
-    # TODO: Cache infolabels (to mem or possibly disk)
-    list_item.setInfo('video', infos)
-    if infos['mediatype'] in ['episode', 'movie']:
-        list_item.setProperty('IsPlayable', 'true')
-    for stream_type, quality_infos in get_quality_infos(item).iteritems():
-        list_item.addStreamInfo(stream_type, quality_infos)
-    return infos
-
-def get_quality_infos(item):
-    """Return audio and video quality infolabels"""
-    quality_infos = {}
-    delivery = item.get('delivery')
-    if delivery:
-        if delivery.get('hasHD'):
-            quality_infos['video'] = {'width': '1920', 'height': '1080'}
-        elif delivery.get('hasUltraHD'):
-            quality_infos['video'] = {'width': '3840', 'height': '2160'}
-        else:
-            quality_infos['video'] = {'width': '960', 'height': '540'}
-            # quality_infos = {'width': '1280', 'height': '720'}
-        if delivery.get('has51Audio'):
-            quality_infos['audio'] = {'codec': 'eac3', 'channels': 6}
-        else:
-            quality_infos['audio'] = {'codec': 'eac3', 'channels': 2}
-    return quality_infos
-
-def add_art(list_item, item):
-    """Add art infolabels to list_item"""
-    boxarts = common.get_multiple_paths(
-        paths.ART_PARTIAL_PATHS[0] + ['url'], item)
-    boxart_large = boxarts[paths.ART_SIZE_FHD]
-    boxart_small = boxarts[paths.ART_SIZE_SD]
-    poster = boxarts[paths.ART_SIZE_POSTER]
-    interesting_moment = common.get_multiple_paths(
-        paths.ART_PARTIAL_PATHS[1] + ['url'], item)[paths.ART_SIZE_FHD]
-    clearlogo = common.get_path_safe(
-        paths.ART_PARTIAL_PATHS[3] + ['url'], item)
-    fanart = common.get_path_safe(
-        paths.ART_PARTIAL_PATHS[4] + [0, 'url'], item)
-    if boxart_large or boxart_small:
-        art = {
-            'thumb': boxart_large or boxart_small,
-            'landscape': boxart_large or boxart_small,
-            'fanart': boxart_large or boxart_small,
-        }
-    else:
-        art = {}
-    if poster:
-        art['poster'] = poster
-    if clearlogo:
-        art['clearlogo'] = clearlogo
-    if interesting_moment:
-        art['fanart'] = interesting_moment
-        if item.get('summary', {}).get('type') == 'episode':
-            art['thumb'] = interesting_moment
-            art['landscape'] = interesting_moment
-    if fanart:
-        art['fanart'] = fanart
-    list_item.setArt(art)
-    return list_item

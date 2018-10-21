@@ -12,13 +12,14 @@ import sys
 
 import xbmcplugin
 
+import resources.lib.cache as cache
 import resources.lib.common as common
-from resources.lib.navigation import InvalidPathError
+import resources.lib.api.shakti as api
+import resources.lib.kodi.ui as ui
+import resources.lib.navigation as nav
 import resources.lib.navigation.directory as directory
 import resources.lib.navigation.hub as hub
-import resources.lib.api.shakti as api
-import resources.lib.api.cache as cache
-import resources.lib.kodi.ui as ui
+import resources.lib.navigation.player as player
 
 def open_settings(addon_id):
     """Open settings page of another addon"""
@@ -28,20 +29,24 @@ def open_settings(addon_id):
 def route(pathitems):
     """Route to the appropriate handler"""
     common.debug('Routing navigation request')
-    if not common.PATH or pathitems[0] == common.MODE_DIRECTORY:
-        directory.build(pathitems[1:], common.REQUEST_PARAMS)
-    elif pathitems[0] == common.MODE_HUB:
-        hub.browse(pathitems[1:], common.REQUEST_PARAMS)
-    elif pathitems[0] == 'logout':
+    root_handler = pathitems[0]
+    pass_on_params = (pathitems[1:], common.REQUEST_PARAMS)
+    if not common.PATH or root_handler == nav.MODE_DIRECTORY:
+        directory.build(*pass_on_params)
+    elif root_handler == nav.MODE_HUB:
+        hub.browse(*pass_on_params)
+    elif root_handler == nav.MODE_PLAY:
+        player.play_item(*pass_on_params)
+    elif root_handler == 'logout':
         api.logout()
-    elif pathitems[0] == 'opensettings':
+    elif root_handler == 'opensettings':
         try:
             open_settings(pathitems[1])
         except IndexError:
-            raise InvalidPathError('Missing target addon id.')
+            raise nav.InvalidPathError('Missing target addon id.')
     else:
-        raise InvalidPathError('No root handler for path {}'
-                               .format('/'.join(pathitems)))
+        raise nav.InvalidPathError(
+            'No root handler for path {}'.format('/'.join(pathitems)))
 
 if __name__ == '__main__':
     # Initialize variables in common module scope
