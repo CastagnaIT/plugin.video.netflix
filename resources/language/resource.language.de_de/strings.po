@@ -339,3 +339,15 @@ msgstr "Sprache und Untertitel für gesamte Serie merken"
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
 msgstr "Fortschritt für Bibliothekseinträge speichern und als gesehen markieren"
+
+msgctxt "#30084"
+msgid "Advanced"
+msgstr "Fortgeschritten"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live (seconds)"
+msgstr "Time-to-live der Cache-Einträge (Sekunden)"
+
+msgctxt "#30086"
+msgid "Cache item time-to-live for metadata (seconds)"
+msgstr "Time-to-live für Metadaten Cache-Einträge (Sekunden)"

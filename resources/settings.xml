@@ -51,7 +51,6 @@
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="locale_id" visible="false" value="en-US" />
     <setting id="msl_service_port" value="8000" visible="false"/>
-    <setting id="netflix_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
   </category>
   <category label="30053">
@@ -59,5 +58,9 @@
     <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
+  </category>
+  <category label="30053">
+    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30085" default="10"/>
+    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,60,525600" label="30086" default="43200"/>
   </category>
 </settings>
