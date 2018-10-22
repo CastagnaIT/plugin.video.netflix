@@ -14,17 +14,13 @@ import xbmcplugin
 
 import resources.lib.cache as cache
 import resources.lib.common as common
-import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
+import resources.lib.kodi.library as library
 import resources.lib.navigation as nav
 import resources.lib.navigation.directory as directory
 import resources.lib.navigation.hub as hub
 import resources.lib.navigation.player as player
-
-def open_settings(addon_id):
-    """Open settings page of another addon"""
-    from xbmcaddon import Addon
-    Addon(addon_id).openSettings()
+import resources.lib.navigation.actions as actions
 
 def route(pathitems):
     """Route to the appropriate handler"""
@@ -37,13 +33,10 @@ def route(pathitems):
         hub.browse(*pass_on_params)
     elif root_handler == nav.MODE_PLAY:
         player.play(pathitems[1:])
-    elif root_handler == 'logout':
-        api.logout()
-    elif root_handler == 'opensettings':
-        try:
-            open_settings(pathitems[1])
-        except IndexError:
-            raise nav.InvalidPathError('Missing target addon id.')
+    elif root_handler == nav.MODE_ACTION:
+        actions.execute(*pass_on_params)
+    elif root_handler == nav.MODE_LIBRARY:
+        library.execute(*pass_on_params)
     else:
         raise nav.InvalidPathError(
             'No root handler for path {}'.format('/'.join(pathitems)))
@@ -64,3 +57,4 @@ if __name__ == '__main__':
         xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE, succeeded=False)
 
     cache.commit()
+    library.save_library()

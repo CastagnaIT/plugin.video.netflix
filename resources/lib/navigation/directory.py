@@ -7,8 +7,6 @@ import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
 from resources.lib.navigation import InvalidPathError
 
-BASE_PATH_ITEM = 'directory'
-
 def build(pathitems, params):
     """Build a directory listing for the given path"""
     try:
@@ -24,11 +22,16 @@ def build(pathitems, params):
     else:
         builder()
 
+    # Remember last location to be able to invalidate it in cache on
+    # certain actions
+    common.remember_last_location() 
+
 class DirectoryBuilder(object):
     """Builds directory listings"""
     # pylint: disable=no-self-use
     def __init__(self, params):
         common.debug('Initializing directory builder: {}'.format(params))
+        self.params = params
 
         profile_id = params.get('profile_id')
         if profile_id:

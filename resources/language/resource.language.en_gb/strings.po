@@ -353,13 +353,13 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr ""
 
 msgctxt "#30084"
-msgid "Advanced"
+msgid "Cache item time-to-live (minutes)"
 msgstr ""
 
 msgctxt "#30085"
-msgid "Cache item time-to-live (seconds)"
+msgid "Cache item time-to-live for metadata (minutes)"
 msgstr ""
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for metadata (seconds)"
+msgid "Invalidate entire cache on modification of My List"
 msgstr ""

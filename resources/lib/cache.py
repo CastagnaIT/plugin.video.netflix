@@ -6,7 +6,10 @@ from __future__ import unicode_literals
 import os
 from time import time
 from functools import wraps
-import json
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import xbmcgui
 
@@ -21,16 +24,23 @@ CACHE_EPISODES = 'cache_episodes'
 CACHE_METADATA = 'cache_metadata'
 CACHE_INFOLABELS = 'cache_infolabels'
 CACHE_ARTINFO = 'cache_artinfo'
+CACHE_LIBRARY = 'library'
 
 BUCKET_NAMES = [CACHE_COMMON, CACHE_VIDEO_LIST, CACHE_SEASONS,
                 CACHE_EPISODES, CACHE_METADATA, CACHE_INFOLABELS,
-                CACHE_ARTINFO]
+                CACHE_ARTINFO, CACHE_LIBRARY]
 BUCKETS = {}
+
+TTL_INFINITE = 60*60*24*365*100
 
 def _init_disk_cache():
     for bucket in BUCKET_NAMES:
+        if bucket == CACHE_LIBRARY:
+            # Library gets special location in DATA_PATH root because we
+            # dont want users accidentally deleting it.
+            continue
         try:
-            os.mkdir(os.path.join(common.DATA_PATH, bucket))
+            os.makedirs(os.path.join(common.DATA_PATH, 'cache', bucket))
         except OSError:
             pass
 
@@ -133,8 +143,36 @@ def invalidate_cache():
 
 def invalidate_entry(bucket, identifier):
     """Remove an item from a bucket"""
-    _purge_entry(bucket, identifier)
-    common.debug('Invalidated {} in {}'.format(identifier, bucket))
+    try:
+        _purge_entry(bucket, identifier)
+        common.debug('Invalidated {} in {}'.format(identifier, bucket))
+    except KeyError:
+        common.debug('Nothing to invalidate, {} was not in {}'
+                     .format(identifier, bucket))
+
+def invalidate_last_location():
+    import resources.lib.api.shakti as api
+    try:
+        last_path = common.get_last_location()[1].split('/')
+        common.debug('Invalidating cache for last location {}'
+                     .format(last_path))
+        if last_path[1] == 'video_list':
+            if last_path[2] in common.KNOWN_LIST_TYPES:
+                video_list_id = api.list_id_for_type(last_path[2])
+                invalidate_entry(CACHE_VIDEO_LIST,
+                                 video_list_id)
+                invalidate_entry(CACHE_COMMON, last_path[2])
+            else:
+                invalidate_entry(CACHE_VIDEO_LIST, last_path[2])
+        elif last_path[1] == 'show':
+            if len(last_path) > 4:
+                invalidate_entry(CACHE_EPISODES, last_path[4])
+            else:
+                invalidate_entry(CACHE_SEASONS, last_path[2])
+    except IndexError as exc:
+        common.error(
+            'Failed to invalidate cache entry for last location: {}'
+            .format(exc))
 
 def commit():
     """Persist cache contents in window properties"""
@@ -162,7 +200,7 @@ def get_from_disk(bucket, identifier):
                  .format(cache_filename))
     try:
         with open(cache_filename, 'r') as cache_file:
-            cache_entry = json.load(cache_file)
+            cache_entry = pickle.load(cache_file)
     except Exception as exc:
         common.debug('Could not load from disk: {}'.format(exc))
         raise CacheMiss()
@@ -184,7 +222,7 @@ def add_to_disk(bucket, identifier, cache_entry):
     cache_filename = _entry_filename(bucket, identifier)
     try:
         with open(cache_filename, 'w') as cache_file:
-            json.dump(cache_entry, cache_file)
+            pickle.dump(cache_entry, cache_file)
     except Exception as exc:
         common.error('Failed to write cache entry to {}: {}'
                      .format(cache_filename, exc))
@@ -199,11 +237,14 @@ def verify_ttl(bucket, identifier, cache_entry):
         raise CacheMiss()
 
 def _entry_filename(bucket, identifier):
-    return os.path.join(
-        common.DATA_PATH,
-        'cache',
-        bucket,
-        '{filename}.cache'.format(filename=identifier))
+    if bucket == CACHE_LIBRARY:
+        # We want a special handling for the library database, so users
+        # dont accidentally delete it when deleting the cache
+        file_loc = ['library.ndb']
+    else:
+        file_loc = [
+            'cache', bucket, '{filename}.cache'.format(filename=identifier)]
+    return os.path.join(common.DATA_PATH, *file_loc)
 
 def _window_property(bucket):
     return 'nfmemcache_{}'.format(bucket)
@@ -211,7 +252,7 @@ def _window_property(bucket):
 def _load_bucket(bucket):
     # pylint: disable=broad-except
     try:
-        return json.loads(WND.getProperty(_window_property(bucket)))
+        return pickle.loads(WND.getProperty(_window_property(bucket)))
     except Exception:
         common.debug('No instance of {} found. Creating new instance...'
                      .format(bucket))
@@ -220,7 +261,7 @@ def _load_bucket(bucket):
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     try:
-        WND.setProperty(_window_property(bucket), json.dumps(contents))
+        WND.setProperty(_window_property(bucket), pickle.dumps(contents))
     except Exception as exc:
         common.error('Failed to persist {} to window properties: {}'
                      .format(bucket, exc))
