@@ -42,7 +42,7 @@ def play_item(pathitems, params):
     if pathitems[0] == 'show' and len(pathitems) == 6:
         play_episode(tvshowid=pathitems[1],
                      seasonid=pathitems[3],
-                     episodeid=pathitems[4])
+                     episodeid=pathitems[5])
     elif pathitems[0] == 'movie' and len(pathitems) == 2:
         play_movie(movieid=pathitems[1])
     else:
@@ -50,6 +50,7 @@ def play_item(pathitems, params):
 
 def play_episode(tvshowid, seasonid, episodeid):
     """Play an episode"""
+    common.info('Playing episode {}'.format(episodeid))
     metadata = api.metadata(tvshowid)
     episode_metadata = common.find_episode(episodeid, metadata['seasons'])
     signal_data = ({'tvshow_video_id': tvshowid})
@@ -63,6 +64,8 @@ def play_video(video_id, metadata, signal_data=None):
     """Generically play a video"""
     signal_data = signal_data or {}
     signal_data['timeline_markers'] = get_timeline_markers(metadata)
+    common.debug('Got timeline markers: {}'
+                 .format(signal_data['timeline_markers']))
     list_item = get_inputstream_listitem(video_id)
     # infolabels.add_info(list_item)
     # infolabels.add_art(list_item)

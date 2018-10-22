@@ -106,7 +106,7 @@ def metadata(video_id):
             'component': 'metadata',
             'req_type': 'api',
             'params': {'movieid': video_id}
-        })
+        })['video']
 
 def build_paths(base_path, partial_paths):
     """Build a list of full paths by concatenating each partial path
