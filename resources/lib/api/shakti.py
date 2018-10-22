@@ -26,6 +26,11 @@ def logout():
     cache.invalidate_cache()
     common.make_call(NetflixSession.logout)
 
+def login():
+    """Perform a login"""
+    cache.invalidate_cache()
+    common.make_call(NetflixSession.login)
+
 def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call(NetflixSession.list_profiles)
@@ -111,6 +116,51 @@ def movie(movie_id):
         NetflixSession.path_request,
         build_paths(['videos', movie_id],
                     EPISODES_PARTIAL_PATHS))
+
+def rate(video_id, rating):
+    """Rate a video on Netflix"""
+    common.debug('Rating {} as {}'.format(video_id, rating))
+    # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
+    rating = min(10, max(0, rating)) / 2
+    common.make_call(
+        NetflixSession.post,
+        {'component': 'set_video_rating',
+         'headers': {
+             'Content-Type': 'application/json',
+             'Accept': 'application/json, text/javascript, */*'},
+         'params': {
+             'titleid': video_id,
+             'rating': rating}})
+
+def add_to_list(video_id):
+    """Add a video to my list"""
+    common.debug('Adding {} to my list'.format(video_id))
+    _update_my_list(video_id, 'add')
+
+def remove_from_list(video_id):
+    """Remove a video from my list"""
+    common.debug('Removing {} from my list'.format(video_id))
+    _update_my_list(video_id, 'remove')
+
+def _update_my_list(video_id, operation):
+    """Call API to update my list with either add or remove action"""
+    common.make_call(
+        NetflixSession.post,
+        {'component': 'update_my_list',
+         'headers': {
+             'Content-Type': 'application/json',
+             'Accept': 'application/json, text/javascript, */*'},
+         'data': {
+             'operation': operation,
+             'videoId': int(video_id)}})
+    if common.ADDON.getSettingBool('invalidate_cache_on_mylist_modify'):
+        cache.invalidate_cache()
+    else:
+        cache.invalidate_last_location()
+        cache.invalidate_entry(cache.CACHE_VIDEO_LIST,
+                               list_id_for_type('queue'))
+        cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
+        cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
 def browse_genre(genre_id):
     """Retrieve video lists for a genre"""

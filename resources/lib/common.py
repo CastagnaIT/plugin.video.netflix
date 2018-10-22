@@ -14,6 +14,7 @@ from urllib import urlencode
 
 import xbmc
 import xbmcaddon
+import xbmcgui
 import AddonSignals
 
 import resources.lib.kodi.ui.newdialogs as dialogs
@@ -82,7 +83,7 @@ def init_globals(argv):
     REQUEST_PARAMS = dict(parse_qsl(PARAM_STRING))
 
     try:
-        os.path.mkdirs(DATA_PATH)
+        os.mkdir(DATA_PATH)
     except OSError:
         pass
 
@@ -120,11 +121,9 @@ class PersistentStorage(object):
         self.commit()
 
     def __getitem__(self, key):
-        debug('Getting {}'.format(key))
         return self.contents[key]
 
     def __setitem__(self, key, value):
-        debug('Setting {} to {}'.format(key, value))
         self._contents[key] = value
         self.commit()
         self._dirty = True
@@ -572,6 +571,8 @@ def select_unused_port():
 def get_path(path, search_space, include_key=False):
     """Retrieve a value from a nested dict by following the path.
     Throws KeyError if any key along the path does not exist"""
+    if not isinstance(path, (tuple, list)):
+        path = [path]
     current_value = search_space[path[0]]
     if len(path) == 1:
         return (path[0], current_value) if include_key else current_value
@@ -652,7 +653,6 @@ def make_call(func, data=None):
 def addonsignals_return_call(func):
     """Makes func return callable through AddonSignals and
     handles catching, conversion and forwarding of exceptions"""
-    func.addonsignals_return_call = True
     @wraps(func)
     def make_return_call(instance, data):
         """Makes func return callable through AddonSignals and
@@ -671,7 +671,7 @@ def addonsignals_return_call(func):
                 result = func(instance)
         except Exception as exc:
             error('AddonSignals callback raised exception: {exc}', exc)
-            error(''.join(traceback.format_stack(sys.exc_info()[2])))
+            error(traceback.format_exc())
             result = {
                 'error': exc.__class__.__name__,
                 'message': exc.__unicode__()
@@ -690,7 +690,7 @@ def reraise(exc, msg, new_exception_cls, stacktrace):
     """Log an error message with original stacktrace and return
     as new exception type to be reraised"""
     error('{msg}: {exc}'.format(msg=msg, exc=exc))
-    error(''.join(traceback.format_stack(stacktrace)))
+    error(traceback.format_exc())
     return new_exception_cls(exc)
 
 def build_directory_url(pathitems, params=None):
@@ -702,6 +702,25 @@ def build_play_url(pathitems, params=None):
     """Build a plugin URL for directory mode"""
     import resources.lib.navigation as nav
     return build_url(pathitems, params, nav.MODE_PLAY)
+
+def build_action_url(pathitems, params=None):
+    """Build a plugin URL for directory mode"""
+    import resources.lib.navigation as nav
+    return build_url(pathitems, params, nav.MODE_ACTION)
+
+def build_library_url(action, videoid, mediatype):
+    """Build a plugin URL for library mode and a library action"""
+    library_mode = 'library'
+    if mediatype == 'show':
+        return build_url([action, 'show', videoid], mode=library_mode)
+    elif mediatype == 'season':
+        return build_url([action, 'show', videoid[0], 'seasons', videoid[1]],
+                         mode=library_mode)
+    elif mediatype == 'episode':
+        return build_url([action, 'show', videoid[0], 'seasons', videoid[1],
+                          'episodes', videoid[2]],
+                         mode=library_mode)
+    return build_url([action, 'movie', videoid], mode=library_mode)
 
 def build_url(pathitems, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters"""
@@ -724,3 +743,20 @@ def get_local_string(string_id):
     """Retrieve a localized string by its id"""
     src = xbmc if string_id < 30000 else ADDON
     return src.getLocalizedString(string_id)
+
+def remember_last_location():
+    """Write the last path and params to a window property for it
+    to be accessible to the next call"""
+    last_location = build_url(PATH.split('/'), params=REQUEST_PARAMS)
+    xbmcgui.Window(10000).setProperty('nf_last_location', last_location)
+    debug('Saved last location as {}'.format(last_location))
+
+def get_last_location():
+    """Retrievethe components (base_url, path, query_params) for the last
+    location"""
+    last_url = xbmcgui.Window(10000).getProperty('nf_last_location')
+    parsed_url = urlparse(last_url)
+    return ('{scheme}://{netloc}'.format(scheme=parsed_url[0],
+                                         netloc=parsed_url[1]),
+            parsed_url[2][1:],  # Path
+            dict(parse_qsl(parsed_url[4][1:])))  # Querystring

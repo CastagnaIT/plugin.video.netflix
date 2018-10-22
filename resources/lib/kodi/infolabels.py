@@ -96,16 +96,24 @@ def get_quality_infos(item):
     delivery = item.get('delivery')
     if delivery:
         if delivery.get('hasHD'):
-            quality_infos['video'] = {'width': '1920', 'height': '1080'}
+            quality_infos['video'] = {'codec': 'h264', 'width': '1920',
+                                      'height': '1080'}
         elif delivery.get('hasUltraHD'):
-            quality_infos['video'] = {'width': '3840', 'height': '2160'}
+            quality_infos['video'] = {'codec': 'h265', 'width': '3840',
+                                      'height': '2160'}
         else:
-            quality_infos['video'] = {'width': '960', 'height': '540'}
+            quality_infos['video'] = {'codec': 'h264', 'width': '960',
+                                      'height': '540'}
             # quality_infos = {'width': '1280', 'height': '720'}
         if delivery.get('has51Audio'):
             quality_infos['audio'] = {'channels': 6}
         else:
             quality_infos['audio'] = {'channels': 2}
+
+        quality_infos['audio']['codec'] = (
+            'eac3'
+            if common.ADDON.getSettingBool('enable_dolby_sound')
+            else 'aac')
     return quality_infos
 
 def parse_art(item):
@@ -170,7 +178,7 @@ def add_info_from_netflix(list_item, videoid):
 
 def add_info_from_library(list_item, videoid):
     """Apply infolabels with info from Kodi library"""
-    details = library.find_item(videoid, include_props=True)
+    details = library.get_item(videoid, include_props=True)
     art = details.pop('art', {})
     infos = {
         'DBID': details.pop('id'),

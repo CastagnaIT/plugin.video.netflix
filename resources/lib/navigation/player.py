@@ -51,7 +51,7 @@ def play_episode(tvshowid, seasonid, episodeid):
     """Play an episode"""
     videoid = (tvshowid, seasonid, episodeid)
     common.info('Playing episode {}'.format(videoid))
-    play_video(videoid, api.episode_metadata(*videoid),
+    play_video(episodeid, api.episode_metadata(*videoid),
                signal_data={'tvshow_video_id': tvshowid})
 
 def play_movie(movieid):

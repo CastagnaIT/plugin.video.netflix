@@ -9,6 +9,7 @@ import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
+import resources.lib.kodi.library as library
 
 from .infolabels import add_info, add_art
 
@@ -27,6 +28,35 @@ CONTENT_MOVIE = 'movies'
 CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
+
+RUN_PLUGIN = 'XBMC.RunPlugin({})'
+
+CONTEXT_MENU_ACTIONS = {
+    'export': {
+        'label': common.get_local_string(30018),
+        'url': (lambda videoid, mediatype:
+                common.build_library_url('export', videoid, mediatype))},
+    'remove': {
+        'label': common.get_local_string(30030),
+        'url': (lambda videoid, mediatype:
+                common.build_library_url('remove', videoid, mediatype))},
+    'update': {
+        'label': common.get_local_string(30030),
+        'url': (lambda videoid, mediatype:
+                common.build_library_url('update', videoid, mediatype))},
+    'rate': {
+        'label': common.get_local_string(30019),
+        'url': (lambda videoid:
+                common.build_action_url(['rate', videoid]))},
+    'add_to_list': {
+        'label': common.get_local_string(30021),
+        'url': (lambda videoid:
+                common.build_action_url(['my_list', 'add', videoid]))},
+    'remove_from_list': {
+        'label': common.get_local_string(30020),
+        'url': (lambda videoid:
+                common.build_action_url(['my_list', 'remove', videoid]))},
+}
 
 def create_list_item(label, icon=None, fanart=None):
     """Create a rudimentary list item with icon and fanart"""
@@ -64,6 +94,7 @@ def custom_viewmode(viewtype):
     def decorate_viewmode(func):
         @wraps(func)
         def set_custom_viewmode(*args, **kwargs):
+            # pylint: disable=no-member
             viewtype_override = func(*args, **kwargs)
             view = (viewtype_override
                     if viewtype_override in VIEWTYPES
@@ -103,10 +134,9 @@ def build_profiles_listing(profiles):
         enc_profile_name = profile_name.encode('utf-8')
         list_item = create_list_item(
             label=unescaped_profile_name, icon=profile.get('avatar'))
-        autologin_url = common.build_url(
+        autologin_url = common.build_action_url(
             pathitems=['save_autologin', profile_guid],
-            params={'autologin_user': enc_profile_name},
-            mode='action')
+            params={'autologin_user': enc_profile_name})
         list_item.addContextMenuItems(
             items=[(common.get_local_string(30053),
                     'RunPlugin({})'.format(autologin_url))])
@@ -173,13 +203,16 @@ def build_video_listing(video_list):
                         .get('level', 1001)) >= 1000
         is_movie = video['summary']['type'] == 'movie'
         if is_movie:
-            url = common.build_url(
-                pathitems=['play', video_id],
+            url = common.build_play_url(
+                pathitems=['movie', video_id],
                 params={'pin': needs_pin})
         else:
             url = common.build_directory_url(
                 pathitems=['show', video_id],
                 params={'pin': needs_pin})
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(video_id, video['summary']['type'],
+                                         video))
         directory_items.append(
             (url,
              list_item,
@@ -206,6 +239,8 @@ def build_season_listing(tvshowid, season_list):
         list_item = create_list_item(season['summary']['name'])
         add_info(list_item, season, season_id, season_list.data, tvshowid)
         add_art(list_item, season_list.tvshow, tvshowid)
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(season_id, 'season', season))
         directory_items.append(
             (common.build_directory_url(
                 pathitems=['show', tvshowid, 'seasons', season_id]),
@@ -230,6 +265,8 @@ def build_episode_listing(tvshowid, seasonid, episode_list):
         list_item = create_list_item(episode['title'])
         add_info(list_item, episode, episode_id, episode_list.data, tvshowid)
         add_art(list_item, episode, episode_id)
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(episode_id, 'episode', episode))
         directory_items.append(
             (common.build_url(
                 pathitems=['play', 'show', tvshowid, 'seasons', seasonid,
@@ -245,3 +282,38 @@ def build_episode_listing(tvshowid, seasonid, episode_list):
                       xbmcplugin.SORT_METHOD_GENRE,
                       xbmcplugin.SORT_METHOD_LASTPLAYED],
         content_type=CONTENT_EPISODE)
+
+def _generate_context_menu_items(video_id, mediatype, item):
+    items = []
+    if library.is_in_library(video_id):
+        items.append(
+            (CONTEXT_MENU_ACTIONS['remove']['label'],
+             RUN_PLUGIN.format(
+                 CONTEXT_MENU_ACTIONS['remove']['url'](video_id, mediatype))))
+        if mediatype in ['show', 'season']:
+            items.append(
+                (CONTEXT_MENU_ACTIONS['update']['label'],
+                 RUN_PLUGIN.format(
+                     CONTEXT_MENU_ACTIONS['update']['url'](video_id,
+                                                           mediatype))))
+    else:
+        items.append(
+            (CONTEXT_MENU_ACTIONS['export']['label'],
+             RUN_PLUGIN.format(
+                 CONTEXT_MENU_ACTIONS['export']['url'](video_id, mediatype))))
+
+    if mediatype != 'season':
+        items.append(
+            (CONTEXT_MENU_ACTIONS['rate']['label'],
+             RUN_PLUGIN.format(
+                 CONTEXT_MENU_ACTIONS['rate']['url'](video_id))))
+
+    if mediatype in ['movie', 'show']:
+        list_action = ('remove_from_list'
+                       if item['queue']['inQueue']
+                       else 'add_to_list')
+        items.append(
+            (CONTEXT_MENU_ACTIONS[list_action]['label'],
+             RUN_PLUGIN.format(
+                 CONTEXT_MENU_ACTIONS[list_action]['url'](video_id))))
+    return items

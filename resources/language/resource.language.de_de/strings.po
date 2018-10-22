@@ -344,10 +344,14 @@ msgctxt "#30084"
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Time-to-live der Cache-Einträge (Minuten)"
+
 msgctxt "#30085"
-msgid "Cache item time-to-live (seconds)"
-msgstr "Time-to-live der Cache-Einträge (Sekunden)"
+msgid "Cache item time-to-live for metadata (minutes)"
+msgstr "Time-to-live für Metadaten Cache-Einträge (Minuten)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for metadata (seconds)"
-msgstr "Time-to-live für Metadaten Cache-Einträge (Sekunden)"
+msgid "Invalidate entire cache on modification of My List"
+msgstr "Gesamten Cache bei Änderungen an Meine Liste invalidieren"

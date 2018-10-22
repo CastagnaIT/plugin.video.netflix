@@ -102,6 +102,7 @@ class NetflixSession(object):
 
     def _register_slots(self):
         self.slots = [
+            self.login,
             self.logout,
             self.list_profiles,
             self.activate_profile,
@@ -160,6 +161,18 @@ class NetflixSession(object):
                 return False
         return True
 
+    def _update_esn(self):
+        """Return True if the esn has changed on Session initialization"""
+        if common.set_esn(self.session_data['esn']):
+            common.send_signal(
+                signal=common.Signals.ESN_CHANGED,
+                data=self.session_data['esn'])
+
+    @common.addonsignals_return_call
+    def login(self):
+        """AddonSignals interface for login function"""
+        self._login()
+
     def _login(self):
         """Perform account login"""
         try:
@@ -168,7 +181,7 @@ class NetflixSession(object):
                 self._get('profiles'))['authURL']
             common.debug('Logging in...')
             login_response = self._post(
-                'login', _login_payload(self.credentials, auth_url))
+                'login', data=_login_payload(self.credentials, auth_url))
             common.debug('Extracting session data...')
             session_data = website.extract_session_data(login_response)
         except Exception as exc:
@@ -180,13 +193,6 @@ class NetflixSession(object):
         self.session_data = session_data
         cookies.save(self.account_hash, self.session.cookies)
         self._update_esn()
-
-    def _update_esn(self):
-        """Return True if the esn has changed on Session initialization"""
-        if common.set_esn(self.session_data['esn']):
-            common.send_signal(
-                signal=common.Signals.ESN_CHANGED,
-                data=self.session_data['esn'])
 
     @common.addonsignals_return_call
     def logout(self):
@@ -248,9 +254,11 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    def post(self, component, data, **kwargs):
+    def post(self, component, **kwargs):
         """Execute a POST request to the designated component's URL."""
-        return self._post(component, data, **kwargs)
+        result = self._post(component, **kwargs)
+        common.debug(result)
+        return result
 
     def _get(self, component, **kwargs):
         return self._request(
@@ -258,11 +266,10 @@ class NetflixSession(object):
             component=component,
             **kwargs)
 
-    def _post(self, component, data, **kwargs):
+    def _post(self, component, **kwargs):
         return self._request(
             method=self.session.post,
             component=component,
-            data=data,
             **kwargs)
 
     def _request(self, method, component, **kwargs):
@@ -272,12 +279,18 @@ class NetflixSession(object):
         common.debug(
             'Executing {verb} request to {url}'.format(
                 verb='GET' if method == self.session.get else 'POST', url=url))
+
+        data = kwargs.get('data', {})
+        if component in ['set_video_rating', 'update_my_list']:
+            data['authURL'] = self.auth_url
+            data = json.dumps(data)
+
         response = method(
             url=url,
             verify=self.verify_ssl,
             headers=kwargs.get('headers'),
             params=kwargs.get('params'),
-            data=kwargs.get('data'))
+            data=data)
         common.debug(
             'Request returned statuscode {}'.format(response.status_code))
         response.raise_for_status()
