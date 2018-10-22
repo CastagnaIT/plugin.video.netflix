@@ -5,8 +5,7 @@ from __future__ import unicode_literals
 import resources.lib.common as common
 import resources.lib.cache as cache
 import resources.lib.api.paths as paths
-
-from resources.lib.kodi.library import ItemNotFound
+import resources.lib.kodi.library as library
 
 def add_info(list_item, item, item_id, raw_data, tvshowid=None):
     """Add infolabels to the list_item. The passed in list_item is modified
@@ -40,12 +39,12 @@ def add_art(list_item, item, item_id):
     list_item.setArt(art)
     return art
 
-def add_info_for_playback(list_item, videoid, tvshowid):
+def add_info_for_playback(list_item, videoid):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
-        return add_info_from_library(list_item, videoid, tvshowid)
-    except ItemNotFound:
-        return add_info_from_netflix(list_item, videoid, tvshowid)
+        return add_info_from_library(list_item, videoid)
+    except library.ItemNotFound:
+        return add_info_from_netflix(list_item, videoid)
 
 def parse_info(item, raw_data, tvshowid):
     """Parse info from a path request response into Kodi infolabels"""
@@ -143,7 +142,7 @@ def parse_art(item):
         art['fanart'] = fanart
     return art
 
-def add_info_from_netflix(list_item, videoid, tvshowid):
+def add_info_from_netflix(list_item, videoid):
     """Apply infolabels with info from Netflix API"""
     try:
         infos = add_info(list_item, None, None, None)
@@ -152,6 +151,11 @@ def add_info_from_netflix(list_item, videoid, tvshowid):
     except TypeError:
         common.info('Infolabels or art were not in cache, retrieving from API')
         import resources.lib.api.shakti as api
+        if isinstance(videoid, tuple):
+            tvshowid = videoid[0]
+            videoid = videoid[2]
+        else:
+            tvshowid = None
         api_data = (api.movie(videoid)
                     if tvshowid is None
                     else api.episode(tvshowid, videoid))
@@ -164,6 +168,16 @@ def add_info_from_netflix(list_item, videoid, tvshowid):
                       item_id=videoid)
     return infos, art
 
-def add_info_from_library(list_item, videoid, tvshowid):
+def add_info_from_library(list_item, videoid):
     """Apply infolabels with info from Kodi library"""
-    pass
+    details = library.find_item(videoid, include_props=True)
+    art = details.pop('art', {})
+    infos = {
+        'DBID': details.pop('id'),
+        'mediatype': details['type'],
+        'DBTYPE': details.pop('type')
+    }
+    infos.update(details)
+    list_item.setInfo(infos)
+    list_item.setArt(art)
+    return infos, art

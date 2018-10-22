@@ -113,14 +113,18 @@ class PersistentStorage(object):
         self.backing_file = os.path.join(DATA_PATH, self.storage_id + '.ndb')
         self._contents = {}
         self._dirty = True
-        log('Instantiated {}'.format(self.storage_id))
+        debug('Instantiated {}'.format(self.storage_id))
+
+    def __del__(self):
+        debug('Destroying storage instance {}'.format(self.storage_id))
+        self.commit()
 
     def __getitem__(self, key):
-        log('Getting {}'.format(key))
+        debug('Getting {}'.format(key))
         return self.contents[key]
 
     def __setitem__(self, key, value):
-        log('Setting {} to {}'.format(key, value))
+        debug('Setting {} to {}'.format(key, value))
         self._contents[key] = value
         self.commit()
         self._dirty = True
@@ -145,9 +149,9 @@ class PersistentStorage(object):
         """
         Write current contents to disk
         """
-        with open(self.backing_file, 'w+') as file_handle:
+        with open(self.backing_file, 'w') as file_handle:
             json.dump(self._contents, file_handle)
-        log('Committed changes to backing file')
+        debug('Committed changes to backing file')
 
     def clear(self):
         """
@@ -157,14 +161,14 @@ class PersistentStorage(object):
         self.commit()
 
     def _load_from_disk(self):
-        log('Trying to load contents from disk')
+        debug('Trying to load contents from disk')
         try:
             with open(self.backing_file, 'r') as file_handle:
-                self._contents = json.loads(file_handle.read())
+                self._contents = json.load(file_handle)
         except IOError:
-            log('Backing file does not exist or is not accessible')
+            error('Backing file does not exist or is not accessible')
         self._dirty = False
-        log('Loaded contents from backing file: {}'.format(self._contents))
+        debug('Loaded contents from backing file: {}'.format(self._contents))
 
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
