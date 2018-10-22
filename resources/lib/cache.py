@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Caching for API calls"""
+"""General caching facilities. Caches are segmented into buckets.
+Within each bucket, identifiers for cache entries must be unique."""
 from __future__ import unicode_literals
 
 import os
 from time import time
-from collections import OrderedDict
 from functools import wraps
 import json
 
@@ -157,11 +157,11 @@ def get(bucket, identifier):
 
 def get_from_disk(bucket, identifier):
     """Load a cache entry from disk and add it to the in memory bucket"""
-    cache_filename = _cache_filename(bucket, identifier)
+    cache_filename = _entry_filename(bucket, identifier)
     common.debug('Retrieving cache entry from disk at {}'
                  .format(cache_filename))
     try:
-        with open(cache_filename, 'rb') as cache_file:
+        with open(cache_filename, 'r') as cache_file:
             cache_entry = json.load(cache_file)
     except Exception as exc:
         common.debug('Could not load from disk: {}'.format(exc))
@@ -181,9 +181,9 @@ def add(bucket, identifier, content, ttl=None, to_disk=False):
 def add_to_disk(bucket, identifier, cache_entry):
     """Write a cache entry to disk"""
     # pylint: disable=broad-except
-    cache_filename = _cache_filename(bucket, identifier)
+    cache_filename = _entry_filename(bucket, identifier)
     try:
-        with open(cache_filename, 'wb') as cache_file:
+        with open(cache_filename, 'w') as cache_file:
             json.dump(cache_entry, cache_file)
     except Exception as exc:
         common.error('Failed to write cache entry to {}: {}'
@@ -198,9 +198,10 @@ def verify_ttl(bucket, identifier, cache_entry):
         _purge_entry(bucket, identifier)
         raise CacheMiss()
 
-def _cache_filename(bucket, identifier):
+def _entry_filename(bucket, identifier):
     return os.path.join(
         common.DATA_PATH,
+        'cache',
         bucket,
         '{filename}.cache'.format(filename=identifier))
 
@@ -212,7 +213,7 @@ def _load_bucket(bucket):
     try:
         return json.loads(WND.getProperty(_window_property(bucket)))
     except Exception:
-        common.debug('Failed to load cache bucket {}. Returning empty bucket.'
+        common.debug('No instance of {} found. Creating new instance...'
                      .format(bucket))
         return {}
 
@@ -221,7 +222,8 @@ def _persist_bucket(bucket, contents):
     try:
         WND.setProperty(_window_property(bucket), json.dumps(contents))
     except Exception as exc:
-        common.error('Failed to persist cache bucket: {exc}', exc)
+        common.error('Failed to persist {} to window properties: {}'
+                     .format(bucket, exc))
 
 def _clear_bucket(bucket):
     WND.clearProperty(_window_property(bucket))
@@ -230,6 +232,6 @@ def _purge_entry(bucket, identifier):
     # Remove from in-memory cache
     del get_bucket(bucket)[identifier]
     # Remove from disk cache if it exists
-    cache_filename = _cache_filename(bucket, identifier)
+    cache_filename = _entry_filename(bucket, identifier)
     if os.path.exists(cache_filename):
         os.remove(cache_filename)

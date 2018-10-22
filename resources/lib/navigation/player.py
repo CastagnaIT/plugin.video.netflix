@@ -49,19 +49,22 @@ def play(pathitems):
 
 def play_episode(tvshowid, seasonid, episodeid):
     """Play an episode"""
-    common.info('Playing episode {}'.format(episodeid))
-    play_video(episodeid, api.episode_metadata(tvshowid, seasonid, episodeid),
-               tvshowid=tvshowid, signal_data={'tvshow_video_id': tvshowid})
+    videoid = (tvshowid, seasonid, episodeid)
+    common.info('Playing episode {}'.format(videoid))
+    play_video(videoid, api.episode_metadata(*videoid),
+               signal_data={'tvshow_video_id': tvshowid})
 
 def play_movie(movieid):
     """Play a movie"""
     common.info('Playing movie {}'.format(movieid))
     play_video(movieid, api.metadata(movieid))
 
-def play_video(videoid, metadata, tvshowid=None, signal_data=None):
+def play_video(videoid, metadata, signal_data=None):
     """Generically play a video"""
-    list_item = get_inputstream_listitem(videoid)
-    infos, art = infolabels.add_info_for_playback(list_item, videoid, tvshowid)
+    list_item = get_inputstream_listitem(videoid[0]
+                                         if isinstance(videoid, tuple)
+                                         else videoid)
+    infos, art = infolabels.add_info_for_playback(list_item, videoid)
     signal_data = signal_data or {}
     signal_data['infos'] = infos
     signal_data['art'] = art
