@@ -32,6 +32,9 @@ def get_offset_markers(metadata):
 
 def get_section_markers(metadata):
     """Extract section start and end markers from metadata if they exist"""
+    if not metadata.get('creditMarkers'):
+        return {}
+
     return {
         section: {
             'start': int(metadata['creditMarkers'][section]['start'] /

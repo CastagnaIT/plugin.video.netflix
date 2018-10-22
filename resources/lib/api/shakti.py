@@ -5,10 +5,8 @@ from __future__ import unicode_literals
 import json
 
 import resources.lib.common as common
+import resources.lib.cache as cache
 from resources.lib.services.nfsession import NetflixSession
-from resources.lib.cache import (cache_output, invalidate_cache, CACHE_COMMON,
-                                 CACHE_VIDEO_LIST, CACHE_SEASONS,
-                                 CACHE_EPISODES, CACHE_METADATA)
 
 from .data_types import LoLoMo, VideoList, SeasonList, EpisodeList
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
@@ -20,19 +18,19 @@ class InvalidVideoListTypeError(Exception):
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    invalidate_cache()
+    cache.invalidate_cache()
     common.make_call(NetflixSession.activate_profile, profile_id)
 
 def logout():
     """Logout of the current account"""
-    invalidate_cache()
+    cache.invalidate_cache()
     common.make_call(NetflixSession.logout)
 
 def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call(NetflixSession.list_profiles)
 
-@cache_output(CACHE_COMMON, fixed_identifier='root_lists')
+@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
     common.debug('Requesting root lists from API')
@@ -42,7 +40,7 @@ def root_lists():
           {'from': 0, 'to': 40},
           ['displayName', 'context', 'id', 'index', 'length']]]))
 
-@cache_output(CACHE_COMMON, 0, 'list_type')
+@cache.cache_output(cache.CACHE_COMMON, 0, 'list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
     try:
@@ -54,7 +52,7 @@ def list_id_for_type(list_type):
         'Resolved list ID for {} to {}'.format(list_type, list_id))
     return list_id
 
-@cache_output(CACHE_VIDEO_LIST, 0, 'list_id')
+@cache.cache_output(cache.CACHE_VIDEO_LIST, 0, 'list_id')
 def video_list(list_id):
     """Retrieve a single video list"""
     common.debug('Requesting video list {}'.format(list_id))
@@ -63,7 +61,7 @@ def video_list(list_id):
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
 
-@cache_output(CACHE_SEASONS, 0, 'tvshow_id')
+@cache.cache_output(cache.CACHE_SEASONS, 0, 'tvshow_id')
 def seasons(tvshow_id):
     """Retrieve seasons of a TV show"""
     common.debug('Requesting season list for show {}'.format(tvshow_id))
@@ -74,7 +72,7 @@ def seasons(tvshow_id):
             build_paths(['videos', tvshow_id],
                         SEASONS_PARTIAL_PATHS)))
 
-@cache_output(CACHE_EPISODES, 1, 'season_id')
+@cache.cache_output(cache.CACHE_EPISODES, 1, 'season_id')
 def episodes(tvshow_id, season_id):
     """Retrieve episodes of a season"""
     common.debug('Requesting episode list for show {}, season {}'
@@ -91,12 +89,35 @@ def episodes(tvshow_id, season_id):
                         ART_PARTIAL_PATHS +
                         [['title']])))
 
+@cache.cache_output(cache.CACHE_EPISODES, 1, 'episode_id')
+def episode(tvshow_id, episode_id):
+    """Retrieve info for a single episode"""
+    common.debug('Requesting single episode info for {}'
+                 .format(episode_id))
+    return common.make_call(
+        NetflixSession.path_request,
+        build_paths(['videos', episode_id],
+                    EPISODES_PARTIAL_PATHS) +
+        build_paths(['videos', tvshow_id],
+                    ART_PARTIAL_PATHS +
+                    [['title']]))
+
+@cache.cache_output(cache.CACHE_EPISODES, 0, 'movie_id')
+def movie(movie_id):
+    """Retrieve info for a single movie"""
+    common.debug('Requesting movie info for {}'
+                 .format(movie_id))
+    return common.make_call(
+        NetflixSession.path_request,
+        build_paths(['videos', movie_id],
+                    EPISODES_PARTIAL_PATHS))
+
 def browse_genre(genre_id):
     """Retrieve video lists for a genre"""
     pass
 
-@cache_output(CACHE_METADATA, 0, 'video_id', ttl=common.CACHE_METADATA_TTL,
-              to_disk=True)
+@cache.cache_output(cache.CACHE_METADATA, 0, 'video_id',
+                    ttl=common.CACHE_METADATA_TTL, to_disk=True)
 def metadata(video_id):
     """Retrieve additional metadata for a video"""
     common.debug('Requesting metdata for {}'.format(video_id))
@@ -107,6 +128,19 @@ def metadata(video_id):
             'req_type': 'api',
             'params': {'movieid': video_id}
         })['video']
+
+def episode_metadata(tvshowid, seasonid, episodeid):
+    """Retrieve metadata for a single episode"""
+    try:
+        return common.find_episode(episodeid, metadata(tvshowid)['seasons'])
+    except KeyError:
+        # Episode metadata may not exist if its a new episode and cached data
+        # is outdated. In this case, invalidate the cache entry and try again
+        # safely (if it doesn't exist this time, there is no metadata for the
+        # episode, so we assign an empty dict).
+        cache.invalidate_entry(cache.CACHE_METADATA, tvshowid)
+        return (metadata(tvshowid).get('seasons', {}).get(seasonid, {})
+                .get('episodes', {}).get(episodeid, {}))
 
 def build_paths(base_path, partial_paths):
     """Build a list of full paths by concatenating each partial path
