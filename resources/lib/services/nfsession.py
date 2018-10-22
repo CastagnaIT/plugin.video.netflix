@@ -153,7 +153,7 @@ class NetflixSession(object):
             try:
                 # If we can get session data, cookies are still valid
                 self.session_data = website.extract_session_data(
-                    self._get('profiles').content)
+                    self._get('profiles'))
                 self._update_esn()
             except Exception:
                 common.info('Stored cookies are expired')
@@ -165,12 +165,12 @@ class NetflixSession(object):
         try:
             common.debug('Extracting authURL...')
             auth_url = website.extract_userdata(
-                self._get('profiles').content)['authURL']
+                self._get('profiles'))['authURL']
             common.debug('Logging in...')
             login_response = self._post(
                 'login', _login_payload(self.credentials, auth_url))
             common.debug('Extracting session data...')
-            session_data = website.extract_session_data(login_response.content)
+            session_data = website.extract_session_data(login_response)
         except Exception as exc:
             raise common.reraise(
                 exc, 'Login failed', LoginFailedError, sys.exc_info()[2])
@@ -238,7 +238,7 @@ class NetflixSession(object):
             req_type='api',
             params=params,
             headers=headers,
-            data=data).json()['value']
+            data=data)['value']
 
     @common.addonsignals_return_call
     @needs_login
@@ -267,7 +267,7 @@ class NetflixSession(object):
 
     def _request(self, method, component, **kwargs):
         url = (_api_url(component, self.session_data['api_data'])
-               if kwargs.get('req_type') == 'api'
+               if URLS[component]['is_api_call']
                else _document_url(component))
         common.debug(
             'Executing {verb} request to {url}'.format(
@@ -281,7 +281,9 @@ class NetflixSession(object):
         common.debug(
             'Request returned statuscode {}'.format(response.status_code))
         response.raise_for_status()
-        return response
+        return (response.json()
+                if URLS[component]['is_api_call']
+                else response.content)
 
 def _login_payload(credentials, auth_url):
     return {
