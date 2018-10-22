@@ -35,6 +35,7 @@ class DirectoryBuilder(object):
             api.activate_profile(profile_id)
 
     def root(self):
+        """Show profiles or home listing is autologin es enabled"""
         autologin = common.ADDON.getSettingBool('autologin_enable')
         profile_id = common.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
@@ -46,15 +47,18 @@ class DirectoryBuilder(object):
             self.profiles()
 
     def profiles(self):
+        """Show profiles listing"""
         common.debug('Showing profiles listing')
         listings.build_profiles_listing(api.profiles())
 
     def home(self):
+        """Show home listing"""
         common.debug('Showing root video lists')
         listings.build_main_menu_listing(
             lolomo=api.root_lists())
 
     def video_list(self, pathitems):
+        """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
         if pathitems[0] in common.KNOWN_LIST_TYPES:
             list_id = api.list_id_for_type(pathitems[0])
@@ -65,6 +69,7 @@ class DirectoryBuilder(object):
             video_list=api.video_list(list_id))
 
     def show(self, pathitems):
+        """Show seasons of a tvshow"""
         tvshowid = pathitems[0]
         if len(pathitems) > 2:
             self.season(tvshowid, pathitems[2:])
@@ -74,6 +79,7 @@ class DirectoryBuilder(object):
                 season_list=api.seasons(tvshowid))
 
     def season(self, tvshowid, pathitems):
+        """Show episodes of a season"""
         seasonid = pathitems[0]
         listings.build_episode_listing(
             tvshowid=tvshowid,

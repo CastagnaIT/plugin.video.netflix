@@ -36,7 +36,7 @@ def route(pathitems):
     elif root_handler == nav.MODE_HUB:
         hub.browse(*pass_on_params)
     elif root_handler == nav.MODE_PLAY:
-        player.play(*pass_on_params)
+        player.play(pathitems[1:])
     elif root_handler == 'logout':
         api.logout()
     elif root_handler == 'opensettings':
