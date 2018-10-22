@@ -407,14 +407,14 @@ def find_episode(episode_id, seasons):
     """
     Get metadata for a specific episode from within a nested
     metadata dict.
-    :return: Episode metadata or an empty dict if the episode could not
-    be found.
+    :return: Episode metadata. Raises KeyError if metadata for episode_id
+    does not exist.
     """
     for season in seasons:
         for episode in season['episodes']:
             if str(episode['id']) == episode_id:
                 return episode
-    return {}
+    raise KeyError('Metadata for episode {} does not exist'.format(episode_id))
 
 def update_library_item_details(dbtype, dbid, details):
     """

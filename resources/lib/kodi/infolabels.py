@@ -124,4 +124,4 @@ def add_art(list_item, item, item_id):
         cache.add(cache.CACHE_ARTINFO, item_id, art,
                   ttl=common.CACHE_METADATA_TTL, to_disk=True)
     list_item.setArt(art)
-    return list_item
+    return art

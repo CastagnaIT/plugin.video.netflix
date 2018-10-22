@@ -7,7 +7,6 @@ import xbmcgui
 import inputstreamhelper
 
 import resources.lib.common as common
-import resources.lib.cache as cache
 import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
 from resources.lib.services.playback import get_timeline_markers
@@ -37,8 +36,8 @@ class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
     pass
 
-def play_item(pathitems, params):
-    """Play an item as specified by the path"""
+def play(pathitems, params):
+    """Play an episode or movie as specified by the path"""
     if pathitems[0] == 'show' and len(pathitems) == 6:
         play_episode(tvshowid=pathitems[1],
                      seasonid=pathitems[3],
@@ -51,24 +50,22 @@ def play_item(pathitems, params):
 def play_episode(tvshowid, seasonid, episodeid):
     """Play an episode"""
     common.info('Playing episode {}'.format(episodeid))
-    metadata = api.metadata(tvshowid)
-    episode_metadata = common.find_episode(episodeid, metadata['seasons'])
-    signal_data = ({'tvshow_video_id': tvshowid})
-    play_video(episodeid, episode_metadata, signal_data)
+    play_video(episodeid, api.episode_metadata(tvshowid, seasonid, episodeid),
+               tvshowid=tvshowid, signal_data={'tvshow_video_id': tvshowid})
 
 def play_movie(movieid):
     """Play a movie"""
+    common.info('Playing movie {}'.format(movieid))
     play_video(movieid, api.metadata(movieid))
 
-def play_video(video_id, metadata, signal_data=None):
+def play_video(videoid, metadata, tvshowid=None, signal_data=None):
     """Generically play a video"""
+    list_item = get_inputstream_listitem(videoid)
+    infos, art = add_infolabels_and_art(list_item, videoid, tvshowid)
     signal_data = signal_data or {}
+    signal_data['infos'] = infos
+    signal_data['art'] = art
     signal_data['timeline_markers'] = get_timeline_markers(metadata)
-    common.debug('Got timeline markers: {}'
-                 .format(signal_data['timeline_markers']))
-    list_item = get_inputstream_listitem(video_id)
-    # infolabels.add_info(list_item)
-    # infolabels.add_art(list_item)
     common.send_signal(common.Signals.PLAYBACK_INITIATED, signal_data)
     xbmcplugin.setResolvedUrl(
         handle=common.PLUGIN_HANDLE,
@@ -114,3 +111,23 @@ def get_inputstream_listitem(video_id):
         key='inputstreamaddon',
         value=is_helper.inputstream_addon)
     return list_item
+
+def add_infolabels_and_art(list_item, videoid, tvshowid):
+    """Retrieve infolabels and art info and add them to the list_item"""
+    try:
+        infos = infolabels.add_info(list_item, None, None, None)
+        art = infolabels.add_art(list_item, None, None)
+        common.debug('Got infolabels and art from cache')
+    except TypeError:
+        common.info('Infolabels or art were not in cache, retrieving from API')
+        api_data = (api.movie(videoid)
+                    if tvshowid is None
+                    else api.episode(tvshowid, videoid))
+        infos = infolabels.add_info(list_item,
+                                    item=api_data['videos'][videoid],
+                                    item_id=videoid,
+                                    raw_data=api_data,
+                                    tvshowid=tvshowid)
+        art = infolabels.add_art(list_item, item=api_data['videos'][videoid],
+                                 item_id=videoid)
+    return infos, art
