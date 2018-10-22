@@ -6,10 +6,7 @@ import os
 from time import time
 from collections import OrderedDict
 from functools import wraps
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import json
 
 import xbmcgui
 
@@ -80,40 +77,40 @@ def cache_output(bucket, identifying_param_index=0,
         return wrapper
     return caching_decorator
 
-def inject_from_cache(bucket, injection_param,
-                      identifying_param_index=0,
-                      identifying_param_name=None,
-                      fixed_identifier=None,
-                      to_disk=False):
-    """Decorator that injects a cached value as parameter if available.
-    The decorated function must return a value to be added to the cache."""
-    # pylint: disable=missing-docstring
-    def injecting_cache_decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if fixed_identifier:
-                # Use the identifier that's statically defined in the applied
-                # decorator isntead of one of the parameters' value
-                identifier = fixed_identifier
-            else:
-                try:
-                    # prefer keyword over positional arguments
-                    identifier = kwargs.get(
-                        identifying_param_name, args[identifying_param_index])
-                except IndexError:
-                    common.error(
-                        'Invalid cache configuration.'
-                        'Cannot determine identifier from params')
-            try:
-                value_to_inject = get(bucket, identifier)
-            except CacheMiss:
-                value_to_inject = None
-            kwargs[injection_param] = value_to_inject
-            output = func(*args, **kwargs)
-            add(bucket, identifier, output, ttl=ttl, to_disk=to_disk)
-            return output
-        return wrapper
-    return injecting_cache_decorator
+# def inject_from_cache(bucket, injection_param,
+#                       identifying_param_index=0,
+#                       identifying_param_name=None,
+#                       fixed_identifier=None,
+#                       to_disk=False):
+#     """Decorator that injects a cached value as parameter if available.
+#     The decorated function must return a value to be added to the cache."""
+#     # pylint: disable=missing-docstring
+#     def injecting_cache_decorator(func):
+#         @wraps(func)
+#         def wrapper(*args, **kwargs):
+#             if fixed_identifier:
+#                 # Use the identifier that's statically defined in the applied
+#                 # decorator isntead of one of the parameters' value
+#                 identifier = fixed_identifier
+#             else:
+#                 try:
+#                     # prefer keyword over positional arguments
+#                     identifier = kwargs.get(
+#                         identifying_param_name, args[identifying_param_index])
+#                 except IndexError:
+#                     common.error(
+#                         'Invalid cache configuration.'
+#                         'Cannot determine identifier from params')
+#             try:
+#                 value_to_inject = get(bucket, identifier)
+#             except CacheMiss:
+#                 value_to_inject = None
+#             kwargs[injection_param] = value_to_inject
+#             output = func(*args, **kwargs)
+#             add(bucket, identifier, output, ttl=ttl, to_disk=to_disk)
+#             return output
+#         return wrapper
+#     return injecting_cache_decorator
 
 def get_bucket(key):
     """Get a cache bucket.
@@ -165,7 +162,7 @@ def get_from_disk(bucket, identifier):
                  .format(cache_filename))
     try:
         with open(cache_filename, 'rb') as cache_file:
-            cache_entry = pickle.load(cache_file)
+            cache_entry = json.load(cache_file)
     except Exception as exc:
         common.debug('Could not load from disk: {}'.format(exc))
         raise CacheMiss()
@@ -187,7 +184,7 @@ def add_to_disk(bucket, identifier, cache_entry):
     cache_filename = _cache_filename(bucket, identifier)
     try:
         with open(cache_filename, 'wb') as cache_file:
-            pickle.dump(cache_entry, cache_file)
+            json.dump(cache_entry, cache_file)
     except Exception as exc:
         common.error('Failed to write cache entry to {}: {}'
                      .format(cache_filename, exc))
@@ -213,16 +210,16 @@ def _window_property(bucket):
 def _load_bucket(bucket):
     # pylint: disable=broad-except
     try:
-        return pickle.loads(WND.getProperty(_window_property(bucket)))
+        return json.loads(WND.getProperty(_window_property(bucket)))
     except Exception:
         common.debug('Failed to load cache bucket {}. Returning empty bucket.'
                      .format(bucket))
-        return OrderedDict()
+        return {}
 
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     try:
-        WND.setProperty(_window_property(bucket), pickle.dumps(contents))
+        WND.setProperty(_window_property(bucket), json.dumps(contents))
     except Exception as exc:
         common.error('Failed to persist cache bucket: {exc}', exc)
 

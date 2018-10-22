@@ -36,7 +36,7 @@ class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
     pass
 
-def play(pathitems, params):
+def play(pathitems):
     """Play an episode or movie as specified by the path"""
     if pathitems[0] == 'show' and len(pathitems) == 6:
         play_episode(tvshowid=pathitems[1],
@@ -61,7 +61,7 @@ def play_movie(movieid):
 def play_video(videoid, metadata, tvshowid=None, signal_data=None):
     """Generically play a video"""
     list_item = get_inputstream_listitem(videoid)
-    infos, art = add_infolabels_and_art(list_item, videoid, tvshowid)
+    infos, art = infolabels.add_info_for_playback(list_item, videoid, tvshowid)
     signal_data = signal_data or {}
     signal_data['infos'] = infos
     signal_data['art'] = art
@@ -111,23 +111,3 @@ def get_inputstream_listitem(video_id):
         key='inputstreamaddon',
         value=is_helper.inputstream_addon)
     return list_item
-
-def add_infolabels_and_art(list_item, videoid, tvshowid):
-    """Retrieve infolabels and art info and add them to the list_item"""
-    try:
-        infos = infolabels.add_info(list_item, None, None, None)
-        art = infolabels.add_art(list_item, None, None)
-        common.debug('Got infolabels and art from cache')
-    except TypeError:
-        common.info('Infolabels or art were not in cache, retrieving from API')
-        api_data = (api.movie(videoid)
-                    if tvshowid is None
-                    else api.episode(tvshowid, videoid))
-        infos = infolabels.add_info(list_item,
-                                    item=api_data['videos'][videoid],
-                                    item_id=videoid,
-                                    raw_data=api_data,
-                                    tvshowid=tvshowid)
-        art = infolabels.add_art(list_item, item=api_data['videos'][videoid],
-                                 item_id=videoid)
-    return infos, art

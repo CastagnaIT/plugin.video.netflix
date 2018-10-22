@@ -12,14 +12,8 @@ from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qsl
 from urllib import urlencode
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
 import xbmc
 import xbmcaddon
-import xbmcvfs
 import AddonSignals
 
 import resources.lib.kodi.ui.newdialogs as dialogs
@@ -87,8 +81,10 @@ def init_globals(argv):
         PARAM_STRING = ''
     REQUEST_PARAMS = dict(parse_qsl(PARAM_STRING))
 
-    if not xbmcvfs.exists(DATA_PATH):
-        xbmcvfs.mkdir(DATA_PATH)
+    try:
+        os.path.mkdirs(DATA_PATH)
+    except OSError:
+        pass
 
 init_globals(sys.argv)
 
@@ -149,9 +145,8 @@ class PersistentStorage(object):
         """
         Write current contents to disk
         """
-        file_handle = xbmcvfs.File(self.backing_file, 'wb')
-        pickle.dump(self._contents, file_handle)
-        file_handle.close()
+        with open(self.backing_file, 'w+') as file_handle:
+            json.dump(self._contents, file_handle)
         log('Committed changes to backing file')
 
     def clear(self):
@@ -163,14 +158,13 @@ class PersistentStorage(object):
 
     def _load_from_disk(self):
         log('Trying to load contents from disk')
-        if xbmcvfs.exists(self.backing_file):
-            file_handle = xbmcvfs.File(self.backing_file, 'rb')
-            self._contents = pickle.loads(file_handle.read())
-            self._dirty = False
-            file_handle.close()
-            log('Loaded contents from backing file: {}'.format(self._contents))
-        else:
-            log('Backing file does not exist')
+        try:
+            with open(self.backing_file, 'r') as file_handle:
+                self._contents = json.loads(file_handle.read())
+        except IOError:
+            log('Backing file does not exist or is not accessible')
+        self._dirty = False
+        log('Loaded contents from backing file: {}'.format(self._contents))
 
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
@@ -369,35 +363,32 @@ def file_exists(filename, data_path=DATA_PATH):
     :param filename: The filename
     :return: True if so
     """
-    return xbmcvfs.exists(path=data_path + filename)
+    return os.path.exists(data_path + filename)
 
-def save_file(filename, content, data_path=DATA_PATH):
+def save_file(filename, content, data_path=DATA_PATH, mode='w+'):
     """
     Saves the given content under given filename
     :param filename: The filename
     :param content: The content of the file
     """
-    file_handle = xbmcvfs.File(filepath=data_path + filename, mode='w')
-    file_handle.write(content.encode('utf-8'))
-    file_handle.close()
+    with open(data_path + filename, mode) as file_handle:
+        file_handle.write(content.encode('utf-8'))
 
-def load_file(filename, data_path=DATA_PATH):
+def load_file(filename, data_path=DATA_PATH, mode='r'):
     """
     Loads the content of a given filename
     :param filename: The file to load
     :return: The content of the file
     """
-    file_handle = xbmcvfs.File(filepath=data_path + filename)
-    file_content = file_handle.read()
-    file_handle.close()
-    return file_content
+    with open(data_path + filename, mode) as file_handle:
+        return file_handle.read()
 
 def list_dir(data_path=DATA_PATH):
     """
     List the contents of a folder
     :return: The contents of the folder
     """
-    return xbmcvfs.listdir(data_path)
+    return os.listdir(data_path)
 
 def noop(**kwargs):
     """Takes everything, does nothing, classic no operation function"""
