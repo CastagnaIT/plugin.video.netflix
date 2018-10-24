@@ -2,7 +2,6 @@
 """Stateful Netflix session management"""
 from __future__ import unicode_literals
 
-import sys
 from time import time
 from base64 import urlsafe_b64encode
 from functools import wraps
@@ -85,7 +84,7 @@ class NetflixSession(object):
         try:
             return common.get_credentials()
         except common.MissingCredentialsError:
-            return common.ask_credentials()
+            return ui.ask_credentials()
 
     @property
     def account_hash(self):

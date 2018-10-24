@@ -17,8 +17,6 @@ import xbmcaddon
 import xbmcgui
 import AddonSignals
 
-import resources.lib.kodi.ui.newdialogs as dialogs
-
 # Global vars are initialized in init_globals
 # Commonly used addon attributes from Kodi
 ADDON = None
@@ -426,19 +424,6 @@ def set_credentials(email, password):
     if email and password:
         ADDON.setSetting('email', encrypt_credential(email))
         ADDON.setSetting('password', encrypt_credential(password))
-
-def ask_credentials():
-    """
-    Show some dialogs and ask the user for account credentials
-    """
-    email = dialogs.show_email_dialog()
-    password = dialogs.show_password_dialog()
-    verify_credentials(email, password)
-    set_credentials(email, password)
-    return {
-        'email': email,
-        'password': password
-    }
 
 def verify_credentials(email, password):
     """Verify credentials for plausibility"""

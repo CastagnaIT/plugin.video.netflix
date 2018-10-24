@@ -8,6 +8,7 @@ from xbmcaddon import Addon
 import resources.lib.common as common
 import resources.lib.cache as cache
 import resources.lib.api.shakti as api
+import resources.lib.kodi.ui as ui
 from resources.lib.navigation import InvalidPathError
 
 def execute(pathitems, params):
@@ -70,7 +71,8 @@ class ActionExecutor(object):
         """Rate an item on Netflix. Ask for a rating if there is none supplied
         in the path."""
         rating = self.params.get('rating') or ui.ask_for_rating()
-        api.rate(videoid, rating)
+        if rating is not None:
+            api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=1, inject_remaining_pathitems=True)
     def my_list(self, videoid, pathitems):
