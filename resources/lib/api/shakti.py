@@ -159,7 +159,7 @@ def _update_my_list(video_id, operation):
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
     if videoid.mediatype != common.VideoId.EPISODE:
-        return _metadata(videoid)
+        return _metadata(videoid.value)
 
     try:
         return common.find_episode(

@@ -61,6 +61,28 @@ CONTEXT_MENU_ACTIONS = {
                                  mode=nav.MODE_ACTION))},
 }
 
+def custom_viewmode(viewtype):
+    """Decorator that sets a custom viewmode if currently in
+    a listing of the plugin"""
+    # pylint: disable=missing-docstring
+    def decorate_viewmode(func):
+        @wraps(func)
+        def set_custom_viewmode(*args, **kwargs):
+            # pylint: disable=no-member
+            viewtype_override = func(*args, **kwargs)
+            view = (viewtype_override
+                    if viewtype_override in VIEWTYPES
+                    else viewtype)
+            if (('plugin://{}'.format(common.ADDON_ID) in
+                 xbmc.getInfoLabel('Container.FolderPath')) and
+                    common.ADDON.getSettingBool('customview')):
+                view_id = common.ADDON.getSettingInt('viewmode' + view)
+                if view_id != -1:
+                    xbmc.executebuiltin(
+                        'Container.SetViewMode({})'.format(view_id))
+        return set_custom_viewmode
+    return decorate_viewmode
+
 @custom_viewmode(VIEW_FOLDER)
 def build_profiles_listing(profiles):
     """
@@ -111,7 +133,6 @@ def build_main_menu_listing(lolomo):
     """
     directory_items = []
     for _, user_list in lolomo.lists_by_context(common.KNOWN_LIST_TYPES):
-        common.debug('Creating listitem for: {}'.format(user_list))
         directory_items.append(
             (common.build_url(
                 ['video_list', user_list['context']], mode=nav.MODE_DIRECTORY),
@@ -151,7 +172,7 @@ def build_video_listing(video_list):
     for videoid_value, video in video_list.videos.iteritems():
         is_movie = video['summary']['type'] == 'movie'
         videoid = common.VideoId(
-            **{'movieid' if is_movie else 'tvshowid': videoid_value})
+            **{('movieid' if is_movie else 'tvshowid'): videoid_value})
         list_item = create_list_item(video['title'])
         add_info(videoid, list_item, video, video_list.data)
         add_art(videoid, list_item, video)
@@ -264,28 +285,6 @@ def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
     xbmcplugin.endOfDirectory(
         handle=common.PLUGIN_HANDLE,
         updateListing=refresh)
-
-def custom_viewmode(viewtype):
-    """Decorator that sets a custom viewmode if currently in
-    a listing of the plugin"""
-    # pylint: disable=missing-docstring
-    def decorate_viewmode(func):
-        @wraps(func)
-        def set_custom_viewmode(*args, **kwargs):
-            # pylint: disable=no-member
-            viewtype_override = func(*args, **kwargs)
-            view = (viewtype_override
-                    if viewtype_override in VIEWTYPES
-                    else viewtype)
-            if (('plugin://{}'.format(common.ADDON_ID) in
-                 xbmc.getInfoLabel('Container.FolderPath')) and
-                    common.ADDON.getSettingBool('customview')):
-                view_id = common.ADDON.getSettingInt('viewmode' + view)
-                if view_id != -1:
-                    xbmc.executebuiltin(
-                        'Container.SetViewMode({})'.format(view_id))
-        return set_custom_viewmode
-    return decorate_viewmode
 
 def _generate_context_menu_items(videoid, item):
     items = []

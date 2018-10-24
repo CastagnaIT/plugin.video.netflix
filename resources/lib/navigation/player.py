@@ -35,14 +35,14 @@ class InputstreamError(Exception):
     pass
 
 @common.inject_video_id(path_offset=0)
-def play(videoid):
+def play(videoid, needs_pin):
     """Play an episode or movie as specified by the path"""
     metadata = api.metadata(videoid)
     timeline_markers = get_timeline_markers(metadata)
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
-        'videoid': videoid,
+        'videoid': videoid.to_dict(),
         'infos': infos,
         'art': art,
         'timeline_markers': timeline_markers})

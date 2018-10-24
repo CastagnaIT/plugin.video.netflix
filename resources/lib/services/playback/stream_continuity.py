@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 import xbmc
 
 import resources.lib.common as common
-from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
+import resources.lib.kodi.ui as ui
 
 from .action_manager import PlaybackActionManager
 
@@ -49,11 +49,7 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _initialize(self, data):
         self.did_restore = False
-        try:
-            self.current_show = data['tvshow_video_id']
-        except KeyError:
-            # Not playing a tvshow
-            self.enabled = False
+        self.current_show = data['videoid']['tvshowid']
 
     def _on_playback_started(self, player_state):
         xbmc.sleep(1000)
@@ -64,15 +60,15 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _on_tick(self, player_state):
         if not self.did_restore:
-            common.log('Did not restore streams yet, ignoring tick')
+            common.debug('Did not restore streams yet, ignoring tick')
             return
 
         for stype in STREAMS:
             current_stream = self.current_streams[stype]
             player_stream = player_state.get(STREAMS[stype]['current'])
             if player_stream != current_stream:
-                common.log('{} has changed from {} to {}'
-                           .format(stype, current_stream, player_stream))
+                common.debug('{} has changed from {} to {}'
+                             .format(stype, current_stream, player_stream))
                 self._set_current_stream(stype, player_state)
                 self._ask_to_save(stype, player_stream)
 
@@ -82,7 +78,7 @@ class StreamContinuityManager(PlaybackActionManager):
         })
 
     def _restore_stream(self, stype):
-        common.log('Trying to restore {}...'.format(stype))
+        common.debug('Trying to restore {}...'.format(stype))
         set_stream = STREAMS[stype]['setter']
         stored_stream = self.show_settings.get(stype)
         if (stored_stream is not None and
@@ -92,14 +88,14 @@ class StreamContinuityManager(PlaybackActionManager):
                                      if isinstance(stored_stream, dict)
                                      else stored_stream))
             self.current_streams[stype] = stored_stream
-            common.log('Restored {} to {}'.format(stype, stored_stream))
+            common.debug('Restored {} to {}'.format(stype, stored_stream))
 
     def _ask_to_save(self, stype, stream):
-        common.log('Asking to save {} for {}'.format(stream, stype))
+        common.debug('Asking to save {} for {}'.format(stream, stype))
         new_show_settings = self.show_settings.copy()
         new_show_settings[stype] = stream
-        show_modal_dialog(
-            xmldialogs.SaveStreamSettings,
+        ui.show_modal_dialog(
+            ui.xmldialogs.SaveStreamSettings,
             "plugin-video-netflix-SaveStreamSettings.xml",
             common.ADDON.getAddonInfo('path'),
             minutes=0,

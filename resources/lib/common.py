@@ -186,12 +186,39 @@ class VideoId(object):
         this instance"""
         if self.videoid:
             return [self.videoid]
+        if self.movieid:
+            return [self.MOVIE, self.movieid]
+
         pathitems = [self.SHOW, self.tvshowid]
         if self.seasonid:
             pathitems.extend([self.SEASON, self.seasonid])
         if self.episodeid:
             pathitems.extend([self.EPISODE, self.episodeid])
         return pathitems
+
+    def to_list(self):
+        """Generate a list representation that can be used with get_path"""
+        if self.videoid:
+            return self.videoid
+        path = [id_part for id_part in self.id_values if id_part]
+        if len(path) > 1:
+            path.reverse()
+        return path
+
+    def to_dict(self):
+        """Return a dict containing the relevant properties of this
+        instance"""
+        result = {'mediatype': self.mediatype}
+        if self.videoid:
+            result['videoid'] = self.videoid
+            return result
+        if self.movieid:
+            result['movieid'] = self.movieid
+            return result
+        result.update({prop: self.__getattribute__(prop)
+                       for prop in ['tvshowid', 'seasonid', 'episodeid']
+                       if self.__getattribute__(prop) is not None})
+        return result
 
     def derive_season(self, seasonid):
         """Return a new VideoId instance that represents the given season
@@ -219,15 +246,12 @@ class VideoId(object):
                  else None in self.id_values[index:])):
                 raise InvalidVideoId(self.id_values)
             return True  # Validation successful
+        if index == len(self.id_values):
+            raise InvalidVideoId(self.id_values)
         return False  # Validation does not apply
 
     def __str__(self):
-        return (VideoId.REPR_FORMAT.format(mediatype=self.mediatype,
-                                           videoid=self.videoid,
-                                           movieid=self.movieid,
-                                           episodeid=self.episodeid,
-                                           seasonid=self.seasonid,
-                                           tvshowid=self.tvshowid))
+        return '{}_{}'.format(self.mediatype, self.value)
 
     def __hash__(self):
         try:
@@ -789,7 +813,6 @@ def make_call(func, data=None):
     The contents of data will be expanded to kwargs and passed into the target
     function."""
     callname = _signal_name(func)
-    debug('Making AddonSignals call {}'.format(callname))
     result = AddonSignals.makeCall(
         source_id=ADDON_ID,
         signal=callname,
@@ -814,12 +837,8 @@ def addonsignals_return_call(func):
         # pylint: disable=broad-except
         try:
             if isinstance(data, dict):
-                debug('Calling {} with kwargs={}'
-                      .format(func.__name__, data))
                 result = func(instance, **data)
             elif data is not None:
-                debug('Calling {} with first positional arg={}'
-                      .format(func.__name__, data))
                 result = func(instance, data)
             else:
                 result = func(instance)
@@ -843,8 +862,9 @@ def _signal_name(func):
 def build_url(pathitems=None, videoid=None, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters.
     Add videoid to the path if it's present."""
+    pathitems = pathitems or []
     if videoid:
-        pathitems = (pathitems or []).extend(videoid.to_path())
+        pathitems.extend(videoid.to_path())
     elif not pathitems:
         raise ValueError('Either pathitems or videoid must be set.')
     if mode:
@@ -884,7 +904,8 @@ def get_last_location():
             parsed_url[2][1:],  # Path
             dict(parse_qsl(parsed_url[4][1:])))  # Querystring
 
-def inject_video_id(path_offset, pathitems_arg='pathitems'):
+def inject_video_id(path_offset, pathitems_arg='pathitems',
+                    inject_remaining_pathitems=False):
     """Decorator that converts a pathitems argument into a VideoId
     and injects this into the decorated function instead. Pathitems
     that are to be converted into a video id must be passed into
@@ -896,7 +917,10 @@ def inject_video_id(path_offset, pathitems_arg='pathitems'):
             try:
                 kwargs['videoid'] = VideoId.from_path(
                     kwargs[pathitems_arg][path_offset:])
-                kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
+                if inject_remaining_pathitems:
+                    kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
+                else:
+                    del kwargs[pathitems_arg]
             except KeyError:
                 raise Exception('Pathitems must be passed as kwarg {}'
                                 .format(pathitems_arg))

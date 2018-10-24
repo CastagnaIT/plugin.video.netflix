@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
 
 import threading
+import traceback
 
 import xbmc
 
@@ -69,6 +70,7 @@ class NetflixService(object):
                     self.controller.on_playback_tick()
                 self.library_updater.on_tick()
             except Exception as exc:
+                traceback.format_exc()
                 common.error(exc)
 
             if self.controller.waitForAbort(1):

@@ -4,11 +4,9 @@
 from __future__ import unicode_literals
 
 import xbmc
-import xbmcgui
 
 import resources.lib.common as common
-from resources.lib.kodi.ui import xmldialogs, show_modal_dialog
-
+import resources.lib.kodi.ui as ui
 from .action_manager import PlaybackActionManager
 from .markers import SKIPPABLE_SECTIONS
 
@@ -45,19 +43,17 @@ class SectionSkipper(PlaybackActionManager):
             del self.markers[section]
 
     def _skip_section(self, section):
-        common.log('Entered section {}'.format(section))
-        label = common.ADDON.getLocalizedString(SKIPPABLE_SECTIONS[section])
+        common.debug('Entered section {}'.format(section))
         if self.auto_skip:
-            self._auto_skip(section, label)
+            self._auto_skip(section)
         else:
-            self._ask_to_skip(section, label)
+            self._ask_to_skip(section)
 
-    def _auto_skip(self, section, label):
-        common.log('Auto-skipping {}'.format(section))
+    def _auto_skip(self, section):
+        common.info('Auto-skipping {}'.format(section))
         player = xbmc.Player()
-        xbmcgui.Dialog().notification(
-            'Netflix', '{}...'.format(label.encode('utf-8')),
-            xbmcgui.NOTIFICATION_INFO, 5000)
+        ui.show_notification(
+            common.get_local_string(SKIPPABLE_SECTIONS[section]))
         if self.pause_on_skip:
             player.pause()
             xbmc.sleep(1000)  # give kodi the chance to execute
@@ -67,16 +63,17 @@ class SectionSkipper(PlaybackActionManager):
         else:
             player.seekTime(self.markers[section]['end'])
 
-    def _ask_to_skip(self, section, label):
-        common.log('Asking to skip {}'.format(section))
+    def _ask_to_skip(self, section):
+        common.debug('Asking to skip {}'.format(section))
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         seconds = dialog_duration % 60
         minutes = (dialog_duration - seconds) / 60
-        show_modal_dialog(xmldialogs.Skip,
-                          "plugin-video-netflix-Skip.xml",
-                          common.ADDON.getAddonInfo('path'),
-                          minutes=minutes,
-                          seconds=seconds,
-                          skip_to=self.markers[section]['end'],
-                          label=label)
+        ui.show_modal_dialog(ui.xmldialogs.Skip,
+                             "plugin-video-netflix-Skip.xml",
+                             common.ADDON.getAddonInfo('path'),
+                             minutes=minutes,
+                             seconds=seconds,
+                             skip_to=self.markers[section]['end'],
+                             label=common.get_local_string(
+                                 SKIPPABLE_SECTIONS[section]))

@@ -337,7 +337,7 @@ msgid "Skip automatically"
 msgstr ""
 
 msgctxt "#30080"
-msgid "Don't pause when skipping"
+msgid "Pause when skipping"
 msgstr ""
 
 msgctxt "#30081"

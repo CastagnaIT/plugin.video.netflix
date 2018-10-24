@@ -14,6 +14,7 @@ class PlaybackActionManager(object):
 
     @property
     def name(self):
+        """Name of this manager"""
         return self.__class__.__name__
 
     @property
@@ -23,7 +24,7 @@ class PlaybackActionManager(object):
         Loads the value from Kodi settings if it has not been set.
         """
         if self._enabled is None:
-            common.log('Loading enabled setting from store')
+            common.debug('Loading enabled setting from store')
             self._enabled = common.ADDON.getSettingBool(
                 '{}_enabled'.format(self.__class__.__name__))
 
@@ -42,9 +43,9 @@ class PlaybackActionManager(object):
             self._call_if_enabled(self._initialize, data=data)
         except Exception as exc:
             self.enabled = False
-            common.log('{} disabled due to exception while initializing:\n{}'
-                       .format(self.name, exc), common.LOGERROR)
-        common.log('Initialiized {}: {}'.format(self.name, self))
+            common.error('{} disabled due to exception while initializing: {}'
+                         .format(self.name, exc))
+        common.debug('Initialiized {}: {}'.format(self.name, self))
 
     def on_playback_started(self, player_state):
         """

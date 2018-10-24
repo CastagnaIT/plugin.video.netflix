@@ -32,7 +32,8 @@ def route(pathitems):
     elif root_handler == nav.MODE_HUB:
         hub.browse(*pass_on_params)
     elif root_handler == nav.MODE_PLAY:
-        player.play(pathitems=pathitems[1:])
+        player.play(pathitems=pathitems[1:],
+                    needs_pin=common.REQUEST_PARAMS.get('pin', False))
     elif root_handler == nav.MODE_ACTION:
         actions.execute(*pass_on_params)
     elif root_handler == nav.MODE_LIBRARY:
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     except Exception as exc:
         import traceback
         common.error(traceback.format_exc())
-        ui.show_notification(title='An error occurred', msg=exc)
+        ui.show_notification(msg='Error: {}'.format(exc))
         xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE, succeeded=False)
 
     cache.commit()
