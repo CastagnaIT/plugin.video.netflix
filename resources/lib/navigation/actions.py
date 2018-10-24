@@ -20,7 +20,7 @@ def execute(pathitems, params):
     common.debug('Invoking action executor {}'.format(executor.__name__))
 
     if len(pathitems) > 1:
-        executor((pathitems[1:]))
+        executor(pathitems=pathitems[1:])
     else:
         executor()
 
@@ -65,24 +65,20 @@ class ActionExecutor(object):
         common.ADDON.setSettingBool(
             not common.ADDON.getSettingBool('adultpin_enable'))
 
-    def rate(self, pathitems):
+    @common.inject_video_id(path_offset=0)
+    def rate(self, videoid):
         """Rate an item on Netflix. Ask for a rating if there is none supplied
         in the path."""
-        if len(pathitems) < 2:
-            rating = ui.ask_for_rating()
-        else:
-            rating = pathitems[1]
-        api.rate(pathitems[0], rating)
+        rating = self.params.get('rating') or ui.ask_for_rating()
+        api.rate(videoid, rating)
 
-    def my_list(self, pathitems):
+    @common.inject_video_id(path_offset=1)
+    def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
-        if len(pathitems) < 2:
-            raise InvalidPathError('Missing video id')
-
         if pathitems[0] == 'add':
-            api.add_to_list(pathitems[1])
+            api.add_to_list(videoid)
         elif pathitems[0] == 'remove':
-            api.remove_from_list(pathitems[1])
+            api.remove_from_list(videoid)
         else:
             raise InvalidPathError('Unknown my-list action: {}'
                                    .format(pathitems[0]))

@@ -32,7 +32,7 @@ def route(pathitems):
     elif root_handler == nav.MODE_HUB:
         hub.browse(*pass_on_params)
     elif root_handler == nav.MODE_PLAY:
-        player.play(pathitems[1:])
+        player.play(pathitems=pathitems[1:])
     elif root_handler == nav.MODE_ACTION:
         actions.execute(*pass_on_params)
     elif root_handler == nav.MODE_LIBRARY:

@@ -18,16 +18,12 @@ import resources.lib.common as common
 WND = xbmcgui.Window(10000)
 
 CACHE_COMMON = 'cache_common'
-CACHE_VIDEO_LIST = 'cache_video_list'
-CACHE_SEASONS = 'cache_seasons'
-CACHE_EPISODES = 'cache_episodes'
 CACHE_METADATA = 'cache_metadata'
 CACHE_INFOLABELS = 'cache_infolabels'
 CACHE_ARTINFO = 'cache_artinfo'
 CACHE_LIBRARY = 'library'
 
-BUCKET_NAMES = [CACHE_COMMON, CACHE_VIDEO_LIST, CACHE_SEASONS,
-                CACHE_EPISODES, CACHE_METADATA, CACHE_INFOLABELS,
+BUCKET_NAMES = [CACHE_COMMON, CACHE_METADATA, CACHE_INFOLABELS,
                 CACHE_ARTINFO, CACHE_LIBRARY]
 BUCKETS = {}
 
@@ -56,7 +52,7 @@ class UnknownCacheBucketError(Exception):
 
 # pylint: disable=too-many-arguments
 def cache_output(bucket, identifying_param_index=0,
-                 identifying_param_name=None,
+                 identifying_param_name='videoid',
                  fixed_identifier=None,
                  ttl=None,
                  to_disk=False):
@@ -159,16 +155,15 @@ def invalidate_last_location():
         if last_path[1] == 'video_list':
             if last_path[2] in common.KNOWN_LIST_TYPES:
                 video_list_id = api.list_id_for_type(last_path[2])
-                invalidate_entry(CACHE_VIDEO_LIST,
-                                 video_list_id)
+                invalidate_entry(CACHE_COMMON, video_list_id)
                 invalidate_entry(CACHE_COMMON, last_path[2])
             else:
-                invalidate_entry(CACHE_VIDEO_LIST, last_path[2])
+                invalidate_entry(CACHE_COMMON, last_path[2])
         elif last_path[1] == 'show':
             if len(last_path) > 4:
-                invalidate_entry(CACHE_EPISODES, last_path[4])
+                invalidate_entry(CACHE_COMMON, last_path[4])
             else:
-                invalidate_entry(CACHE_SEASONS, last_path[2])
+                invalidate_entry(CACHE_COMMON, last_path[2])
     except IndexError as exc:
         common.error(
             'Failed to invalidate cache entry for last location: {}'

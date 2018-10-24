@@ -62,7 +62,7 @@ def execute(pathitems, params):
     common.debug('Invoking action executor {}'.format(executor.__name__))
 
     if len(pathitems) > 1:
-        executor((pathitems[1:]))
+        executor(pathitems=pathitems[1:])
     else:
         executor()
 
@@ -73,17 +73,20 @@ class ActionExecutor(object):
         common.debug('Initializing action executor: {}'.format(params))
         self.params = params
 
-    def export(self, pathitems):
+    @common.inject_video_id(path_offset=0)
+    def export(self, videoid):
         """Export an item to the Kodi library"""
         # TODO: Implement library export
         pass
 
-    def remove(self, pathitems):
+    @common.inject_video_id(path_offset=0)
+    def remove(self, videoid):
         """Remove an item from the Kodi library"""
         # TODO: Implement library removal
         pass
 
-    def update(self, pathitems):
+    @common.inject_video_id(path_offset=0)
+    def update(self, videoid):
         """Update an item in the Kodi library"""
         # TODO: Implement library updates
         pass

@@ -9,6 +9,7 @@ import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
+import resources.lib.navigation as nav
 import resources.lib.kodi.library as library
 
 from .infolabels import add_info, add_art
@@ -34,34 +35,211 @@ RUN_PLUGIN = 'XBMC.RunPlugin({})'
 CONTEXT_MENU_ACTIONS = {
     'export': {
         'label': common.get_local_string(30018),
-        'url': (lambda videoid, mediatype:
-                common.build_library_url('export', videoid, mediatype))},
+        'url': (lambda videoid:
+                common.build_url(['export'], videoid, mode=nav.MODE_LIBRARY))},
     'remove': {
         'label': common.get_local_string(30030),
-        'url': (lambda videoid, mediatype:
-                common.build_library_url('remove', videoid, mediatype))},
+        'url': (lambda videoid:
+                common.build_url(['remove'], videoid, mode=nav.MODE_LIBRARY))},
     'update': {
         'label': common.get_local_string(30030),
-        'url': (lambda videoid, mediatype:
-                common.build_library_url('update', videoid, mediatype))},
+        'url': (lambda videoid:
+                common.build_url(['update'], videoid, mode=nav.MODE_LIBRARY))},
     'rate': {
         'label': common.get_local_string(30019),
         'url': (lambda videoid:
-                common.build_action_url(['rate', videoid]))},
+                common.build_url(['rate'], videoid, mode=nav.MODE_ACTION))},
     'add_to_list': {
         'label': common.get_local_string(30021),
         'url': (lambda videoid:
-                common.build_action_url(['my_list', 'add', videoid]))},
+                common.build_url(['my_list', 'add'], videoid,
+                                 mode=nav.MODE_ACTION))},
     'remove_from_list': {
         'label': common.get_local_string(30020),
         'url': (lambda videoid:
-                common.build_action_url(['my_list', 'remove', videoid]))},
+                common.build_url(['my_list', 'remove'], videoid,
+                                 mode=nav.MODE_ACTION))},
 }
+
+@custom_viewmode(VIEW_FOLDER)
+def build_profiles_listing(profiles):
+    """
+    Builds the profiles list Kodi screen
+
+    :param profiles: list of user profiles
+    :type profiles: list
+    :param action: action paramter to build the subsequent routes
+    :type action: str
+    :param build_url: function to build the subsequent routes
+    :type build_url: fn
+    :returns: bool -- List could be build
+    """
+    directory_items = []
+    try:
+        from HTMLParser import HTMLParser
+    except ImportError:
+        from html.parser import HTMLParser
+    html_parser = HTMLParser()
+    for profile_guid, profile in profiles.iteritems():
+        profile_name = profile.get('profileName', '')
+        unescaped_profile_name = html_parser.unescape(profile_name)
+        enc_profile_name = profile_name.encode('utf-8')
+        list_item = create_list_item(
+            label=unescaped_profile_name, icon=profile.get('avatar'))
+        autologin_url = common.build_url(
+            pathitems=['save_autologin', profile_guid],
+            params={'autologin_user': enc_profile_name},
+            mode=nav.MODE_ACTION)
+        list_item.addContextMenuItems(
+            items=[(common.get_local_string(30053),
+                    'RunPlugin({})'.format(autologin_url))])
+        directory_items.append(
+            (common.build_url(pathitems=['home'],
+                              params={'profile_id': profile_guid},
+                              mode=nav.MODE_DIRECTORY),
+             list_item,
+             True))
+
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_LABEL])
+
+@custom_viewmode(VIEW_FOLDER)
+def build_main_menu_listing(lolomo):
+    """
+    Builds the video lists (my list, continue watching, etc.) Kodi screen
+    """
+    directory_items = []
+    for _, user_list in lolomo.lists_by_context(common.KNOWN_LIST_TYPES):
+        common.debug('Creating listitem for: {}'.format(user_list))
+        directory_items.append(
+            (common.build_url(
+                ['video_list', user_list['context']], mode=nav.MODE_DIRECTORY),
+             create_list_item(user_list['displayName']),
+             True))
+
+    for context_type, data in common.MISC_CONTEXTS.iteritems():
+        directory_items.append(
+            (common.build_url([context_type], mode=nav.MODE_DIRECTORY),
+             create_list_item(common.get_local_string(data['label_id'])),
+             True))
+
+    # Add search
+    directory_items.append(
+        (common.build_url(['search'], mode=nav.MODE_DIRECTORY),
+         create_list_item(common.get_local_string(30011)),
+         True))
+
+    # Add exported
+    directory_items.append(
+        (common.build_url(['exported'], mode=nav.MODE_DIRECTORY),
+         create_list_item(common.get_local_string(30048)),
+         True))
+
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
+        content_type=CONTENT_FOLDER)
+
+@custom_viewmode(VIEW_SHOW)
+def build_video_listing(video_list):
+    """
+    Build a video listing
+    """
+    only_movies = True
+    directory_items = []
+    for videoid_value, video in video_list.videos.iteritems():
+        is_movie = video['summary']['type'] == 'movie'
+        videoid = common.VideoId(
+            **{'movieid' if is_movie else 'tvshowid': videoid_value})
+        list_item = create_list_item(video['title'])
+        add_info(videoid, list_item, video, video_list.data)
+        add_art(videoid, list_item, video)
+        needs_pin = int(video.get('maturity', {})
+                        .get('level', 1001)) >= 1000
+        url = common.build_url(videoid=videoid,
+                               params={'pin': needs_pin},
+                               mode=(nav.MODE_PLAY
+                                     if is_movie
+                                     else nav.MODE_DIRECTORY))
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(videoid, video))
+        directory_items.append(
+            (url,
+             list_item,
+             not is_movie))
+        only_movies = only_movies and is_movie
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
+                      xbmcplugin.SORT_METHOD_LABEL,
+                      xbmcplugin.SORT_METHOD_TITLE,
+                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
+                      xbmcplugin.SORT_METHOD_GENRE,
+                      xbmcplugin.SORT_METHOD_LASTPLAYED],
+        content_type=CONTENT_MOVIE if only_movies else CONTENT_SHOW)
+    return VIEW_MOVIE if only_movies else VIEW_SHOW
+
+@custom_viewmode(VIEW_SEASON)
+def build_season_listing(tvshowid, season_list):
+    """
+    Build a season listing
+    """
+    directory_items = []
+    for seasonid_value, season in season_list.seasons.iteritems():
+        seasonid = tvshowid.derive_season(seasonid_value)
+        list_item = create_list_item(season['summary']['name'])
+        add_info(seasonid, list_item, season, season_list.data)
+        add_art(tvshowid, list_item, season_list.tvshow)
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(seasonid, season))
+        directory_items.append(
+            (common.build_url(videoid=seasonid, mode=nav.MODE_DIRECTORY),
+             list_item,
+             True))
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_NONE,
+                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
+                      xbmcplugin.SORT_METHOD_LABEL,
+                      xbmcplugin.SORT_METHOD_LASTPLAYED,
+                      xbmcplugin.SORT_METHOD_TITLE],
+        content_type=CONTENT_SEASON)
+
+@custom_viewmode(VIEW_EPISODE)
+def build_episode_listing(seasonid, episode_list):
+    """
+    Build a season listing
+    """
+    directory_items = []
+    for episodeid_value, episode in episode_list.episodes.iteritems():
+        episodeid = seasonid.derive_episode(episodeid_value)
+        list_item = create_list_item(episode['title'])
+        add_info(episodeid, list_item, episode, episode_list.data)
+        add_art(episodeid, list_item, episode)
+        list_item.addContextMenuItems(
+            _generate_context_menu_items(episodeid, episode))
+        directory_items.append(
+            (common.build_url(videoid=episodeid, mode=nav.MODE_PLAY),
+             list_item,
+             False))
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
+                      xbmcplugin.SORT_METHOD_LABEL,
+                      xbmcplugin.SORT_METHOD_TITLE,
+                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
+                      xbmcplugin.SORT_METHOD_GENRE,
+                      xbmcplugin.SORT_METHOD_LASTPLAYED],
+        content_type=CONTENT_EPISODE)
+
 
 def create_list_item(label, icon=None, fanart=None):
     """Create a rudimentary list item with icon and fanart"""
+    # pylint: disable=unexpected-keyword-arg
     list_item = xbmcgui.ListItem(label=label,
-                                 iconImage=icon or common.DEFAULT_FANART)
+                                 iconImage=icon or common.DEFAULT_FANART,
+                                 offscreen=True)
     list_item.setProperty('fanart_image', fanart or common.DEFAULT_FANART)
     return list_item
 
@@ -109,211 +287,36 @@ def custom_viewmode(viewtype):
         return set_custom_viewmode
     return decorate_viewmode
 
-@custom_viewmode(VIEW_FOLDER)
-def build_profiles_listing(profiles):
-    """
-    Builds the profiles list Kodi screen
-
-    :param profiles: list of user profiles
-    :type profiles: list
-    :param action: action paramter to build the subsequent routes
-    :type action: str
-    :param build_url: function to build the subsequent routes
-    :type build_url: fn
-    :returns: bool -- List could be build
-    """
-    directory_items = []
-    try:
-        from HTMLParser import HTMLParser
-    except ImportError:
-        from html.parser import HTMLParser
-    html_parser = HTMLParser()
-    for profile_guid, profile in profiles.iteritems():
-        profile_name = profile.get('profileName', '')
-        unescaped_profile_name = html_parser.unescape(profile_name)
-        enc_profile_name = profile_name.encode('utf-8')
-        list_item = create_list_item(
-            label=unescaped_profile_name, icon=profile.get('avatar'))
-        autologin_url = common.build_action_url(
-            pathitems=['save_autologin', profile_guid],
-            params={'autologin_user': enc_profile_name})
-        list_item.addContextMenuItems(
-            items=[(common.get_local_string(30053),
-                    'RunPlugin({})'.format(autologin_url))])
-        directory_items.append(
-            (common.build_directory_url(
-                ['home'], {'profile_id': profile_guid}),
-             list_item,
-             True))
-
-    finalize_directory(
-        items=directory_items,
-        sort_methods=[xbmcplugin.SORT_METHOD_LABEL])
-
-@custom_viewmode(VIEW_FOLDER)
-def build_main_menu_listing(lolomo):
-    """
-    Builds the video lists (my list, continue watching, etc.) Kodi screen
-    """
-    directory_items = []
-    for _, user_list in lolomo.lists_by_context(common.KNOWN_LIST_TYPES):
-        common.debug('Creating listitem for: {}'.format(user_list))
-        directory_items.append(
-            (common.build_directory_url(
-                ['video_list', user_list['context']]),
-             create_list_item(user_list['displayName']),
-             True))
-
-    for context_type, data in common.MISC_CONTEXTS.iteritems():
-        directory_items.append(
-            (common.build_directory_url(
-                [context_type]),
-             create_list_item(common.get_local_string(data['label_id'])),
-             True))
-
-    # Add search
-    directory_items.append(
-        (common.build_url(['search']),
-         create_list_item(common.get_local_string(30011)),
-         True))
-
-    # Add exported
-    directory_items.append(
-        (common.build_directory_url(['exported']),
-         create_list_item(common.get_local_string(30048)),
-         True))
-
-    finalize_directory(
-        items=directory_items,
-        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
-        content_type=CONTENT_FOLDER)
-
-@custom_viewmode(VIEW_SHOW)
-def build_video_listing(video_list):
-    """
-    Build a video listing
-    """
-    only_movies = True
-    directory_items = []
-    for video_id, video in video_list.videos.iteritems():
-        list_item = create_list_item(video['title'])
-        add_info(list_item, video, video_id, video_list.data)
-        add_art(list_item, video, video_id)
-        needs_pin = int(video.get('maturity', {})
-                        .get('level', 1001)) >= 1000
-        is_movie = video['summary']['type'] == 'movie'
-        if is_movie:
-            url = common.build_play_url(
-                pathitems=['movie', video_id],
-                params={'pin': needs_pin})
-        else:
-            url = common.build_directory_url(
-                pathitems=['show', video_id],
-                params={'pin': needs_pin})
-        list_item.addContextMenuItems(
-            _generate_context_menu_items(video_id, video['summary']['type'],
-                                         video))
-        directory_items.append(
-            (url,
-             list_item,
-             not is_movie))
-        only_movies = only_movies and is_movie
-    finalize_directory(
-        items=directory_items,
-        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
-                      xbmcplugin.SORT_METHOD_LABEL,
-                      xbmcplugin.SORT_METHOD_TITLE,
-                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
-                      xbmcplugin.SORT_METHOD_GENRE,
-                      xbmcplugin.SORT_METHOD_LASTPLAYED],
-        content_type=CONTENT_MOVIE if only_movies else CONTENT_SHOW)
-    return VIEW_MOVIE if only_movies else VIEW_SHOW
-
-@custom_viewmode(VIEW_SEASON)
-def build_season_listing(tvshowid, season_list):
-    """
-    Build a season listing
-    """
-    directory_items = []
-    for season_id, season in season_list.seasons.iteritems():
-        list_item = create_list_item(season['summary']['name'])
-        add_info(list_item, season, season_id, season_list.data, tvshowid)
-        add_art(list_item, season_list.tvshow, tvshowid)
-        list_item.addContextMenuItems(
-            _generate_context_menu_items(season_id, 'season', season))
-        directory_items.append(
-            (common.build_directory_url(
-                pathitems=['show', tvshowid, 'seasons', season_id]),
-             list_item,
-             True))
-    finalize_directory(
-        items=directory_items,
-        sort_methods=[xbmcplugin.SORT_METHOD_NONE,
-                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
-                      xbmcplugin.SORT_METHOD_LABEL,
-                      xbmcplugin.SORT_METHOD_LASTPLAYED,
-                      xbmcplugin.SORT_METHOD_TITLE],
-        content_type=CONTENT_SEASON)
-
-@custom_viewmode(VIEW_EPISODE)
-def build_episode_listing(tvshowid, seasonid, episode_list):
-    """
-    Build a season listing
-    """
-    directory_items = []
-    for episode_id, episode in episode_list.episodes.iteritems():
-        list_item = create_list_item(episode['title'])
-        add_info(list_item, episode, episode_id, episode_list.data, tvshowid)
-        add_art(list_item, episode, episode_id)
-        list_item.addContextMenuItems(
-            _generate_context_menu_items(episode_id, 'episode', episode))
-        directory_items.append(
-            (common.build_url(
-                pathitems=['play', 'show', tvshowid, 'seasons', seasonid,
-                           'episodes', episode_id]),
-             list_item,
-             False))
-    finalize_directory(
-        items=directory_items,
-        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
-                      xbmcplugin.SORT_METHOD_LABEL,
-                      xbmcplugin.SORT_METHOD_TITLE,
-                      xbmcplugin.SORT_METHOD_VIDEO_YEAR,
-                      xbmcplugin.SORT_METHOD_GENRE,
-                      xbmcplugin.SORT_METHOD_LASTPLAYED],
-        content_type=CONTENT_EPISODE)
-
-def _generate_context_menu_items(video_id, mediatype, item):
+def _generate_context_menu_items(videoid, item):
     items = []
-    if library.is_in_library(video_id):
+    if library.is_in_library(videoid):
         items.append(
             (CONTEXT_MENU_ACTIONS['remove']['label'],
              RUN_PLUGIN.format(
-                 CONTEXT_MENU_ACTIONS['remove']['url'](video_id, mediatype))))
-        if mediatype in ['show', 'season']:
+                 CONTEXT_MENU_ACTIONS['remove']['url'](videoid))))
+        if videoid.mediatype in [common.VideoId.SHOW, common.VideoId.SEASON]:
             items.append(
                 (CONTEXT_MENU_ACTIONS['update']['label'],
                  RUN_PLUGIN.format(
-                     CONTEXT_MENU_ACTIONS['update']['url'](video_id,
-                                                           mediatype))))
+                     CONTEXT_MENU_ACTIONS['update']['url'](videoid))))
     else:
         items.append(
             (CONTEXT_MENU_ACTIONS['export']['label'],
              RUN_PLUGIN.format(
-                 CONTEXT_MENU_ACTIONS['export']['url'](video_id, mediatype))))
+                 CONTEXT_MENU_ACTIONS['export']['url'](videoid))))
 
-    if mediatype != 'season':
+    if videoid.mediatype != common.VideoId.SEASON:
         items.append(
             (CONTEXT_MENU_ACTIONS['rate']['label'],
              RUN_PLUGIN.format(
-                 CONTEXT_MENU_ACTIONS['rate']['url'](video_id))))
+                 CONTEXT_MENU_ACTIONS['rate']['url'](videoid))))
 
-    if mediatype in ['movie', 'show']:
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
         list_action = ('remove_from_list'
                        if item['queue']['inQueue']
                        else 'add_to_list')
         items.append(
             (CONTEXT_MENU_ACTIONS[list_action]['label'],
              RUN_PLUGIN.format(
-                 CONTEXT_MENU_ACTIONS[list_action]['url'](video_id))))
+                 CONTEXT_MENU_ACTIONS[list_action]['url'](videoid))))
     return items

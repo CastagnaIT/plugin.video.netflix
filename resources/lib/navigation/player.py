@@ -10,13 +10,11 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
 from resources.lib.services.playback import get_timeline_markers
-from resources.lib.navigation import InvalidPathError
-
 
 SERVICE_URL_FORMAT = 'http://localhost:{port}'
 MANIFEST_PATH_FORMAT = ('/manifest?id={videoid}'
                         '&dolby={enable_dolby}&hevc={enable_hevc}')
-LICENSE_PATH_FORMAT = '/license?id={video_id}'
+LICENSE_PATH_FORMAT = '/license?id={videoid}'
 
 INPUTSTREAM_SERVER_CERTIFICATE = '''Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijg
 IwggEKAoIBAQDm875btoWUbGqQD8eAGuBlGY+Pxo8YF1LQR+Ex0pDONMet8EHslcZRBKNQ/09RZFTP
@@ -36,56 +34,37 @@ class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
     pass
 
-def play(pathitems):
+@common.inject_video_id(path_offset=0)
+def play(videoid):
     """Play an episode or movie as specified by the path"""
-    if pathitems[0] == 'show' and len(pathitems) == 6:
-        play_episode(tvshowid=pathitems[1],
-                     seasonid=pathitems[3],
-                     episodeid=pathitems[5])
-    elif pathitems[0] == 'movie' and len(pathitems) == 2:
-        play_movie(movieid=pathitems[1])
-    else:
-        raise InvalidPathError('Cannot play {}'.format(pathitems))
-
-def play_episode(tvshowid, seasonid, episodeid):
-    """Play an episode"""
-    videoid = (tvshowid, seasonid, episodeid)
-    common.info('Playing episode {}'.format(videoid))
-    play_video(episodeid, api.episode_metadata(*videoid),
-               signal_data={'tvshow_video_id': tvshowid})
-
-def play_movie(movieid):
-    """Play a movie"""
-    common.info('Playing movie {}'.format(movieid))
-    play_video(movieid, api.metadata(movieid))
-
-def play_video(videoid, metadata, signal_data=None):
-    """Generically play a video"""
-    list_item = get_inputstream_listitem(videoid[0]
-                                         if isinstance(videoid, tuple)
-                                         else videoid)
-    infos, art = infolabels.add_info_for_playback(list_item, videoid)
-    signal_data = signal_data or {}
-    signal_data['infos'] = infos
-    signal_data['art'] = art
-    signal_data['timeline_markers'] = get_timeline_markers(metadata)
-    common.send_signal(common.Signals.PLAYBACK_INITIATED, signal_data)
+    metadata = api.metadata(videoid)
+    timeline_markers = get_timeline_markers(metadata)
+    list_item = get_inputstream_listitem(videoid)
+    infos, art = infolabels.add_info_for_playback(videoid, list_item)
+    common.send_signal(common.Signals.PLAYBACK_INITIATED, {
+        'videoid': videoid,
+        'infos': infos,
+        'art': art,
+        'timeline_markers': timeline_markers})
+    if videoid.mediatype == common.VideoId.EPISODE:
+        integrate_upnext(videoid, infos, art, timeline_markers, metadata)
     xbmcplugin.setResolvedUrl(
         handle=common.PLUGIN_HANDLE,
         succeeded=True,
         listitem=list_item)
 
-def get_inputstream_listitem(video_id):
+def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set
     for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
         port=common.ADDON.getSetting('msl_service_port'))
     manifest_path = MANIFEST_PATH_FORMAT.format(
-        videoid=video_id,
+        videoid=videoid.value,
         enable_dolby=common.ADDON.getSetting('enable_dolby_sound'),
         enable_hevc=common.ADDON.getSetting('enable_hevc_profiles'))
 
-    list_item = xbmcgui.ListItem(path=service_url + manifest_path)
+    list_item = xbmcgui.ListItem(path=service_url + manifest_path,
+                                 offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/dash+xml')
 
@@ -105,7 +84,7 @@ def get_inputstream_listitem(video_id):
         value='mpd')
     list_item.setProperty(
         key=is_helper.inputstream_addon + '.license_key',
-        value=service_url + LICENSE_PATH_FORMAT.format(video_id=video_id) +
+        value=service_url + LICENSE_PATH_FORMAT.format(videoid=videoid.value) +
         '||b{SSM}!b{SID}|')
     list_item.setProperty(
         key=is_helper.inputstream_addon + '.server_certificate',
@@ -114,3 +93,8 @@ def get_inputstream_listitem(video_id):
         key='inputstreamaddon',
         value=is_helper.inputstream_addon)
     return list_item
+
+def integrate_upnext(videoid, current_infos, current_art, timeline_markers,
+                     metadata):
+    """Determine next episode and send an AddonSignal to UpNext addon"""
+    pass

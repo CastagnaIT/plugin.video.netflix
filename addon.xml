@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.13.21" provider-name="libdev + jojo + asciidisco">
+<addon id="plugin.video.netflix" name="Netflix" version="0.14.0~beta1" provider-name="libdev + jojo + asciidisco">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -34,12 +34,6 @@
     <forum>https://www.kodinerds.net/index.php/Thread/55612-PreRelease-Plugin-Netflix-Inputstream/</forum>
     <source>https://github.com/asciidisco/plugin.video.netflix</source>
     <news>
-v0.13.20 (2018-11-29)
-- MSLv2 for manifest retrieval
-
-v0.13.19 (2018-11-24)
-- Fix VTT / VP9 issues
-
 v0.13.18 (2018-11-17)
 - Write correct codec into VP9 MPEG DAS profiles
 
