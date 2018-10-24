@@ -72,7 +72,7 @@ class ActionExecutor(object):
         rating = self.params.get('rating') or ui.ask_for_rating()
         api.rate(videoid, rating)
 
-    @common.inject_video_id(path_offset=1)
+    @common.inject_video_id(path_offset=1, inject_remaining_pathitems=True)
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         if pathitems[0] == 'add':

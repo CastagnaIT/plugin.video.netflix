@@ -43,10 +43,7 @@ class PlaybackController(xbmc.Monitor):
             SectionSkipper(),
             StreamContinuityManager()
         ]
-        try:
-            self._notify_all(PlaybackActionManager.initialize, data)
-        except Exception as exc:
-            common.log(exc)
+        self._notify_all(PlaybackActionManager.initialize, data)
 
     def onNotification(self, sender, method, data):
         # pylint: disable=unused-argument, invalid-name, broad-except
@@ -62,7 +59,9 @@ class PlaybackController(xbmc.Monitor):
                 elif method == 'Player.OnStop':
                     self._on_playback_stopped()
             except Exception as exc:
-                common.log(exc)
+                common.error(exc)
+                import traceback
+                traceback.format_exc()
 
     def on_playback_tick(self):
         """
@@ -86,8 +85,8 @@ class PlaybackController(xbmc.Monitor):
         self.action_managers = None
 
     def _notify_all(self, notification, data=None):
-        common.log('Notifying all managers of {} (data={})'
-                   .format(notification.__name__, data))
+        common.debug('Notifying all managers of {} (data={})'
+                     .format(notification.__name__, data))
         for manager in self.action_managers:
             notify_method = getattr(manager, notification.__name__)
             if data is not None:

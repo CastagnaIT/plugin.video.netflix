@@ -31,14 +31,15 @@ def _library():
 
 def save_library():
     """Save the library to disk via cache"""
-    cache.add(cache.CACHE_LIBRARY, 'library', __LIBRARY__,
-              ttl=cache.TTL_INFINITE, to_disk=True)
+    if __LIBRARY__ is not None:
+        cache.add(cache.CACHE_LIBRARY, 'library', __LIBRARY__,
+                  ttl=cache.TTL_INFINITE, to_disk=True)
 
 def get_item(videoid, include_props=False):
     """Find an item in the Kodi library by its Netflix videoid and return
     Kodi DBID and mediatype"""
     try:
-        filepath = common.get_path(videoid, _library())['file']
+        filepath = common.get_path(videoid.to_list(), _library())['file']
         params = {'file': filepath, 'media': 'video'}
         if include_props:
             params['properties'] = FILE_PROPS
@@ -50,7 +51,7 @@ def get_item(videoid, include_props=False):
 
 def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
-    return common.get_path_safe(videoid, _library()) is not None
+    return common.get_path_safe(videoid.to_list(), _library()) is not None
 
 def execute(pathitems, params):
     """Execute an action as specified by the path"""

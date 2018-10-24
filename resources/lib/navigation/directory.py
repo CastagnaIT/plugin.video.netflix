@@ -18,7 +18,7 @@ def build(pathitems, params):
     common.debug('Invoking directory handler {}'.format(builder.__name__))
 
     if len(pathitems) > 1:
-        builder(pathitems=pathitems[1:])
+        builder(pathitems=pathitems)
     else:
         builder()
 
@@ -62,10 +62,10 @@ class DirectoryBuilder(object):
     def video_list(self, pathitems):
         """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
-        if pathitems[0] in common.KNOWN_LIST_TYPES:
-            list_id = api.list_id_for_type(pathitems[0])
+        if pathitems[1] in common.KNOWN_LIST_TYPES:
+            list_id = api.list_id_for_type(pathitems[1])
         else:
-            list_id = pathitems[0]
+            list_id = pathitems[1]
 
         listings.build_video_listing(api.video_list(list_id))
 

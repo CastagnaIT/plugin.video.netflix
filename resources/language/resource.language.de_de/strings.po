@@ -325,8 +325,8 @@ msgid "Skip automatically"
 msgstr "Automatisch überspringen"
 
 msgctxt "#30080"
-msgid "Don't pause when skipping"
-msgstr "Beim Weiterspringen nicht pausieren"
+msgid "Pause when skipping"
+msgstr "Beim Weiterspringen pausieren"
 
 msgctxt "#30081"
 msgid "Save audio/subtitle preferences for this show"

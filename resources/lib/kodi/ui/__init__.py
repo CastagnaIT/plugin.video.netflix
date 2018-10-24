@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """Kodi GUI stuff"""
+# pylint: disable=wildcard-import
 from __future__ import unicode_literals
 
 import xbmc
+
+from .xmldialogs import *
 
 CMD_AUTOCLOSE_DIALOG = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
                        '{:02d}:{:02d},silent)'
@@ -12,7 +14,8 @@ def show_notification(msg, title='Netflix'):
     """Show a notification"""
     import resources.lib.common as common
     xbmc.executebuiltin('Notification({}, {}, 3000, {})'
-                        .format(title, msg, common.ICON))
+                        .format(title, msg, common.ICON)
+                        .encode('utf-8'))
 
 def show_modal_dialog(dlg_class, xml, path, **kwargs):
     """

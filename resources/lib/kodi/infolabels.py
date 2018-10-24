@@ -12,13 +12,13 @@ def add_info(videoid, list_item, item, raw_data):
     in place and the infolabels are returned."""
     # pylint: disable=too-many-locals
     try:
-        cache_entry = cache.get(cache.CACHE_INFOLABELS, videoid.value)
+        cache_entry = cache.get(cache.CACHE_INFOLABELS, videoid)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except cache.CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
         cache.add(cache.CACHE_INFOLABELS,
-                  videoid.value,
+                  videoid,
                   {'infos': infos, 'quality_infos': quality_infos},
                   ttl=common.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
