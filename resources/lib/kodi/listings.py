@@ -162,6 +162,24 @@ def build_main_menu_listing(lolomo):
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
         content_type=CONTENT_FOLDER)
 
+def build_lolomo_listing(lolomo, contexts=None):
+    """Build a listing of vieo lists (LoLoMo). Only show those
+    lists with a context specified context if contexts is set."""
+    directory_items = []
+    lists = (lolomo.lists_by_context(contexts)
+             if contexts
+             else lolomo.lists.iteritem())
+    for video_list_id, video_list in lists:
+        directory_items.append(
+            (common.build_url(
+                ['video_list', video_list_id], mode=nav.MODE_DIRECTORY),
+             create_list_item(video_list['displayName']),
+             True))
+    finalize_directory(
+        items=directory_items,
+        sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
+        content_type=CONTENT_FOLDER)
+
 @custom_viewmode(VIEW_SHOW)
 def build_video_listing(video_list):
     """
