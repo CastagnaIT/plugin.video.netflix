@@ -7,18 +7,18 @@ import resources.lib.cache as cache
 import resources.lib.api.paths as paths
 import resources.lib.kodi.library as library
 
-def add_info(list_item, item, item_id, raw_data, tvshowid=None):
+def add_info(videoid, list_item, item, raw_data):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
     # pylint: disable=too-many-locals
     try:
-        cache_entry = cache.get(cache.CACHE_INFOLABELS, item_id)
+        cache_entry = cache.get(cache.CACHE_INFOLABELS, videoid.value)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except cache.CacheMiss:
-        infos, quality_infos = parse_info(item, raw_data, tvshowid)
+        infos, quality_infos = parse_info(videoid, item, raw_data)
         cache.add(cache.CACHE_INFOLABELS,
-                  item_id,
+                  videoid.value,
                   {'infos': infos, 'quality_infos': quality_infos},
                   ttl=common.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
@@ -28,42 +28,40 @@ def add_info(list_item, item, item_id, raw_data, tvshowid=None):
         list_item.addStreamInfo(stream_type, quality_infos)
     return infos
 
-def add_art(list_item, item, item_id):
+def add_art(videoid, list_item, item, raw_data=None):
     """Add art infolabels to list_item"""
     try:
-        art = cache.get(cache.CACHE_ARTINFO, item_id)
+        art = cache.get(cache.CACHE_ARTINFO, videoid)
     except cache.CacheMiss:
-        art = parse_art(item)
-        cache.add(cache.CACHE_ARTINFO, item_id, art,
+        art = parse_art(videoid, item, raw_data)
+        cache.add(cache.CACHE_ARTINFO, videoid, art,
                   ttl=common.CACHE_METADATA_TTL, to_disk=True)
     list_item.setArt(art)
     return art
 
-def add_info_for_playback(list_item, videoid):
+def add_info_for_playback(videoid, list_item):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
-        return add_info_from_library(list_item, videoid)
+        return add_info_from_library(videoid, list_item)
     except library.ItemNotFound:
-        return add_info_from_netflix(list_item, videoid)
+        return add_info_from_netflix(videoid, list_item)
 
-def parse_info(item, raw_data, tvshowid):
+def parse_info(videoid, item, raw_data):
     """Parse info from a path request response into Kodi infolabels"""
     # Only season items don't have a type in their summary, thus, if
     # there's no type, it's a season
-    mediatype = item['summary'].get('type', 'season')
-    if mediatype == 'show':
+    mediatype = videoid.mediatype
+    if mediatype == common.VideoId.SHOW:
         # Type from Netflix doesn't match Kodi's expectations
         mediatype = 'tvshow'
 
-    infos = {
-        'mediatype': mediatype,
-    }
+    infos = {'mediatype': mediatype}
     quality_infos = get_quality_infos(item)
 
-    if mediatype == 'tvshow':
+    if videoid.mediatype == common.VideoId.SHOW:
         infos['tvshowtitle'] = item['title']
-    elif tvshowid and mediatype in ['season', 'episode']:
-        infos['tvshowtitle'] = raw_data['videos'][tvshowid]['title']
+    elif videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
+        infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
 
     for target, source in paths.INFO_MAPPINGS.iteritems():
         value = (common.get_path_safe(source, item)
@@ -116,7 +114,7 @@ def get_quality_infos(item):
             else 'aac')
     return quality_infos
 
-def parse_art(item):
+def parse_art(videoid, item, raw_data):
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[0] + ['url'], item)
@@ -150,33 +148,22 @@ def parse_art(item):
         art['fanart'] = fanart
     return art
 
-def add_info_from_netflix(list_item, videoid):
+def add_info_from_netflix(videoid, list_item):
     """Apply infolabels with info from Netflix API"""
     try:
-        infos = add_info(list_item, None, None, None)
-        art = add_art(list_item, None, None)
+        infos = add_info(videoid, list_item, None, None)
+        art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
     except TypeError:
         common.info('Infolabels or art were not in cache, retrieving from API')
         import resources.lib.api.shakti as api
-        if isinstance(videoid, tuple):
-            tvshowid = videoid[0]
-            videoid = videoid[2]
-        else:
-            tvshowid = None
-        api_data = (api.movie(videoid)
-                    if tvshowid is None
-                    else api.episode(tvshowid, videoid))
-        infos = add_info(list_item,
-                         item=api_data['videos'][videoid],
-                         item_id=videoid,
-                         raw_data=api_data,
-                         tvshowid=tvshowid)
-        art = add_art(list_item, item=api_data['videos'][videoid],
-                      item_id=videoid)
+        api_data = api.single_info(videoid)
+        infos = add_info(videoid, list_item, api_data['videos'][videoid],
+                         api_data)
+        art = add_art(videoid, list_item, api_data['videos'][videoid])
     return infos, art
 
-def add_info_from_library(list_item, videoid):
+def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
     details = library.get_item(videoid, include_props=True)
     art = details.pop('art', {})

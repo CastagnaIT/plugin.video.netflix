@@ -41,26 +41,23 @@ class VideoList(object):
             resolve_refs(self.data['lists'][self.id], self.data))
 
 class SeasonList(object):
-    """A video list"""
-    # pylint: disable=invalid-name
-    def __init__(self, tvshowid, path_response):
+    """A list of seasons. Includes tvshow art."""
+    def __init__(self, videoid, path_response):
         self.data = path_response
-        self.tvshowid = tvshowid
+        self.videoid = videoid
         self.seasons = OrderedDict(
             resolve_refs(
-                self.data['videos'][self.tvshowid]['seasonList'],
+                self.data['videos'][self.videoid.tvshowid]['seasonList'],
                 self.data))
-        self.tvshow = self.data['videos'][self.tvshowid]
+        self.tvshow = self.data['videos'][self.videoid.tvshowid]
 
 class EpisodeList(object):
-    """A video list"""
-    # pylint: disable=invalid-name
-    def __init__(self, tvshowid, seasonid, path_response):
+    """A list of episodes. Includes tvshow art."""
+    def __init__(self, videoid, path_response):
         self.data = path_response
-        self.tvshowid = tvshowid
-        self.seasonid = seasonid
+        self.videoid = videoid
         self.episodes = OrderedDict(
             resolve_refs(
-                self.data['seasons'][self.seasonid]['episodes'],
+                self.data['seasons'][self.videoid.seasonid]['episodes'],
                 self.data))
-        self.tvshowart = None
+        self.tvshow = self.data['videos'][self.videoid.tvshowid]

@@ -18,13 +18,13 @@ def build(pathitems, params):
     common.debug('Invoking directory handler {}'.format(builder.__name__))
 
     if len(pathitems) > 1:
-        builder((pathitems[1:]))
+        builder(pathitems=pathitems[1:])
     else:
         builder()
 
     # Remember last location to be able to invalidate it in cache on
     # certain actions
-    common.remember_last_location() 
+    common.remember_last_location()
 
 class DirectoryBuilder(object):
     """Builds directory listings"""
@@ -57,8 +57,7 @@ class DirectoryBuilder(object):
     def home(self):
         """Show home listing"""
         common.debug('Showing root video lists')
-        listings.build_main_menu_listing(
-            lolomo=api.root_lists())
+        listings.build_main_menu_listing(api.root_lists())
 
     def video_list(self, pathitems):
         """Show a video list"""
@@ -68,23 +67,16 @@ class DirectoryBuilder(object):
         else:
             list_id = pathitems[0]
 
-        listings.build_video_listing(
-            video_list=api.video_list(list_id))
+        listings.build_video_listing(api.video_list(list_id))
 
-    def show(self, pathitems):
+    @common.inject_video_id(path_offset=0)
+    def show(self, videoid):
         """Show seasons of a tvshow"""
-        tvshowid = pathitems[0]
-        if len(pathitems) > 2:
-            self.season(tvshowid, pathitems[2:])
+        if videoid.mediatype == common.VideoId.SEASON:
+            self.season(videoid)
         else:
-            listings.build_season_listing(
-                tvshowid=tvshowid,
-                season_list=api.seasons(tvshowid))
+            listings.build_season_listing(videoid, api.seasons(videoid))
 
-    def season(self, tvshowid, pathitems):
+    def season(self, videoid):
         """Show episodes of a season"""
-        seasonid = pathitems[0]
-        listings.build_episode_listing(
-            tvshowid=tvshowid,
-            seasonid=seasonid,
-            episode_list=api.episodes(tvshowid, seasonid))
+        listings.build_episode_listing(videoid, api.episodes(videoid))

@@ -2,8 +2,6 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
-import json
-
 import resources.lib.common as common
 import resources.lib.cache as cache
 from resources.lib.services.nfsession import NetflixSession
@@ -45,7 +43,8 @@ def root_lists():
           {'from': 0, 'to': 40},
           ['displayName', 'context', 'id', 'index', 'length']]]))
 
-@cache.cache_output(cache.CACHE_COMMON, 0, 'list_type')
+@cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
+                    identifying_param_name='list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
     try:
@@ -57,7 +56,8 @@ def list_id_for_type(list_type):
         'Resolved list ID for {} to {}'.format(list_type, list_id))
     return list_id
 
-@cache.cache_output(cache.CACHE_VIDEO_LIST, 0, 'list_id')
+@cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
+                    identifying_param_name='list_id')
 def video_list(list_id):
     """Retrieve a single video list"""
     common.debug('Requesting video list {}'.format(list_id))
@@ -66,60 +66,54 @@ def video_list(list_id):
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
 
-@cache.cache_output(cache.CACHE_SEASONS, 0, 'tvshow_id')
-def seasons(tvshow_id):
+@cache.cache_output(cache.CACHE_COMMON)
+def seasons(videoid):
     """Retrieve seasons of a TV show"""
-    common.debug('Requesting season list for show {}'.format(tvshow_id))
+    if videoid.mediatype != common.VideoId.SHOW:
+        raise common.InvalidVideoId('Cannot request season list for {}'
+                                    .format(videoid))
+    common.debug('Requesting season list for show {}'.format(videoid))
     return SeasonList(
-        tvshow_id,
+        videoid,
         common.make_call(
             NetflixSession.path_request,
-            build_paths(['videos', tvshow_id],
+            build_paths(['videos', videoid.tvshowid],
                         SEASONS_PARTIAL_PATHS)))
 
-@cache.cache_output(cache.CACHE_EPISODES, 1, 'season_id')
-def episodes(tvshow_id, season_id):
+@cache.cache_output(cache.CACHE_COMMON)
+def episodes(videoid):
     """Retrieve episodes of a season"""
-    common.debug('Requesting episode list for show {}, season {}'
-                 .format(tvshow_id, season_id))
+    if videoid.mediatype != common.VideoId.SEASON:
+        raise common.InvalidVideoId('Cannot request episode list for {}'
+                                    .format(videoid))
+    common.debug('Requesting episode list for {}'.format(videoid))
     return EpisodeList(
-        tvshow_id,
-        season_id,
+        videoid,
         common.make_call(
             NetflixSession.path_request,
-            build_paths(['seasons', season_id, 'episodes',
+            build_paths(['seasons', videoid.seasonid, 'episodes',
                          {'from': 0, 'to': 40}],
                         EPISODES_PARTIAL_PATHS) +
-            build_paths(['videos', tvshow_id],
+            build_paths(['videos', videoid.tvshowid],
                         ART_PARTIAL_PATHS +
                         [['title']])))
 
-@cache.cache_output(cache.CACHE_EPISODES, 1, 'episode_id')
-def episode(tvshow_id, episode_id):
+@cache.cache_output(cache.CACHE_COMMON)
+def single_info(videoid):
     """Retrieve info for a single episode"""
-    common.debug('Requesting single episode info for {}'
-                 .format(episode_id))
-    return common.make_call(
-        NetflixSession.path_request,
-        build_paths(['videos', episode_id],
-                    EPISODES_PARTIAL_PATHS) +
-        build_paths(['videos', tvshow_id],
-                    ART_PARTIAL_PATHS +
-                    [['title']]))
+    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE]:
+        raise common.InvalidVideoId('Cannot request info for {}'
+                                    .format(videoid))
+    common.debug('Requesting info for {}'.format(videoid))
+    paths = build_paths(['videos', videoid.value], EPISODES_PARTIAL_PATHS)
+    if videoid.mediatype == common.VideoId.EPISODE:
+        paths.extend(build_paths(['videos', videoid.tvshowid],
+                                 ART_PARTIAL_PATHS + [['title']]))
+    return common.make_call(NetflixSession.path_request, paths)
 
-@cache.cache_output(cache.CACHE_EPISODES, 0, 'movie_id')
-def movie(movie_id):
-    """Retrieve info for a single movie"""
-    common.debug('Requesting movie info for {}'
-                 .format(movie_id))
-    return common.make_call(
-        NetflixSession.path_request,
-        build_paths(['videos', movie_id],
-                    EPISODES_PARTIAL_PATHS))
-
-def rate(video_id, rating):
+def rate(videoid, rating):
     """Rate a video on Netflix"""
-    common.debug('Rating {} as {}'.format(video_id, rating))
+    common.debug('Rating {} as {}'.format(videoid.value, rating))
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
@@ -129,18 +123,18 @@ def rate(video_id, rating):
              'Content-Type': 'application/json',
              'Accept': 'application/json, text/javascript, */*'},
          'params': {
-             'titleid': video_id,
+             'titleid': videoid.value,
              'rating': rating}})
 
-def add_to_list(video_id):
+def add_to_list(videoid):
     """Add a video to my list"""
-    common.debug('Adding {} to my list'.format(video_id))
-    _update_my_list(video_id, 'add')
+    common.debug('Adding {} to my list'.format(videoid))
+    _update_my_list(videoid.value, 'add')
 
-def remove_from_list(video_id):
+def remove_from_list(videoid):
     """Remove a video from my list"""
-    common.debug('Removing {} from my list'.format(video_id))
-    _update_my_list(video_id, 'remove')
+    common.debug('Removing {} from my list'.format(videoid))
+    _update_my_list(videoid.value, 'remove')
 
 def _update_my_list(video_id, operation):
     """Call API to update my list with either add or remove action"""
@@ -157,19 +151,36 @@ def _update_my_list(video_id, operation):
         cache.invalidate_cache()
     else:
         cache.invalidate_last_location()
-        cache.invalidate_entry(cache.CACHE_VIDEO_LIST,
+        cache.invalidate_entry(cache.CACHE_COMMON,
                                list_id_for_type('queue'))
         cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
         cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
-def browse_genre(genre_id):
-    """Retrieve video lists for a genre"""
-    pass
+def metadata(videoid):
+    """Retrieve additional metadata for the given VideoId"""
+    if videoid.mediatype != common.VideoId.EPISODE:
+        return _metadata(videoid)
+
+    try:
+        return common.find_episode(
+            videoid.episodeid, _metadata(videoid.tvshowid)['seasons'])
+    except KeyError:
+        # Episode metadata may not exist if its a new episode and cached
+        # data is outdated. In this case, invalidate the cache entry and
+        # try again safely (if it doesn't exist this time, there is no
+        # metadata for the episode, so we assign an empty dict).
+        cache.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
+        return common.find_episode(
+            videoid.episodeid,
+            _metadata(videoid.tvshowid).get('seasons', []),
+            raise_exc=False)
 
 @cache.cache_output(cache.CACHE_METADATA, 0, 'video_id',
                     ttl=common.CACHE_METADATA_TTL, to_disk=True)
-def metadata(video_id):
-    """Retrieve additional metadata for a video"""
+def _metadata(video_id):
+    """Retrieve additional metadata for a video.This is a separate method from
+    metadata(videoid) to work around caching issues when new episodes are added
+    to a show by Netflix."""
     common.debug('Requesting metdata for {}'.format(video_id))
     return common.make_call(
         NetflixSession.get,
@@ -179,22 +190,8 @@ def metadata(video_id):
             'params': {'movieid': video_id}
         })['video']
 
-def episode_metadata(tvshowid, seasonid, episodeid):
-    """Retrieve metadata for a single episode"""
-    try:
-        return common.find_episode(episodeid, metadata(tvshowid)['seasons'])
-    except KeyError:
-        # Episode metadata may not exist if its a new episode and cached data
-        # is outdated. In this case, invalidate the cache entry and try again
-        # safely (if it doesn't exist this time, there is no metadata for the
-        # episode, so we assign an empty dict).
-        cache.invalidate_entry(cache.CACHE_METADATA, tvshowid)
-        return (metadata(tvshowid).get('seasons', {}).get(seasonid, {})
-                .get('episodes', {}).get(episodeid, {}))
-
 def build_paths(base_path, partial_paths):
     """Build a list of full paths by concatenating each partial path
     with the base path"""
     paths = [base_path + partial_path for partial_path in partial_paths]
-    common.debug(json.dumps(paths))
     return paths

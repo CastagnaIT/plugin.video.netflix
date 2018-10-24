@@ -184,9 +184,10 @@ class NetflixSession(object):
                 'login', data=_login_payload(self.credentials, auth_url))
             common.debug('Extracting session data...')
             session_data = website.extract_session_data(login_response)
-        except Exception as exc:
-            raise common.reraise(
-                exc, 'Login failed', LoginFailedError, sys.exc_info()[2])
+        except Exception:
+            import traceback
+            common.error(traceback.format_exc())
+            raise LoginFailedError
 
         common.info('Login successful')
         ui.show_notification('Netflix', 'Login successful')
