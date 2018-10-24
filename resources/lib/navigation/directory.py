@@ -16,12 +16,7 @@ def build(pathitems, params):
         raise InvalidPathError('Cannot route {}'.format('/'.join(pathitems)))
 
     common.debug('Invoking directory handler {}'.format(builder.__name__))
-
-    if len(pathitems) > 1:
-        builder(pathitems=pathitems)
-    else:
-        builder()
-
+    builder(pathitems=pathitems)
     # Remember last location to be able to invalidate it in cache on
     # certain actions
     common.remember_last_location()
@@ -37,8 +32,9 @@ class DirectoryBuilder(object):
         if profile_id:
             api.activate_profile(profile_id)
 
-    def root(self):
+    def root(self, pathitems=None):
         """Show profiles or home listing is autologin es enabled"""
+        # pylint: disable=unused-argument
         autologin = common.ADDON.getSettingBool('autologin_enable')
         profile_id = common.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
@@ -49,13 +45,15 @@ class DirectoryBuilder(object):
         else:
             self.profiles()
 
-    def profiles(self):
+    def profiles(self, pathitems=None):
         """Show profiles listing"""
+        # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
         listings.build_profiles_listing(api.profiles())
 
-    def home(self):
+    def home(self, pathitems=None):
         """Show home listing"""
+        # pylint: disable=unused-argument
         common.debug('Showing root video lists')
         listings.build_main_menu_listing(api.root_lists())
 
@@ -80,3 +78,21 @@ class DirectoryBuilder(object):
     def season(self, videoid):
         """Show episodes of a season"""
         listings.build_episode_listing(videoid, api.episodes(videoid))
+
+    def genres(self, pathitems):
+        """Show video lists for a genre"""
+        if len(pathitems) == 1:
+            lolomo = api.root_lists()
+            contexts = common.MISC_CONTEXTS['genres']['contexts']
+        else:
+            # TODO: Implement fetching of genre lolomos
+            lolomo = None
+            contexts = None
+        listings.build_lolomo_listing(lolomo, contexts)
+
+    def recommendations(self, pathitems=None):
+        """Show video lists for a genre"""
+        # pylint: disable=unused-argument
+        listings.build_lolomo_listing(
+            api.root_lists(),
+            common.MISC_CONTEXTS['recommendations']['contexts'])
