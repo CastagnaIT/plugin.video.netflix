@@ -41,7 +41,7 @@ def root_lists():
         NetflixSession.path_request,
         [['lolomo',
           {'from': 0, 'to': 40},
-          ['displayName', 'context', 'id', 'index', 'length']]]))
+          ['displayName', 'context', 'id', 'index', 'length', 'genreId']]]))
 
 @cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_type')

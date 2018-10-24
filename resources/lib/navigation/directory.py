@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
+import resources.lib.kodi.ui as ui
 from resources.lib.navigation import InvalidPathError
 
 def build(pathitems, params):
@@ -65,7 +66,8 @@ class DirectoryBuilder(object):
         else:
             list_id = pathitems[1]
 
-        listings.build_video_listing(api.video_list(list_id))
+        listings.build_video_listing(api.video_list(list_id),
+                                     self.params.get('genreId'))
 
     @common.inject_video_id(path_offset=0)
     def show(self, videoid):
@@ -86,8 +88,9 @@ class DirectoryBuilder(object):
             contexts = common.MISC_CONTEXTS['genres']['contexts']
         else:
             # TODO: Implement fetching of genre lolomos
-            lolomo = None
-            contexts = None
+            ui.show_notification('Browsing genre {}'.format(pathitems[1]))
+            lolomo = api.root_lists()
+            contexts = common.MISC_CONTEXTS['genres']['contexts']
         listings.build_lolomo_listing(lolomo, contexts)
 
     def recommendations(self, pathitems=None):
