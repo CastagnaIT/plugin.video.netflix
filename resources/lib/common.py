@@ -793,11 +793,10 @@ def send_signal(signal, data=None):
         signal=signal,
         data=data)
 
-def make_call(func, data=None):
+def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target
     function."""
-    callname = _signal_name(func)
     result = AddonSignals.makeCall(
         source_id=ADDON_ID,
         signal=callname,
