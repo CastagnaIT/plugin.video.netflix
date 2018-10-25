@@ -48,8 +48,15 @@ def add_info_for_playback(videoid, list_item):
 
 def parse_info(videoid, item, raw_data):
     """Parse info from a path request response into Kodi infolabels"""
-    # Only season items don't have a type in their summary, thus, if
-    # there's no type, it's a season
+    if (videoid.mediatype == common.VideoId.UNSPECIFIED and
+            hasattr(item, 'contained_titles')):
+        # Special handling for VideoLists
+        return {
+            'mediatype': 'video',
+            'plot': (', '.join(item.contained_titles) +
+                     common.get_local_string(30087))
+        }, {}
+
     mediatype = videoid.mediatype
     if mediatype == common.VideoId.SHOW:
         # Type from Netflix doesn't match Kodi's expectations

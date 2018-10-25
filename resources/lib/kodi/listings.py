@@ -133,10 +133,13 @@ def build_main_menu_listing(lolomo):
     """
     directory_items = []
     for _, user_list in lolomo.lists_by_context(common.KNOWN_LIST_TYPES):
+        list_item = create_list_item(user_list['displayName'])
+        add_info(user_list.id, list_item, user_list, user_list.data)
+        add_art(user_list.id, list_item, user_list.artitem)
         directory_items.append(
             (common.build_url(
                 ['video_list', user_list['context']], mode=nav.MODE_DIRECTORY),
-             create_list_item(user_list['displayName']),
+             list_item,
              True))
 
     for context_type, data in common.MISC_CONTEXTS.iteritems():
@@ -173,11 +176,14 @@ def build_lolomo_listing(lolomo, contexts=None):
         params = ({'genreId': video_list['genreId']}
                   if video_list.get('genreId')
                   else None)
+        list_item = create_list_item(video_list['displayName'])
+        add_info(video_list.id, list_item, video_list, video_list.data)
+        add_art(video_list.id, list_item, video_list.artitem)
         directory_items.append(
             (common.build_url(
                 ['video_list', video_list_id], mode=nav.MODE_DIRECTORY,
                 params=params),
-             create_list_item(video_list['displayName']),
+             list_item,
              True))
     finalize_directory(
         items=directory_items,
@@ -216,7 +222,12 @@ def build_video_listing(video_list, genre_id=None):
         directory_items.append(
             (common.build_url(pathitems=['genres', genre_id],
                               mode=nav.MODE_DIRECTORY),
-             create_list_item('Browse more...'),
+             create_list_item('Browse related content...'),
+             True))
+        directory_items.append(
+            (common.build_url(pathitems=['genres', genre_id, 'subgenres'],
+                              mode=nav.MODE_DIRECTORY),
+             create_list_item('Browse subgenres...'),
              True))
     finalize_directory(
         items=directory_items,

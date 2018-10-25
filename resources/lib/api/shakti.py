@@ -39,10 +39,10 @@ def root_lists():
     return LoLoMo(common.make_call(
         'path_request',
         [['lolomo',
-          {'from': 0, 'to': 40},
+          {'from': 0, 'to': 35},
           ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
-        build_paths(['lolomo', {'from': 0, 'to': 40},
-                     {'from': 0, 'to': 1}, 'reference'],
+        build_paths(['lolomo', {'from': 0, 'to': 35},
+                     {'from': 0, 'to': 3}, 'reference'],
                     [['title']] + ART_PARTIAL_PATHS)))
 
 @cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,

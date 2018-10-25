@@ -355,3 +355,7 @@ msgstr "Time-to-live für Metadaten Cache-Einträge (Minuten)"
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
 msgstr "Gesamten Cache bei Änderungen an Meine Liste invalidieren"
+
+msgctxt "#30087"
+msgid " and more..."
+msgstr " und weitere..."
