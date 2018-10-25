@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
+import resources.lib.common as common
+
 from .paths import resolve_refs
 
 class LoLoMo(object):
@@ -44,19 +46,22 @@ class VideoList(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response, list_id=None):
         self.data = path_response
-        self.id = list_id if list_id else next(self.data['lists'].iterkeys())
+        self.id = common.VideoId(
+            videoid=(list_id
+                     if list_id
+                     else next(self.data['lists'].iterkeys())))
         self.videos = OrderedDict(
-            resolve_refs(self.data['lists'][self.id], self.data))
+            resolve_refs(self.data['lists'][self.id.value], self.data))
         self.artitem = next(self.videos.itervalues())
         self.contained_titles = [video['title']
                                  for video in self.videos.itervalues()]
 
     def __getitem__(self, key):
-        return self.data['lists'][self.id][key]
+        return self.data['lists'][self.id.value][key]
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return self.data['lists'][self.id].get(key, default)
+        return self.data['lists'][self.id.value].get(key, default)
 
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
