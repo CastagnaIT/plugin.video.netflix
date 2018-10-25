@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 import resources.lib.cache as cache
-from resources.lib.services.nfsession import NetflixSession
 
 from .data_types import LoLoMo, VideoList, SeasonList, EpisodeList
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
@@ -17,31 +16,34 @@ class InvalidVideoListTypeError(Exception):
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
     cache.invalidate_cache()
-    common.make_call(NetflixSession.activate_profile, profile_id)
+    common.make_call('activate_profile', profile_id)
 
 def logout():
     """Logout of the current account"""
     cache.invalidate_cache()
-    common.make_call(NetflixSession.logout)
+    common.make_call('logout')
 
 def login():
     """Perform a login"""
     cache.invalidate_cache()
-    common.make_call(NetflixSession.login)
+    common.make_call('login')
 
 def profiles():
     """Retrieve the list of available user profiles"""
-    return common.make_call(NetflixSession.list_profiles)
+    return common.make_call('list_profiles')
 
 @cache.cache_output(cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
     common.debug('Requesting root lists from API')
     return LoLoMo(common.make_call(
-        NetflixSession.path_request,
+        'path_request',
         [['lolomo',
           {'from': 0, 'to': 40},
-          ['displayName', 'context', 'id', 'index', 'length', 'genreId']]]))
+          ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
+        build_paths(['lolomo', {'from': 0, 'to': 40},
+                     {'from': 0, 'to': 1}, 'reference'],
+                    [['title']] + ART_PARTIAL_PATHS)))
 
 @cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_type')
@@ -62,7 +64,7 @@ def video_list(list_id):
     """Retrieve a single video list"""
     common.debug('Requesting video list {}'.format(list_id))
     return VideoList(common.make_call(
-        NetflixSession.path_request,
+        'path_request',
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
 
@@ -76,7 +78,7 @@ def seasons(videoid):
     return SeasonList(
         videoid,
         common.make_call(
-            NetflixSession.path_request,
+            'path_request',
             build_paths(['videos', videoid.tvshowid],
                         SEASONS_PARTIAL_PATHS)))
 
@@ -90,7 +92,7 @@ def episodes(videoid):
     return EpisodeList(
         videoid,
         common.make_call(
-            NetflixSession.path_request,
+            'path_request',
             build_paths(['seasons', videoid.seasonid, 'episodes',
                          {'from': 0, 'to': 40}],
                         EPISODES_PARTIAL_PATHS) +
@@ -109,7 +111,7 @@ def single_info(videoid):
     if videoid.mediatype == common.VideoId.EPISODE:
         paths.extend(build_paths(['videos', videoid.tvshowid],
                                  ART_PARTIAL_PATHS + [['title']]))
-    return common.make_call(NetflixSession.path_request, paths)
+    return common.make_call('path_request', paths)
 
 def rate(videoid, rating):
     """Rate a video on Netflix"""
@@ -117,7 +119,7 @@ def rate(videoid, rating):
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
-        NetflixSession.post,
+        'post',
         {'component': 'set_video_rating',
          'headers': {
              'Content-Type': 'application/json',
@@ -139,7 +141,7 @@ def remove_from_list(videoid):
 def _update_my_list(video_id, operation):
     """Call API to update my list with either add or remove action"""
     common.make_call(
-        NetflixSession.post,
+        'post',
         {'component': 'update_my_list',
          'headers': {
              'Content-Type': 'application/json',
@@ -183,7 +185,7 @@ def _metadata(video_id):
     to a show by Netflix."""
     common.debug('Requesting metdata for {}'.format(video_id))
     return common.make_call(
-        NetflixSession.get,
+        'get',
         {
             'component': 'metadata',
             'req_type': 'api',

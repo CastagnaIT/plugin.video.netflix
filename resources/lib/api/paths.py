@@ -73,18 +73,19 @@ def resolve_refs(references, targets):
     """Return a generator expression that returns the objects in targets
     by resolving the references in sorted order"""
     return (common.get_path(ref, targets, include_key=True)
-            for index, ref in iterate_to_sentinel(references))
+            for index, ref in iterate_references(references))
 
-def iterate_to_sentinel(source):
+def iterate_references(source):
     """Generator expression that iterates over a dictionary of
-    index=>reference pairs in sorted order until it reaches the sentinel
-    reference and stops iteration.
+    index=>reference pairs (sorted in ascending order by indices) until it
+    reaches the first empty reference, which signals the end of the reference
+    list.
     Items with a key that do not represent an integer are ignored."""
     for index, ref in sorted({int(k): v
                               for k, v in source.iteritems()
                               if common.is_numeric(k)}.iteritems()):
         path = reference_path(ref)
-        if is_sentinel(path):
+        if path is None:
             break
         else:
             yield (index, path)
@@ -92,17 +93,75 @@ def iterate_to_sentinel(source):
 def reference_path(ref):
     """Return the actual reference path (a list of path items to follow)
     for a reference item.
-    The Netflix API sometimes adds another dict layer with a single key
-    'reference' which we need to extract from."""
-    if isinstance(ref, list):
-        return ref
-    elif isinstance(ref, dict) and 'reference' in ref:
-        return ref['reference']
-    else:
-        raise InvalidReferenceError(
-            'Unexpected reference format encountered: {}'.format(ref))
 
-def is_sentinel(ref):
-    """Check if a reference item is of type sentinel and thus signals
-    the end of the list"""
-    return isinstance(ref, dict) and ref.get('$type') == 'sentinel'
+    The Netflix API returns references in several different formats.
+    In both cases, we want to get at the innermost list, which describes
+    the path to follow when resolving the reference:
+    - List-based references:
+        [
+          "lists",
+          "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070239X20XX1539870260807"
+        ]
+    - Dict-based references which have a type and a value:
+        {
+          "$type": "ref",
+          "value": [
+            "videos",
+            "80018294"
+          ]
+        }
+
+    Empty references indicate the end of a list of references if there
+    are fewer entries available than were requested. They are always a dict,
+    regardless of valid references in the list being list-based or dict-based.
+    They don't have a value attribute and are either of type sentinel or atom:
+        { "$type": "sentinel" }
+            or
+        { "$type": "atom" }
+
+    In some cases, references are requested via the 'reference' attribute of
+    a Netlix list type like so:
+        ["genres", "83", "rw", "shortform",
+         { "from": 0, "to": 50 },
+         { "from": 0, "to": 7 },
+         "reference",
+         "ACTUAL ATTRIBUTE OF REFERENCED ITEM"]
+    In this case, the reference we want to get the value of is nested into an
+    additional 'reference' attribute like so:
+        - list-based nested reference:
+            {
+                "reference": [      <== additional nesting
+                    "videos",
+                    "80178971"
+                ]
+            }
+        - dict-based nested reference:
+            {
+              "reference": {        <== additional nesting
+                "$type": "ref",
+                "value": [
+                  "videos",
+                  "80018294"
+                ]
+              }
+            }
+    To get to the value, we simply remove the additional layer of nesting by
+    doing ref = ref['reference'] and continue with analyzing ref.
+    """
+    if isinstance(ref, dict) and 'reference' in ref:
+        # Nested reference, remove nesting to get to real reference
+        ref = ref['reference']
+    if isinstance(ref, list):
+        # List-based reference (never empty, so return right away)
+        return ref
+    if isinstance(ref, dict):
+        # Dict-based reference
+        reftype = ref.get('$type')
+        if reftype in ['sentinel', 'atom']:
+            # Empty reference
+            return None
+        elif reftype == 'ref':
+            # Valid reference with value
+            return ref['value']
+    raise InvalidReferenceError(
+        'Unexpected reference format encountered: {}'.format(ref))
