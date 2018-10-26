@@ -412,10 +412,14 @@ def get_credentials():
     email = ADDON.getSetting('email')
     password = ADDON.getSetting('password')
     verify_credentials(email, password)
-    return {
-        'email': decrypt_credential(email),
-        'password': decrypt_credential(password)
-    }
+    try:
+        return {
+            'email': decrypt_credential(email),
+            'password': decrypt_credential(password)
+        }
+    except ValueError:
+        raise MissingCredentialsError(
+            'Existing credentials could not be decrypted')
 
 def set_credentials(email, password):
     """
