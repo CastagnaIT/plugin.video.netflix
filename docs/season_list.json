@@ -1,0 +1,330 @@
+{
+    "value": {
+        "null": {
+            "$type": "sentinel"
+        },
+        "videos": {
+            "80133311": {
+                "seasonList": {
+                    "0": [
+                        "seasons",
+                        "80133312"
+                    ],
+                    "1": [
+                        "seasons",
+                        "80195993"
+                    ],
+                    "2": [
+                        "seasons",
+                        "80225658"
+                    ],
+                    "3": {
+                        "$type": "sentinel"
+                    },
+                    "4": {
+                        "$type": "sentinel"
+                    },
+                    "5": {
+                        "$type": "sentinel"
+                    },
+                    "6": {
+                        "$type": "sentinel"
+                    },
+                    "7": {
+                        "$type": "sentinel"
+                    },
+                    "8": {
+                        "$type": "sentinel"
+                    },
+                    "9": {
+                        "$type": "sentinel"
+                    },
+                    "10": {
+                        "$type": "sentinel"
+                    },
+                    "11": {
+                        "$type": "sentinel"
+                    },
+                    "12": {
+                        "$type": "sentinel"
+                    },
+                    "13": {
+                        "$type": "sentinel"
+                    },
+                    "14": {
+                        "$type": "sentinel"
+                    },
+                    "15": {
+                        "$type": "sentinel"
+                    },
+                    "16": {
+                        "$type": "sentinel"
+                    },
+                    "17": {
+                        "$type": "sentinel"
+                    },
+                    "18": {
+                        "$type": "sentinel"
+                    },
+                    "19": {
+                        "$type": "sentinel"
+                    },
+                    "20": {
+                        "$type": "sentinel"
+                    },
+                    "21": {
+                        "$type": "sentinel"
+                    },
+                    "22": {
+                        "$type": "sentinel"
+                    },
+                    "23": {
+                        "$type": "sentinel"
+                    },
+                    "24": {
+                        "$type": "sentinel"
+                    },
+                    "25": {
+                        "$type": "sentinel"
+                    },
+                    "26": {
+                        "$type": "sentinel"
+                    },
+                    "27": {
+                        "$type": "sentinel"
+                    },
+                    "28": {
+                        "$type": "sentinel"
+                    },
+                    "29": {
+                        "$type": "sentinel"
+                    },
+                    "30": {
+                        "$type": "sentinel"
+                    },
+                    "31": {
+                        "$type": "sentinel"
+                    },
+                    "32": {
+                        "$type": "sentinel"
+                    },
+                    "33": {
+                        "$type": "sentinel"
+                    },
+                    "34": {
+                        "$type": "sentinel"
+                    },
+                    "35": {
+                        "$type": "sentinel"
+                    },
+                    "36": {
+                        "$type": "sentinel"
+                    },
+                    "37": {
+                        "$type": "sentinel"
+                    },
+                    "38": {
+                        "$type": "sentinel"
+                    },
+                    "39": {
+                        "$type": "sentinel"
+                    },
+                    "40": {
+                        "$type": "sentinel"
+                    },
+                    "summary": {
+                        "length": 3,
+                        "validUntil": null,
+                        "$type": "leaf"
+                    }
+                },
+                "storyarts": {
+                    "_1632x873": {
+                        "jpg": {
+                            "$type": "sentinel"
+                        }
+                    }
+                },
+                "boxarts": {
+                    "_665x375": {
+                        "jpg": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/art/42a83/0cd3286900723a6748c2d3d587847c6668f42a83.jpg",
+                            "image_key": "sdp,18|AD_025fdc31-c055-11e8-8153-0a53ba4d3aa6|de|CvF",
+                            "$type": "leaf"
+                        }
+                    },
+                    "_1920x1080": {
+                        "jpg": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/art/6780d/2d99ac816b36c646db2507defae7a785e486780d.jpg",
+                            "image_key": "sdp,18|AD_025fdc31-c055-11e8-8153-0a53ba4d3aa6|de|CvF",
+                            "$type": "leaf"
+                        }
+                    },
+                    "_342x684": {
+                        "jpg": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/art/f5428/e63f62cf0fb92c64027e1f5d53c6194c5eaf5428.jpg",
+                            "image_key": "boxshot_newepwkly_de|AD_7fdd1120-aed9-11e7-b444-0affb9d77288|en",
+                            "$type": "leaf"
+                        }
+                    }
+                },
+                "interestingMoment": {
+                    "_665x375": {
+                        "jpg": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/art/3f8af/fe4f5a80d6429b255a697e84653089300313f8af.jpg",
+                            "width": 658,
+                            "height": 370,
+                            "image_key": "MERCH_STILL|9e9a6dd0-bc4b-11e8-a863-1204ac6e63e2|en",
+                            "$type": "leaf"
+                        }
+                    },
+                    "_1920x1080": {
+                        "jpg": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/art/26993/0c5ae18e00945cb9a48fcacd9d638266d1d26993.jpg",
+                            "width": 1920,
+                            "height": 1080,
+                            "image_key": "MERCH_STILL|9e9a6dd0-bc4b-11e8-a863-1204ac6e63e2|en",
+                            "$type": "leaf"
+                        }
+                    }
+                },
+                "bb2OGLogo": {
+                    "_550x124": {
+                        "png": {
+                            "url": "https://occ-0-2931-2774.1.nflxso.net/dnm/api/v5/rendition/852d533dd2fd12f722c03d68cc41826dd8867956/AAAABTlokv45yfTPDX534E0gtZRtercXf5cqu4OuFEhcjVqAHRvfh_hvP-N8Wto18qvB7GRjz-mS-CGBYtxxAcK9Swu09Xl6HHLcC7XrL7IHhr_2ZuFdGubkw92gwAt6CEyNQD_MkXxll-G3SmpSO7iwws7qXa20ELIBiySJJT79qMEepmncb7_xMXIA_3D1DRV7qzcozUVcSL60mzp7J8KZWuUYd5TMiVYYfYJXC4fit8r-V85OWwd-JptMhPhIG0wTLQ.png",
+                            "image_key": "LOGO_BRANDED_HORIZONTAL|495eee41-bbab-11e8-9ffa-12f327f63ce4:c4baf5b0-89bd-11e6-8cfb-0a25b0dd4b2b|de",
+                            "$type": "leaf"
+                        }
+                    }
+                },
+                "BGImages": {
+                    "720": {
+                        "jpg": [
+                            {
+                                "url": "https://occ-0-2931-2774.1.nflxso.net/art/47068/ed21775d75c1275f2d385c943c9f6ba5c4e47068.jpg",
+                                "width": 1280,
+                                "height": 720,
+                                "focalPoint": "{\"x\":0.425,\"y\":0.4847}"
+                            },
+                            {
+                                "url": "https://occ-0-2931-2774.1.nflxso.net/art/2e509/549560d0fa1e9f477cedc00aecf62cd06042e509.jpg",
+                                "width": 1280,
+                                "height": 720,
+                                "focalPoint": "{\"x\":0.3477,\"y\":0.5259}"
+                            },
+                            {
+                                "url": "https://occ-0-2931-2774.1.nflxso.net/art/b9ee7/af82393e5b618ce8655199b00b420fad390b9ee7.jpg",
+                                "width": 1280,
+                                "height": 720,
+                                "focalPoint": "{\"x\":0.4448,\"y\":0.2593}"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "seasons": {
+            "80133312": {
+                "summary": {
+                    "id": 80133312,
+                    "name": "Staffel 1",
+                    "shortName": "St. 1",
+                    "hiddenEpisodeNumbers": false,
+                    "length": 13,
+                    "$type": "leaf"
+                }
+            },
+            "80195993": {
+                "summary": {
+                    "id": 80195993,
+                    "name": "Staffel 2",
+                    "shortName": "St. 2",
+                    "hiddenEpisodeNumbers": false,
+                    "length": 22,
+                    "$type": "leaf"
+                }
+            },
+            "80225658": {
+                "summary": {
+                    "id": 80225658,
+                    "name": "Staffel 3",
+                    "shortName": "St. 3",
+                    "hiddenEpisodeNumbers": false,
+                    "length": 2,
+                    "$type": "leaf"
+                }
+            }
+        }
+    },
+    "paths": [
+        [
+            "null"
+        ],
+        [
+            "videos",
+            "80133311",
+            "seasonList",
+            [
+                {
+                    "from": 0,
+                    "to": 40
+                },
+                "summary"
+            ]
+        ],
+        [
+            "videos",
+            "80133311",
+            "BGImages",
+            "720",
+            "jpg"
+        ],
+        [
+            "videos",
+            "80133311",
+            "bb2OGLogo",
+            "_550x124",
+            "png"
+        ],
+        [
+            "videos",
+            "80133311",
+            "boxarts",
+            [
+                "_1920x1080",
+                "_342x684",
+                "_665x375"
+            ],
+            "jpg"
+        ],
+        [
+            "videos",
+            "80133311",
+            "interestingMoment",
+            [
+                "_1920x1080",
+                "_665x375"
+            ],
+            "jpg"
+        ],
+        [
+            "videos",
+            "80133311",
+            "seasonList",
+            [
+                {
+                    "to": 40,
+                    "from": 0
+                }
+            ],
+            "summary"
+        ],
+        [
+            "videos",
+            "80133311",
+            "storyarts",
+            "_1632x873",
+            "jpg"
+        ]
+    ]
+}
