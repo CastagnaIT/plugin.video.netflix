@@ -1,0 +1,118 @@
+{
+  "paths": [
+    ["genres", 83 "rw",
+      ["id", "requestId", "summary"]
+    ],
+    ["genres", 83, "rw",
+      { "from": 0, "to": 3 },
+      ["context", "displayName", "genreId", "id", "impressionToken", "isTallRow", "length", "requestId", "trackIds", "type", "videoId"]
+    ],
+    ["genres", 83, "rw", "billboards",
+      ["length", "requestId", "trackIds"]
+    ],
+    ["genres", 83, "rw",
+      ["continueWatching", "netflixOriginals", "watchlist"],
+      ["context", "displayName", "genreId", "id", "impressionToken", "isTallRow", "length", "requestId", "trackIds", "videoId"]
+    ],
+    ["genres", 83, "rw", "meta",
+      ["responseExpiration", "statusCode"]
+    ],
+    ["genres", 83, "subgenres",
+      { "from": 0, "to": 30 },
+      ["id", "name"]
+    ],
+    ["genres", 83, "rw", "shortform",
+      { "from": 0, "to": 50 },
+      ["context", "displayName", "genreId", "id", "impressionToken", "isTallRow", "length", "requestId", "trackIds", "videoId"]
+    ],
+    ["genres", 83, "rw",
+      [0, 1, 2, 3, "continueWatching", "netflixOriginals"],
+      { "from": 0, "to": 7 },
+      "reference",
+      ["summary", "title", "titleMaturity", "userRating", "userRatingRequestId"]
+    ],
+    ["genres", 83, "rw", "billboards",
+      { "from": 0, "to": 1 },
+      "reference",
+      ["availability", "delivery", "episodeCount", "interactiveBookmark", "maturity", "numSeasonsLabel", "queue", "releaseYear", "runtime", "seasonCount", "summary", "synopsis", "userRating", "userRatingRequestId"]
+    ],
+    ["genres", 83, "rw", "watchlist",
+      { "from": 0, "to": 7 },
+      "context", "isContinueWatching"
+    ],
+    ["genres", 83, "rw", "watchlist",
+      { "from": 0, "to": 7 },
+      "reference",
+      ["summary", "title", "titleMaturity", "userRating", "userRatingRequestId"]
+    ],
+    ["genres", 83, "rw", "billboards",
+      { "from": 0, "to": 1 },
+      "reference", "current", "summary"
+    ],
+    ["genres", 83, "rw", "billboards", "billboards",
+      { "from": 0, "to": 1 },
+      "webp", "data"
+    ],
+    ["genres", 83 "rw", "conditionalPathsOnlyIfWatchlistRowPresent",
+      { "from": 0, "to": 3 },
+      { "from": 0, "to": 7 },
+      "reference", "watchlistQueue"
+    ],
+    ["genres", 83 "rw",
+      ["continueWatching", "watchlist"],
+      { "from": 0, "to": 7 },
+      "reference", "current",
+      ["bookmarkPosition", "interactiveBookmark" "runtime", "title"]
+    ],
+    ["genres", 83 "rw", "netflixOriginals",
+      { "from": 0, "to": 7 },
+      "reference", "tallBoxarts" "webp"
+    ],
+    ["genres", 83 "rw", "shortform",
+      { "from": 0, "to": 50 },
+      { "from": 0, "to": 7 },
+      "reference",
+      ["summary", "title" "titleMaturity", "userRating" "userRatingRequestId"]
+    ],
+    ["genres", 83 "rw",
+      [0, 1 2, 3 "continueWatching", "netflixOriginals" "watchlist"],
+      { "from": 0, "to": 7 },
+      "reference", "boxarts" "_342x192", "webp"
+    ],
+    ["genres", 83 "rw", "billboards",
+      { "from": 0, "to": 1 },
+      "reference", "BGImages" 513, "webp"
+    ],
+    ["genres", 83 "rw", "billboards",
+      { "from": 0, "to": 1 },
+      "reference", "bb2OGLogoCropped" "_Anyx108", "webp"
+    ],
+    ["genres", 83 "rw", "billboards",
+      { "from": 0, "to": 1 },
+      "reference", "titleTreatmentCropped" "_Anyx130", "webp"
+    ],
+    ["genres", 83 "rw", "shortform",
+      { "from": 0, "to": 50 },
+      { "from": 0, "to": 7 },
+      "reference", "ancestor" "title"
+    ],
+    ["genres", 83 "rw", "shortform",
+      { "from": 0, "to": 50 },
+      { "from": 0, "to": 7 },
+      "reference", "current",
+      ["bookmarkPosition", "interactiveBookmark" "runtime", "title"]
+    ],
+    ["genres", 83 "rw", "shortform",
+      { "from": 0, "to": 50 },
+      { "from": 0, "to": 7 },
+      "reference",
+      ["boxarts", "interestingMoment"],
+      "_342x192", "webp"
+    ],
+    ["genres", 83 "rw", "billboards" "billboards",
+      { "from": 0, "to": 1 },
+      "webp", "playbackVideo" "horizontalBackground", "playbackData" "motionBillboard"
+    ]
+  ],
+  "authURL": "REDACTED"
+}
