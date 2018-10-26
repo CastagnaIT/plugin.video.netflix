@@ -42,8 +42,12 @@ KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals', 'continueWatching',
                     'trendingNow', 'newRelease', 'popularTitles']
 MISC_CONTEXTS = {
     'genres': {'label_id': 30010,
+               'description_id': 30093,
+               'icon': 'DefaultGenre.png',
                'contexts': 'genre'},
     'recommendations': {'label_id': 30001,
+                        'description_id': 30094,
+                        'icon': 'DefaultUser.png',
                         'contexts': ['similars', 'becauseYouAdded']}
 }
 
@@ -123,6 +127,7 @@ class VideoId(object):
                  tvshowid=None, videoid=None):
         if videoid:
             self.videoid = videoid
+            self.id_values = (None, None, None, None)
         else:
             self.videoid = None
             self.id_values = (movieid, episodeid, seasonid, tvshowid)
@@ -252,11 +257,7 @@ class VideoId(object):
         return '{}_{}'.format(self.mediatype, self.value)
 
     def __hash__(self):
-        try:
-            return int(self.value)
-        except ValueError:
-            error('Cannot hash {}'.format(self))
-        return 0
+        return hash(str(self))
 
     def __eq__(self, other):
         return (self.videoid == other.videoid and

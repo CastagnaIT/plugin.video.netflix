@@ -83,14 +83,12 @@ class DirectoryBuilder(object):
 
     def genres(self, pathitems):
         """Show video lists for a genre"""
-        if len(pathitems) == 1:
+        if len(pathitems) < 2:
             lolomo = api.root_lists()
             contexts = common.MISC_CONTEXTS['genres']['contexts']
         else:
-            # TODO: Implement fetching of genre lolomos
-            ui.show_notification('Browsing genre {}'.format(pathitems[1]))
-            lolomo = api.root_lists()
-            contexts = common.MISC_CONTEXTS['genres']['contexts']
+            lolomo = api.genre(pathitems[1])
+            contexts = None
         listings.build_lolomo_listing(lolomo, contexts)
 
     def recommendations(self, pathitems=None):

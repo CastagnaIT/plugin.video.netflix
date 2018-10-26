@@ -365,5 +365,45 @@ msgid "Invalidate entire cache on modification of My List"
 msgstr ""
 
 msgctxt "#30087"
-msgid " and more..."
+msgid "Contains {} and more..."
+msgstr ""
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr ""
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr ""
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr ""
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr ""
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr ""
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr ""
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr ""
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr ""
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr ""
+
+msgctxt "#30097"
+msgid "Main Menu"
 msgstr ""

@@ -53,8 +53,8 @@ def parse_info(videoid, item, raw_data):
         # Special handling for VideoLists
         return {
             'mediatype': 'video',
-            'plot': (', '.join(item.contained_titles) +
-                     common.get_local_string(30087))
+            'plot': common.get_local_string(30087).format(
+                ', '.join(item.contained_titles))
         }, {}
 
     mediatype = videoid.mediatype

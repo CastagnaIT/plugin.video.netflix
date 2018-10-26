@@ -25,6 +25,13 @@ VIDEO_LIST_PARTIAL_PATHS = [
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
 
+GENRE_PARTIAL_PATHS = [
+    [["id", "requestId", "summary", "name"]],
+    [{"from": 0, "to": 50},
+     ["context", "displayName", "genreId", "id", "isTallRow", "length",
+      "requestId", "type", "videoId"]]
+]
+
 SEASONS_PARTIAL_PATHS = [
     ['seasonList', {'from': 0, 'to': 40}, 'summary'],
     ['title']

@@ -61,26 +61,29 @@ class VideoList(object):
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return self.data['lists'][self.id.value].get(key, default)
+        return _check_sentinel(self.data['lists'][self.id.value]
+                               .get(key, default))
 
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
         self.data = path_response
         self.videoid = videoid
-        self.seasons = OrderedDict(
-            resolve_refs(
-                self.data['videos'][self.videoid.tvshowid]['seasonList'],
-                self.data))
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
+        self.seasons = OrderedDict(
+            resolve_refs(self.tvshow['seasonList'], self.data))
 
 class EpisodeList(object):
     """A list of episodes. Includes tvshow art."""
     def __init__(self, videoid, path_response):
         self.data = path_response
         self.videoid = videoid
-        self.episodes = OrderedDict(
-            resolve_refs(
-                self.data['seasons'][self.videoid.seasonid]['episodes'],
-                self.data))
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
+        self.season = self.data['seasons'][self.videoid.seasonid]
+        self.episodes = OrderedDict(
+            resolve_refs(self.season['episodes'], self.data))
+
+def _check_sentinel(value):
+    return (None
+            if isinstance(value, dict) and value.get('$type') == 'sentinel'
+            else value)
