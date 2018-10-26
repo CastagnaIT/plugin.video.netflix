@@ -126,6 +126,25 @@ def build_profiles_listing(profiles):
         items=directory_items,
         sort_methods=[xbmcplugin.SORT_METHOD_LABEL])
 
+ADDITIONAL_MAIN_MENU_ITEMS = [
+    {'path': ['genres', '83'],
+     'label': common.get_local_string(30095),
+     'icon': 'DefaultTVShows.png',
+     'description': None},
+    {'path': ['genres', '34399'],
+     'label': common.get_local_string(30096),
+     'icon': 'DefaultMovies.png',
+     'description': None},
+    {'path': ['search'],
+     'label': common.get_local_string(30011),
+     'icon': None,
+     'description': common.get_local_string(30092)},
+    {'path': ['exported'],
+     'label': common.get_local_string(30048),
+     'icon': 'DefaultHardDisk.png',
+     'description': common.get_local_string(30091)},
+]
+
 @custom_viewmode(VIEW_FOLDER)
 def build_main_menu_listing(lolomo):
     """
@@ -145,23 +164,23 @@ def build_main_menu_listing(lolomo):
     for context_type, data in common.MISC_CONTEXTS.iteritems():
         directory_items.append(
             (common.build_url([context_type], mode=nav.MODE_DIRECTORY),
-             create_list_item(common.get_local_string(data['label_id'])),
+             create_list_item(common.get_local_string(data['label_id']),
+                              icon=data['icon'],
+                              description=common.get_local_string(
+                                  data['description_id'])),
              True))
 
-    # Add search
-    directory_items.append(
-        (common.build_url(['search'], mode=nav.MODE_DIRECTORY),
-         create_list_item(common.get_local_string(30011)),
-         True))
-
-    # Add exported
-    directory_items.append(
-        (common.build_url(['exported'], mode=nav.MODE_DIRECTORY),
-         create_list_item(common.get_local_string(30048)),
-         True))
+    for menu_item in ADDITIONAL_MAIN_MENU_ITEMS:
+        directory_items.append(
+            (common.build_url(menu_item['path'], mode=nav.MODE_DIRECTORY),
+             create_list_item(menu_item['label'],
+                              icon=menu_item['icon'],
+                              description=menu_item['description']),
+             True))
 
     finalize_directory(
         items=directory_items,
+        title=common.get_local_string(30097),
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
         content_type=CONTENT_FOLDER)
 
@@ -171,8 +190,11 @@ def build_lolomo_listing(lolomo, contexts=None):
     directory_items = []
     lists = (lolomo.lists_by_context(contexts)
              if contexts
-             else lolomo.lists.iteritem())
+             else lolomo.lists.iteritems())
     for video_list_id, video_list in lists:
+        if video_list['context'] == 'billboard':
+            # Skip billboard (only contains one video)
+            continue
         params = ({'genreId': video_list['genreId']}
                   if video_list.get('genreId')
                   else None)
@@ -187,6 +209,7 @@ def build_lolomo_listing(lolomo, contexts=None):
              True))
     finalize_directory(
         items=directory_items,
+        title=lolomo.get('name'),
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
         content_type=CONTENT_FOLDER)
 
@@ -222,15 +245,19 @@ def build_video_listing(video_list, genre_id=None):
         directory_items.append(
             (common.build_url(pathitems=['genres', genre_id],
                               mode=nav.MODE_DIRECTORY),
-             create_list_item('Browse related content...'),
+             create_list_item(common.get_local_string(30088),
+                              icon='DefaultAddSource.png',
+                              description=common.get_local_string(30090)),
              True))
-        directory_items.append(
-            (common.build_url(pathitems=['genres', genre_id, 'subgenres'],
-                              mode=nav.MODE_DIRECTORY),
-             create_list_item('Browse subgenres...'),
-             True))
+        # TODO: Implement browsing of subgenres
+        # directory_items.append(
+        #     (common.build_url(pathitems=['genres', genre_id, 'subgenres'],
+        #                       mode=nav.MODE_DIRECTORY),
+        #      create_list_item('Browse subgenres...'),
+        #      True))
     finalize_directory(
         items=directory_items,
+        title=video_list['displayName'],
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
                       xbmcplugin.SORT_METHOD_LABEL,
                       xbmcplugin.SORT_METHOD_TITLE,
@@ -259,6 +286,8 @@ def build_season_listing(tvshowid, season_list):
              True))
     finalize_directory(
         items=directory_items,
+        title=' - '.join((season_list.tvshow['title'],
+                          common.get_local_string(20366)[2:])),
         sort_methods=[xbmcplugin.SORT_METHOD_NONE,
                       xbmcplugin.SORT_METHOD_VIDEO_YEAR,
                       xbmcplugin.SORT_METHOD_LABEL,
@@ -285,6 +314,8 @@ def build_episode_listing(seasonid, episode_list):
              False))
     finalize_directory(
         items=directory_items,
+        title=' - '.join((episode_list.tvshow['title'],
+                          episode_list.season['summary']['name'])),
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED,
                       xbmcplugin.SORT_METHOD_LABEL,
                       xbmcplugin.SORT_METHOD_TITLE,
@@ -294,17 +325,20 @@ def build_episode_listing(seasonid, episode_list):
         content_type=CONTENT_EPISODE)
 
 
-def create_list_item(label, icon=None, fanart=None):
+def create_list_item(label, icon=None, fanart=None, description=None):
     """Create a rudimentary list item with icon and fanart"""
     # pylint: disable=unexpected-keyword-arg
     list_item = xbmcgui.ListItem(label=label,
                                  iconImage=icon or common.DEFAULT_FANART,
                                  offscreen=True)
     list_item.setProperty('fanart_image', fanart or common.DEFAULT_FANART)
+    list_item.setContentLookup(False)
+    if description:
+        list_item.setInfo('video', {'plot': description})
     return list_item
 
 def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
-                       refresh=False):
+                       refresh=False, title=None):
     """Finalize a directory listing.
     Add items, set available sort methods and content type"""
     xbmcplugin.addDirectoryItems(
@@ -316,6 +350,11 @@ def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
         xbmcplugin.addSortMethod(
             handle=common.PLUGIN_HANDLE,
             sortMethod=sort_method)
+
+    if title:
+        xbmcplugin.setPluginCategory(
+            handle=common.PLUGIN_HANDLE,
+            category=title)
 
     xbmcplugin.setContent(
         handle=common.PLUGIN_HANDLE,

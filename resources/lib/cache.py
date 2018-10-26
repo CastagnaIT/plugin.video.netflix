@@ -18,13 +18,14 @@ import resources.lib.common as common
 WND = xbmcgui.Window(10000)
 
 CACHE_COMMON = 'cache_common'
+CACHE_GENRES = 'cache_genres'
 CACHE_METADATA = 'cache_metadata'
 CACHE_INFOLABELS = 'cache_infolabels'
 CACHE_ARTINFO = 'cache_artinfo'
 CACHE_LIBRARY = 'library'
 
-BUCKET_NAMES = [CACHE_COMMON, CACHE_METADATA, CACHE_INFOLABELS,
-                CACHE_ARTINFO, CACHE_LIBRARY]
+BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_METADATA,
+                CACHE_INFOLABELS, CACHE_ARTINFO, CACHE_LIBRARY]
 BUCKETS = {}
 
 TTL_INFINITE = 60*60*24*365*100

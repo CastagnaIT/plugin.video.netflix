@@ -7,7 +7,8 @@ import resources.lib.cache as cache
 
 from .data_types import LoLoMo, VideoList, SeasonList, EpisodeList
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
-                    EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS)
+                    EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
+                    GENRE_PARTIAL_PATHS)
 
 class InvalidVideoListTypeError(Exception):
     """No video list of a given was available"""
@@ -41,6 +42,7 @@ def root_lists():
         [['lolomo',
           {'from': 0, 'to': 35},
           ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
+        # Titles and art of first 4 videos in each video list
         build_paths(['lolomo', {'from': 0, 'to': 35},
                      {'from': 0, 'to': 3}, 'reference'],
                     [['title']] + ART_PARTIAL_PATHS)))
@@ -65,8 +67,26 @@ def video_list(list_id):
     common.debug('Requesting video list {}'.format(list_id))
     return VideoList(common.make_call(
         'path_request',
+        [['lists', [list_id], 'displayName']] +
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
+
+@cache.cache_output(cache.CACHE_GENRES, identifying_param_index=0,
+                    identifying_param_name='genre_id')
+def genre(genre_id):
+    """Retrieve LoLoMos for the given genre"""
+    common.debug('Requesting LoLoMos for genre {}'.format(genre_id))
+    return LoLoMo(common.make_call(
+        'path_request',
+        build_paths(['genres', genre_id, 'rw'], GENRE_PARTIAL_PATHS) +
+        # Titles and art of standard lists' items
+        build_paths(['genres', genre_id, 'rw',
+                     {"from": 0, "to": 50},
+                     {"from": 0, "to": 3}, "reference"],
+                    [['title']] + ART_PARTIAL_PATHS) +
+        # IDs and names of subgenres
+        [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
+          ['id', 'name']]]))
 
 @cache.cache_output(cache.CACHE_COMMON)
 def seasons(videoid):
@@ -93,6 +113,7 @@ def episodes(videoid):
         videoid,
         common.make_call(
             'path_request',
+            [['seasons', videoid.seasonid, 'summary']] +
             build_paths(['seasons', videoid.seasonid, 'episodes',
                          {'from': 0, 'to': 40}],
                         EPISODES_PARTIAL_PATHS) +
