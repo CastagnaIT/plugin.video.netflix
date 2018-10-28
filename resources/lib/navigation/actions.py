@@ -53,7 +53,7 @@ class ActionExecutor(object):
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
         cache.invalidate_cache()
-        xbmc.executebuiltin('Container.Refresh')
+        common.refresh_container()
 
     def switch_account(self):
         """Logo out of the curent account and login into another one"""
@@ -84,4 +84,4 @@ class ActionExecutor(object):
         else:
             raise InvalidPathError('Unknown my-list action: {}'
                                    .format(pathitems[0]))
-        xbmc.executebuiltin('Container.Refresh')
+        common.refresh_container()

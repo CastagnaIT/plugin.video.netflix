@@ -134,6 +134,14 @@ def single_info(videoid):
                                  ART_PARTIAL_PATHS + [['title']]))
     return common.make_call('path_request', paths)
 
+@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='my_list_items')
+def mylist_items():
+    """Return a list of all the items currently contained in my list"""
+    return [video_id
+            for video_id, video in video_list(
+                list_id_for_type('queue')).videos.iteritems()
+            if video['queue'].get('inQueue', False)]
+
 def rate(videoid, rating):
     """Rate a video on Netflix"""
     common.debug('Rating {} as {}'.format(videoid.value, rating))
@@ -170,14 +178,11 @@ def _update_my_list(video_id, operation):
          'data': {
              'operation': operation,
              'videoId': int(video_id)}})
-    if common.ADDON.getSettingBool('invalidate_cache_on_mylist_modify'):
-        cache.invalidate_cache()
-    else:
-        cache.invalidate_last_location()
-        cache.invalidate_entry(cache.CACHE_COMMON,
-                               list_id_for_type('queue'))
-        cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
-        cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
+    cache.invalidate_entry(cache.CACHE_COMMON,
+                           list_id_for_type('queue'))
+    cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
+    cache.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
+    cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
