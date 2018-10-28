@@ -144,7 +144,7 @@ def parse_art(videoid, item, raw_data):
         art = {}
     if poster:
         art['poster'] = poster
-    if clearlogo:
+    if clearlogo and videoid.mediatype != common.VideoId.UNSPECIFIED:
         art['clearlogo'] = clearlogo
     if interesting_moment:
         art['fanart'] = interesting_moment

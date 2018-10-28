@@ -860,7 +860,7 @@ def build_url(pathitems=None, videoid=None, params=None, mode=None):
         pathitems.insert(0, mode)
     return '{netloc}/{path}{qs}'.format(
         netloc=BASE_URL,
-        path='/'.join(pathitems),
+        path='/'.join(pathitems) + '/',
         qs=('?' + urlencode(params)) if params else '')
 
 def is_numeric(string):
