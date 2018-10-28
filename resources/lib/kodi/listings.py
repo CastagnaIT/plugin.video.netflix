@@ -10,6 +10,7 @@ import xbmcplugin
 
 import resources.lib.common as common
 import resources.lib.navigation as nav
+import resources.lib.api.shakti as api
 import resources.lib.kodi.library as library
 
 from .infolabels import add_info, add_art
@@ -391,7 +392,7 @@ def _generate_context_menu_items(videoid, item):
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
         list_action = ('remove_from_list'
-                       if item['queue']['inQueue']
+                       if videoid.value in api.mylist_items()
                        else 'add_to_list')
         items.append(
             (CONTEXT_MENU_ACTIONS[list_action]['label'],

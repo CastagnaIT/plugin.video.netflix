@@ -18,9 +18,6 @@ def build(pathitems, params):
 
     common.debug('Invoking directory handler {}'.format(builder.__name__))
     builder(pathitems=pathitems)
-    # Remember last location to be able to invalidate it in cache on
-    # certain actions
-    common.remember_last_location()
 
 class DirectoryBuilder(object):
     """Builds directory listings"""

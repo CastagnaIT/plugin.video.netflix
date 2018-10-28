@@ -28,6 +28,8 @@ BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_METADATA,
                 CACHE_INFOLABELS, CACHE_ARTINFO, CACHE_LIBRARY]
 BUCKETS = {}
 
+BUCKET_LOCKED = 'LOCKED_BY_{}'
+
 TTL_INFINITE = 60*60*24*365*100
 
 def _init_disk_cache():
@@ -78,6 +80,7 @@ def cache_output(bucket, identifying_param_index=0,
             try:
                 return get(bucket, identifier)
             except CacheMiss:
+                common.debug('Cache miss on {}'.format(identifying_param_name))
                 output = func(*args, **kwargs)
                 add(bucket, identifier, output, ttl=ttl, to_disk=to_disk)
                 return output
@@ -146,29 +149,6 @@ def invalidate_entry(bucket, identifier):
     except KeyError:
         common.debug('Nothing to invalidate, {} was not in {}'
                      .format(identifier, bucket))
-
-def invalidate_last_location():
-    import resources.lib.api.shakti as api
-    try:
-        last_path = common.get_last_location()[1].split('/')
-        common.debug('Invalidating cache for last location {}'
-                     .format(last_path))
-        if last_path[1] == 'video_list':
-            if last_path[2] in common.KNOWN_LIST_TYPES:
-                video_list_id = api.list_id_for_type(last_path[2])
-                invalidate_entry(CACHE_COMMON, video_list_id)
-                invalidate_entry(CACHE_COMMON, last_path[2])
-            else:
-                invalidate_entry(CACHE_COMMON, last_path[2])
-        elif last_path[1] == 'show':
-            if len(last_path) > 4:
-                invalidate_entry(CACHE_COMMON, last_path[4])
-            else:
-                invalidate_entry(CACHE_COMMON, last_path[2])
-    except IndexError as exc:
-        common.error(
-            'Failed to invalidate cache entry for last location: {}'
-            .format(exc))
 
 def commit():
     """Persist cache contents in window properties"""
@@ -246,20 +226,35 @@ def _window_property(bucket):
 
 def _load_bucket(bucket):
     # pylint: disable=broad-except
-    try:
-        return pickle.loads(WND.getProperty(_window_property(bucket)))
-    except Exception:
-        common.debug('No instance of {} found. Creating new instance...'
-                     .format(bucket))
-        return {}
+    wnd_property = ''
+    for _ in range(1,10):
+        wnd_property = WND.getProperty(_window_property(bucket))
+        if wnd_property.startswith(BUCKET_LOCKED[:-2]):
+            common.debug('Waiting for release of {}'.format(bucket))
+            xbmc.sleep(50)
+        else:
+            try:
+                return pickle.loads(wnd_property)
+            except Exception:
+                common.debug('No instance of {} found. Creating new instance.'
+                             .format(bucket))
+                return {}
+    common.warn('Bucket {} is {}. Working with an empty instance...'
+                .format(bucket, wnd_property))
+    return {}
+
 
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
-    try:
-        WND.setProperty(_window_property(bucket), pickle.dumps(contents))
-    except Exception as exc:
-        common.error('Failed to persist {} to window properties: {}'
-                     .format(bucket, exc))
+    lock = WND.getProperty(_window_property(bucket))
+    if lock == BUCKET_LOCKED.format(common.PLUGIN_HANDLE):
+        try:
+            WND.setProperty(_window_property(bucket), pickle.dumps(contents))
+        except Exception as exc:
+            common.error('Failed to persist {} to window properties: {}'
+                         .format(bucket, exc))
+    else:
+        common.warn('Bucket {} is {}. Discarding changes...'.format(bucket, lock))
 
 def _clear_bucket(bucket):
     WND.clearProperty(_window_property(bucket))

@@ -876,23 +876,6 @@ def get_local_string(string_id):
     src = xbmc if string_id < 30000 else ADDON
     return src.getLocalizedString(string_id)
 
-def remember_last_location():
-    """Write the last path and params to a window property for it
-    to be accessible to the next call"""
-    last_location = build_url(PATH.split('/'), params=REQUEST_PARAMS)
-    xbmcgui.Window(10000).setProperty('nf_last_location', last_location)
-    debug('Saved last location as {}'.format(last_location))
-
-def get_last_location():
-    """Retrievethe components (base_url, path, query_params) for the last
-    location"""
-    last_url = xbmcgui.Window(10000).getProperty('nf_last_location')
-    parsed_url = urlparse(last_url)
-    return ('{scheme}://{netloc}'.format(scheme=parsed_url[0],
-                                         netloc=parsed_url[1]),
-            parsed_url[2][1:],  # Path
-            dict(parse_qsl(parsed_url[4][1:])))  # Querystring
-
 def inject_video_id(path_offset, pathitems_arg='pathitems',
                     inject_remaining_pathitems=False):
     """Decorator that converts a pathitems argument into a VideoId
@@ -916,3 +899,6 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
             return func(*args, **kwargs)
         return wrapper
     return injecting_decorator
+
+def refresh_container():
+    xbmc.executebuiltin('Container.Refresh')
