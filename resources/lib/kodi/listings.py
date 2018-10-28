@@ -328,13 +328,14 @@ def build_episode_listing(seasonid, episode_list):
 def create_list_item(label, icon=None, fanart=None, description=None):
     """Create a rudimentary list item with icon and fanart"""
     # pylint: disable=unexpected-keyword-arg
-    list_item = xbmcgui.ListItem(label=label,
-                                 iconImage=icon or common.DEFAULT_FANART,
-                                 offscreen=True)
-    list_item.setProperty('fanart_image', fanart or common.DEFAULT_FANART)
+    list_item = xbmcgui.ListItem(label=label, iconImage=icon, offscreen=True)
     list_item.setContentLookup(False)
+    if fanart:
+        list_item.setProperty('fanart_image', fanart)
+    info = {'title': label}
     if description:
-        list_item.setInfo('video', {'plot': description})
+        info['plot'] = description
+    list_item.setInfo('video', info)
     return list_item
 
 def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
