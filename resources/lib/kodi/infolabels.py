@@ -57,19 +57,26 @@ def parse_info(videoid, item, raw_data):
                 ', '.join(item.contained_titles))
         }, {}
 
-    mediatype = videoid.mediatype
-    if mediatype == common.VideoId.SHOW:
-        # Type from Netflix doesn't match Kodi's expectations
-        mediatype = 'tvshow'
-
-    infos = {'mediatype': mediatype}
-    quality_infos = get_quality_infos(item)
-
-    if videoid.mediatype == common.VideoId.SHOW:
-        infos['tvshowtitle'] = item['title']
-    elif videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
+    infos = {'mediatype': ('tvshow'
+                           if videoid.mediatype == common.VideoId.SHOW
+                           else videoid.mediatype)}
+    if videoid.mediatype in [common.VideoId.SHOW, common.VideoId.SEASON,
+                             common.VideoId.EPISODE]:
         infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
 
+    parse_atomic_infos(item, infos)
+    parse_referenced_infos(item, infos, raw_data)
+
+    infos['tag'] = [tagdef['name']
+                    for tagdef
+                    in item.get('tags', {}).itervalues()
+                    if isinstance(tagdef.get('name', {}), unicode)]
+
+    return infos, get_quality_infos(item)
+
+def parse_atomic_infos(item, infos):
+    """Parse those infos into infolabels that are directly accesible from
+    the item dict"""
     for target, source in paths.INFO_MAPPINGS.iteritems():
         value = (common.get_path_safe(source, item)
                  if isinstance(source, list)
@@ -82,18 +89,17 @@ def parse_info(videoid, item, raw_data):
         if target in paths.INFO_TRANSFORMATIONS:
             value = paths.INFO_TRANSFORMATIONS[target](value)
         infos[target] = value
+    return infos
 
+def parse_referenced_infos(item, infos, raw_data):
+    """Parse those infos into infolabels that need their references
+    resolved within the raw data"""
     for target, source in paths.REFERENCE_MAPPINGS.iteritems():
         infos[target] = [
             person['name']
             for _, person
             in paths.resolve_refs(item.get(source, {}), raw_data)]
-
-    infos['tag'] = [tagdef['name']
-                    for tagdef
-                    in item.get('tags', {}).itervalues()
-                    if isinstance(tagdef.get('name', {}), unicode)]
-    return infos, quality_infos
+    return infos
 
 def get_quality_infos(item):
     """Return audio and video quality infolabels"""
@@ -125,34 +131,39 @@ def parse_art(videoid, item, raw_data):
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[0] + ['url'], item)
-    boxart_large = boxarts[paths.ART_SIZE_FHD]
-    boxart_small = boxarts[paths.ART_SIZE_SD]
-    poster = boxarts[paths.ART_SIZE_POSTER]
     interesting_moment = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[1] + ['url'], item)[paths.ART_SIZE_FHD]
     clearlogo = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[3] + ['url'], item)
     fanart = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[4] + [0, 'url'], item)
-    if boxart_large or boxart_small:
-        art = {
-            'thumb': boxart_large or boxart_small,
-            'landscape': boxart_large or boxart_small,
-            'fanart': boxart_large or boxart_small,
-        }
-    else:
-        art = {}
-    if poster:
-        art['poster'] = poster
-    if clearlogo and videoid.mediatype != common.VideoId.UNSPECIFIED:
-        art['clearlogo'] = clearlogo
-    if interesting_moment:
-        art['fanart'] = interesting_moment
-        if item.get('summary', {}).get('type') == 'episode':
-            art['thumb'] = interesting_moment
-            art['landscape'] = interesting_moment
-    if fanart:
-        art['fanart'] = fanart
+    return assign_art(videoid,
+                      boxarts[paths.ART_SIZE_FHD],
+                      boxarts[paths.ART_SIZE_SD],
+                      boxarts[paths.ART_SIZE_POSTER],
+                      interesting_moment,
+                      clearlogo,
+                      fanart)
+
+def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
+               clearlogo, fanart):
+    """Assign the art available from Netflix to appropriate Kodi art"""
+    # pylint: disable=too-many-arguments
+    art = {}
+    art['poster'] = poster or ''
+    art['clearlogo'] = (clearlogo
+                        if videoid.mediatype != common.VideoId.UNSPECIFIED
+                        else '') or ''
+    art['thumb'] = ((interesting_moment
+                     if videoid.mediatype == common.VideoId.EPISODE else '') or
+                    boxart_large or
+                    boxart_small)
+    art['landscape'] = art['thumb']
+    art['fanart'] = (fanart or
+                     interesting_moment or
+                     boxart_large or
+                     boxart_small or
+                     '')
     return art
 
 def add_info_from_netflix(videoid, list_item):

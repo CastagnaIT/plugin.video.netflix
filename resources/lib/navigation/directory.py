@@ -5,19 +5,6 @@ from __future__ import unicode_literals
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
-import resources.lib.kodi.ui as ui
-from resources.lib.navigation import InvalidPathError
-
-def build(pathitems, params):
-    """Build a directory listing for the given path"""
-    try:
-        builder = DirectoryBuilder(params).__getattribute__(
-            pathitems[0] if pathitems else 'root')
-    except AttributeError:
-        raise InvalidPathError('Cannot route {}'.format('/'.join(pathitems)))
-
-    common.debug('Invoking directory handler {}'.format(builder.__name__))
-    builder(pathitems=pathitems)
 
 class DirectoryBuilder(object):
     """Builds directory listings"""
@@ -58,10 +45,10 @@ class DirectoryBuilder(object):
     def video_list(self, pathitems):
         """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
-        if pathitems[1] in common.KNOWN_LIST_TYPES:
-            list_id = api.list_id_for_type(pathitems[1])
+        if pathitems[0] in common.KNOWN_LIST_TYPES:
+            list_id = api.list_id_for_type(pathitems[0])
         else:
-            list_id = pathitems[1]
+            list_id = pathitems[0]
 
         listings.build_video_listing(api.video_list(list_id),
                                      self.params.get('genreId'))
@@ -78,13 +65,13 @@ class DirectoryBuilder(object):
         """Show episodes of a season"""
         listings.build_episode_listing(videoid, api.episodes(videoid))
 
-    def genres(self, pathitems):
+    def genres(self, pathitems=None):
         """Show video lists for a genre"""
-        if len(pathitems) < 2:
+        if not pathitems:
             lolomo = api.root_lists()
             contexts = common.MISC_CONTEXTS['genres']['contexts']
         else:
-            lolomo = api.genre(pathitems[1])
+            lolomo = api.genre(pathitems[0])
             contexts = None
         listings.build_lolomo_listing(lolomo, contexts)
 

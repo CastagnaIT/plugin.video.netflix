@@ -2,7 +2,6 @@
 """Navigation handler for actions"""
 from __future__ import unicode_literals
 
-import xbmc
 from xbmcaddon import Addon
 
 import resources.lib.common as common
@@ -11,25 +10,12 @@ import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 from resources.lib.navigation import InvalidPathError
 
-def execute(pathitems, params):
-    """Execute an action as specified by the path"""
-    try:
-        executor = ActionExecutor(params).__getattribute__(pathitems[0])
-    except (AttributeError, IndexError):
-        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-
-    common.debug('Invoking action executor {}'.format(executor.__name__))
-
-    if len(pathitems) > 1:
-        executor(pathitems=pathitems[1:])
-    else:
-        executor()
-
-class ActionExecutor(object):
+class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing action executor: {}'.format(params))
+        common.debug('Initializing AddonActionExecutor: {}'
+                     .format(params))
         self.params = params
 
     def logout(self):
