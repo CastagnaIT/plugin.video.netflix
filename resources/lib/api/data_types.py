@@ -24,7 +24,7 @@ class LoLoMo(object):
             in resolve_refs(self.data['lolomos'][self.id], self.data))
 
     def __getitem__(self, key):
-        return self.data['lolomos'][self.id][key]
+        return _check_sentinel(self.data['lolomos'][self.id][key])
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this LoLoMo."""
@@ -59,7 +59,7 @@ class VideoList(object):
                                  for video in self.videos.itervalues()]
 
     def __getitem__(self, key):
-        return self.data['lists'][self.id.value][key]
+        return _check_sentinel(self.data['lists'][self.id.value][key])
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
