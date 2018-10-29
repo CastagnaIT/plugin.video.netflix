@@ -27,16 +27,16 @@ def route(pathitems):
     common.debug('Routing navigation request')
     root_handler = pathitems[0]
     pass_on_params = (pathitems[1:], common.REQUEST_PARAMS)
-    if not common.PATH or root_handler == nav.MODE_DIRECTORY:
+    if not common.PATH or root_handler == common.MODE_DIRECTORY:
         directory.build(*pass_on_params)
-    elif root_handler == nav.MODE_HUB:
+    elif root_handler == common.MODE_HUB:
         hub.browse(*pass_on_params)
-    elif root_handler == nav.MODE_PLAY:
+    elif root_handler == common.MODE_PLAY:
         player.play(pathitems=pathitems[1:],
                     needs_pin=common.REQUEST_PARAMS.get('pin', False))
-    elif root_handler == nav.MODE_ACTION:
+    elif root_handler == common.MODE_ACTION:
         actions.execute(*pass_on_params)
-    elif root_handler == nav.MODE_LIBRARY:
+    elif root_handler == common.MODE_LIBRARY:
         library.execute(*pass_on_params)
     else:
         raise nav.InvalidPathError(

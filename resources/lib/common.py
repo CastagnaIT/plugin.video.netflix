@@ -51,6 +51,12 @@ MISC_CONTEXTS = {
                         'contexts': ['similars', 'becauseYouAdded']}
 }
 
+MODE_DIRECTORY = 'directory'
+MODE_HUB = 'hub'
+MODE_ACTION = 'action'
+MODE_PLAY = 'play'
+MODE_LIBRARY = 'library'
+
 def init_globals(argv):
     """Initialized globally used module variables.
     Needs to be called at start of each plugin instance!
@@ -561,6 +567,22 @@ def noop(**kwargs):
     """Takes everything, does nothing, classic no operation function"""
     return kwargs
 
+def find_season(season_id, seasons, raise_exc=True):
+    """
+    Get metadata for a specific season from within a nested
+    metadata dict.
+    :return: Season metadata. Raises KeyError if metadata for season_id
+    does not exist.
+    """
+    for season in seasons:
+        if str(season['id']) == season_id:
+            return season
+    if raise_exc:
+        raise KeyError('Metadata for season {} does not exist'
+                       .format(season_id))
+    else:
+        return {}
+
 def find_episode(episode_id, seasons, raise_exc=True):
     """
     Get metadata for a specific episode from within a nested
@@ -753,6 +775,19 @@ def get_path_safe(path, search_space, include_key=False, default=None):
         return get_path(path, search_space, include_key)
     except KeyError:
         return default
+
+def remove_path(path, search_space, remove_remnants=True):
+    """Remove a value from a nested dict by following a path.
+    Also removes remaining empty dicts in the hierarchy if remove_remnants
+    is True"""
+    if not isinstance(path, (tuple, list)):
+        path = [path]
+    if len(path) == 1:
+        del search_space[path[0]]
+    else:
+        remove_path(path[1:], search_space[path[0]])
+        if remove_remnants and not search_space[path[0]]:
+            del search_space[path[0]]
 
 def get_multiple_paths(path, search_space, default=None):
     """Retrieve multiple values from a nested dict by following the path.
