@@ -68,66 +68,64 @@ def parse_info(videoid, item, raw_data):
                              common.VideoId.EPISODE]:
         infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
 
-    parse_atomic_infos(item, infos)
-    parse_referenced_infos(item, infos, raw_data)
-
-    infos['tag'] = [tagdef['name']
-                    for tagdef
-                    in item.get('tags', {}).itervalues()
-                    if isinstance(tagdef.get('name', {}), unicode)]
+    infos.update(parse_atomic_infos(item))
+    infos.update(parse_referenced_infos(item, raw_data))
+    infos.update(parse_tags(item))
 
     return infos, get_quality_infos(item)
 
 
-def parse_atomic_infos(item, infos):
+def parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accesible from
     the item dict"""
-    for target, source in paths.INFO_MAPPINGS.iteritems():
-        value = (common.get_path_safe(source, item)
-                 if isinstance(source, list)
-                 else item.get(source))
-        if isinstance(value, dict):
-            value = None
-        if value is None:
-            common.debug('Infolabel {} not available'.format(target))
-            continue
-        if target in paths.INFO_TRANSFORMATIONS:
-            value = paths.INFO_TRANSFORMATIONS[target](value)
-        infos[target] = value
-    return infos
+    return {target: _get_and_transform(source, target, item)
+            for target, source
+            in paths.INFO_MAPPINGS.iteritems()}
 
 
-def parse_referenced_infos(item, infos, raw_data):
+def _get_and_transform(source, target, item):
+    """Get the value for source and transform it if neccessary"""
+    value = common.get_path_safe(source, item)
+    if isinstance(value, dict):
+        return ''
+    return (paths.INFO_TRANSFORMATIONS[target](value)
+            if target in paths.INFO_TRANSFORMATIONS
+            else value)
+
+
+def parse_referenced_infos(item, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
-    for target, source in paths.REFERENCE_MAPPINGS.iteritems():
-        infos[target] = [
-            person['name']
-            for _, person
-            in paths.resolve_refs(item.get(source, {}), raw_data)]
-    return infos
+    return {target: [person['name']
+                     for _, person
+                     in paths.resolve_refs(item.get(source, {}), raw_data)]
+            for target, source in paths.REFERENCE_MAPPINGS.iteritems()}
 
+
+def parse_tags(item):
+    """Parse the tags"""
+    return {'tag': [tagdef['name']
+                    for tagdef
+                    in item.get('tags', {}).itervalues()
+                    if isinstance(tagdef.get('name', {}), unicode)]}
+
+
+QUALITIES = [
+    {'codec': 'h264', 'width': '960', 'height': '540'},
+    {'codec': 'h264', 'width': '1920', 'height': '1080'},
+    {'codec': 'h265', 'width': '3840', 'height': '2160'}
+]
 
 def get_quality_infos(item):
     """Return audio and video quality infolabels"""
     quality_infos = {}
     delivery = item.get('delivery')
     if delivery:
-        if delivery.get('hasHD'):
-            quality_infos['video'] = {'codec': 'h264', 'width': '1920',
-                                      'height': '1080'}
-        elif delivery.get('hasUltraHD'):
-            quality_infos['video'] = {'codec': 'h265', 'width': '3840',
-                                      'height': '2160'}
-        else:
-            quality_infos['video'] = {'codec': 'h264', 'width': '960',
-                                      'height': '540'}
-            # quality_infos = {'width': '1280', 'height': '720'}
-        if delivery.get('has51Audio'):
-            quality_infos['audio'] = {'channels': 6}
-        else:
-            quality_infos['audio'] = {'channels': 2}
-
+        quality_infos['video'] = QUALITIES[
+            min((delivery.get('hasUltraHD', False)<<1 |
+                 delivery.get('hasHD')), 2)]
+        quality_infos['audio'] = {
+            'channels': 2 + 4*delivery.get('has51Audio', False)}
         quality_infos['audio']['codec'] = (
             'eac3'
             if common.ADDON.getSettingBool('enable_dolby_sound')
@@ -158,22 +156,23 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
                clearlogo, fanart):
     """Assign the art available from Netflix to appropriate Kodi art"""
     # pylint: disable=too-many-arguments
-    art = {}
-    art['poster'] = poster or ''
-    art['clearlogo'] = (clearlogo
-                        if videoid.mediatype != common.VideoId.UNSPECIFIED
-                        else '') or ''
+    art = {'poster': _best_art([poster]),
+           'fanart': _best_art([fanart, interesting_moment, boxart_large,
+                                boxart_small])}
     art['thumb'] = ((interesting_moment
                      if videoid.mediatype == common.VideoId.EPISODE else '') or
                     boxart_large or
                     boxart_small)
     art['landscape'] = art['thumb']
-    art['fanart'] = (fanart or
-                     interesting_moment or
-                     boxart_large or
-                     boxart_small or
-                     '')
+    if videoid.mediatype != common.VideoId.UNSPECIFIED:
+        art['clearlogo'] = _best_art([clearlogo])
     return art
+
+
+def _best_art(arts):
+    """Return the best art (determined by list order of arts) or
+    an empty string if none is available"""
+    return next((art for art in arts if art), '')
 
 
 def add_info_from_netflix(videoid, list_item):
