@@ -14,6 +14,7 @@ OS_MACHINE = machine()
 CMD_AUTOCLOSE_DIALOG = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
                        '{:02d}:{:02d},silent)'
 
+
 def show_modal_dialog(dlg_class, xml, path, **kwargs):
     """
     Show a modal Dialog in the UI.
@@ -26,6 +27,7 @@ def show_modal_dialog(dlg_class, xml, path, **kwargs):
     if minutes > 0 or seconds > 0:
         xbmc.executebuiltin(CMD_AUTOCLOSE_DIALOG.format(minutes, seconds))
     dlg.doModal()
+
 
 class Skip(xbmcgui.WindowXMLDialog):
     """
@@ -47,6 +49,7 @@ class Skip(xbmcgui.WindowXMLDialog):
         if controlID == 6012:
             xbmc.Player().seekTime(self.skip_to)
             self.close()
+
 
 class SaveStreamSettings(xbmcgui.WindowXMLDialog):
     """

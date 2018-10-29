@@ -32,6 +32,25 @@ CONTENT_EPISODE = 'episodes'
 
 RUN_PLUGIN = 'XBMC.RunPlugin({})'
 
+ADDITIONAL_MAIN_MENU_ITEMS = [
+    {'path': ['genres', '83'],
+     'label': common.get_local_string(30095),
+     'icon': 'DefaultTVShows.png',
+     'description': None},
+    {'path': ['genres', '34399'],
+     'label': common.get_local_string(30096),
+     'icon': 'DefaultMovies.png',
+     'description': None},
+    {'path': ['search'],
+     'label': common.get_local_string(30011),
+     'icon': None,
+     'description': common.get_local_string(30092)},
+    {'path': ['exported'],
+     'label': common.get_local_string(30048),
+     'icon': 'DefaultHardDisk.png',
+     'description': common.get_local_string(30091)},
+]
+
 CONTEXT_MENU_ACTIONS = {
     'export': {
         'label': common.get_local_string(30018),
@@ -65,6 +84,7 @@ CONTEXT_MENU_ACTIONS = {
                                  mode=common.MODE_ACTION))},
 }
 
+
 def custom_viewmode(viewtype):
     """Decorator that sets a custom viewmode if currently in
     a listing of the plugin"""
@@ -86,6 +106,7 @@ def custom_viewmode(viewtype):
                         'Container.SetViewMode({})'.format(view_id))
         return set_custom_viewmode
     return decorate_viewmode
+
 
 @custom_viewmode(VIEW_FOLDER)
 def build_profiles_listing(profiles):
@@ -130,24 +151,6 @@ def build_profiles_listing(profiles):
         items=directory_items,
         sort_methods=[xbmcplugin.SORT_METHOD_LABEL])
 
-ADDITIONAL_MAIN_MENU_ITEMS = [
-    {'path': ['genres', '83'],
-     'label': common.get_local_string(30095),
-     'icon': 'DefaultTVShows.png',
-     'description': None},
-    {'path': ['genres', '34399'],
-     'label': common.get_local_string(30096),
-     'icon': 'DefaultMovies.png',
-     'description': None},
-    {'path': ['search'],
-     'label': common.get_local_string(30011),
-     'icon': None,
-     'description': common.get_local_string(30092)},
-    {'path': ['exported'],
-     'label': common.get_local_string(30048),
-     'icon': 'DefaultHardDisk.png',
-     'description': common.get_local_string(30091)},
-]
 
 @custom_viewmode(VIEW_FOLDER)
 def build_main_menu_listing(lolomo):
@@ -189,6 +192,7 @@ def build_main_menu_listing(lolomo):
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
         content_type=CONTENT_FOLDER)
 
+@custom_viewmode(VIEW_FOLDER)
 def build_lolomo_listing(lolomo, contexts=None):
     """Build a listing of vieo lists (LoLoMo). Only show those
     lists with a context specified context if contexts is set."""
@@ -217,6 +221,7 @@ def build_lolomo_listing(lolomo, contexts=None):
         title=lolomo.get('name'),
         sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED],
         content_type=CONTENT_FOLDER)
+
 
 @custom_viewmode(VIEW_SHOW)
 def build_video_listing(video_list, genre_id=None):
@@ -272,6 +277,7 @@ def build_video_listing(video_list, genre_id=None):
         content_type=CONTENT_MOVIE if only_movies else CONTENT_SHOW)
     return VIEW_MOVIE if only_movies else VIEW_SHOW
 
+
 @custom_viewmode(VIEW_SEASON)
 def build_season_listing(tvshowid, season_list):
     """
@@ -299,6 +305,7 @@ def build_season_listing(tvshowid, season_list):
                       xbmcplugin.SORT_METHOD_LASTPLAYED,
                       xbmcplugin.SORT_METHOD_TITLE],
         content_type=CONTENT_SEASON)
+
 
 @custom_viewmode(VIEW_EPISODE)
 def build_episode_listing(seasonid, episode_list):
@@ -343,6 +350,7 @@ def create_list_item(label, icon=None, fanart=None, description=None):
     list_item.setInfo('video', info)
     return list_item
 
+
 def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
                        refresh=False, title=None):
     """Finalize a directory listing.
@@ -369,6 +377,7 @@ def finalize_directory(items, sort_methods=None, content_type=CONTENT_FOLDER,
     xbmcplugin.endOfDirectory(
         handle=common.PLUGIN_HANDLE,
         updateListing=refresh)
+
 
 def _generate_context_menu_items(videoid):
     items = []

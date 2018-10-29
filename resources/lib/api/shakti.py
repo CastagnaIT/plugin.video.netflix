@@ -10,28 +10,34 @@ from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS)
 
+
 class InvalidVideoListTypeError(Exception):
     """No video list of a given was available"""
     pass
+
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
     cache.invalidate_cache()
     common.make_call('activate_profile', profile_id)
 
+
 def logout():
     """Logout of the current account"""
     cache.invalidate_cache()
     common.make_call('logout')
+
 
 def login():
     """Perform a login"""
     cache.invalidate_cache()
     common.make_call('login')
 
+
 def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call('list_profiles')
+
 
 @cache.cache_output(cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
@@ -47,6 +53,7 @@ def root_lists():
                      {'from': 0, 'to': 3}, 'reference'],
                     [['title']] + ART_PARTIAL_PATHS)))
 
+
 @cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_type')
 def list_id_for_type(list_type):
@@ -60,6 +67,7 @@ def list_id_for_type(list_type):
         'Resolved list ID for {} to {}'.format(list_type, list_id))
     return list_id
 
+
 @cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_id')
 def video_list(list_id):
@@ -70,6 +78,7 @@ def video_list(list_id):
         [['lists', [list_id], 'displayName']] +
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
+
 
 @cache.cache_output(cache.CACHE_GENRES, identifying_param_index=0,
                     identifying_param_name='genre_id')
@@ -88,6 +97,7 @@ def genre(genre_id):
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
           ['id', 'name']]]))
 
+
 @cache.cache_output(cache.CACHE_COMMON)
 def seasons(videoid):
     """Retrieve seasons of a TV show"""
@@ -101,6 +111,7 @@ def seasons(videoid):
             'path_request',
             build_paths(['videos', videoid.tvshowid],
                         SEASONS_PARTIAL_PATHS)))
+
 
 @cache.cache_output(cache.CACHE_COMMON)
 def episodes(videoid):
@@ -121,6 +132,7 @@ def episodes(videoid):
                         ART_PARTIAL_PATHS +
                         [['title']])))
 
+
 @cache.cache_output(cache.CACHE_COMMON)
 def single_info(videoid):
     """Retrieve info for a single episode"""
@@ -134,6 +146,7 @@ def single_info(videoid):
                                  ART_PARTIAL_PATHS + [['title']]))
     return common.make_call('path_request', paths)
 
+
 @cache.cache_output(cache.CACHE_COMMON, fixed_identifier='my_list_items')
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
@@ -141,6 +154,7 @@ def mylist_items():
             for video_id, video in video_list(
                 list_id_for_type('queue')).videos.iteritems()
             if video['queue'].get('inQueue', False)]
+
 
 def rate(videoid, rating):
     """Rate a video on Netflix"""
@@ -157,15 +171,18 @@ def rate(videoid, rating):
              'titleid': videoid.value,
              'rating': rating}})
 
+
 def add_to_list(videoid):
     """Add a video to my list"""
     common.debug('Adding {} to my list'.format(videoid))
     _update_my_list(videoid.value, 'add')
 
+
 def remove_from_list(videoid):
     """Remove a video from my list"""
     common.debug('Removing {} from my list'.format(videoid))
     _update_my_list(videoid.value, 'remove')
+
 
 def _update_my_list(video_id, operation):
     """Call API to update my list with either add or remove action"""
@@ -183,6 +200,7 @@ def _update_my_list(video_id, operation):
     cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
     cache.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
     cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
+
 
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
@@ -203,6 +221,7 @@ def metadata(videoid):
             _metadata(videoid.tvshowid).get('seasons', []),
             raise_exc=False)
 
+
 @cache.cache_output(cache.CACHE_METADATA, 0, 'video_id',
                     ttl=common.CACHE_METADATA_TTL, to_disk=True)
 def _metadata(video_id):
@@ -217,6 +236,7 @@ def _metadata(video_id):
             'req_type': 'api',
             'params': {'movieid': video_id}
         })['video']
+
 
 def build_paths(base_path, partial_paths):
     """Build a list of full paths by concatenating each partial path

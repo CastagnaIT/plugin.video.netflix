@@ -14,13 +14,16 @@ import resources.lib.common as common
 COOKIES = {}
 """In-memory storage for account cookies"""
 
+
 class MissingCookiesError(Exception):
     """No session cookies have been stored"""
     pass
 
+
 class CookiesExpiredError(Exception):
     """Stored cookies are expired"""
     pass
+
 
 def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
@@ -33,6 +36,7 @@ def save(account_hash, cookie_jar):
     except Exception as exc:
         common.error('Failed to save cookies to file: {exc}', exc)
 
+
 def delete(account_hash):
     """Delete cookies for an account from in-memory storage and the disk"""
     # pylint: disable=broad-except
@@ -41,6 +45,7 @@ def delete(account_hash):
         os.remove(cookie_filename(account_hash))
     except Exception as exc:
         common.error('Failed to delete cookies on disk: {exc}', exc)
+
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
@@ -54,6 +59,7 @@ def load(account_hash):
 
     return cookie_jar
 
+
 def load_from_file(account_hash):
     """Load cookies for a given account from file"""
     try:
@@ -64,6 +70,7 @@ def load_from_file(account_hash):
         common.error('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()
 
+
 def expired(cookie_jar):
     """Check if one of the cookies in the jar is already expired"""
     earliest_expiration = 99999999999999999999
@@ -72,6 +79,7 @@ def expired(cookie_jar):
                 int(cookie.expires) < earliest_expiration):
             earliest_expiration = int(cookie.expires)
     return int(time()) > earliest_expiration
+
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""

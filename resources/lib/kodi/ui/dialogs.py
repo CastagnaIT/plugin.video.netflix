@@ -8,11 +8,13 @@ import xbmcgui
 
 import resources.lib.common as common
 
+
 def show_notification(msg, title='Netflix'):
     """Show a notification"""
     xbmc.executebuiltin('Notification({}, {}, 3000, {})'
                         .format(title, msg, common.ICON)
                         .encode('utf-8'))
+
 
 def ask_credentials():
     """
@@ -32,6 +34,7 @@ def ask_credentials():
         'password': password
     }
 
+
 def ask_for_rating():
     """Ask the user for a rating"""
     heading = '{} {}'.format(common.get_local_string(30019),
@@ -41,6 +44,7 @@ def ask_for_rating():
                                             defaultt=''))
     except ValueError:
         return None
+
 
 def ask_for_pin():
     """Ask the user for the adult pin"""
@@ -52,11 +56,13 @@ def ask_for_pin():
     except ValueError:
         return None
 
+
 def ask_for_search_term():
     """Ask the user for a search term"""
     return xbmcgui.Dialog().input(
         heading=common.get_local_string(30003),
         type=xbmcgui.INPUT_ALPHANUM) or None
+
 
 def ask_for_custom_title(original_title):
     """Ask the user for a custom title (for library export)"""
@@ -65,6 +71,7 @@ def ask_for_custom_title(original_title):
     return xbmcgui.Dialog().input(
         heading=common.get_local_string(30031),
         type=xbmcgui.INPUT_ALPHANUM) or original_title
+
 
 def ask_for_removal_confirmation(title, year=None):
     """Ask the user to finally remove title from the Kodi library"""

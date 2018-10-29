@@ -33,6 +33,7 @@ BUCKET_LOCKED = 'LOCKED_BY_{}'
 
 TTL_INFINITE = 60*60*24*365*100
 
+
 def _init_disk_cache():
     for bucket in BUCKET_NAMES:
         if bucket == CACHE_LIBRARY:
@@ -44,15 +45,19 @@ def _init_disk_cache():
         except OSError:
             pass
 
+
 _init_disk_cache()
+
 
 class CacheMiss(Exception):
     """Requested item is not in the cache"""
     pass
 
+
 class UnknownCacheBucketError(Exception):
     """The requested cahce bucket does ot exist"""
     pass
+
 
 # pylint: disable=too-many-arguments
 def cache_output(bucket, identifying_param_index=0,
@@ -79,6 +84,7 @@ def cache_output(bucket, identifying_param_index=0,
                 return output
         return wrapper
     return caching_decorator
+
 
 def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
                     identifying_param_index, args):
@@ -133,6 +139,7 @@ def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
 #         return wrapper
 #     return injecting_cache_decorator
 
+
 def get_bucket(key):
     """Get a cache bucket.
     Load it lazily from window property if it's not yet in memory"""
@@ -143,6 +150,7 @@ def get_bucket(key):
         BUCKETS[key] = _load_bucket(key)
     return BUCKETS[key]
 
+
 def invalidate_cache():
     """Clear all cache buckets"""
     # pylint: disable=global-statement
@@ -151,6 +159,7 @@ def invalidate_cache():
         _clear_bucket(bucket)
     BUCKETS = {}
     common.info('Cache invalidated')
+
 
 def invalidate_entry(bucket, identifier):
     """Remove an item from a bucket"""
@@ -161,11 +170,13 @@ def invalidate_entry(bucket, identifier):
         common.debug('Nothing to invalidate, {} was not in {}'
                      .format(identifier, bucket))
 
+
 def commit():
     """Persist cache contents in window properties"""
     for bucket, contents in BUCKETS.iteritems():
         _persist_bucket(bucket, contents)
     common.debug('Successfully persisted cache to window properties')
+
 
 def get(bucket, identifier):
     """Retrieve an item from a cache bucket"""
@@ -180,6 +191,7 @@ def get(bucket, identifier):
                  .format(identifier, bucket, cache_entry['eol']))
     return cache_entry['content']
 
+
 def get_from_disk(bucket, identifier):
     """Load a cache entry from disk and add it to the in memory bucket"""
     cache_filename = _entry_filename(bucket, identifier)
@@ -190,6 +202,7 @@ def get_from_disk(bucket, identifier):
         raise CacheMiss()
     add(bucket, identifier, cache_entry['content'])
     return cache_entry
+
 
 def add(bucket, identifier, content, ttl=None, to_disk=False):
     """Add an item to a cache bucket"""
@@ -202,6 +215,7 @@ def add(bucket, identifier, content, ttl=None, to_disk=False):
     if to_disk:
         add_to_disk(bucket, identifier, cache_entry)
 
+
 def add_to_disk(bucket, identifier, cache_entry):
     """Write a cache entry to disk"""
     # pylint: disable=broad-except
@@ -213,6 +227,7 @@ def add_to_disk(bucket, identifier, cache_entry):
         common.error('Failed to write cache entry to {}: {}'
                      .format(cache_filename, exc))
 
+
 def verify_ttl(bucket, identifier, cache_entry):
     """Verify if cache_entry has reached its EOL.
     Remove from in-memory and disk cache if so and raise CacheMiss"""
@@ -221,6 +236,7 @@ def verify_ttl(bucket, identifier, cache_entry):
                      .format(identifier, bucket))
         _purge_entry(bucket, identifier)
         raise CacheMiss()
+
 
 def _entry_filename(bucket, identifier):
     if bucket == CACHE_LIBRARY:
@@ -232,8 +248,10 @@ def _entry_filename(bucket, identifier):
             'cache', bucket, '{filename}.cache'.format(filename=identifier)]
     return os.path.join(common.DATA_PATH, *file_loc)
 
+
 def _window_property(bucket):
     return 'nfmemcache_{}'.format(bucket)
+
 
 def _load_bucket(bucket):
     # pylint: disable=broad-except
@@ -254,6 +272,7 @@ def _load_bucket(bucket):
                 .format(bucket, wnd_property))
     return {}
 
+
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     lock = WND.getProperty(_window_property(bucket))
@@ -267,8 +286,10 @@ def _persist_bucket(bucket, contents):
         common.warn('Bucket {} is {}. Discarding changes...'
                     .format(bucket, lock))
 
+
 def _clear_bucket(bucket):
     WND.clearProperty(_window_property(bucket))
+
 
 def _purge_entry(bucket, identifier):
     # Remove from in-memory cache

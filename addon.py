@@ -22,6 +22,7 @@ import resources.lib.navigation.player as player
 import resources.lib.navigation.actions as actions
 import resources.lib.navigation.library as library
 
+
 def route(pathitems):
     """Route to the appropriate handler"""
     common.debug('Routing navigation request')
@@ -40,6 +41,7 @@ def route(pathitems):
     else:
         raise nav.InvalidPathError(
             'No root handler for path {}'.format('/'.join(pathitems)))
+
 
 if __name__ == '__main__':
     # Initialize variables in common module scope

@@ -23,17 +23,21 @@ PAGE_ITEMS = [
 JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
 
+
 class InvalidAuthURLError(Exception):
     """The authURL is invalid"""
     pass
+
 
 class InvalidProfilesError(Exception):
     """Cannot extract profiles from Netflix webpage"""
     pass
 
+
 class InvalidMembershipStatusError(Exception):
     """The user logging in does not have a valid subscription"""
     pass
+
 
 def extract_session_data(content):
     """
@@ -58,6 +62,7 @@ def extract_session_data(content):
         'api_data': api_data
     }
 
+
 def extract_profiles(content):
     """Extract profile information from Netflix website"""
     profiles = {}
@@ -75,6 +80,7 @@ def extract_profiles(content):
 
     return profiles
 
+
 def _get_avatar(falkor_cache, profile):
     try:
         profile['avatar']['value'].extend(AVATAR_SUBPATH)
@@ -83,6 +89,7 @@ def _get_avatar(falkor_cache, profile):
         common.warn('Cannot find avatar for profile {guid}'
                     .format(guid=profile['summary']['value']['guid']))
     return ''
+
 
 def extract_userdata(content):
     """Extract essential userdata from the reactContext of the webpage"""
@@ -99,11 +106,13 @@ def extract_userdata(content):
 
     return assert_valid_auth_url(user_data)
 
+
 def assert_valid_auth_url(user_data):
     """Raise an exception if user_data does not contain a valid authURL"""
     if len(user_data.get('authURL', '')) != 42:
         raise InvalidAuthURLError('authURL is invalid')
     return user_data
+
 
 def generate_esn(user_data):
     """Generate an ESN if on android or return the one from user_data"""
@@ -131,6 +140,7 @@ def generate_esn(user_data):
         pass
 
     return user_data.get('esn', '')
+
 
 def extract_json(content, name):
     """Extract json from netflix content page"""

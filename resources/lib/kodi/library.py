@@ -24,9 +24,11 @@ FOLDER_TV = 'shows'
 
 __LIBRARY__ = None
 
+
 class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
     pass
+
 
 def _library():
     # pylint: disable=global-statement
@@ -38,17 +40,20 @@ def _library():
             __LIBRARY__ = {}
     return __LIBRARY__
 
+
 def library_path():
     """Return the full path to the library"""
     return (common.ADDON.getSetting('customlibraryfolder')
             if common.ADDON.getSettingBool('enablelibraryfolder')
             else common.DATA_PATH)
 
+
 def save_library():
     """Save the library to disk via cache"""
     if __LIBRARY__ is not None:
         cache.add(cache.CACHE_LIBRARY, 'library', __LIBRARY__,
                   ttl=cache.TTL_INFINITE, to_disk=True)
+
 
 def get_item(videoid, include_props=False):
     """Find an item in the Kodi library by its Netflix videoid and return
@@ -64,9 +69,11 @@ def get_item(videoid, include_props=False):
             'The video with id {} is not present in the Kodi library'
             .format(videoid))
 
+
 def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     return common.get_path_safe(videoid.to_list(), _library()) is not None
+
 
 def compile_tasks(videoid):
     """Compile a list of tasks for items based on the videoid.
@@ -93,11 +100,13 @@ def compile_tasks(videoid):
 
     raise ValueError('Cannot handle {}'.format(videoid))
 
+
 def _compile_season_tasks(videoid, metadata, season):
     """Compile a list of task items for all episodes in a season"""
     return [_create_episode_task(videoid.derive_episode(episode['id']),
                                  metadata, season, episode)
             for episode in season['episodes']]
+
 
 def _create_episode_task(videoid, metadata, season=None, episode=None):
     """Export a single episode to the library"""
@@ -111,6 +120,7 @@ def _create_episode_task(videoid, metadata, season=None, episode=None):
     title = ' - '.join((showname, filename, title))
     return _create_item_task(title, FOLDER_TV, videoid, showname, filename)
 
+
 def _create_item_task(title, section, videoid, destination, filename):
     """Create a single task item"""
     return {
@@ -120,6 +130,7 @@ def _create_item_task(title, section, videoid, destination, filename):
         'destination': destination,
         'filename': filename
     }
+
 
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
@@ -144,6 +155,7 @@ def export_item(item_task, library_home):
             raise
     _add_to_library(item_task['videoid'], export_filename)
 
+
 def _add_to_library(videoid, export_filename):
     """Add an exported file to the library"""
     library_node = _library()
@@ -153,6 +165,7 @@ def _add_to_library(videoid, export_filename):
         library_node = library_node[id_item]
     library_node['file'] = export_filename
     save_library()
+
 
 def remove_item(item_task):
     """Remove an item from the library and delete if from disk"""
@@ -165,6 +178,7 @@ def remove_item(item_task):
         os.remove(parent_folder)
     common.remove_path(id_path, _library())
     save_library()
+
 
 def update_item(item_task, library_home):
     """Remove and then re-export an item to the Kodi library"""

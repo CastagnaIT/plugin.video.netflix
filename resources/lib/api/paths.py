@@ -71,16 +71,19 @@ REFERENCE_MAPPINGS = {
     'genre': 'genres'
 }
 
+
 class InvalidReferenceError(Exception):
     """The provided reference cannot be dealt with as it is in an
     unexpected format"""
     pass
+
 
 def resolve_refs(references, targets):
     """Return a generator expression that returns the objects in targets
     by resolving the references in sorted order"""
     return (common.get_path(ref, targets, include_key=True)
             for index, ref in iterate_references(references))
+
 
 def iterate_references(source):
     """Generator expression that iterates over a dictionary of
@@ -96,6 +99,7 @@ def iterate_references(source):
             break
         else:
             yield (index, path)
+
 
 def reference_path(ref):
     """Return the actual reference path (a list of path items to follow)
