@@ -50,8 +50,7 @@ class DirectoryBuilder(object):
         else:
             list_id = pathitems[0]
 
-        listings.build_video_listing(api.video_list(list_id),
-                                     self.params.get('genreId'))
+        listings.build_video_listing(api.video_list(list_id))
 
     @common.inject_video_id(path_offset=0)
     def show(self, videoid):
