@@ -18,7 +18,7 @@ class AddonActionExecutor(object):
                      .format(params))
         self.params = params
 
-    def logout(self):
+    def logout(self, pathitems=None):
         """Perform account logout"""
         api.logout()
 
@@ -34,19 +34,19 @@ class AddonActionExecutor(object):
         try:
             common.ADDON.setSetting('autologin_user',
                                     self.params['autologin_user'])
-            common.ADDON.setSetting('autologin_id', pathitems[0])
+            common.ADDON.setSetting('autologin_id', pathitems[1])
             common.ADDON.setSetting('autologin_enable', 'true')
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
         cache.invalidate_cache()
         common.refresh_container()
 
-    def switch_account(self):
+    def switch_account(self, pathitems=None):
         """Logo out of the curent account and login into another one"""
         api.logout()
         api.login()
 
-    def toggle_adult_pin(self):
+    def toggle_adult_pin(self, pathitems=None):
         """Toggle adult PIN verification"""
         # pylint: disable=no-member
         common.ADDON.setSettingBool(

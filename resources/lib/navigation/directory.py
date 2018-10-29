@@ -45,10 +45,10 @@ class DirectoryBuilder(object):
     def video_list(self, pathitems):
         """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
-        if pathitems[0] in common.KNOWN_LIST_TYPES:
-            list_id = api.list_id_for_type(pathitems[0])
+        if pathitems[1] in common.KNOWN_LIST_TYPES:
+            list_id = api.list_id_for_type(pathitems[1])
         else:
-            list_id = pathitems[0]
+            list_id = pathitems[1]
 
         listings.build_video_listing(api.video_list(list_id))
 
@@ -70,7 +70,7 @@ class DirectoryBuilder(object):
             lolomo = api.root_lists()
             contexts = common.MISC_CONTEXTS['genres']['contexts']
         else:
-            lolomo = api.genre(pathitems[0])
+            lolomo = api.genre(pathitems[1])
             contexts = None
         listings.build_lolomo_listing(lolomo, contexts)
 
