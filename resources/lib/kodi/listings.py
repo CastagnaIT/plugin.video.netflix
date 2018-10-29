@@ -56,7 +56,7 @@ def ctx_item_url(paths, mode=common.MODE_ACTION):
     for the predefined path"""
     def url_builder(videoid):
         """Build defined URL from videoid"""
-        return common.build_url(paths, videoid, mode)
+        return common.build_url(paths, videoid, mode=mode)
     return url_builder
 
 CONTEXT_MENU_ACTIONS = {
@@ -205,9 +205,9 @@ def build_video_listing(video_list):
     directory_items = [_create_video_item(videoid_value, video, video_list)
                        for videoid_value, video
                        in video_list.videos.iteritems()]
-    if video_list['genre_id']:
+    if video_list.get('genreId'):
         directory_items.append(
-            (common.build_url(pathitems=['genres', video_list['genre_id']],
+            (common.build_url(pathitems=['genres', video_list['genreId']],
                               mode=common.MODE_DIRECTORY),
              list_item_skeleton(common.get_local_string(30088),
                                 icon='DefaultAddSource.png',
