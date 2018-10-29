@@ -10,7 +10,6 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.cache as cache
 import resources.lib.api.shakti as api
-from resources.lib.navigation import InvalidPathError
 
 FILE_PROPS = [
     'title', 'genre', 'year', 'rating', 'duration', 'playcount', 'director',
@@ -69,45 +68,65 @@ def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     return common.get_path_safe(videoid.to_list(), _library()) is not None
 
-def _export_movie(videoid):
-    """Export a movie to the library"""
+def compile_tasks(videoid):
+    """Compile a list of tasks for items based on the videoid.
+    If videoid represents a show or season, tasks will be generated for
+    all contained seasons and episodes"""
     metadata = api.metadata(videoid)
-    name = '{title} ({year})'.format(
-        title=metadata['video']['title'],
-        year=2018)
-    _export_item(videoid, library_path(), FOLDER_MOVIES, name, name)
-
-def _export_tv(videoid):
-    """Export a complete TV show to the library"""
-    metadata = api.metadata(videoid)
-    if videoid.mediatype == common.VideoId.SHOW:
-        for season in metadata['video']['seasons']:
-            _export_season(
-                videoid.derive_season(season['id']), metadata, season)
+    if videoid.mediatype == common.VideoId.MOVIE:
+        name = '{title} ({year})'.format(
+            title=metadata['video']['title'],
+            year=metadata['video']['year'])
+        return [_create_item_task(name, FOLDER_MOVIES, videoid, name, name)]
+    elif videoid.mediatype == common.VideoId.SHOW:
+        return [
+            task for task in (
+                _compile_season_tasks(
+                    videoid.derive_season(season['id']), metadata, season)
+                for season in metadata['video']['seasons'])]
     elif videoid.mediatype == common.VideoId.SEASON:
-        _export_season(
-            videoid, metadata, common.find_season(videoid.seasonid, metadata))
-    else:
-        _export_episode(
-            videoid, metadata, common.find_season(videoid.seasonid, metadata),
-            common.find_episode(videoid.episodeid, metadata))
+        return _compile_season_tasks(
+            videoid, metadata, common.find_season(videoid.seasonid,
+                                                  metadata))
+    elif videoid.mediatype == common.VideoId.EPISODE:
+        return [_create_episode_task(videoid, metadata)]
 
-def _export_season(videoid, metadata, season):
-    """Export a complete season to the library"""
-    for episode in season['episodes']:
-        _export_episode(
-            videoid.derive_episode(episode['id']), metadata, season, episode)
+    raise ValueError('Cannot handle {}'.format(videoid))
 
-def _export_episode(videoid, metadata, season, episode):
+def _compile_season_tasks(videoid, metadata, season):
+    """Compile a list of task items for all episodes in a season"""
+    return [_create_episode_task(videoid.derive_episode(episode['id']),
+                                 metadata, season, episode)
+            for episode in season['episodes']]
+
+def _create_episode_task(videoid, metadata, season=None, episode=None):
     """Export a single episode to the library"""
     showname = metadata['video']['title']
+    season = season or common.find_season(
+        videoid.seasonid, metadata['video']['seasons'])
+    episode = episode or common.find_episode(
+        videoid.episodeid, metadata['video']['seasons'])
+    title = episode['title']
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
-    _export_item(videoid, library_path(), FOLDER_TV, showname, filename)
+    title = ' - '.join((showname, filename, title))
+    return _create_item_task(title, FOLDER_TV, videoid, showname, filename)
 
-def _export_item(videoid, library, section, destination, filename):
+def _create_item_task(title, section, videoid, destination, filename):
+    """Create a single task item"""
+    return {
+        'title': title,
+        'section': section,
+        'videoid': videoid,
+        'destination': destination,
+        'filename': filename
+    }
+
+def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
-    destination_folder = os.path.join(library, section, destination)
-    export_filename = os.path.join(destination_folder, filename + '.strm')
+    destination_folder = os.path.join(
+        library_home, item_task['section'], item_task['destination'])
+    export_filename = os.path.join(
+        destination_folder, item_task['filename'] + '.strm')
     try:
         os.makedirs(xbmc.translatePath(destination_folder))
         with codecs.open(xbmc.translatePath(export_filename),
@@ -115,14 +134,15 @@ def _export_item(videoid, library, section, destination, filename):
                          encoding='utf-8',
                          errors='replace') as filehandle:
             filehandle.write(
-                common.build_url(videoid=videoid, mode=common.MODE_PLAY))
+                common.build_url(videoid=item_task['videoid'],
+                                 mode=common.MODE_PLAY))
     except OSError as exc:
         if exc.errno == os.errno.EEXIST:
             common.info('{} already exists, skipping export'
                         .format(export_filename))
         else:
             raise
-    _add_to_library(videoid, export_filename)
+    _add_to_library(item_task['videoid'], export_filename)
 
 def _add_to_library(videoid, export_filename):
     """Add an exported file to the library"""
@@ -134,79 +154,19 @@ def _add_to_library(videoid, export_filename):
     library_node['file'] = export_filename
     save_library()
 
-def _remove_tv(videoid):
-    metadata = api.metadata(videoid)
-    if videoid.mediatype == common.VideoId.SHOW:
-        for season in metadata['video']['seasons']:
-            _remove_season(
-                videoid.derive_season(season['id']), season)
-    elif videoid.mediatype == common.VideoId.SEASON:
-        _remove_season(
-            videoid, common.find_season(videoid.seasonid, metadata))
-    else:
-        _remove_item(videoid)
-
-def _remove_season(videoid, season):
-    for episode in season['episodes']:
-        _remove_item(videoid.derive_episode(episode['id']))
-
-def _remove_item(videoid):
+def remove_item(item_task):
+    """Remove an item from the library and delete if from disk"""
+    id_path = item_task['videoid'].to_list()
     exported_filename = xbmc.translatePath(
-        common.get_path(videoid.to_list, _library())['file'])
+        common.get_path(id_path, _library())['file'])
     parent_folder = os.path.dirname(exported_filename)
     os.remove(xbmc.translatePath(exported_filename))
     if not os.listdir(parent_folder):
         os.remove(parent_folder)
-    common.remove_path(videoid.to_list(), _library())
+    common.remove_path(id_path, _library())
     save_library()
 
-def execute(pathitems, params):
-    """Execute an action as specified by the path"""
-    try:
-        executor = ActionExecutor(params).__getattribute__(pathitems[0])
-    except (AttributeError, IndexError):
-        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-
-    common.debug('Invoking action executor {}'.format(executor.__name__))
-
-    if len(pathitems) > 1:
-        executor(pathitems=pathitems[1:])
-    else:
-        executor()
-
-class ActionExecutor(object):
-    """Executes actions"""
-    # pylint: disable=no-self-use
-    def __init__(self, params):
-        common.debug('Initializing action executor: {}'.format(params))
-        self.params = params
-
-    @common.inject_video_id(path_offset=0)
-    def export(self, videoid):
-        """Export an item to the Kodi library"""
-        if videoid.mediatype == common.VideoId.MOVIE:
-            _export_movie(videoid)
-        elif videoid.mediatype in [common.VideoId.SHOW,
-                                   common.VideoId.SEASON,
-                                   common.VideoId.EPISODE]:
-            _export_tv(videoid)
-        else:
-            raise ValueError('Cannot export {}'.format(videoid))
-
-    @common.inject_video_id(path_offset=0)
-    def remove(self, videoid):
-        """Remove an item from the Kodi library"""
-        if videoid.mediatype == common.VideoId.MOVIE:
-            _remove_item(videoid)
-        elif videoid.mediatype in [common.VideoId.SHOW,
-                                   common.VideoId.SEASON,
-                                   common.VideoId.EPISODE]:
-            _remove_tv(videoid)
-        else:
-            raise ValueError('Cannot remove {}'.format(videoid))
-
-    @common.inject_video_id(path_offset=0)
-    def update(self, videoid):
-        """Update an item in the Kodi library"""
-        # TODO: Implement library updates
-        pass
+def update_item(item_task, library_home):
+    """Remove and then re-export an item to the Kodi library"""
+    remove_item(item_task)
+    export_item(item_task, library_home)

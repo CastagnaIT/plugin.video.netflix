@@ -517,17 +517,10 @@ def check_folder_path(path):
     If not correct it (makes sure xbmcvfs.exists is working correct)
     """
     end = ''
-    if isinstance(path, unicode):
-        check = path.encode('ascii', 'ignore')
-        if '/' in check and not str(check).endswith('/'):
-            end = u'/'
-        if '\\' in check and not str(check).endswith('\\'):
-            end = u'\\'
-    else:
-        if '/' in path and not str(path).endswith('/'):
-            end = '/'
-        if '\\' in path and not str(path).endswith('\\'):
-            end = '\\'
+    if '/' in path and not path.endswith('/'):
+        end = '/'
+    if '\\' in path and not path.endswith('\\'):
+        end = '\\'
     return path + end
 
 def file_exists(filename, data_path=DATA_PATH):
@@ -860,12 +853,7 @@ def addonsignals_return_call(func):
         handles catching, conversion and forwarding of exceptions"""
         # pylint: disable=broad-except
         try:
-            if isinstance(data, dict):
-                result = func(instance, **data)
-            elif data is not None:
-                result = func(instance, data)
-            else:
-                result = func(instance)
+            result = _call(instance, func, data)
         except Exception as exc:
             error('AddonSignals callback raised exception: {exc}', exc)
             error(traceback.format_exc())
@@ -879,6 +867,13 @@ def addonsignals_return_call(func):
         AddonSignals.returnCall(
             signal=_signal_name(func), source_id=ADDON_ID, data=result)
     return make_return_call
+
+def _call(instance, func, data):
+    if isinstance(data, dict):
+        return func(instance, **data)
+    elif data is not None:
+        return func(instance, data)
+    return func(instance)
 
 def _signal_name(func):
     return func.__name__
@@ -936,4 +931,34 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
     return injecting_decorator
 
 def refresh_container():
+    """Refresh the current container"""
     xbmc.executebuiltin('Container.Refresh')
+
+def execute_tasks(title, tasks, task_handler, notify_errors=False, **kwargs):
+    """Run all tasks through task_handler and display a progress
+    dialog in the GUI. Additional kwargs will be passed into task_handler
+    on each invocation.
+    Returns a list of errors that occured during execution of tasks."""
+    errors = []
+    progress = xbmcgui.DialogProgress()
+    progress.create(title)
+    for task_num, task in tasks:
+        # pylint: disable=broad-except
+        task_title = task.get('title', 'Unknown Task')
+        progress.update(percent=int(task_num / len(tasks) * 100),
+                        line1=task_title)
+        xbmc.sleep(100)
+        if progress.iscanceled():
+            break
+        try:
+            task_handler(task, **kwargs)
+        except Exception as exc:
+            errors.append({
+                'task_title': task_title,
+                'error': ': '.join((type(exc).__name__, exc.message))})
+    if notify_errors and errors:
+        xbmcgui.Dialog().ok(get_local_string(0),
+                            '\n'.join(['{} ({})'.format(err['task_title'],
+                                                        err['error'])
+                                       for err in errors]))
+    return errors

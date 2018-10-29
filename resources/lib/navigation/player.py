@@ -35,7 +35,7 @@ class InputstreamError(Exception):
     pass
 
 @common.inject_video_id(path_offset=0)
-def play(videoid, needs_pin):
+def play(videoid):
     """Play an episode or movie as specified by the path"""
     metadata = api.metadata(videoid)
     timeline_markers = get_timeline_markers(metadata)

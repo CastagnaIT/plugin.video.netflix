@@ -15,12 +15,12 @@ import xbmcplugin
 import resources.lib.cache as cache
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-import resources.lib.kodi.library as library
 import resources.lib.navigation as nav
 import resources.lib.navigation.directory as directory
 import resources.lib.navigation.hub as hub
 import resources.lib.navigation.player as player
 import resources.lib.navigation.actions as actions
+import resources.lib.navigation.library as library
 
 def route(pathitems):
     """Route to the appropriate handler"""
@@ -28,16 +28,15 @@ def route(pathitems):
     root_handler = pathitems[0]
     pass_on_params = (pathitems[1:], common.REQUEST_PARAMS)
     if not common.PATH or root_handler == common.MODE_DIRECTORY:
-        directory.build(*pass_on_params)
+        nav.execute(directory.DirectoryBuilder, *pass_on_params)
     elif root_handler == common.MODE_HUB:
         hub.browse(*pass_on_params)
     elif root_handler == common.MODE_PLAY:
-        player.play(pathitems=pathitems[1:],
-                    needs_pin=common.REQUEST_PARAMS.get('pin', False))
+        player.play(pathitems=pathitems[1:])
     elif root_handler == common.MODE_ACTION:
-        actions.execute(*pass_on_params)
+        nav.execute(actions.AddonActionExecutor, *pass_on_params)
     elif root_handler == common.MODE_LIBRARY:
-        library.execute(*pass_on_params)
+        nav.execute(library.LibraryActionExecutor, *pass_on_params)
     else:
         raise nav.InvalidPathError(
             'No root handler for path {}'.format('/'.join(pathitems)))
@@ -58,4 +57,3 @@ if __name__ == '__main__':
         xbmcplugin.endOfDirectory(handle=common.PLUGIN_HANDLE, succeeded=False)
 
     cache.commit()
-    library.save_library()

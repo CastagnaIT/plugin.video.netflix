@@ -11,6 +11,7 @@ try:
 except ImportError:
     import pickle
 
+import xbmc
 import xbmcgui
 
 import resources.lib.common as common
@@ -64,19 +65,11 @@ def cache_output(bucket, identifying_param_index=0,
     def caching_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if fixed_identifier:
-                # Use the identifier that's statically defined in the applied
-                # decorator isntead of one of the parameters' value
-                identifier = fixed_identifier
-            else:
-                try:
-                    # prefer keyword over positional arguments
-                    identifier = kwargs.get(
-                        identifying_param_name, args[identifying_param_index])
-                except IndexError:
-                    common.error(
-                        'Invalid cache configuration.'
-                        'Cannot determine identifier from params')
+            identifier = _get_identifier(fixed_identifier,
+                                         identifying_param_name,
+                                         kwargs,
+                                         identifying_param_index,
+                                         args)
             try:
                 return get(bucket, identifier)
             except CacheMiss:
@@ -86,6 +79,23 @@ def cache_output(bucket, identifying_param_index=0,
                 return output
         return wrapper
     return caching_decorator
+
+def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
+                    identifying_param_index, args):
+    """Return the identifier to use with the caching_decorator"""
+    if fixed_identifier:
+        # Use the identifier that's statically defined in the applied
+        # decorator isntead of one of the parameters' value
+        return fixed_identifier
+    else:
+        try:
+            # prefer keyword over positional arguments
+            return kwargs.get(identifying_param_name,
+                              args[identifying_param_index])
+        except IndexError:
+            common.error(
+                'Invalid cache configuration.'
+                'Cannot determine identifier from params')
 
 # def inject_from_cache(bucket, injection_param,
 #                       identifying_param_index=0,
@@ -106,7 +116,8 @@ def cache_output(bucket, identifying_param_index=0,
 #                 try:
 #                     # prefer keyword over positional arguments
 #                     identifier = kwargs.get(
-#                         identifying_param_name, args[identifying_param_index])
+#                         identifying_param_name,
+#                         args[identifying_param_index])
 #                 except IndexError:
 #                     common.error(
 #                         'Invalid cache configuration.'
@@ -175,7 +186,7 @@ def get_from_disk(bucket, identifier):
     try:
         with open(cache_filename, 'r') as cache_file:
             cache_entry = pickle.load(cache_file)
-    except Exception as exc:
+    except:
         raise CacheMiss()
     add(bucket, identifier, cache_entry['content'])
     return cache_entry
@@ -227,7 +238,7 @@ def _window_property(bucket):
 def _load_bucket(bucket):
     # pylint: disable=broad-except
     wnd_property = ''
-    for _ in range(1,10):
+    for _ in range(1, 10):
         wnd_property = WND.getProperty(_window_property(bucket))
         if wnd_property.startswith(BUCKET_LOCKED[:-2]):
             common.debug('Waiting for release of {}'.format(bucket))
@@ -243,7 +254,6 @@ def _load_bucket(bucket):
                 .format(bucket, wnd_property))
     return {}
 
-
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     lock = WND.getProperty(_window_property(bucket))
@@ -254,7 +264,8 @@ def _persist_bucket(bucket, contents):
             common.error('Failed to persist {} to window properties: {}'
                          .format(bucket, exc))
     else:
-        common.warn('Bucket {} is {}. Discarding changes...'.format(bucket, lock))
+        common.warn('Bucket {} is {}. Discarding changes...'
+                    .format(bucket, lock))
 
 def _clear_bucket(bucket):
     WND.clearProperty(_window_property(bucket))
