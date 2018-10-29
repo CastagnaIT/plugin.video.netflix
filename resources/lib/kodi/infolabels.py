@@ -86,7 +86,7 @@ def parse_atomic_infos(item):
 def _get_and_transform(source, target, item):
     """Get the value for source and transform it if neccessary"""
     value = common.get_path_safe(source, item)
-    if isinstance(value, dict):
+    if isinstance(value, dict) or value is None:
         return ''
     return (paths.INFO_TRANSFORMATIONS[target](value)
             if target in paths.INFO_TRANSFORMATIONS

@@ -173,9 +173,15 @@ def invalidate_entry(bucket, identifier):
 
 def commit():
     """Persist cache contents in window properties"""
-    for bucket, contents in BUCKETS.iteritems():
+    # pylint: disable=global-statement
+    global BUCKETS
+    for bucket, contents in BUCKETS.items():
         _persist_bucket(bucket, contents)
-    common.debug('Successfully persisted cache to window properties')
+        # The BUCKETS dict survives across addon invocations if the same
+        # languageInvoker thread is being used so we MUST clear its contents
+        # to allow cache consistency between instances
+        del BUCKETS[bucket]
+    common.debug('Cache committ successful')
 
 
 def get(bucket, identifier):
@@ -258,33 +264,42 @@ def _load_bucket(bucket):
     wnd_property = ''
     for _ in range(1, 10):
         wnd_property = WND.getProperty(_window_property(bucket))
-        if wnd_property.startswith(BUCKET_LOCKED[:-2]):
+        # pickle stored byte data, so we must compare against a str
+        if wnd_property.startswith(str('LOCKED')):
             common.debug('Waiting for release of {}'.format(bucket))
             xbmc.sleep(50)
         else:
             try:
-                return pickle.loads(wnd_property)
+                bucket_instance = pickle.loads(wnd_property)
             except Exception:
                 common.debug('No instance of {} found. Creating new instance.'
                              .format(bucket))
-                return {}
-    common.warn('Bucket {} is {}. Working with an empty instance...'
-                .format(bucket, wnd_property))
+                bucket_instance = {}
+            WND.setProperty(_window_property(bucket),
+                            str(BUCKET_LOCKED.format(common.PLUGIN_HANDLE)))
+            common.debug('Acquired lock on {}'.format(bucket))
+            return bucket_instance
+    common.warn('{} is locked. Working with an empty instance...'
+                .format(bucket))
     return {}
 
 
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     lock = WND.getProperty(_window_property(bucket))
-    if lock == BUCKET_LOCKED.format(common.PLUGIN_HANDLE):
+    # pickle stored byte data, so we must compare against a str
+    if lock == str(BUCKET_LOCKED.format(common.PLUGIN_HANDLE)):
         try:
             WND.setProperty(_window_property(bucket), pickle.dumps(contents))
         except Exception as exc:
             common.error('Failed to persist {} to window properties: {}'
                          .format(bucket, exc))
+            WND.clearProperty(_window_property(bucket))
+        finally:
+            common.debug('Released lock on {}'.format(bucket))
     else:
-        common.warn('Bucket {} is {}. Discarding changes...'
-                    .format(bucket, lock))
+        common.warn('{} is locked by another instance. Discarding changes...'
+                    .format(bucket))
 
 
 def _clear_bucket(bucket):
