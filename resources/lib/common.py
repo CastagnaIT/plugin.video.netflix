@@ -57,6 +57,7 @@ MODE_ACTION = 'action'
 MODE_PLAY = 'play'
 MODE_LIBRARY = 'library'
 
+
 def init_globals(argv):
     """Initialized globally used module variables.
     Needs to be called at start of each plugin instance!
@@ -95,15 +96,19 @@ def init_globals(argv):
     except OSError:
         pass
 
+
 init_globals(sys.argv)
+
 
 class MissingCredentialsError(Exception):
     """There are no stored credentials to load"""
     pass
 
+
 class InvalidVideoId(Exception):
     """The provided video id is not valid"""
     pass
+
 
 class VideoId(object):
     """Universal representation of a video id. Video IDs can be of multiple
@@ -272,11 +277,13 @@ class VideoId(object):
     def __neq__(self, other):
         return not self.__eq__(other)
 
+
 class Signals(object):
     """Signal names for use with AddonSignals"""
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
     ESN_CHANGED = 'esn_changed'
+
 
 class PersistentStorage(object):
     """
@@ -348,8 +355,10 @@ class PersistentStorage(object):
         self._dirty = False
         debug('Loaded contents from backing file: {}'.format(self._contents))
 
+
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
+
 
 def __crypt_key():
     """
@@ -361,6 +370,7 @@ def __crypt_key():
         __CRYPT_KEY__ = __uniq_id()
     return __CRYPT_KEY__
 
+
 def __uniq_id():
     """
     Returns a unique id based on the devices MAC address
@@ -371,6 +381,7 @@ def __uniq_id():
         from platform import node
         mac = node()
     return uuid.uuid5(uuid.NAMESPACE_DNS, str(mac)).bytes
+
 
 def encrypt_credential(raw):
     """
@@ -389,6 +400,7 @@ def encrypt_credential(raw):
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(__crypt_key(), AES.MODE_CBC, iv)
     return base64.b64encode(iv + cipher.encrypt(raw))
+
 
 def decrypt_credential(enc):
     """
@@ -410,6 +422,7 @@ def decrypt_credential(enc):
         block_size=__BLOCK_SIZE__).decode('utf-8')
     return decoded
 
+
 def get_credentials():
     """
     Retrieve stored account credentials.
@@ -427,6 +440,7 @@ def get_credentials():
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
 
+
 def set_credentials(email, password):
     """
     Encrypt account credentials and save them to the settings.
@@ -436,14 +450,17 @@ def set_credentials(email, password):
         ADDON.setSetting('email', encrypt_credential(email))
         ADDON.setSetting('password', encrypt_credential(password))
 
+
 def verify_credentials(email, password):
     """Verify credentials for plausibility"""
     if not email or not password:
         raise MissingCredentialsError()
 
+
 def get_esn():
     """Get the ESN from settings"""
     return ADDON.getSetting('esn')
+
 
 def set_esn(esn):
     """
@@ -455,11 +472,13 @@ def set_esn(esn):
         return True
     return False
 
+
 def flush_settings():
     """Reload the ADDON"""
     # pylint: disable=global-statement
     global ADDON
     ADDON = xbmcaddon.Addon()
+
 
 def select_port():
     """Select a port for a server and store it in the settings"""
@@ -468,12 +487,14 @@ def select_port():
     log('[MSL] Picked Port: {}'.format(port))
     return port
 
+
 def log(msg, level=xbmc.LOGDEBUG):
     """Log a message to the Kodi logfile"""
     xbmc.log(
         '[{identifier}] {msg}'.format(identifier=ADDON.getAddonInfo('id'),
                                       msg=msg),
         level)
+
 
 def debug(msg='{exc}', exc=None):
     """
@@ -484,6 +505,7 @@ def debug(msg='{exc}', exc=None):
     log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
         xbmc.LOGDEBUG)
 
+
 def info(msg='{exc}', exc=None):
     """
     Log an info message.
@@ -492,6 +514,7 @@ def info(msg='{exc}', exc=None):
     """
     log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
         xbmc.LOGINFO)
+
 
 def warn(msg='{exc}', exc=None):
     """
@@ -502,6 +525,7 @@ def warn(msg='{exc}', exc=None):
     log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
         xbmc.LOGWARNING)
 
+
 def error(msg='{exc}', exc=None):
     """
     Log an error message.
@@ -510,6 +534,7 @@ def error(msg='{exc}', exc=None):
     """
     log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
         xbmc.LOGERROR)
+
 
 def check_folder_path(path):
     """
@@ -523,6 +548,7 @@ def check_folder_path(path):
         end = '\\'
     return path + end
 
+
 def file_exists(filename, data_path=DATA_PATH):
     """
     Checks if a given file exists
@@ -530,6 +556,7 @@ def file_exists(filename, data_path=DATA_PATH):
     :return: True if so
     """
     return os.path.exists(data_path + filename)
+
 
 def save_file(filename, content, data_path=DATA_PATH, mode='w'):
     """
@@ -540,6 +567,7 @@ def save_file(filename, content, data_path=DATA_PATH, mode='w'):
     with open(data_path + filename, mode) as file_handle:
         file_handle.write(content.encode('utf-8'))
 
+
 def load_file(filename, data_path=DATA_PATH, mode='r'):
     """
     Loads the content of a given filename
@@ -549,6 +577,7 @@ def load_file(filename, data_path=DATA_PATH, mode='r'):
     with open(data_path + filename, mode) as file_handle:
         return file_handle.read()
 
+
 def list_dir(data_path=DATA_PATH):
     """
     List the contents of a folder
@@ -556,9 +585,11 @@ def list_dir(data_path=DATA_PATH):
     """
     return os.listdir(data_path)
 
+
 def noop(**kwargs):
     """Takes everything, does nothing, classic no operation function"""
     return kwargs
+
 
 def find_season(season_id, seasons, raise_exc=True):
     """
@@ -575,6 +606,7 @@ def find_season(season_id, seasons, raise_exc=True):
                        .format(season_id))
     else:
         return {}
+
 
 def find_episode(episode_id, seasons, raise_exc=True):
     """
@@ -593,6 +625,7 @@ def find_episode(episode_id, seasons, raise_exc=True):
     else:
         return {}
 
+
 def update_library_item_details(dbtype, dbid, details):
     """
     Update properties of an item in the Kodi library
@@ -601,6 +634,7 @@ def update_library_item_details(dbtype, dbid, details):
     params = {'{}id'.format(dbtype): dbid}
     params.update(details)
     return json_rpc(method, params)
+
 
 def get_class_methods(class_item=None):
     """
@@ -615,6 +649,7 @@ def get_class_methods(class_item=None):
     return [x
             for x, y in class_item.__dict__.iteritems()
             if isinstance(y, _type)]
+
 
 def get_user_agent():
     """
@@ -643,6 +678,7 @@ def get_user_agent():
     # x86 Linux
     return base.replace('%PL%', '(X11; Linux x86_64)')
 
+
 def json_rpc(method, params=None):
     """
     Executes a JSON-RPC in Kodi
@@ -663,6 +699,7 @@ def json_rpc(method, params=None):
                       .format(response['error']['code'],
                               response['error']['message']))
     return response['result']
+
 
 def logdetails(func):
     """
@@ -696,6 +733,7 @@ def logdetails(func):
     wrapped.__doc__ = func.__doc__
     return wrapped
 
+
 def strp(value, form):
     """
     Helper function to safely create datetime objects from strings
@@ -715,6 +753,7 @@ def strp(value, form):
     except Exception:
         return def_value
 
+
 def _update_running():
     update = ADDON.getSetting('update_running') or None
     if update:
@@ -727,6 +766,7 @@ def _update_running():
             return True
     return False
 
+
 def update_library():
     """
     Update the local Kodi library with new episodes of exported shows
@@ -737,6 +777,7 @@ def update_library():
             ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
              '&inbackground=True)')
             .format(ADDON.getAddonInfo('id')))
+
 
 def select_unused_port():
     """
@@ -751,6 +792,7 @@ def select_unused_port():
     sock.close()
     return port
 
+
 def get_path(path, search_space, include_key=False):
     """Retrieve a value from a nested dict by following the path.
     Throws KeyError if any key along the path does not exist"""
@@ -761,6 +803,7 @@ def get_path(path, search_space, include_key=False):
         return (path[0], current_value) if include_key else current_value
     return get_path(path[1:], current_value, include_key)
 
+
 def get_path_safe(path, search_space, include_key=False, default=None):
     """Retrieve a value from a nested dict by following the path.
     Returns default if any key in the path does not exist."""
@@ -768,6 +811,7 @@ def get_path_safe(path, search_space, include_key=False, default=None):
         return get_path(path, search_space, include_key)
     except KeyError:
         return default
+
 
 def remove_path(path, search_space, remove_remnants=True):
     """Remove a value from a nested dict by following a path.
@@ -781,6 +825,7 @@ def remove_path(path, search_space, remove_remnants=True):
         remove_path(path[1:], search_space[path[0]])
         if remove_remnants and not search_space[path[0]]:
             del search_space[path[0]]
+
 
 def get_multiple_paths(path, search_space, default=None):
     """Retrieve multiple values from a nested dict by following the path.
@@ -802,6 +847,7 @@ def get_multiple_paths(path, search_space, default=None):
             if len(path) == 1
             else get_multiple_paths(path[1:], current_value, default))
 
+
 def register_slot(callback, signal=None):
     """Register a callback with AddonSignals for return calls"""
     name = signal if signal else _signal_name(callback)
@@ -811,6 +857,7 @@ def register_slot(callback, signal=None):
         callback=callback)
     debug('Registered AddonSignals slot {} to {}'.format(name, callback))
 
+
 def unregister_slot(callback, signal=None):
     """Remove a registered callback from AddonSignals"""
     name = signal if signal else _signal_name(callback)
@@ -819,12 +866,14 @@ def unregister_slot(callback, signal=None):
         signal=name)
     debug('Unregistered AddonSignals slot {}'.format(name))
 
+
 def send_signal(signal, data=None):
     """Send a signal via AddonSignals"""
     AddonSignals.sendSignal(
         source_id=ADDON_ID,
         signal=signal,
         data=data)
+
 
 def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
@@ -843,6 +892,7 @@ def make_call(callname, data=None):
     elif result is None:
         raise Exception('AddonSignals call timed out')
     return result
+
 
 def addonsignals_return_call(func):
     """Makes func return callable through AddonSignals and
@@ -868,6 +918,7 @@ def addonsignals_return_call(func):
             signal=_signal_name(func), source_id=ADDON_ID, data=result)
     return make_return_call
 
+
 def _call(instance, func, data):
     if isinstance(data, dict):
         return func(instance, **data)
@@ -875,8 +926,10 @@ def _call(instance, func, data):
         return func(instance, data)
     return func(instance)
 
+
 def _signal_name(func):
     return func.__name__
+
 
 def build_url(pathitems=None, videoid=None, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters.
@@ -893,6 +946,7 @@ def build_url(pathitems=None, videoid=None, params=None, mode=None):
         path='/'.join(pathitems) + '/',
         qs=('?' + urlencode(params)) if params else '')
 
+
 def is_numeric(string):
     """Return true if string represents an integer, else false"""
     try:
@@ -901,10 +955,12 @@ def is_numeric(string):
         return False
     return True
 
+
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
     src = xbmc if string_id < 30000 else ADDON
     return src.getLocalizedString(string_id)
+
 
 def inject_video_id(path_offset, pathitems_arg='pathitems',
                     inject_remaining_pathitems=False):
@@ -930,9 +986,11 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
         return wrapper
     return injecting_decorator
 
+
 def refresh_container():
     """Refresh the current container"""
     xbmc.executebuiltin('Container.Refresh')
+
 
 def execute_tasks(title, tasks, task_handler, notify_errors=False, **kwargs):
     """Run all tasks through task_handler and display a progress

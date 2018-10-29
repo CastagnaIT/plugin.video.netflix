@@ -32,6 +32,7 @@ URLS = {
 }
 """List of all static endpoints for HTML/JSON POST/GET requests"""
 
+
 def needs_login(func):
     """
     Decorator to ensure that a valid login is present when calling a method
@@ -45,9 +46,11 @@ def needs_login(func):
         return func(*args, **kwargs)
     return ensure_login
 
+
 class LoginFailedError(Exception):
     """The login attempt has failed"""
     pass
+
 
 class NetflixSession(object):
     """Stateful netflix session management"""
@@ -298,6 +301,7 @@ class NetflixSession(object):
                 if URLS[component]['is_api_call']
                 else response.content)
 
+
 def _login_payload(credentials, auth_url):
     return {
         'userLoginId': credentials['email'],
@@ -313,8 +317,10 @@ def _login_payload(credentials, auth_url):
         'showPassword': ''
     }
 
+
 def _document_url(component):
     return BASE_URL + URLS[component]['endpoint']
+
 
 def _api_url(component, api_data):
     return '{apiroot}{baseurl}/{buildid}{componenturl}'.format(

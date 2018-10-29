@@ -7,6 +7,7 @@ import resources.lib.cache as cache
 import resources.lib.api.paths as paths
 import resources.lib.kodi.library as library
 
+
 def add_info(videoid, list_item, item, raw_data):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
@@ -28,6 +29,7 @@ def add_info(videoid, list_item, item, raw_data):
         list_item.addStreamInfo(stream_type, quality_infos)
     return infos
 
+
 def add_art(videoid, list_item, item, raw_data=None):
     """Add art infolabels to list_item"""
     try:
@@ -39,12 +41,14 @@ def add_art(videoid, list_item, item, raw_data=None):
     list_item.setArt(art)
     return art
 
+
 def add_info_for_playback(videoid, list_item):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
         return add_info_from_library(videoid, list_item)
     except library.ItemNotFound:
         return add_info_from_netflix(videoid, list_item)
+
 
 def parse_info(videoid, item, raw_data):
     """Parse info from a path request response into Kodi infolabels"""
@@ -74,6 +78,7 @@ def parse_info(videoid, item, raw_data):
 
     return infos, get_quality_infos(item)
 
+
 def parse_atomic_infos(item, infos):
     """Parse those infos into infolabels that are directly accesible from
     the item dict"""
@@ -91,6 +96,7 @@ def parse_atomic_infos(item, infos):
         infos[target] = value
     return infos
 
+
 def parse_referenced_infos(item, infos, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
@@ -100,6 +106,7 @@ def parse_referenced_infos(item, infos, raw_data):
             for _, person
             in paths.resolve_refs(item.get(source, {}), raw_data)]
     return infos
+
 
 def get_quality_infos(item):
     """Return audio and video quality infolabels"""
@@ -127,6 +134,7 @@ def get_quality_infos(item):
             else 'aac')
     return quality_infos
 
+
 def parse_art(videoid, item, raw_data):
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
@@ -144,6 +152,7 @@ def parse_art(videoid, item, raw_data):
                       interesting_moment,
                       clearlogo,
                       fanart)
+
 
 def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
                clearlogo, fanart):
@@ -166,6 +175,7 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
                      '')
     return art
 
+
 def add_info_from_netflix(videoid, list_item):
     """Apply infolabels with info from Netflix API"""
     try:
@@ -180,6 +190,7 @@ def add_info_from_netflix(videoid, list_item):
                          api_data)
         art = add_art(videoid, list_item, api_data['videos'][videoid])
     return infos, art
+
 
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""

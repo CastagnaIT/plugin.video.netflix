@@ -9,6 +9,7 @@ import resources.lib.common as common
 
 from .paths import resolve_refs
 
+
 class LoLoMo(object):
     """List of list of movies (lolomo)"""
     # pylint: disable=invalid-name
@@ -41,6 +42,7 @@ class LoLoMo(object):
                 for list_id, video_list in self.lists.iteritems()
                 if match_context(video_list['context'], context))
 
+
 class VideoList(object):
     """A video list"""
     # pylint: disable=invalid-name
@@ -64,6 +66,7 @@ class VideoList(object):
         return _check_sentinel(self.data['lists'][self.id.value]
                                .get(key, default))
 
+
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
@@ -72,6 +75,7 @@ class SeasonList(object):
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
         self.seasons = OrderedDict(
             resolve_refs(self.tvshow['seasonList'], self.data))
+
 
 class EpisodeList(object):
     """A list of episodes. Includes tvshow art."""
@@ -82,6 +86,7 @@ class EpisodeList(object):
         self.season = self.data['seasons'][self.videoid.seasonid]
         self.episodes = OrderedDict(
             resolve_refs(self.season['episodes'], self.data))
+
 
 def _check_sentinel(value):
     return (None

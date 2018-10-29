@@ -8,6 +8,7 @@ class InvalidPathError(Exception):
     """The requested path is invalid and could not be routed"""
     pass
 
+
 def execute(executor_type, pathitems, params):
     """Execute an action as specified by the path"""
     try:

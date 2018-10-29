@@ -30,9 +30,11 @@ vbiZFwtjMW5njbSRwB3W4CrKoyxw4qsJNSaZRTKAvSjTKdqVDXV/U5HK7SaBA6iJ981/aforXbd2vZ
 lRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nAovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7
 m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ0fFdCmw='''
 
+
 class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
     pass
+
 
 @common.inject_video_id(path_offset=0)
 def play(videoid):
@@ -52,6 +54,7 @@ def play(videoid):
         handle=common.PLUGIN_HANDLE,
         succeeded=True,
         listitem=list_item)
+
 
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set
@@ -93,6 +96,7 @@ def get_inputstream_listitem(videoid):
         key='inputstreamaddon',
         value=is_helper.inputstream_addon)
     return list_item
+
 
 def integrate_upnext(videoid, current_infos, current_art, timeline_markers,
                      metadata):
