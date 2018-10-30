@@ -149,7 +149,8 @@ def build_main_menu_listing(lolomo):
     """
     Builds the video lists (my list, continue watching, etc.) Kodi screen
     """
-    directory_items = [_create_videolist_item(list_id, user_list)
+    directory_items = [_create_videolist_item(list_id, user_list,
+                                              static_lists=True)
                        for list_id, user_list
                        in lolomo.lists_by_context(common.KNOWN_LIST_TYPES)]
     for context_type, data in common.MISC_CONTEXTS.iteritems():
@@ -186,10 +187,10 @@ def build_lolomo_listing(lolomo, contexts=None):
                        title=lolomo.get('name'))
 
 
-def _create_videolist_item(video_list_id, video_list):
+def _create_videolist_item(video_list_id, video_list, static_lists=False):
     """Create a tuple that can be added to a Kodi directory that represents
     a videolist as listed in a LoLoMo"""
-    if video_list['context'] in common.KNOWN_LIST_TYPES:
+    if static_lists and video_list['context'] in common.KNOWN_LIST_TYPES:
         video_list_id = video_list['context']
     list_item = list_item_skeleton(video_list['displayName'])
     add_info(video_list.id, list_item, video_list, video_list.data)
@@ -207,7 +208,7 @@ def build_video_listing(video_list):
                        in video_list.videos.iteritems()]
     if video_list.get('genreId'):
         directory_items.append(
-            (common.build_url(pathitems=['genres', video_list['genreId']],
+            (common.build_url(['genres', unicode(video_list['genreId'])],
                               mode=common.MODE_DIRECTORY),
              list_item_skeleton(common.get_local_string(30088),
                                 icon='DefaultAddSource.png',

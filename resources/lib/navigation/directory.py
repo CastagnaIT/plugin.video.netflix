@@ -64,9 +64,9 @@ class DirectoryBuilder(object):
         """Show episodes of a season"""
         listings.build_episode_listing(videoid, api.episodes(videoid))
 
-    def genres(self, pathitems=None):
+    def genres(self, pathitems):
         """Show video lists for a genre"""
-        if not pathitems:
+        if len(pathitems) < 2:
             lolomo = api.root_lists()
             contexts = common.MISC_CONTEXTS['genres']['contexts']
         else:
