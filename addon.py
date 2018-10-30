@@ -22,25 +22,27 @@ import resources.lib.navigation.player as player
 import resources.lib.navigation.actions as actions
 import resources.lib.navigation.library as library
 
+NAV_HANDLERS = {
+    common.MODE_DIRECTORY: directory.DirectoryBuilder,
+    common.MODE_ACTION: actions.AddonActionExecutor,
+    common.MODE_LIBRARY: library.LibraryActionExecutor,
+    common.MODE_HUB: hub.HubBrowser
+}
+
 
 def route(pathitems):
     """Route to the appropriate handler"""
     common.debug('Routing navigation request')
     root_handler = pathitems[0] if pathitems else common.MODE_DIRECTORY
-    pass_on_params = (pathitems[1:], common.REQUEST_PARAMS)
-    if root_handler == common.MODE_DIRECTORY:
-        nav.execute(directory.DirectoryBuilder, *pass_on_params)
-    elif root_handler == common.MODE_HUB:
-        hub.browse(*pass_on_params)
-    elif root_handler == common.MODE_PLAY:
+    if root_handler == common.MODE_PLAY:
         player.play(pathitems=pathitems[1:])
-    elif root_handler == common.MODE_ACTION:
-        nav.execute(actions.AddonActionExecutor, *pass_on_params)
-    elif root_handler == common.MODE_LIBRARY:
-        nav.execute(library.LibraryActionExecutor, *pass_on_params)
     else:
-        raise nav.InvalidPathError(
-            'No root handler for path {}'.format('/'.join(pathitems)))
+        try:
+            nav.execute(NAV_HANDLERS[root_handler], pathitems[1:],
+                        common.REQUEST_PARAMS)
+        except KeyError:
+            raise nav.InvalidPathError(
+                'No root handler for path {}'.format('/'.join(pathitems)))
 
 
 if __name__ == '__main__':
