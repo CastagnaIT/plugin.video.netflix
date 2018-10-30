@@ -54,10 +54,10 @@ ADDITIONAL_MAIN_MENU_ITEMS = [
 def ctx_item_url(paths, mode=common.MODE_ACTION):
     """Return a function that builds an URL from a videoid
     for the predefined path"""
-    def url_builder(videoid):
-        """Build defined URL from videoid"""
+    def ctx_url_builder(videoid):
+        """Build a context menu item URL"""
         return common.build_url(paths, videoid, mode=mode)
-    return url_builder
+    return ctx_url_builder
 
 CONTEXT_MENU_ACTIONS = {
     'export': {
@@ -67,7 +67,7 @@ CONTEXT_MENU_ACTIONS = {
         'label': common.get_local_string(30030),
         'url': ctx_item_url(['remove'], common.MODE_LIBRARY)},
     'update': {
-        'label': common.get_local_string(30030),
+        'label': common.get_local_string(30061),
         'url': ctx_item_url(['update'], common.MODE_LIBRARY)},
     'rate': {
         'label': common.get_local_string(30019),
@@ -339,5 +339,4 @@ def _generate_context_menu_items(videoid):
 def _ctx_item(template, videoid):
     """Create a context menu item based on the given template and videoid"""
     return (CONTEXT_MENU_ACTIONS[template]['label'],
-            RUN_PLUGIN.format(
-                CONTEXT_MENU_ACTIONS[template]['url'](videoid)))
+            RUN_PLUGIN.format(CONTEXT_MENU_ACTIONS[template]['url'](videoid)))

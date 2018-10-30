@@ -13,7 +13,7 @@ class LibraryActionExecutor(object):
                      .format(params))
         self.params = params
 
-    @common.inject_video_id(path_offset=0)
+    @common.inject_video_id(path_offset=1)
     def export(self, videoid):
         """Export an item to the Kodi library"""
         common.execute_tasks(title=common.get_local_string(650),
@@ -22,7 +22,7 @@ class LibraryActionExecutor(object):
                              notify_errors=True,
                              library_home=library.library_path())
 
-    @common.inject_video_id(path_offset=0)
+    @common.inject_video_id(path_offset=1)
     def export_silent(self, videoid):
         """Export an item to the Kodi library"""
         # pylint: disable=bare-except
@@ -34,7 +34,7 @@ class LibraryActionExecutor(object):
                 common.error(traceback.format_exc())
                 common.error('Export of {} failed'.format(task['title']))
 
-    @common.inject_video_id(path_offset=0)
+    @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
         common.execute_tasks(title=common.get_local_string(650),
@@ -42,7 +42,7 @@ class LibraryActionExecutor(object):
                              task_handler=library.remove_item,
                              notify_errors=True)
 
-    @common.inject_video_id(path_offset=0)
+    @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
         common.execute_tasks(title=common.get_local_string(650),
