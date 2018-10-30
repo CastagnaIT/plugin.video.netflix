@@ -82,15 +82,14 @@ def compile_tasks(videoid):
     metadata = api.metadata(videoid)
     if videoid.mediatype == common.VideoId.MOVIE:
         name = '{title} ({year})'.format(
-            title=metadata['video']['title'],
-            year=metadata['video']['year'])
+            title=metadata['title'],
+            year=metadata['year'])
         return [_create_item_task(name, FOLDER_MOVIES, videoid, name, name)]
     elif videoid.mediatype == common.VideoId.SHOW:
         return [
-            task for task in (
-                _compile_season_tasks(
-                    videoid.derive_season(season['id']), metadata, season)
-                for season in metadata['video']['seasons'])]
+            task for season in metadata['seasons']
+            for task in _compile_season_tasks(
+                videoid.derive_season(season['id']), metadata, season)]
     elif videoid.mediatype == common.VideoId.SEASON:
         return _compile_season_tasks(
             videoid, metadata, common.find_season(videoid.seasonid,
@@ -110,11 +109,11 @@ def _compile_season_tasks(videoid, metadata, season):
 
 def _create_episode_task(videoid, metadata, season=None, episode=None):
     """Export a single episode to the library"""
-    showname = metadata['video']['title']
+    showname = metadata['title']
     season = season or common.find_season(
-        videoid.seasonid, metadata['video']['seasons'])
+        videoid.seasonid, metadata['seasons'])
     episode = episode or common.find_episode(
-        videoid.episodeid, metadata['video']['seasons'])
+        videoid.episodeid, metadata['seasons'])
     title = episode['title']
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
     title = ' - '.join((showname, filename, title))
@@ -140,6 +139,11 @@ def export_item(item_task, library_home):
         destination_folder, item_task['filename'] + '.strm')
     try:
         os.makedirs(xbmc.translatePath(destination_folder))
+    except OSError as exc:
+        if exc.errno != os.errno.EEXIST:
+            raise
+
+    try:
         with codecs.open(xbmc.translatePath(export_filename),
                          mode='w',
                          encoding='utf-8',

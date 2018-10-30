@@ -52,7 +52,7 @@ class AddonActionExecutor(object):
         common.ADDON.setSettingBool(
             not common.ADDON.getSettingBool('adultpin_enable'))
 
-    @common.inject_video_id(path_offset=0)
+    @common.inject_video_id(path_offset=1)
     def rate(self, videoid):
         """Rate an item on Netflix. Ask for a rating if there is none supplied
         in the path."""
@@ -60,14 +60,14 @@ class AddonActionExecutor(object):
         if rating is not None:
             api.rate(videoid, rating)
 
-    @common.inject_video_id(path_offset=1, inject_remaining_pathitems=True)
+    @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
-        if pathitems[0] == 'add':
+        if pathitems[1] == 'add':
             api.add_to_list(videoid)
-        elif pathitems[0] == 'remove':
+        elif pathitems[1] == 'remove':
             api.remove_from_list(videoid)
         else:
             raise InvalidPathError('Unknown my-list action: {}'
-                                   .format(pathitems[0]))
+                                   .format(pathitems[1]))
         common.refresh_container()

@@ -201,13 +201,13 @@ class VideoId(object):
         if self.videoid:
             return [self.videoid]
         if self.movieid:
-            return [self.MOVIE, self.movieid]
+            return [self.MOVIE, unicode(self.movieid)]
 
-        pathitems = [self.SHOW, self.tvshowid]
+        pathitems = [self.SHOW, unicode(self.tvshowid)]
         if self.seasonid:
-            pathitems.extend([self.SEASON, self.seasonid])
+            pathitems.extend([self.SEASON, unicode(self.seasonid)])
         if self.episodeid:
-            pathitems.extend([self.EPISODE, self.episodeid])
+            pathitems.extend([self.EPISODE, unicode(self.episodeid)])
         return pathitems
 
     def to_list(self):
@@ -886,7 +886,7 @@ def make_call(callname, data=None):
         timeout_ms=10000)
     if isinstance(result, dict) and 'error' in result:
         msg = ('AddonSignals call {callname} returned {error}: {message}'
-               .format(callname, **result))
+               .format(callname=callname, **result))
         error(msg)
         raise Exception(msg)
     elif result is None:
@@ -934,16 +934,13 @@ def _signal_name(func):
 def build_url(pathitems=None, videoid=None, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters.
     Add videoid to the path if it's present."""
-    pathitems = pathitems or []
-    if videoid:
-        pathitems.extend(videoid.to_path())
-    elif not pathitems:
+    if not pathitems and not videoid:
         raise ValueError('Either pathitems or videoid must be set.')
-    if mode:
-        pathitems.insert(0, mode)
     return '{netloc}/{path}{qs}'.format(
         netloc=BASE_URL,
-        path='/'.join(pathitems) + '/',
+        path='/'.join(([mode] if mode else []) +
+                      (pathitems or []) +
+                      (videoid.to_path() if videoid else [])) + '/',
         qs=('?' + urlencode(params)) if params else '')
 
 
@@ -1000,20 +997,21 @@ def execute_tasks(title, tasks, task_handler, notify_errors=False, **kwargs):
     errors = []
     progress = xbmcgui.DialogProgress()
     progress.create(title)
-    for task_num, task in tasks:
+    for task_num, task in enumerate(tasks):
         # pylint: disable=broad-except
         task_title = task.get('title', 'Unknown Task')
         progress.update(percent=int(task_num / len(tasks) * 100),
                         line1=task_title)
-        xbmc.sleep(100)
+        xbmc.sleep(25)
         if progress.iscanceled():
             break
         try:
             task_handler(task, **kwargs)
         except Exception as exc:
+            error(traceback.format_exc())
             errors.append({
                 'task_title': task_title,
-                'error': ': '.join((type(exc).__name__, exc.message))})
+                'error': ': '.join((type(exc).__name__, unicode(exc)))})
     if notify_errors and errors:
         xbmcgui.Dialog().ok(get_local_string(0),
                             '\n'.join(['{} ({})'.format(err['task_title'],
