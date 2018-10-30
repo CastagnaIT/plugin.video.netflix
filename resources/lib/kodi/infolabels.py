@@ -64,8 +64,7 @@ def parse_info(videoid, item, raw_data):
     infos = {'mediatype': ('tvshow'
                            if videoid.mediatype == common.VideoId.SHOW
                            else videoid.mediatype)}
-    if videoid.mediatype in [common.VideoId.SHOW, common.VideoId.SEASON,
-                             common.VideoId.EPISODE]:
+    if videoid.mediatype in common.VideoId.TV_TYPES:
         infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
 
     infos.update(parse_atomic_infos(item))
