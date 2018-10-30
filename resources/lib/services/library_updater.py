@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import xbmc
 
 import resources.lib.common as common
+import resources.lib.kodi.library as library
 
 
 class LibraryUpdateService(object):
@@ -20,7 +21,7 @@ class LibraryUpdateService(object):
     def on_tick(self):
         """Check if update is due and trigger it"""
         if self.library_update_scheduled() and self.is_idle():
-            common.update_library()
+            library.update_library()
 
     def is_idle(self):
         """
