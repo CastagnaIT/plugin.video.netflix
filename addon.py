@@ -26,9 +26,9 @@ import resources.lib.navigation.library as library
 def route(pathitems):
     """Route to the appropriate handler"""
     common.debug('Routing navigation request')
-    root_handler = pathitems[0]
+    root_handler = pathitems[0] if pathitems else common.MODE_DIRECTORY
     pass_on_params = (pathitems[1:], common.REQUEST_PARAMS)
-    if not common.PATH or root_handler == common.MODE_DIRECTORY:
+    if root_handler == common.MODE_DIRECTORY:
         nav.execute(directory.DirectoryBuilder, *pass_on_params)
     elif root_handler == common.MODE_HUB:
         hub.browse(*pass_on_params)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     common.info('URL is {}'.format(common.URL))
 
     try:
-        route(common.PATH.split('/'))
+        route(filter(None, common.PATH.split('/')))
     except Exception as exc:
         import traceback
         common.error(traceback.format_exc())

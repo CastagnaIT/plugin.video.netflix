@@ -16,10 +16,5 @@ def execute(executor_type, pathitems, params):
             pathitems[0] if pathitems else 'root')
     except AttributeError:
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-
     common.debug('Invoking action executor {}'.format(executor.__name__))
-
-    if len(pathitems) > 1:
-        executor(pathitems=pathitems)
-    else:
-        executor()
+    executor(pathitems=pathitems)
