@@ -58,6 +58,7 @@ def get_multiple_paths(path, search_space, default=None):
             if len(path) == 1
             else get_multiple_paths(path[1:], current_value, default))
 
+
 def _branch(path, search_space, default):
     return {k: get_multiple_paths([k] + path[1:], search_space, default)
             for k in path[0]

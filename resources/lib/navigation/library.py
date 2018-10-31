@@ -30,19 +30,19 @@ class LibraryActionExecutor(object):
     def export(self, videoid):
         """Export an item to the Kodi library"""
         _execute_library_tasks(videoid, library.export_item,
-                               common.get_local_string(650))
+                               common.get_local_string(30018))
 
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
         _execute_library_tasks(videoid, library.remove_item,
-                               common.get_local_string(650))
+                               common.get_local_string(30030))
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
         _execute_library_tasks(videoid, library.update_item,
-                               common.get_local_string(650))
+                               common.get_local_string(30061))
 
 
 def _execute_library_tasks(videoid, task_handler, title):

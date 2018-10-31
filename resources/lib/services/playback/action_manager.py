@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from resources.lib.globals import g
 import resources.lib.common as common
 
+
 class PlaybackActionManager(object):
     """
     Base class for managers that handle executing of specific actions

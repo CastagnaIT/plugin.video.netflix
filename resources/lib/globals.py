@@ -112,6 +112,7 @@ class GlobalVariables(object):
         # pylint: disable=attribute-defined-outside-init
         self.ADDON = xbmcaddon.Addon()
 
+
 # pylint: disable=invalid-name
 # This will have no effect most of the time, as it doesn't seem to be executed
 # on subsequent addon invocations when reuseLanguageInvoker is being used.

@@ -11,6 +11,7 @@ import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 from resources.lib.navigation import InvalidPathError
 
+
 class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use

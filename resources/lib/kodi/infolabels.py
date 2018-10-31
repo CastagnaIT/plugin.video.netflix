@@ -8,6 +8,12 @@ import resources.lib.cache as cache
 import resources.lib.api.paths as paths
 import resources.lib.kodi.library as library
 
+QUALITIES = [
+    {'codec': 'h264', 'width': '960', 'height': '540'},
+    {'codec': 'h264', 'width': '1920', 'height': '1080'},
+    {'codec': 'h265', 'width': '3840', 'height': '2160'}
+]
+
 
 def add_info(videoid, list_item, item, raw_data):
     """Add infolabels to the list_item. The passed in list_item is modified
@@ -111,19 +117,13 @@ def parse_tags(item):
                     if isinstance(tagdef.get('name', {}), unicode)]}
 
 
-QUALITIES = [
-    {'codec': 'h264', 'width': '960', 'height': '540'},
-    {'codec': 'h264', 'width': '1920', 'height': '1080'},
-    {'codec': 'h265', 'width': '3840', 'height': '2160'}
-]
-
 def get_quality_infos(item):
     """Return audio and video quality infolabels"""
     quality_infos = {}
     delivery = item.get('delivery')
     if delivery:
         quality_infos['video'] = QUALITIES[
-            min((delivery.get('hasUltraHD', False)<<1 |
+            min((delivery.get('hasUltraHD', False) << 1 |
                  delivery.get('hasHD')), 2)]
         quality_infos['audio'] = {
             'channels': 2 + 4*delivery.get('has51Audio', False)}
