@@ -174,6 +174,7 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
     _show_errors(notify_errors, errors)
     return errors
 
+
 def _show_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(get_local_string(0),

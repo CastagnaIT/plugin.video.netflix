@@ -47,7 +47,7 @@ class VideoId(object):
     def _validate(self):
         validation_mask = 0
         for index, value in enumerate(self._id_values):
-            validation_mask |= (value is not None)<<(4-index)
+            validation_mask |= (value is not None) << (4-index)
         try:
             self._mediatype = VideoId.VALIDATION_MASKS[validation_mask]
         except KeyError:

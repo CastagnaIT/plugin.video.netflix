@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 
+
 class InvalidPathError(Exception):
     """The requested path is invalid and could not be routed"""
     pass

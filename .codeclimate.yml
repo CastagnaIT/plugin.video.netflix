@@ -2,6 +2,10 @@
 engines:
   pep8:
     enabled: true
+    checks:
+      E402:
+        # Disable module order check because we need to work around this
+        enabled: false
   radon:
     enabled: true
     config:
