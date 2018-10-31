@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import os
 
-from .globals import DATA_PATH
+from resources.lib.globals import g
 
 
 def check_folder_path(path):
@@ -20,7 +20,7 @@ def check_folder_path(path):
     return path + end
 
 
-def file_exists(filename, data_path=DATA_PATH):
+def file_exists(filename, data_path=g.DATA_PATH):
     """
     Checks if a given file exists
     :param filename: The filename
@@ -29,7 +29,7 @@ def file_exists(filename, data_path=DATA_PATH):
     return os.path.exists(data_path + filename)
 
 
-def save_file(filename, content, data_path=DATA_PATH, mode='w'):
+def save_file(filename, content, data_path=g.DATA_PATH, mode='w'):
     """
     Saves the given content under given filename
     :param filename: The filename
@@ -39,7 +39,7 @@ def save_file(filename, content, data_path=DATA_PATH, mode='w'):
         file_handle.write(content.encode('utf-8'))
 
 
-def load_file(filename, data_path=DATA_PATH, mode='r'):
+def load_file(filename, data_path=g.DATA_PATH, mode='r'):
     """
     Loads the content of a given filename
     :param filename: The file to load
@@ -49,7 +49,7 @@ def load_file(filename, data_path=DATA_PATH, mode='r'):
         return file_handle.read()
 
 
-def list_dir(data_path=DATA_PATH):
+def list_dir(data_path=g.DATA_PATH):
     """
     List the contents of a folder
     :return: The contents of the folder

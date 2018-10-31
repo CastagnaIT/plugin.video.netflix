@@ -3,19 +3,27 @@
 # Module: service
 # Created on: 13.01.2017
 # License: MIT https://goo.gl/5bMj3H
-
+# pylint: disable=wrong-import-position
 """Kodi plugin for Netflix (https://netflix.com)"""
 from __future__ import unicode_literals
 
+import sys
 import threading
 import traceback
 
 import xbmc
 
+# Import and intiliaze globals right away to avoid stale values from the last
+# addon invocation. Otherwise Kodi's reuseLanguageInvoker will caus some
+# really quirky behavior!
+from resources.lib.globals import g
+g.init_globals(sys.argv)
+
 import resources.lib.common as common
 import resources.lib.services as services
 import resources.lib.kodi.ui as ui
 from resources.lib.services.nfsession import NetflixSession
+
 
 class NetflixService(object):
     """
@@ -62,21 +70,20 @@ class NetflixService(object):
         """
         self.start_services()
         player = xbmc.Player()
-
         while not self.controller.abortRequested():
-            # pylint: disable=broad-except
-            try:
-                if player.isPlayingVideo():
-                    self.controller.on_playback_tick()
-                self.library_updater.on_tick()
-            except Exception as exc:
-                traceback.format_exc()
-                common.error(exc)
-
-            if self.controller.waitForAbort(1):
+            if self._tick_and_wait_for_abort(player.isPlayingVideo()):
                 break
-
         self.shutdown()
+
+    def _tick_and_wait_for_abort(self, is_playing_video):
+        # pylint: disable=broad-except
+        try:
+            if is_playing_video:
+                self.controller.on_playback_tick()
+            self.library_updater.on_tick()
+        except Exception:
+            common.error(traceback.format_exc())
+        return self.controller.waitForAbort(1)
 
 
 if __name__ == '__main__':

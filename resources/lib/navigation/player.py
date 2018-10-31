@@ -6,6 +6,7 @@ import xbmcplugin
 import xbmcgui
 import inputstreamhelper
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
@@ -39,6 +40,7 @@ class InputstreamError(Exception):
 @common.inject_video_id(path_offset=0)
 def play(videoid):
     """Play an episode or movie as specified by the path"""
+    common.debug('Playing {}'.format(videoid))
     metadata = api.metadata(videoid)
     timeline_markers = get_timeline_markers(metadata)
     list_item = get_inputstream_listitem(videoid)
@@ -49,9 +51,12 @@ def play(videoid):
         'art': art,
         'timeline_markers': timeline_markers})
     if videoid.mediatype == common.VideoId.EPISODE:
-        integrate_upnext(videoid, infos, art, timeline_markers, metadata)
+        integrate_upnext(videoid,
+                         {'infos': infos, 'art': art},
+                         timeline_markers,
+                         metadata)
     xbmcplugin.setResolvedUrl(
-        handle=common.PLUGIN_HANDLE,
+        handle=g.PLUGIN_HANDLE,
         succeeded=True,
         listitem=list_item)
 
@@ -60,11 +65,11 @@ def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set
     for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
-        port=common.ADDON.getSetting('msl_service_port'))
+        port=g.ADDON.getSetting('msl_service_port'))
     manifest_path = MANIFEST_PATH_FORMAT.format(
         videoid=videoid.value,
-        enable_dolby=common.ADDON.getSetting('enable_dolby_sound'),
-        enable_hevc=common.ADDON.getSetting('enable_hevc_profiles'))
+        enable_dolby=g.ADDON.getSetting('enable_dolby_sound'),
+        enable_hevc=g.ADDON.getSetting('enable_hevc_profiles'))
 
     list_item = xbmcgui.ListItem(path=service_url + manifest_path,
                                  offscreen=True)
@@ -98,7 +103,6 @@ def get_inputstream_listitem(videoid):
     return list_item
 
 
-def integrate_upnext(videoid, current_infos, current_art, timeline_markers,
-                     metadata):
+def integrate_upnext(videoid, current, timeline_markers, metadata):
     """Determine next episode and send an AddonSignal to UpNext addon"""
     pass

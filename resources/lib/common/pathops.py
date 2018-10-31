@@ -27,14 +27,17 @@ def remove_path(path, search_space, remove_remnants=True):
     """Remove a value from a nested dict by following a path.
     Also removes remaining empty dicts in the hierarchy if remove_remnants
     is True"""
-    if not isinstance(path, (tuple, list)):
-        path = [path]
+    path = _ensure_listlike(path)
     if len(path) == 1:
         del search_space[path[0]]
     else:
         remove_path(path[1:], search_space[path[0]])
         if remove_remnants and not search_space[path[0]]:
             del search_space[path[0]]
+
+
+def _ensure_listlike(path):
+    return path if isinstance(path, (tuple, list)) else [path]
 
 
 def get_multiple_paths(path, search_space, default=None):
@@ -49,10 +52,13 @@ def get_multiple_paths(path, search_space, default=None):
     if not isinstance(search_space, (dict, list)):
         return default
     if isinstance(path[0], list):
-        return {k: get_multiple_paths([k] + path[1:], search_space, default)
-                for k in path[0]
-                if k in search_space}
+        return _branch(path, search_space, default)
     current_value = search_space.get(path[0], default)
     return (current_value
             if len(path) == 1
             else get_multiple_paths(path[1:], current_value, default))
+
+def _branch(path, search_space, default):
+    return {k: get_multiple_paths([k] + path[1:], search_space, default)
+            for k in path[0]
+            if k in search_space}

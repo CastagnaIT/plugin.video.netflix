@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import os
 import json
 
-from .globals import DATA_PATH
+from resources.lib.globals import g
 from .logging import debug, error
 
 
@@ -21,7 +21,7 @@ class PersistentStorage(object):
     """
     def __init__(self, storage_id):
         self.storage_id = storage_id
-        self.backing_file = os.path.join(DATA_PATH, self.storage_id + '.ndb')
+        self.backing_file = os.path.join(g.DATA_PATH, self.storage_id + '.ndb')
         self._contents = {}
         self._dirty = True
         debug('Instantiated {}'.format(self.storage_id))

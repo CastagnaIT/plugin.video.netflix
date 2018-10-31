@@ -6,13 +6,14 @@ from __future__ import unicode_literals
 import xbmc
 import xbmcgui
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 
 def show_notification(msg, title='Netflix'):
     """Show a notification"""
     xbmc.executebuiltin('Notification({}, {}, 3000, {})'
-                        .format(title, msg, common.ICON)
+                        .format(title, msg, g.ICON)
                         .encode('utf-8'))
 
 
@@ -66,7 +67,7 @@ def ask_for_search_term():
 
 def ask_for_custom_title(original_title):
     """Ask the user for a custom title (for library export)"""
-    if common.ADDON.getSettingBool('customexportname'):
+    if g.ADDON.getSettingBool('customexportname'):
         return original_title
     return xbmcgui.Dialog().input(
         heading=common.get_local_string(30031),

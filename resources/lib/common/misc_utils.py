@@ -4,20 +4,33 @@
 from __future__ import unicode_literals
 
 import traceback
+from datetime import datetime
 from urllib import urlencode
 
 import xbmc
 import xbmcgui
 
-from .globals import ADDON, BASE_URL
-from .logging import info, error
+from resources.lib.globals import g
+from .logging import debug, info, error
 from .kodiops import get_local_string
+
+
+def find(video_id, search_space, raise_exc=True):
+    """Find a video with matching id in a dict or list"""
+    for video in search_space:
+        if unicode(video['id']) == video_id:
+            return video
+    if raise_exc:
+        raise KeyError('Metadata for {} does not exist'
+                       .format(video_id))
+    else:
+        return {}
 
 
 def select_port():
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
-    ADDON.setSetting('msl_service_port', str(port))
+    g.ADDON.setSetting('msl_service_port', str(port))
     info('[MSL] Picked Port: {}'.format(port))
     return port
 
@@ -82,14 +95,27 @@ def get_user_agent():
 def build_url(pathitems=None, videoid=None, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters.
     Add videoid to the path if it's present."""
-    if not pathitems and not videoid:
+    if not (pathitems or videoid):
         raise ValueError('Either pathitems or videoid must be set.')
-    return '{netloc}/{path}{qs}'.format(
-        netloc=BASE_URL,
-        path='/'.join(([mode] if mode else []) +
+    path = '{netloc}/{path}/{qs}'.format(
+        netloc=g.BASE_URL,
+        path='/'.join(_expand_mode(mode) +
                       (pathitems or []) +
-                      (videoid.to_path() if videoid else [])) + '/',
-        qs=('?' + urlencode(params)) if params else '')
+                      _expand_videoid(videoid)),
+        qs=_encode_params(params))
+    return path
+
+
+def _expand_mode(mode):
+    return [mode] if mode else []
+
+
+def _expand_videoid(videoid):
+    return videoid.to_path() if videoid else []
+
+
+def _encode_params(params):
+    return ('?' + urlencode(params)) if params else ''
 
 
 def is_numeric(string):
@@ -121,12 +147,13 @@ def strp(value, form):
         return def_value
 
 
-def execute_tasks(title, tasks, task_handler, notify_errors=False, **kwargs):
+def execute_tasks(title, tasks, task_handler, **kwargs):
     """Run all tasks through task_handler and display a progress
     dialog in the GUI. Additional kwargs will be passed into task_handler
     on each invocation.
     Returns a list of errors that occured during execution of tasks."""
     errors = []
+    notify_errors = kwargs.pop('notify_errors', False)
     progress = xbmcgui.DialogProgress()
     progress.create(title)
     for task_num, task in enumerate(tasks):
@@ -144,9 +171,12 @@ def execute_tasks(title, tasks, task_handler, notify_errors=False, **kwargs):
             errors.append({
                 'task_title': task_title,
                 'error': '{}: {}'.format(type(exc).__name__, exc)})
+    _show_errors(notify_errors, errors)
+    return errors
+
+def _show_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(get_local_string(0),
                             '\n'.join(['{} ({})'.format(err['task_title'],
                                                         err['error'])
                                        for err in errors]))
-    return errors

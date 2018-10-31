@@ -2,6 +2,7 @@
 """Common base for all playback action managers"""
 from __future__ import unicode_literals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 class PlaybackActionManager(object):
@@ -25,7 +26,7 @@ class PlaybackActionManager(object):
         """
         if self._enabled is None:
             common.debug('Loading enabled setting from store')
-            self._enabled = common.ADDON.getSettingBool(
+            self._enabled = g.ADDON.getSettingBool(
                 '{}_enabled'.format(self.__class__.__name__))
 
         return self._enabled

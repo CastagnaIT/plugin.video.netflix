@@ -4,10 +4,11 @@ from __future__ import unicode_literals
 
 import traceback
 from functools import wraps
+from time import time
 
 import AddonSignals
 
-from .globals import ADDON_ID
+from resources.lib.globals import g
 from .logging import debug, error
 
 
@@ -22,7 +23,7 @@ def register_slot(callback, signal=None):
     """Register a callback with AddonSignals for return calls"""
     name = signal if signal else _signal_name(callback)
     AddonSignals.registerSlot(
-        signaler_id=ADDON_ID,
+        signaler_id=g.ADDON_ID,
         signal=name,
         callback=callback)
     debug('Registered AddonSignals slot {} to {}'.format(name, callback))
@@ -32,7 +33,7 @@ def unregister_slot(callback, signal=None):
     """Remove a registered callback from AddonSignals"""
     name = signal if signal else _signal_name(callback)
     AddonSignals.unRegisterSlot(
-        signaler_id=ADDON_ID,
+        signaler_id=g.ADDON_ID,
         signal=name)
     debug('Unregistered AddonSignals slot {}'.format(name))
 
@@ -40,7 +41,7 @@ def unregister_slot(callback, signal=None):
 def send_signal(signal, data=None):
     """Send a signal via AddonSignals"""
     AddonSignals.sendSignal(
-        source_id=ADDON_ID,
+        source_id=g.ADDON_ID,
         signal=signal,
         data=data)
 
@@ -49,11 +50,13 @@ def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target
     function."""
+    start = time()
     result = AddonSignals.makeCall(
-        source_id=ADDON_ID,
+        source_id=g.ADDON_ID,
         signal=callname,
         data=data,
         timeout_ms=10000)
+    debug('AddonSignals call took {}s'.format(time() - start))
     if isinstance(result, dict) and 'error' in result:
         msg = ('AddonSignals call {callname} returned {error}: {message}'
                .format(callname=callname, **result))
@@ -85,7 +88,7 @@ def addonsignals_return_call(func):
         if result is None:
             result = False
         AddonSignals.returnCall(
-            signal=_signal_name(func), source_id=ADDON_ID, data=result)
+            signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
     return make_return_call
 
 

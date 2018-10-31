@@ -20,6 +20,7 @@ from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 #check if we are on Android
@@ -58,7 +59,7 @@ class MSL(object):
         """
         self.crypto = MSLHandler()
 
-        if common.file_exists(common.DATA_PATH, 'msl_data.json'):
+        if common.file_exists(g.DATA_PATH, 'msl_data.json'):
             self.init_msl_data()
         else:
             self.crypto.fromDict(None)
@@ -561,7 +562,7 @@ class MSL(object):
         :return: The base64 encoded JSON String of the header
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
-        esn = common.get_esn()
+        esn = g.get_esn()
 
         # Add compression algo if not empty
         compression_algos = [compressionalgo] if compressionalgo != '' else []
@@ -600,7 +601,7 @@ class MSL(object):
         return json.dumps(header_data)
 
     def __encrypt(self, plaintext):
-        return json.dumps(self.crypto.encrypt(plaintext, common.get_esn(), self.sequence_number))
+        return json.dumps(self.crypto.encrypt(plaintext, g.get_esn(), self.sequence_number))
 
     def __sign(self, text):
         """
@@ -616,7 +617,7 @@ class MSL(object):
         self.__perform_key_handshake()
 
     def __perform_key_handshake(self):
-        esn = common.get_esn()
+        esn = g.get_esn()
         common.log('perform_key_handshake: esn:' + esn)
 
         if not esn:

@@ -6,42 +6,7 @@ import json
 
 import xbmc
 
-from .globals import ADDON
-
-
-def find_season(season_id, seasons, raise_exc=True):
-    """
-    Get metadata for a specific season from within a nested
-    metadata dict.
-    :return: Season metadata. Raises KeyError if metadata for season_id
-    does not exist.
-    """
-    for season in seasons:
-        if str(season['id']) == season_id:
-            return season
-    if raise_exc:
-        raise KeyError('Metadata for season {} does not exist'
-                       .format(season_id))
-    else:
-        return {}
-
-
-def find_episode(episode_id, seasons, raise_exc=True):
-    """
-    Get metadata for a specific episode from within a nested
-    metadata dict.
-    :return: Episode metadata. Raises KeyError if metadata for episode_id
-    does not exist.
-    """
-    for season in seasons:
-        for episode in season['episodes']:
-            if str(episode['id']) == episode_id:
-                return episode
-    if raise_exc:
-        raise KeyError('Metadata for episode {} does not exist'
-                       .format(episode_id))
-    else:
-        return {}
+from resources.lib.globals import g
 
 
 def update_library_item_details(dbtype, dbid, details):
@@ -83,5 +48,20 @@ def refresh_container():
 
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
-    src = xbmc if string_id < 30000 else ADDON
+    src = xbmc if string_id < 30000 else g.ADDON
     return src.getLocalizedString(string_id)
+
+
+def run_plugin_action(path, block=False):
+    """Create an action that can be run with xbmc.executebuiltin in order
+    to run a Kodi plugin specified by path. If block is True (default=False),
+    the execution of code will block until the called plugin has finished
+    running."""
+    return 'XBMC.RunPlugin({}, {})'.format(path, block)
+
+
+def run_plugin(path, block=False):
+    """Run a Kodi plugin specified by path. If block is True (default=False),
+    the execution of code will block until the called plugin has finished
+    running."""
+    xbmc.executebuiltin(run_plugin_action(path, block))
