@@ -7,16 +7,7 @@ import json
 import xbmc
 
 from resources.lib.globals import g
-
-
-def update_library_item_details(dbtype, dbid, details):
-    """
-    Update properties of an item in the Kodi library
-    """
-    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-    params = {'{}id'.format(dbtype): dbid}
-    params.update(details)
-    return json_rpc(method, params)
+from .logging import debug
 
 
 def json_rpc(method, params=None):
@@ -32,13 +23,33 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    response = json.loads(unicode(xbmc.executeJSONRPC(request), 'utf-8',
-                                  errors='ignore'))
+    debug('Executing JSON-RPC: {}'.format(request))
+    raw_response = unicode(xbmc.executeJSONRPC(request), 'utf-8')
+    debug('JSON-RPC response: {}'.format(raw_response))
+    response = json.loads(raw_response)
     if 'error' in response:
         raise IOError('JSONRPC-Error {}: {}'
                       .format(response['error']['code'],
                               response['error']['message']))
     return response['result']
+
+
+def update_library_item_details(dbtype, dbid, details):
+    """
+    Update properties of an item in the Kodi library
+    """
+    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
+    params = {'{}id'.format(dbtype): dbid}
+    params.update(details)
+    return json_rpc(method, params)
+
+
+def get_library_items(dbtype):
+    """Return a list of all items in the Kodi library that are of type
+    dbtype (either movie or episode)"""
+    method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
+    params = {'properties': ['title', 'file', 'resume']}
+    return json_rpc(method, params)[dbtype + 's']
 
 
 def refresh_container():
