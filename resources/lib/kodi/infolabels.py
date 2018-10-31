@@ -47,7 +47,8 @@ def add_info_for_playback(videoid, list_item):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
         return add_info_from_library(videoid, list_item)
-    except library.ItemNotFound:
+    except library.ItemNotFound as exc:
+        common.debug(exc)
         return add_info_from_netflix(videoid, list_item)
 
 
@@ -185,23 +186,28 @@ def add_info_from_netflix(videoid, list_item):
         common.info('Infolabels or art were not in cache, retrieving from API')
         import resources.lib.api.shakti as api
         api_data = api.single_info(videoid)
-        infos = add_info(videoid, list_item, api_data['videos'][videoid],
+        infos = add_info(videoid, list_item, api_data['videos'][videoid.value],
                          api_data)
-        art = add_art(videoid, list_item, api_data['videos'][videoid])
+        art = add_art(videoid, list_item, api_data['videos'][videoid.value])
     return infos, art
 
 
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
-    details = library.get_item(videoid, include_props=True)
+    details = library.get_item(videoid)
     common.debug('Got fileinfo from library: {}'.format(details))
     art = details.pop('art', {})
+    # Resuming for strm files in library is currently broken in Leia Beta
+    # keeping this for reference / in hopes this will get fixed
+    resume = details.pop('resume', {})
+    # if resume:
+    #     start_percent = resume['position'] / resume['total'] * 100.0
+    #     list_item.setProperty('startPercent', str(start_percent))
     infos = {
-        'DBID': details.pop('id'),
-        'mediatype': details['type'],
-        'DBTYPE': details.pop('type')
+        'DBID': details.pop('{}id'.format(videoid.mediatype)),
+        'mediatype': videoid.mediatype,
+        'title': details['title']
     }
-    infos.update(details)
-    list_item.setInfo(infos)
+    list_item.setInfo('video', infos)
     list_item.setArt(art)
     return infos, art

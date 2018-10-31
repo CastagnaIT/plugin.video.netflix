@@ -12,13 +12,6 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 
-FILE_PROPS = [
-    'title', 'genre', 'year', 'rating', 'duration', 'playcount', 'director',
-    'tagline', 'plot', 'plotoutline', 'originaltitle', 'writer', 'studio',
-    'mpaa', 'cast', 'country', 'runtime', 'set', 'showlink', 'season',
-    'episode', 'showtitle', 'file', 'resume', 'tvshowid', 'setid', 'tag',
-    'art', 'uniqueid']
-
 LIBRARY_HOME = 'library'
 FOLDER_MOVIES = 'movies'
 FOLDER_TV = 'shows'
@@ -36,21 +29,24 @@ def library_path():
             else g.DATA_PATH)
 
 
-def get_item(videoid, include_props=False):
+def get_item(videoid):
     """Find an item in the Kodi library by its Netflix videoid and return
     Kodi DBID and mediatype"""
+    # pylint: disable=broad-except
     try:
-        filepath = xbmc.translatePath(common.get_path(videoid.to_list(), g.library())['file'])
-        params = {'file': filepath, 'media': 'video'}
-        if include_props:
-            params['properties'] = FILE_PROPS
-        return common.json_rpc('Files.GetFileDetails', params)['filedetails']
+        exported_filepath = os.path.normcase(
+            xbmc.translatePath(
+                common.get_path(videoid.to_list(), g.library())['file']))
+        for library_item in common.get_library_items(videoid.mediatype):
+            if os.path.normcase(library_item['file']) == exported_filepath:
+                return library_item
     except Exception:
         import traceback
-        common.debug(traceback.format_exc())
-        raise ItemNotFound(
-            'The video with id {} is not present in the Kodi library'
-            .format(videoid))
+        common.error(traceback.format_exc())
+    # This is intentionally not raised in the except block!
+    raise ItemNotFound(
+        'The video with id {} is not present in the Kodi library'
+        .format(videoid))
 
 
 def is_in_library(videoid):

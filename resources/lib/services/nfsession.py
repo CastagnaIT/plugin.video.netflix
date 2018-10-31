@@ -141,7 +141,8 @@ class NetflixSession(object):
             if self._refresh_session_data():
                 _update_esn(self.session_data['esn'])
                 return True
-        return False
+            return False
+        return True
 
     def _refresh_session_data(self):
         """Refresh session_data from the Netflix website"""
