@@ -2,9 +2,11 @@
 """Navigation for classic plugin directory listing mode"""
 from __future__ import unicode_literals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
+
 
 class DirectoryBuilder(object):
     """Builds directory listings"""
@@ -20,8 +22,8 @@ class DirectoryBuilder(object):
     def root(self, pathitems=None):
         """Show profiles or home listing is autologin es enabled"""
         # pylint: disable=unused-argument
-        autologin = common.ADDON.getSettingBool('autologin_enable')
-        profile_id = common.ADDON.getSetting('autologin_id')
+        autologin = g.ADDON.getSettingBool('autologin_enable')
+        profile_id = g.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
             common.debug('Performing auto-login for selected profile {}'
                          .format(profile_id))
@@ -45,7 +47,7 @@ class DirectoryBuilder(object):
     def video_list(self, pathitems):
         """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
-        if pathitems[1] in common.KNOWN_LIST_TYPES:
+        if pathitems[1] in g.KNOWN_LIST_TYPES:
             list_id = api.list_id_for_type(pathitems[1])
         else:
             list_id = pathitems[1]
@@ -68,7 +70,7 @@ class DirectoryBuilder(object):
         """Show video lists for a genre"""
         if len(pathitems) < 2:
             lolomo = api.root_lists()
-            contexts = common.MISC_CONTEXTS['genres']['contexts']
+            contexts = g.MISC_CONTEXTS['genres']['contexts']
         else:
             lolomo = api.genre(pathitems[1])
             contexts = None
@@ -79,4 +81,4 @@ class DirectoryBuilder(object):
         # pylint: disable=unused-argument
         listings.build_lolomo_listing(
             api.root_lists(),
-            common.MISC_CONTEXTS['recommendations']['contexts'])
+            g.MISC_CONTEXTS['recommendations']['contexts'])

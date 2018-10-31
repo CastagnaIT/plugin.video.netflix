@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import xbmc
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from .action_manager import PlaybackActionManager
@@ -28,8 +29,8 @@ class SectionSkipper(PlaybackActionManager):
 
     def _initialize(self, data):
         self.markers = data['timeline_markers']
-        self.auto_skip = common.ADDON.getSettingBool('auto_skip_credits')
-        self.pause_on_skip = common.ADDON.getSettingBool('pause_on_skip')
+        self.auto_skip = g.ADDON.getSettingBool('auto_skip_credits')
+        self.pause_on_skip = g.ADDON.getSettingBool('pause_on_skip')
 
     def _on_tick(self, player_state):
         for section in SKIPPABLE_SECTIONS:
@@ -71,7 +72,7 @@ class SectionSkipper(PlaybackActionManager):
         minutes = (dialog_duration - seconds) / 60
         ui.show_modal_dialog(ui.xmldialogs.Skip,
                              "plugin-video-netflix-Skip.xml",
-                             common.ADDON.getAddonInfo('path'),
+                             g.ADDON.getAddonInfo('path'),
                              minutes=minutes,
                              seconds=seconds,
                              skip_to=self.markers[section]['end'],

@@ -8,6 +8,7 @@ from functools import wraps
 import json
 import requests
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.website as website
 import resources.lib.services.cookies as cookies
@@ -65,18 +66,23 @@ class NetflixSession(object):
     """The session data extracted from the Netflix webpage.
     Contains profiles, user_data, esn and api_data"""
 
-    verify_ssl = bool(common.ADDON.getSettingBool('ssl_verification'))
+    verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
     """Use SSL verification when performing requests"""
 
     def __init__(self):
-        self._register_slots()
+        self.slots = [
+            self.login,
+            self.logout,
+            self.list_profiles,
+            self.activate_profile,
+            self.path_request,
+            self.get,
+            self.post
+        ]
+        for slot in self.slots:
+            common.register_slot(slot)
         self._init_session()
         self._prefetch_login()
-
-    def __del__(self):
-        """Unregister AddonSignals slots"""
-        for slot in self.slots:
-            common.unregister_slot(slot)
 
     @property
     def credentials(self):
@@ -102,19 +108,6 @@ class NetflixSession(object):
         except (AttributeError, KeyError) as exc:
             raise website.InvalidAuthURLError(exc)
 
-    def _register_slots(self):
-        self.slots = [
-            self.login,
-            self.logout,
-            self.list_profiles,
-            self.activate_profile,
-            self.path_request,
-            self.get,
-            self.post
-        ]
-        for slot in self.slots:
-            common.register_slot(slot)
-
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
@@ -138,37 +131,39 @@ class NetflixSession(object):
             if not self._is_logged_in():
                 self._login()
         except common.MissingCredentialsError:
-            common.info(
-                'Skipping login prefetch. No stored credentials are available')
+            common.info('Login prefetch: No stored credentials are available')
 
     def _is_logged_in(self):
         """Check if the user is logged in"""
-        # pylint: disable=broad-except
         if not self.session.cookies:
             common.debug('Active session has no cookies, trying to restore...')
-            try:
-                self.session.cookies = cookies.load(self.account_hash)
-            except cookies.MissingCookiesError:
-                common.info('No stored cookies available')
-                return False
-            except cookies.CookiesExpiredError:
-                pass
-            try:
-                # If we can get session data, cookies are still valid
-                self.session_data = website.extract_session_data(
-                    self._get('profiles'))
-                self._update_esn()
-            except Exception:
-                common.info('Stored cookies are expired')
-                return False
+            self._load_cookies()
+            if self._refresh_session_data():
+                _update_esn(self.session_data['esn'])
+                return True
+        return False
+
+    def _refresh_session_data(self):
+        """Refresh session_data from the Netflix website"""
+        # pylint: disable=broad-except
+        try:
+            # If we can get session data, cookies are still valid
+            self.session_data = website.extract_session_data(
+                self._get('profiles'))
+        except Exception:
+            common.info('Failed to refresh session data, login expired')
+            return False
         return True
 
-    def _update_esn(self):
-        """Return True if the esn has changed on Session initialization"""
-        if common.set_esn(self.session_data['esn']):
-            common.send_signal(
-                signal=common.Signals.ESN_CHANGED,
-                data=self.session_data['esn'])
+    def _load_cookies(self):
+        """Load stored cookies from disk"""
+        try:
+            self.session.cookies = cookies.load(self.account_hash)
+        except cookies.MissingCookiesError:
+            common.info('No stored cookies available')
+        except cookies.CookiesExpiredError:
+            # Ignore this for now, because login is sometimes valid anyway
+            pass
 
     @common.addonsignals_return_call
     def login(self):
@@ -195,7 +190,7 @@ class NetflixSession(object):
         ui.show_notification('Netflix', 'Login successful')
         self.session_data = session_data
         cookies.save(self.account_hash, self.session.cookies)
-        self._update_esn()
+        _update_esn(self.session_data['esn'])
 
     @common.addonsignals_return_call
     def logout(self):
@@ -236,7 +231,7 @@ class NetflixSession(object):
         common.debug('Executing path request: {}'.format(paths))
         headers = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json, text/javascript, */*',}
+            'Accept': 'application/json, text/javascript, */*'}
         params = {
             'model': self.session_data['user_data']['gpsModel']}
         data = json.dumps({
@@ -282,6 +277,7 @@ class NetflixSession(object):
         common.debug(
             'Executing {verb} request to {url}'.format(
                 verb='GET' if method == self.session.get else 'POST', url=url))
+        start = time()
 
         data = kwargs.get('data', {})
         if component in ['set_video_rating', 'update_my_list']:
@@ -294,6 +290,7 @@ class NetflixSession(object):
             headers=kwargs.get('headers'),
             params=kwargs.get('params'),
             data=data)
+        common.debug('Request took {}s'.format(time() - start))
         common.debug(
             'Request returned statuscode {}'.format(response.status_code))
         response.raise_for_status()
@@ -328,3 +325,9 @@ def _api_url(component, api_data):
         baseurl=api_data['API_BASE_URL'],
         buildid=api_data['BUILD_IDENTIFIER'],
         componenturl=URLS[component]['endpoint'])
+
+
+def _update_esn(esn):
+    """Return True if the esn has changed on Session initialization"""
+    if g.set_esn(esn):
+        common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn)

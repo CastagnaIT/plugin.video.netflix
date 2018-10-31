@@ -2,7 +2,7 @@
 """Handling of account credentials"""
 from __future__ import unicode_literals
 
-from .globals import ADDON
+from resources.lib.globals import g
 
 
 class MissingCredentialsError(Exception):
@@ -81,8 +81,8 @@ def get_credentials():
     Retrieve stored account credentials.
     :return: The stored account credentials or an empty dict if none exist.
     """
-    email = ADDON.getSetting('email')
-    password = ADDON.getSetting('password')
+    email = g.ADDON.getSetting('email')
+    password = g.ADDON.getSetting('password')
     verify_credentials(email, password)
     try:
         return {
@@ -100,8 +100,8 @@ def set_credentials(email, password):
     Does nothing if either email or password are not supplied.
     """
     if email and password:
-        ADDON.setSetting('email', encrypt_credential(email))
-        ADDON.setSetting('password', encrypt_credential(password))
+        g.ADDON.setSetting('email', encrypt_credential(email))
+        g.ADDON.setSetting('password', encrypt_credential(password))
 
 
 def verify_credentials(email, password):

@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 
 import xbmc
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
@@ -97,7 +98,7 @@ class StreamContinuityManager(PlaybackActionManager):
         ui.show_modal_dialog(
             ui.xmldialogs.SaveStreamSettings,
             "plugin-video-netflix-SaveStreamSettings.xml",
-            common.ADDON.getAddonInfo('path'),
+            g.ADDON.getAddonInfo('path'),
             minutes=0,
             seconds=5,
             new_show_settings=new_show_settings,

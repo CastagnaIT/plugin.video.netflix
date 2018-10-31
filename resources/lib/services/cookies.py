@@ -9,6 +9,7 @@ try:
 except ImportError:
     import pickle
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 COOKIES = {}
@@ -83,4 +84,4 @@ def expired(cookie_jar):
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""
-    return '{}_{}'.format(common.COOKIE_PATH, account_hash)
+    return '{}_{}'.format(g.COOKIE_PATH, account_hash)

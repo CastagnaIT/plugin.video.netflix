@@ -6,53 +6,36 @@ from functools import wraps
 
 import xbmc
 
-from .globals import ADDON_ID
+from resources.lib.globals import g
 
 
-def log(msg, level=xbmc.LOGDEBUG):
-    """Log a message to the Kodi logfile"""
+def log(msg, exc=None, level=xbmc.LOGDEBUG):
+    """Log a message to the Kodi logfile.
+    If msg contains a format placeholder for exc and exc is not none,
+    exc will be formatted into the message."""
+    msg = msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg
     xbmc.log(
-        '[{identifier}] {msg}'.format(identifier=ADDON_ID, msg=msg), level)
+        '[{identifier}] {msg}'.format(identifier=g.ADDON_ID, msg=msg), level)
 
 
 def debug(msg='{exc}', exc=None):
-    """
-    Log a debug message.
-    If msg contains a format placeholder for exc and exc is not none,
-    exc will be formatted into the message.
-    """
-    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
-        xbmc.LOGDEBUG)
+    """Log a debug message."""
+    log(msg, exc, xbmc.LOGDEBUG)
 
 
 def info(msg='{exc}', exc=None):
-    """
-    Log an info message.
-    If msg contains a format placeholder for exc and exc is not none,
-    exc will be formatted into the message.
-    """
-    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
-        xbmc.LOGINFO)
+    """Log an info message."""
+    log(msg, exc, xbmc.LOGINFO)
 
 
 def warn(msg='{exc}', exc=None):
-    """
-    Log a warning message.
-    If msg contains a format placeholder for exc and exc is not none,
-    exc will be formatted into the message.
-    """
-    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
-        xbmc.LOGWARNING)
+    """Log a warning message."""
+    log(msg, exc, xbmc.LOGWARNING)
 
 
 def error(msg='{exc}', exc=None):
-    """
-    Log an error message.
-    If msg contains a format placeholder for exc and exc is not none,
-    exc will be formatted into the message.
-    """
-    log(msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg,
-        xbmc.LOGERROR)
+    """Log an error message."""
+    log(msg, exc, xbmc.LOGERROR)
 
 
 def logdetails(func):

@@ -159,20 +159,18 @@ def reference_path(ref):
     To get to the value, we simply remove the additional layer of nesting by
     doing ref = ref['reference'] and continue with analyzing ref.
     """
-    if isinstance(ref, dict) and 'reference' in ref:
-        # Nested reference, remove nesting to get to real reference
-        ref = ref['reference']
+    ref = _remove_nesting(ref)
     if isinstance(ref, list):
-        # List-based reference (never empty, so return right away)
         return ref
-    if isinstance(ref, dict):
-        # Dict-based reference
-        reftype = ref.get('$type')
-        if reftype in ['sentinel', 'atom']:
-            # Empty reference
-            return None
-        elif reftype == 'ref':
-            # Valid reference with value
-            return ref['value']
+    elif isinstance(ref, dict):
+        return ref['value'] if ref.get('$type') == 'ref' else None
     raise InvalidReferenceError(
         'Unexpected reference format encountered: {}'.format(ref))
+
+
+def _remove_nesting(ref):
+    """Remove the outer layer of nesting if ref is a nested reference.
+    Return the original reference if it's not nested"""
+    return (ref['reference']
+            if isinstance(ref, dict) and 'reference' in ref
+            else ref)

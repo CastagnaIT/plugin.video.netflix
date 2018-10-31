@@ -14,6 +14,7 @@ except ImportError:
 import xbmc
 import xbmcgui
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 WND = xbmcgui.Window(10000)
@@ -41,7 +42,7 @@ def _init_disk_cache():
             # dont want users accidentally deleting it.
             continue
         try:
-            os.makedirs(os.path.join(common.DATA_PATH, 'cache', bucket))
+            os.makedirs(os.path.join(g.DATA_PATH, 'cache', bucket))
         except OSError:
             pass
 
@@ -204,7 +205,7 @@ def get_from_disk(bucket, identifier):
     try:
         with open(cache_filename, 'r') as cache_file:
             cache_entry = pickle.load(cache_file)
-    except:
+    except Exception:
         raise CacheMiss()
     add(bucket, identifier, cache_entry['content'])
     return cache_entry
@@ -212,7 +213,7 @@ def get_from_disk(bucket, identifier):
 
 def add(bucket, identifier, content, ttl=None, to_disk=False):
     """Add an item to a cache bucket"""
-    eol = int(time() + (ttl if ttl else common.CACHE_TTL))
+    eol = int(time() + (ttl if ttl else g.CACHE_TTL))
     common.debug('Adding {} to {} (valid until {})'
                  .format(identifier, bucket, eol))
     cache_entry = {'eol': eol, 'content': content}
@@ -252,7 +253,7 @@ def _entry_filename(bucket, identifier):
     else:
         file_loc = [
             'cache', bucket, '{filename}.cache'.format(filename=identifier)]
-    return os.path.join(common.DATA_PATH, *file_loc)
+    return os.path.join(g.DATA_PATH, *file_loc)
 
 
 def _window_property(bucket):
@@ -260,35 +261,39 @@ def _window_property(bucket):
 
 
 def _load_bucket(bucket):
-    # pylint: disable=broad-except
     wnd_property = ''
     for _ in range(1, 10):
         wnd_property = WND.getProperty(_window_property(bucket))
-        # pickle stored byte data, so we must compare against a str
+        # pickle stores byte data, so we must compare against a str
         if wnd_property.startswith(str('LOCKED')):
             common.debug('Waiting for release of {}'.format(bucket))
             xbmc.sleep(50)
         else:
-            try:
-                bucket_instance = pickle.loads(wnd_property)
-            except Exception:
-                common.debug('No instance of {} found. Creating new instance.'
-                             .format(bucket))
-                bucket_instance = {}
-            WND.setProperty(_window_property(bucket),
-                            str(BUCKET_LOCKED.format(common.PLUGIN_HANDLE)))
-            common.debug('Acquired lock on {}'.format(bucket))
-            return bucket_instance
+            return _load_bucket_from_wndprop(bucket, wnd_property)
     common.warn('{} is locked. Working with an empty instance...'
                 .format(bucket))
     return {}
+
+
+def _load_bucket_from_wndprop(bucket, wnd_property):
+    # pylint: disable=broad-except
+    try:
+        bucket_instance = pickle.loads(wnd_property)
+    except Exception:
+        common.debug('No instance of {} found. Creating new instance.'
+                     .format(bucket))
+        bucket_instance = {}
+    WND.setProperty(_window_property(bucket),
+                    str(BUCKET_LOCKED.format(g.PLUGIN_HANDLE)))
+    common.debug('Acquired lock on {}'.format(bucket))
+    return bucket_instance
 
 
 def _persist_bucket(bucket, contents):
     # pylint: disable=broad-except
     lock = WND.getProperty(_window_property(bucket))
     # pickle stored byte data, so we must compare against a str
-    if lock == str(BUCKET_LOCKED.format(common.PLUGIN_HANDLE)):
+    if lock == str(BUCKET_LOCKED.format(g.PLUGIN_HANDLE)):
         try:
             WND.setProperty(_window_property(bucket), pickle.dumps(contents))
         except Exception as exc:

@@ -8,6 +8,7 @@ import json
 import xbmc
 import AddonSignals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 from .action_manager import PlaybackActionManager
@@ -29,7 +30,7 @@ class PlaybackController(xbmc.Monitor):
         self.action_managers = None
 
         AddonSignals.registerSlot(
-            common.ADDON.getAddonInfo('id'), common.Signals.PLAYBACK_INITIATED,
+            g.ADDON.getAddonInfo('id'), common.Signals.PLAYBACK_INITIATED,
             self.initialize_playback)
 
     def initialize_playback(self, data):
@@ -51,17 +52,17 @@ class PlaybackController(xbmc.Monitor):
         Callback for Kodi notifications that handles and dispatches playback
         started and playback stopped events.
         """
-        if self.tracking:
-            try:
-                if method == 'Player.OnAVStart':
-                    self._on_playback_started(
-                        json.loads(unicode(data, 'utf-8', errors='ignore')))
-                elif method == 'Player.OnStop':
-                    self._on_playback_stopped()
-            except Exception as exc:
-                common.error(exc)
-                import traceback
-                traceback.format_exc()
+        if not self.tracking:
+            return
+        try:
+            if method == 'Player.OnAVStart':
+                self._on_playback_started(
+                    json.loads(unicode(data, 'utf-8', errors='ignore')))
+            elif method == 'Player.OnStop':
+                self._on_playback_stopped()
+        except Exception as exc:
+            import traceback
+            common.error(traceback.format_exc())
 
     def on_playback_tick(self):
         """

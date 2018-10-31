@@ -2,6 +2,7 @@
 """Helper functions for setting infolabels of list items"""
 from __future__ import unicode_literals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
 import resources.lib.api.paths as paths
@@ -21,7 +22,7 @@ def add_info(videoid, list_item, item, raw_data):
         cache.add(cache.CACHE_INFOLABELS,
                   videoid,
                   {'infos': infos, 'quality_infos': quality_infos},
-                  ttl=common.CACHE_METADATA_TTL, to_disk=True)
+                  ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
     if infos['mediatype'] in ['episode', 'movie']:
         list_item.setProperty('IsPlayable', 'true')
@@ -37,7 +38,7 @@ def add_art(videoid, list_item, item, raw_data=None):
     except cache.CacheMiss:
         art = parse_art(videoid, item, raw_data)
         cache.add(cache.CACHE_ARTINFO, videoid, art,
-                  ttl=common.CACHE_METADATA_TTL, to_disk=True)
+                  ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setArt(art)
     return art
 
@@ -127,7 +128,7 @@ def get_quality_infos(item):
             'channels': 2 + 4*delivery.get('has51Audio', False)}
         quality_infos['audio']['codec'] = (
             'eac3'
-            if common.ADDON.getSettingBool('enable_dolby_sound')
+            if g.ADDON.getSettingBool('enable_dolby_sound')
             else 'aac')
     return quality_infos
 
@@ -193,6 +194,7 @@ def add_info_from_netflix(videoid, list_item):
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
     details = library.get_item(videoid, include_props=True)
+    common.debug('Got fileinfo from library: {}'.format(details))
     art = details.pop('art', {})
     infos = {
         'DBID': details.pop('id'),

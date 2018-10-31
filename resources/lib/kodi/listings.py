@@ -8,11 +8,11 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.api.shakti as api
-import resources.lib.kodi.library as library
 
 from .infolabels import add_info, add_art
+from .context_menu import generate_context_menu_items
 
 VIEW_FOLDER = 'folder'
 VIEW_MOVIE = 'movie'
@@ -29,8 +29,6 @@ CONTENT_MOVIE = 'movies'
 CONTENT_SHOW = 'tvshows'
 CONTENT_SEASON = 'seasons'
 CONTENT_EPISODE = 'episodes'
-
-RUN_PLUGIN = 'XBMC.RunPlugin({})'
 
 ADDITIONAL_MAIN_MENU_ITEMS = [
     {'path': ['genres', '83'],
@@ -50,35 +48,6 @@ ADDITIONAL_MAIN_MENU_ITEMS = [
      'icon': 'DefaultHardDisk.png',
      'description': common.get_local_string(30091)},
 ]
-
-def ctx_item_url(paths, mode=common.MODE_ACTION):
-    """Return a function that builds an URL from a videoid
-    for the predefined path"""
-    def ctx_url_builder(videoid):
-        """Build a context menu item URL"""
-        return common.build_url(paths, videoid, mode=mode)
-    return ctx_url_builder
-
-CONTEXT_MENU_ACTIONS = {
-    'export': {
-        'label': common.get_local_string(30018),
-        'url': ctx_item_url(['export'], common.MODE_LIBRARY)},
-    'remove': {
-        'label': common.get_local_string(30030),
-        'url': ctx_item_url(['remove'], common.MODE_LIBRARY)},
-    'update': {
-        'label': common.get_local_string(30061),
-        'url': ctx_item_url(['update'], common.MODE_LIBRARY)},
-    'rate': {
-        'label': common.get_local_string(30019),
-        'url': ctx_item_url(['rate'])},
-    'add_to_list': {
-        'label': common.get_local_string(30021),
-        'url': ctx_item_url(['my_list', 'add'])},
-    'remove_from_list': {
-        'label': common.get_local_string(30020),
-        'url': ctx_item_url(['my_list', 'remove'])},
-}
 
 
 def custom_viewmode(viewtype):
@@ -101,10 +70,10 @@ def custom_viewmode(viewtype):
 def _activate_view(view):
     """Activate the given view if the plugin is run in the foreground
     and custom views are enabled"""
-    if (('plugin://{}'.format(common.ADDON_ID) in
+    if (('plugin://{}'.format(g.ADDON_ID) in
          xbmc.getInfoLabel('Container.FolderPath')) and
-            common.ADDON.getSettingBool('customview')):
-        view_id = common.ADDON.getSettingInt('viewmode' + view)
+            g.ADDON.getSettingBool('customview')):
+        view_id = g.ADDON.getSettingInt('viewmode' + view)
         if view_id != -1:
             xbmc.executebuiltin(
                 'Container.SetViewMode({})'.format(view_id))
@@ -134,13 +103,13 @@ def _create_profile_item(profile_guid, profile, html_parser):
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
         params={'autologin_user': enc_profile_name},
-        mode=common.MODE_ACTION)
+        mode=g.MODE_ACTION)
     list_item.addContextMenuItems(
         [(common.get_local_string(30053),
           'RunPlugin({})'.format(autologin_url))])
     url = common.build_url(pathitems=['home'],
                            params={'profile_id': profile_guid},
-                           mode=common.MODE_DIRECTORY)
+                           mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
 
@@ -152,10 +121,10 @@ def build_main_menu_listing(lolomo):
     directory_items = [_create_videolist_item(list_id, user_list,
                                               static_lists=True)
                        for list_id, user_list
-                       in lolomo.lists_by_context(common.KNOWN_LIST_TYPES)]
-    for context_type, data in common.MISC_CONTEXTS.iteritems():
+                       in lolomo.lists_by_context(g.KNOWN_LIST_TYPES)]
+    for context_type, data in g.MISC_CONTEXTS.iteritems():
         directory_items.append(
-            (common.build_url([context_type], mode=common.MODE_DIRECTORY),
+            (common.build_url([context_type], mode=g.MODE_DIRECTORY),
              list_item_skeleton(common.get_local_string(data['label_id']),
                                 icon=data['icon'],
                                 description=common.get_local_string(
@@ -163,7 +132,7 @@ def build_main_menu_listing(lolomo):
              True))
     for menu_item in ADDITIONAL_MAIN_MENU_ITEMS:
         directory_items.append(
-            (common.build_url(menu_item['path'], mode=common.MODE_DIRECTORY),
+            (common.build_url(menu_item['path'], mode=g.MODE_DIRECTORY),
              list_item_skeleton(menu_item['label'],
                                 icon=menu_item['icon'],
                                 description=menu_item['description']),
@@ -190,13 +159,13 @@ def build_lolomo_listing(lolomo, contexts=None):
 def _create_videolist_item(video_list_id, video_list, static_lists=False):
     """Create a tuple that can be added to a Kodi directory that represents
     a videolist as listed in a LoLoMo"""
-    if static_lists and video_list['context'] in common.KNOWN_LIST_TYPES:
+    if static_lists and video_list['context'] in g.KNOWN_LIST_TYPES:
         video_list_id = video_list['context']
     list_item = list_item_skeleton(video_list['displayName'])
     add_info(video_list.id, list_item, video_list, video_list.data)
     add_art(video_list.id, list_item, video_list.artitem)
     url = common.build_url(['video_list', video_list_id],
-                           mode=common.MODE_DIRECTORY)
+                           mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
 
@@ -209,7 +178,7 @@ def build_video_listing(video_list):
     if video_list.get('genreId'):
         directory_items.append(
             (common.build_url(['genres', unicode(video_list['genreId'])],
-                              mode=common.MODE_DIRECTORY),
+                              mode=g.MODE_DIRECTORY),
              list_item_skeleton(common.get_local_string(30088),
                                 icon='DefaultAddSource.png',
                                 description=common.get_local_string(30090)),
@@ -217,7 +186,7 @@ def build_video_listing(video_list):
         # TODO: Implement browsing of subgenres
         # directory_items.append(
         #     (common.build_url(pathitems=['genres', genre_id, 'subgenres'],
-        #                       mode=common.MODE_DIRECTORY),
+        #                       mode=g.MODE_DIRECTORY),
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
     finalize_directory(directory_items, CONTENT_SHOW,
@@ -234,11 +203,10 @@ def _create_video_item(videoid_value, video, video_list):
     add_info(videoid, list_item, video, video_list.data)
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
-                           mode=(common.MODE_PLAY
+                           mode=(g.MODE_PLAY
                                  if is_movie
-                                 else common.MODE_DIRECTORY))
-    list_item.addContextMenuItems(
-        _generate_context_menu_items(videoid))
+                                 else g.MODE_DIRECTORY))
+    list_item.addContextMenuItems(generate_context_menu_items(videoid))
     return (url, list_item, not is_movie)
 
 
@@ -261,9 +229,8 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list):
     list_item = list_item_skeleton(season['summary']['name'])
     add_info(seasonid, list_item, season, season_list.data)
     add_art(tvshowid, list_item, season_list.tvshow)
-    list_item.addContextMenuItems(
-        _generate_context_menu_items(seasonid))
-    url = common.build_url(videoid=seasonid, mode=common.MODE_DIRECTORY)
+    list_item.addContextMenuItems(generate_context_menu_items(seasonid))
+    url = common.build_url(videoid=seasonid, mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
 
@@ -287,9 +254,8 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     list_item = list_item_skeleton(episode['title'])
     add_info(episodeid, list_item, episode, episode_list.data)
     add_art(episodeid, list_item, episode)
-    list_item.addContextMenuItems(
-        _generate_context_menu_items(episodeid))
-    url = common.build_url(videoid=episodeid, mode=common.MODE_PLAY)
+    list_item.addContextMenuItems(generate_context_menu_items(episodeid))
+    url = common.build_url(videoid=episodeid, mode=g.MODE_PLAY)
     return (url, list_item, False)
 
 
@@ -311,32 +277,9 @@ def finalize_directory(items, content_type=CONTENT_FOLDER, refresh=False,
                        title=None):
     """Finalize a directory listing.
     Add items, set available sort methods and content type"""
+    common.debug('Finalizing directory: {}'.format(items))
     if title:
-        xbmcplugin.setPluginCategory(common.PLUGIN_HANDLE, title)
-    xbmcplugin.addDirectoryItems(common.PLUGIN_HANDLE, items)
-    xbmcplugin.setContent(common.PLUGIN_HANDLE, content_type)
-    xbmcplugin.endOfDirectory(common.PLUGIN_HANDLE, updateListing=refresh)
-
-
-def _generate_context_menu_items(videoid):
-    library_actions = (['remove', 'update']
-                       if library.is_in_library(videoid)
-                       else ['export'])
-    items = [_ctx_item(action, videoid) for action in library_actions]
-
-    if videoid.mediatype != common.VideoId.SEASON:
-        items.append(_ctx_item('rate', videoid))
-
-    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
-        list_action = ('remove_from_list'
-                       if videoid.value in api.mylist_items()
-                       else 'add_to_list')
-        items.append(_ctx_item(list_action, videoid))
-
-    return items
-
-
-def _ctx_item(template, videoid):
-    """Create a context menu item based on the given template and videoid"""
-    return (CONTEXT_MENU_ACTIONS[template]['label'],
-            RUN_PLUGIN.format(CONTEXT_MENU_ACTIONS[template]['url'](videoid)))
+        xbmcplugin.setPluginCategory(g.PLUGIN_HANDLE, title)
+    xbmcplugin.addDirectoryItems(g.PLUGIN_HANDLE, items)
+    xbmcplugin.setContent(g.PLUGIN_HANDLE, content_type)
+    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, updateListing=refresh)

@@ -2,6 +2,7 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
 
@@ -172,20 +173,9 @@ def rate(videoid, rating):
              'rating': rating}})
 
 
-def add_to_list(videoid):
-    """Add a video to my list"""
-    common.debug('Adding {} to my list'.format(videoid))
-    _update_my_list(videoid.value, 'add')
-
-
-def remove_from_list(videoid):
-    """Remove a video from my list"""
-    common.debug('Removing {} from my list'.format(videoid))
-    _update_my_list(videoid.value, 'remove')
-
-
-def _update_my_list(video_id, operation):
+def update_my_list(videoid, operation):
     """Call API to update my list with either add or remove action"""
+    common.debug('My List: {} {}'.format(operation, videoid))
     common.make_call(
         'post',
         {'component': 'update_my_list',
@@ -194,7 +184,7 @@ def _update_my_list(video_id, operation):
              'Accept': 'application/json, text/javascript, */*'},
          'data': {
              'operation': operation,
-             'videoId': int(video_id)}})
+             'videoId': int(videoid.value)}})
     cache.invalidate_entry(cache.CACHE_COMMON,
                            list_id_for_type('queue'))
     cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
@@ -208,22 +198,24 @@ def metadata(videoid):
         return _metadata(videoid.value)
 
     try:
-        return common.find_episode(
-            videoid.episodeid, _metadata(videoid.tvshowid)['seasons'])
+        season = common.find(videoid.seasonid,
+                             _metadata(videoid.tvshowid)['seasons'])
+        return common.find(videoid.episodeid, season['episodes'])
     except KeyError:
         # Episode metadata may not exist if its a new episode and cached
         # data is outdated. In this case, invalidate the cache entry and
         # try again safely (if it doesn't exist this time, there is no
         # metadata for the episode, so we assign an empty dict).
         cache.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
-        return common.find_episode(
-            videoid.episodeid,
-            _metadata(videoid.tvshowid).get('seasons', []),
-            raise_exc=False)
+        season = common.find(videoid.seasonid,
+                             _metadata(videoid.tvshowid)['seasons'],
+                             raise_exc=False)
+        return common.find(videoid.episodeid, season.get('episodes', {}),
+                           raise_exc=False)
 
 
 @cache.cache_output(cache.CACHE_METADATA, 0, 'video_id',
-                    ttl=common.CACHE_METADATA_TTL, to_disk=True)
+                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
 def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added
