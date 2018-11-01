@@ -59,9 +59,11 @@ class MSL(object):
         """
         self.crypto = MSLHandler()
 
-        if common.file_exists(g.DATA_PATH, 'msl_data.json'):
+        if common.file_exists('msl_data.json'):
+            common.error('MSL data exists')
             self.init_msl_data()
         else:
+            common.error('MSL data does not exist')
             self.crypto.fromDict(None)
             self.__perform_key_handshake()
 
@@ -201,7 +203,7 @@ class MSL(object):
             manifest_request_data['profiles'].append('ddplus-5.1-dash')
 
         request_data = self.__generate_msl_request_data(manifest_request_data)
-
+        common.debug(request_data)
         try:
             resp = self.session.post(self.endpoints['manifest'], request_data)
         except:
@@ -507,8 +509,10 @@ class MSL(object):
 
     def __generate_msl_request_data(self, data):
         #self.__load_msl_data()
+        mslheader = self.__generate_msl_header()
+        common.debug('Plaintext headerdata: {}'.format(mslheader))
         header_encryption_envelope = self.__encrypt(
-            plaintext=self.__generate_msl_header())
+            plaintext=mslheader)
         headerdata = base64.standard_b64encode(header_encryption_envelope)
         header = {
             'headerdata': headerdata,
@@ -523,7 +527,7 @@ class MSL(object):
         serialized_data += ',"payload":{"data":"'
         serialized_data += marshalled_data
         serialized_data += '"},"query":""}]\n'
-
+        common.debug('Serialized data: {}'.format(serialized_data))
         compressed_data = self.__compress_data(serialized_data)
 
         # Create FIRST Payload Chunks
@@ -534,6 +538,7 @@ class MSL(object):
             'sequencenumber': 1,
             'endofmsg': True
         }
+        common.debug('Plaintext Payload: {}'.format(first_payload))
         first_payload_encryption_envelope = self.__encrypt(
             plaintext=json.dumps(first_payload))
         payload = base64.standard_b64encode(first_payload_encryption_envelope)
