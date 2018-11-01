@@ -23,6 +23,8 @@ import xml.etree.ElementTree as ET
 from resources.lib.globals import g
 import resources.lib.common as common
 
+from .profiles import enabled_profiles
+
 #check if we are on Android
 import subprocess
 try:
@@ -32,11 +34,11 @@ except:
     sdkversion = 0 
 
 if sdkversion >= 18:
-  from MSLMediaDrm import MSLMediaDrmCrypto as MSLHandler
+  from MSLMediaDrm import MSLMediaDrmCrypto as MSLCrypto
 else:
-  from MSLCrypto import MSLCrypto as MSLHandler
+  from MSLCrypto import MSLCrypto as MSLCrypto
 
-class MSL(object):
+class MSLHandler(object):
     # Is a handshake already performed and the keys loaded
     handshake_performed = False
     last_drm_context = ''
@@ -57,7 +59,7 @@ class MSL(object):
         The Constructor checks for already existing crypto Keys.
         If they exist it will load the existing keys
         """
-        self.crypto = MSLHandler()
+        self.crypto = MSLCrypto()
 
         if common.file_exists('msl_data.json'):
             common.error('MSL data exists')
@@ -71,7 +73,7 @@ class MSL(object):
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
 
-    def load_manifest(self, viewable_id, dolby, hevc, hdr, dolbyvision, vp9):
+    def load_manifest(self, viewable_id):
         """
         Loads the manifets for the given viewable_id and
         returns a mpd-XML-Manifest
@@ -83,25 +85,7 @@ class MSL(object):
             'method': 'manifest',
             'lookupType': 'PREPARE',
             'viewableIds': [viewable_id],
-            'profiles': [
-                # Video
-                'playready-h264bpl30-dash',
-                'playready-h264mpl30-dash',
-                'playready-h264mpl31-dash',
-                'playready-h264mpl40-dash',
-
-                # Audio
-                'heaac-2-dash',
-
-                # Subtiltes (handled separately)
-                # 'dfxp-ls-sdh',
-                # 'simplesdh',
-                # 'nflx-cmisc',
-
-                # Unkown
-                'BIF240',
-                'BIF320'
-            ],
+            'profiles': enabled_profiles(),
             'drmSystem': 'widevine',
             'appId': '14673889385265',
             'sessionParams': {
@@ -118,90 +102,6 @@ class MSL(object):
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
-
-        # subtitles
-        addon = xbmcaddon.Addon('inputstream.adaptive')
-        if addon and addon.getAddonInfo('version') >= '2.3.8':
-            manifest_request_data['profiles'].append('webvtt-lssdh-ios8')
-        else:
-            manifest_request_data['profiles'].append('simplesdh')
-
-        # add hevc profiles if setting is set
-        if hevc is True:
-            main = 'hevc-main-'
-            main10 = 'hevc-main10-'
-            prk = 'dash-cenc-prk'
-            cenc = 'dash-cenc'
-            ctl = 'dash-cenc-ctl'
-            manifest_request_data['profiles'].append(main10 + 'L41-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L50-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L51-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L30-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L31-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L40-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L41-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L50-' + cenc)
-            manifest_request_data['profiles'].append(main + 'L51-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L30-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L31-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L40-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L41-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L50-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L51-' + cenc)
-            manifest_request_data['profiles'].append(main10 + 'L30-' + prk)
-            manifest_request_data['profiles'].append(main10 + 'L31-' + prk)
-            manifest_request_data['profiles'].append(main10 + 'L40-' + prk)
-            manifest_request_data['profiles'].append(main10 + 'L41-' + prk)
-            manifest_request_data['profiles'].append(main + 'L30-L31-' + ctl)
-            manifest_request_data['profiles'].append(main + 'L31-L40-' + ctl)
-            manifest_request_data['profiles'].append(main + 'L40-L41-' + ctl)
-            manifest_request_data['profiles'].append(main + 'L50-L51-' + ctl)
-            manifest_request_data['profiles'].append(main10 + 'L30-L31-' + ctl)
-            manifest_request_data['profiles'].append(main10 + 'L31-L40-' + ctl)
-            manifest_request_data['profiles'].append(main10 + 'L40-L41-' + ctl)
-            manifest_request_data['profiles'].append(main10 + 'L50-L51-' + ctl)
-
-            if hdr is True:
-                hdr = 'hevc-hdr-main10-'
-                manifest_request_data['profiles'].append(hdr + 'L30-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L31-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L40-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L41-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L50-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L51-' + cenc)
-                manifest_request_data['profiles'].append(hdr + 'L30-' + prk)
-                manifest_request_data['profiles'].append(hdr + 'L31-' + prk)
-                manifest_request_data['profiles'].append(hdr + 'L40-' + prk)
-                manifest_request_data['profiles'].append(hdr + 'L41-' + prk)
-                manifest_request_data['profiles'].append(hdr + 'L50-' + prk)
-                manifest_request_data['profiles'].append(hdr + 'L51-' + prk)
-
-
-            if dolbyvision is True:
-                dv = 'hevc-dv-main10-'
-                dv5 = 'hevc-dv5-main10-'
-                manifest_request_data['profiles'].append(dv + 'L30-' + cenc)
-                manifest_request_data['profiles'].append(dv + 'L31-' + cenc)
-                manifest_request_data['profiles'].append(dv + 'L40-' + cenc)
-                manifest_request_data['profiles'].append(dv + 'L41-' + cenc)
-                manifest_request_data['profiles'].append(dv + 'L50-' + cenc)
-                manifest_request_data['profiles'].append(dv + 'L51-' + cenc)
-                manifest_request_data['profiles'].append(dv5 + 'L30-' + prk)
-                manifest_request_data['profiles'].append(dv5 + 'L31-' + prk)
-                manifest_request_data['profiles'].append(dv5 + 'L40-' + prk)
-                manifest_request_data['profiles'].append(dv5 + 'L41-' + prk)
-                manifest_request_data['profiles'].append(dv5 + 'L50-' + prk)
-                manifest_request_data['profiles'].append(dv5 + 'L51-' + prk)
-
-        if hevc is False or vp9 is True:
-                manifest_request_data['profiles'].append('vp9-profile0-L30-dash-cenc')
-                manifest_request_data['profiles'].append('vp9-profile0-L31-dash-cenc')
-
-        # Check if dolby sound is enabled and add to profles
-        if dolby:
-            manifest_request_data['profiles'].append('ddplus-2.0-dash')
-            manifest_request_data['profiles'].append('ddplus-5.1-dash')
-
         request_data = self.__generate_msl_request_data(manifest_request_data)
         common.debug(request_data)
         try:
