@@ -18,9 +18,9 @@ except (OSError, subprocess.CalledProcessError):
     SDKVERSION = 0
 
 if SDKVERSION >= 18:
-    from .android_crypto import MSLMediaDrmCrypto as MSLCrypto
+    from .android_crypto import AndroidMSLCrypto as MSLCrypto
 else:
-    from .default_crypto import MSLCrypto as MSLCrypto
+    from .default_crypto import DefaultMSLCrypto as MSLCrypto
 
 
 class MSLRequestBuilder(object):
