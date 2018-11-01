@@ -407,3 +407,15 @@ msgstr ""
 msgctxt "#30097"
 msgid "Main Menu"
 msgstr ""
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Enable VP9 profiles"
+msgstr ""

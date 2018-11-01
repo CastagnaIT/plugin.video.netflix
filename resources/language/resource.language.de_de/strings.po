@@ -399,3 +399,15 @@ msgstr "Alle Filme"
 msgctxt "#30097"
 msgid "Main Menu"
 msgstr "Hauptmenü"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "Aktiviere HDR"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "Aktiviere DolbyVision"
+
+msgctxt "#30136"
+msgid "Enable VP9 profiles"
+msgstr "Aktiviere VP9 profile"
