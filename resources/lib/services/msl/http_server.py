@@ -14,7 +14,7 @@ from urlparse import urlparse, parse_qs
 from SocketServer import TCPServer
 import resources.lib.common as common
 
-from .MSL import MSLHandler
+from .msl_handler import MSLHandler
 from .exceptions import MSLError
 
 

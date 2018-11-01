@@ -6,6 +6,9 @@ from __future__ import unicode_literals
 import traceback
 from datetime import datetime
 from urllib import urlencode
+import gzip
+import base64
+from StringIO import StringIO
 
 import xbmc
 import xbmcgui
@@ -181,3 +184,10 @@ def _show_errors(notify_errors, errors):
                             '\n'.join(['{} ({})'.format(err['task_title'],
                                                         err['error'])
                                        for err in errors]))
+
+def compress_data(data):
+    """GZIP and b64 encode data"""
+    out = StringIO()
+    with gzip.GzipFile(fileobj=out, mode='w') as outh:
+        outh.write(data)
+    return base64.standard_b64encode(out.getvalue())
