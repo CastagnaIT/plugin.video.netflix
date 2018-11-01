@@ -37,7 +37,7 @@ except:
 if sdkversion >= 18:
   from MSLMediaDrm import MSLMediaDrmCrypto as MSLCrypto
 else:
-  from MSLCrypto import MSLCrypto as MSLCrypto
+    from .default_crypto import MSLCrypto as MSLCrypto
 
 class MSLHandler(object):
     # Is a handshake already performed and the keys loaded
@@ -55,21 +55,13 @@ class MSLHandler(object):
     }
 
     def __init__(self):
-
-        """
-        The Constructor checks for already existing crypto Keys.
-        If they exist it will load the existing keys
-        """
-        self.crypto = MSLCrypto()
-
-        if common.file_exists('msl_data.json'):
-            common.error('MSL data exists')
-            self.init_msl_data()
-        else:
-            common.error('MSL data does not exist')
-            self.crypto.fromDict(None)
-            self.__perform_key_handshake()
-
+        # pylint: disable=broad-except
+        try:
+            msl_data = json.loads(common.load_file('msl_data.json'))
+            self.crypto = MSLCrypto(msl_data)
+        except Exception:
+            self.crypto = MSLCrypto()
+            self.perform_key_handshake()
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
@@ -234,13 +226,12 @@ class MSLHandler(object):
         #self.__load_msl_data()
         mslheader = self.__generate_msl_header()
         common.debug('Plaintext headerdata: {}'.format(mslheader))
-        header_encryption_envelope = self.__encrypt(
-            plaintext=mslheader)
+        header_encryption_envelope = self.crypto.encrypt(mslheader)
         headerdata = base64.standard_b64encode(header_encryption_envelope)
         header = {
             'headerdata': headerdata,
-            'signature': self.__sign(header_encryption_envelope),
-            'mastertoken': self.mastertoken,
+            'signature': self.crypto.sign(header_encryption_envelope),
+            'mastertoken': self.crypto.mastertoken,
         }
 
         # Serialize the given Data
@@ -262,12 +253,11 @@ class MSLHandler(object):
             'endofmsg': True
         }
         common.debug('Plaintext Payload: {}'.format(first_payload))
-        first_payload_encryption_envelope = self.__encrypt(
-            plaintext=json.dumps(first_payload))
+        first_payload_encryption_envelope = self.crypto.encrypt(json.dumps(first_payload))
         payload = base64.standard_b64encode(first_payload_encryption_envelope)
         first_payload_chunk = {
             'payload': payload,
-            'signature': self.__sign(first_payload_encryption_envelope),
+            'signature': self.crypto.sign(first_payload_encryption_envelope),
         }
         request_data = json.dumps(header) + json.dumps(first_payload_chunk)
         return request_data
@@ -328,23 +318,7 @@ class MSLHandler(object):
 
         return json.dumps(header_data)
 
-    def __encrypt(self, plaintext):
-        return json.dumps(self.crypto.encrypt(plaintext, g.get_esn(), self.sequence_number))
-
-    def __sign(self, text):
-        """
-        Calculates the HMAC signature for the given
-        text with the current sign key and SHA256
-
-        :param text:
-        :return: Base64 encoded signature
-        """
-        return base64.standard_b64encode(self.crypto.sign(text))
-
     def perform_key_handshake(self):
-        self.__perform_key_handshake()
-
-    def __perform_key_handshake(self):
         esn = g.get_esn()
         common.log('perform_key_handshake: esn:' + esn)
 
@@ -390,61 +364,7 @@ class MSLHandler(object):
             base_head = base64.standard_b64decode(resp['headerdata'])
 
             headerdata=json.JSONDecoder().decode(base_head)
-            self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
             self.crypto.parse_key_response(headerdata)
-            self.__save_msl_data()
         else:
             common.log('Key Exchange failed')
             common.log(resp.text)
-
-    def init_msl_data(self):
-        common.log('MSL Data exists. Use old Tokens.')
-        self.__load_msl_data()
-        self.handshake_performed = True
-
-    def __load_msl_data(self):
-        raw_msl_data = common.load_file('msl_data.json')
-        msl_data = json.JSONDecoder().decode(raw_msl_data)
-        # Check expire date of the token
-        raw_token = msl_data['tokens']['mastertoken']['tokendata']
-        base_token = base64.standard_b64decode(raw_token)
-        master_token = json.JSONDecoder().decode(base_token)
-        exp = int(master_token['expiration'])
-        valid_until = datetime.utcfromtimestamp(exp)
-        present = datetime.now()
-        difference = valid_until - present
-        # If token expires in less then 10 hours or is expires renew it
-        common.log('Expiration time: Key:' + str(valid_until) + ', Now:' + str(present) + ', Diff:' + str(difference.total_seconds()))
-        difference = difference.total_seconds() / 60 / 60
-        if self.crypto.fromDict(msl_data) or difference < 10:
-            self.__perform_key_handshake()
-            return
-
-        self.__set_master_token(msl_data['tokens']['mastertoken'])
-
-    def save_msl_data(self):
-        self.__save_msl_data()
-
-    def __save_msl_data(self):
-        """
-        Saves the keys and tokens in json file
-        :return:
-        """
-        data = {
-            'tokens': {
-                'mastertoken': self.mastertoken
-            }
-        }
-        data.update(self.crypto.toDict())
-
-        serialized_data = json.JSONEncoder().encode(data)
-        common.save_file(
-            filename='msl_data.json',
-            content=serialized_data)
-
-    def __set_master_token(self, master_token):
-        self.mastertoken = master_token
-        raw_token = master_token['tokendata']
-        base_token = base64.standard_b64decode(raw_token)
-        decoded_token = json.JSONDecoder().decode(base_token)
-        self.sequence_number = decoded_token.get('sequencenumber')
