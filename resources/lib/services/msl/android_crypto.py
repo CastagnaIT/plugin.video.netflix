@@ -50,7 +50,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def key_request_data(self):
         """Return a key request dict"""
-        #No key update supported -> remove existing keys
+        # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
         key_request = self.crypto_session.GetKeyRequest(
             bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
@@ -93,11 +93,11 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             raise MSLError('Widevine CryptoSession encrypt failed!')
 
         return {
-            'version' : 1,
+            'version': 1,
             'ciphertext': base64.standard_b64encode(encrypted_data),
             'sha256': 'AA==',
             'keyid': base64.standard_b64encode(self.key_id),
-            #'cipherspec' : 'AES/CBC/PKCS5Padding',
+            # 'cipherspec' : 'AES/CBC/PKCS5Padding',
             'iv': base64.standard_b64encode(init_vector)
         }
 

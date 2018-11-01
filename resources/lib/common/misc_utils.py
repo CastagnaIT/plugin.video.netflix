@@ -185,6 +185,7 @@ def _show_errors(notify_errors, errors):
                                                         err['error'])
                                        for err in errors]))
 
+
 def compress_data(data):
     """GZIP and b64 encode data"""
     out = StringIO()
