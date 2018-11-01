@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-# Author: trummerjo
-# Module: MSLHttpRequestHandler
-# Created on: 26.01.2017
-# License: MIT https://goo.gl/5bMj3H
 """Crypto handler for non-Android platforms"""
 from __future__ import unicode_literals
 
@@ -36,7 +32,6 @@ class MSLCrypto(object):
             self.rsa_key = RSA.importKey(
                 base64.standard_b64decode(msl_data['rsa_key']))
             self._set_mastertoken(msl_data['tokens']['mastertoken'])
-            common.debug('Loaded crypto keys')
         except Exception:
             common.debug('Generating new RSA keys')
             self.rsa_key = RSA.generate(2048)
@@ -115,6 +110,7 @@ class MSLCrypto(object):
             self.mastertoken = mastertoken
             self.sequence_number = tokendata.get('sequencenumber', 0)
         else:
+            common.error('Mastertoken has expired')
             raise MastertokenExpired
 
 
