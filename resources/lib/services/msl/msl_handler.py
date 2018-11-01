@@ -100,10 +100,8 @@ class MSLHandler(object):
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
-        manifest = self._process_chunked_response(
-            self._post(
-                ENDPOINTS['chrome']['manifest'],
-                self.request_builder.msl_request(manifest_request_data)))
+        manifest = self._chunked_request(ENDPOINTS['chrome']['manifest'],
+                                         manifest_request_data)
         return self.__tranform_to_dash(manifest)
 
     def get_license(self, challenge, sid):
@@ -129,10 +127,8 @@ class MSLHandler(object):
             'xid': int((int(time.time()) + 0.1612) * 1000)
 
         }
-        response = self._process_chunked_response(
-            self._post(
-                ENDPOINTS['chrome']['license'],
-                self.request_builder.msl_request(license_request_data)))
+        response = self._chunked_request(ENDPOINTS['chrome']['license'],
+                                         license_request_data)
         if not response['success']:
             common.error('Error getting license: {}'
                          .format(json.dumps(response)))
@@ -145,6 +141,12 @@ class MSLHandler(object):
         self.last_playback_context = manifest['playbackContextId']
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
+
+    def _chunked_request(self, endpoint, request_data):
+        """Do a POST request and process the chunked response"""
+        return self._process_chunked_response(
+            self._post(endpoint,
+                       self.request_builder.msl_request(request_data)))
 
     def _post(self, endpoint, request_data):
         """Execute a post request"""
