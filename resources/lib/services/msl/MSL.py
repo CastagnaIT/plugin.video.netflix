@@ -25,6 +25,7 @@ import resources.lib.common as common
 
 from .profiles import enabled_profiles
 from .converter import convert_to_dash
+from .exceptions import MSLError, LicenseError
 
 #check if we are on Android
 import subprocess
@@ -39,27 +40,36 @@ if sdkversion >= 18:
 else:
     from .default_crypto import MSLCrypto as MSLCrypto
 
+CHROME_BASE_URL = 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/'
+ENDPOINTS = {
+    'chrome': {
+        'manifest': CHROME_BASE_URL + 'manifest',
+        'license': CHROME_BASE_URL + 'license'},
+    'edge': {
+        'manifest': None,
+        'license': None}
+}
+
+
 class MSLHandler(object):
     # Is a handshake already performed and the keys loaded
-    handshake_performed = False
     last_drm_context = ''
     last_playback_context = ''
     current_message_id = 0
     session = requests.session()
     rndm = random.SystemRandom()
     tokens = []
-    base_url = 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/'
-    endpoints = {
-        'manifest': base_url + 'manifest',
-        'license': base_url + 'license'
-    }
 
     def __init__(self):
         # pylint: disable=broad-except
         try:
             msl_data = json.loads(common.load_file('msl_data.json'))
             self.crypto = MSLCrypto(msl_data)
+            common.debug('Loaded MSL data from disk')
         except Exception:
+            import traceback
+            common.debug(traceback.format_exc())
+            common.debug('Stored MSL data expired or not available')
             self.crypto = MSLCrypto()
             self.perform_key_handshake()
         common.register_slot(
@@ -97,32 +107,9 @@ class MSLHandler(object):
         }
         request_data = self.__generate_msl_request_data(manifest_request_data)
         common.debug(request_data)
-        try:
-            resp = self.session.post(self.endpoints['manifest'], request_data)
-        except:
-            resp = None
-            exc = sys.exc_info()
-            msg = '[MSL][POST] Error {} {}'
-            common.log(msg.format(exc[0], exc[1]))
-
-        if resp:
-            try:
-                # if the json() does not fail we have an error because
-                # the manifest response is a chuncked json response
-                resp.json()
-                common.log(
-                    msg='Error getting Manifest: ' + resp.text)
-                return False
-            except ValueError:
-                # json() failed so parse the chunked response
-                #common.log(
-                #    msg='Got chunked Manifest Response: ' + resp.text)
-                resp = self.__parse_chunked_msl_response(resp.text)
-                #common.log(
-                #    msg='Parsed chunked Response: ' + json.dumps(resp))
-                data = self.__decrypt_payload_chunks(resp['payloads'])
-                return self.__tranform_to_dash(data)
-        return False
+        data = self._process_chunked_response(
+            self._post(ENDPOINTS['chrome']['manifest'], request_data))
+        return self.__tranform_to_dash(data)
 
     def get_license(self, challenge, sid):
         """
@@ -148,58 +135,12 @@ class MSLHandler(object):
 
         }
         request_data = self.__generate_msl_request_data(license_request_data)
-
-        try:
-            resp = self.session.post(self.endpoints['license'], request_data)
-        except:
-            resp = None
-            exc = sys.exc_info()
-            common.log(
-                msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
-
-        if resp:
-            try:
-                # If is valid json the request for the licnese failed
-                resp.json()
-                common.log('Error getting license: '+resp.text)
-                return False
-            except ValueError:
-                # json() failed so we have a chunked json response
-                resp = self.__parse_chunked_msl_response(resp.text)
-                data = self.__decrypt_payload_chunks(resp['payloads'])
-                if data['success'] is True:
-                    return data['result']['licenses'][0]['data']
-                else:
-                    common.log(
-                        msg='Error getting license: ' + json.dumps(data))
-                    return False
-        return False
-
-    def __decrypt_payload_chunks(self, payloadchunks):
-        decrypted_payload = ''
-        for chunk in payloadchunks:
-            payloadchunk = json.JSONDecoder().decode(chunk)
-            payload = payloadchunk.get('payload')
-            decoded_payload = base64.standard_b64decode(payload)
-            encryption_envelope = json.JSONDecoder().decode(decoded_payload)
-            # Decrypt the text
-            plaintext = self.crypto.decrypt(base64.standard_b64decode(encryption_envelope['iv']),
-              base64.standard_b64decode(encryption_envelope.get('ciphertext')))
-            # unpad the plaintext
-            plaintext = json.JSONDecoder().decode(plaintext)
-            data = plaintext.get('data')
-
-            # uncompress data if compressed
-            if plaintext.get('compressionalgo') == 'GZIP':
-                decoded_data = base64.standard_b64decode(data)
-                data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
-            else:
-                data = base64.standard_b64decode(data)
-            decrypted_payload += data
-
-        decrypted_payload = json.JSONDecoder().decode(decrypted_payload)[1]['payload']['data']
-        decrypted_payload = base64.standard_b64decode(decrypted_payload)
-        return json.JSONDecoder().decode(decrypted_payload)
+        data = self._process_chunked_response(
+            self._post(ENDPOINTS['chrome']['license'], request_data))
+        if not data['success']:
+            common.error('Error getting license: {}'.format(json.dumps(data)))
+            raise LicenseError
+        return data['result']['licenses'][0]['data']
 
     def __tranform_to_dash(self, manifest):
         common.save_file('manifest.json', json.dumps(manifest))
@@ -207,20 +148,6 @@ class MSLHandler(object):
         self.last_playback_context = manifest['playbackContextId']
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
-
-    def __get_base_url(self, urls):
-        for key in urls:
-            return urls[key]
-
-    def __parse_chunked_msl_response(self, message):
-        header = message.split('}}')[0] + '}}'
-        payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}', message.split('}}')[1])
-        payloads = [x + '}' for x in payloads][:-1]
-
-        return {
-            'header': header,
-            'payloads': payloads
-        }
 
     def __generate_msl_request_data(self, data):
         #self.__load_msl_data()
@@ -319,11 +246,11 @@ class MSLHandler(object):
         return json.dumps(header_data)
 
     def perform_key_handshake(self):
-        esn = g.get_esn()
-        common.log('perform_key_handshake: esn:' + esn)
+        if not g.get_esn():
+            common.error('Cannot perform key handshake, missing ESN')
+            return
 
-        if not esn:
-          return False
+        common.debug('Performing key handshake. ESN: {}'.format(g.get_esn()))
 
         header = self.__generate_msl_header(
             is_key_request=True,
@@ -335,36 +262,87 @@ class MSLHandler(object):
             'entityauthdata': {
                 'scheme': 'NONE',
                 'authdata': {
-                    'identity': esn
+                    'identity': g.get_esn()
                 }
             },
             'headerdata': base64.standard_b64encode(header),
             'signature': '',
         }
-        #common.log('Key Handshake Request:')
-        #common.log(json.dumps(request))
 
+        response = _process_json_response(
+            self._post(ENDPOINTS['chrome']['manifest'],
+                       json.dumps(request, sort_keys=True)))
+        headerdata = json.loads(
+            base64.standard_b64decode(response['headerdata']))
+        self.crypto.parse_key_response(headerdata)
+        common.debug('Key handshake successful')
+
+    def _post(self, endpoint, request_data):
+        """Execute a post request"""
+        response = self.session.post(endpoint, request_data)
+        response.raise_for_status()
+        return response
+
+    def _process_chunked_response(self, response):
+        """Parse and decrypt an encrypted chunked response. Raise an error
+        if the response is plaintext json"""
         try:
-            resp = self.session.post(
-                url=self.endpoints['manifest'],
-                data=json.dumps(request, sort_keys=True))
-        except:
-            resp = None
-            exc = sys.exc_info()
-            common.log(
-                msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
+            # if the json() does not fail we have an error because
+            # the expected response is a chunked json response
+            return _raise_if_error(response.json())
+        except ValueError:
+            # json() failed so parse and decrypt the chunked response
+            response = _parse_chunks(response.text)
+            return _decrypt_chunks(response['payloads'],
+                                   self.crypto)
 
-        if resp and resp.status_code == 200:
-            resp = resp.json()
-            if 'errordata' in resp:
-                common.log('Key Exchange failed')
-                common.log(
-                    msg=base64.standard_b64decode(resp['errordata']))
-                return False
-            base_head = base64.standard_b64decode(resp['headerdata'])
 
-            headerdata=json.JSONDecoder().decode(base_head)
-            self.crypto.parse_key_response(headerdata)
+def _process_json_response(response):
+    """Execute a post request and expect a JSON response"""
+    try:
+        return _raise_if_error(response.json())
+    except ValueError:
+        raise MSLError('Expected JSON response')
+
+
+def _raise_if_error(decoded_response):
+    if 'errordata' in decoded_response:
+        raise MSLError(
+            base64.standard_b64decode(decoded_response['errordata']))
+    return decoded_response
+
+
+def _parse_chunks(message):
+    header = message.split('}}')[0] + '}}'
+    payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}',
+                        message.split('}}')[1])
+    payloads = [x + '}' for x in payloads][:-1]
+    return {'header': header, 'payloads': payloads}
+
+
+def _decrypt_chunks(chunks, crypto):
+    decrypted_payload = ''
+    for chunk in chunks:
+        payloadchunk = json.JSONDecoder().decode(chunk)
+        payload = payloadchunk.get('payload')
+        decoded_payload = base64.standard_b64decode(payload)
+        encryption_envelope = json.JSONDecoder().decode(decoded_payload)
+        # Decrypt the text
+        plaintext = crypto.decrypt(
+            base64.standard_b64decode(encryption_envelope['iv']),
+            base64.standard_b64decode(encryption_envelope.get('ciphertext')))
+        # unpad the plaintext
+        plaintext = json.JSONDecoder().decode(plaintext)
+        data = plaintext.get('data')
+
+        # uncompress data if compressed
+        if plaintext.get('compressionalgo') == 'GZIP':
+            decoded_data = base64.standard_b64decode(data)
+            data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
         else:
-            common.log('Key Exchange failed')
-            common.log(resp.text)
+            data = base64.standard_b64decode(data)
+        decrypted_payload += data
+
+    decrypted_payload = json.loads(decrypted_payload)[1]['payload']['data']
+    decrypted_payload = base64.standard_b64decode(decrypted_payload)
+    return json.JSONDecoder().decode(decrypted_payload)

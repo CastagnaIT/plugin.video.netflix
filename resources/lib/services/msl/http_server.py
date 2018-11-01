@@ -6,6 +6,7 @@
 """Handles & translates requests from Inputstream to Netflix"""
 from __future__ import unicode_literals
 
+import traceback
 import base64
 import BaseHTTPServer
 from urlparse import urlparse, parse_qs
@@ -35,10 +36,9 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(base64.standard_b64decode(b64license))
             self.finish()
-        except MSLError as exc:
-            self.send_error(500, exc.message)
-        except Exception:
-            self.send_error(400, 'Invalid license request')
+        except Exception as exc:
+            common.error(traceback.format_exc())
+            self.send_response(500 if isinstance(exc, MSLError) else 400)
 
     def do_GET(self):
         """Loads the XML manifest for the requested resource"""
@@ -49,10 +49,9 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/xml')
             self.end_headers()
             self.wfile.write(data)
-        except MSLError as exc:
-            self.send_error(500, exc.message)
-        except Exception:
-            self.send_error(400, 'Invalid manifest request')
+        except Exception as exc:
+            common.error(traceback.format_exc())
+            self.send_response(500 if isinstance(exc, MSLError) else 400)
 
     def log_message(self, *args):
         # pylint: disable=arguments-differ
