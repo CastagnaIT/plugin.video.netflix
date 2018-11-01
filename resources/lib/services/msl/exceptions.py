@@ -4,12 +4,16 @@ from __future__ import unicode_literals
 
 
 class MSLError(Exception):
-	pass
+    pass
 
 
 class LicenseError(MSLError):
-	pass
+    pass
 
 
 class ManifestError(MSLError):
-	pass
+    pass
+
+
+class MastertokenExpired(MSLError):
+    pass
