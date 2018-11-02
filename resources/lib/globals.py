@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Global addon constants"""
+"""Global addon constants.
+Everything that is to be globally accessible must be defined in this module
+and initialized in GlobalVariables.init_globals.
+When reusing Kodi languageInvokers, only the code in the main module
+(addon.py or service.py) will be run every time the addon is called.
+All other code executed on module level will only be executed once, when
+the module is first imported on the first addon invocation."""
 from __future__ import unicode_literals
 
-import sys
 import os
 from urlparse import urlparse, parse_qsl
 
 import xbmc
 import xbmcaddon
 
+import resources.lib.cache as cache
+
 
 class GlobalVariables(object):
     """Encapsulation for global variables to work around quirks with
     Kodi's reuseLanguageInvoker behavior"""
+    # pylint: disable=attribute-defined-outside-init
     # pylint: disable=invalid-name, too-many-instance-attributes
     KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals',
                         'continueWatching', 'trendingNow', 'newRelease',
@@ -34,15 +42,15 @@ class GlobalVariables(object):
     MODE_PLAY = 'play'
     MODE_LIBRARY = 'library'
 
-    def __init__(self, argv):
-        self.init_globals(argv)
+    def __init__(self):
+        """Do nothing on constructing the object"""
+        pass
 
     def init_globals(self, argv):
         """Initialized globally used module variables.
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
-        # pylint: disable=global-statement
         self._library = None
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -75,23 +83,40 @@ class GlobalVariables(object):
         except OSError:
             pass
 
+        self._init_cache()
+
+    def _init_cache(self):
+        if not os.path.exists(os.path.join(self.DATA_PATH, 'cache')):
+            for bucket in cache.BUCKET_NAMES:
+                if bucket == cache.CACHE_LIBRARY:
+                    # Library gets special location in DATA_PATH root because
+                    # we don't want users accidentally deleting it.
+                    continue
+                try:
+                    os.makedirs(os.path.join(g.DATA_PATH, 'cache', bucket))
+                except OSError:
+                    pass
+        # This is ugly: Pass the common module into Cache.__init__ to work
+        # around circular import dependencies.
+        import resources.lib.common as common
+        self.CACHE = cache.Cache(common, self.DATA_PATH, self.CACHE_TTL,
+                                 self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
+
     def library(self):
         """Get the current library instance"""
         # pylint: disable=global-statement, attribute-defined-outside-init
-        import resources.lib.cache as cache
         if not self._library:
             try:
-                self._library = cache.get(cache.CACHE_LIBRARY, 'library')
+                self._library = self.CACHE.get(cache.CACHE_LIBRARY, 'library')
             except cache.CacheMiss:
                 self._library = {}
         return self._library
 
     def save_library(self):
         """Save the library to disk via cache"""
-        import resources.lib.cache as cache
         if self._library is not None:
-            cache.add(cache.CACHE_LIBRARY, 'library', self._library,
-                      ttl=cache.TTL_INFINITE, to_disk=True)
+            self.CACHE.add(cache.CACHE_LIBRARY, 'library', self._library,
+                           ttl=cache.TTL_INFINITE, to_disk=True)
 
     def get_esn(self):
         """Get the ESN from settings"""
@@ -116,7 +141,7 @@ class GlobalVariables(object):
 # pylint: disable=invalid-name
 # This will have no effect most of the time, as it doesn't seem to be executed
 # on subsequent addon invocations when reuseLanguageInvoker is being used.
-# We initialize this once so the instance is importable from addon.py and
-# service.py, where g.init_globals(sys.argv) MUST be called before doing
+# We initialize an empty instance so the instance is importable from addon.py
+# and service.py, where g.init_globals(sys.argv) MUST be called before doing
 # anything else (even BEFORE OTHER IMPORTS from this addon)
-g = GlobalVariables(sys.argv)
+g = GlobalVariables()

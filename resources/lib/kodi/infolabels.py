@@ -20,15 +20,14 @@ def add_info(videoid, list_item, item, raw_data):
     in place and the infolabels are returned."""
     # pylint: disable=too-many-locals
     try:
-        cache_entry = cache.get(cache.CACHE_INFOLABELS, videoid)
+        cache_entry = g.CACHE.get(cache.CACHE_INFOLABELS, videoid)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except cache.CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        cache.add(cache.CACHE_INFOLABELS,
-                  videoid,
-                  {'infos': infos, 'quality_infos': quality_infos},
-                  ttl=g.CACHE_METADATA_TTL, to_disk=True)
+        g.CACHE.add(cache.CACHE_INFOLABELS, videoid,
+                    {'infos': infos, 'quality_infos': quality_infos},
+                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
     if infos['mediatype'] in ['episode', 'movie']:
         list_item.setProperty('IsPlayable', 'true')
@@ -40,11 +39,11 @@ def add_info(videoid, list_item, item, raw_data):
 def add_art(videoid, list_item, item, raw_data=None):
     """Add art infolabels to list_item"""
     try:
-        art = cache.get(cache.CACHE_ARTINFO, videoid)
+        art = g.CACHE.get(cache.CACHE_ARTINFO, videoid)
     except cache.CacheMiss:
         art = parse_art(videoid, item, raw_data)
-        cache.add(cache.CACHE_ARTINFO, videoid, art,
-                  ttl=g.CACHE_METADATA_TTL, to_disk=True)
+        g.CACHE.add(cache.CACHE_ARTINFO, videoid, art,
+                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setArt(art)
     return art
 

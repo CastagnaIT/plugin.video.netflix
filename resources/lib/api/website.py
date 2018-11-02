@@ -54,7 +54,7 @@ def extract_session_data(content):
             for item in PAGE_ITEMS
             if 'serverDefs' in item)}
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
-        raise InvalidMembershipStatusError()
+        raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
     return {
         'profiles': profiles,
         'user_data': user_data,

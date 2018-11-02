@@ -14,11 +14,13 @@ import traceback
 import xbmc
 
 # Import and intiliaze globals right away to avoid stale values from the last
-# addon invocation. Otherwise Kodi's reuseLanguageInvoker will caus some
-# really quirky behavior!
+# addon invocation. Otherwise Kodi's reuseLanguageInvoker option will cause
+# some really quirky behavior!
 from resources.lib.globals import g
 g.init_globals(sys.argv)
 
+# Global cache must not be used within these modules, because stale values may
+# be used and cause inconsistencies!
 import resources.lib.common as common
 import resources.lib.services as services
 import resources.lib.kodi.ui as ui

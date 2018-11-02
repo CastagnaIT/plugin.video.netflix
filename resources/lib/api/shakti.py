@@ -20,19 +20,19 @@ class InvalidVideoListTypeError(Exception):
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    cache.invalidate_cache()
+    g.CACHE.invalidate()
     common.make_call('activate_profile', profile_id)
 
 
 def logout():
     """Logout of the current account"""
-    cache.invalidate_cache()
+    g.CACHE.invalidate()
     common.make_call('logout')
 
 
 def login():
     """Perform a login"""
-    cache.invalidate_cache()
+    g.CACHE.invalidate()
     common.make_call('login')
 
 
@@ -41,7 +41,7 @@ def profiles():
     return common.make_call('list_profiles')
 
 
-@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='root_lists')
+@cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
     common.debug('Requesting root lists from API')
@@ -56,7 +56,7 @@ def root_lists():
                     [['title']] + ART_PARTIAL_PATHS)))
 
 
-@cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
+@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
@@ -70,7 +70,7 @@ def list_id_for_type(list_type):
     return list_id
 
 
-@cache.cache_output(cache.CACHE_COMMON, identifying_param_index=0,
+@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_id')
 def video_list(list_id):
     """Retrieve a single video list"""
@@ -92,7 +92,7 @@ def custom_video_list(video_ids):
         build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
 
 
-@cache.cache_output(cache.CACHE_GENRES, identifying_param_index=0,
+@cache.cache_output(g, cache.CACHE_GENRES, identifying_param_index=0,
                     identifying_param_name='genre_id')
 def genre(genre_id):
     """Retrieve LoLoMos for the given genre"""
@@ -110,7 +110,7 @@ def genre(genre_id):
           ['id', 'name']]]))
 
 
-@cache.cache_output(cache.CACHE_COMMON)
+@cache.cache_output(g, cache.CACHE_COMMON)
 def seasons(videoid):
     """Retrieve seasons of a TV show"""
     if videoid.mediatype != common.VideoId.SHOW:
@@ -125,7 +125,7 @@ def seasons(videoid):
                         SEASONS_PARTIAL_PATHS)))
 
 
-@cache.cache_output(cache.CACHE_COMMON)
+@cache.cache_output(g, cache.CACHE_COMMON)
 def episodes(videoid):
     """Retrieve episodes of a season"""
     if videoid.mediatype != common.VideoId.SEASON:
@@ -145,7 +145,7 @@ def episodes(videoid):
                         [['title']])))
 
 
-@cache.cache_output(cache.CACHE_COMMON)
+@cache.cache_output(g, cache.CACHE_COMMON)
 def single_info(videoid):
     """Retrieve info for a single episode"""
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE]:
@@ -159,13 +159,17 @@ def single_info(videoid):
     return common.make_call('path_request', paths)
 
 
-@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='my_list_items')
+@cache.cache_output(g, cache.CACHE_COMMON,
+                    fixed_identifier='my_list_items')
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
-    return [video_id
-            for video_id, video in video_list(
-                list_id_for_type('queue')).videos.iteritems()
-            if video['queue'].get('inQueue', False)]
+    try:
+        return [video_id
+                for video_id, video in video_list(
+                    list_id_for_type('queue')).videos.iteritems()
+                if video['queue'].get('inQueue', False)]
+    except InvalidVideoListTypeError:
+        return []
 
 
 def rate(videoid, rating):
@@ -190,11 +194,10 @@ def update_my_list(videoid, operation):
          'data': {
              'operation': operation,
              'videoId': int(videoid.value)}})
-    cache.invalidate_entry(cache.CACHE_COMMON,
-                           list_id_for_type('queue'))
-    cache.invalidate_entry(cache.CACHE_COMMON, 'queue')
-    cache.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
-    cache.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
+    g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
+    g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'queue')
+    g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
+    g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
 
 def metadata(videoid):
@@ -211,7 +214,7 @@ def metadata(videoid):
         # data is outdated. In this case, invalidate the cache entry and
         # try again safely (if it doesn't exist this time, there is no
         # metadata for the episode, so we assign an empty dict).
-        cache.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
+        g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
         season = common.find(videoid.seasonid,
                              _metadata(videoid.tvshowid)['seasons'],
                              raise_exc=False)
@@ -219,7 +222,7 @@ def metadata(videoid):
                            raise_exc=False)
 
 
-@cache.cache_output(cache.CACHE_METADATA, 0, 'video_id',
+@cache.cache_output(g, cache.CACHE_METADATA, 0, 'video_id',
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
 def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from

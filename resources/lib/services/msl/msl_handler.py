@@ -75,8 +75,9 @@ class MSLHandler(object):
             callback=self.perform_key_handshake)
 
     @display_error_info
-    def perform_key_handshake(self):
+    def perform_key_handshake(self, data=None):
         """Perform a key handshake and initialize crypto keys"""
+        # pylint: disable=unused-argument
         if not g.get_esn():
             common.error('Cannot perform key handshake, missing ESN')
             return
@@ -195,7 +196,8 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
-    if 'errordata' in decoded_response or not decoded_response['success']:
+    if ('errordata' in decoded_response or
+            not decoded_response.get('success', True)):
         raise MSLError(_get_error_details(decoded_response))
     return decoded_response
 

@@ -224,8 +224,6 @@ class NetflixSession(object):
                 'switchProfileGuid': guid,
                 '_': int(time()),
                 'authURL': self.auth_url})
-        self.session.headers.update(
-            {'x-netflix.request.client.user.guid': guid})
         self.session_data['user_data']['guid'] = guid
         common.debug('Successfully activated profile {}'.format(guid))
 
