@@ -411,3 +411,7 @@ msgstr "Aktiviere DolbyVision"
 msgctxt "#30136"
 msgid "Enable VP9 profiles"
 msgstr "Aktiviere VP9 profile"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "Ergebnisse für \"{}\""

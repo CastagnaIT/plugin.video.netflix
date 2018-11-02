@@ -419,3 +419,7 @@ msgstr ""
 msgctxt "#30136"
 msgid "Enable VP9 profiles"
 msgstr ""
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr ""

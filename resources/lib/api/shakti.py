@@ -6,7 +6,8 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
 
-from .data_types import LoLoMo, VideoList, SeasonList, EpisodeList
+from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
+                         SearchVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS)
@@ -228,6 +229,17 @@ def _metadata(video_id):
             'req_type': 'api',
             'params': {'movieid': video_id}
         })['video']
+
+def search(search_term):
+    """Retrieve a video list of search results"""
+    common.debug('Searching for {}'.format(search_term))
+    base_path = ['search', 'byTerm', '|' + search_term, 'titles', 40]
+    return SearchVideoList(common.make_call(
+        'path_request',
+        [base_path + ['referenceId', 'id', 'length', 'name', 'trackIds',
+                      'requestId', 'regularSynopsis', 'evidence']] +
+        build_paths(base_path + [{'from': 0, 'to': 40}, 'reference'],
+                    VIDEO_LIST_PARTIAL_PATHS)))
 
 
 def build_paths(base_path, partial_paths):

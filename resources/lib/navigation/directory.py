@@ -2,10 +2,13 @@
 """Navigation for classic plugin directory listing mode"""
 from __future__ import unicode_literals
 
+import xbmcplugin
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
+import resources.lib.kodi.ui as ui
 
 
 class DirectoryBuilder(object):
@@ -82,3 +85,18 @@ class DirectoryBuilder(object):
         listings.build_lolomo_listing(
             api.root_lists(),
             g.MISC_CONTEXTS['recommendations']['contexts'])
+
+    def search(self, pathitems):
+        """Ask for a search term if none is given via path, query API
+        and display search results"""
+        search_term = (pathitems[1]
+                       if len(pathitems) > 1
+                       else ui.ask_for_search_term())
+        if search_term:
+            search_results = api.search(search_term)
+            if search_results.videos:
+                listings.build_video_listing(search_results)
+                return
+            else:
+                ui.show_notification(common.get_local_string(30013))
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)

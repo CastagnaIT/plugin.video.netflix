@@ -229,7 +229,7 @@ class NetflixSession(object):
     @needs_login
     def path_request(self, paths):
         """Perform a path request against the Shakti API"""
-        common.debug('Executing path request: {}'.format(paths))
+        common.debug('Executing path request: {}'.format(json.dumps(paths)))
         headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json, text/javascript, */*'}

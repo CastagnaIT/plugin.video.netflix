@@ -52,6 +52,7 @@ class VideoList(object):
             videoid=(list_id
                      if list_id
                      else next(self.data['lists'].iterkeys())))
+        self.title = self['displayName']
         self.videos = OrderedDict(
             resolve_refs(self.data['lists'][self.id.value], self.data))
         self.artitem = next(self.videos.itervalues())
@@ -65,6 +66,28 @@ class VideoList(object):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data['lists'][self.id.value]
                                .get(key, default))
+
+
+class SearchVideoList(object):
+    """A video list with search results"""
+    # pylint: disable=invalid-name
+    def __init__(self, path_response):
+        self.data = path_response
+        self.title = common.get_local_string(30100).format(
+            self.data['search']['byTerm'].keys()[0][1:])
+        self.videos = OrderedDict(
+            resolve_refs(self.data['search']['byReference'].values()[0],
+                         self.data))
+        self.artitem = next(self.videos.itervalues(), None)
+        self.contained_titles = [video['title']
+                                 for video in self.videos.itervalues()]
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data['search'][key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this VideoList."""
+        return _check_sentinel(self.data['search'].get(key, default))
 
 
 class SeasonList(object):
