@@ -26,7 +26,7 @@ class BookmarkManager(PlaybackActionManager):
                 .format(self.enabled, self.infos, self.markers))
 
     def _initialize(self, data):
-        if 'DBID' in data:
+        if 'DBID' in data['infos']:
             self.infos = data['infos']
             self.markers = data.get('timeline_markers', {})
             self.progress = 0

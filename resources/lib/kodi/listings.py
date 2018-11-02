@@ -277,7 +277,6 @@ def finalize_directory(items, content_type=CONTENT_FOLDER, refresh=False,
                        title=None):
     """Finalize a directory listing.
     Add items, set available sort methods and content type"""
-    common.debug('Finalizing directory: {}'.format(items))
     if title:
         xbmcplugin.setPluginCategory(g.PLUGIN_HANDLE, title)
     xbmcplugin.addDirectoryItems(g.PLUGIN_HANDLE, items)
