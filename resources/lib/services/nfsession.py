@@ -224,7 +224,7 @@ class NetflixSession(object):
                 'switchProfileGuid': guid,
                 '_': int(time()),
                 'authURL': self.auth_url})
-        self.session_data['user_data']['guid'] = guid
+        self._refresh_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
 
     @common.addonsignals_return_call
