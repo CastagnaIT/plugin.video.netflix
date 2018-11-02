@@ -49,6 +49,12 @@ def get_item(videoid):
         .format(videoid))
 
 
+def list_contents():
+    """Return a list of all top-level video IDs (movies, shows)
+    contained in the library"""
+    return g.library().keys()
+
+
 def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     return common.get_path_safe(videoid.to_list(), g.library()) is not None

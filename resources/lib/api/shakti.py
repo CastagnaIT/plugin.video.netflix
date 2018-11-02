@@ -7,7 +7,7 @@ import resources.lib.common as common
 import resources.lib.cache as cache
 
 from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
-                         SearchVideoList)
+                         SearchVideoList, CustomVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS)
@@ -80,6 +80,16 @@ def video_list(list_id):
         [['lists', [list_id], ['displayName', 'context', 'genreId']]] +
         build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
+
+
+def custom_video_list(video_ids):
+    """Retrieve a video list which contains the videos specified by
+    video_ids"""
+    common.debug('Requesting custom video list with {} videos'
+                 .format(len(video_ids)))
+    return CustomVideoList(common.make_call(
+        'path_request',
+        build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
 
 
 @cache.cache_output(cache.CACHE_GENRES, identifying_param_index=0,
