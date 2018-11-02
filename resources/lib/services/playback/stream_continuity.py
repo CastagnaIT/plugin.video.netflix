@@ -49,8 +49,11 @@ class StreamContinuityManager(PlaybackActionManager):
         return self.storage.get(self.current_show, {})
 
     def _initialize(self, data):
-        self.did_restore = False
-        self.current_show = data['videoid']['tvshowid']
+        if 'tvshowid' in data['videoid']:
+            self.did_restore = False
+            self.current_show = data['videoid']['tvshowid']
+        else:
+            self.enabled = False
 
     def _on_playback_started(self, player_state):
         xbmc.sleep(1000)

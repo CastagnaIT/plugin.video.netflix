@@ -28,7 +28,7 @@ class BookmarkManager(PlaybackActionManager):
     def _initialize(self, data):
         if 'DBID' in data['infos']:
             self.infos = data['infos']
-            self.markers = data.get('timeline_markers', {})
+            self.markers = data['timeline_markers']
             self.progress = 0
             self.elapsed = 0
         else:
@@ -37,6 +37,9 @@ class BookmarkManager(PlaybackActionManager):
     def _on_playback_stopped(self):
         if self._watched_to_end():
             self._mark_as_watched()
+        else:
+            common.debug('Progress insufficient, not marking {} as watched.'
+                         .format(self.infos))
         self.infos = None
         self.markers = None
 
@@ -50,7 +53,7 @@ class BookmarkManager(PlaybackActionManager):
         common.debug('Saving bookmark for {} at {}s'.format(self.infos,
                                                             self.elapsed))
         common.update_library_item_details(
-            self.infos['DBTYPE'], self.infos['DBID'],
+            self.infos['mediatype'], self.infos['DBID'],
             {'resume': {'position': self.elapsed}})
 
     def _watched_to_end(self):
@@ -61,6 +64,6 @@ class BookmarkManager(PlaybackActionManager):
     def _mark_as_watched(self):
         common.info('Marking {} as watched'.format(self.infos))
         common.update_library_item_details(
-            self.infos['DBTYPE'], self.infos['DBID'],
+            self.infos['mediatype'], self.infos['DBID'],
             {'playcount': self.infos.get('playcount', 0) + 1,
              'resume': {'position': 0}})

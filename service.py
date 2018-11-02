@@ -90,7 +90,8 @@ class NetflixService(object):
             self.library_updater.on_tick()
         except Exception as exc:
             common.error(traceback.format_exc())
-            ui.show_notification(exc.message)
+            ui.show_notification(': '.join((exc.__class__.__name__,
+                                            exc.message)))
         return self.controller.waitForAbort(1)
 
 
