@@ -80,10 +80,11 @@ def ask_for_removal_confirmation(title, year=None):
         heading=common.get_local_string(30047),
         line1=title + (' ({})'.format(year) if year else ''))
 
-def show_error_info(title, error_message, unknown_error=False):
+
+def show_error_info(title, message, unknown_error=False, netflix_error=False):
     """Show a dialog that displays the error message"""
-    prefix = 30101 if unknown_error else 30102
+    prefix = (30104, 30101, 30102)[unknown_error + netflix_error]
     return xbmcgui.Dialog().ok(title,
                                line1=common.get_local_string(prefix),
-                               line2=error_message,
+                               line2=message,
                                line3=common.get_local_string(30103))

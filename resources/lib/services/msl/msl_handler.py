@@ -226,16 +226,16 @@ def _parse_chunks(message):
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:
-        payloadchunk = json.JSONDecoder().decode(chunk)
+        payloadchunk = json.loads(chunk)
         payload = payloadchunk.get('payload')
         decoded_payload = base64.standard_b64decode(payload)
-        encryption_envelope = json.JSONDecoder().decode(decoded_payload)
+        encryption_envelope = json.loads(decoded_payload)
         # Decrypt the text
         plaintext = crypto.decrypt(
             base64.standard_b64decode(encryption_envelope['iv']),
             base64.standard_b64decode(encryption_envelope.get('ciphertext')))
         # unpad the plaintext
-        plaintext = json.JSONDecoder().decode(plaintext)
+        plaintext = json.loads(plaintext)
         data = plaintext.get('data')
 
         # uncompress data if compressed
@@ -248,4 +248,4 @@ def _decrypt_chunks(chunks, crypto):
 
     decrypted_payload = json.loads(decrypted_payload)[1]['payload']['data']
     decrypted_payload = base64.standard_b64decode(decrypted_payload)
-    return json.JSONDecoder().decode(decrypted_payload)
+    return json.loads(decrypted_payload)

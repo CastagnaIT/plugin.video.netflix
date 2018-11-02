@@ -65,10 +65,17 @@ class NetflixService(object):
         common.info('Stopped MSL Service')
 
     def run(self):
-        """
-        Main loop. Runs until xbmc.Monitor requests abort
-        """
-        self.start_services()
+        """Main loop. Runs until xbmc.Monitor requests abort"""
+        # pylint: disable=broad-except
+        try:
+            self.start_services()
+        except Exception as exc:
+            ui.show_error_info(
+                title=common.get_local_string(30105),
+                message=': '.join((exc.__class__.__name__, exc.message)),
+                netflix_error=False)
+            return
+
         player = xbmc.Player()
         while not self.controller.abortRequested():
             if self._tick_and_wait_for_abort(player.isPlayingVideo()):
@@ -81,8 +88,9 @@ class NetflixService(object):
             if is_playing_video:
                 self.controller.on_playback_tick()
             self.library_updater.on_tick()
-        except Exception:
+        except Exception as exc:
             common.error(traceback.format_exc())
+            ui.show_notification(exc.message)
         return self.controller.waitForAbort(1)
 
 
