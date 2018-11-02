@@ -9,6 +9,7 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.listings as listings
 import resources.lib.kodi.ui as ui
+import resources.lib.kodi.library as library
 
 
 class DirectoryBuilder(object):
@@ -100,3 +101,14 @@ class DirectoryBuilder(object):
             else:
                 ui.show_notification(common.get_local_string(30013))
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+
+    def exported(self, pathitems=None):
+        """List all items that are exported to the Kodi library"""
+        # pylint: disable=unused-argument
+        library_contents = library.list_contents()
+        if library_contents:
+            listings.build_video_listing(
+                api.custom_video_list(library_contents))
+        else:
+            ui.show_notification(common.get_local_string(30013))
+            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)

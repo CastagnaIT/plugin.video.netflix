@@ -90,6 +90,25 @@ class SearchVideoList(object):
         return _check_sentinel(self.data['search'].get(key, default))
 
 
+class CustomVideoList(object):
+    """A video list"""
+    # pylint: disable=invalid-name
+    def __init__(self, path_response):
+        self.data = path_response
+        self.title = common.get_local_string(30048)
+        self.videos = self.data['videos']
+        self.artitem = next(self.videos.itervalues())
+        self.contained_titles = [video['title']
+                                 for video in self.videos.itervalues()]
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data[key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this VideoList."""
+        return _check_sentinel(self.data.get(key, default))
+
+
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
