@@ -194,7 +194,10 @@ def update_my_list(videoid, operation):
          'data': {
              'operation': operation,
              'videoId': int(videoid.value)}})
-    g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
+    try:
+        g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
+    except InvalidVideoListTypeError:
+        pass
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'queue')
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
