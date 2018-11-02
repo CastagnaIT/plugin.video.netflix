@@ -435,3 +435,15 @@ msgstr "Bei der Ausführung des Addons trat folgender Fehler auf:"
 msgctxt "#30105"
 msgid "Netflix Addon Error"
 msgstr "Netflix Addon Fehler"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Falscher PIN"
+
+msgctxt "#30107"
+msgid "Disabled PIN verfication"
+msgstr "PIN-Abfrage deaktiviert"
+
+msgctxt "#30108"
+msgid "Enabled PIN verfication"
+msgstr "PIN-Abfrage aktiviert"

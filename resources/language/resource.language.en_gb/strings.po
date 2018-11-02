@@ -443,3 +443,15 @@ msgstr ""
 msgctxt "#30105"
 msgid "Netflix Addon Error"
 msgstr ""
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Disabled PIN verfication"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Enabled PIN verfication"
+msgstr ""

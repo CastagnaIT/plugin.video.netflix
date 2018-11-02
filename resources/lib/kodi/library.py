@@ -41,8 +41,9 @@ def get_item(videoid):
             if os.path.normcase(library_item['file']) == exported_filepath:
                 return library_item
     except Exception:
-        import traceback
-        common.error(traceback.format_exc())
+        # import traceback
+        # common.error(traceback.format_exc())
+        pass
     # This is intentionally not raised in the except block!
     raise ItemNotFound(
         'The video with id {} is not present in the Kodi library'

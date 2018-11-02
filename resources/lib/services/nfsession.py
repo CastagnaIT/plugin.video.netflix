@@ -152,6 +152,8 @@ class NetflixSession(object):
             self.session_data = website.extract_session_data(
                 self._get('profiles'))
         except Exception:
+            import traceback
+            common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired')
             return False
         return True
@@ -222,6 +224,8 @@ class NetflixSession(object):
                 'switchProfileGuid': guid,
                 '_': int(time()),
                 'authURL': self.auth_url})
+        self.session.headers.update(
+            {'x-netflix.request.client.user.guid': guid})
         self.session_data['user_data']['guid'] = guid
         common.debug('Successfully activated profile {}'.format(guid))
 
@@ -281,14 +285,18 @@ class NetflixSession(object):
         start = time()
 
         data = kwargs.get('data', {})
-        if component in ['set_video_rating', 'update_my_list']:
+        headers = kwargs.get('headers', {})
+        if component in ['set_video_rating', 'update_my_list', 'adult_pin']:
+            headers.update({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json, text/javascript, */*'})
             data['authURL'] = self.auth_url
             data = json.dumps(data)
 
         response = method(
             url=url,
             verify=self.verify_ssl,
-            headers=kwargs.get('headers'),
+            headers=headers,
             params=kwargs.get('params'),
             data=data)
         common.debug('Request took {}s'.format(time() - start))
