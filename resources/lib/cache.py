@@ -190,12 +190,12 @@ def get(bucket, identifier):
     try:
         cache_entry = get_bucket(bucket)[identifier]
     except KeyError:
+        common.debug('In-memory cache miss on {} in {}'
+                     .format(identifier, bucket))
         cache_entry = get_from_disk(bucket, identifier)
 
     verify_ttl(bucket, identifier, cache_entry)
 
-    common.debug('Cache hit on {} in {}. Entry valid until {}'
-                 .format(identifier, bucket, cache_entry['eol']))
     return cache_entry['content']
 
 
@@ -206,6 +206,8 @@ def get_from_disk(bucket, identifier):
         with open(cache_filename, 'r') as cache_file:
             cache_entry = pickle.load(cache_file)
     except Exception:
+        common.debug('On-disk cache miss on {} in {}'
+                     .format(identifier, bucket))
         raise CacheMiss()
     add(bucket, identifier, cache_entry['content'])
     return cache_entry
@@ -214,8 +216,8 @@ def get_from_disk(bucket, identifier):
 def add(bucket, identifier, content, ttl=None, to_disk=False):
     """Add an item to a cache bucket"""
     eol = int(time() + (ttl if ttl else g.CACHE_TTL))
-    common.debug('Adding {} to {} (valid until {})'
-                 .format(identifier, bucket, eol))
+    # common.debug('Adding {} to {} (valid until {})'
+    #              .format(identifier, bucket, eol))
     cache_entry = {'eol': eol, 'content': content}
     get_bucket(bucket).update(
         {identifier: cache_entry})

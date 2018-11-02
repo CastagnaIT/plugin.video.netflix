@@ -55,7 +55,7 @@ INFO_MAPPINGS = {
     'userrating': ['userRating', 'userRating'],
     'mpaa': ['maturity', 'rating', 'value'],
     'duration': 'runtime',
-    'bookmark': 'bookmarkPosition',
+    # 'bookmark': 'bookmarkPosition',
     'playcount': 'watched'
 }
 
