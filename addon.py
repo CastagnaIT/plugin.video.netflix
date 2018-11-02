@@ -17,7 +17,6 @@ from resources.lib.globals import g
 g.init_globals(sys.argv)
 
 import resources.lib.common as common
-import resources.lib.cache as cache
 import resources.lib.kodi.ui as ui
 import resources.lib.navigation as nav
 import resources.lib.navigation.directory as directory
@@ -67,4 +66,4 @@ if __name__ == '__main__':
                            netflix_error=False)
         xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
 
-    cache.commit()
+    g.CACHE.commit()
