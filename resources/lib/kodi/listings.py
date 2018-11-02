@@ -190,7 +190,7 @@ def build_video_listing(video_list):
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
     finalize_directory(directory_items, CONTENT_SHOW,
-                       title=video_list['displayName'])
+                       title=video_list.title)
 
 
 def _create_video_item(videoid_value, video, video_list):
