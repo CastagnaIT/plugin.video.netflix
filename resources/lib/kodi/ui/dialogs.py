@@ -49,13 +49,10 @@ def ask_for_rating():
 
 def ask_for_pin():
     """Ask the user for the adult pin"""
-    try:
-        return int(xbmcgui.Dialog()
-                   .numeric(heading=common.get_local_string(30002),
-                            type=0,
-                            defaultt=''))
-    except ValueError:
-        return None
+    return xbmcgui.Dialog().numeric(
+        heading=common.get_local_string(30002),
+        type=0,
+        defaultt='') or None
 
 
 def ask_for_search_term():

@@ -10,6 +10,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
+import resources.lib.kodi.ui as ui
 from resources.lib.services.playback import get_timeline_markers
 
 SERVICE_URL_FORMAT = 'http://localhost:{port}'
@@ -42,6 +43,12 @@ def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.debug('Playing {}'.format(videoid))
     metadata = api.metadata(videoid)
+
+    if not _verify_pin(metadata['requiresPin']):
+        ui.show_notification(common.get_local_string(30106))
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        return
+
     timeline_markers = get_timeline_markers(metadata)
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
@@ -101,6 +108,14 @@ def get_inputstream_listitem(videoid):
         key='inputstreamaddon',
         value=is_helper.inputstream_addon)
     return list_item
+
+
+def _verify_pin(pin_required):
+    if (not pin_required or
+            g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
+        return True
+    pin = ui.ask_for_pin()
+    return pin is not None and api.verify_pin(pin)
 
 
 def integrate_upnext(videoid, current, timeline_markers, metadata):

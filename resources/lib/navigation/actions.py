@@ -38,6 +38,7 @@ class AddonActionExecutor(object):
                                self.params['autologin_user'])
             g.ADDON.setSetting('autologin_id', pathitems[1])
             g.ADDON.setSetting('autologin_enable', 'true')
+            g.flush_settings()
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
         cache.invalidate_cache()
@@ -51,8 +52,18 @@ class AddonActionExecutor(object):
     def toggle_adult_pin(self, pathitems=None):
         """Toggle adult PIN verification"""
         # pylint: disable=no-member
-        g.ADDON.setSettingBool(
-            not g.ADDON.getSettingBool('adultpin_enable'))
+        pin = ui.ask_for_pin()
+        if pin is None:
+            return
+        if api.verify_pin(pin):
+            current_setting = {'true': True, 'false': False}.get(
+                g.ADDON.getSetting('adultpin_enable').lower())
+            g.ADDON.setSetting('adultpin_enable', str(not current_setting))
+            g.flush_settings()
+            ui.show_notification(
+                common.get_local_string(30107 if current_setting else 30108))
+        else:
+            ui.show_notification(common.get_local_string(30106))
 
     @common.inject_video_id(path_offset=1)
     def rate(self, videoid):

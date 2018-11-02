@@ -176,9 +176,6 @@ def rate(videoid, rating):
     common.make_call(
         'post',
         {'component': 'set_video_rating',
-         'headers': {
-             'Content-Type': 'application/json',
-             'Accept': 'application/json, text/javascript, */*'},
          'params': {
              'titleid': videoid.value,
              'rating': rating}})
@@ -190,9 +187,6 @@ def update_my_list(videoid, operation):
     common.make_call(
         'post',
         {'component': 'update_my_list',
-         'headers': {
-             'Content-Type': 'application/json',
-             'Accept': 'application/json, text/javascript, */*'},
          'data': {
              'operation': operation,
              'videoId': int(videoid.value)}})
@@ -240,6 +234,7 @@ def _metadata(video_id):
             'params': {'movieid': video_id}
         })['video']
 
+
 def search(search_term):
     """Retrieve a video list of search results"""
     common.debug('Searching for {}'.format(search_term))
@@ -250,6 +245,19 @@ def search(search_term):
                       'requestId', 'regularSynopsis', 'evidence']] +
         build_paths(base_path + [{'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
+
+
+def verify_pin(pin):
+    """Send adult PIN to Netflix and verify it."""
+    # pylint: disable=broad-except
+    try:
+        return common.make_call(
+            'post',
+            {'component': 'adult_pin',
+             'data': {
+                 'pin': pin}}).get('success', False)
+    except Exception:
+        return False
 
 
 def build_paths(base_path, partial_paths):
