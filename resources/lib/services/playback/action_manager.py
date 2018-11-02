@@ -40,13 +40,7 @@ class PlaybackActionManager(object):
         """
         Initialize the manager with data when the addon initiates a playback.
         """
-        # pylint: disable=broad-except
-        try:
-            self._call_if_enabled(self._initialize, data=data)
-        except Exception as exc:
-            self.enabled = False
-            common.error('{} disabled due to exception while initializing: {}'
-                         .format(self.name, exc))
+        self._call_if_enabled(self._initialize, data=data)
         common.debug('Initialiized {}: {}'.format(self.name, self))
 
     def on_playback_started(self, player_state):

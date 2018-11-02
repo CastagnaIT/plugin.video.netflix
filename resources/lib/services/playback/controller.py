@@ -60,7 +60,7 @@ class PlaybackController(xbmc.Monitor):
                     json.loads(unicode(data, 'utf-8', errors='ignore')))
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
-        except Exception as exc:
+        except Exception:
             import traceback
             common.error(traceback.format_exc())
 
@@ -86,14 +86,21 @@ class PlaybackController(xbmc.Monitor):
         self.action_managers = None
 
     def _notify_all(self, notification, data=None):
+        # pylint: disable=broad-except
         common.debug('Notifying all managers of {} (data={})'
                      .format(notification.__name__, data))
         for manager in self.action_managers:
             notify_method = getattr(manager, notification.__name__)
-            if data is not None:
-                notify_method(data)
-            else:
-                notify_method()
+            try:
+                if data is not None:
+                    notify_method(data)
+                else:
+                    notify_method()
+            except Exception as exc:
+                common.error('{} disabled due to exception: {}'
+                             .format(manager.name, exc))
+                manager.enabled = False
+                raise
 
     def _get_player_state(self):
         try:

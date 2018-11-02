@@ -178,10 +178,8 @@ class MSLHandler(object):
         try:
             # if the json() does not fail we have an error because
             # the expected response is a chunked json response
-            return _raise_if_error(json.loads(response))
+            return _raise_if_error(response.json())
         except ValueError:
-            import traceback
-            common.debug(traceback.format_exc())
             # json() failed so parse and decrypt the chunked response
             response = _parse_chunks(response.text)
             return _decrypt_chunks(response['payloads'],
