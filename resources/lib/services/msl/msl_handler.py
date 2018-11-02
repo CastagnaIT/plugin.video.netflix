@@ -11,15 +11,17 @@ import zlib
 import json
 import time
 import base64
+from functools import wraps
 import requests
 
 from resources.lib.globals import g
 import resources.lib.common as common
+import resources.lib.kodi.ui as ui
 
 from .request_builder import MSLRequestBuilder
 from .profiles import enabled_profiles
 from .converter import convert_to_dash
-from .exceptions import MSLError, LicenseError
+from .exceptions import MSLError
 
 CHROME_BASE_URL = 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/'
 ENDPOINTS = {
@@ -30,6 +32,23 @@ ENDPOINTS = {
         'manifest': None,
         'license': None}
 }
+
+
+def display_error_info(func):
+    """Decorator that catches errors raise by the decorated function,
+    displays an error info dialog in the UI and reraises the error"""
+    # pylint: disable=missing-docstring
+    @wraps(func)
+    def error_catching_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as exc:
+            import traceback
+            common.error(traceback.format_exc())
+            ui.show_error_info(common.get_local_string(30028), exc.message,
+                               unknown_error=not exc.message)
+            raise
+    return error_catching_wrapper
 
 
 class MSLHandler(object):
@@ -55,6 +74,7 @@ class MSLHandler(object):
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
 
+    @display_error_info
     def perform_key_handshake(self):
         """Perform a key handshake and initialize crypto keys"""
         if not g.get_esn():
@@ -71,6 +91,7 @@ class MSLHandler(object):
         self.request_builder.crypto.parse_key_response(headerdata)
         common.debug('Key handshake successful')
 
+    @display_error_info
     def load_manifest(self, viewable_id):
         """
         Loads the manifets for the given viewable_id and
@@ -104,6 +125,7 @@ class MSLHandler(object):
                                          manifest_request_data)
         return self.__tranform_to_dash(manifest)
 
+    @display_error_info
     def get_license(self, challenge, sid):
         """
         Requests and returns a license for the given challenge and sid
@@ -129,10 +151,6 @@ class MSLHandler(object):
         }
         response = self._chunked_request(ENDPOINTS['chrome']['license'],
                                          license_request_data)
-        if not response['success']:
-            common.error('Error getting license: {}'
-                         .format(json.dumps(response)))
-            raise LicenseError
         return response['result']['licenses'][0]['data']
 
     def __tranform_to_dash(self, manifest):
@@ -160,8 +178,10 @@ class MSLHandler(object):
         try:
             # if the json() does not fail we have an error because
             # the expected response is a chunked json response
-            return _raise_if_error(response.json())
+            return _raise_if_error(json.loads(response))
         except ValueError:
+            import traceback
+            common.debug(traceback.format_exc())
             # json() failed so parse and decrypt the chunked response
             response = _parse_chunks(response.text)
             return _decrypt_chunks(response['payloads'],
@@ -173,14 +193,26 @@ def _process_json_response(response):
     try:
         return _raise_if_error(response.json())
     except ValueError:
-        raise MSLError('Expected JSON response')
+        raise MSLError('Expected JSON response, got {}'.format(response.text))
 
 
 def _raise_if_error(decoded_response):
-    if 'errordata' in decoded_response:
-        raise MSLError(
-            base64.standard_b64decode(decoded_response['errordata']))
+    if 'errordata' in decoded_response or not decoded_response['success']:
+        raise MSLError(_get_error_details(decoded_response))
     return decoded_response
+
+
+def _get_error_details(decoded_response):
+    if 'errordata' in decoded_response:
+        return json.loads(
+            base64.standard_b64decode(
+                decoded_response['errordata']))['errormsg']
+    elif 'errorDisplayMessage' in decoded_response['result']:
+        return decoded_response['result']['errorDisplayMessage']
+
+    common.error('Received an unknown error from MSL endpoint:\n{}'
+                 .format(json.dumps(decoded_response)))
+    return ''
 
 
 def _parse_chunks(message):
