@@ -455,3 +455,7 @@ msgstr "Login erfolgreich"
 msgctxt "#30110"
 msgid "Background services started"
 msgstr "Hintergrunddienste gestartet"
+
+msgctxt "#30111"
+msgid "Enable Dolby Atmos"
+msgstr "Aktiviere Dolby Atmos"

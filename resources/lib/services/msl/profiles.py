@@ -39,6 +39,7 @@ PROFILES = {
         # Unkown
         'BIF240', 'BIF320'],
     'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash'],
+    'atmos': ['ddplus-atmos-dash'],
     'hevc':
         _profile_strings(base=HEVC,
                          tails=[(BASE_LEVELS, CENC),
@@ -65,6 +66,7 @@ def enabled_profiles():
     return (PROFILES['base'] +
             _subtitle_profiles() +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
+            _additional_profiles('atmos', 'enable_atmos_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
             _additional_profiles('hdr',
                                  ['enable_hevc_profiles',
