@@ -192,3 +192,16 @@ def compress_data(data):
     with gzip.GzipFile(fileobj=out, mode='w') as outh:
         outh.write(data)
     return base64.standard_b64encode(out.getvalue())
+
+
+def merge_dicts(dict_to_merge, merged_dict):
+    """Recursively merge the contents of dict_to_merge into merged_dict.
+    Values that are already present in merged_dict will not be overwritten
+    if they are also present in dict_to_merge"""
+    for key, value in dict_to_merge.iteritems():
+        if key in merged_dict:
+            if isinstance(merged_dict[key], dict):
+                merge_dicts(value, merged_dict[key])
+        else:
+            merged_dict[key] = value
+    return merged_dict

@@ -87,9 +87,11 @@ def video_list(list_id):
     """Retrieve a single video list"""
     common.debug('Requesting video list {}'.format(list_id))
     return VideoList(common.make_call(
-        'path_request',
-        [['lists', [list_id], ['displayName', 'context', 'genreId']]] +
-        build_paths(['lists', [list_id], {'from': 0, 'to': 40}, 'reference'],
+        'perpetual_path_request',
+        # The length attribute MUST be present with perpetual_path_request!
+        [['lists', [list_id],
+          ['displayName', 'context', 'genreId', 'length']]] +
+        build_paths(['lists', [list_id], 'RANGE_SELECTOR', 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
 
 

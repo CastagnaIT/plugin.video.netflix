@@ -34,6 +34,9 @@ URLS = {
 }
 """List of all static endpoints for HTML/JSON POST/GET requests"""
 
+MAX_PATH_REQUEST_SIZE = 40
+"""How many entries of a list will be fetched with one path request"""
+
 
 def needs_login(func):
     """
@@ -74,6 +77,7 @@ class NetflixSession(object):
             self.list_profiles,
             self.activate_profile,
             self.path_request,
+            self.perpetual_path_request,
             self.get,
             self.post
         ]
@@ -245,7 +249,31 @@ class NetflixSession(object):
     @needs_login
     def path_request(self, paths):
         """Perform a path request against the Shakti API"""
-        paths = _inject_root_lolomo(paths, self.session_data['root_lolomo'])
+        return self._path_request(
+            _inject_root_lolomo(paths, self.session_data['root_lolomo']))
+
+    @common.addonsignals_return_call
+    @needs_login
+    def perpetual_path_request(self, paths):
+        """Perform a perpetual path request against the Shakti API to retrieve
+        a possibly large video list. If the requested video list's size is
+        larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
+        executed with forward shifting range selectors and the results will
+        be combined into one path response."""
+        range_start = 0
+        range_end = MAX_PATH_REQUEST_SIZE
+        merged_response = {}
+        while range_start < range_end:
+            path_response = self._path_request(
+                _set_range_selector(paths, range_start, range_end))
+            common.merge_dicts(path_response, merged_response)
+            range_start = range_end + 1
+            if path_response['lists'].values()[0]['length'] > range_end:
+                range_end += MAX_PATH_REQUEST_SIZE
+        return merged_response
+
+    def _path_request(self, paths):
+        """Execute a path request with static paths"""
         common.debug('Executing path request: {}'.format(json.dumps(paths)))
         headers = {
             'Content-Type': 'application/json',
@@ -333,6 +361,16 @@ def _inject_root_lolomo(paths, root_lolomo):
         return paths
     return [['lolomos', root_lolomo] + path
             for path in paths[1:]]
+
+
+def _set_range_selector(paths, range_start, range_end):
+    import copy
+    ranged_paths = copy.deepcopy(paths)
+    for path in ranged_paths:
+        for i in range(0, len(path) - 1):
+            if path[i] == 'RANGE_SELECTOR':
+                path[i] = {'from': range_start, 'to': range_end}
+    return ranged_paths
 
 
 def _login_payload(credentials, auth_url):
