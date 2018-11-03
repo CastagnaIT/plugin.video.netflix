@@ -2,6 +2,7 @@
 """Stateful Netflix session management"""
 from __future__ import unicode_literals
 
+import traceback
 from time import time
 from base64 import urlsafe_b64encode
 from functools import wraps
@@ -20,6 +21,7 @@ BASE_URL = 'https://www.netflix.com'
 URLS = {
     'login': {'endpoint': '/login', 'is_api_call': False},
     'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
+    'browse': {'endpoint': '/browse', 'is_api_call': False},
     'profiles':  {'endpoint': '/profiles/manage', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
     'adult_pin': {'endpoint': '/pin/service', 'is_api_call': True},
@@ -27,7 +29,6 @@ URLS = {
     'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},
     'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
     # Don't know what these could be used for. Keeping for reference
-    # 'browse': {'endpoint': '/browse', 'is_api_call': False},
     # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
     # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
 }
@@ -62,14 +63,11 @@ class NetflixSession(object):
     session = None
     """The requests.session object to handle communication to Netflix"""
 
-    session_data = None
-    """The session data extracted from the Netflix webpage.
-    Contains profiles, user_data, esn and api_data"""
-
     verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
     """Use SSL verification when performing requests"""
 
     def __init__(self):
+        self._session_data = None
         self.slots = [
             self.login,
             self.logout,
@@ -101,6 +99,23 @@ class NetflixSession(object):
         return urlsafe_b64encode(self.credentials.get('email', 'NoMail'))
 
     @property
+    def session_data(self):
+        """The session data extracted from the Netflix webpage.
+        Contains profiles, active_profile, root_lolomo, user_data, esn
+        and api_data"""
+        return self._session_data
+
+    @session_data.setter
+    def session_data(self, new_session_data):
+        self._session_data = new_session_data
+        self.session.headers.update(
+            {'x-netflix.request.client.user.guid':
+                 new_session_data['active_profile']})
+        cookies.save(self.account_hash, self.session.cookies)
+        _update_esn(self.session_data['esn'])
+        common.debug('Set session data: {}'.format(self._session_data))
+
+    @property
     def auth_url(self):
         """Valid authURL. Raises InvalidAuthURLError if it isn't known."""
         try:
@@ -115,7 +130,9 @@ class NetflixSession(object):
             common.info('Session closed')
         except AttributeError:
             pass
-        self.session_data = {}
+        # Do not use property setter for session_data because self.session may
+        # be None at this point
+        self._session_data = {}
         self.session = requests.session()
         self.session.headers.update({
             'User-Agent': common.get_user_agent(),
@@ -137,11 +154,7 @@ class NetflixSession(object):
         """Check if the user is logged in"""
         if not self.session.cookies:
             common.debug('Active session has no cookies, trying to restore...')
-            self._load_cookies()
-            if self._refresh_session_data():
-                _update_esn(self.session_data['esn'])
-                return True
-            return False
+            return self._load_cookies() and self._refresh_session_data()
         return True
 
     def _refresh_session_data(self):
@@ -150,12 +163,12 @@ class NetflixSession(object):
         try:
             # If we can get session data, cookies are still valid
             self.session_data = website.extract_session_data(
-                self._get('profiles'))
+                self._get('browse'))
         except Exception:
-            import traceback
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired')
             return False
+        common.debug('Successfully refreshed session data')
         return True
 
     def _load_cookies(self):
@@ -164,9 +177,11 @@ class NetflixSession(object):
             self.session.cookies = cookies.load(self.account_hash)
         except cookies.MissingCookiesError:
             common.info('No stored cookies available')
+            return False
         except cookies.CookiesExpiredError:
             # Ignore this for now, because login is sometimes valid anyway
             pass
+        return True
 
     @common.addonsignals_return_call
     def login(self):
@@ -176,24 +191,19 @@ class NetflixSession(object):
     def _login(self):
         """Perform account login"""
         try:
-            common.debug('Extracting authURL...')
             auth_url = website.extract_userdata(
-                self._get('profiles'))['authURL']
+                self._get('browse'))['authURL']
             common.debug('Logging in...')
             login_response = self._post(
                 'login', data=_login_payload(self.credentials, auth_url))
-            common.debug('Extracting session data...')
             session_data = website.extract_session_data(login_response)
         except Exception:
-            import traceback
             common.error(traceback.format_exc())
             raise LoginFailedError
 
         common.info('Login successful')
-        ui.show_notification('Netflix', 'Login successful')
+        ui.show_notification(common.get_local_string(30109))
         self.session_data = session_data
-        cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(self.session_data['esn'])
 
     @common.addonsignals_return_call
     def logout(self):
@@ -217,6 +227,9 @@ class NetflixSession(object):
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Activating profile {}'.format(guid))
+        if guid == self.session_data['active_profile']:
+            common.debug('Profile {} is already active'.format(guid))
+            return False
         self._get(
             component='activate_profile',
             req_type='api',
@@ -226,6 +239,7 @@ class NetflixSession(object):
                 'authURL': self.auth_url})
         self._refresh_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
+        return True
 
     @common.addonsignals_return_call
     @needs_login

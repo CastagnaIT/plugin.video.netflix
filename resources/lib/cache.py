@@ -126,7 +126,6 @@ class Cache(object):
         self.buckets = {}
         self.lock_marker = str(BUCKET_LOCKED.format(plugin_handle))
         self.window = xbmcgui.Window(10000)
-        self.common.debug('Cache instantiated')
 
     def get(self, bucket, identifier):
         """Retrieve an item from a cache bucket"""

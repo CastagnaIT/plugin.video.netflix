@@ -447,3 +447,11 @@ msgstr "PIN-Abfrage deaktiviert"
 msgctxt "#30108"
 msgid "Enabled PIN verfication"
 msgstr "PIN-Abfrage aktiviert"
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Login erfolgreich"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Hintergrunddienste gestartet"

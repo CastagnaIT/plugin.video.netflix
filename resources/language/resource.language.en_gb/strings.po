@@ -455,3 +455,11 @@ msgstr ""
 msgctxt "#30108"
 msgid "Enabled PIN verfication"
 msgstr ""
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr ""

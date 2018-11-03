@@ -20,8 +20,8 @@ class InvalidVideoListTypeError(Exception):
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    g.CACHE.invalidate()
-    common.make_call('activate_profile', profile_id)
+    if common.make_call('activate_profile', profile_id):
+        g.CACHE.invalidate()
 
 
 def logout():
@@ -47,6 +47,10 @@ def root_lists():
     common.debug('Requesting root lists from API')
     return LoLoMo(common.make_call(
         'path_request',
+        # TODO: Make sure that mylist is always retrieved
+        [['lolomo',
+          ['queue'],
+          ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
         [['lolomo',
           {'from': 0, 'to': 35},
           ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
