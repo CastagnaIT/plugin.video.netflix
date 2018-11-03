@@ -83,7 +83,7 @@ def get_credentials():
     """
     email = g.ADDON.getSetting('email')
     password = g.ADDON.getSetting('password')
-    verify_credentials(email, password)
+    verify_credentials(email and password)
     try:
         return {
             'email': decrypt_credential(email),
@@ -104,7 +104,13 @@ def set_credentials(email, password):
         g.ADDON.setSetting('password', encrypt_credential(password))
 
 
-def verify_credentials(email, password):
+def purge_credentials():
+    """Delete the stored credentials"""
+    g.ADDON.setSetting('email', '')
+    g.ADDON.setSetting('password', '')
+
+
+def verify_credentials(credential):
     """Verify credentials for plausibility"""
-    if not email or not password:
+    if not credential:
         raise MissingCredentialsError()

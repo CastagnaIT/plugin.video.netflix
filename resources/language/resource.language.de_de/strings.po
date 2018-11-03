@@ -459,3 +459,11 @@ msgstr "Hintergrunddienste gestartet"
 msgctxt "#30111"
 msgid "Enable Dolby Atmos"
 msgstr "Aktiviere Dolby Atmos"
+
+msgctxt "#30112"
+msgid "You need to be logged in to use this function"
+msgstr "Du musst eingeloggt sein um diese Funktion zu benutzen"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Logout erfolgreich"

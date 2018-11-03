@@ -8,6 +8,9 @@ from re import compile as recompile, DOTALL
 
 import resources.lib.common as common
 
+from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
+                         InvalidMembershipStatusError, WebsiteParsingError)
+
 PAGE_ITEMS = [
     'gpsModel',
     'models/userInfo/data/authURL',
@@ -23,26 +26,6 @@ PAGE_ITEMS = [
 
 JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
-
-
-class WebsiteParsingError(Exception):
-    """Parsing info from the Netflix Website failed"""
-    pass
-
-
-class InvalidAuthURLError(WebsiteParsingError):
-    """The authURL is invalid"""
-    pass
-
-
-class InvalidProfilesError(WebsiteParsingError):
-    """Cannot extract profiles from Netflix webpage"""
-    pass
-
-
-class InvalidMembershipStatusError(WebsiteParsingError):
-    """The user logging in does not have a valid subscription"""
-    pass
 
 
 def extract_session_data(content):

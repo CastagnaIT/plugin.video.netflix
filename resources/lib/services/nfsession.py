@@ -16,6 +16,8 @@ import resources.lib.api.paths as apipaths
 import resources.lib.services.cookies as cookies
 import resources.lib.kodi.ui as ui
 
+from resources.lib.api.exceptions import NotLoggedInError, LoginFailedError
+
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
 
@@ -48,14 +50,9 @@ def needs_login(func):
     def ensure_login(*args, **kwargs):
         session = args[0]
         if not session._is_logged_in():
-            session._login()
+            raise NotLoggedInError
         return func(*args, **kwargs)
     return ensure_login
-
-
-class LoginFailedError(Exception):
-    """The login attempt has failed"""
-    pass
 
 
 class NetflixSession(object):
@@ -88,20 +85,10 @@ class NetflixSession(object):
         self._prefetch_login()
 
     @property
-    def credentials(self):
-        """
-        The stored credentials.
-        Will ask for credentials if there are none in store
-        """
-        try:
-            return common.get_credentials()
-        except common.MissingCredentialsError:
-            return ui.ask_credentials()
-
-    @property
     def account_hash(self):
         """The unique hash of the current account"""
-        return urlsafe_b64encode(self.credentials.get('email', 'NoMail'))
+        return urlsafe_b64encode(
+            common.get_credentials().get('email', 'NoMail'))
 
     @property
     def session_data(self):
@@ -154,6 +141,8 @@ class NetflixSession(object):
                 self._login()
         except common.MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
+        except LoginFailedError:
+            ui.show_notification(common.get_local_string(30009))
 
     def _is_logged_in(self):
         """Check if the user is logged in"""
@@ -172,6 +161,7 @@ class NetflixSession(object):
         except Exception:
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired')
+            self.session.cookies.clear()
             return False
         common.debug('Successfully refreshed session data')
         return True
@@ -180,6 +170,10 @@ class NetflixSession(object):
         """Load stored cookies from disk"""
         try:
             self.session.cookies = cookies.load(self.account_hash)
+        except common.MissingCredentialsError:
+            common.debug(
+                'No stored credentials available, cannot identify account')
+            return False
         except cookies.MissingCookiesError:
             common.info('No stored cookies available')
             return False
@@ -200,10 +194,12 @@ class NetflixSession(object):
                 self._get('browse'))['authURL']
             common.debug('Logging in...')
             login_response = self._post(
-                'login', data=_login_payload(self.credentials, auth_url))
+                'login',
+                data=_login_payload(common.get_credentials(), auth_url))
             session_data = website.extract_session_data(login_response)
         except Exception:
             common.error(traceback.format_exc())
+            self.session.cookies.clear()
             raise LoginFailedError
 
         common.info('Login successful')
@@ -216,6 +212,8 @@ class NetflixSession(object):
         common.debug('Logging out of current account')
         self._get('logout')
         cookies.delete(self.account_hash)
+        common.info('Logout successful')
+        ui.show_notification(common.get_local_string(30109))
         self._init_session()
 
     @common.addonsignals_return_call
