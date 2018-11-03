@@ -12,9 +12,6 @@ except ImportError:
 from resources.lib.globals import g
 import resources.lib.common as common
 
-COOKIES = {}
-"""In-memory storage for account cookies"""
-
 
 class MissingCookiesError(Exception):
     """No session cookies have been stored"""
@@ -29,7 +26,7 @@ class CookiesExpiredError(Exception):
 def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
     # pylint: disable=broad-except
-    COOKIES[account_hash] = cookie_jar
+    g.COOKIES[account_hash] = cookie_jar
     try:
         with open(cookie_filename(account_hash), 'wb') as cookie_file:
             common.debug('Saving cookies to file')
@@ -41,7 +38,7 @@ def save(account_hash, cookie_jar):
 def delete(account_hash):
     """Delete cookies for an account from in-memory storage and the disk"""
     # pylint: disable=broad-except
-    del COOKIES[account_hash]
+    del g.COOKIES[account_hash]
     try:
         os.remove(cookie_filename(account_hash))
     except Exception as exc:
@@ -50,13 +47,13 @@ def delete(account_hash):
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
-    cookie_jar = (COOKIES.get(account_hash) or
+    cookie_jar = (g.COOKIES.get(account_hash) or
                   load_from_file(account_hash))
 
     if expired(cookie_jar):
         raise CookiesExpiredError()
 
-    COOKIES[account_hash] = cookie_jar
+    g.COOKIES[account_hash] = cookie_jar
 
     return cookie_jar
 
