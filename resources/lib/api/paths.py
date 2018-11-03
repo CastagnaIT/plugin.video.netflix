@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 
+from .exceptions import InvalidReferenceError
+
 RANGE_SELECTOR = 'RANGE_SELECTOR'
 
 ART_SIZE_POSTER = '_342x684'
@@ -83,12 +85,6 @@ REFERENCE_MAPPINGS = {
     'writer': 'creators',
     'genre': 'genres'
 }
-
-
-class InvalidReferenceError(Exception):
-    """The provided reference cannot be dealt with as it is in an
-    unexpected format"""
-    pass
 
 
 def resolve_refs(references, targets):

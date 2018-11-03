@@ -9,6 +9,8 @@ from time import time
 import AddonSignals
 
 from resources.lib.globals import g
+import resources.lib.api.exceptions as apierrors
+
 from .logging import debug, error
 
 
@@ -61,7 +63,10 @@ def make_call(callname, data=None):
         msg = ('AddonSignals call {callname} returned {error}: {message}'
                .format(callname=callname, **result))
         error(msg)
-        raise Exception(msg)
+        try:
+            raise apierrors.__dict__[result['error']]
+        except KeyError:
+            raise Exception(result['error'])
     elif result is None:
         raise Exception('AddonSignals call timed out')
     return result

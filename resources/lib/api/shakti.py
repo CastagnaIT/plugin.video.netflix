@@ -2,20 +2,19 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
+from functools import wraps
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
+import resources.lib.kodi.ui as ui
 
 from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
                          SearchVideoList, CustomVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
-
-
-class InvalidVideoListTypeError(Exception):
-    """No video list of a given was available"""
-    pass
+from .exceptions import InvalidVideoListTypeError, LoginFailedError
 
 
 def activate_profile(profile_id):
@@ -28,12 +27,24 @@ def logout():
     """Logout of the current account"""
     g.CACHE.invalidate()
     common.make_call('logout')
+    common.purge_credentials()
 
 
 def login():
     """Perform a login"""
     g.CACHE.invalidate()
-    common.make_call('login')
+    try:
+        ui.ask_credentials()
+    except common.MissingCredentialsError:
+        ui.show_notification(common.get_local_string(30112))
+        return False
+    try:
+        common.make_call('login')
+    except LoginFailedError:
+        ui.show_notification(common.get_local_string(30009))
+        common.purge_credentials()
+        return False
+    return True
 
 
 def profiles():
