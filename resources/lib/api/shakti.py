@@ -10,7 +10,7 @@ from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
                          SearchVideoList, CustomVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                    GENRE_PARTIAL_PATHS)
+                    GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
 
 
 class InvalidVideoListTypeError(Exception):
@@ -88,11 +88,15 @@ def video_list(list_id):
     common.debug('Requesting video list {}'.format(list_id))
     return VideoList(common.make_call(
         'perpetual_path_request',
-        # The length attribute MUST be present with perpetual_path_request!
-        [['lists', [list_id],
-          ['displayName', 'context', 'genreId', 'length']]] +
-        build_paths(['lists', [list_id], 'RANGE_SELECTOR', 'reference'],
-                    VIDEO_LIST_PARTIAL_PATHS)))
+        {
+            'path_type': 'videolist',
+            'paths':
+                [['lists', [list_id],
+                  # The length attribute MUST be present!
+                  ['displayName', 'context', 'genreId', 'length']]] +
+                build_paths(['lists', [list_id], RANGE_SELECTOR, 'reference'],
+                            VIDEO_LIST_PARTIAL_PATHS)
+        }))
 
 
 def custom_video_list(video_ids):
@@ -133,9 +137,13 @@ def seasons(videoid):
     return SeasonList(
         videoid,
         common.make_call(
-            'path_request',
-            build_paths(['videos', videoid.tvshowid],
-                        SEASONS_PARTIAL_PATHS)))
+            'perpetual_path_request',
+            {
+                'path_type': 'seasonlist',
+                'length_params': [videoid.tvshowid],
+                'paths': build_paths(['videos', videoid.tvshowid],
+                                     SEASONS_PARTIAL_PATHS)
+            }))
 
 
 @cache.cache_output(g, cache.CACHE_COMMON)
@@ -148,14 +156,18 @@ def episodes(videoid):
     return EpisodeList(
         videoid,
         common.make_call(
-            'path_request',
-            [['seasons', videoid.seasonid, 'summary']] +
-            build_paths(['seasons', videoid.seasonid, 'episodes',
-                         {'from': 0, 'to': 40}],
-                        EPISODES_PARTIAL_PATHS) +
-            build_paths(['videos', videoid.tvshowid],
-                        ART_PARTIAL_PATHS +
-                        [['title']])))
+            'perpetual_path_request',
+            {
+                'path_type': 'episodelist',
+                'length_params': [videoid.seasonid],
+                'paths': [['seasons', videoid.seasonid, 'summary']] +
+                         build_paths(['seasons', videoid.seasonid, 'episodes',
+                                      RANGE_SELECTOR],
+                                     EPISODES_PARTIAL_PATHS) +
+                         build_paths(['videos', videoid.tvshowid],
+                                     ART_PARTIAL_PATHS +
+                                     [['title']])
+            }))
 
 
 @cache.cache_output(g, cache.CACHE_COMMON)

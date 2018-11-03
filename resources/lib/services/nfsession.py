@@ -12,6 +12,7 @@ import requests
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.website as website
+import resources.lib.api.paths as apipaths
 import resources.lib.services.cookies as cookies
 import resources.lib.kodi.ui as ui
 
@@ -254,12 +255,14 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    def perpetual_path_request(self, paths):
+    def perpetual_path_request(self, paths, path_type, length_params=None):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
         larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
         executed with forward shifting range selectors and the results will
         be combined into one path response."""
+        length_params = length_params or []
+        length = apipaths.LENGTH_ATTRIBUTES[path_type]
         range_start = 0
         range_end = MAX_PATH_REQUEST_SIZE
         merged_response = {}
@@ -268,7 +271,9 @@ class NetflixSession(object):
                 _set_range_selector(paths, range_start, range_end))
             common.merge_dicts(path_response, merged_response)
             range_start = range_end + 1
-            if path_response['lists'].values()[0]['length'] > range_end:
+            if length(path_response, *length_params) > range_end:
+                common.debug('{} has more items, doing another path request'
+                             .format(path_type))
                 range_end += MAX_PATH_REQUEST_SIZE
         return merged_response
 
@@ -364,11 +369,15 @@ def _inject_root_lolomo(paths, root_lolomo):
 
 
 def _set_range_selector(paths, range_start, range_end):
+    """Replace the RANGE_SELECTOR placeholder with an actual dict:
+    {'from': range_start, 'to': range_end}"""
     import copy
+    # Make a deepcopy because we don't want to lose the original paths
+    # with the placeholder
     ranged_paths = copy.deepcopy(paths)
     for path in ranged_paths:
         for i in range(0, len(path) - 1):
-            if path[i] == 'RANGE_SELECTOR':
+            if path[i] == apipaths.RANGE_SELECTOR:
                 path[i] = {'from': range_start, 'to': range_end}
     return ranged_paths
 
