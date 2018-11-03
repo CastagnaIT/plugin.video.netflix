@@ -463,3 +463,7 @@ msgstr ""
 msgctxt "#30110"
 msgid "Background services started"
 msgstr ""
+
+msgctxt "#30111"
+msgid "Enable Dolby Atmos"
+msgstr ""
