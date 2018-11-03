@@ -4,9 +4,21 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 
+RANGE_SELECTOR = 'RANGE_SELECTOR'
+
 ART_SIZE_POSTER = '_342x684'
 ART_SIZE_FHD = '_1920x1080'
 ART_SIZE_SD = '_665x375'
+
+LENGTH_ATTRIBUTES = {
+    'videolist': lambda r: r['lists'].values()[0]['length'],
+    'seasonlist': (lambda r, tvshowid:
+                   r['videos'][tvshowid]['seasonList']
+                   ['summary']['length']),
+    'episodelist': (lambda r, seasonid:
+                    r['seasons'][seasonid]['summary']['length'])}
+"""Predefined lambda expressions that return the value of the length
+attribute from within a path response dict"""
 
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
@@ -33,7 +45,8 @@ GENRE_PARTIAL_PATHS = [
 ]
 
 SEASONS_PARTIAL_PATHS = [
-    ['seasonList', {'from': 0, 'to': 40}, 'summary'],
+    ['seasonList', 'summary'],
+    ['seasonList', RANGE_SELECTOR, 'summary'],
     ['title']
 ] + ART_PARTIAL_PATHS
 
