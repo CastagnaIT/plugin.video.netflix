@@ -52,6 +52,7 @@ class GlobalVariables(object):
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
         self._library = None
+        self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
         self.PLUGIN = self.ADDON.getAddonInfo('name')

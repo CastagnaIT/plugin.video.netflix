@@ -168,6 +168,7 @@ class NetflixSession(object):
 
     def _load_cookies(self):
         """Load stored cookies from disk"""
+        # pylint: disable=broad-except
         try:
             self.session.cookies = cookies.load(self.account_hash)
         except common.MissingCredentialsError:
@@ -180,6 +181,11 @@ class NetflixSession(object):
         except cookies.CookiesExpiredError:
             # Ignore this for now, because login is sometimes valid anyway
             pass
+        except Exception:
+            common.error('Unexpected error while trying to load cookies. '
+                         'Maybe using old storage format?')
+            common.debug(traceback.format_exc())
+            return False
         return True
 
     @common.addonsignals_return_call
