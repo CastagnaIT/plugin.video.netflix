@@ -160,13 +160,15 @@ def episodes(videoid):
             {
                 'path_type': 'episodelist',
                 'length_params': [videoid.seasonid],
-                'paths': [['seasons', videoid.seasonid, 'summary']] +
-                         build_paths(['seasons', videoid.seasonid, 'episodes',
-                                      RANGE_SELECTOR],
-                                     EPISODES_PARTIAL_PATHS) +
-                         build_paths(['videos', videoid.tvshowid],
-                                     ART_PARTIAL_PATHS +
-                                     [['title']])
+                'paths':
+                    [['seasons', videoid.seasonid, 'summary']] +
+                    build_paths(
+                        ['seasons', videoid.seasonid, 'episodes',
+                         RANGE_SELECTOR],
+                        EPISODES_PARTIAL_PATHS) +
+                    build_paths(
+                        ['videos', videoid.tvshowid],
+                        ART_PARTIAL_PATHS + [['title']])
             }))
 
 

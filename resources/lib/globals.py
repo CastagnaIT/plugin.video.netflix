@@ -87,20 +87,23 @@ class GlobalVariables(object):
 
     def _init_cache(self):
         if not os.path.exists(os.path.join(self.DATA_PATH, 'cache')):
-            for bucket in cache.BUCKET_NAMES:
-                if bucket == cache.CACHE_LIBRARY:
-                    # Library gets special location in DATA_PATH root because
-                    # we don't want users accidentally deleting it.
-                    continue
-                try:
-                    os.makedirs(os.path.join(g.DATA_PATH, 'cache', bucket))
-                except OSError:
-                    pass
+            self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
         import resources.lib.common as common
         self.CACHE = cache.Cache(common, self.DATA_PATH, self.CACHE_TTL,
                                  self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
+
+    def _init_filesystem_cache(self):
+        for bucket in cache.BUCKET_NAMES:
+            if bucket == cache.CACHE_LIBRARY:
+                # Library gets special location in DATA_PATH root because
+                # we don't want users accidentally deleting it.
+                continue
+            try:
+                os.makedirs(os.path.join(self.DATA_PATH, 'cache', bucket))
+            except OSError:
+                pass
 
     def library(self):
         """Get the current library instance"""

@@ -72,10 +72,7 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:
-            ui.show_error_info(
-                title=common.get_local_string(30105),
-                message=': '.join((exc.__class__.__name__, exc.message)),
-                netflix_error=False)
+            ui.show_addon_error_info(exc)
             return
 
         player = xbmc.Player()

@@ -115,7 +115,7 @@ class NetflixSession(object):
         self._session_data = new_session_data
         self.session.headers.update(
             {'x-netflix.request.client.user.guid':
-                 new_session_data['active_profile']})
+             new_session_data['active_profile']})
         cookies.save(self.account_hash, self.session.cookies)
         _update_esn(self.session_data['esn'])
         common.debug('Set session data: {}'.format(self._session_data))
@@ -376,9 +376,11 @@ def _set_range_selector(paths, range_start, range_end):
     # with the placeholder
     ranged_paths = copy.deepcopy(paths)
     for path in ranged_paths:
-        for i in range(0, len(path) - 1):
-            if path[i] == apipaths.RANGE_SELECTOR:
-                path[i] = {'from': range_start, 'to': range_end}
+        try:
+            path[path.index(apipaths.RANGE_SELECTOR)] = (
+                {'from': range_start, 'to': range_end})
+        except ValueError:
+            pass
     return ranged_paths
 
 

@@ -60,10 +60,7 @@ if __name__ == '__main__':
     except Exception as exc:
         import traceback
         common.error(traceback.format_exc())
-        ui.show_error_info(title=common.get_local_string(30105),
-                           message=': '.join((exc.__class__.__name__,
-                                              exc.message)),
-                           netflix_error=False)
+        ui.show_addon_error_info(exc)
         xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
 
     g.CACHE.commit()
