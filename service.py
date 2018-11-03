@@ -52,7 +52,7 @@ class NetflixService(object):
         common.info('[MSL] Thread started')
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
-        ui.show_notification('Background services started')
+        ui.show_notification(common.get_local_string(30110))
 
     def shutdown(self):
         """
