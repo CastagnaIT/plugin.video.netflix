@@ -63,16 +63,15 @@ def cache_output(g, bucket, identifying_param_index=0,
                                              kwargs,
                                              identifying_param_index,
                                              args)
-                cached_result = g.CACHE.get(bucket, identifier)
-                return cached_result
+                return g.CACHE.get(bucket, identifier)
+            except IndexError:
+                # Do not cache if identifier couldn't be determined
+                return func(*args, **kwargs)
             except CacheMiss:
                 output = func(*args, **kwargs)
                 g.CACHE.add(bucket, identifier, output, ttl=ttl,
                             to_disk=to_disk)
                 return output
-            except IndexError:
-                # Do not cache if identifier couldn't be determined
-                return func(*args, **kwargs)
         return wrapper
     return caching_decorator
 

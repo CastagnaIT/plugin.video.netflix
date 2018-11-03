@@ -90,17 +90,7 @@ class PlaybackController(xbmc.Monitor):
         common.debug('Notifying all managers of {} (data={})'
                      .format(notification.__name__, data))
         for manager in self.action_managers:
-            notify_method = getattr(manager, notification.__name__)
-            try:
-                if data is not None:
-                    notify_method(data)
-                else:
-                    notify_method()
-            except Exception as exc:
-                common.error('{} disabled due to exception: {}'
-                             .format(manager.name, exc))
-                manager.enabled = False
-                raise
+            _notify_managers(manager, notification, data)
 
     def _get_player_state(self):
         try:
@@ -125,3 +115,17 @@ class PlaybackController(xbmc.Monitor):
             player_state['time']['seconds'])
 
         return player_state
+
+
+def _notify_managers(manager, notification, data):
+    notify_method = getattr(manager, notification.__name__)
+    try:
+        if data is not None:
+            notify_method(data)
+        else:
+            notify_method()
+    except Exception as exc:
+        common.error('{} disabled due to exception: {}'
+                     .format(manager.name, exc))
+        manager.enabled = False
+        raise
