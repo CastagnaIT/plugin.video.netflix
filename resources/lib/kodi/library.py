@@ -3,18 +3,22 @@
 from __future__ import unicode_literals
 
 import os
+import re
 import codecs
 from datetime import datetime, timedelta
+from functools import wraps
 
 import xbmc
 
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
+import resources.lib.kodi.ui as ui
 
 LIBRARY_HOME = 'library'
 FOLDER_MOVIES = 'movies'
 FOLDER_TV = 'shows'
+ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
 
 
 class ItemNotFound(Exception):
@@ -34,21 +38,40 @@ def get_item(videoid):
     Kodi DBID and mediatype"""
     # pylint: disable=broad-except
     try:
-        exported_filepath = os.path.normcase(
-            common.translate_path(
-                common.get_path(videoid.to_list(), g.library())['file']))
-        for library_item in common.get_library_items(videoid.mediatype):
-            if os.path.normcase(library_item['file']) == exported_filepath:
-                return common.get_library_item_details(
-                    videoid.mediatype, library_item[videoid.mediatype + 'id'])
-    except Exception:
-        # import traceback
-        # common.error(traceback.format_exc())
-        pass
-    # This is intentionally not raised in the except block!
-    raise ItemNotFound(
-        'The video with id {} is not present in the Kodi library'
-        .format(videoid))
+        library_entry, entry_type = _get_library_entry(videoid)
+        return _get_item(entry_type, library_entry['file'])
+    except (KeyError, AttributeError, IndexError, ItemNotFound):
+        import traceback
+        common.error(traceback.format_exc())
+        raise ItemNotFound(
+            'The video with id {} is not present in the Kodi library'
+            .format(videoid))
+
+
+def _get_library_entry(videoid):
+    """Get the first leaf-entry for videoid from the library.
+    For shows and seasons this will return the first contained episode"""
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+        return (common.get_path(videoid.to_list(), g.library()),
+                videoid.mediatype)
+    elif videoid.mediatype == common.VideoId.SHOW:
+        return (g.library()[videoid.tvshowid].values()[0].values()[0],
+                common.VideoId.EPISODE)
+    elif videoid.mediatype == common.VideoId.SHOW:
+        return (g.library()[videoid.tvshowid][videoid.seasonid].values()[0],
+                common.VideoId.EPISODE)
+    else:
+        raise ItemNotFound('No items of type {} in library'
+                           .format(videoid.mediatype))
+
+
+def _get_item(mediatype, filename):
+    exported_filepath = os.path.normcase(common.translate_path(filename))
+    for library_item in common.get_library_items(mediatype):
+        if os.path.normcase(library_item['file']) == exported_filepath:
+            return common.get_library_item_details(
+                mediatype, library_item[mediatype + 'id'])
+    raise ItemNotFound
 
 
 def list_contents():
@@ -60,6 +83,44 @@ def list_contents():
 def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     return common.get_path_safe(videoid.to_list(), g.library()) is not None
+
+
+def update_kodi_library(library_operation):
+    """Decorator that ensures an update of the Kodi libarary"""
+    @wraps(library_operation)
+    def kodi_library_update_wrapper(videoid, task_handler, *args, **kwargs):
+        """Either trigger an update of the Kodi library or remove the
+        items associated with videoid, depending on the invoked task_handler"""
+        is_remove = task_handler == remove_item
+        if is_remove:
+            _remove_from_kodi_library(videoid)
+        library_operation(videoid, task_handler, *args, **kwargs)
+        if not is_remove:
+            common.debug('Triggering Kodi library scan')
+            xbmc.executebuiltin('UpdateLibrary(video)')
+    return kodi_library_update_wrapper
+
+
+def _remove_from_kodi_library(videoid):
+    """Remove an item from the Kodi library."""
+    common.debug('Removing {} videoid from Kodi library'.format(videoid))
+    try:
+        kodi_library_item = get_item(videoid)
+        rpc_params = {
+            'movie': ['VideoLibrary.RemoveMovie', 'movieid'],
+            'show': ['VideoLibrary.RemoveTVShow', 'tvshowid'],
+            'episode': ['VideoLibrary.RemoveEpisode', 'episodeid']
+        }[videoid.mediatype]
+        common.json_rpc(rpc_params[0],
+                        {rpc_params[1]: kodi_library_item[rpc_params[1]]})
+    except ItemNotFound:
+        common.debug('Cannot remove {} from Kodi library, item not present'
+                     .format(videoid))
+    except KeyError as exc:
+        ui.show_notification(common.get_local_string(30120), time=7500)
+        common.warn('Cannot remove {} from Kodi library, '
+                    'Kodi does not support this (yet)'
+                    .format(exc))
 
 
 def compile_tasks(videoid):
@@ -128,8 +189,8 @@ def _create_item_task(title, section, videoid, destination, filename):
         'title': title,
         'section': section,
         'videoid': videoid,
-        'destination': destination,
-        'filename': filename
+        'destination': re.sub(ILLEGAL_CHARACTERS, '', destination),
+        'filename': re.sub(ILLEGAL_CHARACTERS, '', filename)
     }
 
 
@@ -186,6 +247,11 @@ def _add_to_library(videoid, export_filename):
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument
+    common.debug('Removing {} from library'.format(item_task['title']))
+    if not is_in_library(item_task['videoid']):
+        common.warn('cannot remove {}, item not in library'
+                    .format(item_task['title']))
+        return
     id_path = item_task['videoid'].to_list()
     exported_filename = common.translate_path(
         common.get_path(id_path, g.library())['file'])

@@ -50,7 +50,8 @@ def generate_context_menu_items(videoid):
         list_action = ('remove_from_list'
                        if videoid.value in api.mylist_items()
                        else 'add_to_list')
-        items.append(_ctx_item(list_action, videoid))
+        # Put this as first item
+        items.insert(0, _ctx_item(list_action, videoid))
 
     return items
 

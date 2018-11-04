@@ -10,10 +10,10 @@ from resources.lib.globals import g
 import resources.lib.common as common
 
 
-def show_notification(msg, title='Netflix'):
+def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
-    xbmc.executebuiltin('Notification({}, {}, 3000, {})'
-                        .format(title, msg, g.ICON)
+    xbmc.executebuiltin('Notification({}, {}, {}, {})'
+                        .format(title, msg, time, g.ICON)
                         .encode('utf-8'))
 
 

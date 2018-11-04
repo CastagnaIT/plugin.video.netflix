@@ -349,8 +349,8 @@ msgid "Cache item time-to-live (minutes)"
 msgstr "Time-to-live der Cache-Einträge (Minuten)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (minutes)"
-msgstr "Time-to-live für Metadaten Cache-Einträge (Minuten)"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Time-to-live für Metadaten Cache-Einträge (Tage)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
@@ -483,3 +483,15 @@ msgstr "Erweiterte Addon-Konfiguration"
 msgctxt "#30117"
 msgid "Cache"
 msgstr "Cache"
+
+msgctxt "#30118"
+msgid "My List operation failed: {}"
+msgstr "Aktualisierung von Meine Liste fehlgeschlagen: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Meine Liste erfolgreich aktualisiert"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Staffeln können nicht automatisch aus der Kodi Bilbiothek entfernt werden. Bitte tue dies manuell."

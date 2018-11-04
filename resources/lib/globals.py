@@ -64,7 +64,7 @@ class GlobalVariables(object):
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
         self.CACHE_METADATA_TTL = (
-            self.ADDON.getSettingInt('cache_metadata_ttl') * 60)
+            self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60)
 
         self.URL = urlparse(argv[0])
         try:

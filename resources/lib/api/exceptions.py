@@ -43,3 +43,8 @@ class NotLoggedInError(Exception):
     """The requested operation requires a valid and active login, which
     is not present"""
     pass
+
+
+class APIError(Exception):
+    """The requested API operation has resulted in an error"""
+    pass

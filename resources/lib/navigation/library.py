@@ -2,7 +2,6 @@
 """Navigation handler for library actions"""
 from __future__ import unicode_literals
 
-import xbmc
 
 from resources.lib. globals import g
 import resources.lib.common as common
@@ -65,6 +64,7 @@ class LibraryActionExecutor(object):
             self.params.get('sync_mylist', False))
 
 
+@library.update_kodi_library
 def _execute_library_tasks(videoid, task_handler, title):
     """Execute library tasks for videoid and show errors in foreground"""
     common.execute_tasks(title=title,
@@ -73,9 +73,9 @@ def _execute_library_tasks(videoid, task_handler, title):
                          notify_errors=True,
                          library_home=library.library_path())
     _sync_mylist(videoid, task_handler)
-    xbmc.executebuiltin('UpdateLibrary(video)')
 
 
+@library.update_kodi_library
 def _execute_library_tasks_silently(videoid, task_handler, sync_mylist):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=broad-except
@@ -87,7 +87,6 @@ def _execute_library_tasks_silently(videoid, task_handler, sync_mylist):
             common.error(traceback.format_exc())
             common.error('{} of {} failed'
                          .format(task_handler.__name__, task['title']))
-    xbmc.executebuiltin('UpdateLibrary(video)')
     if sync_mylist:
         _sync_mylist(videoid, task_handler)
 

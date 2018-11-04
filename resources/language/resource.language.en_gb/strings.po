@@ -357,7 +357,7 @@ msgid "Cache item time-to-live (minutes)"
 msgstr ""
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (minutes)"
+msgid "Cache item time-to-live for metadata (days)"
 msgstr ""
 
 msgctxt "#30086"
@@ -490,4 +490,16 @@ msgstr ""
 
 msgctxt "#30117"
 msgid "Cache"
+msgstr ""
+
+msgctxt "#30118"
+msgid "My List operation failed: {}"
+msgstr ""
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr ""

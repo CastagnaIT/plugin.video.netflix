@@ -2,8 +2,6 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
-from functools import wraps
-
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -14,7 +12,7 @@ from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
-from .exceptions import InvalidVideoListTypeError, LoginFailedError
+from .exceptions import InvalidVideoListTypeError, LoginFailedError, APIError
 
 
 def activate_profile(profile_id):
@@ -230,12 +228,16 @@ def update_my_list(videoid, operation):
     videoid_value = (videoid.movieid
                      if videoid.mediatype == common.VideoId.MOVIE
                      else videoid.tvshowid)
-    common.make_call(
-        'post',
-        {'component': 'update_my_list',
-         'data': {
-             'operation': operation,
-             'videoId': int(videoid_value)}})
+    try:
+        common.make_call(
+            'post',
+            {'component': 'update_my_list',
+             'data': {
+                 'operation': operation,
+                 'videoId': int(videoid_value)}})
+        ui.show_notification(common.get_local_string(30119))
+    except APIError as exc:
+        ui.show_notification(common.get_local_string(30118).format(exc))
     try:
         g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
     except InvalidVideoListTypeError:
