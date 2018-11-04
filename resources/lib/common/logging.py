@@ -14,6 +14,8 @@ def log(msg, exc=None, level=xbmc.LOGDEBUG):
     If msg contains a format placeholder for exc and exc is not none,
     exc will be formatted into the message."""
     msg = msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg
+    if isinstance(msg, str):
+        msg = msg.decode('utf-8')
     xbmc.log('[{identifier} ({handle})] {msg}'
              .format(identifier=g.ADDON_ID, handle=g.PLUGIN_HANDLE, msg=msg)
              .encode('utf-8'),

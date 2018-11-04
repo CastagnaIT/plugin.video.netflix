@@ -16,7 +16,8 @@ import resources.lib.api.paths as apipaths
 import resources.lib.services.cookies as cookies
 import resources.lib.kodi.ui as ui
 
-from resources.lib.api.exceptions import NotLoggedInError, LoginFailedError
+from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,
+                                          APIError)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -354,7 +355,7 @@ class NetflixSession(object):
         common.debug(
             'Request returned statuscode {}'.format(response.status_code))
         response.raise_for_status()
-        return (response.json()
+        return (_raise_api_error(response.json())
                 if URLS[component]['is_api_call']
                 else response.content)
 
@@ -421,3 +422,9 @@ def _update_esn(esn):
     """Return True if the esn has changed on Session initialization"""
     if g.set_esn(esn):
         common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn)
+
+
+def _raise_api_error(decoded_response):
+    if decoded_response.get('status', 'success') == 'error':
+        raise APIError(decoded_response.get('message'))
+    return decoded_response

@@ -64,7 +64,7 @@ def make_call(callname, data=None):
                .format(callname=callname, **result))
         error(msg)
         try:
-            raise apierrors.__dict__[result['error']]
+            raise apierrors.__dict__[result['error']](result['message'])
         except KeyError:
             raise Exception(result['error'])
     elif result is None:

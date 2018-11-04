@@ -8,6 +8,8 @@ import xbmc
 
 from resources.lib.globals import g
 
+from .logging import debug
+
 LIBRARY_PROPS = {
     'episode': ['title', 'plot', 'writer', 'firstaired', 'playcount',
                 'runtime', 'director', 'productioncode', 'season',
@@ -37,7 +39,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    # debug('Executing JSON-RPC: {}'.format(request))
+    debug('Executing JSON-RPC: {}'.format(request))
     raw_response = unicode(xbmc.executeJSONRPC(request), 'utf-8')
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
@@ -103,5 +105,5 @@ def run_plugin(path, block=False):
 
 def schedule_builtin(time, command, name='NetflixTask'):
     """Set an alarm to run builtin command after time has passed"""
-    xbmc.executebuiltin('AlarmClock({},{},{},True])'
+    xbmc.executebuiltin('AlarmClock({},{},{},silent)'
                         .format(name, command, time))

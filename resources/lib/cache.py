@@ -34,6 +34,7 @@ BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_METADATA,
 
 BUCKET_LOCKED = 'LOCKED_BY_{}'
 
+# 100 years TTL should be close enough to infinite
 TTL_INFINITE = 60*60*24*365*100
 
 
