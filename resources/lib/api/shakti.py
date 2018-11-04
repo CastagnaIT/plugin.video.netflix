@@ -2,6 +2,8 @@
 """Access to Netflix's Shakti API"""
 from __future__ import unicode_literals
 
+from functools import wraps
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -13,6 +15,18 @@ from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
 from .exceptions import InvalidVideoListTypeError, LoginFailedError, APIError
+
+
+def catch_api_errors(func):
+    """Decorator that catches API errors and displays a notification"""
+    # pylint: disable=missing-docstring
+    @wraps(func)
+    def api_error_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except APIError as exc:
+            ui.show_notification(common.get_local_string(30118).format(exc))
+    return api_error_wrapper
 
 
 def activate_profile(profile_id):
@@ -67,7 +81,7 @@ def root_lists():
           ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
         # Titles of first 4 videos in each video list
         [[{'from': 0, 'to': 40},
-          {'from': 0, 'to': 3}, 'reference', 'title']] +
+          {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
         # Art for first video in each video list
         # (will be displayed as video list art)
         build_paths([{'from': 0, 'to': 40},
@@ -129,7 +143,7 @@ def genre(genre_id):
         build_paths(['genres', genre_id, 'rw',
                      {"from": 0, "to": 50},
                      {"from": 0, "to": 3}, "reference"],
-                    [['title']] + ART_PARTIAL_PATHS) +
+                    [['title', 'summary']] + ART_PARTIAL_PATHS) +
         # IDs and names of subgenres
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
           ['id', 'name']]]))
@@ -207,6 +221,7 @@ def mylist_items():
         return []
 
 
+@catch_api_errors
 def rate(videoid, rating):
     """Rate a video on Netflix"""
     common.debug('Rating {} as {}'.format(videoid.value, rating))
@@ -218,8 +233,10 @@ def rate(videoid, rating):
          'params': {
              'titleid': videoid.value,
              'rating': rating}})
+    ui.show_notification(common.get_local_string(30127).format(rating * 2))
 
 
+@catch_api_errors
 def update_my_list(videoid, operation):
     """Call API to update my list with either add or remove action"""
     common.debug('My List: {} {}'.format(operation, videoid))
@@ -228,16 +245,13 @@ def update_my_list(videoid, operation):
     videoid_value = (videoid.movieid
                      if videoid.mediatype == common.VideoId.MOVIE
                      else videoid.tvshowid)
-    try:
-        common.make_call(
-            'post',
-            {'component': 'update_my_list',
-             'data': {
-                 'operation': operation,
-                 'videoId': int(videoid_value)}})
-        ui.show_notification(common.get_local_string(30119))
-    except APIError as exc:
-        ui.show_notification(common.get_local_string(30118).format(exc))
+    common.make_call(
+        'post',
+        {'component': 'update_my_list',
+         'data': {
+             'operation': operation,
+             'videoId': int(videoid_value)}})
+    ui.show_notification(common.get_local_string(30119))
     try:
         g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
     except InvalidVideoListTypeError:

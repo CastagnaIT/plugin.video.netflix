@@ -55,14 +55,23 @@ def _get_library_entry(videoid):
         return (common.get_path(videoid.to_list(), g.library()),
                 videoid.mediatype)
     elif videoid.mediatype == common.VideoId.SHOW:
-        return (g.library()[videoid.tvshowid].values()[0].values()[0],
-                common.VideoId.EPISODE)
-    elif videoid.mediatype == common.VideoId.SHOW:
-        return (g.library()[videoid.tvshowid][videoid.seasonid].values()[0],
-                common.VideoId.EPISODE)
+        return (
+            _any_child_library_entry(
+                _any_child_library_entry(g.library()[videoid.tvshowid])),
+            common.VideoId.EPISODE)
+    elif videoid.mediatype == common.VideoId.SEASON:
+        return (
+            _any_child_library_entry(
+                g.library()[videoid.tvshowid][videoid.seasonid]),
+            common.VideoId.EPISODE)
     else:
         raise ItemNotFound('No items of type {} in library'
                            .format(videoid.mediatype))
+
+
+def _any_child_library_entry(library_entry):
+    """Return a random library entry that is a child of library_entry"""
+    return common.any_value_except(library_entry, 'videoid')
 
 
 def _get_item(mediatype, filename):
@@ -123,8 +132,19 @@ def _remove_from_kodi_library(videoid):
                     .format(exc))
 
 
+def purge():
+    """Purge all items exported to Kodi library and delete internal library
+    database"""
+    common.debug('Purging library: {}'.format(g.library()))
+    for library_item in g.library().values():
+        execute_library_tasks(library_item['videoid'], remove_item,
+                              common.get_local_string(30030),
+                              sync_mylist=False)
+
+
 def compile_tasks(videoid):
     """Compile a list of tasks for items based on the videoid"""
+    common.debug('Compiling library tasks for {}'.format(videoid))
     metadata = api.metadata(videoid)
     if videoid.mediatype == common.VideoId.MOVIE:
         return _create_movie_task(videoid, metadata)
@@ -200,9 +220,9 @@ def export_item(item_task, library_home):
         library_home, item_task['section'], item_task['destination'])
     export_filename = os.path.join(
         destination_folder, item_task['filename'] + '.strm')
+    _add_to_library(item_task['videoid'], export_filename)
     _create_destination_folder(destination_folder)
     _write_strm_file(item_task, export_filename)
-    _add_to_library(item_task['videoid'], export_filename)
     common.debug('Exported {}'.format(item_task['title']))
 
 
@@ -236,11 +256,15 @@ def _write_strm_file(item_task, export_filename):
 def _add_to_library(videoid, export_filename):
     """Add an exported file to the library"""
     library_node = g.library()
-    for id_item in videoid.to_list():
+    for depth, id_item in enumerate(videoid.to_list()):
         if id_item not in library_node:
-            library_node[id_item] = {}
+            # No entry yet at this level, create a new one and assign
+            # it an appropriate videoid for later reference
+            library_node[id_item] = {
+                'videoid': videoid.derive_parent(depth)}
         library_node = library_node[id_item]
     library_node['file'] = export_filename
+    library_node['videoid'] = videoid
     g.save_library()
 
 
@@ -259,7 +283,7 @@ def remove_item(item_task, library_home=None):
     os.remove(common.translate_path(exported_filename))
     if not os.listdir(parent_folder):
         os.rmdir(parent_folder)
-    common.remove_path(id_path, g.library())
+    common.remove_path(id_path, g.library(), lambda e: e.keys() == ['videoid'])
     g.save_library()
 
 
@@ -292,3 +316,41 @@ def update_library():
             ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
              '&inbackground=True)')
             .format(g.ADDON_ID))
+
+
+
+@update_kodi_library
+def execute_library_tasks(videoid, task_handler, title, sync_mylist=True):
+    """Execute library tasks for videoid and show errors in foreground"""
+    common.execute_tasks(title=title,
+                         tasks=compile_tasks(videoid),
+                         task_handler=task_handler,
+                         notify_errors=True,
+                         library_home=library_path())
+    _sync_mylist(videoid, task_handler, sync_mylist)
+
+
+@update_kodi_library
+def execute_library_tasks_silently(videoid, task_handler, sync_mylist):
+    """Execute library tasks for videoid and don't show any GUI feedback"""
+    # pylint: disable=broad-except
+    for task in compile_tasks(videoid):
+        try:
+            task_handler(task, library_path())
+        except Exception:
+            import traceback
+            common.error(traceback.format_exc())
+            common.error('{} of {} failed'
+                         .format(task_handler.__name__, task['title']))
+    if sync_mylist:
+        _sync_mylist(videoid, task_handler, sync_mylist)
+
+
+def _sync_mylist(videoid, task_handler, enabled):
+    """Add or remove exported items to My List, if enabled in settings"""
+    operation = {
+        'export_item': 'add',
+        'remove_item': 'remove'}.get(task_handler.__name__)
+    if enabled and operation and g.ADDON.getSettingBool('mylist_library_sync'):
+        common.debug('Syncing my list due to change of Kodi library')
+        api.update_my_list(videoid, operation)

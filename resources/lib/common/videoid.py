@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 from functools import wraps
 
+from .logging import debug
+
 
 class InvalidVideoId(Exception):
     """The provided video id is not valid"""
@@ -39,9 +41,7 @@ class VideoId(object):
     }
 
     def __init__(self, **kwargs):
-        self._id_values = (kwargs.get('videoid'), kwargs.get('movieid'),
-                           kwargs.get('episodeid'), kwargs.get('seasonid'),
-                           kwargs.get('tvshowid'))
+        self._id_values = _get_unicode_kwargs(kwargs)
         self._validate()
 
     def _validate(self):
@@ -56,13 +56,27 @@ class VideoId(object):
     @classmethod
     def from_path(cls, pathitems):
         """Create a VideoId instance from pathitems"""
-        if pathitems[0] == 'movie':
+        if pathitems[0] == VideoId.MOVIE:
             return cls(movieid=pathitems[1])
-        elif pathitems[0] == 'show':
+        elif pathitems[0] == VideoId.SHOW:
             return cls(tvshowid=_path_attr(pathitems, 1),
                        seasonid=_path_attr(pathitems, 3),
                        episodeid=_path_attr(pathitems, 5))
         return cls(videoid=pathitems[0])
+
+    @classmethod
+    def from_videolist_item(cls, video):
+        """Create a VideoId from a video item contained in a
+        videolist path response"""
+        mediatype = video['summary']['type']
+        video_id = video['summary']['id']
+        if mediatype == VideoId.MOVIE:
+            return cls(movieid=video_id)
+        elif mediatype == VideoId.SHOW:
+            return cls(tvshowid=video_id)
+        else:
+            raise InvalidVideoId(
+                'Can only construct a VideoId from a show or movie item')
 
     @property
     def value(self):
@@ -151,6 +165,20 @@ class VideoId(object):
         return type(self)(tvshowid=self.tvshowid, seasonid=self.seasonid,
                           episodeid=unicode(episodeid))
 
+    def derive_parent(self, depth):
+        """Returns a new videoid for the parent mediatype (season for episodes,
+        show for seasons) that is at the depth's level of the mediatype
+        hierarchy or this instance if there is no parent mediatype."""
+        if self.mediatype == VideoId.SEASON:
+            return type(self)(tvshowid=self.tvshowid)
+        if self.mediatype == VideoId.EPISODE:
+            if depth == 0:
+                return type(self)(tvshowid=self.tvshowid)
+            if depth == 1:
+                return type(self)(tvshowid=self.tvshowid,
+                                  seasonid=self.seasonid)
+        return self
+
     def _assigned_id_values(self):
         """Return a list of all id_values that are not None"""
         return [id_value
@@ -169,6 +197,15 @@ class VideoId(object):
 
     def __neq__(self, other):
         return not self.__eq__(other)
+
+
+def _get_unicode_kwargs(kwargs):
+    return tuple((unicode(kwargs[idpart])
+                  if kwargs.get(idpart)
+                  else None)
+                 for idpart
+                 in ['videoid', 'movieid', 'episodeid', 'seasonid',
+                     'tvshowid'])
 
 
 def _path_attr(pathitems, index):
