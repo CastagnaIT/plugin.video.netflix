@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 from resources.lib.globals import g
 
+from .logging import debug
+
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
 
@@ -55,7 +57,7 @@ def encrypt_credential(raw):
     return base64.b64encode(iv + cipher.encrypt(raw))
 
 
-def decrypt_credential(enc):
+def decrypt_credential(enc, secret=None):
     """
     Decodes data
 
@@ -69,7 +71,7 @@ def decrypt_credential(enc):
     from Cryptodome.Util import Padding
     enc = base64.b64decode(enc)
     iv = enc[:AES.block_size]
-    cipher = AES.new(__uniq_id(), AES.MODE_CBC, iv)
+    cipher = AES.new(secret or __uniq_id(), AES.MODE_CBC, iv)
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
         block_size=__BLOCK_SIZE__).decode('utf-8')
@@ -90,8 +92,22 @@ def get_credentials():
             'password': decrypt_credential(password)
         }
     except ValueError:
+        return migrate_credentials(email, password)
+
+
+def migrate_credentials(encrypted_email, encrypted_password):
+    """Try to decrypt stored credentials with the old unsafe secret and update
+    them to new safe format"""
+    unsafe_secret = 'UnsafeStaticSecret'.encode()
+    try:
+        email = decrypt_credential(encrypted_email, secret=unsafe_secret)
+        password = decrypt_credential(encrypted_password, secret=unsafe_secret)
+    except ValueError:
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
+    set_credentials(email, password)
+    debug('Migrated old unsafely stored credentials to new safe format')
+    return {'email': email, 'password': password}
 
 
 def set_credentials(email, password):

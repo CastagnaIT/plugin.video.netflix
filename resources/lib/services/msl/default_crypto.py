@@ -63,7 +63,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             'iv': base64.standard_b64encode(init_vector)
         }
         encryption_envelope['ciphertext'] = base64.standard_b64encode(
-            cipher.encrypt(Padding.pad(plaintext, 16)))
+            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16)))
 
         return json.dumps(encryption_envelope)
 
