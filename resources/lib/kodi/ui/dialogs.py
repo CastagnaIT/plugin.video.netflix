@@ -72,11 +72,16 @@ def ask_for_custom_title(original_title):
         type=xbmcgui.INPUT_ALPHANUM) or original_title
 
 
-def ask_for_removal_confirmation(title, year=None):
+def ask_for_removal_confirmation():
     """Ask the user to finally remove title from the Kodi library"""
-    return xbmcgui.Dialog().yesno(
-        heading=common.get_local_string(30047),
-        line1=title + (' ({})'.format(year) if year else ''))
+    return ask_for_confirmation(
+        common.get_local_string(30047),
+        common.get_local_string(30124))
+
+
+def ask_for_confirmation(title, message):
+    """Ask the user to finally remove title from the Kodi library"""
+    return xbmcgui.Dialog().yesno(heading=title, line1=message)
 
 
 def show_error_info(title, message, unknown_error=False, netflix_error=False):

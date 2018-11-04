@@ -493,7 +493,7 @@ msgid "Cache"
 msgstr ""
 
 msgctxt "#30118"
-msgid "My List operation failed: {}"
+msgid "API operation failed: {}"
 msgstr ""
 
 msgctxt "#30119"
@@ -502,4 +502,32 @@ msgstr ""
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr ""
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr ""
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr ""
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
 msgstr ""

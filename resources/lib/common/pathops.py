@@ -23,7 +23,7 @@ def get_path_safe(path, search_space, include_key=False, default=None):
         return default
 
 
-def remove_path(path, search_space, remove_remnants=True):
+def remove_path(path, search_space, is_empty, remove_remnants=True):
     """Remove a value from a nested dict by following a path.
     Also removes remaining empty dicts in the hierarchy if remove_remnants
     is True"""
@@ -31,8 +31,8 @@ def remove_path(path, search_space, remove_remnants=True):
     if len(path) == 1:
         del search_space[path[0]]
     else:
-        remove_path(path[1:], search_space[path[0]])
-        if remove_remnants and not search_space[path[0]]:
+        remove_path(path[1:], search_space[path[0]], is_empty)
+        if remove_remnants and is_empty(search_space[path[0]]):
             del search_space[path[0]]
 
 

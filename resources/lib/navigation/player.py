@@ -14,8 +14,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.services.playback import get_timeline_markers
 
 SERVICE_URL_FORMAT = 'http://localhost:{port}'
-MANIFEST_PATH_FORMAT = ('/manifest?id={videoid}'
-                        '&dolby={enable_dolby}&hevc={enable_hevc}')
+MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
 LICENSE_PATH_FORMAT = '/license?id={videoid}'
 
 INPUTSTREAM_SERVER_CERTIFICATE = '''Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijg
@@ -73,11 +72,7 @@ def get_inputstream_listitem(videoid):
     for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
         port=g.ADDON.getSetting('msl_service_port'))
-    manifest_path = MANIFEST_PATH_FORMAT.format(
-        videoid=videoid.value,
-        enable_dolby=g.ADDON.getSetting('enable_dolby_sound'),
-        enable_hevc=g.ADDON.getSetting('enable_hevc_profiles'))
-
+    manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path,
                                  offscreen=True)
     list_item.setContentLookup(False)

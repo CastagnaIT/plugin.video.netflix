@@ -58,6 +58,11 @@ class VideoList(object):
         self.artitem = next(self.videos.itervalues())
         self.contained_titles = [video['title']
                                  for video in self.videos.itervalues()]
+        try:
+            self.videoids = [common.VideoId.from_videolist_item(video)
+                             for video in self.videos.itervalues()]
+        except KeyError:
+            self.videoids = None
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.id.value][key])
@@ -78,6 +83,8 @@ class SearchVideoList(object):
         self.videos = OrderedDict(
             resolve_refs(self.data['search']['byReference'].values()[0],
                          self.data))
+        self.videoids = [common.VideoId.from_videolist_item(video)
+                         for video in self.videos.itervalues()]
         self.artitem = next(self.videos.itervalues(), None)
         self.contained_titles = [video['title']
                                  for video in self.videos.itervalues()]
@@ -97,6 +104,8 @@ class CustomVideoList(object):
         self.data = path_response
         self.title = common.get_local_string(30048)
         self.videos = self.data['videos']
+        self.videoids = [common.VideoId.from_videolist_item(video)
+                         for video in self.videos.itervalues()]
         self.artitem = next(self.videos.itervalues())
         self.contained_titles = [video['title']
                                  for video in self.videos.itervalues()]

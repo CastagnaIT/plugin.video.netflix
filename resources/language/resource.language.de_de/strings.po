@@ -485,8 +485,8 @@ msgid "Cache"
 msgstr "Cache"
 
 msgctxt "#30118"
-msgid "My List operation failed: {}"
-msgstr "Aktualisierung von Meine Liste fehlgeschlagen: {}"
+msgid "API operation failed: {}"
+msgstr "API-Aktion fehlgeschlagen: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
@@ -495,3 +495,31 @@ msgstr "Meine Liste erfolgreich aktualisiert"
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Staffeln können nicht automatisch aus der Kodi Bilbiothek entfernt werden. Bitte tue dies manuell."
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Vollständige Synchronisation jetzt durchführen"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Meine Liste in Kodi Bilbiothek synchronisieren"
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr "Möchtest du wirklich fortfahren?\nDiese Aktion wird alle vormals exportierten Einträge löschen und alle Einträge aus Meine Liste des aktuell aktiven Profils exportieren.\nDer Vorgang kann einige Zeit in Anspruch nehmen..."
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Bibliothek-Exporte zurücksetzen"
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr "Möchtest du wirklich deine Bibliothek-Exporte zurücksetzen?\nAlle vormals exportierten Einträge werden hierdurch gelöscht."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Mit {} bewertet"
