@@ -87,6 +87,7 @@ def show_error_info(title, message, unknown_error=False, netflix_error=False):
                                line2=message,
                                line3=common.get_local_string(30103))
 
+
 def show_addon_error_info(exc):
     """Show a dialog to notify of an addon internal error"""
     show_error_info(title=common.get_local_string(30105),

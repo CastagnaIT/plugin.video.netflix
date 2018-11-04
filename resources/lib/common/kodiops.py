@@ -7,7 +7,21 @@ import json
 import xbmc
 
 from resources.lib.globals import g
-from .logging import debug
+
+LIBRARY_PROPS = {
+    'episode': ['title', 'plot', 'writer', 'firstaired', 'playcount',
+                'runtime', 'director', 'productioncode', 'season',
+                'episode', 'originaltitle', 'showtitle', 'lastplayed',
+                'fanart', 'thumbnail', 'file', 'resume', 'tvshowid',
+                'dateadded', 'art', 'specialsortseason',
+                'specialsortepisode', 'userrating', 'seasonid'],
+    'movie': ['title', 'genre', 'year', 'director', 'trailer',
+              'tagline', 'plot', 'plotoutline', 'originaltitle', 'lastplayed',
+              'playcount', 'writer', 'studio', 'mpaa', 'country',
+              'imdbnumber', 'runtime', 'set', 'showlink', 'premiered',
+              'top250', 'fanart', 'thumbnail', 'file', 'sorttitle',
+              'resume', 'setid', 'dateadded', 'tag', 'art', 'userrating']
+}
 
 
 def json_rpc(method, params=None):
@@ -48,8 +62,17 @@ def get_library_items(dbtype):
     """Return a list of all items in the Kodi library that are of type
     dbtype (either movie or episode)"""
     method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
-    params = {'properties': ['title', 'file', 'resume']}
+    params = {'properties': ['file']}
     return json_rpc(method, params)[dbtype + 's']
+
+
+def get_library_item_details(dbtype, itemid):
+    """Return details for an item from the Kodi library"""
+    method = 'VideoLibrary.Get{}Details'.format(dbtype.capitalize())
+    params = {
+        dbtype + 'id': itemid,
+        'properties': LIBRARY_PROPS[dbtype]}
+    return json_rpc(method, params)[dbtype + 'details']
 
 
 def refresh_container():

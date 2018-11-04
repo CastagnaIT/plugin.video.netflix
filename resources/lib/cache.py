@@ -114,12 +114,12 @@ def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
 
 
 class Cache(object):
-    def __init__(self, common, data_path, ttl, metadata_ttl, plugin_handle):
+    def __init__(self, common, cache_path, ttl, metadata_ttl, plugin_handle):
         # pylint: disable=too-many-arguments
         # We have the self.common module injected as a dependency to work
         # around circular dependencies with gloabl variable initialization
         self.common = common
-        self.data_path = data_path
+        self.cache_path = cache_path
         self.ttl = ttl
         self.metadata_ttl = metadata_ttl
         self.buckets = {}
@@ -238,11 +238,11 @@ class Cache(object):
         if bucket == CACHE_LIBRARY:
             # We want a special handling for the library database, so users
             # dont accidentally delete it when deleting the cache
-            file_loc = ['library.ndb2']
+            file_loc = [os.path.dirname(self.cache_path), 'library.ndb2']
         else:
-            file_loc = [
-                'cache', bucket, '{}.cache'.format(identifier)]
-        return os.path.join(self.data_path, *file_loc)
+            file_loc = [self.cache_path, bucket, '{}.cache'.format(identifier)]
+        return self.common.translate_path(
+            os.path.join(*file_loc))
 
     def _persist_bucket(self, bucket, contents):
         # pylint: disable=broad-except

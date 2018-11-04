@@ -35,11 +35,12 @@ def get_item(videoid):
     # pylint: disable=broad-except
     try:
         exported_filepath = os.path.normcase(
-            xbmc.translatePath(
+            common.translate_path(
                 common.get_path(videoid.to_list(), g.library())['file']))
         for library_item in common.get_library_items(videoid.mediatype):
             if os.path.normcase(library_item['file']) == exported_filepath:
-                return library_item
+                return common.get_library_item_details(
+                    videoid.mediatype, library_item[videoid.mediatype + 'id'])
     except Exception:
         # import traceback
         # common.error(traceback.format_exc())
@@ -141,12 +142,13 @@ def export_item(item_task, library_home):
     _create_destination_folder(destination_folder)
     _write_strm_file(item_task, export_filename)
     _add_to_library(item_task['videoid'], export_filename)
+    common.debug('Exported {}'.format(item_task['title']))
 
 
 def _create_destination_folder(destination_folder):
     """Create destination folder, ignore error if it already exists"""
     try:
-        os.makedirs(xbmc.translatePath(destination_folder))
+        os.makedirs(common.translate_path(destination_folder))
     except OSError as exc:
         if exc.errno != os.errno.EEXIST:
             raise
@@ -155,7 +157,7 @@ def _create_destination_folder(destination_folder):
 def _write_strm_file(item_task, export_filename):
     """Write the playable URL to a strm file"""
     try:
-        with codecs.open(xbmc.translatePath(export_filename),
+        with codecs.open(common.translate_path(export_filename),
                          mode='w',
                          encoding='utf-8',
                          errors='replace') as filehandle:
@@ -184,10 +186,10 @@ def _add_to_library(videoid, export_filename):
 def remove_item(item_task):
     """Remove an item from the library and delete if from disk"""
     id_path = item_task['videoid'].to_list()
-    exported_filename = xbmc.translatePath(
+    exported_filename = common.translate_path(
         common.get_path(id_path, g.library())['file'])
     parent_folder = os.path.dirname(exported_filename)
-    os.remove(xbmc.translatePath(exported_filename))
+    os.remove(common.translate_path(exported_filename))
     if not os.listdir(parent_folder):
         os.remove(parent_folder)
     common.remove_path(id_path, g.library())

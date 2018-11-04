@@ -7,6 +7,7 @@ import json
 
 from resources.lib.globals import g
 from .logging import debug, error
+from .fileops import translate_path
 
 
 class PersistentStorage(object):
@@ -21,7 +22,8 @@ class PersistentStorage(object):
     """
     def __init__(self, storage_id):
         self.storage_id = storage_id
-        self.backing_file = os.path.join(g.DATA_PATH, self.storage_id + '.ndb')
+        self.backing_file = translate_path(
+            os.path.join(g.DATA_PATH, self.storage_id + '.ndb'))
         self._contents = {}
         self._dirty = True
         debug('Instantiated {}'.format(self.storage_id))
