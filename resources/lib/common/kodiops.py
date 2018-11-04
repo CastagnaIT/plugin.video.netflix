@@ -99,3 +99,9 @@ def run_plugin(path, block=False):
     the execution of code will block until the called plugin has finished
     running."""
     xbmc.executebuiltin(run_plugin_action(path, block))
+
+
+def schedule_builtin(time, command, name='NetflixTask'):
+    """Set an alarm to run builtin command after time has passed"""
+    xbmc.executebuiltin('AlarmClock({},{},{},True])'
+                        .format(name, command, time))

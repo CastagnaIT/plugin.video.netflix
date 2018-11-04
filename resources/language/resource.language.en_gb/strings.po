@@ -475,3 +475,19 @@ msgstr ""
 msgctxt "#30113"
 msgid "Logout successful"
 msgstr ""
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr ""
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr ""
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr ""

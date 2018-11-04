@@ -2,11 +2,11 @@
 """Navigation handler for actions"""
 from __future__ import unicode_literals
 
+import xbmc
 from xbmcaddon import Addon
 
 from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.cache as cache
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 from resources.lib.navigation import InvalidPathError
@@ -38,10 +38,9 @@ class AddonActionExecutor(object):
                                self.params['autologin_user'])
             g.ADDON.setSetting('autologin_id', pathitems[1])
             g.ADDON.setSetting('autologin_enable', 'true')
-            g.flush_settings()
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
-        cache.invalidate_cache()
+        g.CACHE.invalidate()
         common.refresh_container()
 
     def switch_account(self, pathitems=None):
@@ -76,5 +75,22 @@ class AddonActionExecutor(object):
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
-        api.update_my_list(videoid, pathitems[1])
+        operation = pathitems[1]
+        api.update_my_list(videoid, operation)
+        _sync_library(videoid, operation)
         common.refresh_container()
+
+
+def _sync_library(videoid, operation):
+    operation = {
+        'add': 'export_silent',
+        'remove': 'remove_silent'}.get(operation)
+    if operation and g.ADDON.getSettingBool('mylist_library_sync'):
+        common.debug('Syncing library due to change of my list')
+        # We need to wait a little before syncing the library to prevent race
+        # conditions with the Container refresh
+        common.schedule_builtin(
+            '00:03',
+            common.run_plugin_action(
+                common.build_url([operation], videoid, mode=g.MODE_LIBRARY)),
+            name='NetflixLibrarySync')
