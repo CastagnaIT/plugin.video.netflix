@@ -100,6 +100,7 @@ def _create_profile_item(profile_guid, profile, html_parser):
     enc_profile_name = profile_name.encode('utf-8')
     list_item = list_item_skeleton(
         label=unescaped_profile_name, icon=profile.get('avatar'))
+    list_item.select(profile.get('isActive', False))
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
         params={'autologin_user': enc_profile_name},

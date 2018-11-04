@@ -218,6 +218,7 @@ class NetflixSession(object):
         common.debug('Logging out of current account')
         self._get('logout')
         cookies.delete(self.account_hash)
+        common.purge_credentials()
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30109))
         self._init_session()

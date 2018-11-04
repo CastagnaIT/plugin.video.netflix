@@ -204,9 +204,9 @@ def add_info_from_library(videoid, list_item):
     #     list_item.setProperty('startPercent', str(start_percent))
     infos = {
         'DBID': details.pop('{}id'.format(videoid.mediatype)),
-        'mediatype': videoid.mediatype,
-        'title': details['title']
+        'mediatype': videoid.mediatype
     }
+    infos.update(details)
     list_item.setInfo('video', infos)
     list_item.setArt(art)
     return infos, art

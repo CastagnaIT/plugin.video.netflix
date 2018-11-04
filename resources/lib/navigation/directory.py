@@ -2,6 +2,7 @@
 """Navigation for classic plugin directory listing mode"""
 from __future__ import unicode_literals
 
+import xbmc
 import xbmcplugin
 
 from resources.lib.globals import g
@@ -90,17 +91,16 @@ class DirectoryBuilder(object):
     def search(self, pathitems):
         """Ask for a search term if none is given via path, query API
         and display search results"""
-        search_term = (pathitems[1]
-                       if len(pathitems) > 1
-                       else ui.ask_for_search_term())
-        if search_term:
-            search_results = api.search(search_term)
+        if len(pathitems) == 1:
+            _ask_search_term_and_redirect()
+        else:
+            search_results = api.search(pathitems[1])
             if search_results.videos:
                 listings.build_video_listing(search_results)
                 return
             else:
                 ui.show_notification(common.get_local_string(30013))
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+                xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
     def exported(self, pathitems=None):
         """List all items that are exported to the Kodi library"""
@@ -112,3 +112,13 @@ class DirectoryBuilder(object):
         else:
             ui.show_notification(common.get_local_string(30013))
             xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+
+
+def _ask_search_term_and_redirect():
+    search_term = ui.ask_for_search_term()
+    if search_term:
+        url = common.build_url(['search', search_term], mode=g.MODE_DIRECTORY)
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
+        xbmc.executebuiltin('Container.Update({},replace)'.format(url))
+    else:
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)

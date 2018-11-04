@@ -27,7 +27,6 @@ def logout():
     """Logout of the current account"""
     g.CACHE.invalidate()
     common.make_call('logout')
-    common.purge_credentials()
 
 
 def login():

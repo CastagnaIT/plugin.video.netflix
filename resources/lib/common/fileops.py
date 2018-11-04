@@ -4,7 +4,11 @@ from __future__ import unicode_literals
 
 import os
 
+import xbmc
+
 from resources.lib.globals import g
+
+from .logging import debug
 
 
 def check_folder_path(path):
@@ -29,24 +33,26 @@ def file_exists(filename, data_path=g.DATA_PATH):
     return os.path.exists(data_path + filename)
 
 
-def save_file(filename, content, data_path=g.DATA_PATH, mode='w'):
+def save_file(filename, content, mode='w'):
     """
     Saves the given content under given filename
     :param filename: The filename
     :param content: The content of the file
     """
-    with open(data_path + filename, mode) as file_handle:
+    with open(translate_path(os.path.join(g.DATA_PATH, filename)),
+              mode) as file_handle:
         file_handle.write(content.encode('utf-8'))
 
 
-def load_file(filename, data_path=g.DATA_PATH, mode='r'):
+def load_file(filename, mode='r'):
     """
     Loads the content of a given filename
     :param filename: The file to load
     :return: The content of the file
     """
-    with open(data_path + filename, mode) as file_handle:
-        return file_handle.read()
+    with open(translate_path(os.path.join(g.DATA_PATH, filename)),
+              mode) as file_handle:
+        return file_handle.read().decode('utf-8')
 
 
 def list_dir(data_path=g.DATA_PATH):
@@ -55,3 +61,8 @@ def list_dir(data_path=g.DATA_PATH):
     :return: The contents of the folder
     """
     return os.listdir(data_path)
+
+
+def translate_path(path):
+    """Translate path if it contains special:// and decode it to unicode"""
+    return xbmc.translatePath(path).decode('utf-8')

@@ -81,4 +81,4 @@ def expired(cookie_jar):
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""
-    return '{}_{}'.format(g.COOKIE_PATH, account_hash)
+    return common.translate_path('{}_{}'.format(g.COOKIE_PATH, account_hash))

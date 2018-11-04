@@ -59,8 +59,9 @@ class GlobalVariables(object):
         self.VERSION = self.ADDON.getAddonInfo('version')
         self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
         self.ICON = self.ADDON.getAddonInfo('icon')
-        self.DATA_PATH = xbmc.translatePath(self.ADDON.getAddonInfo('profile'))
-        self.COOKIE_PATH = self.DATA_PATH + 'COOKIE'
+        self.DATA_PATH = self.ADDON.getAddonInfo('profile')
+        self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
+        self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
         self.CACHE_METADATA_TTL = (
             self.ADDON.getSettingInt('cache_metadata_ttl') * 60)
@@ -87,12 +88,13 @@ class GlobalVariables(object):
         self._init_cache()
 
     def _init_cache(self):
-        if not os.path.exists(os.path.join(self.DATA_PATH, 'cache')):
+        if not os.path.exists(
+                xbmc.translatePath(self.CACHE_PATH).decode('utf-8')):
             self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
         import resources.lib.common as common
-        self.CACHE = cache.Cache(common, self.DATA_PATH, self.CACHE_TTL,
+        self.CACHE = cache.Cache(common, self.CACHE_PATH, self.CACHE_TTL,
                                  self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
@@ -102,7 +104,9 @@ class GlobalVariables(object):
                 # we don't want users accidentally deleting it.
                 continue
             try:
-                os.makedirs(os.path.join(self.DATA_PATH, 'cache', bucket))
+                os.makedirs(
+                    xbmc.translatePath(
+                        os.path.join(self.CACHE_PATH, bucket)).decode('utf-8'))
             except OSError:
                 pass
 

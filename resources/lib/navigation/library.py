@@ -2,6 +2,10 @@
 """Navigation handler for library actions"""
 from __future__ import unicode_literals
 
+import os
+
+import xbmc
+
 import resources.lib.common as common
 import resources.lib.kodi.library as library
 
@@ -52,3 +56,9 @@ def _execute_library_tasks(videoid, task_handler, title):
                          task_handler=task_handler,
                          notify_errors=True,
                          library_home=library.library_path())
+    path_to_scan = common.translate_path(
+        os.path.join(library.library_path(),
+                     'movies'
+                     if videoid.mediatype == common.VideoId.MOVIE
+                     else 'shows'))
+    xbmc.executebuiltin('UpdateLibrary(video)')
