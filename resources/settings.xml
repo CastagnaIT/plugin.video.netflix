@@ -6,13 +6,18 @@
     <setting id="switch_account" type="action" label="30059c" action="RunPlugin(plugin://plugin.video.netflix/action/switch_account)" option="close"/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin)"/>
+    <setting label="30053" type="lsep"/>
+    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
+    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
     <setting type="sep"/>
     <setting id="is_settings" type="action" label="30035" action="RunPlugin(plugin://plugin.video.netflix/action/opensettings/inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
   </category>
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
-    <setting id="customexportname" type="bool" label="30036" default="false"/>
+    <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
     <setting label="30065" type="lsep"/>
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
@@ -39,27 +44,23 @@
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
   </category>
   <category label="30023">
+    <setting label="30115" type="lsep"/>
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_atmos_sound" type="bool" label="30111" default="true"/>
     <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30136" default="false" visible="eq(-3,true)" subsetting="true"/>
+    <setting label="30116" type="lsep"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
-    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
-    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,60,525600" label="30085" default="43200"/>
-    <setting id="invalidate_cache_on_mylist_modify" type="bool" label="30086" default="false"/>
     <setting id="hidden_esn" visible="false" value="" />
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="msl_service_port" value="8000" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
-  </category>
-  <category label="30053">
-    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
-    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
+    <setting label="30117" type="lsep"/>
+    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
+    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
   </category>
 </settings>

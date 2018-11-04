@@ -183,15 +183,16 @@ def _add_to_library(videoid, export_filename):
     g.save_library()
 
 
-def remove_item(item_task):
+def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
+    # pylint: disable=unused-argument
     id_path = item_task['videoid'].to_list()
     exported_filename = common.translate_path(
         common.get_path(id_path, g.library())['file'])
     parent_folder = os.path.dirname(exported_filename)
     os.remove(common.translate_path(exported_filename))
     if not os.listdir(parent_folder):
-        os.remove(parent_folder)
+        os.rmdir(parent_folder)
     common.remove_path(id_path, g.library())
     g.save_library()
 

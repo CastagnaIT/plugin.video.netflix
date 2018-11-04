@@ -225,12 +225,17 @@ def rate(videoid, rating):
 def update_my_list(videoid, operation):
     """Call API to update my list with either add or remove action"""
     common.debug('My List: {} {}'.format(operation, videoid))
+    # We want the tvshowid for seasons and episodes (such videoids may be
+    # passed by the mylist/library auto-sync feature)
+    videoid_value = (videoid.movieid
+                     if videoid.mediatype == common.VideoId.MOVIE
+                     else videoid.tvshowid)
     common.make_call(
         'post',
         {'component': 'update_my_list',
          'data': {
              'operation': operation,
-             'videoId': int(videoid.value)}})
+             'videoId': int(videoid_value)}})
     try:
         g.CACHE.invalidate_entry(cache.CACHE_COMMON, list_id_for_type('queue'))
     except InvalidVideoListTypeError:

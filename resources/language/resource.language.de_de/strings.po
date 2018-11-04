@@ -467,3 +467,19 @@ msgstr "Du musst eingeloggt sein um diese Funktion zu benutzen"
 msgctxt "#30113"
 msgid "Logout successful"
 msgstr "Logout erfolgreich"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "Meine Liste und Kodi Library synchronisieren"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "Inhaltsprofile"
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr "Erweiterte Addon-Konfiguration"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Cache"
