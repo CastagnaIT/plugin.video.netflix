@@ -107,7 +107,6 @@ class NetflixSession(object):
              new_session_data['active_profile']})
         cookies.save(self.account_hash, self.session.cookies)
         _update_esn(self.session_data['esn'])
-        common.debug('Set session data: {}'.format(self._session_data))
 
     @property
     def auth_url(self):

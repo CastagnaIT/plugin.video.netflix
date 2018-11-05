@@ -219,7 +219,7 @@ class Cache(object):
         """Load a cache entry from disk and add it to the in memory bucket"""
         handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'r')
         try:
-            return pickle.load(handle)
+            return pickle.loads(handle.read())
         except Exception:
             raise CacheMiss()
         finally:
