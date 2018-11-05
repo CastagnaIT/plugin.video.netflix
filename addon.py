@@ -69,6 +69,9 @@ def route(pathitems):
     elif root_handler not in NAV_HANDLERS:
         raise nav.InvalidPathError(
             'No root handler for path {}'.format('/'.join(pathitems)))
+    elif root_handler == 'extrafanart':
+        common.debug('Ignoring extrafanart invocation')
+        xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
     else:
         nav.execute(NAV_HANDLERS[root_handler], pathitems[1:],
                     g.REQUEST_PARAMS)
