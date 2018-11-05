@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 from os import urandom
 import base64
+import json
+
 import xbmcdrm
 
 import resources.lib.common as common
@@ -93,14 +95,14 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         if not encrypted_data:
             raise MSLError('Widevine CryptoSession encrypt failed!')
 
-        return {
+        return json.dumps({
             'version': 1,
             'ciphertext': base64.standard_b64encode(encrypted_data),
             'sha256': 'AA==',
             'keyid': base64.standard_b64encode(self.key_id),
             # 'cipherspec' : 'AES/CBC/PKCS5Padding',
             'iv': base64.standard_b64encode(init_vector)
-        }
+        })
 
     def decrypt(self, init_vector, ciphertext):
         """Decrypt a ciphertext"""
