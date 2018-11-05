@@ -141,7 +141,7 @@ def parse_art(videoid, item, raw_data):
     boxarts = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[0] + ['url'], item)
     interesting_moment = common.get_multiple_paths(
-        paths.ART_PARTIAL_PATHS[1] + ['url'], item)[paths.ART_SIZE_FHD]
+        paths.ART_PARTIAL_PATHS[1] + ['url'], item, {}).get(paths.ART_SIZE_FHD)
     clearlogo = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[3] + ['url'], item)
     fanart = common.get_path_safe(
