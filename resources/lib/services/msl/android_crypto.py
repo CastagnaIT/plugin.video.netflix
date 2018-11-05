@@ -83,9 +83,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         :return: Serialized JSON String of the encryption Envelope
         """
         init_vector = urandom(16)
+        plaintext = plaintext.encode('utf-8')
         # Add PKCS5Padding
         pad = 16 - len(plaintext) % 16
-        padded_data = plaintext + ''.join([chr(pad)] * pad)
+        padded_data = plaintext + str('').join([chr(pad)] * pad)
         encrypted_data = self.crypto_session.Encrypt(self.key_id, padded_data,
                                                      init_vector)
 

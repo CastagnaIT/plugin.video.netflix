@@ -260,7 +260,7 @@ def _add_to_library(videoid, export_filename):
 
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, broad-except
     common.debug('Removing {} from library'.format(item_task['title']))
     if not is_in_library(item_task['videoid']):
         common.warn('cannot remove {}, item not in library'
@@ -270,9 +270,13 @@ def remove_item(item_task, library_home=None):
     exported_filename = xbmc.translatePath(
         common.get_path(id_path, g.library())['file'])
     parent_folder = os.path.dirname(exported_filename)
-    os.remove(xbmc.translatePath(exported_filename))
-    if not os.listdir(parent_folder):
-        os.rmdir(parent_folder)
+    try:
+        xbmcvfs.delete(xbmc.translatePath(exported_filename))
+        if not os.listdir(parent_folder):
+            os.rmdir(parent_folder)
+    except Exception:
+        common.debug('Cannot delete {}, file does not exist'
+                     .format(exported_filename))
     common.remove_path(id_path, g.library(), lambda e: e.keys() == ['videoid'])
     g.save_library()
 
