@@ -21,6 +21,7 @@ except ImportError:
 
 import xbmc
 import xbmcgui
+import xbmcvfs
 
 CACHE_COMMON = 'cache_common'
 CACHE_GENRES = 'cache_genres'
@@ -216,24 +217,26 @@ class Cache(object):
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
-        cache_filename = self._entry_filename(bucket, identifier)
+        handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'r')
         try:
-            with open(cache_filename, 'r') as cache_file:
-                cache_entry = pickle.load(cache_file)
+            return pickle.load(handle)
         except Exception:
             raise CacheMiss()
-        return cache_entry
+        finally:
+            handle.close()
 
     def _add_to_disk(self, bucket, identifier, cache_entry):
         """Write a cache entry to disk"""
         # pylint: disable=broad-except
         cache_filename = self._entry_filename(bucket, identifier)
+        handle = xbmcvfs.File(cache_filename, 'w')
         try:
-            with open(cache_filename, 'w') as cache_file:
-                pickle.dump(cache_entry, cache_file)
+            return pickle.dump(cache_entry, handle)
         except Exception as exc:
             self.common.error('Failed to write cache entry to {}: {}'
                               .format(cache_filename, exc))
+        finally:
+            handle.close()
 
     def _entry_filename(self, bucket, identifier):
         if bucket == CACHE_LIBRARY:
@@ -242,8 +245,7 @@ class Cache(object):
             file_loc = [os.path.dirname(self.cache_path), 'library.ndb2']
         else:
             file_loc = [self.cache_path, bucket, '{}.cache'.format(identifier)]
-        return self.common.translate_path(
-            os.path.join(*file_loc))
+        return xbmc.translatePath(os.path.join(*file_loc))
 
     def _persist_bucket(self, bucket, contents):
         # pylint: disable=broad-except

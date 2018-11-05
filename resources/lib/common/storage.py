@@ -2,12 +2,10 @@
 """Generic persistent on disk storage"""
 from __future__ import unicode_literals
 
-import os
 import json
 
-from resources.lib.globals import g
-from .logging import debug, error
-from .fileops import translate_path
+from .logging import debug, warn
+from .fileops import save_file, load_file
 
 
 class PersistentStorage(object):
@@ -22,8 +20,7 @@ class PersistentStorage(object):
     """
     def __init__(self, storage_id):
         self.storage_id = storage_id
-        self.backing_file = translate_path(
-            os.path.join(g.DATA_PATH, self.storage_id + '.ndb'))
+        self.backing_file = self.storage_id + '.ndb'
         self._contents = {}
         self._dirty = True
         debug('Instantiated {}'.format(self.storage_id))
@@ -60,8 +57,7 @@ class PersistentStorage(object):
         """
         Write current contents to disk
         """
-        with open(self.backing_file, 'w') as file_handle:
-            json.dump(self._contents, file_handle)
+        save_file(self.backing_file, json.dumps(self._contents))
         debug('Committed changes to backing file')
 
     def clear(self):
@@ -72,11 +68,12 @@ class PersistentStorage(object):
         self.commit()
 
     def _load_from_disk(self):
+        # pylint: disable=broad-except
         debug('Trying to load contents from disk')
         try:
-            with open(self.backing_file, 'r') as file_handle:
-                self._contents = json.load(file_handle)
-        except IOError:
-            error('Backing file does not exist or is not accessible')
+            self._contents = json.loads(load_file(self.backing_file))
+            debug('Loaded contents from backing file: {}'
+                  .format(self._contents))
+        except Exception:
+            warn('Backing file does not exist or is not readable')
         self._dirty = False
-        debug('Loaded contents from backing file: {}'.format(self._contents))
