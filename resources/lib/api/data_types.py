@@ -56,11 +56,9 @@ class VideoList(object):
         self.videos = OrderedDict(
             resolve_refs(self.data['lists'][self.id.value], self.data))
         self.artitem = next(self.videos.itervalues())
-        self.contained_titles = [video['title']
-                                 for video in self.videos.itervalues()]
+        self.contained_titles = _get_titles(self.videos)
         try:
-            self.videoids = [common.VideoId.from_videolist_item(video)
-                             for video in self.videos.itervalues()]
+            self.videoids = _get_videoids(self.videos)
         except KeyError:
             self.videoids = None
 
@@ -83,11 +81,9 @@ class SearchVideoList(object):
         self.videos = OrderedDict(
             resolve_refs(self.data['search']['byReference'].values()[0],
                          self.data))
-        self.videoids = [common.VideoId.from_videolist_item(video)
-                         for video in self.videos.itervalues()]
+        self.videoids = _get_videoids(self.videos)
         self.artitem = next(self.videos.itervalues(), None)
-        self.contained_titles = [video['title']
-                                 for video in self.videos.itervalues()]
+        self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['search'][key])
@@ -104,11 +100,9 @@ class CustomVideoList(object):
         self.data = path_response
         self.title = common.get_local_string(30048)
         self.videos = self.data['videos']
-        self.videoids = [common.VideoId.from_videolist_item(video)
-                         for video in self.videos.itervalues()]
+        self.videoids = _get_videoids(self.videos)
         self.artitem = next(self.videos.itervalues())
-        self.contained_titles = [video['title']
-                                 for video in self.videos.itervalues()]
+        self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
         return _check_sentinel(self.data[key])
@@ -143,3 +137,22 @@ def _check_sentinel(value):
     return (None
             if isinstance(value, dict) and value.get('$type') == 'sentinel'
             else value)
+
+
+def _get_title(video):
+    """Get the title of a video (either from direct key or nested within
+    summary)"""
+    return video.get('title', video.get('summary', {}).get('title'))
+
+
+def _get_titles(videos):
+    """Return a list of videos' titles"""
+    return [_get_title(video)
+            for video in videos.itervalues()
+            if _get_title(video)]
+
+
+def _get_videoids(videos):
+    """Return a list of VideoId objects for the videos"""
+    return [common.VideoId.from_videolist_item(video)
+            for video in videos.itervalues()]

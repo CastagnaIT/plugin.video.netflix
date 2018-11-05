@@ -24,6 +24,7 @@ BASE_URL = 'https://www.netflix.com'
 
 URLS = {
     'login': {'endpoint': '/login', 'is_api_call': False},
+    'logout': {'endpoint': '/SignOut', 'is_api_call': False},
     'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
     'browse': {'endpoint': '/browse', 'is_api_call': False},
     'profiles':  {'endpoint': '/profiles/manage', 'is_api_call': False},
