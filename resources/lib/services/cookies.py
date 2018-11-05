@@ -67,7 +67,7 @@ def load_from_file(account_hash):
     common.debug('Loading cookies from file')
     cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'r')
     try:
-        return pickle.load(cookie_file)
+        return pickle.loads(cookie_file.read())
     except Exception as exc:
         common.error('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()
