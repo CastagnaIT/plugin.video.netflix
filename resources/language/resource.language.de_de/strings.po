@@ -523,3 +523,7 @@ msgstr "Möchtest du wirklich deine Bibliothek-Exporte zurücksetzen?\nAlle vorm
 msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Mit {} bewertet"
+
+msgctxt "#30128"
+msgid "No contained titles yet..."
+msgstr "(Noch) keine enthaltenen Titel..."

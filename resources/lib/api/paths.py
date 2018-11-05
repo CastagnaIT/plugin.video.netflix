@@ -106,6 +106,9 @@ def iterate_references(source):
         path = reference_path(ref)
         if path is None:
             break
+        elif path[0] == 'characters':
+            # TODO: Implement handling of character references in Kids profiles
+            continue
         else:
             yield (index, path)
 
