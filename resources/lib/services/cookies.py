@@ -9,6 +9,9 @@ try:
 except ImportError:
     import pickle
 
+import xbmc
+import xbmcvfs
+
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -27,12 +30,13 @@ def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
     # pylint: disable=broad-except
     g.COOKIES[account_hash] = cookie_jar
+    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'w')
     try:
-        with open(cookie_filename(account_hash), 'wb') as cookie_file:
-            common.debug('Saving cookies to file')
-            pickle.dump(cookie_jar, cookie_file)
+        pickle.dump(cookie_jar, cookie_file)
     except Exception as exc:
         common.error('Failed to save cookies to file: {exc}', exc)
+    finally:
+        cookie_file.close()
 
 
 def delete(account_hash):
@@ -40,7 +44,7 @@ def delete(account_hash):
     # pylint: disable=broad-except
     del g.COOKIES[account_hash]
     try:
-        os.remove(cookie_filename(account_hash))
+        xbmcvfs.delete(cookie_filename(account_hash))
     except Exception as exc:
         common.error('Failed to delete cookies on disk: {exc}', exc)
 
@@ -60,13 +64,15 @@ def load(account_hash):
 
 def load_from_file(account_hash):
     """Load cookies for a given account from file"""
+    common.debug('Loading cookies from file')
+    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'r')
     try:
-        with open(cookie_filename(account_hash), 'rb') as cookie_file:
-            common.debug('Loading cookies from file')
-            return pickle.load(cookie_file)
+        return pickle.load(cookie_file)
     except Exception as exc:
         common.error('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()
+    finally:
+        cookie_file.close()
 
 
 def expired(cookie_jar):
@@ -81,4 +87,4 @@ def expired(cookie_jar):
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""
-    return common.translate_path('{}_{}'.format(g.COOKIE_PATH, account_hash))
+    return xbmc.translatePath('{}_{}'.format(g.COOKIE_PATH, account_hash))

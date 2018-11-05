@@ -4,11 +4,11 @@ from __future__ import unicode_literals
 
 import os
 import re
-import codecs
 from datetime import datetime, timedelta
 from functools import wraps
 
 import xbmc
+import xbmcvfs
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -75,7 +75,7 @@ def _any_child_library_entry(library_entry):
 
 
 def _get_item(mediatype, filename):
-    exported_filepath = os.path.normcase(common.translate_path(filename))
+    exported_filepath = os.path.normcase(xbmc.translatePath(filename))
     for library_item in common.get_library_items(mediatype):
         if os.path.normcase(library_item['file']) == exported_filepath:
             return common.get_library_item_details(
@@ -228,29 +228,19 @@ def export_item(item_task, library_home):
 
 def _create_destination_folder(destination_folder):
     """Create destination folder, ignore error if it already exists"""
-    try:
-        os.makedirs(common.translate_path(destination_folder))
-    except OSError as exc:
-        if exc.errno != os.errno.EEXIST:
-            raise
+    destination_folder = xbmc.translatePath(destination_folder)
+    if not xbmcvfs.exists(destination_folder):
+        xbmcvfs.mkdirs(destination_folder)
 
 
 def _write_strm_file(item_task, export_filename):
     """Write the playable URL to a strm file"""
+    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'w')
     try:
-        with codecs.open(common.translate_path(export_filename),
-                         mode='w',
-                         encoding='utf-8',
-                         errors='replace') as filehandle:
-            filehandle.write(
-                common.build_url(videoid=item_task['videoid'],
-                                 mode=g.MODE_PLAY))
-    except OSError as exc:
-        if exc.errno == os.errno.EEXIST:
-            common.info('{} already exists, skipping export'
-                        .format(export_filename))
-        else:
-            raise
+        filehandle.write(common.build_url(videoid=item_task['videoid'],
+                                          mode=g.MODE_PLAY).encode('utf-8'))
+    finally:
+        filehandle.close()
 
 
 def _add_to_library(videoid, export_filename):
@@ -277,10 +267,10 @@ def remove_item(item_task, library_home=None):
                     .format(item_task['title']))
         return
     id_path = item_task['videoid'].to_list()
-    exported_filename = common.translate_path(
+    exported_filename = xbmc.translatePath(
         common.get_path(id_path, g.library())['file'])
     parent_folder = os.path.dirname(exported_filename)
-    os.remove(common.translate_path(exported_filename))
+    os.remove(xbmc.translatePath(exported_filename))
     if not os.listdir(parent_folder):
         os.rmdir(parent_folder)
     common.remove_path(id_path, g.library(), lambda e: e.keys() == ['videoid'])

@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import os
 
 import xbmc
+import xbmcvfs
 
 from resources.lib.globals import g
 
@@ -39,9 +40,12 @@ def save_file(filename, content, mode='w'):
     :param filename: The filename
     :param content: The content of the file
     """
-    with open(translate_path(os.path.join(g.DATA_PATH, filename)),
-              mode) as file_handle:
+    file_handle = xbmcvfs.File(
+        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    try:
         file_handle.write(content.encode('utf-8'))
+    finally:
+        file_handle.close()
 
 
 def load_file(filename, mode='r'):
@@ -50,9 +54,12 @@ def load_file(filename, mode='r'):
     :param filename: The file to load
     :return: The content of the file
     """
-    with open(translate_path(os.path.join(g.DATA_PATH, filename)),
-              mode) as file_handle:
-        return file_handle.read().decode('utf-8')
+    file_handle = xbmcvfs.File(
+        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    try:
+        file_handle.read().decode('utf-8')
+    finally:
+        file_handle.close()
 
 
 def list_dir(data_path=g.DATA_PATH):
@@ -60,9 +67,4 @@ def list_dir(data_path=g.DATA_PATH):
     List the contents of a folder
     :return: The contents of the folder
     """
-    return os.listdir(data_path)
-
-
-def translate_path(path):
-    """Translate path if it contains special:// and decode it to unicode"""
-    return xbmc.translatePath(path).decode('utf-8')
+    return xbmcvfs.listdir(xbmc.translatePath(data_path))
