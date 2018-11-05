@@ -12,6 +12,7 @@ resources.lib.services.nfsession
 from __future__ import unicode_literals
 
 import os
+import sys
 from time import time
 from functools import wraps
 try:
@@ -33,7 +34,7 @@ CACHE_LIBRARY = 'library'
 BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_METADATA,
                 CACHE_INFOLABELS, CACHE_ARTINFO, CACHE_LIBRARY]
 
-BUCKET_LOCKED = 'LOCKED_BY_{}'
+BUCKET_LOCKED = 'LOCKED_BY_{:04d}_AT_{}'
 
 # 100 years TTL should be close enough to infinite
 TTL_INFINITE = 60*60*24*365*100
@@ -121,12 +122,19 @@ class Cache(object):
         # We have the self.common module injected as a dependency to work
         # around circular dependencies with gloabl variable initialization
         self.common = common
+        self.plugin_handle = plugin_handle
         self.cache_path = cache_path
         self.ttl = ttl
         self.metadata_ttl = metadata_ttl
         self.buckets = {}
-        self.lock_marker = str(BUCKET_LOCKED.format(plugin_handle))
         self.window = xbmcgui.Window(10000)
+
+    def lock_marker(self, bucket):
+        """Return a lock marker for this instance and the current time"""
+        # Return maximum timestamp for library to prevent stale lock
+        # overrides which may lead to inconsistencies
+        timestamp = sys.maxint if bucket == CACHE_LIBRARY else int(time())
+        return str(BUCKET_LOCKED.format(self.plugin_handle, timestamp))
 
     def get(self, bucket, identifier):
         """Retrieve an item from a cache bucket"""
@@ -211,9 +219,13 @@ class Cache(object):
             self.common.debug('No instance of {} found. Creating new instance.'
                               .format(bucket))
             bucket_instance = {}
-        self.window.setProperty(_window_property(bucket), self.lock_marker)
+        self._lock(bucket)
         self.common.debug('Acquired lock on {}'.format(bucket))
         return bucket_instance
+
+    def _lock(self, bucket):
+        self.window.setProperty(_window_property(bucket),
+                                self.lock_marker(bucket))
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
@@ -250,8 +262,13 @@ class Cache(object):
     def _persist_bucket(self, bucket, contents):
         # pylint: disable=broad-except
         lock = self.window.getProperty(_window_property(bucket))
-        # pickle stored byte data, so we must compare against a str
-        if lock == self.lock_marker:
+        # Only persist if we acquired the original lock or if the lock is older
+        # than 15 seconds (override stale locks)
+        is_own_lock = lock[:14] == self.lock_marker(bucket)[:14]
+        is_stale_lock = int(lock[18:]) <= time() - 15
+        if is_own_lock or is_stale_lock:
+            if is_stale_lock:
+                self.common.info('Overriding stale cache lock {}'.format(lock))
             try:
                 self.window.setProperty(_window_property(bucket),
                                         pickle.dumps(contents))
