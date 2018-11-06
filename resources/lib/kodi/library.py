@@ -42,7 +42,7 @@ def get_item(videoid):
         return _get_item(entry_type, library_entry['file'])
     except (KeyError, AttributeError, IndexError, ItemNotFound):
         import traceback
-        common.error(traceback.format_exc())
+        common.debug(traceback.format_exc())
         raise ItemNotFound(
             'The video with id {} is not present in the Kodi library'
             .format(videoid))

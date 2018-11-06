@@ -265,7 +265,7 @@ class Cache(object):
         # Only persist if we acquired the original lock or if the lock is older
         # than 15 seconds (override stale locks)
         is_own_lock = lock[:14] == self.lock_marker(bucket)[:14]
-        is_stale_lock = int(lock[18:]) <= time() - 15
+        is_stale_lock = int(lock[18:] or 1) <= time() - 15
         if is_own_lock or is_stale_lock:
             if is_stale_lock:
                 self.common.info('Overriding stale cache lock {}'.format(lock))

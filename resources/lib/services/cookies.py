@@ -69,7 +69,7 @@ def load_from_file(account_hash):
     try:
         return pickle.loads(cookie_file.read())
     except Exception as exc:
-        common.error('Failed to load cookies from file: {exc}', exc)
+        common.debug('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()
     finally:
         cookie_file.close()
