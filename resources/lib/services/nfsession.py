@@ -256,8 +256,7 @@ class NetflixSession(object):
     @needs_login
     def path_request(self, paths):
         """Perform a path request against the Shakti API"""
-        return self._path_request(
-            _inject_root_lolomo(paths, self.session_data['root_lolomo']))
+        return self._path_request(paths)
 
     @common.addonsignals_return_call
     @needs_login
@@ -358,20 +357,6 @@ class NetflixSession(object):
         return (_raise_api_error(response.json())
                 if URLS[component]['is_api_call']
                 else response.content)
-
-
-def _inject_root_lolomo(paths, root_lolomo):
-    """Apply special handling for path requests that query the root lists
-    (displayed on homepage): If first pathitem == 'root_lolomo' (will be
-    supplied by shakti api client), we prepend ['lolomos', root_lolomo] to
-    all paths, where root_lolomo is the ID of the root LoLoMo as extracted
-    from falkorCache.
-    If the first pathitem is not the 'root_lolomo' indicator, we just return
-    the untouched paths"""
-    if paths[0] != 'root_lolomo':
-        return paths
-    return [['lolomos', root_lolomo] + path
-            for path in paths[1:]]
 
 
 def _set_range_selector(paths, range_start, range_end):
