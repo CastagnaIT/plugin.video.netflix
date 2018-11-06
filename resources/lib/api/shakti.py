@@ -69,22 +69,17 @@ def root_lists():
     common.debug('Requesting root lists from API')
     return LoLoMo(common.make_call(
         'path_request',
-        # By prepending this as first pathitem, we will trigger special
-        # handling in nfsession, which will inject the ID of the root LoLoMo
-        # extracted from falkorCache
-        ['root_lolomo'] +
-        # Make sure these 3 are always retrieved (even is not in top40 lists)
-        [[['mylist', 'continueWatching', 'netflixOriginals'],
-          ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
-        # Retrieve additional lists on start page
-        [[{'from': 0, 'to': 40},
+        [['lolomo',
+          {'from': 0, 'to': 40},
           ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
         # Titles of first 4 videos in each video list
-        [[{'from': 0, 'to': 40},
+        [['lolomo',
+          {'from': 0, 'to': 40},
           {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
         # Art for first video in each video list
         # (will be displayed as video list art)
-        build_paths([{'from': 0, 'to': 40},
+        build_paths(['lolomo',
+                     {'from': 0, 'to': 40},
                      {'from': 0, 'to': 0}, 'reference'],
                     ART_PARTIAL_PATHS)))
 
