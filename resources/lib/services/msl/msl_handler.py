@@ -197,6 +197,7 @@ def _process_json_response(response):
 
 def _raise_if_error(decoded_response):
     if ('errordata' in decoded_response or
+            'errorDisplayMessage' in decoded_response.get('result', {}) or
             not decoded_response.get('success', True)):
         raise MSLError(_get_error_details(decoded_response))
     return decoded_response
@@ -207,7 +208,7 @@ def _get_error_details(decoded_response):
         return json.loads(
             base64.standard_b64decode(
                 decoded_response['errordata']))['errormsg']
-    elif 'errorDisplayMessage' in decoded_response['result']:
+    elif 'errorDisplayMessage' in decoded_response.get('result', {}):
         return decoded_response['result']['errorDisplayMessage']
 
     common.error('Received an unknown error from MSL endpoint:\n{}'
