@@ -272,23 +272,30 @@ def update_my_list(videoid, operation):
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
     if videoid.mediatype != common.VideoId.EPISODE:
-        return _metadata(videoid.value)
+        return _metadata(videoid.value), None
 
     try:
-        season = common.find(videoid.seasonid,
-                             _metadata(videoid.tvshowid)['seasons'])
-        return common.find(videoid.episodeid, season['episodes'])
-    except KeyError:
+        return _episode_metadata(videoid)
+    except KeyError as exc:
         # Episode metadata may not exist if its a new episode and cached
         # data is outdated. In this case, invalidate the cache entry and
         # try again safely (if it doesn't exist this time, there is no
         # metadata for the episode, so we assign an empty dict).
+        common.debug('{}, refreshing cache'.format(exc))
         g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
-        season = common.find(videoid.seasonid,
-                             _metadata(videoid.tvshowid)['seasons'],
-                             raise_exc=False)
-        return common.find(videoid.episodeid, season.get('episodes', {}),
-                           raise_exc=False)
+        try:
+            return _episode_metadata(videoid)
+        except KeyError as exc:
+            common.error(exc)
+            return {}, None
+
+
+@common.time_execution
+def _episode_metadata(videoid):
+    show_metadata = _metadata(videoid.tvshowid)
+    episode_metadata, season_metadata = common.find_episode_metadata(
+        videoid, show_metadata)
+    return episode_metadata, season_metadata, show_metadata
 
 
 @common.time_execution

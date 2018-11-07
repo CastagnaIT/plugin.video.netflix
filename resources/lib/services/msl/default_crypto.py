@@ -98,12 +98,8 @@ def _decrypt_key(encrypted_key, cipher):
     return _base64key_decode(json.loads(cipher.decrypt(encrypted_key))['k'])
 
 
-def _base64key_decode(payload):
-    length = len(payload) % 4
-    if length == 2:
-        payload += '=='
-    elif length == 3:
-        payload += '='
-    elif length != 0:
-        raise ValueError('Invalid base64 string')
-    return base64.urlsafe_b64decode(payload.encode('utf-8'))
+def _base64key_decode(b64):
+    padding = len(b64) % 4
+    if padding != 0:
+        b64 += '=' * (4 - padding)
+    return base64.urlsafe_b64decode(b64.encode('utf8'))

@@ -79,10 +79,11 @@ class NetflixSession(object):
             self.path_request,
             self.perpetual_path_request,
             self.get,
-            self.post
+            self.post,
         ]
         for slot in self.slots:
             common.register_slot(slot)
+        common.register_slot(play_callback, g.ADDON_ID + '_play_action')
         self._init_session()
         self._prefetch_login()
 
@@ -427,3 +428,8 @@ def _raise_api_error(decoded_response):
     if decoded_response.get('status', 'success') == 'error':
         raise APIError(decoded_response.get('message'))
     return decoded_response
+
+
+def play_callback(data):
+    """Callback function used for upnext integration"""
+    common.run_plugin(data['play_path'])

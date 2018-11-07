@@ -20,16 +20,19 @@ from .logging import debug, info, error
 from .kodiops import get_local_string
 
 
-def find(video_id, search_space, raise_exc=True):
+def find(value_to_find, attribute, search_space):
     """Find a video with matching id in a dict or list"""
     for video in search_space:
-        if unicode(video['id']) == video_id:
+        if video[attribute] == value_to_find:
             return video
-    if raise_exc:
-        raise KeyError('Metadata for {} does not exist'
-                       .format(video_id))
-    else:
-        return {}
+    raise KeyError('Metadata for {} does not exist'.format(value_to_find))
+
+
+def find_episode_metadata(videoid, metadata):
+    """Find metadata for a specific episode within a show metadata dict"""
+    season = find(int(videoid.seasonid), 'id', metadata['seasons'])
+    return (find(int(videoid.episodeid), 'id', season.get('episodes', {})),
+            season)
 
 
 def select_port():
