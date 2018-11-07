@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import traceback
-from time import time
+import time
 from base64 import urlsafe_b64encode
 from functools import wraps
 import json
@@ -116,6 +116,7 @@ class NetflixSession(object):
         except (AttributeError, KeyError) as exc:
             raise website.InvalidAuthURLError(exc)
 
+    @common.time_execution
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
@@ -133,6 +134,7 @@ class NetflixSession(object):
         })
         common.info('Initialized new session')
 
+    @common.time_execution
     def _prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
@@ -145,6 +147,7 @@ class NetflixSession(object):
         except LoginFailedError:
             ui.show_notification(common.get_local_string(30009))
 
+    @common.time_execution
     def _is_logged_in(self):
         """Check if the user is logged in"""
         if not self.session.cookies:
@@ -152,6 +155,7 @@ class NetflixSession(object):
             return self._load_cookies() and self._refresh_session_data()
         return True
 
+    @common.time_execution
     def _refresh_session_data(self):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
@@ -167,6 +171,7 @@ class NetflixSession(object):
         common.debug('Successfully refreshed session data')
         return True
 
+    @common.time_execution
     def _load_cookies(self):
         """Load stored cookies from disk"""
         # pylint: disable=broad-except
@@ -194,6 +199,7 @@ class NetflixSession(object):
         """AddonSignals interface for login function"""
         self._login()
 
+    @common.time_execution
     def _login(self):
         """Perform account login"""
         try:
@@ -214,6 +220,7 @@ class NetflixSession(object):
         self.session_data = session_data
 
     @common.addonsignals_return_call
+    @common.time_execution
     def logout(self):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
@@ -235,6 +242,7 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
+    @common.time_execution
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Activating profile {}'.format(guid))
@@ -246,7 +254,7 @@ class NetflixSession(object):
             req_type='api',
             params={
                 'switchProfileGuid': guid,
-                '_': int(time()),
+                '_': int(time.time()),
                 'authURL': self.auth_url})
         self._refresh_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
@@ -260,6 +268,7 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
+    @common.time_execution
     def perpetual_path_request(self, paths, path_type, length_params=None):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
@@ -282,6 +291,7 @@ class NetflixSession(object):
                 range_end += MAX_PATH_REQUEST_SIZE
         return merged_response
 
+    @common.time_execution
     def _path_request(self, paths):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}'.format(json.dumps(paths)))
@@ -310,9 +320,7 @@ class NetflixSession(object):
     @needs_login
     def post(self, component, **kwargs):
         """Execute a POST request to the designated component's URL."""
-        result = self._post(component, **kwargs)
-        common.debug(result)
-        return result
+        return self._post(component, **kwargs)
 
     def _get(self, component, **kwargs):
         return self._request(
@@ -326,6 +334,7 @@ class NetflixSession(object):
             component=component,
             **kwargs)
 
+    @common.time_execution
     def _request(self, method, component, **kwargs):
         url = (_api_url(component, self.session_data['api_data'])
                if URLS[component]['is_api_call']
@@ -333,32 +342,37 @@ class NetflixSession(object):
         common.debug(
             'Executing {verb} request to {url}'.format(
                 verb='GET' if method == self.session.get else 'POST', url=url))
-        start = time()
+        data, headers, params = self._prepare_request_properties(component,
+                                                                 kwargs)
+        start = time.clock()
+        response = method(
+            url=url,
+            verify=self.verify_ssl,
+            headers=headers,
+            params=params,
+            data=data)
+        common.debug('Request took {}s'.format(time.clock() - start))
+        common.debug('Request returned statuscode {}'
+                     .format(response.status_code))
+        response.raise_for_status()
+        return (_raise_api_error(response.json())
+                if URLS[component]['is_api_call']
+                else response.content)
 
+    def _prepare_request_properties(self, component, kwargs):
         data = kwargs.get('data', {})
         headers = kwargs.get('headers', {})
+        params = kwargs.get('params', {})
         if component in ['set_video_rating', 'update_my_list', 'adult_pin']:
             headers.update({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json, text/javascript, */*'})
             data['authURL'] = self.auth_url
             data = json.dumps(data)
-
-        response = method(
-            url=url,
-            verify=self.verify_ssl,
-            headers=headers,
-            params=kwargs.get('params'),
-            data=data)
-        common.debug('Request took {}s'.format(time() - start))
-        common.debug(
-            'Request returned statuscode {}'.format(response.status_code))
-        response.raise_for_status()
-        return (_raise_api_error(response.json())
-                if URLS[component]['is_api_call']
-                else response.content)
+        return data, headers, params
 
 
+@common.time_execution
 def _set_range_selector(paths, range_start, range_end):
     """Replace the RANGE_SELECTOR placeholder with an actual dict:
     {'from': range_start, 'to': range_end}"""

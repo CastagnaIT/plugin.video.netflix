@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import traceback
 from functools import wraps
-from time import time
 
 import AddonSignals
 
@@ -12,6 +11,7 @@ from resources.lib.globals import g
 import resources.lib.api.exceptions as apierrors
 
 from .logging import debug, error
+from .misc_utils import time_execution
 
 
 class Signals(object):
@@ -48,21 +48,19 @@ def send_signal(signal, data=None):
         data=data)
 
 
+@time_execution
 def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target
     function."""
-    start = time()
     result = AddonSignals.makeCall(
         source_id=g.ADDON_ID,
         signal=callname,
         data=data,
         timeout_ms=10000)
-    debug('AddonSignals call took {}s'.format(time() - start))
     if isinstance(result, dict) and 'error' in result:
-        msg = ('AddonSignals call {callname} returned {error}: {message}'
-               .format(callname=callname, **result))
-        error(msg)
+        error('AddonSignals call {callname} returned {error}: {message}'
+              .format(callname=callname, **result))
         try:
             raise apierrors.__dict__[result['error']](result['message'])
         except KeyError:

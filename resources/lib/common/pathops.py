@@ -2,7 +2,10 @@
 """Helper functions for retrieving values from nested dicts"""
 from __future__ import unicode_literals
 
+from .misc_utils import time_execution
 
+
+@time_execution
 def get_path(path, search_space, include_key=False):
     """Retrieve a value from a nested dict by following the path.
     Throws KeyError if any key along the path does not exist"""

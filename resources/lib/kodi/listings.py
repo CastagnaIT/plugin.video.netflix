@@ -80,6 +80,7 @@ def _activate_view(view):
 
 
 @custom_viewmode(VIEW_FOLDER)
+@common.time_execution
 def build_profiles_listing(profiles):
     """Builds the profiles list Kodi screen"""
     try:
@@ -115,6 +116,7 @@ def _create_profile_item(profile_guid, profile, html_parser):
 
 
 @custom_viewmode(VIEW_FOLDER)
+@common.time_execution
 def build_main_menu_listing(lolomo):
     """
     Builds the video lists (my list, continue watching, etc.) Kodi screen
@@ -143,6 +145,7 @@ def build_main_menu_listing(lolomo):
 
 
 @custom_viewmode(VIEW_FOLDER)
+@common.time_execution
 def build_lolomo_listing(lolomo, contexts=None):
     """Build a listing of vieo lists (LoLoMo). Only show those
     lists with a context specified context if contexts is set."""
@@ -157,6 +160,7 @@ def build_lolomo_listing(lolomo, contexts=None):
                        title=lolomo.get('name'))
 
 
+@common.time_execution
 def _create_videolist_item(video_list_id, video_list, static_lists=False):
     """Create a tuple that can be added to a Kodi directory that represents
     a videolist as listed in a LoLoMo"""
@@ -171,6 +175,7 @@ def _create_videolist_item(video_list_id, video_list, static_lists=False):
 
 
 @custom_viewmode(VIEW_SHOW)
+@common.time_execution
 def build_video_listing(video_list):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list)
@@ -194,6 +199,7 @@ def build_video_listing(video_list):
                        title=video_list.title)
 
 
+@common.time_execution
 def _create_video_item(videoid_value, video, video_list):
     """Create a tuple that can be added to a Kodi directory that represents
     a video as listed in a videolist"""
@@ -212,6 +218,7 @@ def _create_video_item(videoid_value, video, video_list):
 
 
 @custom_viewmode(VIEW_SEASON)
+@common.time_execution
 def build_season_listing(tvshowid, season_list):
     """Build a season listing"""
     directory_items = [_create_season_item(tvshowid, seasonid_value, season,
@@ -223,6 +230,7 @@ def build_season_listing(tvshowid, season_list):
                                          common.get_local_string(20366)[2:])))
 
 
+@common.time_execution
 def _create_season_item(tvshowid, seasonid_value, season, season_list):
     """Create a tuple that can be added to a Kodi directory that represents
     a season as listed in a season listing"""
@@ -236,6 +244,7 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list):
 
 
 @custom_viewmode(VIEW_EPISODE)
+@common.time_execution
 def build_episode_listing(seasonid, episode_list):
     """Build a season listing"""
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode,
@@ -248,6 +257,7 @@ def build_episode_listing(seasonid, episode_list):
                             episode_list.season['summary']['name'])))
 
 
+@common.time_execution
 def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     """Create a tuple that can be added to a Kodi directory that represents
     an episode as listed in an episode listing"""

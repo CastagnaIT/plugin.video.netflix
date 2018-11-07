@@ -15,6 +15,7 @@ QUALITIES = [
 ]
 
 
+@common.time_execution
 def add_info(videoid, list_item, item, raw_data):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
@@ -36,6 +37,7 @@ def add_info(videoid, list_item, item, raw_data):
     return infos
 
 
+@common.time_execution
 def add_art(videoid, list_item, item, raw_data=None):
     """Add art infolabels to list_item"""
     try:
@@ -48,6 +50,7 @@ def add_art(videoid, list_item, item, raw_data=None):
     return art
 
 
+@common.time_execution
 def add_info_for_playback(videoid, list_item):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
@@ -57,6 +60,7 @@ def add_info_for_playback(videoid, list_item):
         return add_info_from_netflix(videoid, list_item)
 
 
+@common.time_execution
 def parse_info(videoid, item, raw_data):
     """Parse info from a path request response into Kodi infolabels"""
     if (videoid.mediatype == common.VideoId.UNSPECIFIED and
@@ -84,6 +88,7 @@ def parse_info(videoid, item, raw_data):
     return infos, get_quality_infos(item)
 
 
+@common.time_execution
 def parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accesible from
     the item dict"""
@@ -102,6 +107,7 @@ def _get_and_transform(source, target, item):
             else value)
 
 
+@common.time_execution
 def parse_referenced_infos(item, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
@@ -111,6 +117,7 @@ def parse_referenced_infos(item, raw_data):
             for target, source in paths.REFERENCE_MAPPINGS.iteritems()}
 
 
+@common.time_execution
 def parse_tags(item):
     """Parse the tags"""
     return {'tag': [tagdef['name']
@@ -136,6 +143,7 @@ def get_quality_infos(item):
     return quality_infos
 
 
+@common.time_execution
 def parse_art(videoid, item, raw_data):
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
@@ -178,6 +186,7 @@ def _best_art(arts):
     return next((art for art in arts if art), '')
 
 
+@common.time_execution
 def add_info_from_netflix(videoid, list_item):
     """Apply infolabels with info from Netflix API"""
     try:
@@ -194,6 +203,7 @@ def add_info_from_netflix(videoid, list_item):
     return infos, art
 
 
+@common.time_execution
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
     details = library.get_item(videoid)
