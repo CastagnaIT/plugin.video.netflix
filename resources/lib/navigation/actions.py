@@ -65,6 +65,7 @@ class AddonActionExecutor(object):
             ui.show_notification(common.get_local_string(30106))
 
     @common.inject_video_id(path_offset=1)
+    @common.time_execution
     def rate(self, videoid):
         """Rate an item on Netflix. Ask for a rating if there is none supplied
         in the path."""
@@ -73,6 +74,7 @@ class AddonActionExecutor(object):
             api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
+    @common.time_execution
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]

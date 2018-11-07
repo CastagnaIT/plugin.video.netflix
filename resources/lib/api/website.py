@@ -28,6 +28,7 @@ JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
 
 
+@common.time_execution
 def extract_session_data(content):
     """
     Call all the parsers we need to extract all
@@ -50,6 +51,7 @@ def extract_session_data(content):
     }
 
 
+@common.time_execution
 def extract_profiles(falkor_cache):
     """Extract profile information from Netflix website"""
     profiles = {}
@@ -83,6 +85,7 @@ def _get_avatar(falkor_cache, profile):
     return ''
 
 
+@common.time_execution
 def extract_userdata(content):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
@@ -142,6 +145,7 @@ def generate_esn(user_data):
     return user_data.get('esn', '')
 
 
+@common.time_execution
 def extract_json(content, name):
     """Extract json from netflix content page"""
     common.debug('Extracting {} JSON'.format(name))

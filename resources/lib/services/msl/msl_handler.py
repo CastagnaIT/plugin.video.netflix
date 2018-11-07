@@ -75,6 +75,7 @@ class MSLHandler(object):
             callback=self.perform_key_handshake)
 
     @display_error_info
+    @common.time_execution
     def perform_key_handshake(self, data=None):
         """Perform a key handshake and initialize crypto keys"""
         # pylint: disable=unused-argument
@@ -93,6 +94,7 @@ class MSLHandler(object):
         common.debug('Key handshake successful')
 
     @display_error_info
+    @common.time_execution
     def load_manifest(self, viewable_id):
         """
         Loads the manifets for the given viewable_id and
@@ -101,6 +103,7 @@ class MSLHandler(object):
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
         """
+        common.debug('Requesting manifest for {}'.format(viewable_id))
         manifest_request_data = {
             'method': 'manifest',
             'lookupType': 'PREPARE',
@@ -127,6 +130,7 @@ class MSLHandler(object):
         return self.__tranform_to_dash(manifest)
 
     @display_error_info
+    @common.time_execution
     def get_license(self, challenge, sid):
         """
         Requests and returns a license for the given challenge and sid
@@ -134,6 +138,7 @@ class MSLHandler(object):
         :param sid: The sid paired to the challengew
         :return: Base64 representation of the licensekey or False unsuccessfull
         """
+        common.debug('Requesting license')
         license_request_data = {
             'method': 'license',
             'licenseType': 'STANDARD',
@@ -154,6 +159,7 @@ class MSLHandler(object):
                                          license_request_data)
         return response['result']['licenses'][0]['data']
 
+    @common.time_execution
     def __tranform_to_dash(self, manifest):
         common.save_file('manifest.json', json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
@@ -161,18 +167,26 @@ class MSLHandler(object):
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
 
+    @common.time_execution
     def _chunked_request(self, endpoint, request_data):
         """Do a POST request and process the chunked response"""
         return self._process_chunked_response(
             self._post(endpoint,
                        self.request_builder.msl_request(request_data)))
 
+    @common.time_execution
     def _post(self, endpoint, request_data):
         """Execute a post request"""
+        common.debug('Executing POST request to {}'.format(endpoint))
+        start = time.clock()
         response = self.session.post(endpoint, request_data)
+        common.debug('Request took {}s'.format(time.clock() - start))
+        common.debug('Request returned response with status {}'
+                     .format(response.status_code))
         response.raise_for_status()
         return response
 
+    @common.time_execution
     def _process_chunked_response(self, response):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
@@ -182,11 +196,13 @@ class MSLHandler(object):
             return _raise_if_error(response.json())
         except ValueError:
             # json() failed so parse and decrypt the chunked response
+            common.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
             return _decrypt_chunks(response['payloads'],
                                    self.request_builder.crypto)
 
 
+@common.time_execution
 def _process_json_response(response):
     """Execute a post request and expect a JSON response"""
     try:
@@ -216,6 +232,7 @@ def _get_error_details(decoded_response):
     return ''
 
 
+@common.time_execution
 def _parse_chunks(message):
     header = message.split('}}')[0] + '}}'
     payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}',
@@ -224,6 +241,7 @@ def _parse_chunks(message):
     return {'header': header, 'payloads': payloads}
 
 
+@common.time_execution
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:

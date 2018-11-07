@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 import traceback
 from datetime import datetime
 from urllib import urlencode
+from functools import wraps
+from time import clock
 import gzip
 import base64
 from StringIO import StringIO
@@ -211,3 +213,21 @@ def any_value_except(mapping, excluded_key):
     excluded_key. Raises StopIteration if there are no other keys than
     excluded_key"""
     return next(mapping[key] for key in mapping if key != excluded_key)
+
+
+def time_execution(func):
+    """A decorator that wraps a function call and times its execution"""
+    @wraps(func)
+    def timing_wrapper(*args, **kwargs):
+        """Time the execution of a function"""
+        funcname = '.'.join(
+            ((func.im_class.__name__
+              if hasattr(func, 'im_class')
+              else func.__module__),
+             func.__name__))
+        start = clock()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            debug('Call to {} took {}s'.format(funcname, clock() - start))
+    return timing_wrapper

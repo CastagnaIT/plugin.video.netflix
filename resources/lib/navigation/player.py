@@ -38,6 +38,7 @@ class InputstreamError(Exception):
 
 
 @common.inject_video_id(path_offset=0)
+@common.time_execution
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.debug('Playing {}'.format(videoid))

@@ -13,6 +13,7 @@ from .paths import resolve_refs
 class LoLoMo(object):
     """List of list of movies (lolomo)"""
     # pylint: disable=invalid-name
+    @common.time_execution
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
         self.id = (lolomoid
@@ -46,6 +47,7 @@ class LoLoMo(object):
 class VideoList(object):
     """A video list"""
     # pylint: disable=invalid-name
+    @common.time_execution
     def __init__(self, path_response, list_id=None):
         self.data = path_response
         self.id = common.VideoId(
@@ -74,6 +76,7 @@ class VideoList(object):
 class SearchVideoList(object):
     """A video list with search results"""
     # pylint: disable=invalid-name
+    @common.time_execution
     def __init__(self, path_response):
         self.data = path_response
         self.title = common.get_local_string(30100).format(
@@ -96,6 +99,7 @@ class SearchVideoList(object):
 class CustomVideoList(object):
     """A video list"""
     # pylint: disable=invalid-name
+    @common.time_execution
     def __init__(self, path_response):
         self.data = path_response
         self.title = common.get_local_string(30048)
@@ -114,6 +118,7 @@ class CustomVideoList(object):
 
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
+    @common.time_execution
     def __init__(self, videoid, path_response):
         self.data = path_response
         self.videoid = videoid
@@ -124,6 +129,7 @@ class SeasonList(object):
 
 class EpisodeList(object):
     """A list of episodes. Includes tvshow art."""
+    @common.time_execution
     def __init__(self, videoid, path_response):
         self.data = path_response
         self.videoid = videoid
@@ -145,6 +151,7 @@ def _get_title(video):
     return video.get('title', video.get('summary', {}).get('title'))
 
 
+@common.time_execution
 def _get_titles(videos):
     """Return a list of videos' titles"""
     return [_get_title(video)
@@ -152,6 +159,7 @@ def _get_titles(videos):
             if _get_title(video)]
 
 
+@common.time_execution
 def _get_videoids(videos):
     """Return a list of VideoId objects for the videos"""
     return [common.VideoId.from_videolist_item(video)

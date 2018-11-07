@@ -87,6 +87,7 @@ REFERENCE_MAPPINGS = {
 }
 
 
+@common.time_execution
 def resolve_refs(references, targets):
     """Return a generator expression that returns the objects in targets
     by resolving the references in sorted order"""
