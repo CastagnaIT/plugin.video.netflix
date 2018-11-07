@@ -527,3 +527,7 @@ msgstr "Mit {} bewertet"
 msgctxt "#30128"
 msgid "No contained titles yet..."
 msgstr "(Noch) keine enthaltenen Titel..."
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "Up Next Integration aktivieren"

@@ -15,6 +15,7 @@ from .action_manager import PlaybackActionManager
 from .bookmarks import BookmarkManager
 from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
+from .upnext import UpNextNotifier
 
 
 class PlaybackController(xbmc.Monitor):
@@ -42,7 +43,8 @@ class PlaybackController(xbmc.Monitor):
         self.action_managers = [
             BookmarkManager(),
             SectionSkipper(),
-            StreamContinuityManager()
+            StreamContinuityManager(),
+            UpNextNotifier()
         ]
         self._notify_all(PlaybackActionManager.initialize, data)
 

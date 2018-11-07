@@ -43,25 +43,21 @@ def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.debug('Playing {}'.format(videoid))
     metadata = api.metadata(videoid)
+    common.debug('Metadata is {}'.format(metadata))
 
-    if not _verify_pin(metadata['requiresPin']):
+    if not _verify_pin(metadata[0].get('requiresPin', False)):
         ui.show_notification(common.get_local_string(30106))
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
-    timeline_markers = get_timeline_markers(metadata)
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'infos': infos,
         'art': art,
-        'timeline_markers': timeline_markers})
-    if videoid.mediatype == common.VideoId.EPISODE:
-        integrate_upnext(videoid,
-                         {'infos': infos, 'art': art},
-                         timeline_markers,
-                         metadata)
+        'timeline_markers': get_timeline_markers(metadata[0]),
+        'upnext_info': get_upnext_info(videoid, (infos, art), metadata)})
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
         succeeded=True,
@@ -114,6 +110,66 @@ def _verify_pin(pin_required):
     return pin is not None and api.verify_pin(pin)
 
 
-def integrate_upnext(videoid, current, timeline_markers, metadata):
+def get_upnext_info(videoid, current_episode, metadata):
     """Determine next episode and send an AddonSignal to UpNext addon"""
-    pass
+    try:
+        next_episode_id = _find_next_episode(videoid, metadata)
+    except (TypeError, KeyError):
+        import traceback
+        common.debug(traceback.format_exc())
+        return {}
+
+    next_episode = infolabels.add_info_for_playback(next_episode_id,
+                                                    xbmcgui.ListItem())
+    next_info = {
+        'current_episode': upnext_info(*current_episode),
+        'next_episode': upnext_info(*next_episode),
+        'play_info': {'play_path': common.build_url(videoid=next_episode_id,
+                                                    mode=g.MODE_PLAY)},
+    }
+    if 'creditsOffset' in metadata[0]:
+        next_info['notification_time'] = (metadata[0]['runtime'] -
+                                          metadata[0]['creditsOffset'])
+    return next_info
+
+
+def _find_next_episode(videoid, metadata):
+    try:
+        # Find next episode in current season
+        episode = common.find(metadata[0]['seq'] + 1, 'seq',
+                              metadata[1]['episodes'])
+        return common.VideoId(tvshowid=videoid.tvshowid,
+                              seasonid=videoid.seasonid,
+                              episodeid=episode['id'])
+    except (IndexError, KeyError):
+        # Find first episode of next season
+        next_season = common.find(metadata[1]['seq'] + 1, 'seq',
+                                  metadata[2]['seasons'])
+        episode = common.find(1, 'seq', next_season['episodes'])
+        return common.VideoId(tvshowid=videoid.tvshowid,
+                              seasonid=next_season['id'],
+                              episodeid=episode['id'])
+
+
+def upnext_info(infos, art):
+    """Create a data dict for upnext signal"""
+    return {
+        'episodeid': infos.get('DBID'),
+        'tvshowid': infos.get('tvshowid'),
+        'title': infos['title'],
+        'art': {
+            'tvshow.poster': art.get('tvshow.poster', ''),
+            'thumb': art.get('thumb', ''),
+            'tvshow.fanart': art.get('tvshow.fanart', ''),
+            'tvshow.landscape': art.get('tvshow.landscape', ''),
+            'tvshow.clearart': art.get('tvshow.clearart', ''),
+            'tvshow.clearlogo': art.get('tvshow.clearlogo', '')
+        },
+        'plot': infos['plot'],
+        'showtitle': infos['tvshowtitle'],
+        'playcount': infos['playcount'],
+        'season': infos['season'],
+        'episode': infos['episode'],
+        'rating': infos['rating'],
+        'firstaired': infos['year']
+    }

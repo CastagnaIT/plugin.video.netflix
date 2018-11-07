@@ -173,7 +173,7 @@ def _create_tv_tasks(videoid, metadata):
         return _compile_show_tasks(videoid, metadata)
     elif videoid.mediatype == common.VideoId.SEASON:
         return _compile_season_tasks(videoid, metadata,
-                                     common.find(videoid.seasonid,
+                                     common.find(videoid.seasonid, 'id',
                                                  metadata['seasons']))
     return [_create_episode_task(videoid, metadata)]
 
@@ -198,8 +198,9 @@ def _compile_season_tasks(videoid, metadata, season):
 def _create_episode_task(videoid, metadata, season=None, episode=None):
     """Export a single episode to the library"""
     showname = metadata['title']
-    season = season or common.find(videoid.seasonid, metadata['seasons'])
-    episode = episode or common.find(videoid.episodeid, season['episodes'])
+    season = season or common.find(videoid.seasonid, 'id', metadata['seasons'])
+    episode = episode or common.find(videoid.episodeid, 'id',
+                                     season['episodes'])
     title = episode['title']
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
     title = ' - '.join((showname, filename, title))

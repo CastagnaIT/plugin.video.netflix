@@ -535,3 +535,7 @@ msgstr ""
 msgctxt "#30128"
 msgid "No contained titles yet..."
 msgstr ""
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr ""
