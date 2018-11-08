@@ -539,3 +539,23 @@ msgstr ""
 msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr ""
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr ""
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr ""
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr ""

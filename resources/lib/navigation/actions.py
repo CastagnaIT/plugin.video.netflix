@@ -83,6 +83,13 @@ class AddonActionExecutor(object):
         common.refresh_container()
 
 
+    @common.time_execution
+    def purge_cache(self):
+        """Clear the cache. If on_disk param is supplied, also clear cached
+        items from disk"""
+        g.CACHE.invalidate(self.params.get('on_disk', False))
+
+
 def _sync_library(videoid, operation):
     operation = {
         'add': 'export_silent',

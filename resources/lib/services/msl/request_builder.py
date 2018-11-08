@@ -31,13 +31,13 @@ class MSLRequestBuilder(object):
         self.rndm = random.SystemRandom()
         self.crypto = MSLCrypto(msl_data)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def msl_request(self, data):
         """Create an encrypted MSL request"""
         return (json.dumps(self._signed_header()) +
                 json.dumps(self._encrypted_chunk(data)))
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def handshake_request(self):
         """Create a key handshake request"""
         return json.dumps({
@@ -51,7 +51,7 @@ class MSLRequestBuilder(object):
             'signature': ''
         }, sort_keys=True)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _signed_header(self):
         encryption_envelope = self.crypto.encrypt(self._headerdata())
         return {
@@ -89,7 +89,7 @@ class MSLRequestBuilder(object):
 
         return json.dumps(header_data)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _encrypted_chunk(self, data):
         # Serialize the given Data
         serialized_data = ''.join((

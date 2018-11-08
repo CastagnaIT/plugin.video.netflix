@@ -75,7 +75,7 @@ class MSLHandler(object):
             callback=self.perform_key_handshake)
 
     @display_error_info
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def perform_key_handshake(self, data=None):
         """Perform a key handshake and initialize crypto keys"""
         # pylint: disable=unused-argument
@@ -94,7 +94,7 @@ class MSLHandler(object):
         common.debug('Key handshake successful')
 
     @display_error_info
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def load_manifest(self, viewable_id):
         """
         Loads the manifets for the given viewable_id and
@@ -130,7 +130,7 @@ class MSLHandler(object):
         return self.__tranform_to_dash(manifest)
 
     @display_error_info
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def get_license(self, challenge, sid):
         """
         Requests and returns a license for the given challenge and sid
@@ -159,7 +159,7 @@ class MSLHandler(object):
                                          license_request_data)
         return response['result']['licenses'][0]['data']
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
         common.save_file('manifest.json', json.dumps(manifest))
         manifest = manifest['result']['viewables'][0]
@@ -167,14 +167,14 @@ class MSLHandler(object):
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _chunked_request(self, endpoint, request_data):
         """Do a POST request and process the chunked response"""
         return self._process_chunked_response(
             self._post(endpoint,
                        self.request_builder.msl_request(request_data)))
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _post(self, endpoint, request_data):
         """Execute a post request"""
         common.debug('Executing POST request to {}'.format(endpoint))
@@ -186,7 +186,7 @@ class MSLHandler(object):
         response.raise_for_status()
         return response
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _process_chunked_response(self, response):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
@@ -202,7 +202,7 @@ class MSLHandler(object):
                                    self.request_builder.crypto)
 
 
-@common.time_execution
+@common.time_execution(immediate=True)
 def _process_json_response(response):
     """Execute a post request and expect a JSON response"""
     try:
@@ -232,7 +232,7 @@ def _get_error_details(decoded_response):
     return ''
 
 
-@common.time_execution
+@common.time_execution(immediate=True)
 def _parse_chunks(message):
     header = message.split('}}')[0] + '}}'
     payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}',
@@ -241,7 +241,7 @@ def _parse_chunks(message):
     return {'header': header, 'payloads': payloads}
 
 
-@common.time_execution
+@common.time_execution(immediate=True)
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:
