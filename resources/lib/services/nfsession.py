@@ -117,7 +117,7 @@ class NetflixSession(object):
         except (AttributeError, KeyError) as exc:
             raise website.InvalidAuthURLError(exc)
 
-    @common.time_execution(immediate=True)(immediate=True)
+    @common.time_execution(immediate=True)
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
@@ -135,7 +135,7 @@ class NetflixSession(object):
         })
         common.info('Initialized new session')
 
-    @common.time_execution(immediate=True)(immediate=True)
+    @common.time_execution(immediate=True)
     def _prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
