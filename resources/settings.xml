@@ -58,6 +58,7 @@
     <setting id="enable_vp9_profiles" type="bool" label="30136" default="false" visible="eq(-3,true)" subsetting="true"/>
     <setting label="30116" type="lsep"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
+    <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
