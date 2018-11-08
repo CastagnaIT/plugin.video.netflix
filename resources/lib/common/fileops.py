@@ -68,3 +68,9 @@ def list_dir(data_path=g.DATA_PATH):
     :return: The contents of the folder
     """
     return xbmcvfs.listdir(xbmc.translatePath(data_path))
+
+
+def delete_folder_contents(path):
+    """Delete all files in a folder"""
+    for filename in list_dir(path)[1]:
+        xbmcvfs.delete(filename)

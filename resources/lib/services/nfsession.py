@@ -117,7 +117,7 @@ class NetflixSession(object):
         except (AttributeError, KeyError) as exc:
             raise website.InvalidAuthURLError(exc)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)(immediate=True)
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
@@ -135,7 +135,7 @@ class NetflixSession(object):
         })
         common.info('Initialized new session')
 
-    @common.time_execution
+    @common.time_execution(immediate=True)(immediate=True)
     def _prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
@@ -148,7 +148,7 @@ class NetflixSession(object):
         except LoginFailedError:
             ui.show_notification(common.get_local_string(30009))
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _is_logged_in(self):
         """Check if the user is logged in"""
         if not self.session.cookies:
@@ -156,7 +156,7 @@ class NetflixSession(object):
             return self._load_cookies() and self._refresh_session_data()
         return True
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _refresh_session_data(self):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
@@ -172,7 +172,7 @@ class NetflixSession(object):
         common.debug('Successfully refreshed session data')
         return True
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _load_cookies(self):
         """Load stored cookies from disk"""
         # pylint: disable=broad-except
@@ -200,7 +200,7 @@ class NetflixSession(object):
         """AddonSignals interface for login function"""
         self._login()
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _login(self):
         """Perform account login"""
         try:
@@ -221,7 +221,7 @@ class NetflixSession(object):
         self.session_data = session_data
 
     @common.addonsignals_return_call
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def logout(self):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
@@ -243,7 +243,7 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Activating profile {}'.format(guid))
@@ -269,7 +269,7 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def perpetual_path_request(self, paths, path_type, length_params=None):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
@@ -292,7 +292,7 @@ class NetflixSession(object):
                 range_end += MAX_PATH_REQUEST_SIZE
         return merged_response
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _path_request(self, paths):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}'.format(json.dumps(paths)))
@@ -335,7 +335,7 @@ class NetflixSession(object):
             component=component,
             **kwargs)
 
-    @common.time_execution
+    @common.time_execution(immediate=True)
     def _request(self, method, component, **kwargs):
         url = (_api_url(component, self.session_data['api_data'])
                if URLS[component]['is_api_call']
@@ -373,7 +373,7 @@ class NetflixSession(object):
         return data, headers, params
 
 
-@common.time_execution
+@common.time_execution(immediate=True)
 def _set_range_selector(paths, range_start, range_end):
     """Replace the RANGE_SELECTOR placeholder with an actual dict:
     {'from': range_start, 'to': range_end}"""

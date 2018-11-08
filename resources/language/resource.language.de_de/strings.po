@@ -531,3 +531,23 @@ msgstr "(Noch) keine enthaltenen Titel..."
 msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Up Next Integration aktivieren"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Zeige Benachrichtigungen anstatt Dialogfenstern bei Fehlern"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "Prüfe die Logdatei für detaillierte Informationen"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "In-Memory Cache löschen"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "In-Memory und Festplatten-Cache löschen"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "Aktiviere Ausführungs-Zeitmessung"

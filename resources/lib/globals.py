@@ -13,6 +13,7 @@ from urlparse import urlparse, parse_qsl
 
 import xbmc
 import xbmcaddon
+import xbmcvfs
 
 import resources.lib.cache as cache
 
@@ -79,6 +80,8 @@ class GlobalVariables(object):
         except IndexError:
             self.PARAM_STRING = ''
         self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
+        self.reset_time_trace()
+        self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
 
         try:
             os.mkdir(self.DATA_PATH)
@@ -98,17 +101,15 @@ class GlobalVariables(object):
                                  self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
+        # pylint: disable=broad-except
         for bucket in cache.BUCKET_NAMES:
-            if bucket == cache.CACHE_LIBRARY:
+            if bucket != cache.CACHE_LIBRARY:
                 # Library gets special location in DATA_PATH root because
                 # we don't want users accidentally deleting it.
-                continue
-            try:
-                os.makedirs(
+                xbmcvfs.mkdirs(
                     xbmc.translatePath(
-                        os.path.join(self.CACHE_PATH, bucket)).decode('utf-8'))
-            except OSError:
-                pass
+                        os.path.join(self.CACHE_PATH, bucket)))
+
 
     def library(self):
         """Get the current library instance"""
@@ -144,6 +145,10 @@ class GlobalVariables(object):
         """Reload the ADDON"""
         # pylint: disable=attribute-defined-outside-init
         self.ADDON = xbmcaddon.Addon()
+
+    def reset_time_trace(self):
+        """Reset current time trace info"""
+        self.TIME_TRACE = []
 
 
 # pylint: disable=invalid-name

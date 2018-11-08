@@ -169,13 +169,21 @@ class Cache(object):
             # del self.buckets[bucket]
         self.common.debug('Cache committ successful')
 
-    def invalidate(self):
+    def invalidate(self, on_disk=False):
         """Clear all cache buckets"""
         # pylint: disable=global-statement
         for bucket in BUCKET_NAMES:
             self.window.clearProperty(_window_property(bucket))
         self.buckets = {}
+        if on_disk:
+            self._invalidate_on_disk()
         self.common.info('Cache invalidated')
+
+    def _invalidate_on_disk(self):
+        for bucket in BUCKET_NAMES:
+            if bucket != CACHE_LIBRARY:
+                self.common.delete_folder_contents(
+                    os.path.join(self.cache_path, bucket))
 
     def invalidate_entry(self, bucket, identifier):
         """Remove an item from a bucket"""

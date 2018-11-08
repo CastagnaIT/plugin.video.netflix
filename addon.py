@@ -66,12 +66,12 @@ def route(pathitems):
     root_handler = pathitems[0] if pathitems else g.MODE_DIRECTORY
     if root_handler == g.MODE_PLAY:
         player.play(pathitems=pathitems[1:])
-    elif root_handler not in NAV_HANDLERS:
-        raise nav.InvalidPathError(
-            'No root handler for path {}'.format('/'.join(pathitems)))
     elif root_handler == 'extrafanart':
         common.debug('Ignoring extrafanart invocation')
         xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
+    elif root_handler not in NAV_HANDLERS:
+        raise nav.InvalidPathError(
+            'No root handler for path {}'.format('/'.join(pathitems)))
     else:
         nav.execute(NAV_HANDLERS[root_handler], pathitems[1:],
                     g.REQUEST_PARAMS)
@@ -93,3 +93,4 @@ if __name__ == '__main__':
         xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
 
     g.CACHE.commit()
+    common.log_time_trace()
