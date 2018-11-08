@@ -218,29 +218,32 @@ def any_value_except(mapping, excluded_key):
     return next(mapping[key] for key in mapping if key != excluded_key)
 
 
-def time_execution(func, immediate=False):
+def time_execution(immediate=False):
     """A decorator that wraps a function call and times its execution"""
-    @wraps(func)
-    def timing_wrapper(*args, **kwargs):
-        """Time the execution of a function"""
-        if not g.TIME_TRACE_ENABLED:
-            return func(*args, **kwargs)
+    # pylint: disable=missing-docstring
+    def time_execution_decorator(func):
+        @wraps(func)
+        def timing_wrapper(*args, **kwargs):
+            if not g.TIME_TRACE_ENABLED:
+                return func(*args, **kwargs)
 
-        funcname = '.'.join(
-            ((func.im_class.__name__
-              if hasattr(func, 'im_class')
-              else func.__module__),
-             func.__name__))
-        start = clock()
-        try:
-            return func(*args, **kwargs)
-        finally:
-            execution_time = int((clock() - start) * 1000)
-            if immediate:
-                debug('Call to {} took {}ms'.format(funcname, execution_time))
-            else:
-                g.TIME_TRACE.append([funcname, execution_time])
-    return timing_wrapper
+            funcname = '.'.join(
+                ((func.im_class.__name__
+                  if hasattr(func, 'im_class')
+                  else func.__module__),
+                 func.__name__))
+            start = clock()
+            try:
+                return func(*args, **kwargs)
+            finally:
+                execution_time = int((clock() - start) * 1000)
+                if immediate:
+                    debug('Call to {} took {}ms'
+                          .format(funcname, execution_time))
+                else:
+                    g.TIME_TRACE.append([funcname, execution_time])
+        return timing_wrapper
+    return time_execution_decorator
 
 
 def log_time_trace():
