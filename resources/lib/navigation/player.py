@@ -177,6 +177,6 @@ def upnext_info(videoid, infos, art):
         'playcount': infos['playcount'],
         'season': infos['season'],
         'episode': infos['episode'],
-        'rating': infos['rating'],
-        'firstaired': infos['year']
+        'rating': infos.get('rating', infos.get('userrating', '')),
+        'firstaired': infos.get('year', infos.get('firstaired', ''))
     }

@@ -11,18 +11,15 @@ from resources.lib.globals import g
 from .logging import debug
 
 LIBRARY_PROPS = {
-    'episode': ['title', 'plot', 'writer', 'firstaired', 'playcount',
-                'runtime', 'director', 'productioncode', 'season',
-                'episode', 'originaltitle', 'showtitle', 'lastplayed',
-                'fanart', 'thumbnail', 'file', 'resume', 'tvshowid',
-                'dateadded', 'art', 'specialsortseason',
-                'specialsortepisode', 'userrating', 'seasonid'],
+    'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
+                'episode', 'originaltitle', 'showtitle', 'lastplayed', 'file',
+                'resume', 'dateadded', 'art', 'userrating', 'firstaired'],
     'movie': ['title', 'genre', 'year', 'director', 'trailer',
               'tagline', 'plot', 'plotoutline', 'originaltitle', 'lastplayed',
               'playcount', 'writer', 'studio', 'mpaa', 'country',
               'imdbnumber', 'runtime', 'set', 'showlink', 'premiered',
-              'top250', 'fanart', 'thumbnail', 'file', 'sorttitle',
-              'resume', 'setid', 'dateadded', 'tag', 'art', 'userrating']
+              'top250', 'file', 'sorttitle', 'resume', 'setid', 'dateadded',
+              'tag', 'art', 'userrating']
 }
 
 

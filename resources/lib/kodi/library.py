@@ -150,18 +150,16 @@ def compile_tasks(videoid):
     common.debug('Compiling library tasks for {}'.format(videoid))
     metadata = api.metadata(videoid)
     if videoid.mediatype == common.VideoId.MOVIE:
-        return _create_movie_task(videoid, metadata)
+        return _create_movie_task(videoid, metadata[0])
     elif videoid.mediatype in common.VideoId.TV_TYPES:
         return _create_tv_tasks(videoid, metadata)
 
     raise ValueError('Cannot handle {}'.format(videoid))
 
 
-def _create_movie_task(videoid, metadata):
+def _create_movie_task(videoid, movie):
     """Create a task for a movie"""
-    name = '{title} ({year})'.format(
-        title=metadata['title'],
-        year=metadata['year'])
+    name = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
     return [_create_item_task(name, FOLDER_MOVIES, videoid, name, name)]
 
 
@@ -170,41 +168,37 @@ def _create_tv_tasks(videoid, metadata):
     If videoid represents a show or season, tasks will be generated for
     all contained seasons and episodes"""
     if videoid.mediatype == common.VideoId.SHOW:
-        return _compile_show_tasks(videoid, metadata)
+        return _compile_show_tasks(videoid, metadata[0])
     elif videoid.mediatype == common.VideoId.SEASON:
-        return _compile_season_tasks(videoid, metadata,
+        return _compile_season_tasks(videoid, metadata[0],
                                      common.find(videoid.seasonid, 'id',
-                                                 metadata['seasons']))
-    return [_create_episode_task(videoid, metadata)]
+                                                 metadata[0]['seasons']))
+    return [_create_episode_task(videoid, *metadata)]
 
 
-def _compile_show_tasks(videoid, metadata):
+def _compile_show_tasks(videoid, show):
     """Compile a list of task items for all episodes of all seasons
     of a tvshow"""
     # This nested comprehension is nasty but neccessary. It flattens
     # the task lists for each season into one list
-    return [task for season in metadata['seasons']
+    return [task for season in show['seasons']
             for task in _compile_season_tasks(
-                videoid.derive_season(season['id']), metadata, season)]
+                videoid.derive_season(season['id']), show, season)]
 
 
-def _compile_season_tasks(videoid, metadata, season):
+def _compile_season_tasks(videoid, show, season):
     """Compile a list of task items for all episodes in a season"""
     return [_create_episode_task(videoid.derive_episode(episode['id']),
-                                 metadata, season, episode)
+                                 episode, season, show)
             for episode in season['episodes']]
 
 
-def _create_episode_task(videoid, metadata, season=None, episode=None):
+def _create_episode_task(videoid, episode, season, show):
     """Export a single episode to the library"""
-    showname = metadata['title']
-    season = season or common.find(videoid.seasonid, 'id', metadata['seasons'])
-    episode = episode or common.find(videoid.episodeid, 'id',
-                                     season['episodes'])
-    title = episode['title']
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
-    title = ' - '.join((showname, filename, title))
-    return _create_item_task(title, FOLDER_TV, videoid, showname, filename)
+    title = ' - '.join((show['title'], filename, episode['title']))
+    return _create_item_task(title, FOLDER_TV, videoid, show['title'],
+                             filename)
 
 
 def _create_item_task(title, section, videoid, destination, filename):
