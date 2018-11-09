@@ -149,6 +149,15 @@ class GlobalVariables(object):
     def reset_time_trace(self):
         """Reset current time trace info"""
         self.TIME_TRACE = []
+        self.time_trace_level = -2
+
+    def add_time_trace_level(self):
+        """Add a level to the time trace"""
+        self.time_trace_level += 2
+
+    def remove_time_trace_level(self):
+        """Remove a level from the time trace"""
+        self.time_trace_level -= 2
 
 
 # pylint: disable=invalid-name

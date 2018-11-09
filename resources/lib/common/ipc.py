@@ -21,11 +21,11 @@ class Signals(object):
     ESN_CHANGED = 'esn_changed'
 
 
-def register_slot(callback, signal=None):
+def register_slot(callback, signal=None, source_id=None):
     """Register a callback with AddonSignals for return calls"""
     name = signal if signal else _signal_name(callback)
     AddonSignals.registerSlot(
-        signaler_id=g.ADDON_ID,
+        signaler_id=source_id or g.ADDON_ID,
         signal=name,
         callback=callback)
     debug('Registered AddonSignals slot {} to {}'.format(name, callback))
@@ -48,7 +48,7 @@ def send_signal(signal, data=None):
         data=data)
 
 
-@time_execution
+time_execution(immediate=False)
 def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target

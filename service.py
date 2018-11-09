@@ -11,8 +11,6 @@ import sys
 import threading
 import traceback
 
-import xbmc
-
 # Import and intiliaze globals right away to avoid stale values from the last
 # addon invocation. Otherwise Kodi's reuseLanguageInvoker option will cause
 # some really quirky behavior!
@@ -75,17 +73,15 @@ class NetflixService(object):
             ui.show_addon_error_info(exc)
             return
 
-        player = xbmc.Player()
         while not self.controller.abortRequested():
-            if self._tick_and_wait_for_abort(player.isPlayingVideo()):
+            if self._tick_and_wait_for_abort():
                 break
         self.shutdown()
 
-    def _tick_and_wait_for_abort(self, is_playing_video):
+    def _tick_and_wait_for_abort(self):
         # pylint: disable=broad-except
         try:
-            if is_playing_video:
-                self.controller.on_playback_tick()
+            self.controller.on_playback_tick()
             self.library_updater.on_tick()
         except Exception as exc:
             common.error(traceback.format_exc())
