@@ -9,6 +9,8 @@ from functools import wraps
 import json
 import requests
 
+import xbmc
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.website as website
@@ -83,7 +85,8 @@ class NetflixSession(object):
         ]
         for slot in self.slots:
             common.register_slot(slot)
-        common.register_slot(play_callback, g.ADDON_ID + '_play_action')
+        common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
+                             source_id='upnextprovider')
         self._init_session()
         self._prefetch_login()
 
@@ -229,7 +232,7 @@ class NetflixSession(object):
         cookies.delete(self.account_hash)
         common.purge_credentials()
         common.info('Logout successful')
-        ui.show_notification(common.get_local_string(30109))
+        ui.show_notification(common.get_local_string(30113))
         self._init_session()
 
     @common.addonsignals_return_call
@@ -432,4 +435,6 @@ def _raise_api_error(decoded_response):
 
 def play_callback(data):
     """Callback function used for upnext integration"""
-    common.run_plugin(data['play_path'])
+    common.debug('Received signal from Up Next. Playing next episode...')
+    common.stop_playback()
+    common.play_media(data['play_path'])

@@ -44,8 +44,8 @@ class LibraryUpdateService(object):
         Checks if the scheduled time for a library update has been reached
         """
         now = datetime.now()
-        interval = int(g.ADDON.getSetting('schedule_check_interval'))
-        update_frequency = int('0' + g.ADDON.getSetting('auto_update'))
+        update_frequency = g.ADDON.getSettingInt('auto_update')
+        interval = g.ADDON.getSettingInt('schedule_check_interval')
         next_schedule_check = (self.last_schedule_check +
                                timedelta(minutes=interval))
 

@@ -58,13 +58,13 @@ def login():
     return True
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def profiles():
     """Retrieve the list of available user profiles"""
     return common.make_call('list_profiles')
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
@@ -86,7 +86,6 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-@common.time_execution
 @cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_type')
 def list_id_for_type(list_type):
@@ -101,7 +100,7 @@ def list_id_for_type(list_type):
     return list_id
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
                     identifying_param_name='list_id')
 def video_list(list_id):
@@ -120,7 +119,7 @@ def video_list(list_id):
         }))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def custom_video_list(video_ids):
     """Retrieve a video list which contains the videos specified by
     video_ids"""
@@ -131,7 +130,7 @@ def custom_video_list(video_ids):
         build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_GENRES, identifying_param_index=0,
                     identifying_param_name='genre_id')
 def genre(genre_id):
@@ -150,7 +149,7 @@ def genre(genre_id):
           ['id', 'name']]]))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON)
 def seasons(videoid):
     """Retrieve seasons of a TV show"""
@@ -170,7 +169,7 @@ def seasons(videoid):
             }))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON)
 def episodes(videoid):
     """Retrieve episodes of a season"""
@@ -197,7 +196,7 @@ def episodes(videoid):
             }))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON)
 def single_info(videoid):
     """Retrieve info for a single episode"""
@@ -212,7 +211,6 @@ def single_info(videoid):
     return common.make_call('path_request', paths)
 
 
-@common.time_execution
 @cache.cache_output(g, cache.CACHE_COMMON,
                     fixed_identifier='my_list_items')
 def mylist_items():
@@ -227,7 +225,7 @@ def mylist_items():
 
 
 @catch_api_errors
-@common.time_execution
+@common.time_execution(immediate=False)
 def rate(videoid, rating):
     """Rate a video on Netflix"""
     common.debug('Rating {} as {}'.format(videoid.value, rating))
@@ -243,7 +241,7 @@ def rate(videoid, rating):
 
 
 @catch_api_errors
-@common.time_execution
+@common.time_execution(immediate=False)
 def update_my_list(videoid, operation):
     """Call API to update my list with either add or remove action"""
     common.debug('My List: {} {}'.format(operation, videoid))
@@ -268,7 +266,7 @@ def update_my_list(videoid, operation):
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
     if videoid.mediatype != common.VideoId.EPISODE:
@@ -290,7 +288,7 @@ def metadata(videoid):
             return {}, None
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def _episode_metadata(videoid):
     show_metadata = _metadata(videoid.tvshowid)
     episode_metadata, season_metadata = common.find_episode_metadata(
@@ -298,7 +296,7 @@ def _episode_metadata(videoid):
     return episode_metadata, season_metadata, show_metadata
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_METADATA, 0, 'video_id',
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
 def _metadata(video_id):
@@ -315,7 +313,7 @@ def _metadata(video_id):
         })['video']
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def search(search_term):
     """Retrieve a video list of search results"""
     common.debug('Searching for {}'.format(search_term))
@@ -328,7 +326,7 @@ def search(search_term):
                     VIDEO_LIST_PARTIAL_PATHS)))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def verify_pin(pin):
     """Send adult PIN to Netflix and verify it."""
     # pylint: disable=broad-except
@@ -342,7 +340,6 @@ def verify_pin(pin):
         return False
 
 
-@common.time_execution
 def build_paths(base_path, partial_paths):
     """Build a list of full paths by concatenating each partial path
     with the base path"""

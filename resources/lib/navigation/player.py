@@ -40,7 +40,7 @@ class InputstreamError(Exception):
 
 
 @common.inject_video_id(path_offset=0)
-@common.time_execution
+@common.time_execution(immediate=False)
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.debug('Playing {}'.format(videoid))
@@ -54,6 +54,7 @@ def play(videoid):
 
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
+    common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'infos': infos,
@@ -112,6 +113,7 @@ def _verify_pin(pin_required):
     return pin is not None and api.verify_pin(pin)
 
 
+@common.time_execution(immediate=False)
 def get_upnext_info(videoid, current_episode, metadata):
     """Determine next episode and send an AddonSignal to UpNext addon"""
     try:
@@ -119,13 +121,15 @@ def get_upnext_info(videoid, current_episode, metadata):
     except (TypeError, KeyError):
         import traceback
         common.debug(traceback.format_exc())
+        common.debug('There is no next episode, not setting up Up Next')
         return {}
 
+    common.debug('Next episode is {}'.format(next_episode_id))
     next_episode = infolabels.add_info_for_playback(next_episode_id,
                                                     xbmcgui.ListItem())
     next_info = {
-        'current_episode': upnext_info(*current_episode),
-        'next_episode': upnext_info(*next_episode),
+        'current_episode': upnext_info(videoid, *current_episode),
+        'next_episode': upnext_info(next_episode_id, *next_episode),
         'play_info': {'play_path': common.build_url(videoid=next_episode_id,
                                                     mode=g.MODE_PLAY)},
     }
@@ -135,6 +139,7 @@ def get_upnext_info(videoid, current_episode, metadata):
     return next_info
 
 
+@common.time_execution(immediate=False)
 def _find_next_episode(videoid, metadata):
     try:
         # Find next episode in current season
@@ -153,19 +158,19 @@ def _find_next_episode(videoid, metadata):
                               episodeid=episode['id'])
 
 
-def upnext_info(infos, art):
+def upnext_info(videoid, infos, art):
     """Create a data dict for upnext signal"""
     return {
-        'episodeid': infos.get('DBID'),
-        'tvshowid': infos.get('tvshowid'),
+        'episodeid': videoid.episodeid,
+        'tvshowid': videoid.tvshowid,
         'title': infos['title'],
         'art': {
-            'tvshow.poster': art.get('tvshow.poster', ''),
+            'tvshow.poster': art.get('poster', ''),
             'thumb': art.get('thumb', ''),
-            'tvshow.fanart': art.get('tvshow.fanart', ''),
-            'tvshow.landscape': art.get('tvshow.landscape', ''),
-            'tvshow.clearart': art.get('tvshow.clearart', ''),
-            'tvshow.clearlogo': art.get('tvshow.clearlogo', '')
+            'tvshow.fanart': art.get('fanart', ''),
+            'tvshow.landscape': art.get('landscape', ''),
+            'tvshow.clearart': art.get('clearart', ''),
+            'tvshow.clearlogo': art.get('clearlogo', '')
         },
         'plot': infos['plot'],
         'showtitle': infos['tvshowtitle'],

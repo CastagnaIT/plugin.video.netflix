@@ -3,8 +3,6 @@
 """Relay playback info to UP NEXT addon"""
 from __future__ import unicode_literals
 
-import xbmc
-
 import resources.lib.common as common
 
 from .action_manager import PlaybackActionManager
@@ -28,7 +26,7 @@ class UpNextNotifier(PlaybackActionManager):
 
     def _on_playback_started(self, player_state):
         # pylint: disable=unused-argument
-        xbmc.sleep(50000)
+        common.debug('Sending initialization signal to Up Next')
         common.send_signal('upnext_data', self.upnext_info)
 
     def _on_tick(self, player_state):

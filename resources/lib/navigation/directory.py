@@ -37,21 +37,20 @@ class DirectoryBuilder(object):
         else:
             self.profiles()
 
-    @common.time_execution
     def profiles(self, pathitems=None):
         """Show profiles listing"""
         # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
         listings.build_profiles_listing(api.profiles())
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def home(self, pathitems=None):
         """Show home listing"""
         # pylint: disable=unused-argument
         common.debug('Showing root video lists')
         listings.build_main_menu_listing(api.root_lists())
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def video_list(self, pathitems):
         """Show a video list"""
         # Use predefined names instead of dynamic IDs for common video lists
@@ -63,7 +62,7 @@ class DirectoryBuilder(object):
         listings.build_video_listing(api.video_list(list_id))
 
     @common.inject_video_id(path_offset=0)
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def show(self, videoid):
         """Show seasons of a tvshow"""
         if videoid.mediatype == common.VideoId.SEASON:
@@ -75,7 +74,7 @@ class DirectoryBuilder(object):
         """Show episodes of a season"""
         listings.build_episode_listing(videoid, api.episodes(videoid))
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def genres(self, pathitems):
         """Show video lists for a genre"""
         if len(pathitems) < 2:
@@ -86,7 +85,7 @@ class DirectoryBuilder(object):
             contexts = None
         listings.build_lolomo_listing(lolomo, contexts)
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def recommendations(self, pathitems=None):
         """Show video lists for a genre"""
         # pylint: disable=unused-argument
@@ -102,7 +101,7 @@ class DirectoryBuilder(object):
         else:
             _display_search_results(pathitems[1])
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
         """List all items that are exported to the Kodi library"""
         # pylint: disable=unused-argument
@@ -125,7 +124,7 @@ def _ask_search_term_and_redirect():
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def _display_search_results(search_term):
     search_results = api.search(search_term)
     if search_results.videos:

@@ -107,3 +107,13 @@ def schedule_builtin(time, command, name='NetflixTask'):
     """Set an alarm to run builtin command after time has passed"""
     xbmc.executebuiltin('AlarmClock({},{},{},silent)'
                         .format(name, command, time))
+
+
+def play_media(media):
+    """Play a media in Kodi"""
+    xbmc.executebuiltin('PlayMedia({})'.format(media))
+
+
+def stop_playback():
+    """Stop the running playback"""
+    xbmc.executebuiltin('PlayerControl(Stop)')

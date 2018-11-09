@@ -39,7 +39,6 @@ CONTEXT_MENU_ACTIONS = {
 }
 
 
-@common.time_execution
 def generate_context_menu_items(videoid):
     """Generate context menu items for a listitem"""
     items = _generate_library_ctx_items(videoid)

@@ -40,6 +40,7 @@ class PlaybackController(xbmc.Monitor):
         Callback for addon signal when this addon has initiated a playback
         """
         self.tracking = True
+        self.active_player_id = None
         self.action_managers = [
             BookmarkManager(),
             SectionSkipper(),
@@ -70,14 +71,14 @@ class PlaybackController(xbmc.Monitor):
         """
         Notify action managers of playback tick
         """
-        if self.tracking:
+        if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
                 self._notify_all(PlaybackActionManager.on_tick,
                                  player_state)
 
     def _on_playback_started(self, data):
-        self.active_player_id = data['player']['playerid']
+        self.active_player_id = max(data['player']['playerid'], 1)
         self._notify_all(PlaybackActionManager.on_playback_started,
                          self._get_player_state())
 

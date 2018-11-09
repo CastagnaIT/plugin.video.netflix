@@ -2,7 +2,6 @@
 """Navigation handler for actions"""
 from __future__ import unicode_literals
 
-import xbmc
 from xbmcaddon import Addon
 
 from resources.lib.globals import g
@@ -65,7 +64,7 @@ class AddonActionExecutor(object):
             ui.show_notification(common.get_local_string(30106))
 
     @common.inject_video_id(path_offset=1)
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def rate(self, videoid):
         """Rate an item on Netflix. Ask for a rating if there is none supplied
         in the path."""
@@ -74,7 +73,7 @@ class AddonActionExecutor(object):
             api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]
@@ -83,7 +82,7 @@ class AddonActionExecutor(object):
         common.refresh_container()
 
 
-    @common.time_execution
+    @common.time_execution(immediate=False)
     def purge_cache(self):
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""

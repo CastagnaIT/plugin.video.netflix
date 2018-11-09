@@ -33,7 +33,7 @@ def library_path():
             else g.DATA_PATH)
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def get_item(videoid):
     """Find an item in the Kodi library by its Netflix videoid and return
     Kodi DBID and mediatype"""
@@ -47,7 +47,7 @@ def get_item(videoid):
             .format(videoid))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def _get_library_entry(videoid):
     """Get the first leaf-entry for videoid from the library.
     For shows and seasons this will return the first contained episode"""
@@ -74,7 +74,7 @@ def _any_child_library_entry(library_entry):
     return common.any_value_except(library_entry, 'videoid')
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def _get_item(mediatype, filename):
     exported_filepath = os.path.normcase(xbmc.translatePath(filename))
     for library_item in common.get_library_items(mediatype):
@@ -133,7 +133,7 @@ def _remove_from_kodi_library(videoid):
                     .format(exc))
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def purge():
     """Purge all items exported to Kodi library and delete internal library
     database"""
@@ -144,7 +144,7 @@ def purge():
                               sync_mylist=False)
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def compile_tasks(videoid):
     """Compile a list of tasks for items based on the videoid"""
     common.debug('Compiling library tasks for {}'.format(videoid))
@@ -218,7 +218,7 @@ def _create_item_task(title, section, videoid, destination, filename):
     }
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     destination_folder = os.path.join(
@@ -263,7 +263,7 @@ def _add_to_library(videoid, export_filename):
     g.save_library()
 
 
-@common.time_execution
+@common.time_execution(immediate=False)
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except

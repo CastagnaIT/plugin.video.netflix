@@ -80,7 +80,7 @@ class MSLHandler(object):
         """Perform a key handshake and initialize crypto keys"""
         # pylint: disable=unused-argument
         if not g.get_esn():
-            common.error('Cannot perform key handshake, missing ESN')
+            common.info('Cannot perform key handshake, missing ESN')
             return
 
         common.debug('Performing key handshake. ESN: {}'.format(g.get_esn()))
