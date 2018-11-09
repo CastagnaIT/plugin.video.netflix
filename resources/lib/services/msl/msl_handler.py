@@ -18,7 +18,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
-from .request_builder import MSLRequestBuilder
+from .request_builder import MSLRequestBuilder, SDKVERSION
 from .profiles import enabled_profiles
 from .converter import convert_to_dash
 from .exceptions import MSLError
@@ -106,7 +106,7 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         manifest = self._load_manifest(viewable_id, g.get_esn())
-        if not has_1080p(manifest):
+        if SDKVERSION < 18 and not has_1080p(manifest):
             common.debug('Manifest has no 1080p viewables')
             manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)

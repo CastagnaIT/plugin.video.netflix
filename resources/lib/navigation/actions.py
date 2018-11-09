@@ -21,6 +21,7 @@ class AddonActionExecutor(object):
 
     def logout(self, pathitems=None):
         """Perform account logout"""
+        # pylint: disable=unused-argument
         api.logout()
 
     def opensettings(self, pathitems):
@@ -44,12 +45,13 @@ class AddonActionExecutor(object):
 
     def switch_account(self, pathitems=None):
         """Logo out of the curent account and login into another one"""
+        # pylint: disable=unused-argument
         api.logout()
         api.login()
 
     def toggle_adult_pin(self, pathitems=None):
         """Toggle adult PIN verification"""
-        # pylint: disable=no-member
+        # pylint: disable=no-member, unused-argument
         pin = ui.ask_for_pin()
         if pin is None:
             return
@@ -83,9 +85,10 @@ class AddonActionExecutor(object):
 
 
     @common.time_execution(immediate=False)
-    def purge_cache(self):
+    def purge_cache(self, pathitems=None):
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""
+        # pylint: disable=unused-argument
         g.CACHE.invalidate(self.params.get('on_disk', False))
 
 

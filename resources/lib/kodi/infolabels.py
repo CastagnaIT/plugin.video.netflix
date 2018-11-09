@@ -14,6 +14,11 @@ QUALITIES = [
     {'codec': 'h265', 'width': '3840', 'height': '2160'}
 ]
 
+JSONRPC_MAPPINGS = {
+    'showtitle': 'tvshowtitle',
+    'userrating': 'rating'
+}
+
 
 def add_info(videoid, list_item, item, raw_data):
     """Add infolabels to the list_item. The passed in list_item is modified
@@ -200,6 +205,7 @@ def add_info_from_library(videoid, list_item):
     details = library.get_item(videoid)
     common.debug('Got fileinfo from library: {}'.format(details))
     art = details.pop('art', {})
+    _sanitize_infos(details)
     # Resuming for strm files in library is currently broken in Leia Beta
     # keeping this for reference / in hopes this will get fixed
     resume = details.pop('resume', {})
@@ -214,3 +220,11 @@ def add_info_from_library(videoid, list_item):
     list_item.setInfo('video', infos)
     list_item.setArt(art)
     return infos, art
+
+
+def _sanitize_infos(details):
+    for source, target in JSONRPC_MAPPINGS.items():
+        if source in details:
+            details[target] = details.pop(source)
+    for prop in ['file', 'label']:
+        details.pop(prop, None)
