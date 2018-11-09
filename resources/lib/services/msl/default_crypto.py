@@ -48,7 +48,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
                      'keypairid': 'superKeyPair'
                  }}]
 
-    def encrypt(self, plaintext):
+    def encrypt(self, plaintext, esn):
         """
         Encrypt the given Plaintext with the encryption key
         :param plaintext:
@@ -58,7 +58,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
         cipher = AES.new(self.encryption_key, AES.MODE_CBC, init_vector)
         encryption_envelope = {
             'ciphertext': '',
-            'keyid': '_'.join((g.get_esn(), str(self.sequence_number))),
+            'keyid': '_'.join((esn, str(self.sequence_number))),
             'sha256': 'AA==',
             'iv': base64.standard_b64encode(init_vector)
         }

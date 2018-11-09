@@ -7,7 +7,6 @@ import base64
 import subprocess
 import random
 
-from resources.lib.globals import g
 import resources.lib.common as common
 
 # check if we are on Android
@@ -32,35 +31,36 @@ class MSLRequestBuilder(object):
         self.crypto = MSLCrypto(msl_data)
 
     @common.time_execution(immediate=True)
-    def msl_request(self, data):
+    def msl_request(self, data, esn):
         """Create an encrypted MSL request"""
-        return (json.dumps(self._signed_header()) +
-                json.dumps(self._encrypted_chunk(data)))
+        return (json.dumps(self._signed_header(esn)) +
+                json.dumps(self._encrypted_chunk(data, esn)))
 
     @common.time_execution(immediate=True)
-    def handshake_request(self):
+    def handshake_request(self, esn):
         """Create a key handshake request"""
         return json.dumps({
             'entityauthdata': {
                 'scheme': 'NONE',
-                'authdata': {'identity': g.get_esn()}},
+                'authdata': {'identity': esn}},
             'headerdata':
                 base64.standard_b64encode(
                     self._headerdata(is_key_request=True, is_handshake=True,
-                                     compression=None)),
+                                     compression=None, esn=esn)),
             'signature': ''
         }, sort_keys=True)
 
     @common.time_execution(immediate=True)
-    def _signed_header(self):
-        encryption_envelope = self.crypto.encrypt(self._headerdata())
+    def _signed_header(self, esn):
+        encryption_envelope = self.crypto.encrypt(self._headerdata(esn=esn),
+                                                  esn)
         return {
             'headerdata': base64.standard_b64encode(encryption_envelope),
             'signature': self.crypto.sign(encryption_envelope),
             'mastertoken': self.crypto.mastertoken,
         }
 
-    def _headerdata(self, is_handshake=False, is_key_request=False,
+    def _headerdata(self, esn, is_handshake=False, is_key_request=False,
                     compression='GZIP'):
         """
         Function that generates a MSL header dict
@@ -68,7 +68,7 @@ class MSLRequestBuilder(object):
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
         header_data = {
-            'sender': g.get_esn(),
+            'sender': esn,
             'handshake': is_handshake,
             'nonreplayable': False,
             'capabilities': {
@@ -90,7 +90,7 @@ class MSLRequestBuilder(object):
         return json.dumps(header_data)
 
     @common.time_execution(immediate=True)
-    def _encrypted_chunk(self, data):
+    def _encrypted_chunk(self, data, esn):
         # Serialize the given Data
         serialized_data = ''.join((
             '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"',
@@ -103,7 +103,7 @@ class MSLRequestBuilder(object):
             'sequencenumber': 1,
             'endofmsg': True
         }
-        encryption_envelope = self.crypto.encrypt(json.dumps(payload))
+        encryption_envelope = self.crypto.encrypt(json.dumps(payload), esn)
         return {
             'payload': base64.standard_b64encode(encryption_envelope),
             'signature': self.crypto.sign(encryption_envelope),

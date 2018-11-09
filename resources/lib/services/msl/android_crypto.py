@@ -78,12 +78,13 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         common.debug('Widevine CryptoSession provideKeyResponse successful')
         common.debug('keySetId: {}'.format(self.keyset_id))
 
-    def encrypt(self, plaintext):
+    def encrypt(self, plaintext, esn):
         """
         Encrypt the given Plaintext with the encryption key
         :param plaintext:
         :return: Serialized JSON String of the encryption Envelope
         """
+        # pylint: disable=unused-argument
         init_vector = urandom(16)
         plaintext = plaintext.encode('utf-8')
         # Add PKCS5Padding

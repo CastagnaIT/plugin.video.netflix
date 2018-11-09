@@ -79,18 +79,20 @@ class MSLHandler(object):
     def perform_key_handshake(self, data=None):
         """Perform a key handshake and initialize crypto keys"""
         # pylint: disable=unused-argument
-        if not g.get_esn():
+        esn = data or g.get_esn()
+        if not esn:
             common.info('Cannot perform key handshake, missing ESN')
             return
 
-        common.debug('Performing key handshake. ESN: {}'.format(g.get_esn()))
+        common.debug('Performing key handshake. ESN: {}'.format(esn))
 
         response = _process_json_response(
             self._post(ENDPOINTS['chrome']['manifest'],
-                       self.request_builder.handshake_request()))
+                       self.request_builder.handshake_request(esn)))
         headerdata = json.loads(
             base64.standard_b64decode(response['headerdata']))
-        self.request_builder.crypto.parse_key_response(headerdata)
+        self.request_builder.crypto.parse_key_response(
+            headerdata, not esn.startswith('NFCDIE-02-'))
         common.debug('Key handshake successful')
 
     @display_error_info
@@ -103,10 +105,34 @@ class MSLHandler(object):
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
         """
-        common.debug('Requesting manifest for {}'.format(viewable_id))
+        manifest = self._load_manifest(viewable_id, g.get_esn())
+        if not has_1080p(manifest):
+            common.debug('Manifest has no 1080p viewables')
+            manifest = self.get_edge_manifest(viewable_id, manifest)
+        return self.__tranform_to_dash(manifest)
+
+    def get_edge_manifest(self, viewable_id, chrome_manifest):
+        """Load a manifest with an EDGE ESN and replace playback_context and
+        drm_context"""
+        common.debug('Loading EDGE manifest')
+        esn = generate_edge_esn()
+        common.debug('Switching MSL data to EDGE')
+        self.perform_key_handshake(esn)
+        manifest = self._load_manifest(viewable_id, esn)
+        manifest['playbackContextId'] = chrome_manifest['playbackContextId']
+        manifest['drmContextId'] = chrome_manifest['drmContextId']
+        common.debug('Successfully loaded EDGE manifest')
+        common.debug('Resetting MSL data to Chrome')
+        self.perform_key_handshake()
+        return manifest
+
+    @common.time_execution(immediate=True)
+    def _load_manifest(self, viewable_id, esn):
+        common.debug('Requesting manifest for {} with ESN {}'
+                     .format(viewable_id, esn))
         manifest_request_data = {
             'method': 'manifest',
-            'lookupType': 'PREPARE',
+            'lookupType': 'STANDARD',
             'viewableIds': [viewable_id],
             'profiles': enabled_profiles(),
             'drmSystem': 'widevine',
@@ -117,7 +143,7 @@ class MSLHandler(object):
             },
             'sessionId': '14673889385265',
             'trackId': 0,
-            'flavor': 'PRE_FETCH',
+            'flavor': 'STANDARD',
             'secureUrls': False,
             'supportPreviewContent': True,
             'forceClearStreams': False,
@@ -126,8 +152,9 @@ class MSLHandler(object):
             'uiVersion': 'akira'
         }
         manifest = self._chunked_request(ENDPOINTS['chrome']['manifest'],
-                                         manifest_request_data)
-        return self.__tranform_to_dash(manifest)
+                                         manifest_request_data, esn)
+        common.save_file('manifest.json', json.dumps(manifest))
+        return manifest['result']['viewables'][0]
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -153,26 +180,24 @@ class MSLHandler(object):
             }],
             'clientTime': int(time.time()),
             'xid': int((int(time.time()) + 0.1612) * 1000)
-
         }
         response = self._chunked_request(ENDPOINTS['chrome']['license'],
-                                         license_request_data)
+                                         license_request_data, g.get_esn())
+        common.debug(response)
         return response['result']['licenses'][0]['data']
 
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
-        common.save_file('manifest.json', json.dumps(manifest))
-        manifest = manifest['result']['viewables'][0]
         self.last_playback_context = manifest['playbackContextId']
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
 
     @common.time_execution(immediate=True)
-    def _chunked_request(self, endpoint, request_data):
+    def _chunked_request(self, endpoint, request_data, esn):
         """Do a POST request and process the chunked response"""
         return self._process_chunked_response(
             self._post(endpoint,
-                       self.request_builder.msl_request(request_data)))
+                       self.request_builder.msl_request(request_data, esn)))
 
     @common.time_execution(immediate=True)
     def _post(self, endpoint, request_data):
@@ -268,3 +293,20 @@ def _decrypt_chunks(chunks, crypto):
     decrypted_payload = json.loads(decrypted_payload)[1]['payload']['data']
     decrypted_payload = base64.standard_b64decode(decrypted_payload)
     return json.loads(decrypted_payload)
+
+
+def has_1080p(manifest):
+    """Return True if any of the video tracks in manifest have a 1080p profile
+    available, else False"""
+    return any(video['contentProfile'] == 'playready-h264mpl40-dash'
+               for video in manifest['videoTracks'][0]['downloadables'])
+
+
+def generate_edge_esn():
+    """Generate a random EDGE ESN"""
+    import random
+    esn = ['NFCDIE-02-']
+    possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    for _ in range(0, 30):
+        esn.append(random.choice(possible))
+    return''.join(esn)

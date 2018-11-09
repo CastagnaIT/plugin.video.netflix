@@ -32,6 +32,7 @@ PROFILES = {
         'playready-h264mpl31-dash', 'playready-h264mpl40-dash',
         # Audio
         'heaac-2-dash',
+        'heaac-5.1-dash',
         # Subtiltes
         # 'dfxp-ls-sdh',
         # 'simplesdh',
