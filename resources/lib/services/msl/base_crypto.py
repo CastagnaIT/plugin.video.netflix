@@ -19,11 +19,12 @@ class MSLBaseCrypto(object):
         if msl_data:
             self._set_mastertoken(msl_data['tokens']['mastertoken'])
 
-    def parse_key_response(self, headerdata):
+    def parse_key_response(self, headerdata, save_to_disk):
         """Parse a key response and update crypto keys"""
         self._set_mastertoken(headerdata['keyresponsedata']['mastertoken'])
         self._init_keys(headerdata['keyresponsedata'])
-        self._save_msl_data()
+        if save_to_disk:
+            self._save_msl_data()
 
     def _set_mastertoken(self, mastertoken):
         """Set the mastertoken and check it for validity"""
