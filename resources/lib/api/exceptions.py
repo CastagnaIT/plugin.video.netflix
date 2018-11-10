@@ -3,6 +3,11 @@
 from __future__ import unicode_literals
 
 
+class MissingCredentialsError(Exception):
+    """There are no stored credentials to load"""
+    pass
+
+
 class InvalidReferenceError(Exception):
     """The provided reference cannot be dealt with as it is in an
     unexpected format"""

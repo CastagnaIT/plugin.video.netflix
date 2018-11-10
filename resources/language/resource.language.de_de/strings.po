@@ -551,3 +551,7 @@ msgstr "In-Memory und Festplatten-Cache löschen"
 msgctxt "#30134"
 msgid "Enable execution timing"
 msgstr "Aktiviere Ausführungs-Zeitmessung"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Cache geleert"

@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 
 import os
 from urlparse import urlparse, parse_qsl
+from urllib import unquote
 
 import xbmc
 import xbmcaddon
@@ -74,7 +75,7 @@ class GlobalVariables(object):
             self.PLUGIN_HANDLE = 0
         self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
                                                      netloc=self.URL[1])
-        self.PATH = self.URL[2][1:]
+        self.PATH = unquote(self.URL[2][1:]).decode('utf-8')
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -109,7 +110,6 @@ class GlobalVariables(object):
                 xbmcvfs.mkdirs(
                     xbmc.translatePath(
                         os.path.join(self.CACHE_PATH, bucket)))
-
 
     def library(self):
         """Get the current library instance"""

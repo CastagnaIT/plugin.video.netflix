@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import traceback
 from datetime import datetime
-from urllib import urlencode
+from urllib import urlencode, quote
 from functools import wraps
 from time import clock
 import gzip
@@ -107,9 +107,7 @@ def build_url(pathitems=None, videoid=None, params=None, mode=None):
         raise ValueError('Either pathitems or videoid must be set.')
     path = '{netloc}/{path}/{qs}'.format(
         netloc=g.BASE_URL,
-        path='/'.join(_expand_mode(mode) +
-                      (pathitems or []) +
-                      _expand_videoid(videoid)),
+        path=_encode_path(mode, pathitems, videoid),
         qs=_encode_params(params))
     return path
 
@@ -120,6 +118,13 @@ def _expand_mode(mode):
 
 def _expand_videoid(videoid):
     return videoid.to_path() if videoid else []
+
+
+def _encode_path(mode, pathitems, videoid):
+    return quote(
+        '/'.join(_expand_mode(mode) +
+                 (pathitems or []) +
+                 _expand_videoid(videoid)).encode('utf-8'))
 
 
 def _encode_params(params):

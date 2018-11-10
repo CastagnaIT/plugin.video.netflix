@@ -14,7 +14,8 @@ from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
-from .exceptions import InvalidVideoListTypeError, LoginFailedError, APIError
+from .exceptions import (InvalidVideoListTypeError, LoginFailedError, APIError,
+                         NotLoggedInError, MissingCredentialsError)
 
 
 def catch_api_errors(func):
@@ -37,8 +38,11 @@ def activate_profile(profile_id):
 
 def logout():
     """Logout of the current account"""
-    g.CACHE.invalidate()
-    common.make_call('logout')
+    try:
+        common.make_call('logout')
+        g.CACHE.invalidate()
+    except (MissingCredentialsError, NotLoggedInError):
+        ui.show_notification(common.get_local_string(30112))
 
 
 def login():
@@ -46,14 +50,10 @@ def login():
     g.CACHE.invalidate()
     try:
         ui.ask_credentials()
-    except common.MissingCredentialsError:
-        ui.show_notification(common.get_local_string(30112))
-        return False
-    try:
         common.make_call('login')
-    except LoginFailedError:
-        ui.show_notification(common.get_local_string(30009))
-        common.purge_credentials()
+    except (MissingCredentialsError, LoginFailedError) as exc:
+        msg = 30009 if isinstance(exc, LoginFailedError) else 30112
+        ui.show_notification(common.get_local_string(msg))
         return False
     return True
 

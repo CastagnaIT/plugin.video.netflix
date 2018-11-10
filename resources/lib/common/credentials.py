@@ -3,16 +3,12 @@
 from __future__ import unicode_literals
 
 from resources.lib.globals import g
+from resources.lib.api.exceptions import MissingCredentialsError
 
 from .logging import debug
 
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
-
-
-class MissingCredentialsError(Exception):
-    """There are no stored credentials to load"""
-    pass
 
 
 def __crypt_key():
