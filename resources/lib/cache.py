@@ -37,7 +37,7 @@ BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_METADATA,
 BUCKET_LOCKED = 'LOCKED_BY_{:04d}_AT_{}'
 
 # 100 years TTL should be close enough to infinite
-TTL_INFINITE = 60*60*24*365*100
+TTL_INFINITE = 60 * 60 * 24 * 365 * 100
 
 
 class CacheMiss(Exception):
@@ -269,27 +269,35 @@ class Cache(object):
 
     def _persist_bucket(self, bucket, contents):
         # pylint: disable=broad-except
-        lock = self.window.getProperty(_window_property(bucket))
-        # Only persist if we acquired the original lock or if the lock is older
-        # than 15 seconds (override stale locks)
-        is_own_lock = lock[:14] == self.lock_marker(bucket)[:14]
-        is_stale_lock = int(lock[18:] or 1) <= time() - 15
-        if is_own_lock or is_stale_lock:
-            if is_stale_lock:
-                self.common.info('Overriding stale cache lock {}'.format(lock))
-            try:
-                self.window.setProperty(_window_property(bucket),
-                                        pickle.dumps(contents))
-            except Exception as exc:
-                self.common.error('Failed to persist {} to wnd properties: {}'
-                                  .format(bucket, exc))
-                self.window.clearProperty(_window_property(bucket))
-            finally:
-                self.common.debug('Released lock on {}'.format(bucket))
-        else:
+        if not self.is_safe_to_persist(bucket):
             self.common.warn(
                 '{} is locked by another instance. Discarding changes'
                 .format(bucket))
+            return
+
+        try:
+            self.window.setProperty(_window_property(bucket),
+                                    pickle.dumps(contents))
+        except Exception as exc:
+            self.common.error('Failed to persist {} to wnd properties: {}'
+                              .format(bucket, exc))
+            self.window.clearProperty(_window_property(bucket))
+        finally:
+            self.common.debug('Released lock on {}'.format(bucket))
+
+    def is_safe_to_persist(self, bucket):
+        # Only persist if we acquired the original lock or if the lock is older
+        # than 15 seconds (override stale locks)
+        lock = self.window.getProperty(_window_property(bucket))
+        is_own_lock = lock[:14] == self.lock_marker(bucket)[:14]
+        try:
+            is_stale_lock = int(lock[18:] or 1) <= time() - 15
+        except ValueError:
+            is_stale_lock = False
+        if is_stale_lock:
+            self.common.info('Overriding stale cache lock {} on {}'
+                             .format(lock, bucket))
+        return is_own_lock or is_stale_lock
 
     def verify_ttl(self, bucket, identifier, cache_entry):
         """Verify if cache_entry has reached its EOL.

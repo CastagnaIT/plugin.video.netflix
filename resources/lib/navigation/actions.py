@@ -2,13 +2,10 @@
 """Navigation handler for actions"""
 from __future__ import unicode_literals
 
-from xbmcaddon import Addon
-
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
-from resources.lib.navigation import InvalidPathError
 
 
 class AddonActionExecutor(object):
@@ -24,13 +21,6 @@ class AddonActionExecutor(object):
         # pylint: disable=unused-argument
         api.logout()
 
-    def opensettings(self, pathitems):
-        """Open settings of another addon"""
-        try:
-            Addon(pathitems[1]).openSettings()
-        except IndexError:
-            raise InvalidPathError('Missing target addon id')
-
     def save_autologin(self, pathitems):
         """Save autologin data"""
         try:
@@ -42,12 +32,6 @@ class AddonActionExecutor(object):
             common.error('Cannot save autologin - invalid params')
         g.CACHE.invalidate()
         common.refresh_container()
-
-    def switch_account(self, pathitems=None):
-        """Logo out of the curent account and login into another one"""
-        # pylint: disable=unused-argument
-        api.logout()
-        api.login()
 
     def toggle_adult_pin(self, pathitems=None):
         """Toggle adult PIN verification"""
@@ -83,13 +67,13 @@ class AddonActionExecutor(object):
         _sync_library(videoid, operation)
         common.refresh_container()
 
-
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""
         # pylint: disable=unused-argument
         g.CACHE.invalidate(self.params.get('on_disk', False))
+        ui.show_notification(common.get_local_string(30135))
 
 
 def _sync_library(videoid, operation):

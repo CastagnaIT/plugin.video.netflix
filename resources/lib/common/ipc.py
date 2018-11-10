@@ -48,7 +48,7 @@ def send_signal(signal, data=None):
         data=data)
 
 
-time_execution(immediate=False)
+@time_execution(immediate=False)
 def make_call(callname, data=None):
     """Make a call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target

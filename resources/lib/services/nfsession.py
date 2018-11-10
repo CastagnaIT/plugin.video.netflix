@@ -9,8 +9,6 @@ from functools import wraps
 import json
 import requests
 
-import xbmc
-
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.website as website
@@ -19,7 +17,7 @@ import resources.lib.services.cookies as cookies
 import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,
-                                          APIError)
+                                          APIError, MissingCredentialsError)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -29,7 +27,7 @@ URLS = {
     'logout': {'endpoint': '/SignOut', 'is_api_call': False},
     'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
     'browse': {'endpoint': '/browse', 'is_api_call': False},
-    'profiles':  {'endpoint': '/profiles/manage', 'is_api_call': False},
+    'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
     'adult_pin': {'endpoint': '/pin/service', 'is_api_call': True},
     'metadata': {'endpoint': '/metadata', 'is_api_call': True},
@@ -146,7 +144,7 @@ class NetflixSession(object):
             common.get_credentials()
             if not self._is_logged_in():
                 self._login()
-        except common.MissingCredentialsError:
+        except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
         except LoginFailedError:
             ui.show_notification(common.get_local_string(30009))
@@ -181,7 +179,7 @@ class NetflixSession(object):
         # pylint: disable=broad-except
         try:
             self.session.cookies = cookies.load(self.account_hash)
-        except common.MissingCredentialsError:
+        except MissingCredentialsError:
             common.debug(
                 'No stored credentials available, cannot identify account')
             return False
@@ -215,7 +213,7 @@ class NetflixSession(object):
                 data=_login_payload(common.get_credentials(), auth_url))
             session_data = website.extract_session_data(login_response)
         except Exception:
-            common.error(traceback.format_exc())
+            common.debug(traceback.format_exc())
             self.session.cookies.clear()
             raise LoginFailedError
 
@@ -228,8 +226,8 @@ class NetflixSession(object):
     def logout(self):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
-        self._get('logout')
         cookies.delete(self.account_hash)
+        self._get('logout')
         common.purge_credentials()
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))

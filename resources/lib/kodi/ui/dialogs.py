@@ -58,18 +58,20 @@ def ask_for_pin():
 
 def ask_for_search_term():
     """Ask the user for a search term"""
+    return _ask_for_input(common.get_local_string(30003))
+
+
+def _ask_for_input(heading):
     return xbmcgui.Dialog().input(
-        heading=common.get_local_string(30003),
-        type=xbmcgui.INPUT_ALPHANUM) or None
+        heading=heading,
+        type=xbmcgui.INPUT_ALPHANUM).decode('utf-8') or None
 
 
 def ask_for_custom_title(original_title):
     """Ask the user for a custom title (for library export)"""
     if g.ADDON.getSettingBool('customexportname'):
         return original_title
-    return xbmcgui.Dialog().input(
-        heading=common.get_local_string(30031),
-        type=xbmcgui.INPUT_ALPHANUM) or original_title
+    return _ask_for_input(common.get_local_string(30031)) or original_title
 
 
 def ask_for_removal_confirmation():
