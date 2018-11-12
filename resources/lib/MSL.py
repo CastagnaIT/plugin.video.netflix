@@ -19,6 +19,8 @@ from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
 
+import xbmcaddon
+
 #check if we are on Android
 import subprocess
 try:
@@ -85,9 +87,9 @@ class MSL(object):
                 # Audio
                 'heaac-2-dash',
 
-                # Subtiltes
+                # Subtiltes (handled separately)
                 # 'dfxp-ls-sdh',
-                'simplesdh',
+                # 'simplesdh',
                 # 'nflx-cmisc',
 
                 # Unkown
@@ -110,6 +112,13 @@ class MSL(object):
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
+
+        # subtitles
+        addon = xbmcaddon.Addon('inputstream.adaptive')
+        if addon and addon.getAddonInfo('version') >= '2.3.8':
+            manifest_request_data['profiles'].append('webvtt-lssdh-ios8')
+        else:
+            manifest_request_data['profiles'].append('simplesdh')
 
         # add hevc profiles if setting is set
         if hevc is True:
@@ -445,20 +454,22 @@ class MSL(object):
             is_downloadables = 'downloadables' not in text_track
             if is_downloadables or text_track.get('downloadables') is None:
                 continue
+            # Only one subtitle representation per adaptationset
+            downloadable = text_track['downloadables'][0]
+
             subtiles_adaption_set = ET.SubElement(
                 parent=period,
                 tag='AdaptationSet',
                 lang=text_track.get('bcp47'),
-                codecs='stpp',
+                codecs='wvtt' if downloadable.get('contentProfile') == 'webvtt-lssdh-ios8' else 'stpp',
                 contentType='text',
-                mimeType='application/ttml+xml')
-            for downloadable in text_track['downloadables']:
-                rep = ET.SubElement(
-                    parent=subtiles_adaption_set,
-                    tag='Representation',
-                    nflxProfile=downloadable.get('contentProfile'))
-                base_url = self.__get_base_url(downloadable['urls'])
-                ET.SubElement(rep, 'BaseURL').text = base_url
+                mimeType='text/vtt' if downloadable.get('contentProfile') == 'webvtt-lssdh-ios8' else 'application/ttml+xml')
+            rep = ET.SubElement(
+                parent=subtiles_adaption_set,
+                tag='Representation',
+                nflxProfile=downloadable.get('contentProfile'))
+            base_url = self.__get_base_url(downloadable['urls'])
+            ET.SubElement(rep, 'BaseURL').text = base_url
 
         xml = ET.tostring(root, encoding='utf-8', method='xml')
         xml = xml.replace('\n', '').replace('\r', '')
