@@ -464,6 +464,11 @@ class MSL(object):
                 codecs='wvtt' if downloadable.get('contentProfile') == 'webvtt-lssdh-ios8' else 'stpp',
                 contentType='text',
                 mimeType='text/vtt' if downloadable.get('contentProfile') == 'webvtt-lssdh-ios8' else 'application/ttml+xml')
+            role = ET.SubElement(
+                parent=subtiles_adaption_set,
+                tag = 'Role',
+                schemeIdUri = 'urn:mpeg:dash:role:2011',
+                value = 'forced' if text_track.get('isForced') == True else 'main')
             rep = ET.SubElement(
                 parent=subtiles_adaption_set,
                 tag='Representation',
