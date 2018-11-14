@@ -18,19 +18,15 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
-from .request_builder import MSLRequestBuilder, SDKVERSION
+from .request_builder import MSLRequestBuilder
 from .profiles import enabled_profiles
 from .converter import convert_to_dash
 from .exceptions import MSLError
 
 CHROME_BASE_URL = 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/'
 ENDPOINTS = {
-    'chrome': {
-        'manifest': CHROME_BASE_URL + 'manifest',
-        'license': CHROME_BASE_URL + 'license'},
-    'edge': {
-        'manifest': None,
-        'license': None}
+    'manifest': CHROME_BASE_URL + 'manifest',
+    'license': CHROME_BASE_URL + 'license'
 }
 
 
@@ -87,7 +83,7 @@ class MSLHandler(object):
         common.debug('Performing key handshake. ESN: {}'.format(esn))
 
         response = _process_json_response(
-            self._post(ENDPOINTS['chrome']['manifest'],
+            self._post(ENDPOINTS['manifest'],
                        self.request_builder.handshake_request(esn)))
         headerdata = json.loads(
             base64.standard_b64decode(response['headerdata']))
@@ -106,7 +102,8 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         manifest = self._load_manifest(viewable_id, g.get_esn())
-        if SDKVERSION < 18 and not has_1080p(manifest):
+        if (g.ADDON.getSettingBool('enable_1080p_unlock') and
+                not has_1080p(manifest)):
             common.debug('Manifest has no 1080p viewables')
             manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)
@@ -132,7 +129,7 @@ class MSLHandler(object):
                      .format(viewable_id, esn))
         manifest_request_data = {
             'method': 'manifest',
-            'lookupType': 'STANDARD',
+            'lookupType': 'PREPARE',
             'viewableIds': [viewable_id],
             'profiles': enabled_profiles(),
             'drmSystem': 'widevine',
@@ -143,7 +140,7 @@ class MSLHandler(object):
             },
             'sessionId': '14673889385265',
             'trackId': 0,
-            'flavor': 'STANDARD',
+            'flavor': 'PRE_FETCH',
             'secureUrls': False,
             'supportPreviewContent': True,
             'forceClearStreams': False,
@@ -151,7 +148,7 @@ class MSLHandler(object):
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira'
         }
-        manifest = self._chunked_request(ENDPOINTS['chrome']['manifest'],
+        manifest = self._chunked_request(ENDPOINTS['manifest'],
                                          manifest_request_data, esn)
         common.save_file('manifest.json', json.dumps(manifest))
         return manifest['result']['viewables'][0]
@@ -181,7 +178,7 @@ class MSLHandler(object):
             'clientTime': int(time.time()),
             'xid': int((int(time.time()) + 0.1612) * 1000)
         }
-        response = self._chunked_request(ENDPOINTS['chrome']['license'],
+        response = self._chunked_request(ENDPOINTS['license'],
                                          license_request_data, g.get_esn())
         common.debug(response)
         return response['result']['licenses'][0]['data']

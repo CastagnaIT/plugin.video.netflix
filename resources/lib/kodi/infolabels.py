@@ -82,6 +82,8 @@ def parse_info(videoid, item, raw_data):
                            else videoid.mediatype)}
     if videoid.mediatype in common.VideoId.TV_TYPES:
         infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
+    if item.get('watched', False):
+        infos['playcount'] = 1
 
     infos.update(parse_atomic_infos(item))
     infos.update(parse_referenced_infos(item, raw_data))
@@ -134,7 +136,7 @@ def get_quality_infos(item):
             min((delivery.get('hasUltraHD', False) << 1 |
                  delivery.get('hasHD')), 2)]
         quality_infos['audio'] = {
-            'channels': 2 + 4*delivery.get('has51Audio', False)}
+            'channels': 2 + 4 * delivery.get('has51Audio', False)}
         quality_infos['audio']['codec'] = (
             'eac3'
             if g.ADDON.getSettingBool('enable_dolby_sound')

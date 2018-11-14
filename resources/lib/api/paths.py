@@ -71,7 +71,7 @@ INFO_MAPPINGS = {
     'mpaa': ['maturity', 'rating', 'value'],
     'duration': 'runtime',
     # 'bookmark': 'bookmarkPosition',
-    'playcount': 'watched'
+    # 'playcount': 'watched'
 }
 
 INFO_TRANSFORMATIONS = {

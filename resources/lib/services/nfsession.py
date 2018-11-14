@@ -164,7 +164,7 @@ class NetflixSession(object):
         try:
             # If we can get session data, cookies are still valid
             self.session_data = website.extract_session_data(
-                self._get('browse'))
+                self._get('profiles'))
         except Exception:
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired')
@@ -206,7 +206,7 @@ class NetflixSession(object):
         """Perform account login"""
         try:
             auth_url = website.extract_userdata(
-                self._get('browse'))['authURL']
+                self._get('profiles'))['authURL']
             common.debug('Logging in...')
             login_response = self._post(
                 'login',

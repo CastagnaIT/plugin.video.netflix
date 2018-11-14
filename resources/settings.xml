@@ -40,7 +40,7 @@
     <setting id="viewmodeexported" type="number" label="30074" enable="eq(-7,true)" default="504"/>
   </category>
   <category label="30078">
-    <setting id="BookmarkManager_enabled" type="bool" label="30083" default="true"/>
+    <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
     <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
@@ -49,6 +49,7 @@
   </category>
   <category label="30023">
     <setting label="30115" type="lsep"/>
+    <setting id="enable_1080p_unlock" type="bool" label="30136" default="false"/>
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_atmos_sound" type="bool" label="30111" default="false"/>
     <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
