@@ -563,3 +563,7 @@ msgstr ""
 msgctxt "#30135"
 msgid "Cache cleared"
 msgstr ""
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr ""

@@ -35,16 +35,16 @@ def extract_session_data(content):
     the session relevant data from the HTML page
     """
     common.debug('Extracting session data...')
-    falkor_cache = extract_json(content, 'falcorCache')
-    profiles, active_profile = extract_profiles(falkor_cache)
+    profiles, active_profile = extract_profiles(
+        extract_json(content, 'falcorCache'))
     user_data = extract_userdata(content)
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
-        common.error(user_data)
-        raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
+        common.debug(user_data)
+        # Ignore this for now
+        # raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
     return {
         'profiles': profiles,
         'active_profile': active_profile,
-        'root_lolomo': next(falkor_cache.get('lolomos', {}).iterkeys(), None),
         'user_data': user_data,
         'esn': generate_esn(user_data),
         'api_data': _parse_api_data(user_data)
