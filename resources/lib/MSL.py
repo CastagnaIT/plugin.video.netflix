@@ -79,10 +79,12 @@ class MSL(object):
             'viewableIds': [viewable_id],
             'profiles': [
                 # Video
-                "playready-h264bpl30-dash",
-                "playready-h264mpl30-dash",
-                "playready-h264mpl31-dash",
-                "playready-h264mpl40-dash",
+                'playready-h264bpl30-dash',
+                'playready-h264mpl30-dash',
+                'playready-h264mpl31-dash',
+                'playready-h264mpl40-dash',
+                'vp9-profile0-L30-dash-cenc',
+                'vp9-profile0-L31-dash-cenc',
 
                 # Audio
                 'heaac-2-dash',
@@ -126,7 +128,7 @@ class MSL(object):
             main10 = 'hevc-main10-'
             prk = 'dash-cenc-prk'
             cenc = 'dash-cenc'
-            ctl = 'dash-cenc-tl'
+            ctl = 'dash-cenc-ctl'
             manifest_request_data['profiles'].append(main10 + 'L41-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L50-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L51-' + cenc)
