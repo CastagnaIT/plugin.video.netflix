@@ -367,6 +367,10 @@ class MSL(object):
                 codec = 'h264'
                 if 'hevc' in downloadable['contentProfile']:
                     codec = 'hevc'
+                elif downloadable['contentProfile'] == 'vp9-profile0-L30-dash-cenc':
+                  codec = 'vp9.0.30'
+                elif downloadable['contentProfile'] == 'vp9-profile0-L31-dash-cenc':
+                  codec = 'vp9.0.31'
 
                 hdcp_versions = '0.0'
                 for hdcp in downloadable['hdcpVersions']:
