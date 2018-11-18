@@ -851,4 +851,4 @@ class Library(object):
         file = os.path.join(self.imagecache_path, imgfile)
         if xbmcvfs.exists(file):
             return file
-        return self.nx_common.default_fanart
+        return ""
