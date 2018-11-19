@@ -375,7 +375,7 @@ class MSL(object):
                 hdcp_versions = '0.0'
                 for hdcp in downloadable['hdcpVersions']:
                     if hdcp != 'none':
-                        hdcp_versions = hdcp
+                        hdcp_versions = hdcp if hdcp != 'any' else '1.0'
 
                 rep = ET.SubElement(
                     parent=video_adaption_set,
