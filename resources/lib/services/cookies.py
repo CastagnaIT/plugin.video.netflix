@@ -51,37 +51,36 @@ def delete(account_hash):
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
-    cookie_jar = (g.COOKIES.get(account_hash) or
-                  load_from_file(account_hash))
-
-    if expired(cookie_jar):
-        raise CookiesExpiredError()
-
-    g.COOKIES[account_hash] = cookie_jar
-
-    return cookie_jar
-
-
-def load_from_file(account_hash):
-    """Load cookies for a given account from file"""
-    common.debug('Loading cookies from file')
-    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'r')
     try:
-        return pickle.loads(cookie_file.read())
+        filename = cookie_filename(account_hash)
+        common.debug('Loading cookies from {}'.format(filename))
+        cookie_file = xbmcvfs.File(filename, 'r')
+        cookie_jar = pickle.loads(cookie_file.read())
     except Exception as exc:
         common.debug('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()
     finally:
         cookie_file.close()
+    # Clear flwssn cookie if present, as it is trouble with early expiration
+    try:
+        cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
+    except KeyError:
+        pass
+    common.debug('Loaded cookies:\n' + '\n'.join(
+        ['{} ({}m remaining TTL'.format(cookie.name,
+                                        ((cookie.expires or 0) - time() / 60))
+         for cookie in cookie_jar]))
+    if expired(cookie_jar):
+        raise CookiesExpiredError()
+    return cookie_jar
 
 
 def expired(cookie_jar):
     """Check if one of the cookies in the jar is already expired"""
     earliest_expiration = 99999999999999999999
     for cookie in cookie_jar:
-        if (cookie.expires is not None and
-                int(cookie.expires) < earliest_expiration):
-            earliest_expiration = int(cookie.expires)
+        if cookie.expires is not None:
+            earliest_expiration = min(int(cookie.expires), earliest_expiration)
     return int(time()) > earliest_expiration
 
 
