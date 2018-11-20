@@ -90,25 +90,36 @@ def _add_protection_info(adaptation_set, pssh, keyid):
 
 def _convert_video_downloadable(downloadable, adaptation_set,
                                 init_length):
-    codec = ('hevc'
-             if 'hevc' in downloadable['contentProfile']
-             else 'h264')
-    hdcp_versions = next((hdcp
-                          for hdcp
-                          in downloadable['hdcpVersions']
-                          if hdcp != 'none'), '0.0')
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
         width=str(downloadable['width']),
         height=str(downloadable['height']),
         bandwidth=str(downloadable['bitrate']*1024),
-        hdcp=hdcp_versions,
+        hdcp=_determine_hdcp_version(downloadable['hdcpVersions']),
         nflxContentProfile=str(downloadable['contentProfile']),
-        codecs=codec,
+        codecs=_determine_video_codec(downloadable['contentProfile']),
         mimeType='video/mp4')
     _add_base_url(representation, downloadable)
     _add_segment_base(representation, init_length)
+
+
+def _determine_hdcp_version(hdcp_versions):
+    hdcp_version = '0.0'
+    for hdcp in hdcp_versions:
+        if hdcp != 'none':
+            hdcp_version = hdcp if hdcp != 'any' else '1.0'
+    return hdcp_version
+
+
+def _determine_video_codec(content_profile):
+    if 'hevc' in content_profile:
+        return 'hevc'
+    elif content_profile == 'vp9-profile0-L30-dash-cenc':
+        return 'vp9.0.30'
+    elif content_profile == 'vp9-profile0-L31-dash-cenc':
+        return 'vp9.0.31'
+    return 'h264'
 
 
 def _convert_audio_track(audio_track, period, init_length, default):

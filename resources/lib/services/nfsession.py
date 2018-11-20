@@ -152,10 +152,8 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
         """Check if the user is logged in"""
-        if not self.session.cookies:
-            common.debug('Active session has no cookies, trying to restore...')
-            return self._load_cookies() and self._refresh_session_data()
-        return True
+        return (self.session.cookies or
+                (self._load_cookies() and self._refresh_session_data()))
 
     @common.time_execution(immediate=True)
     def _refresh_session_data(self):
@@ -179,21 +177,12 @@ class NetflixSession(object):
         # pylint: disable=broad-except
         try:
             self.session.cookies = cookies.load(self.account_hash)
-        except MissingCredentialsError:
+        except Exception as exc:
             common.debug(
-                'No stored credentials available, cannot identify account')
-            return False
-        except cookies.MissingCookiesError:
-            common.info('No stored cookies available')
-            return False
-        except cookies.CookiesExpiredError:
-            # Ignore this for now, because login is sometimes valid anyway
-            pass
-        except Exception:
-            common.error('Unexpected error while trying to load cookies. '
-                         'Maybe using old storage format?')
+                'Failed to load stored cookies: {}'.format(type(exc).__name__))
             common.debug(traceback.format_exc())
             return False
+        common.debug('Successfully loaded stored cookies')
         return True
 
     @common.addonsignals_return_call
