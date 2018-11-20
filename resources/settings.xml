@@ -43,6 +43,7 @@
     <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30084" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30085" default="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="enable_vp9_profiles" type="bool" label="30086" default="false" visible="eq(-3,true)" subsetting="true"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="enable_tracking" type="bool" label="30032" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>

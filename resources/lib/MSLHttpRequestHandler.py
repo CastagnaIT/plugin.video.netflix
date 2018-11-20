@@ -61,10 +61,12 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                     params['hdr'][0].lower() == 'true' else 'false')
             dolbyvision = (True if 'dolbyvision' in params and
                     params['dolbyvision'][0].lower() == 'true' else 'false')
+            vp9 = (True if 'vp9' in params and
+                    params['vp9'][0].lower() == 'true' else 'false')
 
             data = self.server.msl_handler.load_manifest(
                 int(params['id'][0]),
-                dolby, hevc, hdr, dolbyvision)
+                dolby, hevc, hdr, dolbyvision, vp9)
 
             self.send_response(200)
             self.send_header('Content-type', 'application/xml')

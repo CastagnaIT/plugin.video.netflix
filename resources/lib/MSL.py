@@ -65,7 +65,7 @@ class MSL(object):
           self.crypto.fromDict(None)
           self.__perform_key_handshake()
 
-    def load_manifest(self, viewable_id, dolby, hevc, hdr, dolbyvision):
+    def load_manifest(self, viewable_id, dolby, hevc, hdr, dolbyvision, vp9):
         """
         Loads the manifets for the given viewable_id and
         returns a mpd-XML-Manifest
@@ -83,8 +83,6 @@ class MSL(object):
                 'playready-h264mpl30-dash',
                 'playready-h264mpl31-dash',
                 'playready-h264mpl40-dash',
-                'vp9-profile0-L30-dash-cenc',
-                'vp9-profile0-L31-dash-cenc',
 
                 # Audio
                 'heaac-2-dash',
@@ -124,7 +122,7 @@ class MSL(object):
 
         # add hevc profiles if setting is set
         if hevc is True:
-            hevc = 'hevc-main-'
+            main = 'hevc-main-'
             main10 = 'hevc-main10-'
             prk = 'dash-cenc-prk'
             cenc = 'dash-cenc'
@@ -132,12 +130,12 @@ class MSL(object):
             manifest_request_data['profiles'].append(main10 + 'L41-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L50-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L51-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L30-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L31-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L40-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L41-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L50-' + cenc)
-            manifest_request_data['profiles'].append(hevc + 'L51-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L30-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L31-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L40-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L41-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L50-' + cenc)
+            manifest_request_data['profiles'].append(main + 'L51-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L30-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L31-' + cenc)
             manifest_request_data['profiles'].append(main10 + 'L40-' + cenc)
@@ -148,10 +146,10 @@ class MSL(object):
             manifest_request_data['profiles'].append(main10 + 'L31-' + prk)
             manifest_request_data['profiles'].append(main10 + 'L40-' + prk)
             manifest_request_data['profiles'].append(main10 + 'L41-' + prk)
-            manifest_request_data['profiles'].append(hevc + 'L30-L31-' + ctl)
-            manifest_request_data['profiles'].append(hevc + 'L31-L40-' + ctl)
-            manifest_request_data['profiles'].append(hevc + 'L40-L41-' + ctl)
-            manifest_request_data['profiles'].append(hevc + 'L50-L51-' + ctl)
+            manifest_request_data['profiles'].append(main + 'L30-L31-' + ctl)
+            manifest_request_data['profiles'].append(main + 'L31-L40-' + ctl)
+            manifest_request_data['profiles'].append(main + 'L40-L41-' + ctl)
+            manifest_request_data['profiles'].append(main + 'L50-L51-' + ctl)
             manifest_request_data['profiles'].append(main10 + 'L30-L31-' + ctl)
             manifest_request_data['profiles'].append(main10 + 'L31-L40-' + ctl)
             manifest_request_data['profiles'].append(main10 + 'L40-L41-' + ctl)
@@ -188,6 +186,10 @@ class MSL(object):
                 manifest_request_data['profiles'].append(dv5 + 'L41-' + prk)
                 manifest_request_data['profiles'].append(dv5 + 'L50-' + prk)
                 manifest_request_data['profiles'].append(dv5 + 'L51-' + prk)
+
+        if hevc is False or vp9 is True:
+                manifest_request_data['profiles'].append('vp9-profile0-L30-dash-cenc')
+                manifest_request_data['profiles'].append('vp9-profile0-L31-dash-cenc')
 
         # Check if dolby sound is enabled and add to profles
         if dolby:

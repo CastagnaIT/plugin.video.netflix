@@ -919,6 +919,7 @@ class KodiHelper(object):
         msl_manifest_url += '&hevc=' +  self.nx_common.get_setting('enable_hevc_profiles')
         msl_manifest_url += '&hdr=' +  self.nx_common.get_setting('enable_hdr_profiles')
         msl_manifest_url += '&dolbyvision=' +  self.nx_common.get_setting('enable_dolbyvision_profiles')
+        msl_manifest_url += '&vp9=' +  self.nx_common.get_setting('enable_vp9_profiles')
 
         play_item = xbmcgui.ListItem(path=msl_manifest_url)
         play_item.setContentLookup(False)
