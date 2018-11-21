@@ -115,10 +115,8 @@ def _determine_hdcp_version(hdcp_versions):
 def _determine_video_codec(content_profile):
     if 'hevc' in content_profile:
         return 'hevc'
-    elif content_profile == 'vp9-profile0-L30-dash-cenc':
-        return 'vp9.0.30'
-    elif content_profile == 'vp9-profile0-L31-dash-cenc':
-        return 'vp9.0.31'
+    elif 'vp9' in content_profile:
+        return 'vp9.0.' + content_profile[14:16]
     return 'h264'
 
 

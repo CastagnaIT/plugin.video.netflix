@@ -50,12 +50,12 @@
   <category label="30023">
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false"/>
+    <setting id="enable_vp9_profiles" type="bool" label="30137" default="false"/>
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
-    <setting id="enable_atmos_sound" type="bool" label="30111" default="false"/>
+    <setting id="enable_atmos_sound" type="bool" label="30111" default="false" visible="false"/> <!-- Deprecated (always on now) -->
     <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="enable_vp9_profiles" type="bool" label="30136" default="false" visible="eq(-3,true)" subsetting="true"/>
     <setting label="30116" type="lsep"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>

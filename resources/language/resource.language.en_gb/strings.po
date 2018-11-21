@@ -416,10 +416,6 @@ msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
 msgstr ""
 
-msgctxt "#30136"
-msgid "Enable VP9 profiles"
-msgstr ""
-
 msgctxt "#30100"
 msgid "Results for \"{}\""
 msgstr ""
@@ -566,4 +562,8 @@ msgstr ""
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr ""
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disables 1080p unlock)"
 msgstr ""

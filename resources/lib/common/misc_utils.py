@@ -260,3 +260,8 @@ def log_time_trace():
         time_trace.append('{:>5} ms\n'.format(trace[1]))
     debug(''.join(time_trace))
     g.reset_time_trace()
+
+
+def is_edge_esn(esn):
+    """Return True if the esn is an EDGE esn"""
+    return esn.startswith('NFCDIE-02-')

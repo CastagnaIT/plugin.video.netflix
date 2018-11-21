@@ -39,10 +39,9 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            import traceback
-            common.error(traceback.format_exc())
             ui.show_error_info(common.get_local_string(30028), exc.message,
-                               unknown_error=not exc.message)
+                               unknown_error=not exc.message,
+                               netflix_error=isinstance(exc, MSLError))
             raise
     return error_catching_wrapper
 
@@ -88,7 +87,7 @@ class MSLHandler(object):
         headerdata = json.loads(
             base64.standard_b64decode(response['headerdata']))
         self.request_builder.crypto.parse_key_response(
-            headerdata, not esn.startswith('NFCDIE-02-'))
+            headerdata, not common.is_edge_esn(esn))
         common.debug('Key handshake successful')
 
     @display_error_info
@@ -103,8 +102,9 @@ class MSLHandler(object):
         """
         manifest = self._load_manifest(viewable_id, g.get_esn())
         if (g.ADDON.getSettingBool('enable_1080p_unlock') and
+                not g.ADDON.getSettingBool('enable_vp9_profiles') and
                 not has_1080p(manifest)):
-            common.debug('Manifest has no 1080p viewables')
+            common.debug('Manifest has no 1080p viewables, trying unlock')
             manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)
 
@@ -112,7 +112,7 @@ class MSLHandler(object):
         """Load a manifest with an EDGE ESN and replace playback_context and
         drm_context"""
         common.debug('Loading EDGE manifest')
-        esn = generate_edge_esn()
+        esn = g.get_edge_esn()
         common.debug('Switching MSL data to EDGE')
         self.perform_key_handshake(esn)
         manifest = self._load_manifest(viewable_id, esn)
@@ -180,7 +180,6 @@ class MSLHandler(object):
         }
         response = self._chunked_request(ENDPOINTS['license'],
                                          license_request_data, g.get_esn())
-        common.debug(response)
         return response['result']['licenses'][0]['data']
 
     @common.time_execution(immediate=True)
@@ -220,8 +219,9 @@ class MSLHandler(object):
             # json() failed so parse and decrypt the chunked response
             common.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
-            return _decrypt_chunks(response['payloads'],
-                                   self.request_builder.crypto)
+            decrypted_response = _decrypt_chunks(response['payloads'],
+                                                 self.request_builder.crypto)
+            return _raise_if_error(decrypted_response)
 
 
 @common.time_execution(immediate=True)
@@ -235,8 +235,9 @@ def _process_json_response(response):
 
 def _raise_if_error(decoded_response):
     if ('errordata' in decoded_response or
-            'errorDisplayMessage' in decoded_response.get('result', {}) or
             not decoded_response.get('success', True)):
+        common.error('Full MSL error information:')
+        common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
     return decoded_response
 
@@ -246,11 +247,10 @@ def _get_error_details(decoded_response):
         return json.loads(
             base64.standard_b64decode(
                 decoded_response['errordata']))['errormsg']
-    elif 'errorDisplayMessage' in decoded_response.get('result', {}):
+    elif decoded_response.get('result', {}).get('errorDisplayMessage'):
         return decoded_response['result']['errorDisplayMessage']
-
-    common.error('Received an unknown error from MSL endpoint:\n{}'
-                 .format(json.dumps(decoded_response)))
+    elif decoded_response.get('result', {}).get('errorDetails'):
+        return decoded_response['result']['errorDetails']
     return ''
 
 
@@ -295,15 +295,5 @@ def _decrypt_chunks(chunks, crypto):
 def has_1080p(manifest):
     """Return True if any of the video tracks in manifest have a 1080p profile
     available, else False"""
-    return any(video['contentProfile'] == 'playready-h264mpl40-dash'
+    return any(video['width'] >= 1920
                for video in manifest['videoTracks'][0]['downloadables'])
-
-
-def generate_edge_esn():
-    """Generate a random EDGE ESN"""
-    import random
-    esn = ['NFCDIE-02-']
-    possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    for _ in range(0, 30):
-        esn.append(random.choice(possible))
-    return''.join(esn)
