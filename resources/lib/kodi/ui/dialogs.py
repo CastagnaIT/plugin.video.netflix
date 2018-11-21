@@ -88,7 +88,7 @@ def ask_for_confirmation(title, message):
 
 def show_error_info(title, message, unknown_error=False, netflix_error=False):
     """Show a dialog that displays the error message"""
-    prefix = (30104, 30101, 30102)[unknown_error + netflix_error]
+    prefix = (30104, 30102, 30101)[unknown_error + netflix_error]
     return xbmcgui.Dialog().ok(title,
                                line1=common.get_local_string(prefix),
                                line2=message,

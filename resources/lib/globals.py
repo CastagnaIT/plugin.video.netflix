@@ -141,6 +141,22 @@ class GlobalVariables(object):
             return True
         return False
 
+    def get_edge_esn(self):
+        """Get a previously generated edge ESN from the settings or generate
+        a new one if none exists"""
+        return self.ADDON.getSetting('edge_esn') or self.generate_edge_esn()
+
+    def generate_edge_esn(self):
+        """Generate a random EDGE ESN and save it to the settings"""
+        import random
+        esn = ['NFCDIE-02-']
+        possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        for _ in range(0, 30):
+            esn.append(random.choice(possible))
+        edge_esn = ''.join(esn)
+        self.ADDON.setSetting('edge_esn', edge_esn)
+        return edge_esn
+
     def flush_settings(self):
         """Reload the ADDON"""
         # pylint: disable=attribute-defined-outside-init

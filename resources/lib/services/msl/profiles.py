@@ -14,6 +14,7 @@ CENC_TL = 'dash-cenc-ctl'
 HDR = 'hevc-hdr-main10-'
 DV = 'hevc-dv-main10-'
 DV5 = 'hevc-dv5-main10-'
+VP9 = 'vp9-profile0-'
 
 BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 CENC_TL_LEVELS = ['L30-L31-', 'L31-L40-', 'L40-L41-', 'L50-L51-']
@@ -27,20 +28,16 @@ def _profile_strings(base, tails):
 
 PROFILES = {
     'base': [
-        # Video
-        'playready-h264bpl30-dash', 'playready-h264mpl30-dash',
-        'playready-h264mpl31-dash', 'playready-h264mpl40-dash',
+        # include bogus hevc profile to work around missing prk profile error
+        'hevc-main10-L30-dash-cenc-prk',
         # Audio
         'heaac-2-dash',
-        # 'heaac-5.1-dash',
-        # Subtiltes
-        # 'dfxp-ls-sdh',
-        # 'simplesdh',
-        # 'nflx-cmisc',
         # Unkown
         'BIF240', 'BIF320'],
-    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash'],
-    'atmos': ['ddplus-atmos-dash'],
+    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash',
+                   'ddplus-atmos-dash'],
+    'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
+             'playready-h264mpl40-dash', 'playready-h264mpl41-dash'],
     'hevc':
         _profile_strings(base=HEVC,
                          tails=[(BASE_LEVELS, CENC),
@@ -58,24 +55,26 @@ PROFILES = {
                          tails=[(BASE_LEVELS, CENC)]) +
         _profile_strings(base=DV5,
                          tails=[(BASE_LEVELS, CENC_PRK)]),
-    'vp9': ['vp9-profile0-L30-dash-cenc', 'vp9-profile0-L31-dash-cenc']
+    'vp9':
+        _profile_strings(base=VP9,
+                         tails=[(BASE_LEVELS, CENC)])
 }
 
 
 def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
     return (PROFILES['base'] +
+            PROFILES['h264'] +
             _subtitle_profiles() +
+            _additional_profiles('vp9', 'enable_vp9_profiles') +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
-            _additional_profiles('atmos', 'enable_atmos_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
             _additional_profiles('hdr',
                                  ['enable_hevc_profiles',
                                   'enable_hdr_profiles']) +
             _additional_profiles('dolbyvision',
                                  ['enable_hevc_profiles',
-                                  'enable_dolbyvision_profiles']) +
-            _vp9_profiles())
+                                  'enable_dolbyvision_profiles']))
 
 
 def _subtitle_profiles():
@@ -89,11 +88,4 @@ def _additional_profiles(profiles, settings):
     settings = settings if isinstance(settings, list) else [settings]
     return (PROFILES[profiles]
             if all(g.ADDON.getSettingBool(setting) for setting in settings)
-            else [])
-
-
-def _vp9_profiles():
-    return (PROFILES['vp9']
-            if (not g.ADDON.getSettingBool('enable_hevc_profiles') or
-                g.ADDON.getSettingBool('enable_vp9_profiles'))
             else [])
