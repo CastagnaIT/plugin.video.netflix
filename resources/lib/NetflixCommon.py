@@ -157,3 +157,14 @@ class NetflixCommon(object):
     @staticmethod
     def list_dir(data_path):
         return xbmcvfs.listdir(data_path)
+
+    @staticmethod
+    def compare_versions(v1, v2):
+        if len(v1) != len(v2):
+            return len(v1) - len(v2)
+        for i in range(0, len(v1)):
+            if v1[i] > v2[1]:
+                return 1
+            elif v1[i] < v2[1]:
+                return -1
+        return 0

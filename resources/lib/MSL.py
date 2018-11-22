@@ -115,7 +115,7 @@ class MSL(object):
 
         # subtitles
         addon = xbmcaddon.Addon('inputstream.adaptive')
-        if addon and addon.getAddonInfo('version') >= '2.3.8':
+        if addon and self.nx_common.compare_versions(map(int, addon.getAddonInfo('version').split('.')), [2, 3, 8]):
             manifest_request_data['profiles'].append('webvtt-lssdh-ios8')
         else:
             manifest_request_data['profiles'].append('simplesdh')
