@@ -579,3 +579,7 @@ msgstr ""
 msgctxt "#30140"
 msgid "Migrate Library to new format"
 msgstr ""
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr ""
