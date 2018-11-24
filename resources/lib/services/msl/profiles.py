@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import xbmcaddon
 
 from resources.lib.globals import g
+import resources.lib.common as common
 
 HEVC = 'hevc-main-'
 HEVC_M10 = 'hevc-main10-'
@@ -28,8 +29,6 @@ def _profile_strings(base, tails):
 
 PROFILES = {
     'base': [
-        # include bogus hevc profile to work around missing prk profile error
-        'hevc-main10-L30-dash-cenc-prk',
         # Audio
         'heaac-2-dash',
         # Unkown
@@ -66,7 +65,7 @@ def enabled_profiles():
     return (PROFILES['base'] +
             PROFILES['h264'] +
             _subtitle_profiles() +
-            _additional_profiles('vp9', 'enable_vp9_profiles') +
+            _additional_profiles('vp9', forb_settings='enable_hevc_profiles') +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
             _additional_profiles('hdr',
@@ -78,14 +77,16 @@ def enabled_profiles():
 
 
 def _subtitle_profiles():
-    inputstream_addon = xbmcaddon.Addon('inputstream.adaptive')
+    isversion = xbmcaddon.Addon('inputstream.adaptive').getAddonInfo('version')
     return ['webvtt-lssdh-ios8'
-            if inputstream_addon.getAddonInfo('version') >= '2.3.8'
+            if common.is_minimum_version(isversion, '2.3.8')
             else 'simplesdh']
 
 
-def _additional_profiles(profiles, settings):
-    settings = settings if isinstance(settings, list) else [settings]
+def _additional_profiles(profiles, req_settings=None, forb_settings=None):
     return (PROFILES[profiles]
-            if all(g.ADDON.getSettingBool(setting) for setting in settings)
+            if (all(g.ADDON.getSettingBool(setting)
+                for setting in common.make_list(req_settings)) and
+                not (any(g.ADDON.getSettingBool(setting)
+                     for setting in common.make_list(forb_settings))))
             else [])

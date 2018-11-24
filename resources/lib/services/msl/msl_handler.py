@@ -101,11 +101,12 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         manifest = self._load_manifest(viewable_id, g.get_esn())
-        if (g.ADDON.getSettingBool('enable_1080p_unlock') and
-                not g.ADDON.getSettingBool('enable_vp9_profiles') and
-                not has_1080p(manifest)):
-            common.debug('Manifest has no 1080p viewables, trying unlock')
-            manifest = self.get_edge_manifest(viewable_id, manifest)
+        # Disable 1080p Unlock for now, as it is broken due to Netflix changes
+        # if (g.ADDON.getSettingBool('enable_1080p_unlock') and
+        #         not g.ADDON.getSettingBool('enable_vp9_profiles') and
+        #         not has_1080p(manifest)):
+        #     common.debug('Manifest has no 1080p viewables, trying unlock')
+        #     manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)
 
     def get_edge_manifest(self, viewable_id, chrome_manifest):
@@ -127,11 +128,15 @@ class MSLHandler(object):
     def _load_manifest(self, viewable_id, esn):
         common.debug('Requesting manifest for {} with ESN {}'
                      .format(viewable_id, esn))
+        profiles = enabled_profiles()
+        import pprint
+        common.debug('Requested profiles:\n{}'
+                     .format(pprint.pformat(profiles, indent=2)))
         manifest_request_data = {
             'method': 'manifest',
             'lookupType': 'PREPARE',
             'viewableIds': [viewable_id],
-            'profiles': enabled_profiles(),
+            'profiles': profiles,
             'drmSystem': 'widevine',
             'appId': '14673889385265',
             'sessionParams': {

@@ -265,3 +265,18 @@ def log_time_trace():
 def is_edge_esn(esn):
     """Return True if the esn is an EDGE esn"""
     return esn.startswith('NFCDIE-02-')
+
+
+def is_minimum_version(version, min_version):
+    """Rrturn True if version is equal or greater to min_version"""
+    return map(int, version.split('.')) >= map(int, min_version.split('.'))
+
+
+def make_list(arg):
+    """Return a list with arg as its member or arg if arg is already a list.
+    Returns an empty list if arg is None"""
+    return (arg
+            if isinstance(arg, list)
+            else ([arg]
+                  if arg is not None
+                  else []))
