@@ -35,11 +35,11 @@ def find_episode_metadata(videoid, metadata):
             season)
 
 
-def select_port():
+def select_port(service):
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
-    g.ADDON.setSetting('msl_service_port', str(port))
-    info('[MSL] Picked Port: {}'.format(port))
+    g.ADDON.setSetting('{}_service_port'.format(service.lower()), str(port))
+    info('[{}] Picked Port: {}'.format(service, port))
     return port
 
 

@@ -83,14 +83,19 @@ if __name__ == '__main__':
     # (necessary when reusing language invoker)
     common.info('Started (Version {})'.format(g.VERSION))
     common.info('URL is {}'.format(g.URL))
+    success = False
 
     try:
         route(filter(None, g.PATH.split('/')))
+        success = True
+    except common.BackendNotReady:
+        ui.show_backend_not_ready()
     except Exception as exc:
         import traceback
         common.error(traceback.format_exc())
         ui.show_addon_error_info(exc)
-        xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
+
+    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=success)
 
     g.CACHE.commit()
     common.log_time_trace()
