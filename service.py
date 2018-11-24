@@ -65,7 +65,8 @@ class NetflixService(object):
             common.info('[{}] Thread started'.format(server['name']))
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
-        ui.show_notification(common.get_local_string(30110))
+        if not g.ADDON.getSettingBool('disable_startup_notification'):
+            ui.show_notification(common.get_local_string(30110))
 
     def shutdown(self):
         """

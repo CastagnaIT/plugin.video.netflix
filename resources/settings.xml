@@ -49,7 +49,6 @@
     <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="true"/>
   </category>
   <category label="30023">
-    <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_vp9_profiles" type="bool" label="30137" default="false" visible="false"/> <!-- Deprecated (always on now) -->
@@ -59,6 +58,8 @@
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting label="30116" type="lsep"/>
+    <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
+    <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
