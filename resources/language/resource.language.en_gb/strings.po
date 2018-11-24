@@ -575,3 +575,7 @@ msgstr ""
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
 msgstr ""
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr ""

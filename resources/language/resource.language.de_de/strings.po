@@ -567,3 +567,7 @@ msgstr "Die angeforderte Aktion konnte nicht abgeschlossen werden. Falls du Kodi
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
 msgstr "Aktiviere IPC über HTTP (bei AddonSignals Timeouts benutzen)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Bibliothek auf neues Format migrieren"

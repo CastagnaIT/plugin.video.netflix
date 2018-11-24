@@ -87,3 +87,10 @@ class LibraryActionExecutor(object):
         if ui.ask_for_confirmation(common.get_local_string(30125),
                                    common.get_local_string(30126)):
             library.purge()
+
+    def migrate(self, pathitems):
+        """Migrate exported items from old library format to the new format"""
+        for videoid in library.get_previously_exported_items():
+            library.execute_library_tasks(videoid, library.export_item,
+                                          common.get_local_string(30018),
+                                          sync_mylist=False)

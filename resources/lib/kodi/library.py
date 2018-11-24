@@ -312,7 +312,6 @@ def update_library():
             .format(g.ADDON_ID))
 
 
-
 @update_kodi_library
 def execute_library_tasks(videoid, task_handler, title, sync_mylist=True):
     """Execute library tasks for videoid and show errors in foreground"""
@@ -348,3 +347,42 @@ def _sync_mylist(videoid, task_handler, enabled):
     if enabled and operation and g.ADDON.getSettingBool('mylist_library_sync'):
         common.debug('Syncing my list due to change of Kodi library')
         api.update_my_list(videoid, operation)
+
+
+def get_previously_exported_items():
+    """Return a list of movie or tvshow VideoIds for items that were exported in
+    the old storage format"""
+    result = []
+    videoid_pattern = re.compile('video_id=(\\d+)')
+    for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
+        for file in xbmcvfs.listdir(folder)[1]:
+            filepath = os.path.join(folder, file.decode('utf-8'))
+            if filepath.endswith('.strm'):
+                common.debug('Trying to migrate {}'.format(filepath))
+                try:
+                    # Only get a VideoId from the first file in each folder.
+                    # For shows, all episodes will result in the same VideoId
+                    # and movies only contain one file
+                    result.append(
+                        _get_root_videoid(filepath, videoid_pattern))
+                except (AttributeError, IndexError):
+                    common.debug('Item does not conform to old format')
+                break
+    return result
+
+
+def _lib_folders(section):
+    section_dir = xbmc.translatePath(os.path.join(library_path(), section))
+    return [os.path.join(section_dir, folder.decode('utf-8'))
+            for folder
+            in xbmcvfs.listdir(section_dir)[0]]
+
+
+def _get_root_videoid(filename, pattern):
+    match = re.search(pattern,
+                      xbmcvfs.File(filename, 'r').read().split('\n')[-1])
+    metadata = api.metadata(
+        common.VideoId(videoid=match.groups()[0]))[0]
+    if metadata['type'] == 'show':
+        return common.VideoId(tvshowid=metadata['id'])
+    return common.VideoId(movieid=metadata['id'])

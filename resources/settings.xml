@@ -19,6 +19,7 @@
     <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
     <setting id="initial_mylist_sync" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/initial_mylist_sync/)" visible="eq(-1,true)" subsetting="true"/>
     <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
+    <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
     <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting id="invalidate_cache_on_mylist_modify" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting label="30065" type="lsep"/>
