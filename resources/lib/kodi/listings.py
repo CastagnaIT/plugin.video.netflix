@@ -292,4 +292,3 @@ def finalize_directory(items, content_type=CONTENT_FOLDER, refresh=False,
         xbmcplugin.setPluginCategory(g.PLUGIN_HANDLE, title)
     xbmcplugin.addDirectoryItems(g.PLUGIN_HANDLE, items)
     xbmcplugin.setContent(g.PLUGIN_HANDLE, content_type)
-    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, updateListing=refresh)

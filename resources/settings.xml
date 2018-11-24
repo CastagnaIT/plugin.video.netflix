@@ -48,6 +48,7 @@
     <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="true"/>
   </category>
   <category label="30023">
+    <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_vp9_profiles" type="bool" label="30137" default="false" visible="false"/> <!-- Deprecated (always on now) -->
@@ -65,6 +66,7 @@
     <setting id="hidden_esn" visible="false" value="" />
     <setting id="tracking_id" value="" visible="false"/>
     <setting id="msl_service_port" value="8000" visible="false"/>
+    <setting id="ns_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
     <setting label="30117" type="lsep"/>
     <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>

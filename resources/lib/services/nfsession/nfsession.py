@@ -11,9 +11,9 @@ import requests
 
 from resources.lib.globals import g
 import resources.lib.common as common
+import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
 import resources.lib.api.paths as apipaths
-import resources.lib.services.cookies as cookies
 import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,

@@ -22,32 +22,47 @@ g.init_globals(sys.argv)
 import resources.lib.common as common
 import resources.lib.services as services
 import resources.lib.kodi.ui as ui
-from resources.lib.services.nfsession import NetflixSession
 
 
 class NetflixService(object):
     """
     Netflix addon service
     """
+    SERVERS = [
+        {
+            'name': 'MSL',
+            'class': services.MSLTCPServer,
+            'instance': None,
+            'thread': None},
+        {
+            'name': 'NS',
+            'class': services.NetflixTCPServer,
+            'instance': None,
+            'thread': None},
+    ]
+
     def __init__(self):
-        services.MSLTCPServer.allow_reuse_address = True
-        self.msl_server = services.MSLTCPServer(
-            ('127.0.0.1', common.select_port()))
-        self.msl_thread = threading.Thread(
-            target=self.msl_server.serve_forever)
-        self.session = None
+        for server in self.SERVERS:
+            self.init_server(server)
         self.controller = None
         self.library_updater = None
+
+    def init_server(self, server):
+            server['class'].allow_reuse_address = True
+            server['instance'] = server['class'](
+                ('127.0.0.1', common.select_port(server['name'])))
+            server['thread'] = threading.Thread(
+                target=server['instance'].serve_forever)
 
     def start_services(self):
         """
         Start the background services
         """
-        self.session = NetflixSession()
-        self.msl_server.server_activate()
-        self.msl_server.timeout = 1
-        self.msl_thread.start()
-        common.info('[MSL] Thread started')
+        for server in self.SERVERS:
+            server['instance'].server_activate()
+            server['instance'].timeout = 1
+            server['thread'].start()
+            common.info('[{}] Thread started'.format(server['name']))
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
         ui.show_notification(common.get_local_string(30110))
@@ -56,12 +71,12 @@ class NetflixService(object):
         """
         Stop the background services
         """
-        del self.session
-        self.msl_server.server_close()
-        self.msl_server.shutdown()
-        self.msl_server = None
-        self.msl_thread.join()
-        self.msl_thread = None
+        for server in self.SERVERS:
+            server['instance'].server_close()
+            server['instance'].shutdown()
+            server['instance'] = None
+            server['thread'].join()
+            server['thread'] = None
         common.info('Stopped MSL Service')
 
     def run(self):

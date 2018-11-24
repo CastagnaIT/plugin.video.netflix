@@ -567,3 +567,11 @@ msgstr ""
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disables 1080p unlock)"
 msgstr ""
+
+msgctxt "#30138"
+msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr ""
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgstr ""
