@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import json
 import traceback
-from re import compile as recompile, DOTALL
+from re import compile as recompile, DOTALL, sub
 
 import resources.lib.common as common
 
@@ -124,20 +124,23 @@ def generate_esn(user_data):
         manufacturer = subprocess.check_output(
             ['/system/bin/getprop', 'ro.product.manufacturer'])
         if manufacturer:
-            esn = ['NFANDROID1-PRV-']
+            esn = ('NFANDROID1-PRV-'
+                   if subprocess.check_output(
+                       ['/system/bin/getprop', 'ro.build.characteristics']
+                   ).strip(' \t\n\r') != 'tv'
+                   else 'NFANDROID2-PRV-')
             inp = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.nrdp.modelgroup'])
-            if inp:
-                esn.append(inp.strip(' \t\n\r'))
-                esn.append('-')
+                ['/system/bin/getprop', 'ro.nrdp.modelgroup']).strip(' \t\n\r')
+            if not inp:
+                esn += 'T-L3-'
             else:
-                esn.append('T-L3-')
-            esn.append('{:5}'.format(manufacturer.strip(' \t\n\r').upper()))
+                esn += inp + '-'
+            esn += '{:=<5}'.format(manufacturer.strip(' \t\n\r').upper())
             inp = subprocess.check_output(
                 ['/system/bin/getprop', 'ro.product.model'])
-            esn.append(inp.strip(' \t\n\r').replace(' ', '=').upper())
-            esn = ''.join(esn)
-            common.log('Android generated ESN:' + esn)
+            esn += inp.strip(' \t\n\r').replace(' ', '=').upper()
+            esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
+            common.debug('Android generated ESN:' + esn)
             return esn
     except OSError:
         pass
