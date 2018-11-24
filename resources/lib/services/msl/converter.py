@@ -11,9 +11,9 @@ import resources.lib.common as common
 
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEGDASH manifest"""
-    seconds = manifest['runtime']/1000
-    init_length = seconds / 2 * 12 + 20*1000
-    duration = "PT"+str(seconds)+".00S"
+    seconds = manifest['runtime'] / 1000
+    init_length = seconds / 2 * 12 + 20 * 1000
+    duration = "PT" + str(seconds) + ".00S"
 
     root = _mpd_manifest_root(duration)
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
@@ -95,7 +95,7 @@ def _convert_video_downloadable(downloadable, adaptation_set,
         tag='Representation',
         width=str(downloadable['width']),
         height=str(downloadable['height']),
-        bandwidth=str(downloadable['bitrate']*1024),
+        bandwidth=str(downloadable['bitrate'] * 1024),
         hdcp=_determine_hdcp_version(downloadable['hdcpVersions']),
         nflxContentProfile=str(downloadable['contentProfile']),
         codecs=_determine_video_codec(downloadable['contentProfile']),
@@ -138,13 +138,11 @@ def _convert_audio_track(audio_track, period, init_length, default):
 
 def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
                                 channels_count):
-    is_dplus2 = downloadable['contentProfile'] == 'ddplus-2.0-dash'
-    is_dplus5 = downloadable['contentProfile'] == 'ddplus-5.1-dash'
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
-        codecs='ec-3' if is_dplus2 or is_dplus5 else 'aac',
-        bandwidth=str(downloadable['bitrate']*1024),
+        codecs='ec-3' if 'ddplus' in downloadable['contentProfile'] else 'aac',
+        bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
     ET.SubElement(
         parent=representation,

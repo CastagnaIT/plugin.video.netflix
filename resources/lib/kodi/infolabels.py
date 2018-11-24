@@ -192,7 +192,7 @@ def add_info_from_netflix(videoid, list_item):
         infos = add_info(videoid, list_item, None, None)
         art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
-    except TypeError:
+    except (AttributeError, TypeError):
         common.info('Infolabels or art were not in cache, retrieving from API')
         import resources.lib.api.shakti as api
         api_data = api.single_info(videoid)
