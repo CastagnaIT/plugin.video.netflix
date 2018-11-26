@@ -54,15 +54,15 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             # Get the manifest with the given id
             dolby = (True if 'dolby' in params and
-                     params['dolby'][0].lower() == 'true' else 'false')
+                     params['dolby'][0].lower() == 'true' else False)
             hevc = (True if 'hevc' in params and
-                    params['hevc'][0].lower() == 'true' else 'false')
+                    params['hevc'][0].lower() == 'true' else False)
             hdr = (True if 'hdr' in params and
-                    params['hdr'][0].lower() == 'true' else 'false')
+                    params['hdr'][0].lower() == 'true' else False)
             dolbyvision = (True if 'dolbyvision' in params and
-                    params['dolbyvision'][0].lower() == 'true' else 'false')
+                    params['dolbyvision'][0].lower() == 'true' else False)
             vp9 = (True if 'vp9' in params and
-                    params['vp9'][0].lower() == 'true' else 'false')
+                    params['vp9'][0].lower() == 'true' else False)
 
             data = self.server.msl_handler.load_manifest(
                 int(params['id'][0]),
