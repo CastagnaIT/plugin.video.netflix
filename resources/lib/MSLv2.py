@@ -192,6 +192,15 @@ class MSL(object):
         if hevc is False or vp9 is True:
             profiles.append('vp9-profile0-L30-dash-cenc')
             profiles.append('vp9-profile0-L31-dash-cenc')
+            profiles.append('vp9-profile0-L32-dash-cenc')
+            profiles.append('vp9-profile0-L40-dash-cenc')
+            profiles.append('vp9-profile0-L41-dash-cenc')
+            profiles.append('vp9-profile0-L50-dash-cenc')
+            profiles.append('vp9-profile0-L51-dash-cenc')
+            profiles.append('vp9-profile0-L52-dash-cenc')
+            profiles.append('vp9-profile0-L60-dash-cenc')
+            profiles.append('vp9-profile0-L61-dash-cenc')
+            profiles.append('vp9-profile0-L62-dash-cenc')
 
         # Check if dolby sound is enabled and add to profles
         if dolby:
@@ -397,10 +406,9 @@ class MSL(object):
                 codec = 'h264'
                 if 'hevc' in stream['content_profile']:
                     codec = 'hevc'
-                elif stream['content_profile'] == 'vp9-profile0-L30-dash-cenc':
-                    codec = 'vp9.0.30'
-                elif stream['content_profile'] == 'vp9-profile0-L31-dash-cenc':
-                    codec = 'vp9.0.31'
+                elif 'vp9' in stream['content_profile']:
+                    lp = re.search('vp9-profile(.+?)-L(.+?)-dash', stream['content_profile'])
+                    codec = 'vp9.' + lp.group(1) + '.' + lp.group(2)
 
                 hdcp_versions = '0.0'
                 #for hdcp in stream['hdcpVersions']:
