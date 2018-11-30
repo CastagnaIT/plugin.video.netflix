@@ -60,6 +60,10 @@ class MSL(object):
       """
       self.nx_common = nx_common
 
+      self.locale_id = []
+      locale_id = nx_common.get_setting('locale_id')
+      self.locale_id.append(locale_id if locale_id else 'en-US')
+
       self.crypto = MSLHandler(nx_common)
 
       if self.nx_common.file_exists(self.nx_common.data_path, 'msl_data.json'):
@@ -82,7 +86,7 @@ class MSL(object):
             'url': '/manifest',
             'id': 15423166626396,
             'esn': esn,
-            'languages': ['de-US'],
+            'languages': self.locale_id,
             'uiVersion': 'shakti-vb45817f4',
             'clientVersion': '6.0011.474.011',
             'params': {
@@ -117,7 +121,7 @@ class MSL(object):
 
         # subtitles
         addon = xbmcaddon.Addon('inputstream.adaptive')
-        if addon and self.nx_common.compare_versions(map(int, addon.getAddonInfo('version').split('.')), [2, 3, 8]):
+        if addon and self.nx_common.compare_versions(map(int, addon.getAddonInfo('version').split('.')), [2, 3, 8]) >= 0:
             profiles.append('webvtt-lssdh-ios8')
         else:
             profiles.append('simplesdh')
@@ -189,7 +193,7 @@ class MSL(object):
                 profiles.append(dv5 + 'L50-' + prk)
                 profiles.append(dv5 + 'L51-' + prk)
 
-        if hevc is False or vp9 is True:
+        if vp9 is True:
             profiles.append('vp9-profile0-L30-dash-cenc')
             profiles.append('vp9-profile0-L31-dash-cenc')
             profiles.append('vp9-profile0-L32-dash-cenc')
@@ -253,7 +257,7 @@ class MSL(object):
             'url': self.last_license_url,
             'id': id,
             'esn': esn,
-            'languages': ['de-US'],
+            'languages': self.locale_id,
             'uiVersion': 'shakti-v25d2fa21',
             'clientVersion': '6.0011.511.011',
             'params': [{
@@ -270,7 +274,7 @@ class MSL(object):
             'licenseType': 'STANDARD',
             'clientVersion': '4.0004.899.011',
             'uiVersion': 'akira',
-            'languages': ['de-DE'],
+            'languages': self.locale_id,
             'playbackContextId': self.last_playback_context,
             'drmContextIds': [self.last_drm_context],
             'challenges': [{

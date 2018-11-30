@@ -112,7 +112,8 @@ class NetflixSession(object):
         'models/esnGeneratorModel/data/esn',
         'gpsModel',
         'models/userInfo/data/countryOfSignup',
-        'models/userInfo/data/membershipStatus'
+        'models/userInfo/data/membershipStatus',
+        'models/memberContext/data/geo/preferredLocale'
     ]
 
     def __init__(self, cookie_path, data_path, verify_ssl, nx_common):
@@ -2130,6 +2131,9 @@ class NetflixSession(object):
             return None
         self.user_data = user_data
         self.esn = self._parse_esn_data(user_data)
+        if 'preferredLocale' in user_data:
+            self.nx_common.set_setting('locale_id', user_data['preferredLocale']['id'])
+
         self.api_data = {
             'API_BASE_URL': user_data.get('API_BASE_URL'),
             'API_ROOT': user_data.get('API_ROOT'),

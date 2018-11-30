@@ -163,8 +163,8 @@ class NetflixCommon(object):
         if len(v1) != len(v2):
             return len(v1) - len(v2)
         for i in range(0, len(v1)):
-            if v1[i] > v2[1]:
+            if v1[i] > v2[i]:
                 return 1
-            elif v1[i] < v2[1]:
+            elif v1[i] < v2[i]:
                 return -1
         return 0
