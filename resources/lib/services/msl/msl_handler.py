@@ -66,10 +66,10 @@ class MSLHandler(object):
             common.debug(traceback.format_exc())
             common.debug('Stored MSL data expired or not available')
             self.request_builder = MSLRequestBuilder()
-            self.perform_key_handshake()
-            self.request_builder = MSLRequestBuilder(json.loads(
-                common.load_file('msl_data.json')))
-            common.debug('Loaded renewed MSL data from disk')
+            if self.perform_key_handshake():
+                self.request_builder = MSLRequestBuilder(json.loads(
+            	    common.load_file('msl_data.json')))
+                common.debug('Loaded renewed MSL data from disk')
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
@@ -82,7 +82,7 @@ class MSLHandler(object):
         esn = data or g.get_esn()
         if not esn:
             common.info('Cannot perform key handshake, missing ESN')
-            return
+            return False
 
         common.debug('Performing key handshake. ESN: {}'.format(esn))
 
@@ -94,6 +94,7 @@ class MSLHandler(object):
         self.request_builder.crypto.parse_key_response(
             headerdata, not common.is_edge_esn(esn))
         common.debug('Key handshake successful')
+        return True
 
     @display_error_info
     @common.time_execution(immediate=True)
