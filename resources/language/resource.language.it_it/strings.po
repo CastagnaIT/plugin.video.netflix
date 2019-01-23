@@ -583,3 +583,11 @@ msgstr "Migra la libreria nel nuovo formato"
 msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Disabilita notifica all'avvio"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Personalizzata"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "ID Vista personalizzata"

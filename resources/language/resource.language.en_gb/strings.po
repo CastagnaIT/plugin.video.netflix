@@ -583,3 +583,11 @@ msgstr ""
 msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr ""
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr ""
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr ""
