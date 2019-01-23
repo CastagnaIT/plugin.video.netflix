@@ -15,6 +15,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 
 from .base_crypto import MSLBaseCrypto
+from .exceptions import MastertokenExpired
 
 
 class DefaultMSLCrypto(MSLBaseCrypto):
@@ -31,6 +32,9 @@ class DefaultMSLCrypto(MSLBaseCrypto):
                 raise ValueError('Missing encryption_key or sign_key')
             self.rsa_key = RSA.importKey(
                 base64.standard_b64decode(msl_data['rsa_key']))
+
+        except MastertokenExpired as me:
+            raise me
         except Exception:
             common.debug('Generating new RSA keys')
             self.rsa_key = RSA.generate(2048)

@@ -67,6 +67,9 @@ class MSLHandler(object):
             common.debug('Stored MSL data expired or not available')
             self.request_builder = MSLRequestBuilder()
             self.perform_key_handshake()
+            self.request_builder = MSLRequestBuilder(json.loads(
+                common.load_file('msl_data.json')))
+            common.debug('Loaded renewed MSL data from disk')
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
