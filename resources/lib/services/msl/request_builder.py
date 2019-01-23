@@ -7,6 +7,7 @@ import base64
 import subprocess
 import random
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 # check if we are on Android
@@ -72,7 +73,7 @@ class MSLRequestBuilder(object):
             'handshake': is_handshake,
             'nonreplayable': False,
             'capabilities': {
-                'languages': ['en-US'],
+                'languages': [g.LOCALE_ID],
                 'compressionalgos': [compression] if compression else []
             },
             'recipient': 'Netflix',
@@ -81,7 +82,7 @@ class MSLRequestBuilder(object):
             'timestamp': 1467733923
         }
 
-        # If this is a keyrequest act diffrent then other requests
+        # If this is a keyrequest act different then other requests
         if is_key_request:
             header_data['keyrequestdata'] = self.crypto.key_request_data()
         else:
@@ -91,14 +92,10 @@ class MSLRequestBuilder(object):
 
     @common.time_execution(immediate=True)
     def _encrypted_chunk(self, data, esn):
-        # Serialize the given Data
-        serialized_data = ''.join((
-            '[{},{"headers":{},"path":"/cbp/cadmium-13","payload":{"data":"',
-            json.dumps(data).replace('"', '\\"'),
-            '"},"query":""}]\n'))
         payload = {
             'messageid': self.current_message_id,
-            'data': common.compress_data(serialized_data),
+            #'data': base64.standard_b64encode(json.dumps(data)),
+            'data': common.compress_data(json.dumps(data)),
             'compressionalgo': 'GZIP',
             'sequencenumber': 1,
             'endofmsg': True

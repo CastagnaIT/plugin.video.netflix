@@ -8,6 +8,7 @@ from re import compile as recompile, DOTALL, sub
 
 import resources.lib.common as common
 
+from resources.lib.globals import g
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
                          InvalidMembershipStatusError, WebsiteParsingError)
 
@@ -21,7 +22,8 @@ PAGE_ITEMS = [
     'models/serverDefs/data/ICHNAEA_ROOT',
     'models/serverDefs/data/API_ROOT',
     'models/serverDefs/data/API_BASE_URL',
-    'models/esnGeneratorModel/data/esn'
+    'models/esnGeneratorModel/data/esn',
+    'models/memberContext/data/geo/preferredLocale'
 ]
 
 JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
@@ -38,6 +40,10 @@ def extract_session_data(content):
     profiles, active_profile = extract_profiles(
         extract_json(content, 'falcorCache'))
     user_data = extract_userdata(content)
+
+    if user_data.get('preferredLocale'):
+        g.LOCALE_ID = user_data.get('preferredLocale').get('id','en-US')
+
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         common.debug(user_data)
         # Ignore this for now

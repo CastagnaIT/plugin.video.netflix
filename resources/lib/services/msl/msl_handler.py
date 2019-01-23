@@ -13,6 +13,7 @@ import time
 import base64
 from functools import wraps
 import requests
+import xbmcaddon
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -23,10 +24,10 @@ from .profiles import enabled_profiles
 from .converter import convert_to_dash
 from .exceptions import MSLError
 
-CHROME_BASE_URL = 'http://www.netflix.com/api/msl/NFCDCH-LX/cadmium/'
+CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
-    'manifest': CHROME_BASE_URL + 'manifest',
-    'license': CHROME_BASE_URL + 'license'
+    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router', #"pbo_manifests/^1.0.0/router"
+    'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router'
 }
 
 
@@ -49,6 +50,7 @@ def display_error_info(func):
 class MSLHandler(object):
     """Handles session management and crypto for license and manifest
     requests"""
+    last_license_url = ''
     last_drm_context = ''
     last_playback_context = ''
     session = requests.session()
@@ -132,31 +134,51 @@ class MSLHandler(object):
         import pprint
         common.debug('Requested profiles:\n{}'
                      .format(pprint.pformat(profiles, indent=2)))
+
+        ia_addon = xbmcaddon.Addon('inputstream.adaptive')
+        hdcp = ia_addon is not None and ia_addon.getSetting('HDCPOVERRIDE') == 'true'
+
+        id = int(time.time() * 10000)
         manifest_request_data = {
-            'method': 'manifest',
-            'lookupType': 'PREPARE',
-            'viewableIds': [viewable_id],
-            'profiles': profiles,
-            'drmSystem': 'widevine',
-            'appId': '14673889385265',
-            'sessionParams': {
-                'pinCapableClient': False,
-                'uiplaycontext': 'null'
-            },
-            'sessionId': '14673889385265',
-            'trackId': 0,
-            'flavor': 'PRE_FETCH',
-            'secureUrls': False,
-            'supportPreviewContent': True,
-            'forceClearStreams': False,
-            'languages': ['de-DE'],
-            'clientVersion': '4.0004.899.011',
-            'uiVersion': 'akira'
+            'version': 2,
+            'url': '/manifest',
+            'id': id,
+            'esn': esn,
+            'languages' : [g.LOCALE_ID],
+            'uiVersion': 'shakti-v25d2fa21',
+            'clientVersion': '6.0011.474.011',
+            'params': {
+                'type': 'standard',
+                'viewableId': [viewable_id],
+                'profiles': profiles,
+                'flavor': 'PRE_FETCH',
+                'drmType': 'widevine',
+                'drmVersion': 25,
+                'usePsshBox': True,
+                'isBranching': False,
+                'useHttpsStreams': False,
+                'imageSubtitleHeight': 1080,
+                'uiVersion': 'shakti-vb45817f4',
+                'clientVersion': '6.0011.511.011',
+                'supportsPreReleasePin': True,
+                'supportsWatermark': True,
+                'showAllSubDubTracks': False,
+                'titleSpecificData': {},
+                'videoOutputInfo': [{
+                    'type': 'DigitalVideoOutputDescriptor',
+                    'outputType': 'unknown',
+                    'supportedHdcpVersions': [],
+                    'isHdcpEngaged': hdcp
+                }],
+                'preferAssistiveAudio': False,
+                'isNonMember': False
+            }
         }
+
         manifest = self._chunked_request(ENDPOINTS['manifest'],
                                          manifest_request_data, esn)
         common.save_file('manifest.json', json.dumps(manifest))
-        return manifest['result']['viewables'][0]
+        return manifest['result']
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -168,27 +190,32 @@ class MSLHandler(object):
         :return: Base64 representation of the licensekey or False unsuccessfull
         """
         common.debug('Requesting license')
+        id = int(time.time() * 10000)
+
         license_request_data = {
-            'method': 'license',
-            'licenseType': 'STANDARD',
-            'clientVersion': '4.0004.899.011',
-            'uiVersion': 'akira',
-            'languages': ['de-DE'],
-            'playbackContextId': self.last_playback_context,
-            'drmContextIds': [self.last_drm_context],
-            'challenges': [{
-                'dataBase64': challenge,
-                'sessionId': sid
+            'version': 2,
+            'url': self.last_license_url,
+            'id': id,
+            'esn': g.get_esn(),
+            'languages': [g.LOCALE_ID],
+            'uiVersion': 'shakti-v25d2fa21',
+            'clientVersion': '6.0011.511.011',
+            'params': [{
+                'sessionId': sid,
+                'clientTime': int(id / 10000),
+                'challengeBase64': challenge,
+                'xid': str(id + 1610)
             }],
-            'clientTime': int(time.time()),
-            'xid': int((int(time.time()) + 0.1612) * 1000)
+            'echo': 'sessionId'
         }
+
         response = self._chunked_request(ENDPOINTS['license'],
                                          license_request_data, g.get_esn())
-        return response['result']['licenses'][0]['data']
+        return response['result'][0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
+        self.last_license_url = manifest['links']['license']['href']
         self.last_playback_context = manifest['playbackContextId']
         self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
@@ -291,11 +318,7 @@ def _decrypt_chunks(chunks, crypto):
         else:
             data = base64.standard_b64decode(data)
         decrypted_payload += data
-
-    decrypted_payload = json.loads(decrypted_payload)[1]['payload']['data']
-    decrypted_payload = base64.standard_b64decode(decrypted_payload)
     return json.loads(decrypted_payload)
-
 
 def has_1080p(manifest):
     """Return True if any of the video tracks in manifest have a 1080p profile

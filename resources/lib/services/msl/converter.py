@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Manifest format conversion"""
 from __future__ import unicode_literals
-
+import re
 import base64
 import uuid
 import xml.etree.ElementTree as ET
@@ -11,7 +11,7 @@ import resources.lib.common as common
 
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEGDASH manifest"""
-    seconds = manifest['runtime'] / 1000
+    seconds = manifest['duration'] / 1000
     init_length = seconds / 2 * 12 + 20 * 1000
     duration = "PT" + str(seconds) + ".00S"
 
@@ -19,16 +19,19 @@ def convert_to_dash(manifest):
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
     protection = _protection_info(manifest)
 
-    for video_track in manifest['videoTracks']:
+
+    for video_track in manifest['video_tracks']:
         _convert_video_track(
             video_track, period, init_length, protection)
 
-    for index, audio_track in enumerate(manifest['audioTracks']):
+    for index, audio_track in enumerate(manifest['audio_tracks']):
         # Assume that first listed track is the default
         _convert_audio_track(audio_track, period, init_length,
                              default=(index == 0))
 
-    for text_track in manifest.get('textTracks'):
+    for text_track in manifest['timedtexttracks']:
+        if text_track['isNoneTrack']:
+            continue
         _convert_text_track(text_track, period)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
@@ -46,10 +49,11 @@ def _mpd_manifest_root(duration):
 
 def _protection_info(manifest):
     try:
-        pssh = manifest['psshb64'][0]
-        psshbytes = base64.standard_b64decode(pssh)
-        if len(psshbytes) == 52:
-            keyid = psshbytes[36:]
+        pssh = None
+        keyid = None
+        if 'drmHeader' in manifest:
+            pssh = manifest['drmHeader']['bytes']
+            keyid = manifest['drmHeader']['keyId']
     except (KeyError, AttributeError, IndexError):
         pssh = None
         keyid = None
@@ -63,7 +67,7 @@ def _convert_video_track(video_track, period, init_length, protection):
         mimeType='video/mp4',
         contentType='video')
     _add_protection_info(adaptation_set, **protection)
-    for downloadable in video_track['downloadables']:
+    for downloadable in video_track['streams']:
         _convert_video_downloadable(
             downloadable, adaptation_set, init_length)
 
@@ -93,14 +97,15 @@ def _convert_video_downloadable(downloadable, adaptation_set,
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
-        width=str(downloadable['width']),
-        height=str(downloadable['height']),
+        width=str(downloadable['res_w']),
+        height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
-        hdcp=_determine_hdcp_version(downloadable['hdcpVersions']),
-        nflxContentProfile=str(downloadable['contentProfile']),
-        codecs=_determine_video_codec(downloadable['contentProfile']),
+        #Does tag hdcpVersions still exist? to check if the tag is present when hdcp activated
+        hdcp=_determine_hdcp_version(downloadable.get('hdcpVersions', 'none')),
+        nflxContentProfile=str(downloadable['content_profile']),
+        codecs=_determine_video_codec(downloadable['content_profile']),
         mimeType='video/mp4')
-    _add_base_url(representation, downloadable)
+    _add_base_url(representation, downloadable['urls'][0]['url'])
     _add_segment_base(representation, init_length)
 
 
@@ -121,16 +126,22 @@ def _determine_video_codec(content_profile):
 
 
 def _convert_audio_track(audio_track, period, init_length, default):
+    languageMap = {}
+    channelCount = {'1.0':'1', '2.0':'2', '5.1':'6', '7.1':'8'}
+    impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
+    original = 'true' if audio_track['isNative'] else 'false'
+    default = 'false' if audio_track['language'] in languageMap else 'true'
+    languageMap[audio_track['language']] = True
     adaptation_set = ET.SubElement(
         parent=period,
         tag='AdaptationSet',
-        lang=audio_track['bcp47'],
+        lang=audio_track['language'],
         contentType='audio',
         mimeType='audio/mp4',
-        impaired=str(audio_track.get('trackType') == 'ASSISTIVE').lower(),
-        original=str(audio_track.get('language', '').find('[') > 0).lower(),
-        default=str(default).lower())
-    for downloadable in audio_track['downloadables']:
+        impaired=impaired,
+        original=original,
+        default=default)
+    for downloadable in audio_track['streams']:
         _convert_audio_downloadable(
             downloadable, adaptation_set, init_length,
             audio_track.get('channelsCount'))
@@ -141,7 +152,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
-        codecs='ec-3' if 'ddplus' in downloadable['contentProfile'] else 'aac',
+        codecs='ec-3' if 'ddplus' in downloadable['content_profile'] else 'aac',
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
     ET.SubElement(
@@ -149,19 +160,23 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
         tag='AudioChannelConfiguration',
         schemeIdUri='urn:mpeg:dash:23003:3:audio_channel_configuration:2011',
         value=str(channels_count))
-    _add_base_url(representation, downloadable)
+    _add_base_url(representation, downloadable['urls'][0]['url'])
     _add_segment_base(representation, init_length)
 
 
 def _convert_text_track(text_track, period):
-    if text_track.get('downloadables'):
+    if text_track.get('ttDownloadables'):
         # Only one subtitle representation per adaptationset
-        downloadable = text_track['downloadables'][0]
-        is_ios8 = downloadable.get('contentProfile') == 'webvtt-lssdh-ios8'
+        downloadable = text_track['ttDownloadables']
+        #common.save_file('downloadable.log', str(downloadable))
+
+        content_profile = downloadable.keys()[0]
+        is_ios8 = content_profile == 'webvtt-lssdh-ios8'
+
         adaptation_set = ET.SubElement(
             parent=period,
             tag='AdaptationSet',
-            lang=text_track.get('bcp47'),
+            lang=text_track.get('language'),
             codecs=('stpp', 'wvtt')[is_ios8],
             contentType='text',
             mimeType=('application/ttml+xml', 'text/vtt')[is_ios8])
@@ -169,19 +184,18 @@ def _convert_text_track(text_track, period):
             parent=adaptation_set,
             tag='Role',
             schemeIdUri='urn:mpeg:dash:role:2011',
-            value='forced' if text_track.get('isForced') else 'main')
+            value = 'forced' if text_track.get('isForcedNarrative') else 'main')
         representation = ET.SubElement(
             parent=adaptation_set,
             tag='Representation',
-            nflxProfile=downloadable.get('contentProfile'))
-        _add_base_url(representation, downloadable)
+            nflxProfile=content_profile)
+        _add_base_url(representation, downloadable[content_profile]['downloadUrls'].values()[0])
 
 
-def _add_base_url(representation, downloadable):
+def _add_base_url(representation, base_url):
     ET.SubElement(
         parent=representation,
-        tag='BaseURL').text = downloadable['urls'].values()[0]
-
+        tag='BaseURL').text = base_url
 
 def _add_segment_base(representation, init_length):
     ET.SubElement(
