@@ -7,7 +7,7 @@
 			<right>30</right>
 			<bottom>60</bottom>
 			<height>80</height>
-			<width>180</width>
+			<width>250</width>
 			<control type="group">
 				<control type="button" id="6012">
 					<description>Skip intro</description>
