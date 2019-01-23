@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Manifest format conversion"""
 from __future__ import unicode_literals
+from resources.lib.globals import g
 import re
 import base64
 import uuid
+import xbmc
 import xml.etree.ElementTree as ET
 
 import resources.lib.common as common
@@ -19,15 +21,16 @@ def convert_to_dash(manifest):
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
     protection = _protection_info(manifest)
 
-
     for video_track in manifest['video_tracks']:
         _convert_video_track(
             video_track, period, init_length, protection)
 
+    default_audio_language_index = _get_default_audio_language(manifest)
+
     for index, audio_track in enumerate(manifest['audio_tracks']):
         # Assume that first listed track is the default
         _convert_audio_track(audio_track, period, init_length,
-                             default=(index == 0))
+                             default=(index == default_audio_language_index))
 
     for text_track in manifest['timedtexttracks']:
         if text_track['isNoneTrack']:
@@ -126,12 +129,10 @@ def _determine_video_codec(content_profile):
 
 
 def _convert_audio_track(audio_track, period, init_length, default):
-    languageMap = {}
-    channelCount = {'1.0':'1', '2.0':'2', '5.1':'6', '7.1':'8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
-    default = 'false' if audio_track['language'] in languageMap else 'true'
-    languageMap[audio_track['language']] = True
+    default = 'true' if default else 'false'
+
     adaptation_set = ET.SubElement(
         parent=period,
         tag='AdaptationSet',
@@ -144,7 +145,7 @@ def _convert_audio_track(audio_track, period, init_length, default):
     for downloadable in audio_track['streams']:
         _convert_audio_downloadable(
             downloadable, adaptation_set, init_length,
-            audio_track.get('channelsCount'))
+            audio_track.get('channels'))
 
 
 def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
@@ -203,3 +204,39 @@ def _add_segment_base(representation, init_length):
         tag='SegmentBase',
         indexRange='0-' + str(init_length),
         indexRangeExact='true')
+
+def _get_default_audio_language(manifest):
+    channelList = {'1.0': '1', '2.0': '2'}
+    channelListDolby = {'5.1': '6', '7.1': '8'}
+
+    # Read language in kodi settings
+    audio_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
+    audio_language = xbmc.convertLanguage(audio_language['value'], xbmc.ISO_639_1)
+    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    audio_language = audio_language if audio_language else 'en'
+
+    # Try to find the preferred language with the right channels
+    if g.ADDON.getSettingBool('enable_dolby_sound'):
+        for index, audio_track in enumerate(manifest['audio_tracks']):
+            if audio_track['language'] == audio_language and audio_track['channels'] in channelListDolby:
+                return index
+                break
+    # If dolby audio track not exists check other channels list
+    for index, audio_track in enumerate(manifest['audio_tracks']):
+        if audio_track['language'] == audio_language and audio_track['channels'] in channelList:
+            return index
+            break
+
+    # If there is no matches to preferred language, try to sets the original language track as default
+        # Check if the dolby audio track in selected language exists
+    if g.ADDON.getSettingBool('enable_dolby_sound'):
+        for index, audio_track in enumerate(manifest['audio_tracks']):
+            if audio_track['isNative'] and audio_track['channels'] in channelListDolby:
+                return index
+                break
+    # If dolby audio track not exists check other channels list
+    for index, audio_track in enumerate(manifest['audio_tracks']):
+        if audio_track['isNative'] and audio_track['channels'] in channelList:
+            return index
+            break
+    return 0
