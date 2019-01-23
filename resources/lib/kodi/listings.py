@@ -73,8 +73,16 @@ def _activate_view(view):
     if (('plugin://{}'.format(g.ADDON_ID) in
          xbmc.getInfoLabel('Container.FolderPath')) and
             g.ADDON.getSettingBool('customview')):
-        view_id = g.ADDON.getSettingInt('viewmode' + view)
-        if view_id != -1:
+
+        #enum order: List|Poster|IconWall|Shift|InfoWall|WideList|Wall|Banner|FanArt|Custom
+        views_id_list = [50, 51, 52, 53, 54, 55, 500, 501, 502, -1]
+
+        view_id = views_id_list[int(g.ADDON.getSettingInt('viewmode' + view))]
+
+        if view_id == -1:
+            view_id = int(g.ADDON.getSettingInt('viewmode' + view + 'id'))
+
+        if view_id != -1 and view_id != 0:
             xbmc.executebuiltin(
                 'Container.SetViewMode({})'.format(view_id))
 
