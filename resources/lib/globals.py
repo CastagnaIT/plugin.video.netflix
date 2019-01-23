@@ -84,6 +84,7 @@ class GlobalVariables(object):
         self.reset_time_trace()
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
+        self.LOCALE_ID = 'en-US'
 
         try:
             os.mkdir(self.DATA_PATH)
