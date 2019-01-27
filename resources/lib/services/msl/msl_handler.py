@@ -325,7 +325,10 @@ def _decrypt_chunks(chunks, crypto):
         else:
             data = base64.standard_b64decode(data)
 
-        decrypted_payload += data
+        if isinstance(data, str):
+            decrypted_payload += unicode(data, 'utf-8')
+        else:
+            decrypted_payload += data
 
     decrypted_payload = json.loads(decrypted_payload)
     if 'result' in decrypted_payload:
