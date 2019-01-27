@@ -273,8 +273,7 @@ def _process_json_response(response):
 
 def _raise_if_error(decoded_response):
     common.debug('decoded_response: ' + str(decoded_response))
-    if ('errordata' in decoded_response or
-            or not decoded_response.values().get('success', True)):
+    if 'errordata' in decoded_response:
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
