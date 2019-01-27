@@ -94,9 +94,7 @@ class MSLRequestBuilder(object):
     def _encrypted_chunk(self, data, esn):
         payload = {
             'messageid': self.current_message_id,
-            #'data': base64.standard_b64encode(json.dumps(data)),
-            'data': common.compress_data(json.dumps(data)),
-            'compressionalgo': 'GZIP',
+            'data': base64.standard_b64encode(json.dumps(data)),
             'sequencenumber': 1,
             'endofmsg': True
         }

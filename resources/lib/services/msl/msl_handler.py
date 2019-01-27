@@ -182,7 +182,9 @@ class MSLHandler(object):
         manifest = self._chunked_request(ENDPOINTS['manifest'],
                                          manifest_request_data, esn)
         common.save_file('manifest.json', json.dumps(manifest))
-        return manifest['result']
+        if 'result' in manifest:
+            return manifest['result']
+        return manifest
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -215,7 +217,7 @@ class MSLHandler(object):
 
         response = self._chunked_request(ENDPOINTS['license'],
                                          license_request_data, g.get_esn())
-        return response['result'][0]['licenseResponseBase64']
+        return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
@@ -270,8 +272,9 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
+    common.debug('decoded_response: ' + str(decoded_response))
     if ('errordata' in decoded_response or
-            not decoded_response.get('success', True)):
+            or not decoded_response.values().get('success', True)):
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
@@ -321,8 +324,20 @@ def _decrypt_chunks(chunks, crypto):
             data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
         else:
             data = base64.standard_b64decode(data)
+
         decrypted_payload += data
-    return json.loads(decrypted_payload)
+
+    decrypted_payload = json.loads(decrypted_payload)
+    if 'result' in decrypted_payload:
+        return decrypted_payload['result']
+
+    decrypted_payload = decrypted_payload[1]['payload']
+    if 'json' in decrypted_payload:
+        return decrypted_payload['json']['result']
+    else:
+        decrypted_payload = base64.standard_b64decode(decrypted_payload['data'])
+        return json.JSONDecoder().decode(decrypted_payload)
+
 
 def has_1080p(manifest):
     """Return True if any of the video tracks in manifest have a 1080p profile
