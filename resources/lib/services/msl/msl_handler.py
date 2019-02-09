@@ -277,6 +277,9 @@ def _raise_if_error(decoded_response):
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
+    if isinstance(decoded_response, list):
+        if decoded_response[0].get('error'):
+            raise MSLError(_get_error_details(decoded_response))
     return decoded_response
 
 
@@ -289,6 +292,9 @@ def _get_error_details(decoded_response):
         return decoded_response['result']['errorDisplayMessage']
     elif decoded_response.get('result', {}).get('errorDetails'):
         return decoded_response['result']['errorDetails']
+    elif isinstance(decoded_response, list):
+        if decoded_response[0].get('error', {}).get('errorDisplayMessage'):
+            return decoded_response[0]['error']['errorDisplayMessage']
     return ''
 
 
