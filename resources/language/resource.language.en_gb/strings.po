@@ -340,8 +340,9 @@ msgctxt "#30080"
 msgid "Pause when skipping"
 msgstr ""
 
+#Unused id
 msgctxt "#30081"
-msgid "Save audio/subtitle preferences for this show"
+msgid ""
 msgstr ""
 
 msgctxt "#30082"
