@@ -15,7 +15,8 @@ CENC_TL = 'dash-cenc-ctl'
 HDR = 'hevc-hdr-main10-'
 DV = 'hevc-dv-main10-'
 DV5 = 'hevc-dv5-main10-'
-VP9 = 'vp9-profile0-'
+VP9_PROFILE0 = 'vp9-profile0-'
+VP9_PROFILE2 = 'vp9-profile2-'
 
 BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 CENC_TL_LEVELS = ['L30-L31-', 'L31-L40-', 'L40-L41-', 'L50-L51-']
@@ -31,13 +32,15 @@ PROFILES = {
     'base': [
         # Audio
         'heaac-2-dash',
-        # Unkown
+        'playready-heaac-2-dash',
+        # Unknown
         'BIF240', 'BIF320'],
     'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash',
                    'ddplus-atmos-dash'],
     'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
-             'playready-h264mpl40-dash', 'playready-h264mpl41-dash',
-             'playready-h264hpl30-dash', 'playready-h264hpl31-dash'],
+             'playready-h264mpl40-dash',
+             'playready-h264hpl30-dash', 'playready-h264hpl31-dash',
+             'playready-h264hpl40-dash'],
     'hevc':
         _profile_strings(base=HEVC,
                          tails=[(BASE_LEVELS, CENC),
@@ -55,9 +58,12 @@ PROFILES = {
                          tails=[(BASE_LEVELS, CENC)]) +
         _profile_strings(base=DV5,
                          tails=[(BASE_LEVELS, CENC_PRK)]),
-    'vp9':
-        _profile_strings(base=VP9,
-                         tails=[(BASE_LEVELS, CENC)])
+    'vp9profile0':
+        _profile_strings(base=VP9_PROFILE0,
+                         tails=[(BASE_LEVELS, CENC)]),
+    'vp9profile2':
+        _profile_strings(base=VP9_PROFILE2,
+                         tails=[(BASE_LEVELS, CENC_PRK)])
 }
 
 
@@ -65,7 +71,8 @@ def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
     return (PROFILES['base'] +
             PROFILES['h264'] +
-            PROFILES['vp9'] +
+            PROFILES['vp9profile0'] +
+            PROFILES['vp9profile2'] +
             _subtitle_profiles() +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
