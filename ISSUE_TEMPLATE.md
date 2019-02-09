@@ -3,11 +3,11 @@
   - [ ] feature request
   - [ ] support request
 
-## General infomration
+## General information
 
-### Prerequisites
+### Addon version used
 
-* [ ] Are you running the latest version?
+[eg. 13.21.0]
 
 ### Description
 
@@ -27,9 +27,9 @@
 
 ### Installation
 
-* [ ] I installed the plugin via zip from the Releases page
-* [ ] I´m using the Netflix Repo
-* [ ] I´m using a different source (Please tell which)
+* [ ] I'm using this Netflix Repo
+* [ ] I'm using other Netflix Repo (Please specify which)
+* [ ] I'm using a different source (Please tell which)
 
 ### Operating System
 
@@ -45,7 +45,7 @@
 
 ## Debug log
 
-[Please include a link to your debug log (use something like [http://sprunge.us/](http://sprunge.us/)) or similar, please do not paste]
+[Please include a link to your debug log (use something like [http://sprunge.us/](http://sprunge.us/) or [https://pastebin.com/](https://pastebin.com/)) or similar, please do not paste]
 
 ## Other information
 
