@@ -340,10 +340,6 @@ msgctxt "#30080"
 msgid "Don't pause when skipping"
 msgstr "Não pause quando pulando"
 
-msgctxt "#30081"
-msgid "Save audio/subtitle preferences for this show"
-msgstr "Salvar preferências de áudio /legendas para este show"
-
 msgctxt "#30082"
 msgid "Save audio / subtitle settings for TV shows"
 msgstr "Salvar ajustes de áudio / legendas para seriados"

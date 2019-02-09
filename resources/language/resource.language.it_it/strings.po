@@ -340,10 +340,6 @@ msgctxt "#30080"
 msgid "Pause when skipping"
 msgstr "Dopo il salto metti in pausa"
 
-msgctxt "#30081"
-msgid "Save audio/subtitle preferences for this show"
-msgstr "Salva preferenze audio/sottotitoli per questo programma"
-
 msgctxt "#30082"
 msgid "Save audio / subtitle settings for TV shows"
 msgstr "Salva impostazioni audio/sottotitoli per i programmi tv"

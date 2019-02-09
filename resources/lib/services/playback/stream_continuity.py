@@ -74,7 +74,7 @@ class StreamContinuityManager(PlaybackActionManager):
                 common.debug('{} has changed from {} to {}'
                              .format(stype, current_stream, player_stream))
                 self._set_current_stream(stype, player_state)
-                self._ask_to_save(stype, player_stream)
+                self._save_changed_stream(stype, player_stream)
 
     def _set_current_stream(self, stype, player_state):
         self.current_streams.update({
@@ -94,19 +94,11 @@ class StreamContinuityManager(PlaybackActionManager):
             self.current_streams[stype] = stored_stream
             common.debug('Restored {} to {}'.format(stype, stored_stream))
 
-    def _ask_to_save(self, stype, stream):
-        common.debug('Asking to save {} for {}'.format(stream, stype))
+    def _save_changed_stream(self, stype, stream):
+        common.debug('Save changed stream {} for {}'.format(stream, stype))
         new_show_settings = self.show_settings.copy()
         new_show_settings[stype] = stream
-        ui.show_modal_dialog(
-            ui.xmldialogs.SaveStreamSettings,
-            "plugin-video-netflix-SaveStreamSettings.xml",
-            g.ADDON.getAddonInfo('path'),
-            minutes=0,
-            seconds=5,
-            new_show_settings=new_show_settings,
-            tvshowid=self.current_show,
-            storage=self.storage)
+        self.storage[self.current_show] = new_show_settings
 
     def __repr__(self):
         return ('enabled={}, current_show={}'
