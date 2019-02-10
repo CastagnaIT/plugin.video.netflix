@@ -148,7 +148,6 @@ def genre(genre_id):
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
           ['id', 'name']]]))
 
-
 @common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON)
 def seasons(videoid):
