@@ -340,6 +340,10 @@ msgctxt "#30080"
 msgid "Pause when skipping"
 msgstr "Dopo il salto metti in pausa"
 
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "Forza il supporto per HDCP 2.2 (abilita contenuti 4K)"
+
 msgctxt "#30082"
 msgid "Save audio / subtitle settings for TV shows"
 msgstr "Salva impostazioni audio/sottotitoli per i programmi tv"

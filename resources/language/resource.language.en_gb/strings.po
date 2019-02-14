@@ -340,9 +340,8 @@ msgctxt "#30080"
 msgid "Pause when skipping"
 msgstr ""
 
-#Unused id
 msgctxt "#30081"
-msgid ""
+msgid "Force support of HDCP 2.2 (enable 4K content)"
 msgstr ""
 
 msgctxt "#30082"

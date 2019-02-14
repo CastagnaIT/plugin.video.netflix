@@ -103,7 +103,6 @@ def _convert_video_downloadable(downloadable, adaptation_set,
         width=str(downloadable['res_w']),
         height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
-        #Does tag hdcpVersions still exist? to check if the tag is present when hdcp activated
         hdcp=_determine_hdcp_version(downloadable.get('hdcpVersions', 'none')),
         nflxContentProfile=str(downloadable['content_profile']),
         codecs=_determine_video_codec(downloadable['content_profile']),

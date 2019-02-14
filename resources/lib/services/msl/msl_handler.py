@@ -142,6 +142,13 @@ class MSLHandler(object):
         ia_addon = xbmcaddon.Addon('inputstream.adaptive')
         hdcp = ia_addon is not None and ia_addon.getSetting('HDCPOVERRIDE') == 'true'
 
+        # TODO: Future implementation when available,
+        #       request the HDCP version from Kodi through a function
+        #       in CryptoSession currently not implemented
+        hdcp_version = []
+        if g.ADDON.getSettingBool('enable_force_hdcp'):
+            hdcp_version = ['2.2']
+
         id = int(time.time() * 10000)
         manifest_request_data = {
             'version': 2,
@@ -171,7 +178,7 @@ class MSLHandler(object):
                 'videoOutputInfo': [{
                     'type': 'DigitalVideoOutputDescriptor',
                     'outputType': 'unknown',
-                    'supportedHdcpVersions': [],
+                    'supportedHdcpVersions': hdcp_version,
                     'isHdcpEngaged': hdcp
                 }],
                 'preferAssistiveAudio': False,
