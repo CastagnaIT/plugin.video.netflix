@@ -86,9 +86,11 @@ def enabled_profiles():
 
 def _subtitle_profiles():
     isversion = xbmcaddon.Addon('inputstream.adaptive').getAddonInfo('version')
-    return ['webvtt-lssdh-ios8'
-            if common.is_minimum_version(isversion, '2.3.8')
-            else 'simplesdh']
+    subtitle_profile = ['webvtt-lssdh-ios8']
+    if g.ADDON.getSettingBool('disable_webvtt_subtitle') \
+        or not common.is_minimum_version(isversion, '2.3.8'):
+        subtitle_profile = ['simplesdh']
+    return subtitle_profile
 
 
 def _additional_profiles(profiles, req_settings=None, forb_settings=None):

@@ -591,3 +591,7 @@ msgstr "Personalizzata"
 msgctxt "#30143"
 msgid "Custom view ID"
 msgstr "ID Vista personalizzata"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "Disabilita supporto ai sottotitoli WebVTT"
