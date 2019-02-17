@@ -137,10 +137,14 @@ def get_quality_infos(item):
                  delivery.get('hasHD')), 2)]
         quality_infos['audio'] = {
             'channels': 2 + 4 * delivery.get('has51Audio', False)}
-        quality_infos['audio']['codec'] = (
-            'eac3'
-            if g.ADDON.getSettingBool('enable_dolby_sound')
-            else 'aac')
+
+        if g.ADDON.getSettingBool('enable_dolby_sound'):
+            if delivery.get('hasDolbyAtmos', False):
+                quality_infos['audio']['codec'] = 'truehd'
+            else:
+                quality_infos['audio']['codec'] = 'eac3'
+        else:
+            quality_infos['audio']['codec'] = 'aac'
     return quality_infos
 
 
