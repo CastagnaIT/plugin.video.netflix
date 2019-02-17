@@ -274,6 +274,7 @@ class NetflixSession(object):
         while range_start < range_end:
             path_response = self._path_request(
                 _set_range_selector(paths, range_start, range_end))
+            common.debug('perpetual_path_request path_response: ' + str(path_response))
             common.merge_dicts(path_response, merged_response)
             range_start = range_end + 1
             if length(path_response, *length_params) > range_end:
