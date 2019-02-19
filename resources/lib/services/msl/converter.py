@@ -128,6 +128,7 @@ def _determine_video_codec(content_profile):
 
 
 def _convert_audio_track(audio_track, period, init_length, default):
+    channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
     default = 'true' if default else 'false'
@@ -144,7 +145,7 @@ def _convert_audio_track(audio_track, period, init_length, default):
     for downloadable in audio_track['streams']:
         _convert_audio_downloadable(
             downloadable, adaptation_set, init_length,
-            audio_track.get('channels'))
+            channels_count[downloadable['channels']])
 
 
 def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
@@ -159,7 +160,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
         parent=representation,
         tag='AudioChannelConfiguration',
         schemeIdUri='urn:mpeg:dash:23003:3:audio_channel_configuration:2011',
-        value=str(channels_count))
+        value=channels_count)
     _add_base_url(representation, downloadable['urls'][0]['url'])
     _add_segment_base(representation, init_length)
 
