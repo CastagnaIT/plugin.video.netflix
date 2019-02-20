@@ -71,9 +71,9 @@ def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
     return (PROFILES['base'] +
             PROFILES['h264'] +
-            PROFILES['vp9profile0'] +
-            PROFILES['vp9profile2'] +
             _subtitle_profiles() +
+            _additional_profiles('vp9profile0', 'enable_vp9_profiles') +
+            _additional_profiles('vp9profile2', 'enable_vp9_profiles') +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
             _additional_profiles('hdr',

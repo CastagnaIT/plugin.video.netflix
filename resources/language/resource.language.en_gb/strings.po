@@ -565,7 +565,7 @@ msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr ""
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (disables 1080p unlock)"
+msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
 msgstr ""
 
 msgctxt "#30138"

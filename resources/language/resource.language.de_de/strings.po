@@ -552,10 +552,6 @@ msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr "Aktiviere 1080p Unlock (nicht empfohlen auf Android)"
 
-msgctxt "#30137"
-msgid "Enable VP9 profiles (disables 1080p unlock)"
-msgstr "Aktiviere VP9 Profile (deaktiviert 1080p Unlock)"
-
 msgctxt "#30138"
 msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
 msgstr "Die angeforderte Aktion konnte nicht abgeschlossen werden. Falls du Kodi oder das Addon gerade erst gestartet hast, kann es sein, dass die Hintergrundservices noch nicht verfügbar sind. Versuche es in diesem Fall in einem kurzen Moment einfach nochmal."
