@@ -103,20 +103,11 @@ def _convert_video_downloadable(downloadable, adaptation_set,
         width=str(downloadable['res_w']),
         height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
-        hdcp=_determine_hdcp_version(downloadable.get('hdcpVersions', 'none')),
         nflxContentProfile=str(downloadable['content_profile']),
         codecs=_determine_video_codec(downloadable['content_profile']),
         mimeType='video/mp4')
     _add_base_url(representation, downloadable['urls'][0]['url'])
     _add_segment_base(representation, init_length)
-
-
-def _determine_hdcp_version(hdcp_versions):
-    hdcp_version = '0.0'
-    for hdcp in hdcp_versions:
-        if hdcp != 'none':
-            hdcp_version = hdcp if hdcp != 'any' else '1.0'
-    return hdcp_version
 
 
 def _determine_video_codec(content_profile):

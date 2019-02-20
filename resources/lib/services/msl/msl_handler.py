@@ -145,8 +145,12 @@ class MSLHandler(object):
         # TODO: Future implementation when available,
         #       request the HDCP version from Kodi through a function
         #       in CryptoSession currently not implemented
+        #       so there will be no more need to use the HDCPOVERRIDE = true
+
         hdcp_version = []
-        if g.ADDON.getSettingBool('enable_force_hdcp'):
+        if not g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
+            hdcp_version = ['1.4']
+        if g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
             hdcp_version = ['2.2']
 
         id = int(time.time() * 10000)
