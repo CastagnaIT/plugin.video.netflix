@@ -1,13 +1,10 @@
 # Netflix Plugin for Kodi 18 (plugin.video.netflix)
 
-[![Bitcoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://blockchain.info/address/1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF)
-[![Build Status](https://travis-ci.org/asciidisco/plugin.video.netflix.svg?branch=master)](https://travis-ci.org/asciidisco/plugin.video.netflix)
-[![Test Coverage](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/coverage.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix/coverage)
-[![Issue Count](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/issue_count.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix)
-[![Code Climate](https://codeclimate.com/github/asciidisco/plugin.video.netflix/badges/gpa.svg)](https://codeclimate.com/github/asciidisco/plugin.video.netflix)
-[![GitHub release](https://img.shields.io/github/release/asciidisco/plugin.video.netflix.svg)](https://github.com/asciidisco/plugin.video.netflix/releases)
-[![Docs](https://media.readthedocs.org/static/projects/badges/passing.svg)](https://asciidisco.github.io/plugin.video.netflix/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+This source code comes from the [caphm repository](https://github.com/caphm/plugin.video.netflix) given the discontinuity of his work, i'm trying to keep the project alive, help from skilled people are welcome.
+The initial project is on the [repository of asciidisco](https://github.com/asciidisco/plugin.video.netflix) no longer maintained but used as a reference.
 
 ## Disclaimer
 
@@ -16,18 +13,22 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 
 ## Prerequisites
 
-- Kodi 18 [nightlybuild](http://mirrors.kodi.tv/nightlies/)
+- Kodi 18 [official download](https://kodi.tv/download)
 - Inputstream.adaptive [>=v2.0.0](https://github.com/peak3d/inputstream.adaptive)
-  (must be separately installed from the Kodi repo since Leia Beta 5)
-- Cryptdome python library (for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
+  (with Kodi 18 should be installed automatically, otherwise you will be notified)
+- Cryptdome python library, with Kodi 18 will be installed automatically
+(for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
 
-For non-Android devices, the required Widevine DRM binaries will automatically be installed by inputstream.helper.
+- Widevine DRM
+For non-Android devices, will automatically be installed (by inputstream.helper).
 Please make sure to read the licence agreement that is presented upon Widevine installation, so you know what you´re getting yourself into.
 
 ## Installation & Updates
 
-You can use [our repository](https://github.com/kodinerds/repo/raw/master/repository.netflix/repository.netflix-1.0.1.zip) to install the plugin.
-Using this, you´ll immediately receive updates once a new release has been drafted.
+I don't have a repository that provides automatic updates.
+Daily build and Release build can be downloaded from here:
+http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon
+
 
 ## Functionality
 
@@ -50,14 +51,13 @@ No. Netflix's DRM is incompatible with inpustream from Kodi 17.
 Yes, but you most likely won't get 1080p playback to work properly (see next FAQ).
 
 ### Can it play 1080p videos?
-Yes, as long as they are available from Netflix and your hardware can handle it. On Widevine L1 devices (some Android devices), this is usually not an issue, because DRM is built into the system and hardware decoding can be used.
-On all other platforms, video is always software decoded due to Netflix licensing restrictions, so **you'll need a CPU that can handle the load of software decoding 1080p video**.
+- On Android devices
+Yes, as long as they are available from Netflix and your hardware can handle it.
+To understand if your device can handle them, you need to check if it has support for the Widewine L1 DRM
 
-**Current RPI devices cannot play 1080p**, because they usually cannot deliver the required performance, which will result in stuttering video playback. 720p is maximum for those devices, and even then you need to make sure to properly cool your RPI or you'll have stuttering playback as well.
-
-### Can it play 1080p on Linux?
-Yes. There is a workaround included to enabled 1080p playback for titles that are usually locked to lower resolutions. This also extends to some titles, which will only play in 480p on Chrome on Windows as well (mostly Disney stuff).
-The workaround uses the method devised by truedread for his Chrome plugin: https://github.com/truedread/netflix-1080p
+- Other platform (Windows, Linux, ...)
+The video is always software decoded due to Netflix licensing restrictions, so **you'll need a CPU that can handle the load of software decoding 1080p video** otherwise you'll have the result of stuttering video playback.
+Which is what happens with certain RPI, 720p is maximum for those devices, and even then you need to make sure to properly cool your RPI or you'll have stuttering playback as well.
 
 ### It only plays videos in 480p/720p, why is that?
 inputstream.adaptive selects the stream to play based on an initial bandwidth measurement and your screen resolution.
@@ -66,7 +66,16 @@ Also make sure your display resolution is at least 1080p or enable `Ignore displ
 If it's still not playing 1080p, the title most probably just isn't available in 1080p.
 
 ### Can it play 4K videos?
-Yes, but only on Android devices with Widevine L1. You need to enter the ESN from your Netflix App (can be found unter Settings => About) and enable HEVC profiles in addon settings.
+Yes, but only on Android devices with Widevine L1, and you need to set the following parameters:
+- In the addon settings, Expert page:
+`Enable VP9 profiles` to OFF
+`Enable HEVC profiles` to ON
+`Force support to HDCP 2.2` to ON
+- In the Inputstream Addon settings, Account page:
+`Override HDCP status` to ON
+
+If you don't get 4k resolution when you play:
+Try to enter the ESN from your Netflix App (can be found unter Settings => About).
 
 ### Can it play HDR?
 Yes, as long as the 4K prerequisites are met. Additionally, you must enabled HDR and/or DolbyVision profiles
@@ -75,14 +84,21 @@ Depending on your setup, there may be some tinkering required to get HDR to work
 if you are using an AV-Receiver, which device Kodi is running on, etc. Please make sure to search the issues and available forum threads for a solution before opening an issue!
 
 ### Does it support 5.1 audio?
-Yes, enable Dolby Sound in addon settings (is enabled by default).
+Yes, enable `Use Dolby Sound` in addon settings (is enabled by default).
 
 ### Is Dolby Atmos supported?
-Yes. It's disabled by default, so you'll need to enable it in the settings.
+Yes. It's enabled by default, when option `Use Dolby Sound` is enabled.
+But only some videos have Atmos, they can be distinguished from the skin media-flag "Dolby-HD".
+Note: concerning the audio streams have descriptions equal to the normal Dolby, if you see two tracks 5.1 in your language means that one of the two is Atmos (in the future it is hoped in a support from kodi to distinguish them).
 
 ### Are image based subtitles (Hebrew, Arabic, ...) supported?
 No. They are provided in a different format, which requires some work to support, either on Kodi or the addon side.
 It's on the roadmap but doesn't have an ETA.
+
+### Why do i always see subtitles in every video?
+Just change how Kodi handles subtitles by choosing forced only.
+In Kodi Settings -> Player -> Language
+set: `Preferred subtitle language` to `Forced only`
 
 ### I added/removed something to My List on PC/in the Netflix App but it doesn't show up in my Kodi library?
 Only add/remove to My List from within the addon keeps the Kodi library in sync. Changes made in other clients (PC, App, ...) are not recognized because it's unclear how to handle those actions with multiple profiles.
@@ -99,11 +115,6 @@ If something doesn't work for you, please:
 
 We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
 Please also use a service like pastebin to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
-
-## Donate
-
-If you like this project feel free to buy us some cups of coffee.
-Our bitcoin address is: `1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF`
 
 ## Code of Conduct
 

@@ -32,7 +32,7 @@
     <website>https://www.netflix.com</website>
     <email>public at asciidisco dot com</email>
     <forum>https://www.kodinerds.net/index.php/Thread/55612-PreRelease-Plugin-Netflix-Inputstream/</forum>
-    <source>https://github.com/asciidisco/plugin.video.netflix</source>
+    <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
 v0.14.0 beta21 (2019-02-22)
 - Re-added option to disable VP9 profile
