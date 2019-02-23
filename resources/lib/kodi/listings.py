@@ -176,7 +176,8 @@ def _create_videolist_item(video_list_id, video_list, static_lists=False):
         video_list_id = video_list['context']
     list_item = list_item_skeleton(video_list['displayName'])
     add_info(video_list.id, list_item, video_list, video_list.data)
-    add_art(video_list.id, list_item, video_list.artitem)
+    if video_list.artitem:
+        add_art(video_list.id, list_item, video_list.artitem)
     url = common.build_url(['video_list', video_list_id],
                            mode=g.MODE_DIRECTORY)
     return (url, list_item, True)

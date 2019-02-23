@@ -15,6 +15,7 @@ class LoLoMo(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
+        common.debug('LoLoMo data: ' + str(self.data))
         self.id = (lolomoid
                    if lolomoid
                    else next(self.data['lolomos'].iterkeys()))
@@ -55,11 +56,16 @@ class VideoList(object):
         self.title = self['displayName']
         self.videos = OrderedDict(
             resolve_refs(self.data['lists'][self.id.value], self.data))
-        self.artitem = next(self.videos.itervalues())
-        self.contained_titles = _get_titles(self.videos)
-        try:
-            self.videoids = _get_videoids(self.videos)
-        except KeyError:
+        if self.videos:
+            self.artitem = next(self.videos.itervalues())
+            self.contained_titles = _get_titles(self.videos)
+            try:
+                self.videoids = _get_videoids(self.videos)
+            except KeyError:
+                self.videoids = None
+        else:
+            self.artitem = None
+            self.contained_titles = None
             self.videoids = None
 
     def __getitem__(self, key):
