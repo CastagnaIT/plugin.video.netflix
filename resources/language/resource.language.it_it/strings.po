@@ -595,3 +595,11 @@ msgstr "ID Vista personalizzata"
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Disabilita supporto ai sottotitoli WebVTT"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Aggiunti di recente"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Scopri gli ultimi contenuti aggiunti."

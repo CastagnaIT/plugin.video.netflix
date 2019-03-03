@@ -13,10 +13,11 @@ ART_SIZE_FHD = '_1920x1080'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
-    'videolist': lambda r: r['lists'].values()[0]['length'],
+    'videolistAZ': lambda r, context_name: len(r[context_name]['az']),
+    'videolistAZgenre': lambda r, context_name, context_id: len(r[context_name][context_id]['az']),
+    'videolist': lambda r, listid: len(r['lists'][listid].keys()),
     'seasonlist': (lambda r, tvshowid:
-                   r['videos'][tvshowid]['seasonList']
-                   ['summary']['length']),
+                   len(r['videos'][tvshowid]['seasonList'].keys())),
     'episodelist': (lambda r, seasonid:
                     r['seasons'][seasonid]['summary']['length'])}
 """Predefined lambda expressions that return the value of the length
@@ -25,7 +26,7 @@ attribute from within a path response dict"""
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['storyarts', '_1632x873', 'jpg'],
+    ['storyarts', '_1632x873', 'jpg'], # <This path seem no more used, never found it in the results
     ['bb2OGLogo', '_550x124', 'png'],
     ['BGImages', '720', 'jpg']
 ]
@@ -47,7 +48,6 @@ GENRE_PARTIAL_PATHS = [
 ]
 
 SEASONS_PARTIAL_PATHS = [
-    ['seasonList', 'summary'],
     ['seasonList', RANGE_SELECTOR, 'summary'],
     ['title']
 ] + ART_PARTIAL_PATHS
@@ -111,6 +111,22 @@ def iterate_references(source):
             continue
         else:
             yield (index, path)
+
+
+def count_references(source):
+    counter = 0
+    for index, ref in sorted({int(k): v
+                              for k, v in source.iteritems()
+                              if common.is_numeric(k)}.iteritems()):
+        path = reference_path(ref)
+
+        if path is None:
+            continue
+        elif path[0] == 'characters':
+            continue
+        else:
+            counter += 1
+    return counter
 
 
 def reference_path(ref):

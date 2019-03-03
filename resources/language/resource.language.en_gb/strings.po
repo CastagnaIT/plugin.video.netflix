@@ -595,3 +595,11 @@ msgstr ""
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr ""
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr ""
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr ""

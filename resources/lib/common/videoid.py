@@ -42,10 +42,14 @@ class VideoId(object):
 
     def __init__(self, **kwargs):
         self._id_values = _get_unicode_kwargs(kwargs)
+        #debug('VideoId validation values: ' + str(self._id_values))
         self._validate()
+        self._menu_parameters = MenuIdParameters(id_values = self._assigned_id_values()[0])
 
     def _validate(self):
         validation_mask = 0
+        # Example: ('39c9a88a-a56e-4c8a-921c-3c1f86c0ebb9_62682962X28X6548X1551537755876', None, None, None, None)
+        # This result in a VALIDATION_MASKS 'unspecified'. Because text data is on index 0, and others are None
         for index, value in enumerate(self._id_values):
             validation_mask |= (value is not None) << (4-index)
         try:
@@ -82,6 +86,11 @@ class VideoId(object):
     def value(self):
         """The value of this VideoId"""
         return self._assigned_id_values()[0]
+
+    @property
+    def menu_parameters(self):
+        """The menu parameters of the videoid value, if it exists"""
+        return self._menu_parameters
 
     @property
     def videoid(self):
@@ -200,6 +209,7 @@ class VideoId(object):
 
 
 def _get_unicode_kwargs(kwargs):
+    # Example of return value: (None, '70084801', None, None, None) this is a movieid
     return tuple((unicode(kwargs[idpart])
                   if kwargs.get(idpart)
                   else None)
@@ -246,3 +256,56 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
         kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
     else:
         del kwargs[pathitems_arg]
+
+class MenuIdParameters(object):
+    """Distinguishes the information grouped in a id value of a menu
+
+    I am not sure that the definitions of the data info are correct, for my intuition i have distinguished them in this way
+    8f0bcda8-a281-4ca3-9f56-f64ee1d76219_68180357X28X1430972X1551542684270
+    [              request id                   ]X[ type id ]X[ context id ]X[ group id ]
+    """
+
+    def __init__(self, **kwargs):
+        _id_values = kwargs.get('id_values')
+
+        #Check if the idvalues is a menu id value
+        if _id_values and _id_values.count('-') == 4 and _id_values.count('_') == 1 and _id_values.count('X') == 3:
+            self._is_menu_id = True
+            self._request_id = _id_values.split('X')[0]
+            self._type_id = _id_values.split('X')[1]
+            self._context_id = _id_values.split('X')[2]
+            self._group_id = _id_values.split('X')[3]
+        else:
+            self._is_menu_id = False
+
+    @property
+    def is_menu_id(self):
+        """Return True if is a Menu Id"""
+        return self._is_menu_id
+
+    @property
+    def request_id(self):
+        """Return the menu id"""
+        return self._request_id if self._is_menu_id else None
+
+    @property
+    def type_id(self):
+        """Return the menu type
+        Menu types can be distinguished by numeric code, some example:
+        6 - My list menu
+        20 - Featured menu
+        28 - Generic type of menu that returns tv series
+        29 - Generic type of "Other content similar to"
+        55 - Original netflix menu
+        """
+        return self._type_id if self._is_menu_id else None
+
+    @property
+    def context_id(self):
+        """Return the menu context id"""
+        return self._context_id if self._is_menu_id else None
+
+    @property
+    def group_id(self):
+        """Return the menu group id"""
+        return self._group_id if self._is_menu_id else None

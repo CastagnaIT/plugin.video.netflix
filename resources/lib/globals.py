@@ -12,6 +12,7 @@ import os
 from urlparse import urlparse, parse_qsl
 from urllib import unquote
 
+import collections
 import xbmc
 import xbmcaddon
 import xbmcvfs
@@ -24,19 +25,148 @@ class GlobalVariables(object):
     Kodi's reuseLanguageInvoker behavior"""
     # pylint: disable=attribute-defined-outside-init
     # pylint: disable=invalid-name, too-many-instance-attributes
-    KNOWN_LIST_TYPES = ['queue', 'topTen', 'netflixOriginals',
-                        'continueWatching', 'trendingNow', 'newRelease',
-                        'popularTitles']
-    MISC_CONTEXTS = {
-        'genres': {'label_id': 30010,
-                   'description_id': 30093,
-                   'icon': 'DefaultGenre.png',
-                   'contexts': 'genre'},
-        'recommendations': {'label_id': 30001,
-                            'description_id': 30094,
-                            'icon': 'DefaultUser.png',
-                            'contexts': ['similars', 'becauseYouAdded']}
-    }
+
+    VIEW_FOLDER = 'folder'
+    VIEW_MOVIE = 'movie'
+    VIEW_SHOW = 'show'
+    VIEW_SEASON = 'season'
+    VIEW_EPISODE = 'episode'
+    VIEW_GENRES = 'genres'
+    VIEW_RACOMMENDATIONS = 'folder'
+    VIEW_SEARCH = 'folder'
+    VIEW_EXPORTED = 'exported'
+
+    VIEWTYPES = [VIEW_FOLDER, VIEW_MOVIE, VIEW_SHOW, VIEW_SEASON,
+                 VIEW_EPISODE, VIEW_GENRES, VIEW_RACOMMENDATIONS,
+                 VIEW_SEARCH, VIEW_EXPORTED]
+
+    CONTENT_FOLDER = 'files'
+    CONTENT_MOVIE = 'movies'
+    CONTENT_SHOW = 'tvshows'
+    CONTENT_SEASON = 'seasons'
+    CONTENT_EPISODE = 'episodes'
+
+    '''
+    --Main Menu key infos--
+    path : passes information to the called method generally structured as follows: [func. name, menu id, other...]
+    contexts : contexts used to obtain the list of contents (use only one context when lolomo_known = True)
+    lolomo_known : if True, keys label_id/description_id/icon are ignored, the values are obtained from lolomo list
+    label_id : menu title
+    description_id : description info text
+    icon : set a default image
+    view_type : set the type of view, configurable from addon views settings
+    content_type : sets the type of content
+    show_in_menu : show/hide menu
+    '''
+    MAIN_MENU_ITEMS = collections.OrderedDict([
+        ('myList', {'path': ['video_list', 'myList'],
+                    # The context name in Lolomo is 'queue',
+                    # when request the list using 'az/su' the context used is 'mylist'
+                    'contexts': ['queue'],
+                    'lolomo_known': True,
+                    'view_type': VIEW_SHOW,
+                    'content_type': CONTENT_FOLDER,
+                    'show_in_menu': True}),
+        ('continueWatching', {'path': ['video_list_byid', 'continueWatching'],
+                              'contexts': ['continueWatching'],
+                              'lolomo_known': True,
+                              'view_type': VIEW_SHOW,
+                              'content_type': CONTENT_FOLDER,
+                              'show_in_menu': True}),
+        ('chosenForYou', {'path': ['video_list_byid', 'chosenForYou'],
+                          'contexts': ['topTen'],
+                          'lolomo_known': True,
+                          'view_type': VIEW_SHOW,
+                          'content_type': CONTENT_FOLDER,
+                          'show_in_menu': True}),
+        ('recentlyAdded', {'path': ['video_list', 'recentlyAdded', '1592210'],
+                           'contexts': None,
+                           'lolomo_known': False,
+                           'label_id': 30145,
+                           'description_id': 30146,
+                           'icon': 'DefaultRecentlyAddedMovies.png',
+                           'view_type': VIEW_SHOW,
+                           'content_type': CONTENT_FOLDER,
+                           'show_in_menu': True}),
+        ('newRelease', {'path': ['video_list', 'newRelease'],
+                        'contexts': ['newRelease'],
+                        'lolomo_known': True,
+                        'view_type': VIEW_SHOW,
+                        'content_type': CONTENT_FOLDER,
+                        'show_in_menu': True}),
+        ('currentTitles', {'path': ['video_list_byid', 'currentTitles'],
+                           'contexts': ['trendingNow'],
+                           'lolomo_known': True,
+                           'view_type': VIEW_SHOW,
+                           'content_type': CONTENT_FOLDER,
+                           'show_in_menu': True}),
+        ('mostViewed', {'path': ['video_list_byid', 'mostViewed'],
+                        'contexts': ['popularTitles'],
+                        'lolomo_known': True,
+                        'view_type': VIEW_SHOW,
+                        'content_type': CONTENT_FOLDER,
+                        'show_in_menu': True}),
+        ('netflixOriginals', {'path': ['video_list', 'netflixOriginals', '839338'],
+                              'contexts': ['netflixOriginals'],
+                              'lolomo_known': True,
+                              'view_type': VIEW_SHOW,
+                              'content_type': CONTENT_FOLDER,
+                              'show_in_menu': True}),
+        ('genres', {'path': ['genres', 'genres'],
+                    'contexts': ['genre'],
+                    'lolomo_known': False,
+                    'label_id': 30010,
+                    'description_id': 30093,
+                    'icon': 'DefaultGenre.png',
+                    'view_type': VIEW_GENRES,
+                    'content_type': CONTENT_SHOW,
+                    'show_in_menu': True}),
+        ('recommendations', {'path': ['recommendations', 'recommendations'], #deve usare video_list_byid
+                             'contexts': ['similars', 'becauseYouAdded'],
+                             'lolomo_known': False,
+                             'label_id': 30001,
+                             'description_id': 30094,
+                             'icon': 'DefaultUser.png',
+                             'view_type': VIEW_RACOMMENDATIONS,
+                             'content_type': CONTENT_SHOW,
+                             'show_in_menu': True}),
+        ('tvshows', {'path': ['genres', 'tvshows', '83'],
+                     'contexts': None,
+                     'lolomo_known': False,
+                     'label_id': 30095,
+                     'description_id': None,
+                     'icon': 'DefaultTVShows.png',
+                     'view_type': VIEW_SHOW,
+                     'content_type': CONTENT_SHOW,
+                     'show_in_menu': True}),
+        ('movies', {'path': ['genres', 'movies', '34399'],
+                    'contexts': None,
+                    'lolomo_known': False,
+                    'label_id': 30096,
+                    'description_id': None,
+                    'icon': 'DefaultMovies.png',
+                    'view_type': VIEW_MOVIE,
+                    'content_type': CONTENT_MOVIE,
+                    'show_in_menu': True}),
+        ('search', {'path': ['search', 'search'],
+                    'contexts': None,
+                    'lolomo_known': False,
+                    'label_id': 30011,
+                    'description_id': 30092,
+                    'icon': None,
+                    'view_type': VIEW_SEARCH,
+                    'content_type': CONTENT_SHOW,
+                    'show_in_menu': True}),
+        ('exported', {'path': ['exported', 'exported'],
+                      'contexts': None,
+                      'lolomo_known': False,
+                      'label_id': 30048,
+                      'description_id': 30091,
+                      'icon': 'DefaultHardDisk.png',
+                      'view_type': VIEW_EXPORTED,
+                      'content_type': CONTENT_SHOW,
+                      'show_in_menu': True})
+    ])
 
     MODE_DIRECTORY = 'directory'
     MODE_HUB = 'hub'
@@ -158,6 +288,14 @@ class GlobalVariables(object):
         edge_esn = ''.join(esn)
         self.ADDON.setSetting('edge_esn', edge_esn)
         return edge_esn
+
+    def is_known_menu_context(self, context):
+        """Return true if context are one of the menu with lolomo_known=True"""
+        for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():
+            if data['lolomo_known']:
+                if data['contexts'][0] == context:
+                    return True
+        return False
 
     def flush_settings(self):
         """Reload the ADDON"""

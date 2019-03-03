@@ -51,15 +51,35 @@ class DirectoryBuilder(object):
         listings.build_main_menu_listing(api.root_lists())
 
     @common.time_execution(immediate=False)
+    def video_list_byid(self, pathitems):
+        """Show a video list
+        Some menu such as 'mostViewed' are only accessible by listid
+        """
+        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        # Use predefined names instead of dynamic IDs for common video lists
+        if g.is_known_menu_context(pathitems[2]):
+            list_id = api.list_id_for_type(menu_data['contexts'][0])
+            listings.build_video_listing(api.video_list(list_id), menu_data)
+        else:
+            list_id = pathitems[2]
+            listings.build_video_listing(api.video_list(list_id), menu_data)
+
+    @common.time_execution(immediate=False)
     def video_list(self, pathitems):
         """Show a video list"""
+        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
         # Use predefined names instead of dynamic IDs for common video lists
-        if pathitems[1] in g.KNOWN_LIST_TYPES:
-            list_id = api.list_id_for_type(pathitems[1])
+        if g.is_known_menu_context(pathitems[2]):
+            if menu_data['contexts'][0] == 'queue':
+                # To make a request of the my list, now we use 'mylist' context
+                context_name = 'mylist'
+            else:
+                context_name = menu_data['contexts'][0].lower()
+            listings.build_video_listing(api.video_list_az(context_name), menu_data)
         else:
-            list_id = pathitems[1]
+            list_id = pathitems[2]
+            listings.build_video_listing(api.video_list_genre(list_id), menu_data)
 
-        listings.build_video_listing(api.video_list(list_id))
 
     @common.inject_video_id(path_offset=0)
     @common.time_execution(immediate=False)
@@ -77,13 +97,14 @@ class DirectoryBuilder(object):
     @common.time_execution(immediate=False)
     def genres(self, pathitems):
         """Show video lists for a genre"""
-        if len(pathitems) < 2:
+        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        # pathitems indexes: 0 function name, 1 menu id, 2 optional id
+        if len(pathitems) < 3:
             lolomo = api.root_lists()
-            contexts = g.MISC_CONTEXTS['genres']['contexts']
+            listings.build_lolomo_listing(lolomo, menu_data)
         else:
-            lolomo = api.genre(pathitems[1])
-            contexts = None
-        listings.build_lolomo_listing(lolomo, contexts)
+            lolomo = api.genre(pathitems[2])
+            listings.build_lolomo_listing(lolomo, menu_data, exclude_lolomo_known=True)
 
     @common.time_execution(immediate=False)
     def recommendations(self, pathitems=None):
@@ -91,15 +112,15 @@ class DirectoryBuilder(object):
         # pylint: disable=unused-argument
         listings.build_lolomo_listing(
             api.root_lists(),
-            g.MISC_CONTEXTS['recommendations']['contexts'])
+            g.MAIN_MENU_ITEMS['recommendations'], force_videolistbyid=True)
 
     def search(self, pathitems):
         """Ask for a search term if none is given via path, query API
         and display search results"""
-        if len(pathitems) == 1:
+        if len(pathitems) == 2:
             _ask_search_term_and_redirect()
         else:
-            _display_search_results(pathitems[1])
+            _display_search_results(pathitems[2])
 
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
@@ -117,7 +138,7 @@ class DirectoryBuilder(object):
 def _ask_search_term_and_redirect():
     search_term = ui.ask_for_search_term()
     if search_term:
-        url = common.build_url(['search', search_term],
+        url = common.build_url(['search', 'search', search_term],
                                mode=g.MODE_DIRECTORY)
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
         xbmc.executebuiltin('Container.Update({},replace)'
@@ -130,7 +151,8 @@ def _ask_search_term_and_redirect():
 def _display_search_results(search_term):
     search_results = api.search(search_term)
     if search_results.videos:
-        listings.build_video_listing(search_results)
+        listings.build_video_listing(search_results,
+                                     g.MAIN_MENU_ITEMS['search'])
         return
     else:
         ui.show_notification(common.get_local_string(30013))

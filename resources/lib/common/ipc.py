@@ -90,7 +90,7 @@ def make_addonsignals_call(callname, data):
         source_id=g.ADDON_ID,
         signal=callname,
         data=data,
-        timeout_ms=10000)
+        timeout_ms=16000)
     _raise_for_error(callname, result)
     if result is None:
         raise Exception('AddonSignals call timed out')

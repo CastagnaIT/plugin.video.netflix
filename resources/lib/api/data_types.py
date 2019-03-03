@@ -31,17 +31,29 @@ class LoLoMo(object):
         """Pass call on to the backing dict of this LoLoMo."""
         return self.data['lolomos'][self.id].get(key, default)
 
-    def lists_by_context(self, context):
+    def lists_by_context(self, context, break_on_first=False):
         """Return a generator expression that iterates over all video
         lists with the given context.
         Will match any video lists with type contained in context
         if context is a list."""
+        # 'context' may contain a list of multiple contexts or a single
+        # 'context' can be passed as a string, convert to simplify code
+        if not isinstance(context, list):
+            context = [context]
+
         match_context = ((lambda context, contexts: context in contexts)
                          if isinstance(context, list)
                          else (lambda context, target: context == target))
-        return ((list_id, VideoList(self.data, list_id))
-                for list_id, video_list in self.lists.iteritems()
-                if match_context(video_list['context'], context))
+
+        # Keep sort order of context list
+        lists = {}
+        for context_name in context:
+            for list_id, video_list in self.lists.iteritems():
+                if match_context(video_list['context'], context_name):
+                    lists.update({list_id: VideoList(self.data, list_id)})
+                    if break_on_first:
+                        break
+        return iter(lists.iteritems())
 
 
 class VideoList(object):
@@ -53,7 +65,7 @@ class VideoList(object):
             videoid=(list_id
                      if list_id
                      else next(self.data['lists'].iterkeys())))
-        self.title = self['displayName']
+        #self.title = self['displayName']   Not more used
         self.videos = OrderedDict(
             resolve_refs(self.data['lists'][self.id.value], self.data))
         if self.videos:
@@ -76,6 +88,36 @@ class VideoList(object):
         return _check_sentinel(self.data['lists'][self.id.value]
                                .get(key, default))
 
+class VideoListAZ(object):
+    """A video list"""
+    # pylint: disable=invalid-name
+    def __init__(self, path_response, context_name, context_id=None):
+        self.data = path_response
+        self.data_lists = path_response[context_name][context_id]['az'] \
+            if context_id else path_response[context_name]['az']
+        self.context_name = context_name
+        #self.title = self['displayName']   Not more used
+        self.videos = OrderedDict(
+            resolve_refs(self.data_lists, self.data))
+        if self.videos:
+            self.artitem = next(self.videos.itervalues())
+            self.contained_titles = _get_titles(self.videos)
+            try:
+                self.videoids = _get_videoids(self.videos)
+            except KeyError:
+                self.videoids = None
+        else:
+            self.artitem = None
+            self.contained_titles = None
+            self.videoids = None
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data_lists[key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this VideoList."""
+        return _check_sentinel(self.data_lists
+                               .get(key, default))
 
 class SearchVideoList(object):
     """A video list with search results"""

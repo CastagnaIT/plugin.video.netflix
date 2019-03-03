@@ -9,7 +9,7 @@ import resources.lib.common as common
 import resources.lib.cache as cache
 import resources.lib.kodi.ui as ui
 
-from .data_types import (LoLoMo, VideoList, SeasonList, EpisodeList,
+from .data_types import (LoLoMo, VideoList, VideoListAZ, SeasonList, EpisodeList,
                          SearchVideoList, CustomVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -111,13 +111,44 @@ def video_list(list_id):
         {
             'path_type': 'videolist',
             'paths':
-                [['lists', [list_id],
-                  # The length attribute MUST be present!
-                  ['displayName', 'context', 'genreId', 'length']]] +
-                build_paths(['lists', [list_id], RANGE_SELECTOR, 'reference'],
-                            VIDEO_LIST_PARTIAL_PATHS)
+                build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
+                            VIDEO_LIST_PARTIAL_PATHS),
+            'length_params1': list_id
+            # Note: using this format: ["lists", "20c4b91b-2a3d-4fd9-ba82-4c7c63c8ccfe_31272600X19XX1551626066006", {"to": 47, "from": 0}, "reference", ...
+            # the 'length' parameter never return to the actual total count of the elements
+            # because the limit seems fixed at 40 from netflix
+            # to pass it, we have to use 'az' or 'su' request by using a context name see video_list_az()
         }))
 
+@common.time_execution(immediate=False)
+@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
+                    identifying_param_name='context_id')
+def video_list_genre(context_id):
+    """Retrieve a single video list of a genere"""
+    common.debug('Requesting video list TEST ')
+    return VideoListAZ(common.make_call(
+        'perpetual_path_request',
+        {
+            'path_type': 'videolistAZgenre',
+            'paths':
+                build_paths(['genres', context_id, 'az', RANGE_SELECTOR],
+                            VIDEO_LIST_PARTIAL_PATHS),
+            'length_params1': 'genres',
+            'length_params2': context_id
+        }), 'genres', context_id)
+
+def video_list_az(context):
+    """Retrieve a single video list in a-z order"""
+    common.debug('Requesting video list TEST ')
+    return VideoListAZ(common.make_call(
+        'perpetual_path_request',
+        {
+            'path_type': 'videolistAZ',
+            'paths':
+                build_paths([context, 'az', RANGE_SELECTOR],
+                            VIDEO_LIST_PARTIAL_PATHS),
+            'length_params1': context
+        }), context)
 
 @common.time_execution(immediate=False)
 def custom_video_list(video_ids):
@@ -162,9 +193,9 @@ def seasons(videoid):
             'perpetual_path_request',
             {
                 'path_type': 'seasonlist',
-                'length_params': [videoid.tvshowid],
                 'paths': build_paths(['videos', videoid.tvshowid],
-                                     SEASONS_PARTIAL_PATHS)
+                                     SEASONS_PARTIAL_PATHS),
+                'length_params1': videoid.tvshowid
             }))
 
 
@@ -182,7 +213,6 @@ def episodes(videoid):
             'perpetual_path_request',
             {
                 'path_type': 'episodelist',
-                'length_params': [videoid.seasonid],
                 'paths':
                     [['seasons', videoid.seasonid, 'summary']] +
                     build_paths(
@@ -191,7 +221,8 @@ def episodes(videoid):
                         EPISODES_PARTIAL_PATHS) +
                     build_paths(
                         ['videos', videoid.tvshowid],
-                        ART_PARTIAL_PATHS + [['title']])
+                        ART_PARTIAL_PATHS + [['title']]),
+                'length_params1': videoid.seasonid
             }))
 
 
@@ -214,10 +245,10 @@ def single_info(videoid):
                     fixed_identifier='my_list_items')
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
+    common.debug('Try to perform a request to get the id list of the videos in my list')
     try:
         return [video_id
-                for video_id, video in video_list(
-                    list_id_for_type('queue')).videos.iteritems()
+                for video_id, video in video_list_az('mylist').videos.iteritems()
                 if video['queue'].get('inQueue', False)]
     except InvalidVideoListTypeError:
         return []
