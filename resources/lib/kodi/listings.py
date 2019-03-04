@@ -95,6 +95,7 @@ def build_main_menu_listing(lolomo):
     Builds the video lists (my list, continue watching, etc.) Kodi screen
     """
     directory_items = []
+    mylist_menu_exists = False
 
     for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
         if data['show_in_menu']:
@@ -102,6 +103,8 @@ def build_main_menu_listing(lolomo):
                 for list_id, user_list in lolomo.lists_by_context(data['contexts'], break_on_first=True):
                     directory_items.append(_create_videolist_item(list_id, user_list, data, static_lists=True))
                     data['menu_title'] = user_list['displayName']
+                    if "queue" in data['contexts']:
+                        mylist_menu_exists = True
             else:
                 menu_title = common.get_local_string(data['label_id']) \
                     if data['label_id'] is not None else 'Missing menu title'
@@ -115,6 +118,7 @@ def build_main_menu_listing(lolomo):
                                         description=menu_description),
                      True))
 
+    g.MAIN_MENU_HAVE_MYLIST = mylist_menu_exists
     finalize_directory(directory_items, g.CONTENT_FOLDER,
                        title=common.get_local_string(30097))
 

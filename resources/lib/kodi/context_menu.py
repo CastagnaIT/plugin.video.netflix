@@ -46,7 +46,7 @@ def generate_context_menu_items(videoid):
     if videoid.mediatype != common.VideoId.SEASON:
         items.insert(0, _ctx_item('rate', videoid))
 
-    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] and g.MAIN_MENU_HAVE_MYLIST:
         list_action = ('remove_from_list'
                        if videoid.value in api.mylist_items()
                        else 'add_to_list')

@@ -168,6 +168,8 @@ class GlobalVariables(object):
                       'show_in_menu': True})
     ])
 
+    MAIN_MENU_HAVE_MYLIST = True
+
     MODE_DIRECTORY = 'directory'
     MODE_HUB = 'hub'
     MODE_ACTION = 'action'
