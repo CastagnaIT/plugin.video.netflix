@@ -129,7 +129,7 @@ class DirectoryBuilder(object):
         library_contents = library.list_contents()
         if library_contents:
             listings.build_video_listing(
-                api.custom_video_list(library_contents))
+                api.custom_video_list(library_contents), g.MAIN_MENU_ITEMS['exported'])
         else:
             ui.show_notification(common.get_local_string(30013))
             xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
