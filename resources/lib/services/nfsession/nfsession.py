@@ -273,14 +273,16 @@ class NetflixSession(object):
         length = apipaths.LENGTH_ATTRIBUTES[path_type]
         range_start = 0
         range_end = MAX_PATH_REQUEST_SIZE
+        range_limit = int(g.ADDON.getSetting('list_limit_results'))\
+            if common.is_numeric(g.ADDON.getSetting('list_limit_results')) else 0
         merged_response = {}
         while range_start < range_end:
-            # Limit the list result to about 300 items, increasing takes too long,
-            # causing the AddonSignals call timed out.
+            # We limit the number of results of the list, a very high number has more chance of causing,
+            # AddonSignals call timed out, for the time it takes to request information
             # Would be more suitable that when you reach the end of the list,
             # you load the next block of results.
-            if range_start >= 300:
-                range_start = range_end;
+            if range_start >= range_limit > 0:
+                range_start = range_end
                 continue
 
             path_response = self._path_request(
