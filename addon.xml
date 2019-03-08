@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.14.0~beta21" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.14.0~beta22" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -34,6 +34,17 @@
     <forum>https://www.kodinerds.net/index.php/Thread/55612-PreRelease-Plugin-Netflix-Inputstream/</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.14.0 beta22 (2019-03-08)
+- Fixed error when accessing profile (lolomo error due to netflix changes)
+- Exceeded the limit of the lists with only 40 results!
+- It is possible to customize the maximum limit of the results (exp.settings)
+- Reworked menus code (not yet finished)
+- Fixed missing menu titles on all submenus
+- Order of the menus is now respected
+- Fixed children profile menus
+- Added a new menu "recently added"
+- Updated polish translation
+
 v0.14.0 beta21 (2019-02-22)
 - Re-added option to disable VP9 profile
 - Added support to Atmos media flag
