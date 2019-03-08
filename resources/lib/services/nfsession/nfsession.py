@@ -310,13 +310,12 @@ class NetflixSession(object):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}'.format(json.dumps(paths)))
         headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
         params = {
             'model': self.session_data['user_data']['gpsModel']}
-        data = json.dumps({
-            'paths': paths,
-            'authURL': self.auth_url})
+        data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
+        data += '&authURL=' + self.auth_url
         return self._post(
             component='shakti',
             req_type='api',
