@@ -386,6 +386,7 @@ class KodiHelper(object):
         xbmcplugin.endOfDirectory(self.plugin_handle)
 
         # (re)select the previously selected main menu entry
+        preselected_list_item = None
         idx = 1
         for item in preselect_items:
             idx += 1

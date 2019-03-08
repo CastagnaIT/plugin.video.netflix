@@ -1680,10 +1680,11 @@ class NetflixSession(object):
             'Accept': 'application/json, text/javascript, */*',
         }
 
-        data = json.dumps({
-            'paths': paths,
-            'authURL': self.user_data['authURL']
-        })
+        data = ""
+        for path in paths:
+            data = data + 'path=' + json.dumps(path) + '&'
+
+        data = data + 'authURL=' + self.user_data['authURL']
 
         params = {
             'model': self.user_data['gpsModel']
