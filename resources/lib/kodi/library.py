@@ -380,7 +380,7 @@ def _lib_folders(section):
 
 def _get_root_videoid(filename, pattern):
     match = re.search(pattern,
-                      xbmcvfs.File(filename, 'r').read().split('\n')[-1])
+                      xbmcvfs.File(filename, 'r').read().decode('utf-8').split('\n')[-1])
     metadata = api.metadata(
         common.VideoId(videoid=match.groups()[0]))[0]
     if metadata['type'] == 'show':
