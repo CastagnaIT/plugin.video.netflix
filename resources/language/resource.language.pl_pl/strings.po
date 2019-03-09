@@ -583,7 +583,7 @@ msgstr "Migracja biblioteki do nowego formatu"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr Wyłącz powiadomienia o starcie""
+msgstr "Wyłącz powiadomienia o starcie"
 
 msgctxt "#30142"
 msgid "Custom"
