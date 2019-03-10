@@ -48,8 +48,8 @@ class GlobalVariables(object):
 
     '''
     --Main Menu key infos--
-    path : passes information to the called method generally structured as follows: [func. name, menu id, other...]
-    contexts : contexts used to obtain the list of contents (use only one context when lolomo_known = True)
+    path : passes information to the called method generally structured as follows: [func. name, menu id, context id]
+    lolomo_contexts : contexts used to obtain the list of contents (use only one context when lolomo_known = True)
     lolomo_known : if True, keys label_id/description_id/icon are ignored, the values are obtained from lolomo list
     label_id : menu title
     description_id : description info text
@@ -57,72 +57,81 @@ class GlobalVariables(object):
     view_type : set the type of view, configurable from addon views settings
     content_type : sets the type of content
     show_in_menu : show/hide menu
+
+    Explanation of function names in the 'path' key:
+        video_list: automatically gets the list_id by making a lolomo request,
+                    the list_id search is made using the value specified on the lolomo_contexts key
+        video_list_sorted: to work must have a third argument on the path that is the context_id
+                           or instead specified the key request_context_name
     '''
     MAIN_MENU_ITEMS = collections.OrderedDict([
-        ('myList', {'path': ['video_list', 'myList'],
-                    # The context name in Lolomo is 'queue',
-                    # when request the list using 'az/su' the context used is 'mylist'
-                    'contexts': ['queue'],
+        ('myList', {'path': ['video_list_sorted', 'myList'],
+                    'lolomo_contexts': ['queue'],
                     'lolomo_known': True,
+                    'request_context_name': 'mylist',
                     'view_type': VIEW_SHOW,
                     'content_type': CONTENT_FOLDER,
                     'show_in_menu': True}),
-        ('continueWatching', {'path': ['video_list_byid', 'continueWatching'],
-                              'contexts': ['continueWatching'],
+        ('continueWatching', {'path': ['video_list', 'continueWatching'],
+                              'lolomo_contexts': ['continueWatching'],
                               'lolomo_known': True,
                               'view_type': VIEW_SHOW,
                               'content_type': CONTENT_FOLDER,
                               'show_in_menu': True}),
-        ('chosenForYou', {'path': ['video_list_byid', 'chosenForYou'],
-                          'contexts': ['topTen'],
+        ('chosenForYou', {'path': ['video_list', 'chosenForYou'],
+                          'lolomo_contexts': ['topTen'],
                           'lolomo_known': True,
                           'view_type': VIEW_SHOW,
                           'content_type': CONTENT_FOLDER,
                           'show_in_menu': True}),
-        ('recentlyAdded', {'path': ['video_list', 'recentlyAdded', '1592210'],
-                           'contexts': None,
+        ('recentlyAdded', {'path': ['video_list_sorted', 'recentlyAdded', '1592210'],
+                           'lolomo_contexts': None,
                            'lolomo_known': False,
+                           'request_context_name': 'genres',
                            'label_id': 30145,
                            'description_id': 30146,
                            'icon': 'DefaultRecentlyAddedMovies.png',
                            'view_type': VIEW_SHOW,
                            'content_type': CONTENT_FOLDER,
                            'show_in_menu': True}),
-        ('newRelease', {'path': ['video_list', 'newRelease'],
-                        'contexts': ['newRelease'],
+        ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
+                        'lolomo_contexts': ['newRelease'],
                         'lolomo_known': True,
+                        'request_context_name': 'newrelease',
                         'view_type': VIEW_SHOW,
                         'content_type': CONTENT_FOLDER,
                         'show_in_menu': True}),
-        ('currentTitles', {'path': ['video_list_byid', 'currentTitles'],
-                           'contexts': ['trendingNow'],
+        ('currentTitles', {'path': ['video_list', 'currentTitles'],
+                           'lolomo_contexts': ['trendingNow'],
                            'lolomo_known': True,
                            'view_type': VIEW_SHOW,
                            'content_type': CONTENT_FOLDER,
                            'show_in_menu': True}),
-        ('mostViewed', {'path': ['video_list_byid', 'mostViewed'],
-                        'contexts': ['popularTitles'],
+        ('mostViewed', {'path': ['video_list', 'mostViewed'],
+                        'lolomo_contexts': ['popularTitles'],
                         'lolomo_known': True,
                         'view_type': VIEW_SHOW,
                         'content_type': CONTENT_FOLDER,
                         'show_in_menu': True}),
-        ('netflixOriginals', {'path': ['video_list', 'netflixOriginals', '839338'],
-                              'contexts': ['netflixOriginals'],
+        ('netflixOriginals', {'path': ['video_list_sorted', 'netflixOriginals', '839338'],
+                              'lolomo_contexts': ['netflixOriginals'],
                               'lolomo_known': True,
+                              'request_context_name': 'genres',
                               'view_type': VIEW_SHOW,
                               'content_type': CONTENT_FOLDER,
                               'show_in_menu': True}),
         ('genres', {'path': ['genres', 'genres'],
-                    'contexts': ['genre'],
+                    'lolomo_contexts': ['genre'],
                     'lolomo_known': False,
+                    'request_context_name': 'genres',
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png',
                     'view_type': VIEW_GENRES,
                     'content_type': CONTENT_SHOW,
                     'show_in_menu': True}),
-        ('recommendations', {'path': ['recommendations', 'recommendations'], #deve usare video_list_byid
-                             'contexts': ['similars', 'becauseYouAdded'],
+        ('recommendations', {'path': ['recommendations', 'recommendations'],
+                             'lolomo_contexts': ['similars', 'becauseYouAdded'],
                              'lolomo_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
@@ -131,8 +140,9 @@ class GlobalVariables(object):
                              'content_type': CONTENT_SHOW,
                              'show_in_menu': True}),
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
-                     'contexts': None,
+                     'lolomo_contexts': None,
                      'lolomo_known': False,
+                     'request_context_name': 'genres', # Used for sub-menus
                      'label_id': 30095,
                      'description_id': None,
                      'icon': 'DefaultTVShows.png',
@@ -140,8 +150,9 @@ class GlobalVariables(object):
                      'content_type': CONTENT_SHOW,
                      'show_in_menu': True}),
         ('movies', {'path': ['genres', 'movies', '34399'],
-                    'contexts': None,
+                    'lolomo_contexts': None,
                     'lolomo_known': False,
+                    'request_context_name': 'genres', # Used for sub-menus
                     'label_id': 30096,
                     'description_id': None,
                     'icon': 'DefaultMovies.png',
@@ -149,7 +160,7 @@ class GlobalVariables(object):
                     'content_type': CONTENT_MOVIE,
                     'show_in_menu': True}),
         ('search', {'path': ['search', 'search'],
-                    'contexts': None,
+                    'lolomo_contexts': None,
                     'lolomo_known': False,
                     'label_id': 30011,
                     'description_id': 30092,
@@ -158,7 +169,7 @@ class GlobalVariables(object):
                     'content_type': CONTENT_SHOW,
                     'show_in_menu': True}),
         ('exported', {'path': ['exported', 'exported'],
-                      'contexts': None,
+                      'lolomo_contexts': None,
                       'lolomo_known': False,
                       'label_id': 30048,
                       'description_id': 30091,
@@ -167,8 +178,6 @@ class GlobalVariables(object):
                       'content_type': CONTENT_SHOW,
                       'show_in_menu': True})
     ])
-
-    MAIN_MENU_HAVE_MYLIST = True
 
     MODE_DIRECTORY = 'directory'
     MODE_HUB = 'hub'
@@ -216,7 +225,6 @@ class GlobalVariables(object):
         self.reset_time_trace()
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
-        self.LOCALE_ID = 'en-US'
 
         try:
             os.mkdir(self.DATA_PATH)
@@ -224,6 +232,7 @@ class GlobalVariables(object):
             pass
 
         self._init_cache()
+        self.init_persistent_storage()
 
     def _init_cache(self):
         if not os.path.exists(
@@ -244,6 +253,34 @@ class GlobalVariables(object):
                 xbmcvfs.mkdirs(
                     xbmc.translatePath(
                         os.path.join(self.CACHE_PATH, bucket)))
+
+    def init_persistent_storage(self):
+        """
+        Save on disk the data to keep in memory,
+        at each screen change kodi reinitializes the addon
+        making it impossible to have persistent variables
+        """
+        # This is ugly: Pass the common module into Cache.__init__ to work
+        # around circular import dependencies.
+        import resources.lib.common as common
+        # In PersistentStorage "save on destroy" here cause problems because often gets destroyed by various behaviors
+        self.PERSISTENT_STORAGE = common.PersistentStorage(__name__, no_save_on_destroy=True)
+        # If missing create necessary keys
+        if not self.PERSISTENT_STORAGE.get('menu_titles'):
+            self.PERSISTENT_STORAGE['menu_titles'] = {}
+        if not self.PERSISTENT_STORAGE.get('sub_menus'):
+            self.PERSISTENT_STORAGE['sub_menus'] = {}
+
+    def get_menu_title(self, menu_key, fallback_title=''):
+        """
+        Get the menu title from persistent storage,
+        in some situations, such as deleting the persistent file,
+        or context_id/menu_id changed due to netflix changes or addon menu code changes..
+        the list or key may no longer be present
+        """
+        if not g.PERSISTENT_STORAGE.get('menu_titles'):
+            return fallback_title
+        return g.PERSISTENT_STORAGE['menu_titles'].get(menu_key, fallback_title)
 
     def library(self):
         """Get the current library instance"""
@@ -295,7 +332,7 @@ class GlobalVariables(object):
         """Return true if context are one of the menu with lolomo_known=True"""
         for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():
             if data['lolomo_known']:
-                if data['contexts'][0] == context:
+                if data['lolomo_contexts'][0] == context:
                     return True
         return False
 

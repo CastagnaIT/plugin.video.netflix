@@ -159,7 +159,7 @@ class MSLHandler(object):
             'url': '/manifest',
             'id': id,
             'esn': esn,
-            'languages' : [g.LOCALE_ID],
+            'languages' : [g.PERSISTENT_STORAGE['locale_id']],
             'uiVersion': 'shakti-v25d2fa21',
             'clientVersion': '6.0011.474.011',
             'params': {
@@ -214,7 +214,7 @@ class MSLHandler(object):
             'url': self.last_license_url,
             'id': id,
             'esn': g.get_esn(),
-            'languages': [g.LOCALE_ID],
+            'languages': [g.PERSISTENT_STORAGE['locale_id']],
             'uiVersion': 'shakti-v25d2fa21',
             'clientVersion': '6.0011.511.011',
             'params': [{

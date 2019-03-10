@@ -51,35 +51,31 @@ class DirectoryBuilder(object):
         listings.build_main_menu_listing(api.root_lists())
 
     @common.time_execution(immediate=False)
-    def video_list_byid(self, pathitems):
-        """Show a video list
-        Some menu such as 'mostViewed' are only accessible by listid
-        """
-        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
-        # Use predefined names instead of dynamic IDs for common video lists
+    def video_list(self, pathitems):
+        """Show a video list with a listid request"""
+        menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
+        if not menu_data:
+            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
         if g.is_known_menu_context(pathitems[2]):
-            list_id = api.list_id_for_type(menu_data['contexts'][0])
+            list_id = api.list_id_for_type(menu_data['lolomo_contexts'][0])
             listings.build_video_listing(api.video_list(list_id), menu_data)
         else:
+            # Dynamic IDs from generated sub-menu
             list_id = pathitems[2]
             listings.build_video_listing(api.video_list(list_id), menu_data)
 
     @common.time_execution(immediate=False)
-    def video_list(self, pathitems):
-        """Show a video list"""
-        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
-        # Use predefined names instead of dynamic IDs for common video lists
-        if g.is_known_menu_context(pathitems[2]):
-            if menu_data['contexts'][0] == 'queue':
-                # To make a request of the my list, now we use 'mylist' context
-                context_name = 'mylist'
-            else:
-                context_name = menu_data['contexts'][0].lower()
-            listings.build_video_listing(api.video_list_az(context_name), menu_data)
+    def video_list_sorted(self, pathitems):
+        """Show a video list with a sorted request"""
+        menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
+        if not menu_data:
+            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
+        if menu_data.get('request_context_name',None) and g.is_known_menu_context(pathitems[2]):
+            listings.build_video_listing(api.video_list_sorted(menu_data['request_context_name']), menu_data)
         else:
+            #Dynamic IDs for common video lists
             list_id = pathitems[2]
-            listings.build_video_listing(api.video_list_genre(list_id), menu_data)
-
+            listings.build_video_listing(api.video_list_sorted(menu_data['request_context_name'], list_id), menu_data)
 
     @common.inject_video_id(path_offset=0)
     @common.time_execution(immediate=False)
@@ -103,6 +99,7 @@ class DirectoryBuilder(object):
             lolomo = api.root_lists()
             listings.build_lolomo_listing(lolomo, menu_data)
         else:
+            #Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
             lolomo = api.genre(pathitems[2])
             listings.build_lolomo_listing(lolomo, menu_data, exclude_lolomo_known=True)
 

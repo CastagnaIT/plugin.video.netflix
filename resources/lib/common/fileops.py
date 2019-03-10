@@ -74,3 +74,9 @@ def delete_folder_contents(path):
     """Delete all files in a folder"""
     for filename in list_dir(path)[1]:
         xbmcvfs.delete(filename)
+
+def delete_ndb_files(data_path=g.DATA_PATH):
+    """Delete all .ndb files in a folder"""
+    for filename in list_dir(data_path)[1]:
+        if filename.endswith('.ndb'):
+            xbmcvfs.delete(os.path.join(g.DATA_PATH, filename))

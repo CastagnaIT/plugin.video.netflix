@@ -18,24 +18,25 @@ class PersistentStorage(object):
     are not automatically written to disk. You need to call commit() to
     persist these changes.
     """
-    def __init__(self, storage_id):
+    def __init__(self, storage_id, no_save_on_destroy=False):
         self.storage_id = storage_id
         self.backing_file = self.storage_id + '.ndb'
         self._contents = {}
         self._dirty = True
+        self._no_save_on_destroy = no_save_on_destroy
         debug('Instantiated {}'.format(self.storage_id))
 
     def __del__(self):
-        debug('Destroying storage instance {}'.format(self.storage_id))
-        self.commit()
+        debug('Destroying storage instance (no_save_on_destroy={0}) {1}'.format(str(self._no_save_on_destroy), self.storage_id))
+        if not self._no_save_on_destroy:
+            self.commit()
 
     def __getitem__(self, key):
         return self.contents[key]
 
     def __setitem__(self, key, value):
-        self._contents[key] = value
+        self.contents[key] = value
         self.commit()
-        self._dirty = True
 
     @property
     def contents(self):

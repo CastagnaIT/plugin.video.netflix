@@ -42,7 +42,7 @@ def extract_session_data(content):
     user_data = extract_userdata(content)
 
     if user_data.get('preferredLocale'):
-        g.LOCALE_ID = user_data.get('preferredLocale').get('id','en-US')
+        g.PERSISTENT_STORAGE['locale_id'] = user_data.get('preferredLocale').get('id','en-US')
 
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         common.debug(user_data)

@@ -66,8 +66,7 @@ class VideoList(object):
                      if list_id
                      else next(self.data['lists'].iterkeys())))
         #self.title = self['displayName']   Not more used
-        self.videos = OrderedDict(
-            resolve_refs(self.data['lists'][self.id.value], self.data))
+        self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
         if self.videos:
             self.artitem = next(self.videos.itervalues())
             self.contained_titles = _get_titles(self.videos)
@@ -85,20 +84,24 @@ class VideoList(object):
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return _check_sentinel(self.data['lists'][self.id.value]
-                               .get(key, default))
+        return _check_sentinel(self.data['lists'][self.id.value].get(key, default))
 
-class VideoListAZ(object):
+class VideoListSorted(object):
     """A video list"""
     # pylint: disable=invalid-name
-    def __init__(self, path_response, context_name, context_id=None):
+    def __init__(self, path_response, context_name, context_id):
         self.data = path_response
-        self.data_lists = path_response[context_name][context_id]['az'] \
-            if context_id else path_response[context_name]['az']
         self.context_name = context_name
-        #self.title = self['displayName']   Not more used
-        self.videos = OrderedDict(
-            resolve_refs(self.data_lists, self.data))
+        data_present = True if (context_id and path_response.get(context_name)
+                                and path_response[context_name].get(context_id)) or \
+                                (not context_id and path_response.get(context_name)) else False
+        if data_present:
+            self.data_lists = path_response[context_name][context_id]['az'] \
+                if context_id else path_response[context_name]['az']
+            self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
+        else:
+            self.data_lists = {}
+            self.videos = {}
         if self.videos:
             self.artitem = next(self.videos.itervalues())
             self.contained_titles = _get_titles(self.videos)
@@ -116,8 +119,7 @@ class VideoListAZ(object):
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return _check_sentinel(self.data_lists
-                               .get(key, default))
+        return _check_sentinel(self.data_lists.get(key, default))
 
 class SearchVideoList(object):
     """A video list with search results"""

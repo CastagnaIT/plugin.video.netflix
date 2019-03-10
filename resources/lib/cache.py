@@ -82,10 +82,13 @@ def cache_output(g, bucket, identifying_param_index=0,
 def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
                     identifying_param_index, args):
     """Return the identifier to use with the caching_decorator"""
-    return (fixed_identifier
-            if fixed_identifier
-            else kwargs.get(identifying_param_name,
-                            args[identifying_param_index]))
+    identifier = (fixed_identifier
+                  if fixed_identifier
+                  else kwargs.get(identifying_param_name, args[identifying_param_index]))
+    #Fix for api.video_list_sorted, when the first argument is None, fallback to the first argument
+    if identifier is None and len(args) > 0 and identifying_param_index > 0:
+        identifier = args[0]
+    return identifier
 
 
 # def inject_from_cache(cache, bucket, injection_param,

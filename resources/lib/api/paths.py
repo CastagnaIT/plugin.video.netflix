@@ -13,9 +13,9 @@ ART_SIZE_FHD = '_1920x1080'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
-    'videolistAZ': lambda r, context_name: len(r[context_name]['az']),
-    'videolistAZgenre': lambda r, context_name, context_id: len(r[context_name][context_id]['az']),
     'videolist': lambda r, listid: len(r['lists'][listid].keys()),
+    'videolist_sorted': lambda r, context_name: len(r[context_name]['az']),
+    'videolist_wid_sorted': lambda r, context_name, context_id: len(r[context_name][context_id]['az']),
     'seasonlist': (lambda r, tvshowid:
                    len(r['videos'][tvshowid]['seasonList'].keys())),
     'episodelist': (lambda r, seasonid:
