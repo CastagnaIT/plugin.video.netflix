@@ -207,7 +207,7 @@ def _get_default_audio_language(manifest):
 
     # Read language in kodi settings
     audio_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(audio_language['value'], xbmc.ISO_639_1)
+    audio_language = xbmc.convertLanguage(audio_language['value'].encode('utf-8'), xbmc.ISO_639_1)
     audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
     audio_language = audio_language if audio_language else 'en'
 
@@ -243,7 +243,7 @@ def _get_default_subtitle_language(manifest):
         # Leave the selection of forced subtitles to kodi
         return -1
     else:
-        subtitle_language = xbmc.convertLanguage(subtitle_language['value'], xbmc.ISO_639_1)
+        subtitle_language = xbmc.convertLanguage(subtitle_language['value'].encode('utf-8'), xbmc.ISO_639_1)
         subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
         subtitle_language = subtitle_language if subtitle_language else 'en'
 
