@@ -9,6 +9,8 @@ from functools import wraps
 import json
 import requests
 
+import xbmc
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
@@ -221,6 +223,8 @@ class NetflixSession(object):
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
+        xbmc.executebuiltin('XBMC.Container.Update(path,replace)') # Clean path history
+        xbmc.executebuiltin('XBMC.ActivateWindow(Home)')
 
     @common.addonsignals_return_call
     @needs_login
