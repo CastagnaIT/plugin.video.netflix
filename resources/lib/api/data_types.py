@@ -16,6 +16,7 @@ class LoLoMo(object):
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
         common.debug('LoLoMo data: ' + str(self.data))
+        _filterout_contexts(self.data, ['billboard','showAsARow'])
         self.id = (lolomoid
                    if lolomoid
                    else next(self.data['lolomos'].iterkeys()))
@@ -206,3 +207,16 @@ def _get_videoids(videos):
     """Return a list of VideoId objects for the videos"""
     return [common.VideoId.from_videolist_item(video)
             for video in videos.itervalues()]
+
+def _filterout_contexts(data, contexts):
+    """Deletes from the data all records related to the specified contexts"""
+    id = next(data['lolomos'].iterkeys())
+    for context in contexts:
+        for listid in data.get('lists', {}).keys():
+            if data['lists'][listid]['context'] == context:
+                for idkey in data['lolomos'][id].keys():
+                    if listid in data['lolomos'][id][idkey]:
+                        del data['lolomos'][id][idkey]
+                        break
+                del data['lists'][listid]
+

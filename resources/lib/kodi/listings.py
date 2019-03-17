@@ -134,24 +134,23 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
              else lolomo.lists.iteritems())
     directory_items = []
     for video_list_id, video_list in lists:
-        if video_list['context'] != 'billboard':
-            menu_parameters = common.MenuIdParameters(id_values=video_list_id)
-            if exclude_lolomo_known:
-                # Keep only the menus genre
-                if menu_parameters.type_id != '28':
-                    continue
-            if menu_parameters.is_menu_id:
-                # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
-                sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
-                sub_menu_data = menu_data.copy()
-                sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id]
-                sub_menu_data['lolomo_known'] = False
-                sub_menu_data['lolomo_contexts'] = None
-                sub_menu_data['show_in_menu'] = False
-                sub_menu_data['force_videolistbyid'] = force_videolistbyid
-                g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
-                g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
-                directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
+        menu_parameters = common.MenuIdParameters(id_values=video_list_id)
+        if exclude_lolomo_known:
+            # Keep only the menus genre
+            if menu_parameters.type_id != '28':
+                 continue
+        if menu_parameters.is_menu_id:
+            # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
+            sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
+            sub_menu_data = menu_data.copy()
+            sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id]
+            sub_menu_data['lolomo_known'] = False
+            sub_menu_data['lolomo_contexts'] = None
+            sub_menu_data['show_in_menu'] = False
+            sub_menu_data['force_videolistbyid'] = force_videolistbyid
+            g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
+            g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
+            directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
     g.PERSISTENT_STORAGE.commit()
     finalize_directory(directory_items, g.CONTENT_FOLDER,
                        title=g.get_menu_title(menu_data['path'][1]))
