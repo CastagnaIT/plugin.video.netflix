@@ -25,6 +25,9 @@ def convert_to_dash(manifest):
         _convert_video_track(
             video_track, period, init_length, protection)
 
+    _fix_locale_languages(manifest['audio_tracks'])
+    _fix_locale_languages(manifest['timedtexttracks'])
+
     default_audio_language_index = _get_default_audio_language(manifest)
     for index, audio_track in enumerate(manifest['audio_tracks']):
         _convert_audio_track(audio_track, period, init_length,
@@ -216,12 +219,10 @@ def _get_default_audio_language(manifest):
         for index, audio_track in enumerate(manifest['audio_tracks']):
             if audio_track['language'] == audio_language and audio_track['channels'] in channelListDolby:
                 return index
-                break
     # If dolby audio track not exists check other channels list
     for index, audio_track in enumerate(manifest['audio_tracks']):
         if audio_track['language'] == audio_language and audio_track['channels'] in channelList:
             return index
-            break
 
     # If there is no matches to preferred language, try to sets the original language track as default
         # Check if the dolby audio track in selected language exists
@@ -229,12 +230,10 @@ def _get_default_audio_language(manifest):
         for index, audio_track in enumerate(manifest['audio_tracks']):
             if audio_track['isNative'] and audio_track['channels'] in channelListDolby:
                 return index
-                break
     # If dolby audio track not exists check other channels list
     for index, audio_track in enumerate(manifest['audio_tracks']):
         if audio_track['isNative'] and audio_track['channels'] in channelList:
             return index
-            break
     return 0
 
 def _get_default_subtitle_language(manifest):
@@ -252,5 +251,43 @@ def _get_default_subtitle_language(manifest):
                 continue
             if not text_track.get('isForcedNarrative') and text_track['language'] == subtitle_language:
                 return index
-                break
         return -1
+
+def _fix_locale_languages(data_list):
+    """Replace locale code, Kodi does not understand the country code"""
+    # Get all the ISO 639-1 codes (without country)
+    locale_list_nocountry = []
+    for item in data_list:
+        if item.get('isNoneTrack',False):
+            continue
+        if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
+            locale_list_nocountry.append(item['language'])
+    # Replace the locale languages with country with a new one
+    for item in data_list:
+        if item.get('isNoneTrack',False):
+            continue
+        if len(item['language']) == 2:
+            continue
+        item['language'] = _adjust_locale(item['language'], item['language'][0:2] in locale_list_nocountry)
+
+def _adjust_locale(locale_code, lang_code_without_country_exists):
+    """
+    Locale conversion helper
+    Conversion table to prevent Kodi to display es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
+    """
+    locale_conversion_table = {
+        'es-ES': 'es-Spain',
+        'pt-BR': 'pt-Brazil',
+        'fr-CA': 'fr-Canada',
+        'ar-EG': 'ar-Egypt',
+        'nl-BE': 'nl-Belgium'
+    }
+    language_code = locale_code[0:2]
+    if not lang_code_without_country_exists:
+        return language_code
+    else:
+        if locale_code in locale_conversion_table:
+            return locale_conversion_table[locale_code]
+        else:
+            common.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+            return locale_code
