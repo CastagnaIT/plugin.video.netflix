@@ -73,7 +73,7 @@ class MSLRequestBuilder(object):
             'handshake': is_handshake,
             'nonreplayable': False,
             'capabilities': {
-                'languages': [g.PERSISTENT_STORAGE['locale_id']],
+                'languages': [g.PERSISTENT_STORAGE.get('locale_id', 'en-US')],
                 'compressionalgos': [compression] if compression else []
             },
             'recipient': 'Netflix',
