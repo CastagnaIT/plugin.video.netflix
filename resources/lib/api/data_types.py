@@ -127,14 +127,19 @@ class SearchVideoList(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response):
         self.data = path_response
-        self.title = common.get_local_string(30100).format(
-            self.data['search']['byTerm'].keys()[0][1:])
-        self.videos = OrderedDict(
-            resolve_refs(self.data['search']['byReference'].values()[0],
-                         self.data))
-        self.videoids = _get_videoids(self.videos)
-        self.artitem = next(self.videos.itervalues(), None)
-        self.contained_titles = _get_titles(self.videos)
+        have_data = 'search' in path_response
+        if have_data:
+            self.title = common.get_local_string(30100).format(self.data['search']['byTerm'].keys()[0][1:])
+            self.videos = OrderedDict(resolve_refs(self.data['search']['byReference'].values()[0], self.data))
+            self.videoids = _get_videoids(self.videos)
+            self.artitem = next(self.videos.itervalues(), None)
+            self.contained_titles = _get_titles(self.videos)
+        else:
+            common.debug('SearchVideoList - No data in path_response')
+            self.videos = {}
+            self.videoids = None
+            self.artitem = None
+            self.contained_titles = None
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['search'][key])

@@ -344,8 +344,8 @@ def search(search_term):
     base_path = ['search', 'byTerm', '|' + search_term, 'titles', 40]
     return SearchVideoList(common.make_call(
         'path_request',
-        [base_path + ['referenceId', 'id', 'length', 'name', 'trackIds',
-                      'requestId', 'regularSynopsis', 'evidence']] +
+        [base_path + [['referenceId', 'id', 'length', 'name', 'trackIds',
+                      'requestId', 'regularSynopsis', 'evidence']]] +
         build_paths(base_path + [{'from': 0, 'to': 40}, 'reference'],
                     VIDEO_LIST_PARTIAL_PATHS)))
 
