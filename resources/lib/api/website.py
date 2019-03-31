@@ -158,13 +158,17 @@ def generate_esn(user_data):
 def extract_json(content, name):
     """Extract json from netflix content page"""
     common.debug('Extracting {} JSON'.format(name))
+    json_str = None
     try:
         json_array = recompile(JSON_REGEX % name, DOTALL).findall(content)
         json_str = json_array[0]
         json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
         json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
+        json_str = json_str.replace('\n', '\\n')  # Escape line feed
         json_str = json_str.decode('unicode_escape')  # finally decoding...
         return json.loads(json_str)
     except Exception:
+        if json_str:
+            common.error('JSON string trying to load: {}'.format(json_str))
         common.error(traceback.format_exc())
         raise WebsiteParsingError('Unable to extract {}'.format(name))
