@@ -76,7 +76,7 @@ def _any_child_library_entry(library_entry):
 
 @common.time_execution(immediate=False)
 def _get_item(mediatype, filename):
-    exported_filepath = os.path.normcase(xbmc.translatePath(filename))
+    exported_filepath = os.path.normcase(xbmc.translatePath(filename).decode("utf-8"))
     for library_item in common.get_library_items(mediatype):
         if os.path.normcase(library_item['file']) == exported_filepath:
             return common.get_library_item_details(
