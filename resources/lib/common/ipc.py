@@ -67,6 +67,7 @@ def make_http_call(callname, data):
     from collections import OrderedDict
     import urllib2
     import json
+    debug('Handling HTTP IPC call to {}'.format(callname))
     # don't use proxy for localhost
     url = 'http://127.0.0.1:{}/{}'.format(
         g.ADDON.getSetting('ns_service_port'), callname)

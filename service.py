@@ -46,6 +46,7 @@ class NetflixService(object):
             self.init_server(server)
         self.controller = None
         self.library_updater = None
+        self.settings_monitor = None
 
     def init_server(self, server):
             server['class'].allow_reuse_address = True
@@ -65,6 +66,7 @@ class NetflixService(object):
             common.info('[{}] Thread started'.format(server['name']))
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
+        self.settings_monitor = services.SettingsMonitor()
         if not g.ADDON.getSettingBool('disable_startup_notification'):
             ui.show_notification(common.get_local_string(30110))
 
