@@ -268,10 +268,10 @@ def remove_item(item_task, library_home=None):
         return
     id_path = item_task['videoid'].to_list()
     exported_filename = xbmc.translatePath(
-        common.get_path(id_path, g.library())['file'])
+        common.get_path(id_path, g.library())['file']).decode("utf-8")
     parent_folder = os.path.dirname(exported_filename)
     try:
-        xbmcvfs.delete(xbmc.translatePath(exported_filename))
+        xbmcvfs.delete(xbmc.translatePath(exported_filename).decode("utf-8"))
         if not os.listdir(parent_folder):
             os.rmdir(parent_folder)
     except Exception:
