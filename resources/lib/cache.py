@@ -146,7 +146,9 @@ class Cache(object):
         except KeyError:
             cache_entry = self._get_from_disk(bucket, identifier)
             self.add(bucket, identifier, cache_entry['content'])
-        self.verify_ttl(bucket, identifier, cache_entry)
+        # Do not verify TTL on cache library, prevents the loss of exported objects
+        if not bucket == CACHE_LIBRARY:
+            self.verify_ttl(bucket, identifier, cache_entry)
         return cache_entry['content']
 
     def add(self, bucket, identifier, content, ttl=None, to_disk=False):
@@ -170,14 +172,18 @@ class Cache(object):
             # same languageInvoker thread is being used so we MUST clear its
             # contents to allow cache consistency between instances
             # del self.buckets[bucket]
-        self.common.debug('Cache committ successful')
+        self.common.debug('Cache commit successful')
 
     def invalidate(self, on_disk=False):
         """Clear all cache buckets"""
         # pylint: disable=global-statement
         for bucket in BUCKET_NAMES:
+            if bucket == CACHE_LIBRARY:
+                continue
             self.window.clearProperty(_window_property(bucket))
-        self.buckets = {}
+            if bucket in self.buckets:
+                del self.buckets[bucket]
+
         if on_disk:
             self._invalidate_on_disk()
         self.common.info('Cache invalidated')

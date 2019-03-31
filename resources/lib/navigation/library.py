@@ -30,12 +30,14 @@ class LibraryActionExecutor(object):
         if ui.ask_for_removal_confirmation():
             library.execute_library_tasks(videoid, library.remove_item,
                                           common.get_local_string(30030))
+            common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
         library.execute_library_tasks(videoid, library.update_item,
                                       common.get_local_string(30061))
+        common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def export_silent(self, videoid):
