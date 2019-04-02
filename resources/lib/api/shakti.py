@@ -121,14 +121,13 @@ def video_list(list_id):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=1,
-                    identifying_param_name='context_id')
-def video_list_sorted(context_name, context_id=None):
+def video_list_sorted(context_name, context_id=None, **kwargs):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
     """
     common.debug('Requesting video list sorted {}'.format(context_id))
     call_data = {'length_params1': context_name}
+    call_data.update(kwargs)
     request_sort_order = 'az'
     if context_id:
         call_data['path_type'] = 'videolist_wid_sorted'
@@ -140,7 +139,7 @@ def video_list_sorted(context_name, context_id=None):
         call_data['paths'] = build_paths([context_name, request_sort_order, RANGE_SELECTOR],
                                          VIDEO_LIST_PARTIAL_PATHS)
     return VideoListSorted(common.make_call(
-        'perpetual_path_request',call_data), context_name, context_id)
+        'perpetual_path_request', call_data), context_name, context_id)
 
 
 @common.time_execution(immediate=False)
@@ -338,16 +337,19 @@ def _metadata(video_id):
 
 
 @common.time_execution(immediate=False)
-def search(search_term):
+def search(search_term, **kwargs):
     """Retrieve a video list of search results"""
     common.debug('Searching for {}'.format(search_term))
     base_path = ['search', 'byTerm', '|' + search_term, 'titles', 40]
-    return SearchVideoList(common.make_call(
-        'path_request',
-        [base_path + [['referenceId', 'id', 'length', 'name', 'trackIds',
-                      'requestId', 'regularSynopsis', 'evidence']]] +
-        build_paths(base_path + [{'from': 0, 'to': 40}, 'reference'],
-                    VIDEO_LIST_PARTIAL_PATHS)))
+    paths = [base_path + [['referenceId', 'id', 'length', 'name', 'trackIds',
+                           'requestId', 'regularSynopsis', 'evidence']]]
+    paths.extend(build_paths(base_path + [RANGE_SELECTOR, 'reference'],
+                             VIDEO_LIST_PARTIAL_PATHS))
+    call_data = {'length_params1': 'videos'}
+    call_data.update(kwargs)
+    call_data['path_type'] = 'searchlist'
+    call_data['paths'] = paths
+    return SearchVideoList(common.make_call('perpetual_path_request', call_data))
 
 
 @common.time_execution(immediate=False)

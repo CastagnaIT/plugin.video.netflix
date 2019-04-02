@@ -41,7 +41,7 @@ URLS = {
 }
 """List of all static endpoints for HTML/JSON POST/GET requests"""
 
-MAX_PATH_REQUEST_SIZE = 47
+MAX_PATH_REQUEST_SIZE = 49 # 50 items/request
 """How many entries of a list will be fetched with one path request"""
 
 
@@ -264,7 +264,9 @@ class NetflixSession(object):
     @common.addonsignals_return_call
     @needs_login
     @common.time_execution(immediate=True)
-    def perpetual_path_request(self, paths, path_type, length_params1=None, length_params2=None):
+    def perpetual_path_request(self, paths, path_type,
+                               length_params1=None, length_params2=None,
+                               range_start=0):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
         larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
@@ -274,40 +276,22 @@ class NetflixSession(object):
             length_params = [length_params1]
         else:
             length_params = [length_params1, length_params2]
-        length = apipaths.LENGTH_ATTRIBUTES[path_type]
-        range_start = 0
-        range_end = MAX_PATH_REQUEST_SIZE
-        range_limit = int(g.ADDON.getSetting('list_limit_results'))\
-            if common.is_numeric(g.ADDON.getSetting('list_limit_results')) else 0
-        merged_response = {}
-        while range_start < range_end:
-            # We limit the number of results of the list, a very high number has more chance of causing,
-            # AddonSignals call timed out, for the time it takes to request information
-            # Would be more suitable that when you reach the end of the list,
-            # you load the next block of results.
-            if range_start >= range_limit > 0:
-                range_start = range_end
-                continue
-
-            path_response = self._path_request(
-                _set_range_selector(paths, range_start, range_end))
-
-            #common.debug('perpetual_path_request path_response: ' + str(path_response))
-            range_start = range_end + 1
-            if len(path_response) != 0:
-                common.merge_dicts(path_response, merged_response)
-
-                videos_count = length(path_response, *length_params) - 1 #has zero base
-
-                # If the number of video elements is lower, we've come to the end
-                # Note: when the request is made with 'genre' context,
-                #  the response strangely does not respect the number of objects requested,
-                #  returning 2 more items, i couldn't understand why
-                if videos_count >= MAX_PATH_REQUEST_SIZE:
-                    common.debug('{} has more items, doing another path request'
-                                 .format(path_type))
-                    range_end += MAX_PATH_REQUEST_SIZE + 1
-        return merged_response
+        range_start = int(range_start)
+        range_end = range_start + MAX_PATH_REQUEST_SIZE
+        path_response = self._path_request(
+            _set_range_selector(paths, range_start, range_end))
+        if len(path_response) != 0:
+            length = apipaths.LENGTH_ATTRIBUTES[path_type]
+            videos_count = length(path_response, *length_params) - 1 #has zero base
+            # If the number of video elements is lower, we've come to the end
+            if videos_count >= MAX_PATH_REQUEST_SIZE:
+                # Note: when the request is made with 'genres' context,
+                #  the response strangely does not respect the number of objects
+                #  requested, returning 1 more item, i couldn't understand why
+                if length_params1 == "genres":
+                    range_end += 1
+                path_response["__more__"] = {"range_start": range_end + 1}
+        return path_response
 
     @common.time_execution(immediate=True)
     def _path_request(self, paths):

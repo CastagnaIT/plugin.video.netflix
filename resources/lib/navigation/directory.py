@@ -71,11 +71,15 @@ class DirectoryBuilder(object):
         if not menu_data:
             menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
         if menu_data.get('request_context_name',None) and g.is_known_menu_context(pathitems[2]):
-            listings.build_video_listing(api.video_list_sorted(menu_data['request_context_name']), menu_data)
+            listings.build_video_listing(
+                api.video_list_sorted(menu_data['request_context_name'], **self.params),
+                menu_data, pathitems)
         else:
             #Dynamic IDs for common video lists
             list_id = pathitems[2]
-            listings.build_video_listing(api.video_list_sorted(menu_data['request_context_name'], list_id), menu_data)
+            listings.build_video_listing(
+                api.video_list_sorted(menu_data['request_context_name'], list_id, **self.params),
+                menu_data, pathitems)
 
     @common.inject_video_id(path_offset=0)
     @common.time_execution(immediate=False)
@@ -117,7 +121,7 @@ class DirectoryBuilder(object):
         if len(pathitems) == 2:
             _ask_search_term_and_redirect()
         else:
-            _display_search_results(pathitems[2])
+            _display_search_results(pathitems[2], **self.params)
 
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
@@ -145,12 +149,11 @@ def _ask_search_term_and_redirect():
 
 
 @common.time_execution(immediate=False)
-def _display_search_results(search_term):
-    search_results = api.search(search_term)
+def _display_search_results(search_term, **kwargs):
+    search_results = api.search(search_term, **kwargs)
     if search_results.videos:
-        listings.build_video_listing(search_results,
-                                     g.MAIN_MENU_ITEMS['search'])
-        return
+        listings.build_video_listing(search_results, g.MAIN_MENU_ITEMS['search'],
+                                     ['search', 'search', search_term])
     else:
         ui.show_notification(common.get_local_string(30013))
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)

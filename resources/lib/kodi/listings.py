@@ -180,7 +180,7 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
 
 @custom_viewmode(g.VIEW_SHOW)
 @common.time_execution(immediate=False)
-def build_video_listing(video_list, menu_data):
+def build_video_listing(video_list, menu_data, pathitems=None):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list)
                        for videoid_value, video
@@ -199,6 +199,13 @@ def build_video_listing(video_list, menu_data):
         #                       mode=g.MODE_DIRECTORY),
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
+    params = getattr(video_list, "__more__", None)
+    if params and pathitems:
+        more_url = common.build_url(pathitems=pathitems, params=params,
+                                    mode=g.MODE_DIRECTORY)
+        directory_items.append((more_url,
+                                list_item_skeleton(common.get_local_string(22082)),
+                                True))
     finalize_directory(directory_items, menu_data['content_type'],
                        title=g.get_menu_title(menu_data['path'][1]))
 

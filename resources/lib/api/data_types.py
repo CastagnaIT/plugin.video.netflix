@@ -91,6 +91,7 @@ class VideoListSorted(object):
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, context_name, context_id):
+        self.__more__ = path_response.pop("__more__", None)
         self.data = path_response
         self.context_name = context_name
         data_present = True if (context_id and path_response.get(context_name)
@@ -126,6 +127,7 @@ class SearchVideoList(object):
     """A video list with search results"""
     # pylint: disable=invalid-name
     def __init__(self, path_response):
+        self.__more__ = path_response.pop("__more__", None)
         self.data = path_response
         have_data = 'search' in path_response
         if have_data:

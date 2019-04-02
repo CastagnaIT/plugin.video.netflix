@@ -19,7 +19,8 @@ LENGTH_ATTRIBUTES = {
     'seasonlist': (lambda r, tvshowid:
                    len(r['videos'][tvshowid]['seasonList'].keys())),
     'episodelist': (lambda r, seasonid:
-                    r['seasons'][seasonid]['summary']['length'])}
+                    r['seasons'][seasonid]['summary']['length']),
+    'searchlist': lambda r, key: len(r[key])}
 """Predefined lambda expressions that return the value of the length
 attribute from within a path response dict"""
 
