@@ -606,4 +606,4 @@ msgstr "Découvrir le contenu récement ajouté."
 
 msgctxt "#30147"
 msgid "Limits list results to about (higher numbers can cause timeouts)"
-msgstr "Limiter la liste de résultat à (un nombre élevé peut causer des erreurs de temps mort)"
+msgstr "Limiter la liste de résultat à (un nombre élevé peut causer des erreurs de timeouts)"
