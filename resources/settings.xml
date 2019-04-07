@@ -31,6 +31,7 @@
     <setting id="update_running" type="text" visible="false" default="false"/>
   </category>
   <category label="30037">
+    <setting id="sortordertype" type="select" label="30149" lvalues="30150|30151|30152|30153" default="0"/>
     <setting id="customview" type="bool" label="30038" default="false"/>
     <setting id="viewmodelogin" type="select" label="30044" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="7" enable="eq(-1,true)" visible="false"/>
     <setting id="viewmodeloginid" type="number" label="30143" visible="eq(-1,9) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>

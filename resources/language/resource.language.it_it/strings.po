@@ -611,3 +611,23 @@ msgstr "Pagina seguente >>"
 msgctxt "#30148"
 msgid "<< Previous page"
 msgstr "<< Pagina precedente"
+
+msgctxt "#30149"
+msgid "Sort results by (works on menus with paging)"
+msgstr "Ordina i risultati per (funziona solo per elenchi paginati)"
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "Ordine alfabetico (A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "Ordine alfabetico (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Suggerimenti per te"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Anno di uscita"

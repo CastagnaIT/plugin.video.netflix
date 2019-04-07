@@ -226,6 +226,10 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
+        # enum order: AZ|ZA|Suggested|Year
+        sort_order_types = ['az', 'za', 'su', 'yr']
+        self.REQ_SORT_ORDER_TYPE = sort_order_types[int(g.ADDON.getSettingInt('sortordertype'))]
+
         try:
             os.mkdir(self.DATA_PATH)
         except OSError:

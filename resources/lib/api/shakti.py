@@ -129,15 +129,14 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None)
     common.debug('Requesting video list sorted {}'.format(context_id))
     call_data = {'length_params1': context_name,
                  'perpetual_range_start': perpetual_range_start}
-    request_sort_order = 'az'
     if context_id:
         call_data['path_type'] = 'videolist_wid_sorted'
-        call_data['paths'] = build_paths([context_name, context_id, request_sort_order, RANGE_SELECTOR],
+        call_data['paths'] = build_paths([context_name, context_id, g.REQ_SORT_ORDER_TYPE, RANGE_SELECTOR],
                                          VIDEO_LIST_PARTIAL_PATHS)
         call_data['length_params2'] = context_id
     else:
         call_data['path_type'] = 'videolist_sorted'
-        call_data['paths'] = build_paths([context_name, request_sort_order, RANGE_SELECTOR],
+        call_data['paths'] = build_paths([context_name, g.REQ_SORT_ORDER_TYPE, RANGE_SELECTOR],
                                          VIDEO_LIST_PARTIAL_PATHS)
     return VideoListSorted(common.make_call(
         'perpetual_path_request', call_data), context_name, context_id)

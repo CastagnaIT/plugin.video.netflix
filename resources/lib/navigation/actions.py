@@ -80,7 +80,8 @@ class AddonActionExecutor(object):
         #    common.delete_ndb_files()
         #    g.init_persistent_storage()
         g.CACHE.invalidate(self.params.get('on_disk', False))
-        ui.show_notification(common.get_local_string(30135))
+        if not self.params.get('no_notification', False):
+            ui.show_notification(common.get_local_string(30135))
 
 
 def _sync_library(videoid, operation):

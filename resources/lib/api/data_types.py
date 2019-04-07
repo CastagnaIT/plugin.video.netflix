@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 from .paths import resolve_refs
@@ -99,8 +100,8 @@ class VideoListSorted(object):
                                 and path_response[context_name].get(context_id)) or \
                                 (not context_id and path_response.get(context_name)) else False
         if data_present:
-            self.data_lists = path_response[context_name][context_id]['az'] \
-                if context_id else path_response[context_name]['az']
+            self.data_lists = path_response[context_name][context_id][g.REQ_SORT_ORDER_TYPE] \
+                if context_id else path_response[context_name][g.REQ_SORT_ORDER_TYPE]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
         else:
             self.data_lists = {}

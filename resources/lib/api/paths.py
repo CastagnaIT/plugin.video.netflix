@@ -2,6 +2,7 @@
 """Path info to query the Shakti pathEvaluator"""
 from __future__ import unicode_literals
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 from .exceptions import InvalidReferenceError
@@ -18,9 +19,9 @@ LENGTH_ATTRIBUTES = {
     'videolist': lambda r, listid:
                  len(r['lists'][listid]),
     'videolist_sorted': lambda r, context_name:
-                        len(r[context_name]['az']),
+                        len(r[context_name][g.REQ_SORT_ORDER_TYPE]),
     'videolist_wid_sorted': lambda r, context_name, context_id:
-                            len(r[context_name][context_id]['az']),
+                            len(r[context_name][context_id][g.REQ_SORT_ORDER_TYPE]),
     'seasonlist': lambda r, tvshowid:
                   len(r['videos'][tvshowid]['seasonList']),
     'episodelist': lambda r, seasonid:

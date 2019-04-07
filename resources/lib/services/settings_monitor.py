@@ -18,4 +18,10 @@ class SettingsMonitor(xbmc.Monitor):
 
     def _on_change(self):
         common.debug('SettingsMonitor: Settings changed, reinitialize global settings')
+        req_sort_order_type_oldvalue = g.REQ_SORT_ORDER_TYPE
+
         g.init_globals(sys.argv)
+
+        if g.REQ_SORT_ORDER_TYPE != req_sort_order_type_oldvalue:
+            # We remove the cache to allow get the new results in the chosen order
+            common.run_plugin('plugin://plugin.video.netflix/action/purge_cache/?on_disk=True&no_notification=True')
