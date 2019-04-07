@@ -605,5 +605,9 @@ msgid "Discover the latest content added."
 msgstr ""
 
 msgctxt "#30147"
-msgid "Limits list results to about (higher numbers can cause timeouts)"
+msgid "Next page >>"
+msgstr ""
+
+msgctxt "#30148"
+msgid "<< Previous page"
 msgstr ""

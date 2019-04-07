@@ -49,10 +49,19 @@ class UnknownCacheBucketError(Exception):
     """The requested cahce bucket does ot exist"""
     pass
 
+'''
+Logic to get the identifier
+cache_output: called without params, use the first argument value of the function as identifier
+cache_output: with identify_from_kwarg_name specified - get value identifier from kwarg name specified, if None value fallback to first function argument value
 
-def cache_output(g, bucket, identifying_param_index=0,
-                 identifying_param_name='videoid',
-                 fixed_identifier=None,
+identify_append_from_kwarg_name - if specified append the value after the kwarg identify_from_kwarg_name, to creates a more specific identifier
+identify_fallback_arg_index - to change the default fallback arg index (0), where the identifier get the value from the func arguments
+fixed_identifier - note if specified all other params are ignored
+'''
+def cache_output(g, bucket, fixed_identifier=None,
+                 identify_from_kwarg_name='videoid',
+                 identify_append_from_kwarg_name=None,
+                 identify_fallback_arg_index=0,
                  ttl=None,
                  to_disk=False):
     """Decorator that ensures caching the output of a function"""
@@ -62,14 +71,15 @@ def cache_output(g, bucket, identifying_param_index=0,
         def wrapper(*args, **kwargs):
             try:
                 identifier = _get_identifier(fixed_identifier,
-                                             identifying_param_name,
-                                             kwargs,
-                                             identifying_param_index,
-                                             args)
+                                             identify_from_kwarg_name,
+                                             identify_append_from_kwarg_name,
+                                             identify_fallback_arg_index,
+                                             args,
+                                             kwargs)
+                if not identifier:
+                    # Do not cache if identifier couldn't be determined
+                    return func(*args, **kwargs)
                 return g.CACHE.get(bucket, identifier)
-            except IndexError:
-                # Do not cache if identifier couldn't be determined
-                return func(*args, **kwargs)
             except CacheMiss:
                 output = func(*args, **kwargs)
                 g.CACHE.add(bucket, identifier, output, ttl=ttl,
@@ -79,15 +89,21 @@ def cache_output(g, bucket, identifying_param_index=0,
     return caching_decorator
 
 
-def _get_identifier(fixed_identifier, identifying_param_name, kwargs,
-                    identifying_param_index, args):
+def _get_identifier(fixed_identifier, identify_from_kwarg_name,
+                    identify_append_from_kwarg_name, identify_fallback_arg_index, args, kwargs):
     """Return the identifier to use with the caching_decorator"""
-    identifier = (fixed_identifier
-                  if fixed_identifier
-                  else kwargs.get(identifying_param_name, args[identifying_param_index]))
-    #Fix for api.video_list_sorted, when the first argument is None, fallback to the first argument
-    if identifier is None and len(args) > 0 and identifying_param_index > 0:
-        identifier = args[0]
+    #import resources.lib.common as common
+    #common.debug('Get_identifier args: {}'.format(args))
+    #common.debug('Get_identifier kwargs: {}'.format(kwargs))
+    if fixed_identifier:
+        identifier = fixed_identifier
+    else:
+        identifier = kwargs.get(identify_from_kwarg_name)
+        if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
+            identifier = identifier + '_' + kwargs.get(identify_append_from_kwarg_name)
+        if not identifier and len(args) > 0:
+            identifier = args[identify_fallback_arg_index]
+    #common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
     return identifier
 
 

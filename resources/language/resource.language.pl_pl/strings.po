@@ -604,7 +604,3 @@ msgstr "Ostatnio dodane"
 msgctxt "#30146"
 msgid "Discover the latest content added."
 msgstr "Odkryj najnowsze treści dodane."
-
-msgctxt "#30147"
-msgid "Limits list results to about (higher numbers can cause timeouts)"
-msgstr "Ogranicza listę wyników do (wyższe liczby mogą powodować przekroczenie limitu czasu)"

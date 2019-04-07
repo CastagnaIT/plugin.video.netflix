@@ -95,7 +95,8 @@ if __name__ == '__main__':
         common.error(traceback.format_exc())
         ui.show_addon_error_info(exc)
 
-    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=success)
+    if not success:
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=success)
 
     g.CACHE.commit()
     common.log_time_trace()

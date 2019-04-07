@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from functools import wraps
 
+import os
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -119,8 +120,7 @@ def build_main_menu_listing(lolomo):
                      True))
     #g.PERSISTENT_STORAGE.commit()  performed with the next call to PERSISTENT_STORAGE setitem
     g.PERSISTENT_STORAGE['profile_have_mylist_menu'] = mylist_menu_exists
-    finalize_directory(directory_items, g.CONTENT_FOLDER,
-                       title=common.get_local_string(30097))
+    finalize_directory(directory_items, g.CONTENT_FOLDER, title=common.get_local_string(30097))
 
 
 @custom_viewmode(g.VIEW_FOLDER)
@@ -152,8 +152,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
             directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
     g.PERSISTENT_STORAGE.commit()
-    finalize_directory(directory_items, g.CONTENT_FOLDER,
-                       title=g.get_menu_title(menu_data['path'][1]))
+    finalize_directory(directory_items, g.CONTENT_FOLDER, title=g.get_menu_title(menu_data['path'][1]))
 
 
 @common.time_execution(immediate=False)
@@ -180,7 +179,7 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
 
 @custom_viewmode(g.VIEW_SHOW)
 @common.time_execution(immediate=False)
-def build_video_listing(video_list, menu_data):
+def build_video_listing(video_list, menu_data, pathitems=None):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list)
                        for videoid_value, video
@@ -199,8 +198,8 @@ def build_video_listing(video_list, menu_data):
         #                       mode=g.MODE_DIRECTORY),
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
-    finalize_directory(directory_items, menu_data['content_type'],
-                       title=g.get_menu_title(menu_data['path'][1]))
+    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector)
+    finalize_directory(directory_items, menu_data['content_type'], title=g.get_menu_title(menu_data['path'][1]))
 
 
 @common.time_execution(immediate=False)
@@ -223,13 +222,14 @@ def _create_video_item(videoid_value, video, video_list):
 
 @custom_viewmode(g.VIEW_SEASON)
 @common.time_execution(immediate=False)
-def build_season_listing(tvshowid, season_list):
+def build_season_listing(tvshowid, season_list, pathitems=None):
     """Build a season listing"""
     directory_items = [_create_season_item(tvshowid, seasonid_value, season,
                                            season_list)
                        for seasonid_value, season
                        in season_list.seasons.iteritems()]
-    finalize_directory(directory_items, g.CONTENT_SEASON,
+    add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector)
+    finalize_directory(directory_items, g.CONTENT_SEASON, 'sort_only_label',
                        title=' - '.join((season_list.tvshow['title'],
                                          common.get_local_string(20366)[2:])))
 
@@ -249,13 +249,14 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list):
 
 @custom_viewmode(g.VIEW_EPISODE)
 @common.time_execution(immediate=False)
-def build_episode_listing(seasonid, episode_list):
+def build_episode_listing(seasonid, episode_list, pathitems=None):
     """Build a season listing"""
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode,
                                             episode_list)
                        for episodeid_value, episode
                        in episode_list.episodes.iteritems()]
-    finalize_directory(directory_items, g.CONTENT_EPISODE,
+    add_items_previous_next_page(directory_items, pathitems, episode_list.perpetual_range_selector)
+    finalize_directory(directory_items, g.CONTENT_EPISODE, 'sort_episodes',
                        title=' - '.join(
                            (episode_list.tvshow['title'],
                             episode_list.season['summary']['name'])))
@@ -274,13 +275,22 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     return (url, list_item, False)
 
 
-def list_item_skeleton(label, icon=None, fanart=None, description=None):
+def list_item_skeleton(label, icon=None, fanart=None, description=None, customicon=None):
     """Create a rudimentary list item skeleton with icon and fanart"""
     # pylint: disable=unexpected-keyword-arg
-    list_item = xbmcgui.ListItem(label=label, iconImage=icon, offscreen=True)
+    list_item = xbmcgui.ListItem(label=label, offscreen=True)
     list_item.setContentLookup(False)
+    art_values={}
+    if customicon:
+        addon_dir = xbmc.translatePath(g.ADDON.getAddonInfo('path'))
+        icon = os.path.join(addon_dir, 'resources', 'media', customicon)
+        art_values['thumb'] = icon
+    if icon:
+        art_values['icon'] = icon
     if fanart:
-        list_item.setProperty('fanart_image', fanart)
+        art_values['fanart'] = fanart
+    if art_values:
+        list_item.setArt(art_values)
     info = {'title': label}
     if description:
         info['plot'] = description
@@ -288,12 +298,39 @@ def list_item_skeleton(label, icon=None, fanart=None, description=None):
     return list_item
 
 
-def finalize_directory(items, content_type=g.CONTENT_FOLDER, refresh=False,
+def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector):
+    if pathitems and perpetual_range_selector:
+        if 'previous_start' in perpetual_range_selector:
+            previous_page_url = common.build_url(pathitems=pathitems,
+                                                 params={'perpetual_range_start': perpetual_range_selector.get('previous_start')},
+                                                 mode=g.MODE_DIRECTORY)
+            directory_items.insert(0, (previous_page_url, list_item_skeleton(common.get_local_string(30148),
+                                                                             customicon='FolderPagePrevious.png'), True))
+        if 'next_start' in perpetual_range_selector:
+            next_page_url = common.build_url(pathitems=pathitems,
+                                        params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
+                                        mode=g.MODE_DIRECTORY)
+            directory_items.append((next_page_url, list_item_skeleton(common.get_local_string(30147),
+                                                                      customicon='FolderPageNext.png'), True))
+
+
+def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_nothing',
                        title=None):
     """Finalize a directory listing.
     Add items, set available sort methods and content type"""
     if title:
         xbmcplugin.setPluginCategory(g.PLUGIN_HANDLE, title)
     xbmcplugin.setContent(g.PLUGIN_HANDLE, content_type)
+    add_sort_methods(sort_type)
     xbmcplugin.addDirectoryItems(g.PLUGIN_HANDLE, items)
-    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
+
+
+def add_sort_methods(sort_type):
+    if sort_type=='sort_nothing':
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_NONE)
+    if sort_type=='sort_label':
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
+    if sort_type=='sort_episodes':
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_EPISODE)
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_VIDEO_TITLE)

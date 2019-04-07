@@ -223,7 +223,8 @@ def _path_attr(pathitems, index):
 
 
 def inject_video_id(path_offset, pathitems_arg='pathitems',
-                    inject_remaining_pathitems=False):
+                    inject_remaining_pathitems=False,
+                    inject_full_pathitems=False):
     """Decorator that converts a pathitems argument into a VideoId
     and injects this into the decorated function instead. Pathitems
     that are to be converted into a video id must be passed into
@@ -234,7 +235,7 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
         def wrapper(*args, **kwargs):
             try:
                 _path_to_videoid(kwargs, pathitems_arg, path_offset,
-                                 inject_remaining_pathitems)
+                                 inject_remaining_pathitems, inject_full_pathitems)
             except KeyError:
                 raise Exception('Pathitems must be passed as kwarg {}'
                                 .format(pathitems_arg))
@@ -244,7 +245,7 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
 
 
 def _path_to_videoid(kwargs, pathitems_arg, path_offset,
-                     inject_remaining_pathitems):
+                     inject_remaining_pathitems, inject_full_pathitems):
     """Parses a VideoId from the kwarg with name defined by pathitems_arg and
     adds it to the kwargs dict.
     If inject_remaining_pathitems is True, the pathitems representing the
@@ -252,8 +253,11 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
     pathitems remain in kwargs. Otherwise, the pathitems will be removed
     from the kwargs dict."""
     kwargs['videoid'] = VideoId.from_path(kwargs[pathitems_arg][path_offset:])
-    if inject_remaining_pathitems:
-        kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
+    if inject_remaining_pathitems or inject_full_pathitems:
+        if inject_full_pathitems:
+            kwargs[pathitems_arg] = kwargs[pathitems_arg]
+        else:
+            kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
     else:
         del kwargs[pathitems_arg]
 

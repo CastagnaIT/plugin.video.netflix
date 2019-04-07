@@ -13,7 +13,7 @@ from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, Episode
                          SearchVideoList, CustomVideoList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
                     EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                    GENRE_PARTIAL_PATHS, RANGE_SELECTOR)
+                    GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE)
 from .exceptions import (InvalidVideoListTypeError, LoginFailedError, APIError,
                          NotLoggedInError, MissingCredentialsError)
 
@@ -86,8 +86,7 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
-                    identifying_param_name='list_type')
+@cache.cache_output(g, cache.CACHE_COMMON, identify_from_kwarg_name='list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
     try:
@@ -101,11 +100,10 @@ def list_id_for_type(list_type):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=0,
-                    identifying_param_name='list_id')
-def video_list(list_id):
+@cache.cache_output(g, cache.CACHE_COMMON, identify_from_kwarg_name='list_id')
+def video_list(list_id, perpetual_range_start=None):
     """Retrieve a single video list
-    this type of request seems to have results fixed at ~40 from netflix
+    some of this type of request seems to have results fixed at ~40 from netflix
     and the 'length' tag never return to the actual total count of the elements
     """
     common.debug('Requesting video list {}'.format(list_id))
@@ -116,19 +114,21 @@ def video_list(list_id):
             'paths':
                 build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
                             VIDEO_LIST_PARTIAL_PATHS),
-            'length_params1': list_id
+            'length_params1': list_id,
+            'perpetual_range_start': perpetual_range_start
         }))
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_COMMON, identifying_param_index=1,
-                    identifying_param_name='context_id')
-def video_list_sorted(context_name, context_id=None):
+@cache.cache_output(g, cache.CACHE_COMMON, identify_from_kwarg_name='context_id',
+                    identify_append_from_kwarg_name='perpetual_range_start')
+def video_list_sorted(context_name, context_id=None, perpetual_range_start=None):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
     """
     common.debug('Requesting video list sorted {}'.format(context_id))
-    call_data = {'length_params1': context_name}
+    call_data = {'length_params1': context_name,
+                 'perpetual_range_start': perpetual_range_start}
     request_sort_order = 'az'
     if context_id:
         call_data['path_type'] = 'videolist_wid_sorted'
@@ -140,7 +140,7 @@ def video_list_sorted(context_name, context_id=None):
         call_data['paths'] = build_paths([context_name, request_sort_order, RANGE_SELECTOR],
                                          VIDEO_LIST_PARTIAL_PATHS)
     return VideoListSorted(common.make_call(
-        'perpetual_path_request',call_data), context_name, context_id)
+        'perpetual_path_request', call_data), context_name, context_id)
 
 
 @common.time_execution(immediate=False)
@@ -155,8 +155,7 @@ def custom_video_list(video_ids):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_GENRES, identifying_param_index=0,
-                    identifying_param_name='genre_id')
+@cache.cache_output(g, cache.CACHE_GENRES, identify_from_kwarg_name='genre_id')
 def genre(genre_id):
     """Retrieve LoLoMos for the given genre"""
     common.debug('Requesting LoLoMos for genre {}'.format(genre_id))
@@ -234,8 +233,7 @@ def single_info(videoid):
     return common.make_call('path_request', paths)
 
 
-@cache.cache_output(g, cache.CACHE_COMMON,
-                    fixed_identifier='my_list_items')
+@cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='my_list_items')
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
     common.debug('Try to perform a request to get the id list of the videos in my list')
@@ -286,6 +284,7 @@ def update_my_list(videoid, operation):
     except InvalidVideoListTypeError:
         pass
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'queue')
+    g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'mylist')
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
     g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'root_lists')
 
@@ -321,7 +320,7 @@ def _episode_metadata(videoid):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_METADATA, 0, 'video_id',
+@cache.cache_output(g, cache.CACHE_METADATA, identify_from_kwarg_name='video_id',
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
 def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
@@ -338,16 +337,18 @@ def _metadata(video_id):
 
 
 @common.time_execution(immediate=False)
-def search(search_term):
+def search(search_term, perpetual_range_start=None):
     """Retrieve a video list of search results"""
     common.debug('Searching for {}'.format(search_term))
-    base_path = ['search', 'byTerm', '|' + search_term, 'titles', 40]
-    return SearchVideoList(common.make_call(
-        'path_request',
-        [base_path + [['referenceId', 'id', 'length', 'name', 'trackIds',
-                      'requestId', 'regularSynopsis', 'evidence']]] +
-        build_paths(base_path + [{'from': 0, 'to': 40}, 'reference'],
-                    VIDEO_LIST_PARTIAL_PATHS)))
+    base_path = ['search', 'byTerm', '|' + search_term, 'titles', MAX_PATH_REQUEST_SIZE]
+    paths = [base_path + [['id', 'name', 'requestId']]]
+    paths.extend(build_paths(base_path + [RANGE_SELECTOR, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
+    call_data = {'path_type': 'searchlist',
+                 'paths': paths,
+                 'length_params1': 'search',
+                 'length_params2': 'byReference',
+                 'perpetual_range_start': perpetual_range_start}
+    return SearchVideoList(common.make_call('perpetual_path_request', call_data))
 
 
 @common.time_execution(immediate=False)

@@ -6,6 +6,8 @@ import resources.lib.common as common
 
 from .exceptions import InvalidReferenceError
 
+MAX_PATH_REQUEST_SIZE = 47 # Stands for 48 results, is the default value defined by netflix for a single request
+
 RANGE_SELECTOR = 'RANGE_SELECTOR'
 
 ART_SIZE_POSTER = '_342x684'
@@ -13,15 +15,19 @@ ART_SIZE_FHD = '_1920x1080'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
-    'videolist': lambda r, listid: len(r['lists'][listid].keys()),
-    'videolist_sorted': lambda r, context_name: len(r[context_name]['az']),
-    'videolist_wid_sorted': lambda r, context_name, context_id: len(r[context_name][context_id]['az']),
-    'seasonlist': (lambda r, tvshowid:
-                   len(r['videos'][tvshowid]['seasonList'].keys())),
-    'episodelist': (lambda r, seasonid:
-                    r['seasons'][seasonid]['summary']['length'])}
-"""Predefined lambda expressions that return the value of the length
-attribute from within a path response dict"""
+    'videolist': lambda r, listid:
+                 len(r['lists'][listid]),
+    'videolist_sorted': lambda r, context_name:
+                        len(r[context_name]['az']),
+    'videolist_wid_sorted': lambda r, context_name, context_id:
+                            len(r[context_name][context_id]['az']),
+    'seasonlist': lambda r, tvshowid:
+                  len(r['videos'][tvshowid]['seasonList']),
+    'episodelist': lambda r, seasonid:
+                   len(r['seasons'][seasonid]['episodes']),
+    'searchlist': lambda r, context_name, by_ref:
+                  len(next(iter(r[context_name][by_ref].values())))}
+"""Predefined lambda expressions that return the number of video results within a path response dict"""
 
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],

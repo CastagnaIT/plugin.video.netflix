@@ -61,6 +61,7 @@ class VideoList(object):
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, list_id=None):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.id = common.VideoId(
             videoid=(list_id
@@ -91,6 +92,7 @@ class VideoListSorted(object):
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, context_name, context_id):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
         data_present = True if (context_id and path_response.get(context_name)
@@ -126,6 +128,7 @@ class SearchVideoList(object):
     """A video list with search results"""
     # pylint: disable=invalid-name
     def __init__(self, path_response):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         have_data = 'search' in path_response
         if have_data:
@@ -153,6 +156,7 @@ class CustomVideoList(object):
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.title = common.get_local_string(30048)
         self.videos = self.data['videos']
@@ -171,6 +175,7 @@ class CustomVideoList(object):
 class SeasonList(object):
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
@@ -181,6 +186,7 @@ class SeasonList(object):
 class EpisodeList(object):
     """A list of episodes. Includes tvshow art."""
     def __init__(self, videoid, path_response):
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
         self.tvshow = self.data['videos'][self.videoid.tvshowid]

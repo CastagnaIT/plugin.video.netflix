@@ -59,7 +59,6 @@
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
-    <setting id="enable_atmos_sound" type="bool" label="30111" default="false" visible="false"/> <!-- Deprecated (linked to dolby_sound) -->
     <setting id="enable_vp9_profiles" type="bool" label="30137" default="true"/>
     <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
@@ -67,16 +66,15 @@
     <setting id="enable_force_hdcp" type="bool" label="30081" default="true"/>
     <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
     <setting label="30116" type="lsep"/>
-    <setting id="list_limit_results" type="select" label="30147" values="&#8734;|100|200|300|400" default="300"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
-    <setting id="enable_tracking" type="bool" label="30032" default="true"/>
+    <setting id="enable_tracking" type="bool" label="30032" default="true" visible="false"/> <!-- Not implemented -->
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="hidden_esn" visible="false" value="" />
-    <setting id="tracking_id" value="" visible="false"/>
+    <setting id="tracking_id" value="" visible="false"/> <!-- Not implemented -->
     <setting id="msl_service_port" value="8000" visible="false"/>
     <setting id="ns_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
