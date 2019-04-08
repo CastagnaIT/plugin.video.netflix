@@ -46,7 +46,7 @@ msgstr "Paswoord"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -66,7 +66,7 @@ msgstr "Controleer uw inloggegevens"
 
 msgctxt "#30010"
 msgid "Genres"
-msgstr ""
+msgstr "Genres"
 
 msgctxt "#30011"
 msgid "Search"
@@ -82,7 +82,7 @@ msgstr "Geen overeenkomsten gevonden"
 
 msgctxt "#30014"
 msgid "Account"
-msgstr ""
+msgstr "Account"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -110,7 +110,7 @@ msgstr "(tussen 0 & 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr ""
+msgstr "Expert"
 
 msgctxt "#30024"
 msgid "SSL verification"
@@ -146,11 +146,7 @@ msgstr "Titel bibliotheek aanpassen"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr ""
-
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Gebruik Dolby geluid"
+msgstr "Tracking"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"

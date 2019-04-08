@@ -148,10 +148,6 @@ msgctxt "#30032"
 msgid "Tracking"
 msgstr "Seuranta"
 
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Käytä Dolby-ääniä"
-
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (luotu automaattisesti, käyttäjän muokattavissa)"
@@ -257,8 +253,8 @@ msgid "Switch accounts"
 msgstr "Vaihda käyttäjätiliä"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Käytä HEVC-pakkausta (mahdollistaa 4K-laadun Androidilla)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Käytä HEVC-pakkausta (4K-laadun Androidilla/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

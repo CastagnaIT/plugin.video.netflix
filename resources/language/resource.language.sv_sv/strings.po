@@ -147,10 +147,6 @@ msgctxt "#30032"
 msgid "Tracking"
 msgstr "Spårning"
 
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Använd Dolby Digital-ljud"
-
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (ändra automatiskt, kan ändras manuellt)"

@@ -149,7 +149,7 @@ msgid "Tracking"
 msgstr ""
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr ""
 
 msgctxt "#30034"
@@ -257,7 +257,7 @@ msgid "Switch accounts"
 msgstr ""
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
 msgstr ""
 
 msgctxt "#30061"
@@ -460,8 +460,8 @@ msgctxt "#30110"
 msgid "Background services started"
 msgstr ""
 
-msgctxt "#30111"
-msgid "Enable Dolby Atmos"
+msgctxt "#30111" #Not in use
+msgid ""
 msgstr ""
 
 msgctxt "#30112"

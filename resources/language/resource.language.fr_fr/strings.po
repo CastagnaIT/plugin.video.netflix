@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr "Traceur"
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Activer le son Dolby"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Activer Dolby Digital Plus (DDPlus HQ et Atmos sur Premium)"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +257,8 @@ msgid "Switch accounts"
 msgstr "Changer de compte"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Activer HEVC (par example pour la 4k sur Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Activer HEVC (4k sur Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

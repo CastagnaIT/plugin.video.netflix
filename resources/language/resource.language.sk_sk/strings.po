@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr "Sledovanie"
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Použiť Dolby Sound"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Povoliť Dolby Digital Plus (DDPlus HQ a Atmos on Premium)"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +257,8 @@ msgid "Switch accounts"
 msgstr "Prepnúť účty"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Povoliť HEVC profily (napr. 4k pre Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Povoliť HEVC profily (4k pre Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

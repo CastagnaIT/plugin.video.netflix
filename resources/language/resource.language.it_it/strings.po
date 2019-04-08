@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr ""
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Utilizza l'audio Dolby"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Abilita Dolby Digital Plus (DDPlus HQ e Atmos su Premium)"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +257,8 @@ msgid "Switch accounts"
 msgstr "Cambia account"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Abilita HEVC (es: 4k per Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Abilita HEVC (4k per Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -459,10 +459,6 @@ msgstr "Login riuscito"
 msgctxt "#30110"
 msgid "Background services started"
 msgstr "Servizi in background avviati"
-
-msgctxt "#30111"
-msgid "Enable Dolby Atmos"
-msgstr "Abilita Dolby Atmos"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"
