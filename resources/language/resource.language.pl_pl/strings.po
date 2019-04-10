@@ -460,6 +460,10 @@ msgctxt "#30110"
 msgid "Background services started"
 msgstr "Uruchomiono usługi w tle"
 
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Brak zawartości"
+
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"
 msgstr "Musisz być zalogowany, aby móc korzystać z tej funkcji"

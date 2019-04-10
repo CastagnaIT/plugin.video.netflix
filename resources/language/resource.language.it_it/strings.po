@@ -50,7 +50,7 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Controllo parentale fallito"
+msgstr "Controllo parentale non riuscito"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
@@ -58,7 +58,7 @@ msgstr "Verifica che il pin di controllo parentale sia corretto"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Accesso fallito"
+msgstr "Accesso non riuscito"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
@@ -459,6 +459,10 @@ msgstr "Login riuscito"
 msgctxt "#30110"
 msgid "Background services started"
 msgstr "Servizi in background avviati"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Non ci sono contenuti"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"

@@ -74,7 +74,7 @@ def parse_info(videoid, item, raw_data):
                 common.get_local_string(30087).format(
                     ', '.join(item.contained_titles))
                 if item.contained_titles
-                else common.get_local_string(30087)
+                else common.get_local_string(30111)
         }, {}
 
     infos = {'mediatype': ('tvshow'
