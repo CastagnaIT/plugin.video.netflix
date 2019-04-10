@@ -306,8 +306,10 @@ class NetflixSession(object):
                 break
 
         if perpetual_range_start > 0:
-            n_page = (perpetual_range_start / apipaths.MAX_PATH_REQUEST_SIZE) / number_of_requests
-            previous_start = (n_page * apipaths.MAX_PATH_REQUEST_SIZE) if n_page > 1 else 0
+            size = apipaths.MAX_PATH_REQUEST_SIZE + 1
+            if length_params1 == 'genres':
+                size += 1
+            previous_start = perpetual_range_start - (size * number_of_requests)
             if '_perpetual_range_selector' in merged_response:
                 merged_response['_perpetual_range_selector']['previous_start'] = previous_start
             else:
