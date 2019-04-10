@@ -1,0 +1,507 @@
+{
+    "value": {
+        "null": {
+            "$type": "sentinel"
+        },
+        "lolomo": [
+            "lolomos",
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_ROOT"
+        ],
+        "lolomos": {
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_ROOT": {
+                "0": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070239X20XX1539870260807"
+                ],
+                "1": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070240X55XX1539870260807"
+                ],
+                "2": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070241X54XX1539870260807"
+                ],
+                "3": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070242X3XX1539870260807"
+                ],
+                "4": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070243X6XX1539870260807"
+                ],
+                "5": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070244X30X80029820X1539870260807"
+                ],
+                "6": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070245X28X1208954X1539870260807"
+                ],
+                "7": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070246X28X1191605X1539870260807"
+                ],
+                "8": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070247X28X6839X1539870260807"
+                ],
+                "9": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070248X28X2694067X1539870260807"
+                ],
+                "10": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070249X28X546633X1539870260807"
+                ],
+                "11": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070250X9XX1539870260807"
+                ],
+                "12": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070251X19XX1539870260807"
+                ],
+                "13": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070252X28X1189278X1539870260807"
+                ],
+                "14": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070253X32XX1539870260807"
+                ],
+                "15": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070254X28X6548X1539870260807"
+                ],
+                "16": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070255X28X1189238X1539870260807"
+                ],
+                "17": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070256X28X837838X1539870260807"
+                ],
+                "18": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070257X28X546035X1539870260807"
+                ],
+                "19": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070258X28X1365X1539870260807"
+                ],
+                "20": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070259X28X72355X1539870260807"
+                ],
+                "21": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070260X28X16705X1539870260807"
+                ],
+                "22": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070261X28X109012X1539870260807"
+                ],
+                "23": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070262X28X4698X1539870260807"
+                ],
+                "24": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070263X28X10375X1539870260807"
+                ],
+                "25": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070264X28X11714X1539870260807"
+                ],
+                "26": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070265X28X1192581X1539870260807"
+                ],
+                "27": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070266X28X26239X1539870260807"
+                ],
+                "28": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070267X28X1214991X1539870260807"
+                ],
+                "29": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070268X28X26705X1539870260807"
+                ],
+                "30": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070269X28X72409X1539870260807"
+                ],
+                "31": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070270X28X83X1539870260807"
+                ],
+                "32": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070271X28X8933X1539870260807"
+                ],
+                "33": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070272X28X1029511X1539870260807"
+                ],
+                "34": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070273X29X70272726X1539870260807"
+                ],
+                "35": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070274X28X72404X1539870260807"
+                ],
+                "36": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070275X29X80083977X1539870260807"
+                ],
+                "37": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070276X28X1189831X1539870260807"
+                ],
+                "38": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070277X28X2233411X1539870260807"
+                ],
+                "39": [
+                    "lists",
+                    "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070278X28X1024761X1539870260807"
+                ],
+                "40": {
+                    "$type": "sentinel"
+                }
+            }
+        },
+        "lists": {
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070239X20XX1539870260807": {
+                "displayName": "Highlights",
+                "context": "billboard",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070239X20XX1539870260807",
+                "index": "0",
+                "length": 1
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070240X55XX1539870260807": {d
+                "displayName": "NETFLIX ORIGINALE",
+                "context": "netflixOriginals",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070240X55XX1539870260807",
+                "index": "1",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070241X54XX1539870260807": {
+                "displayName": "Derzeit beliebt",
+                "context": "trendingNow",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070241X54XX1539870260807",
+                "index": "2",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070242X3XX1539870260807": {
+                "displayName": "Mit dem Profil von Philipp weiterschauen",
+                "context": "continueWatching",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070242X3XX1539870260807",
+                "index": "3",
+                "length": 5
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070243X6XX1539870260807": {
+                "displayName": "Meine Liste",
+                "context": "queue",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070243X6XX1539870260807",
+                "index": "4",
+                "length": 31
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070244X30X80029820X1539870260807": {
+                "displayName": "Weil Sie „Ascension“ Ihrer Liste hinzugefügt haben",
+                "context": "becauseYouAdded",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070244X30X80029820X1539870260807",
+                "index": "5",
+                "length": 39
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070245X28X1208954X1539870260807": {
+                "displayName": "Internationale Dramaserien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070245X28X1208954X1539870260807",
+                "index": "6",
+                "length": 39
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070246X28X1191605X1539870260807": {
+                "displayName": "Perfekt für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070246X28X1191605X1539870260807",
+                "index": "7",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070247X28X6839X1539870260807": {
+                "displayName": "Dokumentationen",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070247X28X6839X1539870260807",
+                "index": "8",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070248X28X2694067X1539870260807": {
+                "displayName": "Schräge Peinlichkeiten",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070248X28X2694067X1539870260807",
+                "index": "9",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070249X28X546633X1539870260807": {
+                "displayName": "Emmy-prämierte historische Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070249X28X546633X1539870260807",
+                "index": "10",
+                "length": 8
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070250X9XX1539870260807": {
+                "displayName": "Top-Auswahl für Philipp",
+                "context": "topTen",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070250X9XX1539870260807",
+                "index": "11",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070251X19XX1539870260807": {
+                "displayName": "Beliebt auf Netflix",
+                "context": "popularTitles",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070251X19XX1539870260807",
+                "index": "12",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070252X28X1189278X1539870260807": {
+                "displayName": "Europäische Serien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070252X28X1189278X1539870260807",
+                "index": "13",
+                "length": 31
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070253X32XX1539870260807": {
+                "displayName": "Neuerscheinungen",
+                "context": "newRelease",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070253X32XX1539870260807",
+                "index": "14",
+                "length": 39
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070254X28X6548X1539870260807": {
+                "displayName": "Komödien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070254X28X6548X1539870260807",
+                "index": "15",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070255X28X1189238X1539870260807": {
+                "displayName": "Emmy-prämierte Serien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070255X28X1189238X1539870260807",
+                "index": "16",
+                "length": 7
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070256X28X837838X1539870260807": {
+                "displayName": "Sci-Fi- und Horrorserien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070256X28X837838X1539870260807",
+                "index": "17",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070257X28X546035X1539870260807": {
+                "displayName": "Historische US-Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070257X28X546035X1539870260807",
+                "index": "18",
+                "length": 34
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070258X28X1365X1539870260807": {
+                "displayName": "Action und Abenteuer",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070258X28X1365X1539870260807",
+                "index": "19",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070259X28X72355X1539870260807": {
+                "displayName": "Anspruchsvolle US-Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070259X28X72355X1539870260807",
+                "index": "20",
+                "length": 14
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070260X28X16705X1539870260807": {
+                "displayName": "Spannende Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070260X28X16705X1539870260807",
+                "index": "21",
+                "length": 38
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070261X28X109012X1539870260807": {
+                "displayName": "Europäische Filme und Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070261X28X109012X1539870260807",
+                "index": "22",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070262X28X4698X1539870260807": {
+                "displayName": "Animationsfilme",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070262X28X4698X1539870260807",
+                "index": "23",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070263X28X10375X1539870260807": {
+                "displayName": "Comedyserien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070263X28X10375X1539870260807",
+                "index": "24",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070264X28X11714X1539870260807": {
+                "displayName": "Dramaserien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070264X28X11714X1539870260807",
+                "index": "25",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070265X28X1192581X1539870260807": {
+                "displayName": "US-Crime-Serien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070265X28X1192581X1539870260807",
+                "index": "26",
+                "length": 8
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070266X28X26239X1539870260807": {
+                "displayName": "Unkonventionelle Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070266X28X26239X1539870260807",
+                "index": "27",
+                "length": 7
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070267X28X1214991X1539870260807": {
+                "displayName": "Historische Dramaserien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070267X28X1214991X1539870260807",
+                "index": "28",
+                "length": 7
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070268X28X26705X1539870260807": {
+                "displayName": "Systemkampf-Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070268X28X26705X1539870260807",
+                "index": "29",
+                "length": 17
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070269X28X72409X1539870260807": {
+                "displayName": "US-Dramedy-Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070269X28X72409X1539870260807",
+                "index": "30",
+                "length": 15
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070270X28X83X1539870260807": {
+                "displayName": "Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070270X28X83X1539870260807",
+                "index": "31",
+                "length": 39
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070271X28X8933X1539870260807": {
+                "displayName": "Thriller",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070271X28X8933X1539870260807",
+                "index": "32",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070272X28X1029511X1539870260807": {
+                "displayName": "Crime-Thrillerserien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070272X28X1029511X1539870260807",
+                "index": "33",
+                "length": 18
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070273X29X70272726X1539870260807": {
+                "displayName": "Weil Sie „The Fall – Tod in Belfast“ angesehen haben",
+                "context": "similars",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070273X29X70272726X1539870260807",
+                "index": "34",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070274X28X72404X1539870260807": {
+                "displayName": "US-Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070274X28X72404X1539870260807",
+                "index": "35",
+                "length": 39
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070275X29X80083977X1539870260807": {
+                "displayName": "Weil Sie „American Crime Story“ angesehen haben",
+                "context": "similars",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070275X29X80083977X1539870260807",
+                "index": "36",
+                "length": 40
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070276X28X1189831X1539870260807": {
+                "displayName": "Historische Serien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070276X28X1189831X1539870260807",
+                "index": "37",
+                "length": 8
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070277X28X2233411X1539870260807": {
+                "displayName": "Rührselige spanischsprachige Serien",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070277X28X2233411X1539870260807",
+                "index": "38",
+                "length": 7
+            },
+            "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070278X28X1024761X1539870260807": {
+                "displayName": "Mystery-Serien für einen Serienmarathon",
+                "context": "genre",
+                "id": "09a4eb6f-8f6b-45fe-a65b-c64c4fcdc6b8_60070278X28X1024761X1539870260807",
+                "index": "39",
+                "length": 12
+            }
+        }
+    },
+    "paths": [
+        [
+            "lolomo"
+        ],
+        [
+            "null"
+        ],
+        [
+            "lolomo",
+            [
+                {
+                    "from": 0,
+                    "to": 40
+                }
+            ]
+        ],
+        [
+            "lolomo",
+            {
+                "to": 40,
+                "from": 0
+            },
+            [
+                "displayName",
+                "context",
+                "id",
+                "index",
+                "length"
+            ]
+        ],
+        [
+            "lolomo",
+            [
+                {
+                    "from": 0,
+                    "to": 39
+                }
+            ],
+            [
+                "context",
+                "displayName",
+                "id",
+                "index",
+                "length"
+            ]
+        ]
+    ]
+}

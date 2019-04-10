@@ -1,0 +1,96 @@
+{
+    "version": "2.1",
+    "video": {
+        "year": 2018,
+        "runtime": 7247,
+        "creditsOffset": 7037,
+        "autoplayable": true,
+        "start": 1539932400000,
+        "end": 32503680000000,
+        "hd": true,
+        "progressImageRoot": "https://tp-s.nflximg.net/tpa5/413/686093413/",
+        "type": "movie",
+        "id": 80148162,
+        "merchedVideoId": null,
+        "title": "The Night Comes for Us",
+        "synopsis": "Ein ehemaliger Elite-Attentäter der Triaden, der während eines Massakers das Leben eines Mädchens verschonte, muss nun vor gleichfalls mörderischen Gangstern fliehen.",
+        "rating": "18",
+        "cinematch": {
+            "value": 4.6400003,
+            "type": "predicted"
+        },
+        "userRating": {
+            "type": "thumb",
+            "matchScore": 91,
+            "userRating": 0,
+            "tooNewForMatchScore": false
+        },
+        "hiddenEpisodeNumbers": false,
+        "requiresPin": true,
+        "requiresPreReleasePin": false,
+        "requiresAdultVerification": false,
+        "stills": [
+            {
+                "w": 1920,
+                "h": 1080,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/c9f0e/f770800080708aed8cd8506313e824aa288c9f0e.jpg"
+            }
+        ],
+        "logo": {
+            "w": 400,
+            "h": 170,
+            "url": "https://occ-0-1335-1336.1.nflxso.net/art/a1778/56b941f513e594c46acc4805737567354e9a1778.png"
+        },
+        "storyart": [
+            {
+                "w": 1280,
+                "h": 720,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/af852/8ad103ddc00c58803a62c8141e01aef6330af852.jpg"
+            },
+            {
+                "w": 1632,
+                "h": 873,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/f08cd/16e6a396bbc1b38478c241cf37fda277702f08cd.jpg"
+            }
+        ],
+        "artwork": [
+            {
+                "w": 1280,
+                "h": 720,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/94d8f/571db1f80c72ec8be67919e95ddeb71420394d8f.jpg"
+            },
+            {
+                "w": 1280,
+                "h": 720,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/94d8f/571db1f80c72ec8be67919e95ddeb71420394d8f.jpg"
+            }
+        ],
+        "boxart": [
+            {
+                "w": 426,
+                "h": 607,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/fde8f/1a695db00d282b75190028113f2e1ebcef3fde8f.jpg"
+            },
+            {
+                "w": 284,
+                "h": 405,
+                "url": "https://occ-0-1335-1336.1.nflxso.net/art/8fbc2/5c11a31a7a3ec90e229b75fca7f712c085f8fbc2.jpg"
+            }
+        ],
+        "creditMarkers": {
+            "credit": {
+                "start": null,
+                "end": null
+            },
+            "recap": {
+                "start": null,
+                "end": null
+            }
+        },
+        "interactivity": {}
+    },
+    "trackIds": {
+        "nextEpisode": 200257858,
+        "episodeSelector": 200257859
+    }
+}

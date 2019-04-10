@@ -1,0 +1,11 @@
+{
+  "signature": "NNkcIH717kW9NG4qwIv/7BDLTx83r/INQQozajG278GcQx6iaY3vbRtA5IHAPQ2+grL2K05bkoEYWvxtDndvfjWUQ4NDawHcNp0cQoCaWyW5HHElDpxyz9ZsPfpeZCJ1uvwdshy09+4Nhqbu17agLvnzVQZJZIZQqjAmD4H+XcSTySwQbUQ5plBDxskm7nUd5PkHplCs76rxF63a9Uew9CgexwHuDYAOO4Tk+rAnuhS+/388SwMZHImygl5vO5EXY+eyuDC9qGMTCa7zdNbwc7j2N2egHisGB6ti5MJ1HvKc4VpPoMY9+nFvbv0U37nMb0otLH67RgHoAh+YKTnDNw==",
+  "errordata": "eyJpbnRlcm5hbGNvZGUiOjIwNTAwNiwibWVzc2FnZWlkIjozNDA0NjE5MTU1MzEzOTMwLCJlcnJvcmNvZGUiOjIsImVycm9ybXNnIjoiRXJyb3IgY29tbXVuaWNhdGluZyB3aXRoIGF1dGhlbnRpY2F0aW9uIG1hbmFnZXIuIiwidGltZXN0YW1wIjoxNTIxNjM0Mjc3fQ==",
+  "entityauthdata": {
+    "scheme": "RSA",
+    "authdata": {
+      "identity": "Netflix",
+      "pubkeyid": "MSL_TRUSTED_NETWORK_SERVER_KEY"
+    }
+  }
+}

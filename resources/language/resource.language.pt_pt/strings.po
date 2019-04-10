@@ -1,0 +1,317 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2018-06-14 13:37+0000\n"
+"Last-Translator: Gustavo Silva <beatwiz@gmail.com>\n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Addon do Netflix, um serviço de Video On Demand"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Algumas partes deste addon poderão não ser legais no seu país de residência. Por favor, verifique as suas leis locais antes de instalar."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Recomendações"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Pin de controlo parental"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Termo de pesquisa"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Senha"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "A validação de controlo parental falhou"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Por favor, verifique se o pin de controlo parental está correcto"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Erro ao inicar sessão"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Por favor, verifique as suas credenciais de acesso"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Géneros"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Procurar"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Sem temporadas disponíveis"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Não foram encontrados resultados"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Conta"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Terminar sessão"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Exportar para a biblioteca"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Avaliar no Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Remover da 'Minha Lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Adicionar à 'Minha Lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(Entre 0 e 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr ""
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Verificação SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Bibilioteca"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Activar pasta de biblioteca personalizada"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Caminho para a pasta de bibilioteca personalizada"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Erro de reprodução"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "O addon Inputstream está em falta"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Remover da biblioteca"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Alterar título"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Rastreio"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Usar Dolby Sound"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (definido automaticamente, pode ser alterado manualmente)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Configurações do addon Inputstream"
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Utilizar sempre o título original para exportar"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Reproduções"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Activar vistas personalizadas"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Vista para as pastas"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Vista para os filmes"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Vista para as séries"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Vista para as temporadas"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Vista para os episódios"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Vista para os perfis"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- PÁGINA SEGUINTE --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "O addon Inputstream não está activado"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Deseja eliminar?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Exportado"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Actualizar base de dados"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Actualização concluída com sucesso"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Erro no pedido"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "De momento, não foi possível concluír o pedido"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Inicio de sessão automático"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Activar o início de sessão automático"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Perfil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Seleccionar perfil na lista de perfis -> menu de contexto"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Início de sessão automático activado!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Mudar de conta"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Activar perfis HEVC (por exemplo, 4k para Android)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Actualizar dentro da biblioteca"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Activar / desactivar o pin de controlo parental. Activo: "
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "novos episódios adicionados à biblioteca"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Exportar novos episódios"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Actualizar automaticamente"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "nunca"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "diáriamente"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "dias alternados"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "cada 5 dias"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "semanalmente"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Hora do dia"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Começar apenas depois de 5 minutos de inactividade"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Verificar a cada X minutos se uma actualização está programada"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Vista para exportados"

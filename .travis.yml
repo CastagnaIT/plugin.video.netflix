@@ -1,0 +1,26 @@
+---
+sudo: false
+language: python
+
+python:
+  - "2.7"
+
+script:
+  - pip install pycryptodomex
+  - make all
+  - touch ./_build/.nojekyll
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then make rere; else exit 0; fi
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: _build
+    target_branch: gh-pages
+    "on":
+      branch: master
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

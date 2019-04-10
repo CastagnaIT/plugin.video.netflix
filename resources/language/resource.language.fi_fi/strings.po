@@ -1,0 +1,317 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: Sebastian Golasch <public@asciidisco.com>\n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix-suoratoistopalvelun lisäosa"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Jotkin tämän lisäosan ominaisuuksista eivät välttämättä ole laillisia kotimaassasi - tarkista käytön laillisuus ennen asentamista."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Suositukset"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Lapsilukon PIN-koodi"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Hakusana"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Salasana"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "Sähköpostiosoite"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Lapsilukon poistaminen epäonnistui"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Tarkista PIN-koodisi"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Kirjautuminen epäonnistui"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Tarkista käyttäjätietosi"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Lajityypit"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Haku"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Ei katsottavissa olevia kausia"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Hakusi ei tuottanut tuloksia"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Käyttäjätili"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Kirjaudu ulos"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Vie kirjastoon"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Anna arvosana"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Poista 'Omalta listalta'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Lisää 'Omalle listalle'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(väliltä 0-10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Asiantuntija"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL-varmennus"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Kirjasto"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Käytä omaa kirjastokansiota"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Kirjastokansion polku"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Toistovirhe"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Inputstream-lisäosa puuttuu"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Poista kirjastosta"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Muokkaa kirjastonimeä"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Seuranta"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Käytä Dolby-ääniä"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (luotu automaattisesti, käyttäjän muokattavissa)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Inputstream-lisäosan asetukset..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Käytä aina alkuperäisiä nimiä"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Näkymät"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Käytä omia näkymiä"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Kansioiden näkymä"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Elokuvien näkymä"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Tv-sarjojen näkymä"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Kausien näkymä"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Jaksojen näkymä"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Profiilien näkymä"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- SEURAAVA SIVU --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "Inputstream-lisäosa ei ole käytössä"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Poistetaanko kirjastosta?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Kirjastoon viedyt"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Päivitä tietokanta"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Päivitys onnistui"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Virhe pyynnössä"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Pyyntöä ei voida suorittaa tällä hetkellä"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Automaattinen kirjautuminen"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Kirjaudu automaattisesti"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Käyttäjäprofiili"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "ID-numero"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Valitse 'Automaattinen kirjautuminen' profiililistan sisältövalikosta"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Automaattinen kirjautuminen käytössä!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Vaihda käyttäjätiliä"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Käytä HEVC-pakkausta (mahdollistaa 4K-laadun Androidilla)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Päivitä kirjastossa"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Lapsilukon PIN-koodin määritys. Tila:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "uutta jaksoa lisätty kirjastoon"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Vie uudet jaksot"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Automaattinen päivitys"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "ei koskaan"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "päivittäin"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "joka toinen päivä"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "joka viides päivä"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "viikoittain"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Kellonaika"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Aloita, kun laite on ollut 5 minuuttia käyttämättä"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Tarkista X minuutin välein, onko päivitystä ajastettu"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Kirjastoon lisättyjen näkymä"

@@ -1,0 +1,610 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"Last-Translator: Marcin W. + notoco\n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Wtyczka dla usług VOD serwisu Netflix"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Niektóre części tego dodatku mogą być nielegalne w Twoim kraju - sprawdź przed instalacją zgodność z lokalnym prawem."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Polecane"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Kod kontroli rodzicielskiej"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Szukane wyrażenie"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Hasło"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "Adres e-mail"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "Nieudana weryfikacja kontroli rodzicielskiej"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Zweryfikuj poprawność kodu kontroli rodzicielskiej"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Nieudane logowanie"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Zweryfikuj poprawność wprowadzonych danych"
+
+msgctxt "#30010"
+msgid "Genres"
+msgstr "Gatunki"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Szukaj"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Brak dostępnych sezonów"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Brak pasujących wyników"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Konto"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Wyloguj"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Eksportuj do biblioteki"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Oceń w serwisie Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Usuń z 'Moja lista'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Dodaj do 'Moja lista'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(między 0 a 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Eksperckie"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Weryfikacja certyfikatu SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Biblioteka"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Używaj niestandardowego folderu biblioteki"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Folder niestandardowy"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Błąd odtwarzania"
+
+msgctxt "#30029"
+msgid "Missing Inputstream addon"
+msgstr "Brakuje wtyczki strumieniowej InputStream Adaptive"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Usuń z biblioteki"
+
+msgctxt "#30031"
+msgid "Change library title"
+msgstr "Zmień tytuł"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Śledzenie"
+
+msgctxt "#30033"
+msgid "Use Dolby Sound"
+msgstr "Używaj ścieżek Dolby Sound"
+
+msgctxt "#30034"
+msgid "ESN (set automatically, can be changed manually)"
+msgstr "ESN (ustawiany automatycznie, z możliwością zmiany)"
+
+msgctxt "#30035"
+msgid "Inputstream Addon Settings..."
+msgstr "Ustawienia wtyczki strumieniowej..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Używaj oryginalnego tytułu podczas eksportu"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Widoki"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Aktywuj niestandardowe widoki"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Widok folderów"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Widok filmów"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Widok seriali"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Widok sezonów"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Widok odcinków"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Widok profili"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- NASTĘPNA STRONA --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "Inputstream addon is not enabled"
+msgstr "Wtyczka strumieniowa nie jest aktywna"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Czy usunąć definitywnie?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Wyeksportowane"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Aktualizuj bazę"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Aktualizacja zakończona powodzeniem"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Błąd żądania"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Żądanie nie może teraz zostać wykonane"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Logowanie automatyczne"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Aktywuj logowanie automatyczne"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "Identyfikator"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Wybierz profil z listy profili -> menu kontekstowe"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Logowanie automatyczne zostało aktywowane!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Zmień konto"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgstr "Aktywuj profile HEVC (funkcja 4K dla Androida)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr ""
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Włączanie/wyłączanie PIN kontroli rodzicielskiej. Aktywne:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "nowe odcinki dodane do biblioteki"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Eksportuj nowe odcinki"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Automatyczna aktualizacja"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "nigdy"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "codziennie"
+
+msgctxt "#30068"
+msgid "każdego innego dnia"
+msgstr ""
+
+msgctxt "#30069"
+msgid "co 5 dni"
+msgstr ""
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "co tydzień"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Pora dnia"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Uruchom tylko po 5 minutach bezczynności"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Sprawdzaj co X minut jeśli zaplanowano aktualizację"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Zobacz wyeksportowane"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Pytaj o pominiecie czołówki i listy płac"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Pomiń czołówkę"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Pomiń listę"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Odtwarzanie"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Pomiń automatycznie"
+
+msgctxt "#30080"
+msgid "Pause when skipping"
+msgstr "Pauza podczas pomijania"
+
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "Wymuś wsparcie HDCP 2.2 (uaktywnia treści 4K)"
+
+msgctxt "#30082"
+msgid "Save audio / subtitle settings for TV shows"
+msgstr "Zachowaj ustawienia dźwięku i napisów dla seriali"
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr "Zachowaj zakładki dla pozycji biblioteki / oznacz jako obejrzane"
+
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Utrzymuj pamięć podręczną przez (minuty)"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Utrzymuj pamięć podręczną metadanych przez (dni)"
+
+msgctxt "#30086"
+msgid "Invalidate entire cache on modification of My List"
+msgstr "Unieważnij całą pamięć podręczną przy modyfikacji Mojej listy"
+
+msgctxt "#30087"
+msgid "Contains {} and more..."
+msgstr "Zawiera {} i więcej..."
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr "Przeglądaj powiązane treści"
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr "Przeglądaj podgatunki"
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr "Przejrzyj powiązane listy filmów i odkryj więcej treści."
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr "Przeglądaj i zarządzaj zawartością, która została wyeksportowana do biblioteki Kodi."
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr "Wyszukaj treści i łatwo znajdź to, co chcesz obejrzeć."
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr "Przeglądaj treści według gatunku i łatwo odkrywaj powiązane treści."
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr "Przeglądaj rekomendacje i wybierz coś, co może Ci się spodobać."
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr "Wszystkie seriale"
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr "Wszystkie filmy"
+
+msgctxt "#30097"
+msgid "Main Menu"
+msgstr "Główne menu"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "Włącz profile HDR"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "Włącz profile DolbyVision"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "Wyniki dla \"{}\""
+
+msgctxt "#30101"
+msgid "Netflix returned an unknown error."
+msgstr "Netflix zwrócił nieznanu błąd"
+
+msgctxt "#30102"
+msgid "Netflix returned the following error:"
+msgstr "Netflix zwrócił poniższy błąd"
+
+msgctxt "#30103"
+msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub. Podaj pełny dziennik debugowania wraz z raportem o błędzie (włącz \"Dziennikowanie debugowania\" w ustawieniach Kodi)"
+
+msgctxt "#30104"
+msgid "The addon encountered to following error:"
+msgstr "Dodatek napotkał następujący błąd:"
+
+msgctxt "#30105"
+msgid "Netflix Addon Error"
+msgstr "Błąd dodatku Netflix"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Nieprawidłowy PIN"
+
+msgctxt "#30107"
+msgid "Disabled PIN verfication"
+msgstr "Wyłączona kontrola PIN"
+
+msgctxt "#30108"
+msgid "Enabled PIN verfication"
+msgstr "Włączona kontrola PIN"
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Zalogowano pomyślnie"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Uruchomiono usługi w tle"
+
+msgctxt "#30111"
+msgid "Enable Dolby Atmos"
+msgstr "Włącz Dolby Atmos "
+
+msgctxt "#30112"
+msgid "You need to be logged in to use this function"
+msgstr "Musisz być zalogowany, aby móc korzystać z tej funkcji"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Wylogowano pomysłnie"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "Utrzymaj synchronizację Mojej Listy i biblioteki Kodi"
+"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "Profile zawartości"
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr "Zaawansowana konfiguracja dodatku"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Pamięć podręczna"
+
+msgctxt "#30118"
+msgid "API operation failed: {}"
+msgstr "Operacja API nie powiodła się: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Działanie na Mojej liście zakończyły się powodzeniem"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Nie można automatycznie usunąć sezonu z biblioteki Kodi, zrób to ręcznie"
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Wykonaj teraz pełną synchronizację"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Synchronizuj Moją Listę z biblioteką Kodi"
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr "Czy na pewno chcesz kontynuować? \nSpowoduje to usunięcie wszystkich wcześniej wyeksportowanych pozycji i wyeksportowanie wszystkich pozycji z Mojej listy dla aktualnie aktywnego profilu. \nTa operacja może trochę potrwać ..."
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr "Czy na pewno chcesz usunąć ę pozycję?"
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Wyczyść bibliotekę"
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr "Czy na pewno chcesz wyczyścić bibliotekę? \nWszystkie wyeksportowane pozycje zostaną usunięte."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Przyznana ocena {}"
+
+msgctxt "#30128"
+msgid "No contained titles yet..."
+msgstr ""
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "Włącz integrację z Up Next"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Pokaż powiadomienia zamiast okna dialogowego dla błędów"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "Wyczyść pamięć podręczną w pamięci"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "Wyczyść pamięć podręczną i pamięć podręczną dysku"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "Włącz czas wykonywania"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Pamięć podręczna wyczyszczona"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "Włącz odblokowywanie 1080p (niezalecane dla Androida)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
+msgstr "Włącz profile VP9 (nie używać z HEVC, wyłącz jeśli powoduje artefakty)"
+
+msgctxt "#30138"
+msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "Żądana akcja wygasła. Usługi w tle mogą nie być jeszcze dostępne, jeśli właśnie uruchomiłeś Kodi/dodatek. W takim przypadku spróbuj ponownie za chwilę."
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgstr "Włącz IPC przez HTTP (użyj, gdy występują przekroczenia czasu AddonSignals)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Migracja biblioteki do nowego formatu"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Wyłącz powiadomienia o starcie"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Własny"
+
+msgctxt "#30143"
+msgid "Własny widok ID"
+msgstr ""
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "Wyłącz obsługę napisów WebVTT"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Ostatnio dodane"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Odkryj najnowsze treści dodane."
+
+msgctxt "#30147"
+msgid "Limits list results to about (higher numbers can cause timeouts)"
+msgstr "Ogranicza listę wyników do (wyższe liczby mogą powodować przekroczenie limitu czasu)"

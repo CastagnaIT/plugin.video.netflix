@@ -1,0 +1,602 @@
+{
+  "result": {
+    "errorDetails": "Unable to create context (due to ContentViewableFailure) for viewableId=80117711",
+    "errorSubCode": 1331,
+    "errorExternalCode": 5059,
+    "errorDisplayMessage": "Sie scheinen einen Unblocker oder Proxy zu verwenden. Bitte schalten Sie derartige Dienste aus und versuchen Sie es erneut. Für weitere Unterstützung besuchen Sie bitte netflix.com/proxy.",
+    "errorEdgeCode": "434",
+    "data": {
+      "CODE": "434",
+      "PRESENTATION_TYPES": {
+        "1": "PRIMARY",
+        "0": "COMMENTARY",
+        "2": "ASSISTIVE"
+      },
+      "OPEN_CONNECT_SIGNALS": {
+        "IS_HTTPS_SUPPORTED": "false"
+      },
+      "REQUEST_CONTEXT_APP_ID": 0,
+      "SUPPORTS_PREVIEW_CONTENT": true,
+      "DIAGNOSTICS": [],
+      "NETWORK_TYPE": "UNKNOWN",
+      "INCOMPATIBLE_MEDIA_INCLUDED": false,
+      "ES_LINK": "http://es_tribe_pla_insights.eu-west-1.dynprod.netflix.net:7001/kibana/#/dashboard/elasticsearch/playback_manifest_log_query?q=%20%2BplaybackContextId%3AE1-BQFRAAELELrppwMae7i08rR_xfjT4dxw1vr2hkmgVJlN-bIGdh3cGxLORcdd8G0NoM6zbJE92ddgQubE1aHPkAPO-v85XwUUlj3QvHrERxSJIuln_Kx__TWr8I6k_S4FkS_FZH1fJkTzQf6vQykeC74iI1OsNfdjnCSDrezgBZpblPgddws0mw..",
+      "CLIENT_RETRYABLE": "false",
+      "LOCAL_MESSAGE": "Unable to create context (due to ContentViewableFailure) for viewableId=",
+      "BRANCHED_CONTENT_REQUESTED": false,
+      "trackId": 0,
+      "CUSTOMER_DATA": {
+        "RESTRICTED_BY_TESTER_TYPE": false,
+        "STREAM_QUALITY": "UNSPECIFIED",
+        "SIGNUP_DATE": "",
+        "ACCOUNT_ID": "",
+        "MEMBERSHIP_STATUS": "CURRENT_MEMBER",
+        "SIGNUP_COUNTRY": "DE",
+        "ACCOUNT_PLAYBACK_RESTRICTED": false,
+        "PROFILE_ID": 1111111111111111110051,
+        "IS_PARTNER_PREVIEW_ACCOUNT": false,
+        "ALLOWED_VIDEO_FORMAT": "Ultra_HD",
+        "AB_TEST_ALLOCATIONS": {
+          "10205": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10205,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "6496": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 6496,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10536": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10536,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9107": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9107,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9883": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9883,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10755": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10755,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10477": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10477,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9754": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9754,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10109": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10109,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10567": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10567,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7833": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7833,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9995": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9995,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "8338": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 3,
+            "TEST_ID": 8338,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10102": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10102,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7324": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7324,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10581": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10581,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7095": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7095,
+            "EXPLICITLY_ALLOCATED": false
+          },
+          "9915": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9915,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9917": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 6,
+            "TEST_ID": 9917,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9967": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9967,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9771": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9771,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "3238": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 3238,
+            "EXPLICITLY_ALLOCATED": false
+          },
+          "3253": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 3253,
+            "EXPLICITLY_ALLOCATED": false
+          },
+          "7497": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7497,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "6847": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 6847,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7096": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7096,
+            "EXPLICITLY_ALLOCATED": false
+          },
+          "7412": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7412,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7559": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7559,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10591": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10591,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10294": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 5,
+            "TEST_ID": 10294,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10621": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 4,
+            "TEST_ID": 10621,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10436": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10436,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9951": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9951,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9966": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9966,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7291": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7291,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9272": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9272,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10920": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10920,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10350": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10350,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10074": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10074,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "8047": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 8047,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "8169": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 3,
+            "TEST_ID": 8169,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10313": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10313,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10359": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10359,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9708": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9708,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10508": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 4,
+            "TEST_ID": 10508,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9581": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9581,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10880": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10880,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10203": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10203,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7860": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 7860,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9317": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9317,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "6951": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 6951,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "6952": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 6952,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "6955": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 6955,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "8288": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 8288,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7868": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 7868,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "11026": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 11026,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9868": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9868,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9772": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 3,
+            "TEST_ID": 9772,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "3221": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 3221,
+            "EXPLICITLY_ALLOCATED": false
+          },
+          "9800": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9800,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9965": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9965,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9791": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9791,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7864": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 7864,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "7997": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 7997,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10750": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 10750,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "11054": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 11054,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9579": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 9579,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10757": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10757,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "9968": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 1,
+            "TEST_ID": 9968,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10492": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10492,
+            "EXPLICITLY_ALLOCATED": true
+          },
+          "10490": {
+            "IS_FALLBACK_ALLOCATION": false,
+            "TEST_CELL": 2,
+            "TEST_ID": 10490,
+            "EXPLICITLY_ALLOCATED": true
+          }
+        },
+        "MATURITY_TYPE": "ADULTS",
+        "IS_AGE_VERIFIED": true,
+        "PRIMARY_LANGUAGE": "en-DE",
+        "MATURITY_LEVEL": 1000000,
+        "IS_TEST_ACCOUNT": false,
+        "AGE_VERIFICATION_REQUIRED_LIMIT": 125,
+        "EXPERIENCE_TYPE": "regular"
+      },
+      "REQUEST_CONTEXT_ESN": "NFCDCH-02-ET7763RUR3W2KVKJLFMLEK4XAVTYF7",
+      "OPTION_TREE_DEFINITION": {
+        "REF": "TREE_2",
+        "GROUP": "OPTION_TREE_DEFINITION_GROUP"
+      },
+      "REQUEST_CONTEXT_STACK": "prod",
+      "sessionparams": {
+        "uiplaycontext": "null",
+        "pinCapableClient": false
+      },
+      "VIEWABLE_ID": 80117711,
+      "PREFERRED_LANGUAGES": {
+        "0": "de-DE"
+      },
+      "REQUEST_CONTEXT_IP_ADDRESS": "",
+      "TAGS": {
+        "PRESENTATION_TYPES": "{0=COMMENTARY, 1=PRIMARY, 2=ASSISTIVE}",
+        "OPEN_CONNECT_SIGNALS": "{IS_HTTPS_SUPPORTED=false}",
+        "OFFLINE_DOWNLOAD_DESCRIPTOR": "{QUALITY=DEFAULT}",
+        "SUPPORTS_PREVIEW_CONTENT": "true",
+        "device.operationalName": "cadmium",
+        "NETWORK_TYPE": "UNKNOWN",
+        "INCOMPATIBLE_MEDIA_INCLUDED": "false",
+        "BRANCHED_CONTENT_REQUESTED": "false",
+        "trackId": "0",
+        "CUSTOMER_DATA": "{PROFILE_ID=, RESTRICTED_BY_TESTER_TYPE=false, MATURITY_LEVEL=1000000, ACCOUNT_ID=, IS_AGE_VERIFIED=true, SIGNUP_DATE=, ALLOWED_VIDEO_FORMAT=Ultra_HD, AGE_VERIFICATION_REQUIRED_LIMIT=125, IS_TEST_ACCOUNT=false, ACCOUNT_PLAYBACK_RESTRICTED=false, PRIMARY_LANGUAGE=en-DE, AB_TEST_ALLOCATIONS={9107={TEST_CELL=1, TEST_ID=9107, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10490={TEST_CELL=2, TEST_ID=10490, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6951={TEST_CELL=1, TEST_ID=6951, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10294={TEST_CELL=5, TEST_ID=10294, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10492={TEST_CELL=2, TEST_ID=10492, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7324={TEST_CELL=1, TEST_ID=7324, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9581={TEST_CELL=1, TEST_ID=9581, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10536={TEST_CELL=1, TEST_ID=10536, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3238={TEST_CELL=1, TEST_ID=3238, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 7833={TEST_CELL=1, TEST_ID=7833, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7997={TEST_CELL=2, TEST_ID=7997, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7559={TEST_CELL=1, TEST_ID=7559, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 11026={TEST_CELL=1, TEST_ID=11026, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7497={TEST_CELL=1, TEST_ID=7497, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9951={TEST_CELL=2, TEST_ID=9951, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9995={TEST_CELL=1, TEST_ID=9995, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10581={TEST_CELL=1, TEST_ID=10581, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9754={TEST_CELL=1, TEST_ID=9754, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7412={TEST_CELL=1, TEST_ID=7412, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7291={TEST_CELL=1, TEST_ID=7291, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3253={TEST_CELL=1, TEST_ID=3253, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 9791={TEST_CELL=2, TEST_ID=9791, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7095={TEST_CELL=1, TEST_ID=7095, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 9272={TEST_CELL=1, TEST_ID=9272, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7096={TEST_CELL=1, TEST_ID=7096, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 10109={TEST_CELL=2, TEST_ID=10109, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10508={TEST_CELL=4, TEST_ID=10508, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6952={TEST_CELL=2, TEST_ID=6952, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8338={TEST_CELL=3, TEST_ID=8338, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6955={TEST_CELL=2, TEST_ID=6955, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9868={TEST_CELL=1, TEST_ID=9868, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9708={TEST_CELL=1, TEST_ID=9708, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10102={TEST_CELL=2, TEST_ID=10102, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10621={TEST_CELL=4, TEST_ID=10621, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9883={TEST_CELL=2, TEST_ID=9883, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6496={TEST_CELL=1, TEST_ID=6496, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7860={TEST_CELL=2, TEST_ID=7860, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9800={TEST_CELL=1, TEST_ID=9800, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9965={TEST_CELL=1, TEST_ID=9965, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10350={TEST_CELL=1, TEST_ID=10350, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7864={TEST_CELL=1, TEST_ID=7864, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10074={TEST_CELL=2, TEST_ID=10074, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10591={TEST_CELL=1, TEST_ID=10591, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3221={TEST_CELL=1, TEST_ID=3221, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 10359={TEST_CELL=1, TEST_ID=10359, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10436={TEST_CELL=2, TEST_ID=10436, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10755={TEST_CELL=2, TEST_ID=10755, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10757={TEST_CELL=2, TEST_ID=10757, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9317={TEST_CELL=2, TEST_ID=9317, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10750={TEST_CELL=1, TEST_ID=10750, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9917={TEST_CELL=6, TEST_ID=9917, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10477={TEST_CELL=2, TEST_ID=10477, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6847={TEST_CELL=2, TEST_ID=6847, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9915={TEST_CELL=1, TEST_ID=9915, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10313={TEST_CELL=2, TEST_ID=10313, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8288={TEST_CELL=1, TEST_ID=8288, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8047={TEST_CELL=2, TEST_ID=8047, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9771={TEST_CELL=2, TEST_ID=9771, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9772={TEST_CELL=3, TEST_ID=9772, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9579={TEST_CELL=2, TEST_ID=9579, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 11054={TEST_CELL=1, TEST_ID=11054, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8169={TEST_CELL=3, TEST_ID=8169, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10205={TEST_CELL=2, TEST_ID=10205, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10920={TEST_CELL=1, TEST_ID=10920, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9968={TEST_CELL=1, TEST_ID=9968, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10880={TEST_CELL=1, TEST_ID=10880, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9966={TEST_CELL=1, TEST_ID=9966, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7868={TEST_CELL=2, TEST_ID=7868, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9967={TEST_CELL=1, TEST_ID=9967, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10567={TEST_CELL=1, TEST_ID=10567, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10203={TEST_CELL=2, TEST_ID=10203, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}}, MEMBERSHIP_STATUS=CURRENT_MEMBER, MATURITY_TYPE=ADULTS, STREAM_QUALITY=UNSPECIFIED, EXPERIENCE_TYPE=regular, IS_PARTNER_PREVIEW_ACCOUNT=false, SIGNUP_COUNTRY=DE}",
+        "OPTION_TREE_DEFINITION": "{GROUP=OPTION_TREE_DEFINITION_GROUP, REF=TREE_2}",
+        "JSON": "{MOBILE_ASN_FILTERING_ENABLED=true, sessionid=, SUPPORTS_PREVIEW_CONTENT=true, INTEGRATION_CONTEXT=, ACCOUNT_ID=, VISITOR_DEVICE_ID=, CUSTOMER_ID=**************, GEO_PROPERTIES={zip=, ipaddress=, city=, timezone=GMT+1, nf_ip_provider=blend, long=8.59917, country_code=DE, domain=hostingbuy.de, asnum=28753, dma=276003, company=Leaseweb_Deutschland_GmbH_Cloudstack_Premium, blocked_proxy=1, lat=50.0881, region_code=HE}, CLIENT_VERSIONS={USER_INTERFACE=akira, CLIENT=4.0004.899.011}}, TRACKS_ONLY=false, NON_LETTERBOXED_VIDEO_PREFERRED=false, ENCODING_PROFILE_NAMES={0=playready-h264bpl30-dash, 1=playready-h264mpl30-dash, 2=playready-h264mpl31-dash, 3=playready-h264mpl40-dash, 4=heaac-2-dash, 5=simplesdh, 6=BIF240, 7=BIF320, 8=ddplus-2.0-dash, 9=ddplus-5.1-dash}, PREFERRED_LANGUAGES={0=de-DE}, SUPPORTS_WATERMARK=false, PRESENTATION_TYPES={0=COMMENTARY, 1=PRIMARY, 2=ASSISTIVE}, FLAVOR=PRE_FETCH, CUSTOMER_DATA={PROFILE_ID=, RESTRICTED_BY_TESTER_TYPE=false, MATURITY_LEVEL=1000000, ACCOUNT_ID=, IS_AGE_VERIFIED=true, SIGNUP_DATE=, ALLOWED_VIDEO_FORMAT=Ultra_HD, AGE_VERIFICATION_REQUIRED_LIMIT=125, IS_TEST_ACCOUNT=false, ACCOUNT_PLAYBACK_RESTRICTED=false, PRIMARY_LANGUAGE=en-DE, AB_TEST_ALLOCATIONS={9107={TEST_CELL=1, TEST_ID=9107, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10490={TEST_CELL=2, TEST_ID=10490, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6951={TEST_CELL=1, TEST_ID=6951, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10294={TEST_CELL=5, TEST_ID=10294, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10492={TEST_CELL=2, TEST_ID=10492, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7324={TEST_CELL=1, TEST_ID=7324, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9581={TEST_CELL=1, TEST_ID=9581, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10536={TEST_CELL=1, TEST_ID=10536, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3238={TEST_CELL=1, TEST_ID=3238, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 7833={TEST_CELL=1, TEST_ID=7833, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7997={TEST_CELL=2, TEST_ID=7997, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7559={TEST_CELL=1, TEST_ID=7559, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 11026={TEST_CELL=1, TEST_ID=11026, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7497={TEST_CELL=1, TEST_ID=7497, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9951={TEST_CELL=2, TEST_ID=9951, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9995={TEST_CELL=1, TEST_ID=9995, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10581={TEST_CELL=1, TEST_ID=10581, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9754={TEST_CELL=1, TEST_ID=9754, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7412={TEST_CELL=1, TEST_ID=7412, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7291={TEST_CELL=1, TEST_ID=7291, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3253={TEST_CELL=1, TEST_ID=3253, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 9791={TEST_CELL=2, TEST_ID=9791, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7095={TEST_CELL=1, TEST_ID=7095, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 9272={TEST_CELL=1, TEST_ID=9272, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7096={TEST_CELL=1, TEST_ID=7096, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 10109={TEST_CELL=2, TEST_ID=10109, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10508={TEST_CELL=4, TEST_ID=10508, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6952={TEST_CELL=2, TEST_ID=6952, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8338={TEST_CELL=3, TEST_ID=8338, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6955={TEST_CELL=2, TEST_ID=6955, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9868={TEST_CELL=1, TEST_ID=9868, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9708={TEST_CELL=1, TEST_ID=9708, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10102={TEST_CELL=2, TEST_ID=10102, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10621={TEST_CELL=4, TEST_ID=10621, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9883={TEST_CELL=2, TEST_ID=9883, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6496={TEST_CELL=1, TEST_ID=6496, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7860={TEST_CELL=2, TEST_ID=7860, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9800={TEST_CELL=1, TEST_ID=9800, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9965={TEST_CELL=1, TEST_ID=9965, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10350={TEST_CELL=1, TEST_ID=10350, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7864={TEST_CELL=1, TEST_ID=7864, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10074={TEST_CELL=2, TEST_ID=10074, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10591={TEST_CELL=1, TEST_ID=10591, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 3221={TEST_CELL=1, TEST_ID=3221, EXPLICITLY_ALLOCATED=false, IS_FALLBACK_ALLOCATION=false}, 10359={TEST_CELL=1, TEST_ID=10359, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10436={TEST_CELL=2, TEST_ID=10436, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10755={TEST_CELL=2, TEST_ID=10755, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10757={TEST_CELL=2, TEST_ID=10757, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9317={TEST_CELL=2, TEST_ID=9317, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10750={TEST_CELL=1, TEST_ID=10750, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9917={TEST_CELL=6, TEST_ID=9917, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10477={TEST_CELL=2, TEST_ID=10477, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 6847={TEST_CELL=2, TEST_ID=6847, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9915={TEST_CELL=1, TEST_ID=9915, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10313={TEST_CELL=2, TEST_ID=10313, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8288={TEST_CELL=1, TEST_ID=8288, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8047={TEST_CELL=2, TEST_ID=8047, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9771={TEST_CELL=2, TEST_ID=9771, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9772={TEST_CELL=3, TEST_ID=9772, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9579={TEST_CELL=2, TEST_ID=9579, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 11054={TEST_CELL=1, TEST_ID=11054, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 8169={TEST_CELL=3, TEST_ID=8169, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10205={TEST_CELL=2, TEST_ID=10205, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10920={TEST_CELL=1, TEST_ID=10920, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9968={TEST_CELL=1, TEST_ID=9968, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10880={TEST_CELL=1, TEST_ID=10880, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9966={TEST_CELL=1, TEST_ID=9966, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 7868={TEST_CELL=2, TEST_ID=7868, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 9967={TEST_CELL=1, TEST_ID=9967, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10567={TEST_CELL=1, TEST_ID=10567, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}, 10203={TEST_CELL=2, TEST_ID=10203, EXPLICITLY_ALLOCATED=true, IS_FALLBACK_ALLOCATION=false}}, MEMBERSHIP_STATUS=CURRENT_MEMBER, MATURITY_TYPE=ADULTS, STREAM_QUALITY=UNSPECIFIED, EXPERIENCE_TYPE=regular, IS_PARTNER_PREVIEW_ACCOUNT=false, SIGNUP_COUNTRY=DE}, METADATA_SIMULATION_ENABLED=false, REQUEST_DIMENSION={REQUEST_STAGE=FRESH, REQUEST_USAGE=PLAYBACK, REQUEST_SOURCE=API}, sessionparams={uiplaycontext=null, pinCapableClient=false}, trackId=0, PREFERRED_PRESENTATION_TYPE=PRIMARY, INCOMPATIBLE_MEDIA_INCLUDED=false, OPEN_CONNECT_SIGNALS={IS_HTTPS_SUPPORTED=false}, NETWORK_TYPE=UNKNOWN, DRM_SYSTEM_TYPE=EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED, appid=, SUPPORTS_PRE_RELEASE_PIN=false, VIEWABLE_ID=80117711, OBJECT_GROUPS={OPTION_TREE_DEFINITION_GROUP={TREE_2={OPTION_LIST_DEFINITIONS={0={GROUPING={0=AUDIO_CHANNELS_FORMAT, 1=AUDIO_LANGUAGE_BCP47}, ORDER_SCHEME=DEFAULT, ORDER_SCHEME_INSTRUCTION_SET=AUDIO, NAME=Audio}, 1={GROUPING={0=TEXT_PRESENTATION_TYPE, 1=TEXT_IS_NONE_TRACK, 2=TEXT_LANGUAGE_BCP47, 3=TEXT_LANGUAGE_LABEL, 4=TEXT_TYPE}, ORDER_SCHEME=DEFAULT, ORDER_SCHEME_INSTRUCTION_SET=TEXT, NAME=Subtitle}}, ID=TREE_2}}}, OFFLINE_DOWNLOAD_DESCRIPTOR={QUALITY=DEFAULT}, MEDIAROOM_VIDEO_BITRATE_MULTIPLIER=1.0, OPTION_TREE_DEFINITION={GROUP=OPTION_TREE_DEFINITION_GROUP, REF=TREE_2}, BRANCHED_CONTENT_REQUESTED=false}",
+        "sessionparams": "{uiplaycontext=null, pinCapableClient=false}",
+        "DEVICE_REPORTING_NAME": "HTML 5",
+        "OBJECT_GROUPS": "{OPTION_TREE_DEFINITION_GROUP={TREE_2={OPTION_LIST_DEFINITIONS={0={GROUPING={0=AUDIO_CHANNELS_FORMAT, 1=AUDIO_LANGUAGE_BCP47}, ORDER_SCHEME=DEFAULT, ORDER_SCHEME_INSTRUCTION_SET=AUDIO, NAME=Audio}, 1={GROUPING={0=TEXT_PRESENTATION_TYPE, 1=TEXT_IS_NONE_TRACK, 2=TEXT_LANGUAGE_BCP47, 3=TEXT_LANGUAGE_LABEL, 4=TEXT_TYPE}, ORDER_SCHEME=DEFAULT, ORDER_SCHEME_INSTRUCTION_SET=TEXT, NAME=Subtitle}}, ID=TREE_2}}}",
+        "VIEWABLE_ID": "80117711",
+        "PREFERRED_LANGUAGES": "{0=de-DE}",
+        "COUNTRY_CODE": "DE",
+        "METADATA_SIMULATION_ENABLED": "false",
+        "DRM_SYSTEM_TYPE": "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED",
+        "appid": "",
+        "DEVICE_OPERATIONAL_NAME": "cadmium",
+        "sessionid": "14673889385265",
+        "PREFERRED_PRESENTATION_TYPE": "PRIMARY",
+        "FLAVOR": "PRE_FETCH",
+        "MEDIAROOM_VIDEO_BITRATE_MULTIPLIER": "1.0",
+        "MOBILE_ASN_FILTERING_ENABLED": "true",
+        "SUPPORTS_PRE_RELEASE_PIN": "false",
+        "SUPPORTS_WATERMARK": "false",
+        "ENCODING_PROFILE_NAMES": "{0=playready-h264bpl30-dash, 1=playready-h264mpl30-dash, 2=playready-h264mpl31-dash, 3=playready-h264mpl40-dash, 4=heaac-2-dash, 5=simplesdh, 6=BIF240, 7=BIF320, 8=ddplus-2.0-dash, 9=ddplus-5.1-dash}",
+        "device.reportingName": "HTML 5",
+        "NON_LETTERBOXED_VIDEO_PREFERRED": "false",
+        "REQUEST_DIMENSION": "{REQUEST_STAGE=FRESH, REQUEST_USAGE=PLAYBACK, REQUEST_SOURCE=API}",
+        "INTEGRATION_CONTEXT": "**************, ACCOUNT_ID=, VISITOR_DEVICE_ID=, CUSTOMER_ID=, GEO_PROPERTIES={zip=, ipaddress=, city=, timezone=GMT+1, nf_ip_provider=blend, long=8.59917, country_code=DE, domain=hostingbuy.de, asnum=28753, dma=276003, company=Leaseweb_Deutschland_GmbH_Cloudstack_Premium, blocked_proxy=1, lat=50.0881, region_code=HE}, CLIENT_VERSIONS={USER_INTERFACE=akira, CLIENT=4.0004.899.011}}",
+        "TRACKS_ONLY": "false"
+      },
+      "REQUEST_CONTEXT_DEVICE_TYPE_ID": 1109,
+      "REQUEST_CONTEXT_ENVIRONMENT": "prod",
+      "OFFLINE_DOWNLOAD_DESCRIPTOR": {
+        "QUALITY": "DEFAULT"
+      },
+      "METADATA_SIMULATION_ENABLED": false,
+      "DRM_SYSTEM_TYPE": "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED",
+      "REQUEST_DIMENSION": {
+        "REQUEST_STAGE": "FRESH",
+        "REQUEST_USAGE": "PLAYBACK",
+        "REQUEST_SOURCE": "API"
+      },
+      "ROOT_CAUSE_STACK_TRACE": "Not available.",
+      "REQUEST_CONTEXT_CLIENT_ID": "74a8639a-bfbd-497e-b1b2-7b144a187d67",
+      "TRACKS_ONLY": false,
+      "sessionid": "14673889385265",
+      "SUCCESS": false,
+      "PREFERRED_PRESENTATION_TYPE": "PRIMARY",
+      "FLAVOR": "PRE_FETCH",
+      "ID": "E1-BQFRAAELELrppwMae7i08rR_xfjT4dxw1vr2hkmgVJlN-bIGdh3cGxLORcdd8G0NoM6zbJE92ddgQubE1aHPkAPO-v85XwUUlj3QvHrERxSJIuln_Kx__TWr8I6k_S4FkS_FZH1fJkTzQf6vQykeC74iI1OsNfdjnCSDrezgBZpblPgddws0mw..",
+      "MOBILE_ASN_FILTERING_ENABLED": true,
+      "DESCRIPTION": "Blacklisted IP Address",
+      "SUPPORTS_PRE_RELEASE_PIN": false,
+      "REQUEST_CONTEXT_REQUEST_ID": "977e3f59-0499-4bda-b6b6-581adb76fcf7-72095737",
+      "appid": "",
+      "REQUEST_CONTEXT_ENDPOINT_PATH": "/cbp/cadmium-13",
+      "SUPPORTS_WATERMARK": false,
+      "EXCEPTION_TYPE": "INVALID_REQUEST_BLACKLISTED_IP",
+      "ENCODING_PROFILE_NAMES": {
+        "1": "playready-h264mpl30-dash",
+        "0": "playready-h264bpl30-dash",
+        "3": "playready-h264mpl40-dash",
+        "2": "playready-h264mpl31-dash",
+        "5": "simplesdh",
+        "4": "heaac-2-dash",
+        "7": "BIF320",
+        "6": "BIF240",
+        "9": "ddplus-5.1-dash",
+        "8": "ddplus-2.0-dash"
+      },
+      "REQUEST_CONTEXT_COUNTRY": "DE",
+      "NON_LETTERBOXED_VIDEO_PREFERRED": false,
+      "MEDIAROOM_VIDEO_BITRATE_MULTIPLIER": 1.0,
+      "TRANSLATED": true,
+      "INTEGRATION_CONTEXT": {
+        "VISITOR_DEVICE_ID": "",
+        "CLIENT_VERSIONS": {
+          "USER_INTERFACE": "akira",
+          "CLIENT": "4.0004.899.011"
+        },
+        "ACCOUNT_ID": "************",
+        "ESN": "",
+        "CUSTOMER_ID": "",
+        "GEO_PROPERTIES": {
+          "city": "",
+          "domain": "hostingbuy.de",
+          "region_code": "HE",
+          "asnum": "28753",
+          "zip": "",
+          "dma": "276003",
+          "company": "Leaseweb_Deutschland_GmbH_Cloudstack_Premium",
+          "long": "8.59917",
+          "blocked_proxy": "1",
+          "country_code": "DE",
+          "lat": "50.0881",
+          "timezone": "GMT+1",
+          "nf_ip_provider": "blend",
+          "ipaddress": "*************"
+        }
+      },
+      "MESSAGE": "Unable to create context (due to ContentViewableFailure) for viewableId=80117711",
+      "REQUEST_CONTEXT_CLOCK_TIME": 1536401388
+    }
+  },
+  "success": false
+}

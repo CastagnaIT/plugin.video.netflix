@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="30014">
+    <setting id="email" type="text" visible="false" default=""/>
+    <setting id="password" type="text" visible="false" default=""/>
+    <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
+    <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
+    <setting label="30053" type="lsep"/>
+    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
+    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
+    <setting type="sep"/>
+    <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
+  </category>
+  <category label="30025">
+    <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
+    <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
+    <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
+    <setting id="initial_mylist_sync" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/initial_mylist_sync/)" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
+    <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
+    <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
+    <setting id="invalidate_cache_on_mylist_modify" type="bool" label="No longer in use" default="true" visible="false"/>
+    <setting label="30065" type="lsep"/>
+    <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
+    <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
+    <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
+    <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
+    <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
+    <setting id="update_running" type="text" visible="false" default="false"/>
+  </category>
+  <category label="30037">
+    <setting id="customview" type="bool" label="30038" default="false"/>
+    <setting id="viewmodelogin" type="select" label="30044" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="7" enable="eq(-1,true)" visible="false"/>
+    <setting id="viewmodeloginid" type="number" label="30143" visible="eq(-1,9) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>
+    <setting id="viewmodefolder" type="select" label="30039" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="7" enable="eq(-3,true)"/>
+    <setting id="viewmodefolderid" type="number" label="30143" visible="eq(-1,9) + eq(-4,true)" enable="eq(-4,true)" subsetting="true"/>
+    <setting id="viewmodemovie" type="select" label="30040" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-5,true)"/>
+    <setting id="viewmodemovieid" type="number" label="30143" visible="eq(-1,9) + eq(-6,true)" enable="eq(-6,true)" subsetting="true"/>
+    <setting id="viewmodeshow" type="select" label="30041" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-7,true)"/>
+    <setting id="viewmodeshowid" type="number" label="30143" visible="eq(-1,9) + eq(-8,true)" enable="eq(-8,true)" subsetting="true"/>
+    <setting id="viewmodeseason" type="select" label="30042" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-9,true)"/>
+    <setting id="viewmodeseasonid" type="number" label="30143" visible="eq(-1,9) + eq(-10,true)" enable="eq(-10,true)" subsetting="true"/>
+    <setting id="viewmodeepisode" type="select" label="30043" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="5" enable="eq(-11,true)"/>
+    <setting id="viewmodeepisodeid" type="number" label="30143" visible="eq(-1,9) + eq(-12,true)" enable="eq(-12,true)" subsetting="true"/>
+    <setting id="viewmodeexported" type="select" label="30074" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-13,true)"/>
+    <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,9) + eq(-14,true)" enable="eq(-14,true)" subsetting="true"/>
+  </category>
+  <category label="30078">
+    <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
+    <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
+    <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
+    <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="true"/>
+  </category>
+  <category label="30023">
+    <setting label="30115" type="lsep"/>
+    <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
+    <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
+    <setting id="enable_atmos_sound" type="bool" label="30111" default="false" visible="false"/> <!-- Deprecated (linked to dolby_sound) -->
+    <setting id="enable_vp9_profiles" type="bool" label="30137" default="true"/>
+    <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
+    <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="enable_force_hdcp" type="bool" label="30081" default="true"/>
+    <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
+    <setting label="30116" type="lsep"/>
+    <setting id="list_limit_results" type="select" label="30147" values="&#8734;|100|200|300|400" default="300"/>
+    <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
+    <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
+    <setting id="enable_timing" type="bool" label="30134" default="false"/>
+    <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
+    <setting id="ssl_verification" type="bool" label="30024" default="true"/>
+    <setting id="enable_tracking" type="bool" label="30032" default="true"/>
+    <setting id="esn" type="text" label="30034" value="" default=""/>
+    <setting id="hidden_esn" visible="false" value="" />
+    <setting id="tracking_id" value="" visible="false"/>
+    <setting id="msl_service_port" value="8000" visible="false"/>
+    <setting id="ns_service_port" value="8001" visible="false"/>
+    <setting id="show_update_db" type="bool" default="false" visible="false"/>
+    <setting label="30117" type="lsep"/>
+    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
+    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
+    <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
+    <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/?on_disk=True)"/>
+  </category>
+</settings>
