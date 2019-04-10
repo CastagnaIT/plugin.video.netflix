@@ -206,7 +206,7 @@ def compress_data(data):
 
 def merge_dicts(dict_to_merge, merged_dict):
     """Recursively merge the contents of dict_to_merge into merged_dict.
-    Values that are already present in merged_dict will not be overwritten
+    Values that are already present in merged_dict will be overwritten
     if they are also present in dict_to_merge"""
     for key, value in dict_to_merge.iteritems():
         if isinstance(merged_dict.get(key), dict):
