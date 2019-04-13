@@ -107,16 +107,14 @@ def video_list(list_id, perpetual_range_start=None):
     and the 'length' tag never return to the actual total count of the elements
     """
     common.debug('Requesting video list {}'.format(list_id))
-    return VideoList(common.make_call(
-        'perpetual_path_request',
-        {
-            'path_type': 'videolist',
-            'paths':
-                build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
-                            VIDEO_LIST_PARTIAL_PATHS),
-            'length_params1': list_id,
-            'perpetual_range_start': perpetual_range_start
-        }))
+    paths = build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
+                        VIDEO_LIST_PARTIAL_PATHS)
+    callargs = {
+        'paths': paths,
+        'length_params': ['stdlist', ['lists', list_id]],
+        'perpetual_range_start': perpetual_range_start
+    }
+    return VideoList(common.make_call('perpetual_path_request', callargs))
 
 
 @common.time_execution(immediate=False)
@@ -127,19 +125,20 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None)
     this type of request allows to obtain more than ~40 results
     """
     common.debug('Requesting video list sorted {}'.format(context_id))
-    call_data = {'length_params1': context_name,
-                 'perpetual_range_start': perpetual_range_start}
+    base_path = [context_name]
+    response_type = 'stdlist'
     if context_id:
-        call_data['path_type'] = 'videolist_wid_sorted'
-        call_data['paths'] = build_paths([context_name, context_id, g.REQ_SORT_ORDER_TYPE, RANGE_SELECTOR],
-                                         VIDEO_LIST_PARTIAL_PATHS)
-        call_data['length_params2'] = context_id
-    else:
-        call_data['path_type'] = 'videolist_sorted'
-        call_data['paths'] = build_paths([context_name, g.REQ_SORT_ORDER_TYPE, RANGE_SELECTOR],
-                                         VIDEO_LIST_PARTIAL_PATHS)
-    return VideoListSorted(common.make_call(
-        'perpetual_path_request', call_data), context_name, context_id)
+        base_path.append(context_id)
+        response_type = 'stdlist_wid'
+    base_path.append(g.REQ_SORT_ORDER_TYPE)
+    paths = build_paths(base_path + [RANGE_SELECTOR], VIDEO_LIST_PARTIAL_PATHS)
+    callargs = {
+        'paths': paths,
+        'length_params': [response_type, base_path],
+        'perpetual_range_start': perpetual_range_start
+    }
+    return VideoListSorted(common.make_call('perpetual_path_request', callargs),
+                           context_name, context_id)
 
 
 @common.time_execution(immediate=False)
@@ -170,6 +169,7 @@ def genre(genre_id):
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
           ['id', 'name']]]))
 
+
 @common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON)
 def seasons(videoid):
@@ -178,16 +178,12 @@ def seasons(videoid):
         raise common.InvalidVideoId('Cannot request season list for {}'
                                     .format(videoid))
     common.debug('Requesting season list for show {}'.format(videoid))
-    return SeasonList(
-        videoid,
-        common.make_call(
-            'perpetual_path_request',
-            {
-                'path_type': 'seasonlist',
-                'paths': build_paths(['videos', videoid.tvshowid],
-                                     SEASONS_PARTIAL_PATHS),
-                'length_params1': videoid.tvshowid
-            }))
+    paths = build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS)
+    callargs = {
+        'paths': paths,
+        'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']]
+    }
+    return SeasonList(videoid, common.make_call('perpetual_path_request', callargs))
 
 
 @common.time_execution(immediate=False)
@@ -198,23 +194,16 @@ def episodes(videoid):
         raise common.InvalidVideoId('Cannot request episode list for {}'
                                     .format(videoid))
     common.debug('Requesting episode list for {}'.format(videoid))
-    return EpisodeList(
-        videoid,
-        common.make_call(
-            'perpetual_path_request',
-            {
-                'path_type': 'episodelist',
-                'paths':
-                    [['seasons', videoid.seasonid, 'summary']] +
-                    build_paths(
-                        ['seasons', videoid.seasonid, 'episodes',
-                         RANGE_SELECTOR],
-                        EPISODES_PARTIAL_PATHS) +
-                    build_paths(
-                        ['videos', videoid.tvshowid],
-                        ART_PARTIAL_PATHS + [['title']]),
-                'length_params1': videoid.seasonid
-            }))
+    paths = [['seasons', videoid.seasonid, 'summary']]
+    paths.extend(build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_SELECTOR],
+                             EPISODES_PARTIAL_PATHS))
+    paths.extend(build_paths(['videos', videoid.tvshowid],
+                             ART_PARTIAL_PATHS + [['title']]))
+    callargs = {
+        'paths': paths,
+        'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']]
+    }
+    return EpisodeList(videoid, common.make_call('perpetual_path_request', callargs))
 
 
 @common.time_execution(immediate=False)
@@ -341,13 +330,14 @@ def search(search_term, perpetual_range_start=None):
     common.debug('Searching for {}'.format(search_term))
     base_path = ['search', 'byTerm', '|' + search_term, 'titles', MAX_PATH_REQUEST_SIZE]
     paths = [base_path + [['id', 'name', 'requestId']]]
-    paths.extend(build_paths(base_path + [RANGE_SELECTOR, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
-    call_data = {'path_type': 'searchlist',
-                 'paths': paths,
-                 'length_params1': 'search',
-                 'length_params2': 'byReference',
-                 'perpetual_range_start': perpetual_range_start}
-    return SearchVideoList(common.make_call('perpetual_path_request', call_data))
+    paths.extend(build_paths(base_path + [RANGE_SELECTOR, 'reference'],
+                             VIDEO_LIST_PARTIAL_PATHS))
+    callargs = {
+        'paths': paths,
+        'length_params': ['searchlist', ['search', 'byReference']],
+        'perpetual_range_start': perpetual_range_start
+    }
+    return SearchVideoList(common.make_call('perpetual_path_request', callargs))
 
 
 @common.time_execution(immediate=False)
