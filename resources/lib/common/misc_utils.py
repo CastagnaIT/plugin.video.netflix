@@ -38,7 +38,9 @@ def find_episode_metadata(videoid, metadata):
 def select_port(service):
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
+    g.SETTINGS_MONITOR_IGNORE = True
     g.ADDON.setSetting('{}_service_port'.format(service.lower()), str(port))
+    g.SETTINGS_MONITOR_IGNORE = False
     info('[{}] Picked Port: {}'.format(service, port))
     return port
 
@@ -280,3 +282,19 @@ def make_list(arg):
             else ([arg]
                   if arg is not None
                   else []))
+
+def get_system_platform():
+    platform = "unknown"
+    if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
+        platform = "linux"
+    elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
+        platform = "android"
+    elif xbmc.getCondVisibility('system.platform.xbox'):
+        platform = "xbox"
+    elif xbmc.getCondVisibility('system.platform.windows'):
+        platform = "windows"
+    elif xbmc.getCondVisibility('system.platform.osx'):
+        platform = "osx"
+    elif xbmc.getCondVisibility('system.platform.ios'):
+        platform = "ios"
+    return platform

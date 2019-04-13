@@ -14,7 +14,8 @@ class SettingsMonitor(xbmc.Monitor):
         xbmc.Monitor.__init__(self)
 
     def onSettingsChanged(self):
-        self._on_change()
+        if not g.SETTINGS_MONITOR_IGNORE:
+            self._on_change()
 
     def _on_change(self):
         common.debug('SettingsMonitor: Settings changed, reinitialize global settings')

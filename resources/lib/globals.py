@@ -195,6 +195,7 @@ class GlobalVariables(object):
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
         self._library = None
+        self.SETTINGS_MONITOR_IGNORE = False
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -257,6 +258,60 @@ class GlobalVariables(object):
                 xbmcvfs.mkdirs(
                     xbmc.translatePath(
                         os.path.join(self.CACHE_PATH, bucket)))
+
+    def initial_addon_configuration(self):
+        """
+        Initial addon configuration,
+        helps users to automatically configure addon parameters for proper viewing of videos
+        """
+        run_initial_config = self.ADDON.getSettingBool('run_init_configuration')
+        if run_initial_config:
+            import resources.lib.common as common
+            import resources.lib.kodi.ui as ui
+            self.SETTINGS_MONITOR_IGNORE = True
+            system = common.get_system_platform()
+            common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
+            if system in ['osx','ios','xbox']:
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', True)
+            elif system == 'windows':
+                # Currently inputstream does not support hardware video acceleration on windows,
+                # there is no guarantee that we will get 4K without video hardware acceleration,
+                # so no 4K configuration
+                self.ADDON.setSettingBool('enable_vp9_profiles', True)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
+            elif system == 'android':
+                ultrahd_capable_device = False
+                premium_account = ui.ask_for_confirmation(common.get_local_string(30154),
+                                                          common.get_local_string(30155))
+                if premium_account:
+                    ultrahd_capable_device = ui.ask_for_confirmation(common.get_local_string(30154),
+                                                                     common.get_local_string(30156))
+                if ultrahd_capable_device:
+                    ui.show_ok_dialog(common.get_local_string(30154),
+                                      common.get_local_string(30157))
+                    ia_addon = xbmcaddon.Addon('inputstream.adaptive')
+                    if ia_addon:
+                        xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
+                    else:
+                        ui.show_ok_dialog(common.get_local_string(30154),
+                                          common.get_local_string(30046))
+                    self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                    self.ADDON.setSettingBool('enable_hevc_profiles', True)
+                else:
+                    # VP9 should have better performance since there is no need for 4k
+                    self.ADDON.setSettingBool('enable_vp9_profiles', True)
+                    self.ADDON.setSettingBool('enable_hevc_profiles', False)
+                self.ADDON.setSettingBool('enable_force_hdcp', ultrahd_capable_device)
+            elif system == 'linux':
+                # Some linux distributions have encountered problems with VP9, so disabled
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', True)
+            else:
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
+            self.ADDON.setSettingBool('run_init_configuration', False)
+            self.SETTINGS_MONITOR_IGNORE = False
 
     def init_persistent_storage(self):
         """

@@ -631,3 +631,23 @@ msgstr "Suggerimenti per te"
 msgctxt "#30153"
 msgid "Year released"
 msgstr "Anno di uscita"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Configurazione Netflix addon"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Hai un account Netflix Premium?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Il dispositivo supporta lo standard 4K?\r\nIl dispositivo deve:\r\nEssere certificato Netflix, supportare Widevine Security level L1 ed avere un display 4K HDCP 2.2"
+
+msgctxt "#30157"
+msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Sarà ora aperto il pannello di InputStream, dove è necessario ABILITARE l'opzione \"Override HDCP status\""
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Mostra schermata per la configurazione all'avvio dell'addon"

@@ -86,6 +86,7 @@ if __name__ == '__main__':
     success = False
 
     try:
+        g.initial_addon_configuration()
         route(filter(None, g.PATH.split('/')))
         success = True
     except common.BackendNotReady:

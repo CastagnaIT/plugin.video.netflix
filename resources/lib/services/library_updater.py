@@ -43,24 +43,29 @@ class LibraryUpdateService(object):
         """
         Checks if the scheduled time for a library update has been reached
         """
-        now = datetime.now()
-        update_frequency = g.ADDON.getSettingInt('auto_update')
-        interval = g.ADDON.getSettingInt('schedule_check_interval')
-        next_schedule_check = (self.last_schedule_check +
-                               timedelta(minutes=interval))
+        try:
+            now = datetime.now()
+            update_frequency = g.ADDON.getSettingInt('auto_update')
+            interval = g.ADDON.getSettingInt('schedule_check_interval')
+            next_schedule_check = (self.last_schedule_check +
+                                   timedelta(minutes=interval))
 
-        if not update_frequency or now <= next_schedule_check:
+            if not update_frequency or now <= next_schedule_check:
+                return False
+
+            self.last_schedule_check = now
+            time = g.ADDON.getSetting('update_time') or '00:00'
+            lastrun_date = (g.ADDON.getSetting('last_update') or
+                            '1970-01-01')
+            lastrun = common.strp('{} {}'.format(lastrun_date, time[0:5]),
+                                  '%Y-%m-%d %H:%M')
+            nextrun = lastrun + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
+            common.log(
+                'It\'s currently {}, next run is scheduled for {}'
+                .format(now, nextrun))
+
+            return now >= nextrun
+        except TypeError:
+            # When there is concurrency between getSettingX and setSettingX at the same time,
+            # the get settings fails to read
             return False
-
-        self.last_schedule_check = now
-        time = g.ADDON.getSetting('update_time') or '00:00'
-        lastrun_date = (g.ADDON.getSetting('last_update') or
-                        '1970-01-01')
-        lastrun = common.strp('{} {}'.format(lastrun_date, time[0:5]),
-                              '%Y-%m-%d %H:%M')
-        nextrun = lastrun + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
-        common.log(
-            'It\'s currently {}, next run is scheduled for {}'
-            .format(now, nextrun))
-
-        return now >= nextrun
