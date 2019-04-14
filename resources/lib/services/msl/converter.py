@@ -144,10 +144,13 @@ def _convert_audio_track(audio_track, period, init_length, default):
 
 def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
                                 channels_count):
+    codec_type = 'aac'
+    if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
+        codec_type = 'ec-3'
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
-        codecs='ec-3' if 'ddplus' in downloadable['content_profile'] else 'aac',
+        codecs=codec_type,
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
     ET.SubElement(

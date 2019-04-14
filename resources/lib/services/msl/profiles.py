@@ -11,7 +11,7 @@ HEVC = 'hevc-main-'
 HEVC_M10 = 'hevc-main10-'
 CENC_PRK = 'dash-cenc-prk'
 CENC = 'dash-cenc'
-CENC_TL = 'dash-cenc-ctl'
+CENC_TL = 'dash-cenc-tl'
 HDR = 'hevc-hdr-main10-'
 DV = 'hevc-dv-main10-'
 DV5 = 'hevc-dv5-main10-'
@@ -20,6 +20,8 @@ VP9_PROFILE2 = 'vp9-profile2-'
 
 BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 CENC_TL_LEVELS = ['L30-L31-', 'L31-L40-', 'L40-L41-', 'L50-L51-']
+VP9_PROFILE0_LEVELS = ['L21-', 'L30-', 'L31-', 'L40-']
+VP9_PROFILE2_LEVELS = ['L30-', 'L31-', 'L40-', 'L50-', 'L51-']
 
 
 def _profile_strings(base, tails):
@@ -35,8 +37,8 @@ PROFILES = {
         'playready-heaac-2-dash',
         # Unknown
         'BIF240', 'BIF320'],
-    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash',
-                   'ddplus-atmos-dash'],
+    # 'dd-5.1-elem' DD 384< Bitrate, currently inputstream fails to manage this profile
+    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-atmos-dash'],
     'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
              'playready-h264mpl40-dash',
              'playready-h264hpl30-dash', 'playready-h264hpl31-dash',
@@ -60,10 +62,10 @@ PROFILES = {
                          tails=[(BASE_LEVELS, CENC_PRK)]),
     'vp9profile0':
         _profile_strings(base=VP9_PROFILE0,
-                         tails=[(BASE_LEVELS, CENC)]),
+                         tails=[(VP9_PROFILE0_LEVELS, CENC)]),
     'vp9profile2':
         _profile_strings(base=VP9_PROFILE2,
-                         tails=[(BASE_LEVELS, CENC_PRK)])
+                         tails=[(VP9_PROFILE2_LEVELS, CENC_PRK)])
 }
 
 
