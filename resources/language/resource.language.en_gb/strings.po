@@ -651,3 +651,19 @@ msgstr ""
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
 msgstr ""
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr ""
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr ""
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr ""
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr ""

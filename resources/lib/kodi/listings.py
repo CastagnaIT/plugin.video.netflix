@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from functools import wraps
 
+import collections
 import os
 import xbmc
 import xbmcgui
@@ -16,7 +17,7 @@ from .infolabels import add_info, add_art
 from .context_menu import generate_context_menu_items
 
 
-def custom_viewmode(viewtype):
+def custom_viewmode(partial_setting_id):
     """Decorator that sets a custom viewmode if currently in
     a listing of the plugin"""
     # pylint: disable=missing-docstring
@@ -24,36 +25,46 @@ def custom_viewmode(viewtype):
         @wraps(func)
         def set_custom_viewmode(*args, **kwargs):
             # pylint: disable=no-member
-            viewtype_override = func(*args, **kwargs)
-            view = (viewtype_override
-                    if viewtype_override in g.VIEWTYPES
-                    else viewtype)
-            _activate_view(view)
+            override_partial_setting_id = func(*args, **kwargs)
+            _activate_view(override_partial_setting_id
+                           if override_partial_setting_id else
+                           partial_setting_id)
         return set_custom_viewmode
     return decorate_viewmode
 
 
-def _activate_view(view):
-    """Activate the given view if the plugin is run in the foreground
-    and custom views are enabled"""
-    if (('plugin://{}'.format(g.ADDON_ID) in
-         xbmc.getInfoLabel('Container.FolderPath')) and
-            g.ADDON.getSettingBool('customview')):
+def _activate_view(partial_setting_id):
+    """Activate the given view if the plugin is run in the foreground"""
+    if 'plugin://{}'.format(g.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath'):
+        if g.ADDON.getSettingBool('customview'):
+            # Do not change the sequence of this keys, match the return value of the enum xml menu
+            list_views = collections.OrderedDict({
+                ''' 
+                With Kodi 19 should be implemented a method to get the id of the current skin,
+                so we can use this list only with the default skin, 
+                the other skins partially implement the view types of the standard skin of kodi
+                causing also alterations in the translations of the view type names.
+                'List': 50,
+                'Poster': 51,
+                'IconWall': 52,
+                'Shift': 53,
+                'InfoWall': 54,
+                'WideList': 55,
+                'Wall': 500,
+                'Banner': 501,
+                'FanArt': 502,'''
+                'LastUsed': 0, # Leave the management to kodi
+                'Custom': -1
+            })
+            # Force a custom view
+            view_id = list_views.values()[int(g.ADDON.getSettingInt('viewmode' + partial_setting_id))]
+            if view_id == -1:
+                view_id = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id + 'id'))
+            if view_id > 0:
+                xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
 
-        #enum order: List|Poster|IconWall|Shift|InfoWall|WideList|Wall|Banner|FanArt|Custom
-        views_id_list = [50, 51, 52, 53, 54, 55, 500, 501, 502, -1]
 
-        view_id = views_id_list[int(g.ADDON.getSettingInt('viewmode' + view))]
-
-        if view_id == -1:
-            view_id = int(g.ADDON.getSettingInt('viewmode' + view + 'id'))
-
-        if view_id != -1 and view_id != 0:
-            xbmc.executebuiltin(
-                'Container.SetViewMode({})'.format(view_id))
-
-
-@custom_viewmode(g.VIEW_FOLDER)
+@custom_viewmode(g.VIEW_PROFILES)
 @common.time_execution(immediate=False)
 def build_profiles_listing(profiles):
     """Builds the profiles list Kodi screen"""
@@ -62,9 +73,11 @@ def build_profiles_listing(profiles):
     except ImportError:
         from html.parser import HTMLParser
     html_parser = HTMLParser()
+    # The standard kodi theme does not allow to change view type if the content is "files" type,
+    # so here we use "images" type, visually better to see
     finalize_directory([_create_profile_item(guid, profile, html_parser)
                         for guid, profile
-                        in profiles.iteritems()])
+                        in profiles.iteritems()], g.CONTENT_IMAGES)
 
 
 def _create_profile_item(profile_guid, profile, html_parser):
@@ -89,7 +102,7 @@ def _create_profile_item(profile_guid, profile, html_parser):
     return (url, list_item, True)
 
 
-@custom_viewmode(g.VIEW_FOLDER)
+@custom_viewmode(g.VIEW_MAINMENU)
 @common.time_execution(immediate=False)
 def build_main_menu_listing(lolomo):
     """
@@ -146,13 +159,16 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
             sub_menu_data['lolomo_contexts'] = None
+            sub_menu_data['content_type'] = g.CONTENT_SHOW
             sub_menu_data['show_in_menu'] = False
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
             g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
             g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
             directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
     g.PERSISTENT_STORAGE.commit()
-    finalize_directory(directory_items, g.CONTENT_FOLDER, title=g.get_menu_title(menu_data['path'][1]))
+    finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
+                       title=g.get_menu_title(menu_data['path'][1]))
+    return menu_data.get('view')
 
 
 @common.time_execution(immediate=False)
@@ -199,7 +215,9 @@ def build_video_listing(video_list, menu_data, pathitems=None):
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector)
-    finalize_directory(directory_items, menu_data['content_type'], title=g.get_menu_title(menu_data['path'][1]))
+    finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
+                       title=g.get_menu_title(menu_data['path'][1]))
+    return menu_data.get('view')
 
 
 @common.time_execution(immediate=False)

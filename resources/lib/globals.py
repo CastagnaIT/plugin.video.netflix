@@ -26,20 +26,20 @@ class GlobalVariables(object):
     # pylint: disable=attribute-defined-outside-init
     # pylint: disable=invalid-name, too-many-instance-attributes
 
+    # Values in the variables VIEW_* stand for a partial menu id,
+    # contained in the settings xml, example 'profiles' stand for id 'viewmodeprofiles'
+    VIEW_PROFILES = 'profiles'
+    VIEW_MAINMENU = 'mainmenu'
+    VIEW_MYLIST = 'mylist'
     VIEW_FOLDER = 'folder'
     VIEW_MOVIE = 'movie'
     VIEW_SHOW = 'show'
     VIEW_SEASON = 'season'
     VIEW_EPISODE = 'episode'
-    VIEW_GENRES = 'genres'
-    VIEW_RACOMMENDATIONS = 'folder'
-    VIEW_SEARCH = 'folder'
+    VIEW_SEARCH = 'search'
     VIEW_EXPORTED = 'exported'
 
-    VIEWTYPES = [VIEW_FOLDER, VIEW_MOVIE, VIEW_SHOW, VIEW_SEASON,
-                 VIEW_EPISODE, VIEW_GENRES, VIEW_RACOMMENDATIONS,
-                 VIEW_SEARCH, VIEW_EXPORTED]
-
+    CONTENT_IMAGES = 'images'
     CONTENT_FOLDER = 'files'
     CONTENT_MOVIE = 'movies'
     CONTENT_SHOW = 'tvshows'
@@ -54,8 +54,8 @@ class GlobalVariables(object):
     label_id : menu title
     description_id : description info text
     icon : set a default image
-    view_type : set the type of view, configurable from addon views settings
-    content_type : sets the type of content
+    view : override the default "partial menu id" of view
+    content_type : override the default content type (CONTENT_SHOW)
     show_in_menu : show/hide menu
 
     Explanation of function names in the 'path' key:
@@ -69,20 +69,15 @@ class GlobalVariables(object):
                     'lolomo_contexts': ['queue'],
                     'lolomo_known': True,
                     'request_context_name': 'mylist',
-                    'view_type': VIEW_SHOW,
-                    'content_type': CONTENT_FOLDER,
+                    'view': VIEW_MYLIST,
                     'show_in_menu': True}),
         ('continueWatching', {'path': ['video_list', 'continueWatching'],
                               'lolomo_contexts': ['continueWatching'],
                               'lolomo_known': True,
-                              'view_type': VIEW_SHOW,
-                              'content_type': CONTENT_FOLDER,
                               'show_in_menu': True}),
         ('chosenForYou', {'path': ['video_list', 'chosenForYou'],
                           'lolomo_contexts': ['topTen'],
                           'lolomo_known': True,
-                          'view_type': VIEW_SHOW,
-                          'content_type': CONTENT_FOLDER,
                           'show_in_menu': True}),
         ('recentlyAdded', {'path': ['video_list_sorted', 'recentlyAdded', '1592210'],
                            'lolomo_contexts': None,
@@ -91,34 +86,24 @@ class GlobalVariables(object):
                            'label_id': 30145,
                            'description_id': 30146,
                            'icon': 'DefaultRecentlyAddedMovies.png',
-                           'view_type': VIEW_SHOW,
-                           'content_type': CONTENT_FOLDER,
                            'show_in_menu': True}),
         ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
                         'lolomo_contexts': ['newRelease'],
                         'lolomo_known': True,
                         'request_context_name': 'newrelease',
-                        'view_type': VIEW_SHOW,
-                        'content_type': CONTENT_FOLDER,
                         'show_in_menu': True}),
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'lolomo_contexts': ['trendingNow'],
                            'lolomo_known': True,
-                           'view_type': VIEW_SHOW,
-                           'content_type': CONTENT_FOLDER,
                            'show_in_menu': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'lolomo_contexts': ['popularTitles'],
                         'lolomo_known': True,
-                        'view_type': VIEW_SHOW,
-                        'content_type': CONTENT_FOLDER,
                         'show_in_menu': True}),
         ('netflixOriginals', {'path': ['video_list_sorted', 'netflixOriginals', '839338'],
                               'lolomo_contexts': ['netflixOriginals'],
                               'lolomo_known': True,
                               'request_context_name': 'genres',
-                              'view_type': VIEW_SHOW,
-                              'content_type': CONTENT_FOLDER,
                               'show_in_menu': True}),
         ('genres', {'path': ['genres', 'genres'],
                     'lolomo_contexts': ['genre'],
@@ -127,8 +112,7 @@ class GlobalVariables(object):
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png',
-                    'view_type': VIEW_GENRES,
-                    'content_type': CONTENT_SHOW,
+                    'content_type': CONTENT_FOLDER,
                     'show_in_menu': True}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
                              'lolomo_contexts': ['similars', 'becauseYouAdded'],
@@ -136,8 +120,7 @@ class GlobalVariables(object):
                              'label_id': 30001,
                              'description_id': 30094,
                              'icon': 'DefaultUser.png',
-                             'view_type': VIEW_RACOMMENDATIONS,
-                             'content_type': CONTENT_SHOW,
+                             'content_type': CONTENT_FOLDER,
                              'show_in_menu': True}),
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
                      'lolomo_contexts': None,
@@ -146,8 +129,7 @@ class GlobalVariables(object):
                      'label_id': 30095,
                      'description_id': None,
                      'icon': 'DefaultTVShows.png',
-                     'view_type': VIEW_SHOW,
-                     'content_type': CONTENT_SHOW,
+                     'content_type': CONTENT_FOLDER,
                      'show_in_menu': True}),
         ('movies', {'path': ['genres', 'movies', '34399'],
                     'lolomo_contexts': None,
@@ -156,8 +138,7 @@ class GlobalVariables(object):
                     'label_id': 30096,
                     'description_id': None,
                     'icon': 'DefaultMovies.png',
-                    'view_type': VIEW_MOVIE,
-                    'content_type': CONTENT_MOVIE,
+                    'content_type': CONTENT_FOLDER,
                     'show_in_menu': True}),
         ('search', {'path': ['search', 'search'],
                     'lolomo_contexts': None,
@@ -165,8 +146,7 @@ class GlobalVariables(object):
                     'label_id': 30011,
                     'description_id': 30092,
                     'icon': None,
-                    'view_type': VIEW_SEARCH,
-                    'content_type': CONTENT_SHOW,
+                    'view': VIEW_SEARCH,
                     'show_in_menu': True}),
         ('exported', {'path': ['exported', 'exported'],
                       'lolomo_contexts': None,
@@ -174,8 +154,7 @@ class GlobalVariables(object):
                       'label_id': 30048,
                       'description_id': 30091,
                       'icon': 'DefaultHardDisk.png',
-                      'view_type': VIEW_EXPORTED,
-                      'content_type': CONTENT_SHOW,
+                      'view': VIEW_EXPORTED,
                       'show_in_menu': True})
     ])
 

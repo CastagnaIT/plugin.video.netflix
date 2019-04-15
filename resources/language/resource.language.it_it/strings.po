@@ -651,3 +651,19 @@ msgstr "Sarà ora aperto il pannello di InputStream, dove è necessario ABILITAR
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
 msgstr "Mostra schermata per la configurazione all'avvio dell'addon"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Vista per il menu principale"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Vista per la ricerca"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Vista per esportati"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Ultima utilizzata"

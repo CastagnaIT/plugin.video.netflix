@@ -33,20 +33,24 @@
   <category label="30037">
     <setting id="sortordertype" type="select" label="30149" lvalues="30150|30151|30152|30153" default="0"/>
     <setting id="customview" type="bool" label="30038" default="false"/>
-    <setting id="viewmodelogin" type="select" label="30044" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="7" enable="eq(-1,true)" visible="false"/>
-    <setting id="viewmodeloginid" type="number" label="30143" visible="eq(-1,9) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>
-    <setting id="viewmodefolder" type="select" label="30039" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="7" enable="eq(-3,true)"/>
-    <setting id="viewmodefolderid" type="number" label="30143" visible="eq(-1,9) + eq(-4,true)" enable="eq(-4,true)" subsetting="true"/>
-    <setting id="viewmodemovie" type="select" label="30040" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-5,true)"/>
-    <setting id="viewmodemovieid" type="number" label="30143" visible="eq(-1,9) + eq(-6,true)" enable="eq(-6,true)" subsetting="true"/>
-    <setting id="viewmodeshow" type="select" label="30041" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-7,true)"/>
-    <setting id="viewmodeshowid" type="number" label="30143" visible="eq(-1,9) + eq(-8,true)" enable="eq(-8,true)" subsetting="true"/>
-    <setting id="viewmodeseason" type="select" label="30042" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-9,true)"/>
-    <setting id="viewmodeseasonid" type="number" label="30143" visible="eq(-1,9) + eq(-10,true)" enable="eq(-10,true)" subsetting="true"/>
-    <setting id="viewmodeepisode" type="select" label="30043" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="5" enable="eq(-11,true)"/>
-    <setting id="viewmodeepisodeid" type="number" label="30143" visible="eq(-1,9) + eq(-12,true)" enable="eq(-12,true)" subsetting="true"/>
-    <setting id="viewmodeexported" type="select" label="30074" lvalues="535|20021|31099|31100|31101|31107|31102|20020|20445|30142" default="8" enable="eq(-13,true)"/>
-    <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,9) + eq(-14,true)" enable="eq(-14,true)" subsetting="true"/>
+    <setting id="viewmodeprofiles" type="select" label="30044" lvalues="30162|30142" default="4" enable="eq(-1,true)"/>
+    <setting id="viewmodeprofilesid" type="number" label="30143" visible="eq(-1,1) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>
+    <setting id="viewmodemainmenu" type="select" label="30159" lvalues="30162|30142" default="0" enable="eq(-3,true)"/>
+    <setting id="viewmodemainmenuid" type="number" label="30143" visible="eq(-1,1) + eq(-4,true)" enable="eq(-4,true)" subsetting="true"/>
+    <setting id="viewmodefolder" type="select" label="30039" lvalues="30162|30142" default="0" enable="eq(-5,true)"/>
+    <setting id="viewmodefolderid" type="number" label="30143" visible="eq(-1,1) + eq(-6,true)" enable="eq(-6,true)" subsetting="true"/>
+    <setting id="viewmodemovie" type="select" label="30040" lvalues="30162|30142" default="0" enable="eq(-7,true)"/>
+    <setting id="viewmodemovieid" type="number" label="30143" visible="eq(-1,1) + eq(-8,true)" enable="eq(-8,true)" subsetting="true"/>
+    <setting id="viewmodeshow" type="select" label="30041" lvalues="30162|30142" default="0" enable="eq(-9,true)"/>
+    <setting id="viewmodeshowid" type="number" label="30143" visible="eq(-1,1) + eq(-10,true)" enable="eq(-10,true)" subsetting="true"/>
+    <setting id="viewmodeseason" type="select" label="30042" lvalues="30162|30142" default="0" enable="eq(-11,true)"/>
+    <setting id="viewmodeseasonid" type="number" label="30143" visible="eq(-1,1) + eq(-12,true)" enable="eq(-12,true)" subsetting="true"/>
+    <setting id="viewmodeepisode" type="select" label="30043" lvalues="30162|30142" default="0" enable="eq(-13,true)"/>
+    <setting id="viewmodeepisodeid" type="number" label="30143" visible="eq(-1,1) + eq(-14,true)" enable="eq(-14,true)" subsetting="true"/>
+    <setting id="viewmodesearch" type="select" label="30160" lvalues="30162|30142" default="0" enable="eq(-15,true)"/>
+    <setting id="viewmodesearchid" type="number" label="30143" visible="eq(-1,1) + eq(-16,true)" enable="eq(-16,true)" subsetting="true"/>
+    <setting id="viewmodeexported" type="select" label="30161" lvalues="30162|30142" default="0" enable="eq(-17,true)"/>
+    <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,1) + eq(-18,true)" enable="eq(-18,true)" subsetting="true"/>
   </category>
   <category label="30078">
     <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
