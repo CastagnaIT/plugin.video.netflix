@@ -19,7 +19,7 @@ def get_path_safe(path, search_space, include_key=False, default=None):
     Returns default if any key in the path does not exist."""
     try:
         return get_path(path, search_space, include_key)
-    except KeyError:
+    except (KeyError, IndexError):
         return default
 
 
