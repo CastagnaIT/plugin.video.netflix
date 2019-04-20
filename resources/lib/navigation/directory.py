@@ -86,7 +86,7 @@ class DirectoryBuilder(object):
                 menu_data, pathitems)
         else:
             #Dynamic IDs for common video lists
-            list_id = pathitems[2]
+            list_id = None if pathitems[2] == 'None' else pathitems[2]
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       context_id=list_id,

@@ -667,3 +667,11 @@ msgstr ""
 msgctxt "#30162"
 msgid "Last used"
 msgstr ""
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr ""
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr ""
