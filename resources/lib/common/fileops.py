@@ -61,6 +61,12 @@ def load_file(filename, mode='r'):
     finally:
         file_handle.close()
 
+def delete_file(filename):
+    file_path = xbmc.translatePath(os.path.join(g.DATA_PATH, filename))
+    try:
+        xbmcvfs.delete(file_path)
+    finally:
+        pass
 
 def list_dir(data_path=g.DATA_PATH):
     """

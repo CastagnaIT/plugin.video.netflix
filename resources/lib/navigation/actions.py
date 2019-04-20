@@ -76,14 +76,9 @@ class AddonActionExecutor(object):
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""
         # pylint: disable=unused-argument
-        #TODO: Delete all ndb file cache files and re-init persistent storage
-        #      need to reload the title list and localeid etc..
-        #      it would be easier to return to the selection profiles list
-        #
-        #if self.params.get('on_disk', False):
-        #    common.delete_ndb_files()
-        #    g.init_persistent_storage()
         g.CACHE.invalidate(self.params.get('on_disk', False))
+        if self.params.get('on_disk', False):
+            common.delete_file('resources.lib.services.playback.stream_continuity.ndb')
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 
