@@ -675,3 +675,7 @@ msgstr ""
 msgctxt "#30164"
 msgid "Browse contents with audio description."
 msgstr ""
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr ""
