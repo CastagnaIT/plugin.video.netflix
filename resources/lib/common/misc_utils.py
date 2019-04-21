@@ -83,7 +83,7 @@ def get_user_agent():
     :returns: str -- User agent string
     """
     import platform
-    chrome_version = 'Chrome/59.0.3071.115'
+    chrome_version = 'Chrome/73.0.3683.103'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
