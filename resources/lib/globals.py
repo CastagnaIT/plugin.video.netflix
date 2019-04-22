@@ -277,8 +277,8 @@ class GlobalVariables(object):
                 if ultrahd_capable_device:
                     ui.show_ok_dialog(common.get_local_string(30154),
                                       common.get_local_string(30157))
-                    ia_addon = xbmcaddon.Addon('inputstream.adaptive')
-                    if ia_addon:
+                    ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
+                    if ia_enabled:
                         xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
                     else:
                         ui.show_ok_dialog(common.get_local_string(30154),
