@@ -13,6 +13,16 @@
     <setting type="sep"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
   </category>
+  <category label="30097">
+    <setting id="menu_recentlyAdded" type="bool" label="30145" default="true"/>
+    <setting id="menu_assistiveAudio" type="bool" label="30163" default="true"/>
+    <setting id="menu_genres" type="bool" label="30010" default="true"/>
+    <setting id="menu_recommendations" type="bool" label="30001" default="true"/>
+    <setting id="menu_tvshows" type="bool" label="30095" default="true"/>
+    <setting id="menu_movies" type="bool" label="30096" default="true"/>
+    <setting id="menu_search" type="bool" label="30011" default="true"/>
+    <setting id="menu_exported" type="bool" label="30048" default="true"/>
+  </category>
   <category label="30025">
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>

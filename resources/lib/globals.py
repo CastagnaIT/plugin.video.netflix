@@ -85,8 +85,7 @@ class GlobalVariables(object):
                            'request_context_name': 'genres',
                            'label_id': 30145,
                            'description_id': 30146,
-                           'icon': 'DefaultRecentlyAddedMovies.png',
-                           'show_in_menu': True}),
+                           'icon': 'DefaultRecentlyAddedMovies.png'}),
         ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
                         'lolomo_contexts': ['newRelease'],
                         'lolomo_known': True,
@@ -111,8 +110,7 @@ class GlobalVariables(object):
                            'request_context_name': 'assistiveAudio',
                            'label_id': 30163,
                            'description_id': 30164,
-                           'icon': 'DefaultTVShows.png',
-                           'show_in_menu': True}),
+                           'icon': 'DefaultTVShows.png'}),
         ('genres', {'path': ['genres', 'genres'],
                     'lolomo_contexts': ['genre'],
                     'lolomo_known': False,
@@ -120,16 +118,14 @@ class GlobalVariables(object):
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png',
-                    'content_type': CONTENT_FOLDER,
-                    'show_in_menu': True}),
+                    'content_type': CONTENT_FOLDER}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
                              'lolomo_contexts': ['similars', 'becauseYouAdded'],
                              'lolomo_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
                              'icon': 'DefaultUser.png',
-                             'content_type': CONTENT_FOLDER,
-                             'show_in_menu': True}),
+                             'content_type': CONTENT_FOLDER}),
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
                      'lolomo_contexts': None,
                      'lolomo_known': False,
@@ -137,8 +133,7 @@ class GlobalVariables(object):
                      'label_id': 30095,
                      'description_id': None,
                      'icon': 'DefaultTVShows.png',
-                     'content_type': CONTENT_FOLDER,
-                     'show_in_menu': True}),
+                     'content_type': CONTENT_FOLDER}),
         ('movies', {'path': ['genres', 'movies', '34399'],
                     'lolomo_contexts': None,
                     'lolomo_known': False,
@@ -146,24 +141,21 @@ class GlobalVariables(object):
                     'label_id': 30096,
                     'description_id': None,
                     'icon': 'DefaultMovies.png',
-                    'content_type': CONTENT_FOLDER,
-                    'show_in_menu': True}),
+                    'content_type': CONTENT_FOLDER}),
         ('search', {'path': ['search', 'search'],
                     'lolomo_contexts': None,
                     'lolomo_known': False,
                     'label_id': 30011,
                     'description_id': 30092,
                     'icon': None,
-                    'view': VIEW_SEARCH,
-                    'show_in_menu': True}),
+                    'view': VIEW_SEARCH}),
         ('exported', {'path': ['exported', 'exported'],
                       'lolomo_contexts': None,
                       'lolomo_known': False,
                       'label_id': 30048,
                       'description_id': 30091,
                       'icon': 'DefaultHardDisk.png',
-                      'view': VIEW_EXPORTED,
-                      'show_in_menu': True})
+                      'view': VIEW_EXPORTED})
     ])
 
     MODE_DIRECTORY = 'directory'
@@ -399,6 +391,16 @@ class GlobalVariables(object):
     def remove_time_trace_level(self):
         """Remove a level from the time trace"""
         self.time_trace_level -= 2
+
+    def show_in_menu(self, menu_id, default=True):
+        """Return true if menu_id is to be shown on the Main Menu"""
+        show = self.MAIN_MENU_ITEMS[menu_id].get('show_in_menu')
+        if show is None:
+            try:
+                show = self.ADDON.getSettingBool('_'.join(('menu', menu_id)))
+            except TypeError: # not set or not a bool
+                show = default
+        return show
 
 
 # pylint: disable=invalid-name
