@@ -34,7 +34,7 @@ def add_info(videoid, list_item, item, raw_data):
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
-    if infos['mediatype'] in ['episode', 'movie']:
+    if infos.get('mediatype') in ['episode', 'movie']:
         list_item.setProperty('IsPlayable', 'true')
     for stream_type, quality_infos in quality_infos.iteritems():
         list_item.addStreamInfo(stream_type, quality_infos)
@@ -69,7 +69,6 @@ def parse_info(videoid, item, raw_data):
             hasattr(item, 'contained_titles')):
         # Special handling for VideoLists
         return {
-            'mediatype': 'video',
             'plot':
                 common.get_local_string(30087).format(
                     ', '.join(item.contained_titles))
