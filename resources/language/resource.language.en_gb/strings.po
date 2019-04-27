@@ -679,3 +679,35 @@ msgstr ""
 msgctxt "#30165"
 msgid "View for my list"
 msgstr ""
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr ""
+
+msgctxt "#30167"
+msgid "My list"
+msgstr ""
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr ""
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr ""
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr ""
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr ""
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr ""
+
+msgctxt "#30173"
+msgid "NETFLIX ORIGINALS"
+msgstr ""

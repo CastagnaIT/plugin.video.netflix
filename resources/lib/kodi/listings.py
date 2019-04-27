@@ -39,9 +39,9 @@ def _activate_view(partial_setting_id):
         if g.ADDON.getSettingBool('customview'):
             # Do not change the sequence of this keys, match the return value of the enum xml menu
             list_views = collections.OrderedDict({
-                ''' 
+                '''
                 With Kodi 19 should be implemented a method to get the id of the current skin,
-                so we can use this list only with the default skin, 
+                so we can use this list only with the default skin,
                 the other skins partially implement the view types of the standard skin of kodi
                 causing also alterations in the translations of the view type names.
                 'List': 50,
@@ -112,7 +112,8 @@ def build_main_menu_listing(lolomo):
     mylist_menu_exists = False
 
     for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
-        if data['show_in_menu']:
+        show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
+        if show_in_menu:
             if data['lolomo_known']:
                 for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'], break_on_first=True):
                     directory_items.append(_create_videolist_item(list_id, user_list, data, static_lists=True))

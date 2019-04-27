@@ -26,3 +26,16 @@ class SettingsMonitor(xbmc.Monitor):
         if g.REQ_SORT_ORDER_TYPE != req_sort_order_type_oldvalue:
             # We remove the cache to allow get the new results in the chosen order
             common.run_plugin('plugin://plugin.video.netflix/action/purge_cache/?on_disk=True&no_notification=True')
+
+        ps_changed = False
+        for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
+            new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
+            old_setting = g.PERSISTENT_STORAGE['show_menus'].get(menu_id, True)
+
+            if new_setting != old_setting:
+                g.PERSISTENT_STORAGE['show_menus'][menu_id] = new_setting
+                ps_changed = True
+        if ps_changed:
+            g.PERSISTENT_STORAGE.commit()
+            url = 'plugin://plugin.video.netflix/directory/root'
+            xbmc.executebuiltin('Container.Update({},replace)'.format(url))

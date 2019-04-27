@@ -679,3 +679,35 @@ msgstr "Sfoglia i contenuti con audiodescrizione."
 msgctxt "#30165"
 msgid "View for my list"
 msgstr "Vista per la mia lista"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Elementi menu principale"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "La mia lista"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Continua a guardare"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Scelti per te"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Nuove uscite"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "I titoli del momento"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "I più visti su Netflix"
+
+msgctxt "#30173"
+msgid "ORIGINALI NETFLIX"
+msgstr ""

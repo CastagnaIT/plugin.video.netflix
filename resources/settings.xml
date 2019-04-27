@@ -30,6 +30,23 @@
     <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
     <setting id="update_running" type="text" visible="false" default="false"/>
   </category>
+  <category label="30166">
+    <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
+    <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
+    <setting id="show_menu_chosenforyou" type="bool" label="30169" default="true"/>
+    <setting id="show_menu_recentlyadded" type="bool" label="30145" default="true"/>
+    <setting id="show_menu_newrelease" type="bool" label="30170" default="true"/>
+    <setting id="show_menu_currenttitles" type="bool" label="30171" default="true"/>
+    <setting id="show_menu_mostviewed" type="bool" label="30172" default="true"/>
+    <setting id="show_menu_netflixoriginals" type="bool" label="30173" default="true"/>
+    <setting id="show_menu_assistiveaudio" type="bool" label="30163" default="true"/>
+    <setting id="show_menu_genres" type="bool" label="30010" default="true"/>
+    <setting id="show_menu_recommendations" type="bool" label="30001" default="true"/>
+    <setting id="show_menu_tvshows" type="bool" label="30095" default="true"/>
+    <setting id="show_menu_movies" type="bool" label="30096" default="true"/>
+    <setting id="show_menu_search" type="bool" label="30011" default="true"/>
+    <setting id="show_menu_exported" type="bool" label="30048" default="true"/>
+  </category>
   <category label="30037">
     <setting id="sortordertype" type="select" label="30149" lvalues="30150|30151|30152|30153" default="0"/>
     <setting id="customview" type="bool" label="30038" default="false"/>
