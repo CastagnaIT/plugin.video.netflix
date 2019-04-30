@@ -275,9 +275,11 @@ class GlobalVariables(object):
                     self.ADDON.setSettingBool('enable_hevc_profiles', False)
                 self.ADDON.setSettingBool('enable_force_hdcp', ultrahd_capable_device)
             elif system == 'linux':
-                # Some linux distributions have encountered problems with VP9, so disabled
+                # Too many different linux systems, we can not predict all the behaviors
+                # Some linux distributions have encountered problems with VP9,
+                # OMSC users complain that hevc creates problems
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', True)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
             else:
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', False)
