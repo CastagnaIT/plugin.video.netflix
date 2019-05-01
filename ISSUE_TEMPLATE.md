@@ -45,7 +45,12 @@
 
 ## Debug log
 
-[Please include a link to your debug log (use something like [http://sprunge.us/](http://sprunge.us/) or [https://pastebin.com/](https://pastebin.com/)) or similar, please do not paste]
+SIMPLE RULES:
+- Before performing any operation enable Kodi debug logging [Settings->System->Logging->Enable debug logging] only after perform the operations to reproduce the issue
+- Copy here a link to your debug log, use something like [https://paste.kodi.tv/](https://paste.kodi.tv/) or similar
+- Do NOT paste the content of the log here
+- Do NOT cut the log
+- If the log file is really huge (more than 1Mb) then in Kodi settings disable the *Component-specific logging*
 
 ## Other information
 
