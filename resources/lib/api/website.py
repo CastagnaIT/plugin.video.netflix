@@ -13,7 +13,6 @@ from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
                          InvalidMembershipStatusError, WebsiteParsingError)
 
 PAGE_ITEMS = [
-    'gpsModel',
     'models/userInfo/data/authURL',
     'models/userInfo/data/guid',
     'models/userInfo/data/countryOfSignup',
@@ -95,7 +94,7 @@ def _get_avatar(falkor_cache, profile):
 def extract_userdata(content):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
-    user_data = {'gpsModel': 'harris'}
+    user_data = {}
     react_context = extract_json(content, 'reactContext')
     for path in ([path_item for path_item in path.split('/')]
                  for path in PAGE_ITEMS):

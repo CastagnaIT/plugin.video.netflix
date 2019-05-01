@@ -322,7 +322,11 @@ class NetflixSession(object):
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
         params = {
-            'model': self.session_data['user_data']['gpsModel']}
+            'drmSystem': 'widevine',
+           #'falcor_server' : '0.1.0', #json responses like browser
+            'withSize': 'false',       #puts the 'size' field inside each dictionary
+            'materialize' : 'false'    #if true, when a path that no longer exists is requested (like 'storyarts'), it is still added in an 'empty' form in the response
+        }
         data = 'path=' + '&path='.join(json.dumps(path, ensure_ascii=False) for path in paths)
         data += '&authURL=' + self.auth_url
         return self._post(
