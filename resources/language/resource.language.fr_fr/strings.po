@@ -246,7 +246,7 @@ msgstr "ID"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "Selectionnez le profile dans la liste des profils -> menu contextuel"
+msgstr "Selectionnez le profil dans la liste des profils -> menu contextuel"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
@@ -366,7 +366,7 @@ msgstr "Invalider le cache lors d'une modification de 'Ma Liste'"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr "Contient {} ou plue..."
+msgstr "Contient {} ou plus..."
 
 msgctxt "#30088"
 msgid "Browse related content"
@@ -422,7 +422,7 @@ msgstr "Résultats pour \"{}\""
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr "Netflix à renvoyé une erreur inconnue"
+msgstr "Netflix a renvoyé une erreur inconnue"
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
@@ -458,7 +458,7 @@ msgstr "Authentification réussie"
 
 msgctxt "#30110"
 msgid "Background services started"
-msgstr "Services d'arrière plan démarrés"
+msgstr "Services d'arrière-plan démarrés"
 
 msgctxt "#30111"
 msgid "There is no contents"
@@ -474,7 +474,7 @@ msgstr "Déconnexion réussie"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Maintenir 'Ma Liste' et la médiathèque synchronisés"
+msgstr "Maintenir 'Ma Liste' et la médiathèque synchronisées"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -582,7 +582,7 @@ msgstr "Convertir la médiathèque au nouveau format"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "Désactiver le notification au démarrage"
+msgstr "Désactiver la notification au démarrage"
 
 msgctxt "#30142"
 msgid "Custom"
@@ -642,7 +642,7 @@ msgstr "Avez-vous un compte Netflix Premium ?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Votre appareil prend-il en charge la norme 4K ?\r\nL'appareil doit :\r\nEtre certifié Netflix, prendre en charge le niveau de sécurité Widevine L1 et disposer d’un écran 4K HDCP 2.2."
+msgstr "Votre appareil prend-il en charge la norme 4K ?\r\nL'appareil doit :\r\nÊtre certifié Netflix, prendre en charge le niveau de sécurité Widevine L1 et disposer d’un écran 4K HDCP 2.2."
 
 msgctxt "#30157"
 msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
