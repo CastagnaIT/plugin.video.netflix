@@ -613,8 +613,8 @@ msgid "<< Previous page"
 msgstr "<< Page précédente"
 
 msgctxt "#30149"
-msgid "Sort results by (works on menus with paging)"
-msgstr "Trier les résultats par (fonctionne sur les menus avec pagination)"
+msgid "Sort results by"
+msgstr "Trier les résultats par"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
