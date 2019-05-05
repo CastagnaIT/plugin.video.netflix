@@ -709,5 +709,5 @@ msgid "Popular on Netflix"
 msgstr "I più visti su Netflix"
 
 msgctxt "#30173"
-msgid "ORIGINALI NETFLIX"
-msgstr ""
+msgid "NETFLIX ORIGINALS"
+msgstr "ORIGINALI NETFLIX"
