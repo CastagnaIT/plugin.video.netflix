@@ -39,6 +39,10 @@ VIDEO_LIST_PARTIAL_PATHS = [
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
 
+VIDEO_LIST_BASIC_PARTIAL_PATHS = [
+    [['title', 'queue', 'watched']]
+]
+
 GENRE_PARTIAL_PATHS = [
     [["id", "requestId", "summary", "name"]],
     [{"from": 0, "to": 50},

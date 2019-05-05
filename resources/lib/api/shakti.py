@@ -11,8 +11,8 @@ import resources.lib.kodi.ui as ui
 
 from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, EpisodeList,
                          SearchVideoList, CustomVideoList)
-from .paths import (VIDEO_LIST_PARTIAL_PATHS, SEASONS_PARTIAL_PATHS,
-                    EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
+from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
+                    SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE)
 from .exceptions import (InvalidVideoListTypeError, LoginFailedError, APIError,
                          NotLoggedInError, MissingCredentialsError)
@@ -221,6 +221,21 @@ def single_info(videoid):
     return common.make_call('path_request', paths)
 
 
+def custom_video_list_basicinfo(list_id):
+    """Retrieve a single video list
+    used only to know which videos are in my list without requesting additional information
+    """
+    common.debug('Requesting custom video list basic info {}'.format(list_id))
+    paths = build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
+                        VIDEO_LIST_BASIC_PARTIAL_PATHS)
+    callargs = {
+        'paths': paths,
+        'length_params': ['stdlist', ['lists', list_id]],
+        'perpetual_range_start': None
+    }
+    return VideoList(common.make_call('perpetual_path_request', callargs))
+
+
 @cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='my_list_items')
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
@@ -228,7 +243,9 @@ def mylist_items():
     try:
         return [video_id
                 for video_id, video in
-                video_list_sorted(g.MAIN_MENU_ITEMS['myList']['request_context_name']).videos.iteritems()
+                custom_video_list_basicinfo(
+                    list_id_for_type(
+                        g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0])).videos.iteritems()
                 if video['queue'].get('inQueue', False)]
     except InvalidVideoListTypeError:
         return []
