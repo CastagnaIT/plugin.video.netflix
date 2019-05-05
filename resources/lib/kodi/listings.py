@@ -167,7 +167,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
     g.PERSISTENT_STORAGE.commit()
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]))
+                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
     return menu_data.get('view')
 
 
@@ -215,8 +215,12 @@ def build_video_listing(video_list, menu_data, pathitems=None):
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector)
+    # At the moment it is not possible to make a query with results sorted for the 'mylist', so we adding the sort order of kodi
+    sort_type = 'sort_nothing'
+    if menu_data['path'][1]=='myList':
+        sort_type='sort_label'
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]))
+                       title=g.get_menu_title(menu_data['path'][1]), sort_type=sort_type)
     return menu_data.get('view')
 
 
