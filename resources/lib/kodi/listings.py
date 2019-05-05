@@ -157,11 +157,10 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
             sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
             sub_menu_data = menu_data.copy()
-            sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id]
+            sub_menu_data['path'] = [menu_data['path'][0], menu_data['path'][1], sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
             sub_menu_data['lolomo_contexts'] = None
             sub_menu_data['content_type'] = g.CONTENT_SHOW
-            sub_menu_data['show_in_menu'] = False
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
             g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
             g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']

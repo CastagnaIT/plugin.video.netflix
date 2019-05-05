@@ -613,7 +613,7 @@ msgid "<< Previous page"
 msgstr ""
 
 msgctxt "#30149"
-msgid "Sort results by (works on menus with paging)"
+msgid "Sort results by"
 msgstr ""
 
 msgctxt "#30150"

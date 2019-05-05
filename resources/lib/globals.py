@@ -106,7 +106,7 @@ class GlobalVariables(object):
         ('genres', {'path': ['genres', 'genres'],
                     'lolomo_contexts': ['genre'],
                     'lolomo_known': False,
-                    'request_context_name': 'genres',
+                    'request_context_name': 'genres', # Used for sub-menus
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png',
@@ -197,10 +197,6 @@ class GlobalVariables(object):
         self.reset_time_trace()
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
-
-        # enum order: AZ|ZA|Suggested|Year
-        sort_order_types = ['az', 'za', 'su', 'yr']
-        self.REQ_SORT_ORDER_TYPE = sort_order_types[int(g.ADDON.getSettingInt('sortordertype'))]
 
         try:
             os.mkdir(self.DATA_PATH)
@@ -300,6 +296,8 @@ class GlobalVariables(object):
         # If missing create necessary keys
         if not self.PERSISTENT_STORAGE.get('show_menus'):
             self.PERSISTENT_STORAGE['show_menus'] = {}
+        if not self.PERSISTENT_STORAGE.get('menu_sortorder'):
+            self.PERSISTENT_STORAGE['menu_sortorder'] = {}
         if not self.PERSISTENT_STORAGE.get('menu_titles'):
             self.PERSISTENT_STORAGE['menu_titles'] = {}
         if not self.PERSISTENT_STORAGE.get('sub_menus'):

@@ -32,23 +32,30 @@
   </category>
   <category label="30166">
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
+    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="false" subsetting="true" default="0"/> <!-- is currently (05-05-2019) no longer supported by the netflix server-->
     <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
     <setting id="show_menu_chosenforyou" type="bool" label="30169" default="true"/>
     <setting id="show_menu_recentlyadded" type="bool" label="30145" default="true"/>
+    <setting id="menu_sortorder_recentlyadded" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_newrelease" type="bool" label="30170" default="true"/>
+    <setting id="menu_sortorder_newrelease" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_currenttitles" type="bool" label="30171" default="true"/>
     <setting id="show_menu_mostviewed" type="bool" label="30172" default="true"/>
     <setting id="show_menu_netflixoriginals" type="bool" label="30173" default="true"/>
+    <setting id="menu_sortorder_netflixoriginals" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_assistiveaudio" type="bool" label="30163" default="true"/>
+    <setting id="menu_sortorder_assistiveaudio" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_genres" type="bool" label="30010" default="true"/>
+    <setting id="menu_sortorder_genres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_recommendations" type="bool" label="30001" default="true"/>
     <setting id="show_menu_tvshows" type="bool" label="30095" default="true"/>
+    <setting id="menu_sortorder_tvshows" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_movies" type="bool" label="30096" default="true"/>
+    <setting id="menu_sortorder_movies" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_search" type="bool" label="30011" default="true"/>
     <setting id="show_menu_exported" type="bool" label="30048" default="true"/>
   </category>
   <category label="30037">
-    <setting id="sortordertype" type="select" label="30149" lvalues="30150|30151|30152|30153" default="0"/>
     <setting id="customview" type="bool" label="30038" default="false"/>
     <setting id="viewmodeprofiles" type="select" label="30044" lvalues="30162|30142" default="0" enable="eq(-1,true)"/>
     <setting id="viewmodeprofilesid" type="number" label="30143" visible="eq(-1,1) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>

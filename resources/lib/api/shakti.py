@@ -120,17 +120,24 @@ def video_list(list_id, perpetual_range_start=None):
 @common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON, identify_from_kwarg_name='context_id',
                     identify_append_from_kwarg_name='perpetual_range_start')
-def video_list_sorted(context_name, context_id=None, perpetual_range_start=None):
+def video_list_sorted(context_name, context_id=None, perpetual_range_start=None, menu_data=None):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
     """
-    common.debug('Requesting video list sorted {}'.format(context_id))
+    common.debug(
+        'Requesting video list sorted for context name: "{}", context id: "{}"'
+            .format(context_name, context_id))
     base_path = [context_name]
     response_type = 'stdlist'
     if context_id:
         base_path.append(context_id)
         response_type = 'stdlist_wid'
-    base_path.append(g.REQ_SORT_ORDER_TYPE)
+
+    # enum order: AZ|ZA|Suggested|Year
+    sort_order_types = ['az', 'za', 'su', 'yr']
+    req_sort_order_type = sort_order_types[
+        int(g.ADDON.getSettingInt('_'.join(('menu_sortorder', menu_data['path'][1]))))]
+    base_path.append(req_sort_order_type)
     paths = build_paths(base_path + [RANGE_SELECTOR], VIDEO_LIST_PARTIAL_PATHS)
     callargs = {
         'paths': paths,
@@ -138,7 +145,7 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None)
         'perpetual_range_start': perpetual_range_start
     }
     return VideoListSorted(common.make_call('perpetual_path_request', callargs),
-                           context_name, context_id)
+                           context_name, context_id, req_sort_order_type)
 
 
 @common.time_execution(immediate=False)

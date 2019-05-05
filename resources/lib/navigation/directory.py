@@ -82,7 +82,8 @@ class DirectoryBuilder(object):
         if menu_data.get('request_context_name',None) and g.is_known_menu_context(pathitems[2]):
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
-                                      perpetual_range_start=self.perpetual_range_start),
+                                      perpetual_range_start=self.perpetual_range_start,
+                                      menu_data=menu_data),
                 menu_data, pathitems)
         else:
             #Dynamic IDs for common video lists
@@ -90,7 +91,8 @@ class DirectoryBuilder(object):
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       context_id=list_id,
-                                      perpetual_range_start=self.perpetual_range_start),
+                                      perpetual_range_start=self.perpetual_range_start,
+                                      menu_data=menu_data),
                 menu_data, pathitems)
         _handle_endofdirectory(self.dir_update_listing)
 
