@@ -240,7 +240,9 @@ def custom_video_list_basicinfo(list_id):
         'length_params': ['stdlist', ['lists', list_id]],
         'perpetual_range_start': None
     }
-    return VideoList(common.make_call('perpetual_path_request', callargs))
+    # When the list is empty the server returns an empty response
+    path_response = common.make_call('perpetual_path_request', callargs)
+    return {} if not path_response else VideoList(path_response)
 
 
 @cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='my_list_items')
@@ -248,12 +250,12 @@ def mylist_items():
     """Return a list of all the items currently contained in my list"""
     common.debug('Try to perform a request to get the id list of the videos in my list')
     try:
-        return [video_id
-                for video_id, video in
-                custom_video_list_basicinfo(
-                    list_id_for_type(
-                        g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0])).videos.iteritems()
-                if video['queue'].get('inQueue', False)]
+        mylist_items = []
+        video_list = custom_video_list_basicinfo(list_id_for_type(g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0]))
+        if video_list:
+            mylist_items = [video_id for video_id, video in video_list.videos.iteritems()
+                            if video['queue'].get('inQueue', False)]
+        return mylist_items
     except InvalidVideoListTypeError:
         return []
 
