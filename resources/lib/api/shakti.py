@@ -252,7 +252,7 @@ def mylist_items():
                 for video_id, video in
                 custom_video_list_basicinfo(
                     list_id_for_type(
-                        g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0])).videos.iteritems()
+                        g.MAIN_MENU_ITEMS['myList']['request_context_name'])).videos.iteritems()
                 if video['queue'].get('inQueue', False)]
     except InvalidVideoListTypeError:
         return []
