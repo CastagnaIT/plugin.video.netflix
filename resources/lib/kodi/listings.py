@@ -132,7 +132,7 @@ def build_main_menu_listing(lolomo):
                                         icon=data['icon'],
                                         description=menu_description),
                      True))
-    #g.PERSISTENT_STORAGE.commit()  performed with the next call to PERSISTENT_STORAGE setitem
+    # g.PERSISTENT_STORAGE.commit()  performed with the next call to PERSISTENT_STORAGE setitem
     g.PERSISTENT_STORAGE['profile_have_mylist_menu'] = mylist_menu_exists
     finalize_directory(directory_items, g.CONTENT_FOLDER, title=common.get_local_string(30097))
 
@@ -215,7 +215,8 @@ def build_video_listing(video_list, menu_data, pathitems=None):
         #      list_item_skeleton('Browse subgenres...'),
         #      True))
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector)
-    # At the moment it is not possible to make a query with results sorted for the 'mylist', so we adding the sort order of kodi
+    # At the moment it is not possible to make a query with results sorted for the 'mylist',
+    # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
     if menu_data['path'][1]=='myList':
         sort_type='sort_label'
@@ -330,8 +331,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                                                                              customicon='FolderPagePrevious.png'), True))
         if 'next_start' in perpetual_range_selector:
             next_page_url = common.build_url(pathitems=pathitems,
-                                        params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
-                                        mode=g.MODE_DIRECTORY)
+                                             params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
+                                             mode=g.MODE_DIRECTORY)
             directory_items.append((next_page_url, list_item_skeleton(common.get_local_string(30147),
                                                                       customicon='FolderPageNext.png'), True))
 

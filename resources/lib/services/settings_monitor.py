@@ -9,6 +9,7 @@ import sys
 from resources.lib.globals import g
 import resources.lib.common as common
 
+
 class SettingsMonitor(xbmc.Monitor):
     def __init__(self):
         xbmc.Monitor.__init__(self)
@@ -27,7 +28,7 @@ class SettingsMonitor(xbmc.Monitor):
         sort_order_type_changed = False
 
         for menu_id, menu_data in g.MAIN_MENU_ITEMS.iteritems():
-            #Check settings changes in show menu
+            # Check settings changes in show menu
             show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
             show_menu_old_setting = g.PERSISTENT_STORAGE['show_menus'].get(menu_id, True)
             if show_menu_new_setting != show_menu_old_setting:

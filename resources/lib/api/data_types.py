@@ -68,7 +68,7 @@ class VideoList(object):
             videoid=(list_id
                      if list_id
                      else next(self.data['lists'].iterkeys())))
-        #self.title = self['displayName']   Not more used
+        # self.title = self['displayName']   Not more used
         self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
         if self.videos:
             self.artitem = next(self.videos.itervalues())
@@ -88,6 +88,7 @@ class VideoList(object):
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data['lists'][self.id.value].get(key, default))
+
 
 class VideoListSorted(object):
     """A video list"""
@@ -124,6 +125,7 @@ class VideoListSorted(object):
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data_lists.get(key, default))
+
 
 class SearchVideoList(object):
     """A video list with search results"""
@@ -220,6 +222,7 @@ def _get_videoids(videos):
     return [common.VideoId.from_videolist_item(video)
             for video in videos.itervalues()]
 
+
 def _filterout_contexts(data, contexts):
     """Deletes from the data all records related to the specified contexts"""
     id = next(data['lolomos'].iterkeys())
@@ -231,4 +234,3 @@ def _filterout_contexts(data, contexts):
                         del data['lolomos'][id][idkey]
                         break
                 del data['lists'][listid]
-

@@ -172,11 +172,10 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
     # pylint: disable=too-many-arguments
     art = {'poster': _best_art([poster]),
            'fanart': _best_art([fanart, interesting_moment, boxart_large,
-                                boxart_small])}
-    art['thumb'] = ((interesting_moment
-                     if videoid.mediatype == common.VideoId.EPISODE else '') or
-                    boxart_large or
-                    boxart_small)
+                                boxart_small]),
+           'thumb': ((interesting_moment
+                     if videoid.mediatype == common.VideoId.EPISODE else '')
+                     or boxart_large or boxart_small)}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:
         art['clearlogo'] = _best_art([clearlogo])
@@ -213,7 +212,7 @@ def add_info_from_library(videoid, list_item):
     _sanitize_infos(details)
     # Resuming for strm files in library is currently broken in Leia Beta
     # keeping this for reference / in hopes this will get fixed
-    resume = details.pop('resume', {})
+    # resume = details.pop('resume', {})
     # if resume:
     #     start_percent = resume['position'] / resume['total'] * 100.0
     #     list_item.setProperty('startPercent', str(start_percent))

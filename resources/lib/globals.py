@@ -106,7 +106,7 @@ class GlobalVariables(object):
         ('genres', {'path': ['genres', 'genres'],
                     'lolomo_contexts': ['genre'],
                     'lolomo_known': False,
-                    'request_context_name': 'genres', # Used for sub-menus
+                    'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png',
@@ -121,7 +121,7 @@ class GlobalVariables(object):
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
                      'lolomo_contexts': None,
                      'lolomo_known': False,
-                     'request_context_name': 'genres', # Used for sub-menus
+                     'request_context_name': 'genres',  # Used for sub-menus
                      'label_id': 30095,
                      'description_id': None,
                      'icon': 'DefaultTVShows.png',
@@ -129,7 +129,7 @@ class GlobalVariables(object):
         ('movies', {'path': ['genres', 'movies', '34399'],
                     'lolomo_contexts': None,
                     'lolomo_known': False,
-                    'request_context_name': 'genres', # Used for sub-menus
+                    'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30096,
                     'description_id': None,
                     'icon': 'DefaultMovies.png',

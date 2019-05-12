@@ -26,7 +26,7 @@ from .exceptions import MSLError
 
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
-    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router', #"pbo_manifests/^1.0.0/router"
+    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
     'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router'
 }
 
@@ -68,7 +68,7 @@ class MSLHandler(object):
             self.request_builder = MSLRequestBuilder()
             if self.perform_key_handshake():
                 self.request_builder = MSLRequestBuilder(json.loads(
-            	    common.load_file('msl_data.json')))
+                    common.load_file('msl_data.json')))
                 common.debug('Loaded renewed MSL data from disk')
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,

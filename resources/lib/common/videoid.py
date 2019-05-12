@@ -42,7 +42,7 @@ class VideoId(object):
 
     def __init__(self, **kwargs):
         self._id_values = _get_unicode_kwargs(kwargs)
-        #debug('VideoId validation values: ' + str(self._id_values))
+        # debug('VideoId validation values: ' + str(self._id_values))
         self._validate()
         self._menu_parameters = MenuIdParameters(id_values = self._assigned_id_values()[0])
 
@@ -261,6 +261,7 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
     else:
         del kwargs[pathitems_arg]
 
+
 class MenuIdParameters(object):
     """Distinguishes the information grouped in a id value of a menu
 
@@ -272,7 +273,7 @@ class MenuIdParameters(object):
     def __init__(self, **kwargs):
         _id_values = kwargs.get('id_values')
 
-        #Check if the idvalues is a menu id value
+        # Check if the idvalues is a menu id value
         if _id_values and _id_values.count('-') == 4 and _id_values.count('_') == 1 and _id_values.count('X') == 3:
             self._is_menu_id = True
             self._request_id = _id_values.split('X')[0]

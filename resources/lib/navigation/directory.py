@@ -166,6 +166,7 @@ def _ask_search_term_and_redirect():
     else:
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
+
 @common.time_execution(immediate=False)
 def _display_search_results(pathitems, perpetual_range_start, dir_update_listing):
     search_term = pathitems[2]
@@ -176,6 +177,7 @@ def _display_search_results(pathitems, perpetual_range_start, dir_update_listing
     else:
         ui.show_notification(common.get_local_string(30013))
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+
 
 def _handle_endofdirectory(dir_update_listing):
     # If dir_update_listing=True overwrite the history list, so we can get back to the main page

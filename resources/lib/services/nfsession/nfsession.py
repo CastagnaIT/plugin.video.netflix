@@ -222,7 +222,7 @@ class NetflixSession(object):
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
-        xbmc.executebuiltin('XBMC.Container.Update(path,replace)') # Clean path history
+        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
         xbmc.executebuiltin('XBMC.ActivateWindow(Home)')
 
     @common.addonsignals_return_call
@@ -300,7 +300,7 @@ class NetflixSession(object):
                     else:
                         range_end = range_start + request_size
                 else:
-                    #There are no other elements to request
+                    # There are no other elements to request
                     break
             else:
                 break
@@ -321,11 +321,20 @@ class NetflixSession(object):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
+
+        '''
+        params:
+        drmSystem       drm used
+        falcor_server   json responses like browser
+        withSize        puts the 'size' field inside each dictionary
+        materialize     if true, when a path that no longer exists is requested (like 'storyarts'),
+                           it is still added in an 'empty' form in the response
+        '''
         params = {
             'drmSystem': 'widevine',
-           #'falcor_server' : '0.1.0', #json responses like browser
-            'withSize': 'false',       #puts the 'size' field inside each dictionary
-            'materialize' : 'false'    #if true, when a path that no longer exists is requested (like 'storyarts'), it is still added in an 'empty' form in the response
+            # 'falcor_server': '0.1.0',
+            'withSize': 'false',
+            'materialize': 'false'
         }
         data = 'path=' + '&path='.join(json.dumps(path, ensure_ascii=False) for path in paths)
         data += '&authURL=' + self.auth_url

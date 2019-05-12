@@ -283,6 +283,7 @@ def make_list(arg):
                   if arg is not None
                   else []))
 
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
