@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Provjereite svoje podatke ovjere"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Žanrovi"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"

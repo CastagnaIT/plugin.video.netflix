@@ -65,7 +65,7 @@ msgid "Please Check your credentials"
 msgstr "로그인 암호를 확인하십시오."
 
 msgctxt "#30010"
-msgid "Genres"
+msgid "Lists of all kinds"
 msgstr "장르"
 
 msgctxt "#30011"

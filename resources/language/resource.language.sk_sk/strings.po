@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Prosím skontrolujte prihlasovacie údaje"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Žánre"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"

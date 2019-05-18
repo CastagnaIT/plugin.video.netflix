@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Verifica le tue credenziali"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Per genere"
+msgid "Lists of all kinds"
+msgstr "Liste di ogni tipo"
 
 msgctxt "#30011"
 msgid "Search"
@@ -711,3 +711,11 @@ msgstr "I più visti su Netflix"
 msgctxt "#30173"
 msgid "NETFLIX ORIGINALS"
 msgstr "ORIGINALI NETFLIX"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Generi di Serie Tv"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Generi di Film"

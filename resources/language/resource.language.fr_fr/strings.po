@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Vérifiez vos identifiants"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Genres"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"

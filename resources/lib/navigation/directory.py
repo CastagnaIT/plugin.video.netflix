@@ -93,7 +93,7 @@ class DirectoryBuilder(object):
                                       context_id=list_id,
                                       perpetual_range_start=self.perpetual_range_start,
                                       menu_data=menu_data),
-                menu_data, pathitems)
+                menu_data, pathitems, self.params.get('genre_id'))
         _handle_endofdirectory(self.dir_update_listing)
 
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)
@@ -123,6 +123,13 @@ class DirectoryBuilder(object):
             # Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
             lolomo = api.genre(pathitems[2])
             listings.build_lolomo_listing(lolomo, menu_data, exclude_lolomo_known=True)
+        _handle_endofdirectory(False)
+
+    def subgenres(self, pathitems):
+        """Show a lists of subgenres"""
+        # pathitems indexes: 0 function name, 1 menu id, 2 genre id
+        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        listings.build_subgenre_listing(api.subgenre(pathitems[2]), menu_data)
         _handle_endofdirectory(False)
 
     @common.time_execution(immediate=False)

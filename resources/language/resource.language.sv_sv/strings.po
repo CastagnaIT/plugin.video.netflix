@@ -64,8 +64,8 @@ msgid "Please Check your credentials"
 msgstr "Kontrollera dina inloggninguppgifter"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Genrer"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"

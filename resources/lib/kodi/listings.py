@@ -189,32 +189,61 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
     add_info(video_list.id, list_item, video_list, video_list.data)
     if video_list.artitem:
         add_art(video_list.id, list_item, video_list.artitem)
+    url = common.build_url(pathitems,
+                           params={'genre_id': unicode(video_list.get('genreId'))},
+                           mode=g.MODE_DIRECTORY)
+    return (url, list_item, True)
+
+
+@custom_viewmode(g.VIEW_FOLDER)
+@common.time_execution(immediate=False)
+def build_subgenre_listing(subgenre_list, menu_data):
+    """Build a listing of subgenre lists."""
+    directory_items = []
+    for index, subgenre_data in subgenre_list.lists:
+        # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
+        sel_video_list_id = str(subgenre_data['id'])
+        sub_menu_data = menu_data.copy()
+        sub_menu_data['path'] = [menu_data['path'][0], menu_data['path'][1], sel_video_list_id]
+        sub_menu_data['lolomo_known'] = False
+        sub_menu_data['lolomo_contexts'] = None
+        sub_menu_data['content_type'] = g.CONTENT_SHOW
+        g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
+        g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = subgenre_data['name']
+        directory_items.append(_create_subgenre_item(sel_video_list_id, subgenre_data, sub_menu_data))
+    g.PERSISTENT_STORAGE.commit()
+    finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
+                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
+    return menu_data.get('view')
+
+
+@common.time_execution(immediate=False)
+def _create_subgenre_item(video_list_id, subgenre_data, menu_data, static_lists=False):
+    """Create a tuple that can be added to a Kodi directory that represents
+    a videolist as listed in a subgenre listing"""
+    pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
+    list_item = list_item_skeleton(subgenre_data['name'])
     url = common.build_url(pathitems, mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
 
 @custom_viewmode(g.VIEW_SHOW)
 @common.time_execution(immediate=False)
-def build_video_listing(video_list, menu_data, pathitems=None):
+def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list)
                        for videoid_value, video
                        in video_list.videos.iteritems()]
-    if video_list.get('genreId'):
-        directory_items.append(
-            (common.build_url(['genres', unicode(video_list['genreId'])],
-                              mode=g.MODE_DIRECTORY),
-             list_item_skeleton(common.get_local_string(30088),
-                                icon='DefaultAddSource.png',
-                                description=common.get_local_string(30090)),
-             True))
-        # TODO: Implement browsing of subgenres
-        # directory_items.append(
-        #     (common.build_url(pathitems=['genres', genre_id, 'subgenres'],
-        #                       mode=g.MODE_DIRECTORY),
-        #      list_item_skeleton('Browse subgenres...'),
-        #      True))
-    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector)
+    # If genre_id exists add possibility to browse lolomos subgenres
+    if genre_id:
+        directory_items.insert(0,
+                               (common.build_url(['genres', menu_data['path'][1], genre_id],
+                                                 mode=g.MODE_DIRECTORY),
+                                list_item_skeleton(common.get_local_string(30089),
+                                                   icon='DefaultVideoPlaylist.png',
+                                                   description=common.get_local_string(30088)),
+                                True))
+    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, genre_id)
     # At the moment it is not possible to make a query with results sorted for the 'mylist',
     # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
@@ -321,18 +350,23 @@ def list_item_skeleton(label, icon=None, fanart=None, description=None, customic
     return list_item
 
 
-def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector):
+def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, genre_id=None):
     if pathitems and perpetual_range_selector:
         if 'previous_start' in perpetual_range_selector:
-            previous_page_url = common.build_url(pathitems=pathitems,
-                                                 params={'perpetual_range_start': perpetual_range_selector.get('previous_start')},
-                                                 mode=g.MODE_DIRECTORY)
-            directory_items.insert(0, (previous_page_url, list_item_skeleton(common.get_local_string(30148),
-                                                                             customicon='FolderPagePrevious.png'), True))
+            previous_page_url = \
+                common.build_url(pathitems=pathitems,
+                                 params={'perpetual_range_start': perpetual_range_selector.get('previous_start'),
+                                         'genre_id':
+                                             genre_id if perpetual_range_selector.get('previous_start') == 0 else None},
+                                 mode=g.MODE_DIRECTORY)
+            directory_items.insert(0, (previous_page_url,
+                                       list_item_skeleton(common.get_local_string(30148),
+                                                          customicon='FolderPagePrevious.png'), True))
         if 'next_start' in perpetual_range_selector:
-            next_page_url = common.build_url(pathitems=pathitems,
-                                             params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
-                                             mode=g.MODE_DIRECTORY)
+            next_page_url = \
+                common.build_url(pathitems=pathitems,
+                                 params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
+                                 mode=g.MODE_DIRECTORY)
             directory_items.append((next_page_url, list_item_skeleton(common.get_local_string(30147),
                                                                       customicon='FolderPageNext.png'), True))
 

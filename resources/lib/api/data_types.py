@@ -198,6 +198,18 @@ class EpisodeList(object):
             resolve_refs(self.season['episodes'], self.data))
 
 
+class SubgenreList(object):
+    """A list of subgenre."""
+    def __init__(self, path_response):
+        common.debug('Subgenre data: {}'.format(path_response))
+        self.lists = {}
+        if path_response:
+            self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
+            genre_id = next(path_response.get('genres', {}).iterkeys())
+            self.subgenre_data = path_response['genres'].get(genre_id, {}).get('subgenres')
+            self.lists = path_response['genres'].get(genre_id, {}).get('subgenres').items()
+
+
 def _check_sentinel(value):
     return (None
             if isinstance(value, dict) and value.get('$type') == 'sentinel'

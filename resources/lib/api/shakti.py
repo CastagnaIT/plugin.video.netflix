@@ -10,7 +10,7 @@ import resources.lib.cache as cache
 import resources.lib.kodi.ui as ui
 
 from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, EpisodeList,
-                         SearchVideoList, CustomVideoList)
+                         SearchVideoList, CustomVideoList, SubgenreList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE)
@@ -174,6 +174,14 @@ def genre(genre_id):
         # IDs and names of subgenres
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 30},
           ['id', 'name']]]))
+
+
+def subgenre(genre_id):
+    """Retrieve subgenres for the given genre"""
+    common.debug('Requesting subgenres for genre {}'.format(genre_id))
+    return SubgenreList(common.make_call(
+        'path_request',
+        [['genres', genre_id, 'subgenres', {'from': 0, 'to': 47}, ['id', 'name']]]))
 
 
 @common.time_execution(immediate=False)
