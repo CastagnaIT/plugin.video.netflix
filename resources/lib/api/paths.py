@@ -25,7 +25,7 @@ LENGTH_ATTRIBUTES = {
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['storyarts', '_1632x873', 'jpg'], # <This path seem no more used, never found it in the results
+    ['storyarts', '_1632x873', 'jpg'],  # storyarts seem no more used, never found it in the results
     ['bb2OGLogo', '_550x124', 'png'],
     ['BGImages', '720', 'jpg']
 ]

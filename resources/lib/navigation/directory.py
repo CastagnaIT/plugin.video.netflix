@@ -79,14 +79,14 @@ class DirectoryBuilder(object):
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
             menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
-        if menu_data.get('request_context_name',None) and g.is_known_menu_context(pathitems[2]):
+        if menu_data.get('request_context_name', None) and g.is_known_menu_context(pathitems[2]):
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       perpetual_range_start=self.perpetual_range_start,
                                       menu_data=menu_data),
                 menu_data, pathitems)
         else:
-            #Dynamic IDs for common video lists
+            # Dynamic IDs for common video lists
             list_id = None if pathitems[2] == 'None' else pathitems[2]
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
@@ -120,7 +120,7 @@ class DirectoryBuilder(object):
             lolomo = api.root_lists()
             listings.build_lolomo_listing(lolomo, menu_data)
         else:
-            #Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
+            # Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
             lolomo = api.genre(pathitems[2])
             listings.build_lolomo_listing(lolomo, menu_data, exclude_lolomo_known=True)
         _handle_endofdirectory(False)

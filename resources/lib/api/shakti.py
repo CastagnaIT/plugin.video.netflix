@@ -125,8 +125,7 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
     this type of request allows to obtain more than ~40 results
     """
     common.debug(
-        'Requesting video list sorted for context name: "{}", context id: "{}"'
-            .format(context_name, context_id))
+        'Requesting video list sorted for context name: "{}", context id: "{}"'.format(context_name, context_id))
     base_path = [context_name]
     response_type = 'stdlist'
     if context_id:

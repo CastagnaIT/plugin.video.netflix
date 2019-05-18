@@ -140,7 +140,7 @@ def build_main_menu_listing(lolomo):
 @custom_viewmode(g.VIEW_FOLDER)
 @common.time_execution(immediate=False)
 def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_lolomo_known=False):
-    """Build a listing of vieo lists (LoLoMo). Only show those
+    """Build a listing of video lists (LoLoMo). Only show those
     lists with a context specified context if contexts is set."""
     contexts = menu_data['lolomo_contexts']
     lists = (lolomo.lists_by_context(contexts)
@@ -152,7 +152,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
         if exclude_lolomo_known:
             # Keep only the menus genre
             if menu_parameters.type_id != '28':
-                 continue
+                continue
         if menu_parameters.is_menu_id:
             # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
             sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
@@ -218,8 +218,8 @@ def build_video_listing(video_list, menu_data, pathitems=None):
     # At the moment it is not possible to make a query with results sorted for the 'mylist',
     # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
-    if menu_data['path'][1]=='myList':
-        sort_type='sort_label'
+    if menu_data['path'][1] == 'myList':
+        sort_type = 'sort_label'
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
                        title=g.get_menu_title(menu_data['path'][1]), sort_type=sort_type)
     return menu_data.get('view')
@@ -303,7 +303,7 @@ def list_item_skeleton(label, icon=None, fanart=None, description=None, customic
     # pylint: disable=unexpected-keyword-arg
     list_item = xbmcgui.ListItem(label=label, offscreen=True)
     list_item.setContentLookup(False)
-    art_values={}
+    art_values = {}
     if customicon:
         addon_dir = xbmc.translatePath(g.ADDON.getAddonInfo('path'))
         icon = os.path.join(addon_dir, 'resources', 'media', customicon)
@@ -349,11 +349,11 @@ def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_not
 
 
 def add_sort_methods(sort_type):
-    if sort_type=='sort_nothing':
+    if sort_type == 'sort_nothing':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_NONE)
-    if sort_type=='sort_label':
+    if sort_type == 'sort_label':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
-    if sort_type=='sort_episodes':
+    if sort_type == 'sort_episodes':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_VIDEO_TITLE)
