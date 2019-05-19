@@ -252,7 +252,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                (common.build_url(['genres', menu_id, genre_id],
                                                  mode=g.MODE_DIRECTORY),
                                 list_item_skeleton(common.get_local_string(30089),
-                                                   icon='DefaultVideoPlaylist.png',
+                                                   icon='DefaultVideoPlaylists.png',
                                                    description=common.get_local_string(30088)),
                                 True))
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, genre_id)
