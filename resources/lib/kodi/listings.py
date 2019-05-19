@@ -260,7 +260,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
     if menu_data['path'][1] == 'myList':
-        sort_type = 'sort_label'
+        sort_type = 'sort_label_ignore_folders'
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
                        title=g.get_menu_title(menu_data['path'][1]), sort_type=sort_type)
     return menu_data.get('view')
@@ -399,6 +399,8 @@ def add_sort_methods(sort_type):
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     if sort_type == 'sort_label':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
+    if sort_type == 'sort_label_ignore_folders':
+        xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
     if sort_type == 'sort_episodes':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
