@@ -10,6 +10,7 @@ from functools import wraps
 from time import clock
 import gzip
 import base64
+import re
 from StringIO import StringIO
 
 import xbmc
@@ -299,3 +300,29 @@ def get_system_platform():
     elif xbmc.getCondVisibility('system.platform.ios'):
         platform = "ios"
     return platform
+
+
+class GetKodiVersion(object):
+    """Get the kodi version, git date, stage name"""
+
+    def __init__(self):
+        # Examples of some types of supported strings:
+        # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
+        # 0422-f2643566d0                        19.0-ALPHA1 Git:20190419-c963b64487
+        build_version_str = xbmc.getInfoLabel('System.BuildVersion')
+        re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
+        if re_kodi_version:
+            self.version = re_kodi_version.group(0)
+        else:
+            self.version = 'Unknown'
+        re_git_date = re.search('(Git:)(\\d+?(?=(-|$)))', build_version_str)
+        if re_git_date and len(re_git_date.groups()) >= 2:
+            self.date = int(re_git_date.group(2))
+        else:
+            self.date = 0
+        re_stage = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', build_version_str)
+        if not re_stage:
+            re_stage = re.search('^(.+)(-\\d+\\.\\d+)', build_version_str)
+            self.stage = re_stage.group(1) if re_stage else ''
+        else:
+            self.stage = re_stage.group(2) if re_stage else ''
