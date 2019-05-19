@@ -157,11 +157,12 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
             sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
             sub_menu_data = menu_data.copy()
-            sub_menu_data['path'] = [menu_data['path'][0], menu_data['path'][1], sel_video_list_id]
+            sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
             sub_menu_data['lolomo_contexts'] = None
             sub_menu_data['content_type'] = g.CONTENT_SHOW
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
+            sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
             g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
             g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
             directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
@@ -202,12 +203,13 @@ def build_subgenre_listing(subgenre_list, menu_data):
     directory_items = []
     for index, subgenre_data in subgenre_list.lists:
         # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
-        sel_video_list_id = str(subgenre_data['id'])
+        sel_video_list_id = unicode(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
-        sub_menu_data['path'] = [menu_data['path'][0], menu_data['path'][1], sel_video_list_id]
+        sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
         sub_menu_data['content_type'] = g.CONTENT_SHOW
+        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
         g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
         g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = subgenre_data['name']
         directory_items.append(_create_subgenre_item(sel_video_list_id, subgenre_data, sub_menu_data))
@@ -236,8 +238,18 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                        in video_list.videos.iteritems()]
     # If genre_id exists add possibility to browse lolomos subgenres
     if genre_id:
+        menu_id = 'subgenre_' + genre_id
+        sub_menu_data = menu_data.copy()
+        sub_menu_data['path'] = [menu_data['path'][0], menu_id, genre_id]
+        sub_menu_data['lolomo_known'] = False
+        sub_menu_data['lolomo_contexts'] = None
+        sub_menu_data['content_type'] = g.CONTENT_SHOW
+        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
+        g.PERSISTENT_STORAGE['sub_menus'][menu_id] = sub_menu_data
+        g.PERSISTENT_STORAGE['menu_titles'][menu_id] = common.get_local_string(30089)
+        g.PERSISTENT_STORAGE.commit()
         directory_items.insert(0,
-                               (common.build_url(['genres', menu_data['path'][1], genre_id],
+                               (common.build_url(['genres', menu_id, genre_id],
                                                  mode=g.MODE_DIRECTORY),
                                 list_item_skeleton(common.get_local_string(30089),
                                                    icon='DefaultVideoPlaylist.png',

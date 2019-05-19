@@ -79,11 +79,15 @@ class DirectoryBuilder(object):
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
             menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
+        mainmenu_data = menu_data.copy()
+        # If the menu is a sub-menu, we get the parameters of the main menu
+        if menu_data.get('main_menu'):
+            mainmenu_data = menu_data['main_menu']
         if menu_data.get('request_context_name', None) and g.is_known_menu_context(pathitems[2]):
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       perpetual_range_start=self.perpetual_range_start,
-                                      menu_data=menu_data),
+                                      menu_data=mainmenu_data),
                 menu_data, pathitems)
         else:
             # Dynamic IDs for common video lists
@@ -92,7 +96,7 @@ class DirectoryBuilder(object):
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       context_id=list_id,
                                       perpetual_range_start=self.perpetual_range_start,
-                                      menu_data=menu_data),
+                                      menu_data=mainmenu_data),
                 menu_data, pathitems, self.params.get('genre_id'))
         _handle_endofdirectory(self.dir_update_listing)
 
@@ -114,7 +118,9 @@ class DirectoryBuilder(object):
     @common.time_execution(immediate=False)
     def genres(self, pathitems):
         """Show video lists for a genre"""
-        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
+        if not menu_data:
+            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
         # pathitems indexes: 0 function name, 1 menu id, 2 optional id
         if len(pathitems) < 3:
             lolomo = api.root_lists()
