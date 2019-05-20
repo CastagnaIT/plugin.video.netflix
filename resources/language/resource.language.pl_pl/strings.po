@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -66,7 +66,7 @@ msgstr "Zweryfikuj poprawność wprowadzonych danych"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr ""
+msgstr "Listy wszelkiego rodzaju"
 
 msgctxt "#30011"
 msgid "Search"
@@ -262,7 +262,7 @@ msgstr "Aktywuj profile HEVC (4K dla Androida/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr ""
+msgstr "Aktualizuj wewnątrz biblioteki"
 
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
@@ -289,12 +289,12 @@ msgid "daily"
 msgstr "codziennie"
 
 msgctxt "#30068"
-msgid "każdego innego dnia"
-msgstr ""
+msgid "every other day"
+msgstr "Każdego innego dnia"
 
 msgctxt "#30069"
-msgid "co 5 dni"
-msgstr ""
+msgid "every 5 days"
+msgstr "co 5 dni"
 
 msgctxt "#30070"
 msgid "weekly"
@@ -530,7 +530,7 @@ msgstr "Przyznana ocena {}"
 
 msgctxt "#30128"
 msgid "No contained titles yet..."
-msgstr ""
+msgstr "Brak zawartych tytułów ..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -589,8 +589,8 @@ msgid "Custom"
 msgstr "Własny"
 
 msgctxt "#30143"
-msgid "Własny widok ID"
-msgstr ""
+msgid "Custom view ID"
+msgstr "ID własnego widoku"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
@@ -631,3 +631,91 @@ msgstr "Proponowane dla Ciebie""
 msgctxt "#30153"
 msgid "Year released"
 msgstr "Rok wydania"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Konfiguracja dodatku Netflix"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Czy masz konto Netflix Premium?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Czy twoje urządzenie obsługuje standard 4k?\r\nUrządzenie musi:\r\n Być certyfikowane przez Netflix, wspierać Widevine Security poziom L1 i posiadać ekran 4K HDCP 2.2"
+
+msgctxt "#30157"
+msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Zostanie otworzone okno ustawień dodatku InputStream, żebyś mógł włączyć opcję \"Override HDCP status\""
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Pokaż ekran konfiguracji przy starcie dodatku"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Widok dla głównego menu"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Widok dla wyszukiwania"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Widok dla wyeksportowanych"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Ostatnio użyty"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Audio deskrypcja"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Przeglądaj zawartość z deskrypcją audio"
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Widok dla mojej listy"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Pozycje głównego menu"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Moja lista"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Oglądaj dalej"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Wybrane"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Nowości"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Popularne teraz"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Popularne w Netflix"
+
+msgctxt "#30173"
+msgid "NETFLIX ORIGINALS"
+msgstr "NETFLIX ORIGINALS"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Gatunki seriali"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Gatunki filmów"
