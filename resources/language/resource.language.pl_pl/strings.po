@@ -603,32 +603,4 @@ msgstr "Ostatnio dodane"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr "Odkryj ostatnio dodane materiały."
-
-msgctxt "#30147"
-msgid "Next page >>"
-msgstr "Następna strona >>"
-
-msgctxt "#30148"
-msgid "<< Previous page"
-msgstr "<< Poprzednia strona"
-
-msgctxt "#30149"
-msgid "Sort results by (works on menus with paging)"
-msgstr "Sortuj wyniki według (działa z menu ze stronnicowaniem)"
-
-msgctxt "#30150"
-msgid "Alphabetical order (A-Z)"
-msgstr "Porządek alfabetyczny (A-Z)"
-
-msgctxt "#30151"
-msgid "Alphabetical order (Z-A)"
-msgstr "Porządek alfabetyczny (Z-A)"
-
-msgctxt "#30152"
-msgid "Suggestions for you"
-msgstr "Proponowane dla Ciebie""
-
-msgctxt "#30153"
-msgid "Year released"
-msgstr "Rok wydania"
+msgstr "Odkryj najnowsze treści dodane."
