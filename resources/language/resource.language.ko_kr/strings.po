@@ -65,7 +65,7 @@ msgid "Please Check your credentials"
 msgstr "로그인 암호를 확인하십시오."
 
 msgctxt "#30010"
-msgid "Genres"
+msgid "Lists of all kinds"
 msgstr "장르"
 
 msgctxt "#30011"
@@ -257,7 +257,7 @@ msgid "Switch accounts"
 msgstr "다른 계정으로"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
 msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
 
 msgctxt "#30061"

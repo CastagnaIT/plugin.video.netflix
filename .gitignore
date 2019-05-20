@@ -103,4 +103,10 @@ ENV/
 # mypy
 .mypy_cache/
 
+# Visual Studio Code
 .vscode
+
+# Visual Studio
+*.pyproj
+*.sln
+.vs/

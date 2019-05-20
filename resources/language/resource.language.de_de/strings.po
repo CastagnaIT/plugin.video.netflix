@@ -65,7 +65,7 @@ msgid "Please Check your credentials"
 msgstr "Bitte die Anmeldedaten überprüfen"
 
 msgctxt "#30010"
-msgid "Genres"
+msgid "Lists of all kinds"
 msgstr ""
 
 msgctxt "#30011"
@@ -147,10 +147,6 @@ msgstr "Export Titel ändern"
 msgctxt "#30032"
 msgid "Tracking"
 msgstr ""
-
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Benutze Dolby-Ton"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -245,8 +241,8 @@ msgid "Switch accounts"
 msgstr "Accounts wechseln"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Aktiviere HEVC profile (z.b. für 4k in Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Aktiviere HEVC profile (4k in Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -447,10 +443,6 @@ msgstr "Login erfolgreich"
 msgctxt "#30110"
 msgid "Background services started"
 msgstr "Hintergrunddienste gestartet"
-
-msgctxt "#30111"
-msgid "Enable Dolby Atmos"
-msgstr "Aktiviere Dolby Atmos"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"

@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Por favor, verifique as suas credenciais de acesso"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Géneros"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"
@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr "Rastreio"
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Usar Dolby Sound"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Ativar Dolby Digital Plus (DDPlus HQ e Atmos on Premium)"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +257,8 @@ msgid "Switch accounts"
 msgstr "Mudar de conta"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Activar perfis HEVC (por exemplo, 4k para Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Activar perfis HEVC (4k para Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

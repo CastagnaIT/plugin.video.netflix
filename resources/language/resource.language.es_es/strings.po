@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Por favor, comprueba que el e-mail y la contraseña son correctos"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Géneros"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"
@@ -147,10 +147,6 @@ msgstr "Cambiar nombre de la biblioteca"
 msgctxt "#30032"
 msgid "Tracking"
 msgstr ""
-
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Usar Dolby Sound"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +253,8 @@ msgid "Switch accounts"
 msgstr "Cambiar de cuenta"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Habilitar perfiles HEVC (por ejemplo, 4k para Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Habilitar perfiles HEVC (4k para Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

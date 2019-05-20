@@ -79,19 +79,25 @@ class DirectoryBuilder(object):
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
             menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
-        if menu_data.get('request_context_name',None) and g.is_known_menu_context(pathitems[2]):
+        mainmenu_data = menu_data.copy()
+        # If the menu is a sub-menu, we get the parameters of the main menu
+        if menu_data.get('main_menu'):
+            mainmenu_data = menu_data['main_menu']
+        if menu_data.get('request_context_name', None) and g.is_known_menu_context(pathitems[2]):
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
-                                      perpetual_range_start=self.perpetual_range_start),
+                                      perpetual_range_start=self.perpetual_range_start,
+                                      menu_data=mainmenu_data),
                 menu_data, pathitems)
         else:
-            #Dynamic IDs for common video lists
-            list_id = pathitems[2]
+            # Dynamic IDs for common video lists
+            list_id = None if pathitems[2] == 'None' else pathitems[2]
             listings.build_video_listing(
                 api.video_list_sorted(context_name=menu_data['request_context_name'],
                                       context_id=list_id,
-                                      perpetual_range_start=self.perpetual_range_start),
-                menu_data, pathitems)
+                                      perpetual_range_start=self.perpetual_range_start,
+                                      menu_data=mainmenu_data),
+                menu_data, pathitems, self.params.get('genre_id'))
         _handle_endofdirectory(self.dir_update_listing)
 
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)
@@ -112,15 +118,24 @@ class DirectoryBuilder(object):
     @common.time_execution(immediate=False)
     def genres(self, pathitems):
         """Show video lists for a genre"""
-        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
+        if not menu_data:
+            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
         # pathitems indexes: 0 function name, 1 menu id, 2 optional id
         if len(pathitems) < 3:
             lolomo = api.root_lists()
             listings.build_lolomo_listing(lolomo, menu_data)
         else:
-            #Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
+            # Here is provided the id of the genre, eg. get sub-menus of tvshows (all tv show)
             lolomo = api.genre(pathitems[2])
             listings.build_lolomo_listing(lolomo, menu_data, exclude_lolomo_known=True)
+        _handle_endofdirectory(False)
+
+    def subgenres(self, pathitems):
+        """Show a lists of subgenres"""
+        # pathitems indexes: 0 function name, 1 menu id, 2 genre id
+        menu_data = g.MAIN_MENU_ITEMS[pathitems[1]]
+        listings.build_subgenre_listing(api.subgenre(pathitems[2]), menu_data)
         _handle_endofdirectory(False)
 
     @common.time_execution(immediate=False)
@@ -164,6 +179,7 @@ def _ask_search_term_and_redirect():
     else:
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
+
 @common.time_execution(immediate=False)
 def _display_search_results(pathitems, perpetual_range_start, dir_update_listing):
     search_term = pathitems[2]
@@ -174,6 +190,7 @@ def _display_search_results(pathitems, perpetual_range_start, dir_update_listing
     else:
         ui.show_notification(common.get_local_string(30013))
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+
 
 def _handle_endofdirectory(dir_update_listing):
     # If dir_update_listing=True overwrite the history list, so we can get back to the main page

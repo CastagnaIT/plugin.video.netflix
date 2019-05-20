@@ -222,7 +222,7 @@ class NetflixSession(object):
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
-        xbmc.executebuiltin('XBMC.Container.Update(path,replace)') # Clean path history
+        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
         xbmc.executebuiltin('XBMC.ActivateWindow(Home)')
 
     @common.addonsignals_return_call
@@ -263,51 +263,50 @@ class NetflixSession(object):
     @common.addonsignals_return_call
     @needs_login
     @common.time_execution(immediate=True)
-    def perpetual_path_request(self, paths, path_type, length_params1=None, length_params2=None,
-                               perpetual_range_start=None):
+    def perpetual_path_request(self, paths, length_params, perpetual_range_start=None):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
         larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
         executed with forward shifting range selectors and the results will
         be combined into one path response."""
-        if length_params2 is None:
-            length_params = [length_params1]
-        else:
-            length_params = [length_params1, length_params2]
-        length = apipaths.LENGTH_ATTRIBUTES[path_type]
+        response_type, length_args = length_params
+        context_name = length_args[0]
+        response_length = apipaths.LENGTH_ATTRIBUTES[response_type]
+
+        request_size = apipaths.MAX_PATH_REQUEST_SIZE
+        response_size = request_size + 1
+        # Note: when the request is made with 'genres' context,
+        # the response strangely does not respect the number of objects
+        # requested, returning 1 more item, i couldn't understand why
+        if context_name == 'genres':
+            response_size += 1
 
         number_of_requests = 2
         perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
         range_start = perpetual_range_start
-        range_end = range_start + apipaths.MAX_PATH_REQUEST_SIZE
+        range_end = range_start + request_size
         merged_response = {}
 
         for n_req in range(number_of_requests):
             path_response = self._path_request(_set_range_selector(paths, range_start, range_end))
             if len(path_response) != 0:
                 common.merge_dicts(path_response, merged_response)
-                videos_count = length(path_response, *length_params) - 1 # has zero base
-                if videos_count >= apipaths.MAX_PATH_REQUEST_SIZE:
-                    # Note: when the request is made with 'genres' context,
-                    #  the response strangely does not respect the number of objects
-                    #  requested, returning 1 more item, i couldn't understand why
-                    if length_params1 == 'genres':
-                        range_end += 1
-                    if n_req == (number_of_requests-1):
-                        merged_response['_perpetual_range_selector'] = {'next_start': range_end + 1}
-                        common.debug('{} have other elements, added _perpetual_range_selector item'.format(path_type))
+                response_count = response_length(path_response, *length_args)
+                if response_count >= response_size:
+                    range_start += response_size
+                    if n_req == (number_of_requests - 1):
+                        merged_response['_perpetual_range_selector'] = {'next_start': range_start}
+                        common.debug('{} has other elements, added _perpetual_range_selector item'.format(response_type))
                     else:
-                        range_start = range_end + 1
-                        range_end = range_start + apipaths.MAX_PATH_REQUEST_SIZE
+                        range_end = range_start + request_size
                 else:
-                    #There are no other elements to request
+                    # There are no other elements to request
                     break
             else:
                 break
 
         if perpetual_range_start > 0:
-            n_page = (perpetual_range_start / apipaths.MAX_PATH_REQUEST_SIZE) / number_of_requests
-            previous_start = (n_page * apipaths.MAX_PATH_REQUEST_SIZE) if n_page > 1 else 0
+            previous_start = perpetual_range_start - (response_size * number_of_requests)
             if '_perpetual_range_selector' in merged_response:
                 merged_response['_perpetual_range_selector']['previous_start'] = previous_start
             else:
@@ -322,8 +321,21 @@ class NetflixSession(object):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
+
+        '''
+        params:
+        drmSystem       drm used
+        falcor_server   json responses like browser
+        withSize        puts the 'size' field inside each dictionary
+        materialize     if true, when a path that no longer exists is requested (like 'storyarts'),
+                           it is still added in an 'empty' form in the response
+        '''
         params = {
-            'model': self.session_data['user_data']['gpsModel']}
+            'drmSystem': 'widevine',
+            # 'falcor_server': '0.1.0',
+            'withSize': 'false',
+            'materialize': 'false'
+        }
         data = 'path=' + '&path='.join(json.dumps(path, ensure_ascii=False) for path in paths)
         data += '&authURL=' + self.auth_url
         return self._post(

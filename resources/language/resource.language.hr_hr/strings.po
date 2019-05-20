@@ -65,8 +65,8 @@ msgid "Please Check your credentials"
 msgstr "Provjereite svoje podatke ovjere"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Žanrovi"
+msgid "Lists of all kinds"
+msgstr ""
 
 msgctxt "#30011"
 msgid "Search"
@@ -147,10 +147,6 @@ msgstr "Promijeni naslov videoteke"
 msgctxt "#30032"
 msgid "Tracking"
 msgstr "Praćenje"
-
-msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Koristi Dolby zvuk"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +253,8 @@ msgid "Switch accounts"
 msgstr "Zamijeni račune"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Omogući HEVC profile (npr. 4k za Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Omogući HEVC profile (4k za Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"

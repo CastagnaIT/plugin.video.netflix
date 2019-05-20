@@ -26,20 +26,20 @@ class GlobalVariables(object):
     # pylint: disable=attribute-defined-outside-init
     # pylint: disable=invalid-name, too-many-instance-attributes
 
+    # Values in the variables VIEW_* stand for a partial menu id,
+    # contained in the settings xml, example 'profiles' stand for id 'viewmodeprofiles'
+    VIEW_PROFILES = 'profiles'
+    VIEW_MAINMENU = 'mainmenu'
+    VIEW_MYLIST = 'mylist'
     VIEW_FOLDER = 'folder'
     VIEW_MOVIE = 'movie'
     VIEW_SHOW = 'show'
     VIEW_SEASON = 'season'
     VIEW_EPISODE = 'episode'
-    VIEW_GENRES = 'genres'
-    VIEW_RACOMMENDATIONS = 'folder'
-    VIEW_SEARCH = 'folder'
+    VIEW_SEARCH = 'search'
     VIEW_EXPORTED = 'exported'
 
-    VIEWTYPES = [VIEW_FOLDER, VIEW_MOVIE, VIEW_SHOW, VIEW_SEASON,
-                 VIEW_EPISODE, VIEW_GENRES, VIEW_RACOMMENDATIONS,
-                 VIEW_SEARCH, VIEW_EXPORTED]
-
+    CONTENT_IMAGES = 'images'
     CONTENT_FOLDER = 'files'
     CONTENT_MOVIE = 'movies'
     CONTENT_SHOW = 'tvshows'
@@ -54,9 +54,8 @@ class GlobalVariables(object):
     label_id : menu title
     description_id : description info text
     icon : set a default image
-    view_type : set the type of view, configurable from addon views settings
-    content_type : sets the type of content
-    show_in_menu : show/hide menu
+    view : override the default "partial menu id" of view
+    content_type : override the default content type (CONTENT_SHOW)
 
     Explanation of function names in the 'path' key:
         video_list: automatically gets the list_id by making a lolomo request,
@@ -69,114 +68,102 @@ class GlobalVariables(object):
                     'lolomo_contexts': ['queue'],
                     'lolomo_known': True,
                     'request_context_name': 'mylist',
-                    'view_type': VIEW_SHOW,
-                    'content_type': CONTENT_FOLDER,
-                    'show_in_menu': True}),
+                    'view': VIEW_MYLIST}),
         ('continueWatching', {'path': ['video_list', 'continueWatching'],
                               'lolomo_contexts': ['continueWatching'],
-                              'lolomo_known': True,
-                              'view_type': VIEW_SHOW,
-                              'content_type': CONTENT_FOLDER,
-                              'show_in_menu': True}),
+                              'lolomo_known': True}),
         ('chosenForYou', {'path': ['video_list', 'chosenForYou'],
                           'lolomo_contexts': ['topTen'],
-                          'lolomo_known': True,
-                          'view_type': VIEW_SHOW,
-                          'content_type': CONTENT_FOLDER,
-                          'show_in_menu': True}),
+                          'lolomo_known': True}),
         ('recentlyAdded', {'path': ['video_list_sorted', 'recentlyAdded', '1592210'],
                            'lolomo_contexts': None,
                            'lolomo_known': False,
                            'request_context_name': 'genres',
                            'label_id': 30145,
                            'description_id': 30146,
-                           'icon': 'DefaultRecentlyAddedMovies.png',
-                           'view_type': VIEW_SHOW,
-                           'content_type': CONTENT_FOLDER,
-                           'show_in_menu': True}),
+                           'icon': 'DefaultRecentlyAddedMovies.png'}),
         ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
                         'lolomo_contexts': ['newRelease'],
                         'lolomo_known': True,
-                        'request_context_name': 'newrelease',
-                        'view_type': VIEW_SHOW,
-                        'content_type': CONTENT_FOLDER,
-                        'show_in_menu': True}),
+                        'request_context_name': 'newrelease'}),
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'lolomo_contexts': ['trendingNow'],
-                           'lolomo_known': True,
-                           'view_type': VIEW_SHOW,
-                           'content_type': CONTENT_FOLDER,
-                           'show_in_menu': True}),
+                           'lolomo_known': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'lolomo_contexts': ['popularTitles'],
-                        'lolomo_known': True,
-                        'view_type': VIEW_SHOW,
-                        'content_type': CONTENT_FOLDER,
-                        'show_in_menu': True}),
+                        'lolomo_known': True}),
         ('netflixOriginals', {'path': ['video_list_sorted', 'netflixOriginals', '839338'],
                               'lolomo_contexts': ['netflixOriginals'],
                               'lolomo_known': True,
-                              'request_context_name': 'genres',
-                              'view_type': VIEW_SHOW,
-                              'content_type': CONTENT_FOLDER,
-                              'show_in_menu': True}),
-        ('genres', {'path': ['genres', 'genres'],
-                    'lolomo_contexts': ['genre'],
-                    'lolomo_known': False,
-                    'request_context_name': 'genres',
-                    'label_id': 30010,
-                    'description_id': 30093,
-                    'icon': 'DefaultGenre.png',
-                    'view_type': VIEW_GENRES,
-                    'content_type': CONTENT_SHOW,
-                    'show_in_menu': True}),
+                              'request_context_name': 'genres'}),
+        ('assistiveAudio', {'path': ['video_list_sorted', 'assistiveAudio', 'None'],
+                            'lolomo_contexts': None,
+                            'lolomo_known': False,
+                            'request_context_name': 'assistiveAudio',
+                            'label_id': 30163,
+                            'description_id': 30164,
+                            'icon': 'DefaultTVShows.png'}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
                              'lolomo_contexts': ['similars', 'becauseYouAdded'],
                              'lolomo_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
                              'icon': 'DefaultUser.png',
-                             'view_type': VIEW_RACOMMENDATIONS,
-                             'content_type': CONTENT_SHOW,
-                             'show_in_menu': True}),
+                             'content_type': CONTENT_FOLDER}),
+        ('tvshowsGenres', {'path': ['subgenres', 'tvshowsGenres', '83'],
+                           'lolomo_contexts': None,
+                           'lolomo_known': False,
+                           'request_context_name': 'genres',  # Used for sub-menus
+                           'label_id': 30174,
+                           'description_id': None,
+                           'icon': 'DefaultTVShows.png',
+                           'content_type': CONTENT_FOLDER}),
+        ('moviesGenres', {'path': ['subgenres', 'moviesGenres', '34399'],
+                          'lolomo_contexts': None,
+                          'lolomo_known': False,
+                          'request_context_name': 'genres',  # Used for sub-menus
+                          'label_id': 30175,
+                          'description_id': None,
+                          'icon': 'DefaultMovies.png',
+                          'content_type': CONTENT_FOLDER}),
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
                      'lolomo_contexts': None,
                      'lolomo_known': False,
-                     'request_context_name': 'genres', # Used for sub-menus
+                     'request_context_name': 'genres',  # Used for sub-menus
                      'label_id': 30095,
                      'description_id': None,
                      'icon': 'DefaultTVShows.png',
-                     'view_type': VIEW_SHOW,
-                     'content_type': CONTENT_SHOW,
-                     'show_in_menu': True}),
+                     'content_type': CONTENT_FOLDER}),
         ('movies', {'path': ['genres', 'movies', '34399'],
                     'lolomo_contexts': None,
                     'lolomo_known': False,
-                    'request_context_name': 'genres', # Used for sub-menus
+                    'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30096,
                     'description_id': None,
                     'icon': 'DefaultMovies.png',
-                    'view_type': VIEW_MOVIE,
-                    'content_type': CONTENT_MOVIE,
-                    'show_in_menu': True}),
+                    'content_type': CONTENT_FOLDER}),
+        ('genres', {'path': ['genres', 'genres'],
+                    'lolomo_contexts': ['genre'],
+                    'lolomo_known': False,
+                    'request_context_name': 'genres',  # Used for sub-menus
+                    'label_id': 30010,
+                    'description_id': 30093,
+                    'icon': 'DefaultGenre.png',
+                    'content_type': CONTENT_FOLDER}),
         ('search', {'path': ['search', 'search'],
                     'lolomo_contexts': None,
                     'lolomo_known': False,
                     'label_id': 30011,
                     'description_id': 30092,
                     'icon': None,
-                    'view_type': VIEW_SEARCH,
-                    'content_type': CONTENT_SHOW,
-                    'show_in_menu': True}),
+                    'view': VIEW_SEARCH}),
         ('exported', {'path': ['exported', 'exported'],
                       'lolomo_contexts': None,
                       'lolomo_known': False,
                       'label_id': 30048,
                       'description_id': 30091,
                       'icon': 'DefaultHardDisk.png',
-                      'view_type': VIEW_EXPORTED,
-                      'content_type': CONTENT_SHOW,
-                      'show_in_menu': True})
+                      'view': VIEW_EXPORTED})
     ])
 
     MODE_DIRECTORY = 'directory'
@@ -195,6 +182,7 @@ class GlobalVariables(object):
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
         self._library = None
+        self.SETTINGS_MONITOR_IGNORE = False
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -226,10 +214,6 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
-        # enum order: AZ|ZA|Suggested|Year
-        sort_order_types = ['az', 'za', 'su', 'yr']
-        self.REQ_SORT_ORDER_TYPE = sort_order_types[int(g.ADDON.getSettingInt('sortordertype'))]
-
         try:
             os.mkdir(self.DATA_PATH)
         except OSError:
@@ -258,6 +242,62 @@ class GlobalVariables(object):
                     xbmc.translatePath(
                         os.path.join(self.CACHE_PATH, bucket)))
 
+    def initial_addon_configuration(self):
+        """
+        Initial addon configuration,
+        helps users to automatically configure addon parameters for proper viewing of videos
+        """
+        run_initial_config = self.ADDON.getSettingBool('run_init_configuration')
+        if run_initial_config:
+            import resources.lib.common as common
+            import resources.lib.kodi.ui as ui
+            self.SETTINGS_MONITOR_IGNORE = True
+            system = common.get_system_platform()
+            common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
+            if system in ['osx','ios','xbox']:
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', True)
+            elif system == 'windows':
+                # Currently inputstream does not support hardware video acceleration on windows,
+                # there is no guarantee that we will get 4K without video hardware acceleration,
+                # so no 4K configuration
+                self.ADDON.setSettingBool('enable_vp9_profiles', True)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
+            elif system == 'android':
+                ultrahd_capable_device = False
+                premium_account = ui.ask_for_confirmation(common.get_local_string(30154),
+                                                          common.get_local_string(30155))
+                if premium_account:
+                    ultrahd_capable_device = ui.ask_for_confirmation(common.get_local_string(30154),
+                                                                     common.get_local_string(30156))
+                if ultrahd_capable_device:
+                    ui.show_ok_dialog(common.get_local_string(30154),
+                                      common.get_local_string(30157))
+                    ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
+                    if ia_enabled:
+                        xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
+                    else:
+                        ui.show_ok_dialog(common.get_local_string(30154),
+                                          common.get_local_string(30046))
+                    self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                    self.ADDON.setSettingBool('enable_hevc_profiles', True)
+                else:
+                    # VP9 should have better performance since there is no need for 4k
+                    self.ADDON.setSettingBool('enable_vp9_profiles', True)
+                    self.ADDON.setSettingBool('enable_hevc_profiles', False)
+                self.ADDON.setSettingBool('enable_force_hdcp', ultrahd_capable_device)
+            elif system == 'linux':
+                # Too many different linux systems, we can not predict all the behaviors
+                # Some linux distributions have encountered problems with VP9,
+                # OMSC users complain that hevc creates problems
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
+            else:
+                self.ADDON.setSettingBool('enable_vp9_profiles', False)
+                self.ADDON.setSettingBool('enable_hevc_profiles', False)
+            self.ADDON.setSettingBool('run_init_configuration', False)
+            self.SETTINGS_MONITOR_IGNORE = False
+
     def init_persistent_storage(self):
         """
         Save on disk the data to keep in memory,
@@ -270,6 +310,10 @@ class GlobalVariables(object):
         # In PersistentStorage "save on destroy" here cause problems because often gets destroyed by various behaviors
         self.PERSISTENT_STORAGE = common.PersistentStorage(__name__, no_save_on_destroy=True)
         # If missing create necessary keys
+        if not self.PERSISTENT_STORAGE.get('show_menus'):
+            self.PERSISTENT_STORAGE['show_menus'] = {}
+        if not self.PERSISTENT_STORAGE.get('menu_sortorder'):
+            self.PERSISTENT_STORAGE['menu_sortorder'] = {}
         if not self.PERSISTENT_STORAGE.get('menu_titles'):
             self.PERSISTENT_STORAGE['menu_titles'] = {}
         if not self.PERSISTENT_STORAGE.get('sub_menus'):

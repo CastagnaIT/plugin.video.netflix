@@ -16,24 +16,16 @@ ART_SIZE_FHD = '_1920x1080'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
-    'videolist': lambda r, listid:
-                 len(r['lists'][listid]),
-    'videolist_sorted': lambda r, context_name:
-                        len(r[context_name][g.REQ_SORT_ORDER_TYPE]),
-    'videolist_wid_sorted': lambda r, context_name, context_id:
-                            len(r[context_name][context_id][g.REQ_SORT_ORDER_TYPE]),
-    'seasonlist': lambda r, tvshowid:
-                  len(r['videos'][tvshowid]['seasonList']),
-    'episodelist': lambda r, seasonid:
-                   len(r['seasons'][seasonid]['episodes']),
-    'searchlist': lambda r, context_name, by_ref:
-                  len(next(iter(r[context_name][by_ref].values())))}
+    'stdlist': lambda r, context, key: len(r[context][key]),
+    'stdlist_wid': lambda r, context, uid, key: len(r[context][uid][key]),
+    'searchlist': lambda r, context, key: len(next(r[context][key].itervalues()))
+}
 """Predefined lambda expressions that return the number of video results within a path response dict"""
 
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['storyarts', '_1632x873', 'jpg'], # <This path seem no more used, never found it in the results
+    ['storyarts', '_1632x873', 'jpg'],  # storyarts seem no more used, never found it in the results
     ['bb2OGLogo', '_550x124', 'png'],
     ['BGImages', '720', 'jpg']
 ]
@@ -46,6 +38,10 @@ VIDEO_LIST_PARTIAL_PATHS = [
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
+
+VIDEO_LIST_BASIC_PARTIAL_PATHS = [
+    [['title', 'queue', 'watched']]
+]
 
 GENRE_PARTIAL_PATHS = [
     [["id", "requestId", "summary", "name"]],

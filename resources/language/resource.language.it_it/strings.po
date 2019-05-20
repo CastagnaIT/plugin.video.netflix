@@ -50,7 +50,7 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Controllo parentale fallito"
+msgstr "Controllo parentale non riuscito"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
@@ -58,15 +58,15 @@ msgstr "Verifica che il pin di controllo parentale sia corretto"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Accesso fallito"
+msgstr "Accesso non riuscito"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
 msgstr "Verifica le tue credenziali"
 
 msgctxt "#30010"
-msgid "Genres"
-msgstr "Per genere"
+msgid "Lists of all kinds"
+msgstr "Liste di ogni tipo"
 
 msgctxt "#30011"
 msgid "Search"
@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr ""
 
 msgctxt "#30033"
-msgid "Use Dolby Sound"
-msgstr "Utilizza l'audio Dolby"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Abilita Dolby Digital Plus (DDPlus HQ e Atmos su Premium)"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
@@ -257,8 +257,8 @@ msgid "Switch accounts"
 msgstr "Cambia account"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (f.e. 4k for Android)"
-msgstr "Abilita HEVC (es: 4k per Android)"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Abilita HEVC (4k per Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -461,8 +461,8 @@ msgid "Background services started"
 msgstr "Servizi in background avviati"
 
 msgctxt "#30111"
-msgid "Enable Dolby Atmos"
-msgstr "Abilita Dolby Atmos"
+msgid "There is no contents"
+msgstr "Non ci sono contenuti"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"
@@ -613,8 +613,8 @@ msgid "<< Previous page"
 msgstr "<< Pagina precedente"
 
 msgctxt "#30149"
-msgid "Sort results by (works on menus with paging)"
-msgstr "Ordina i risultati per (funziona solo per elenchi paginati)"
+msgid "Sort results by"
+msgstr "Ordina i risultati per"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
@@ -631,3 +631,91 @@ msgstr "Suggerimenti per te"
 msgctxt "#30153"
 msgid "Year released"
 msgstr "Anno di uscita"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Configurazione Netflix addon"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Hai un account Netflix Premium?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Il dispositivo supporta lo standard 4K?\r\nIl dispositivo deve:\r\nEssere certificato Netflix, supportare Widevine Security level L1 ed avere un display 4K HDCP 2.2"
+
+msgctxt "#30157"
+msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Sarà ora aperto il pannello di InputStream, dove è necessario ABILITARE l'opzione \"Override HDCP status\""
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Mostra schermata per la configurazione all'avvio dell'addon"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Vista per il menu principale"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Vista per la ricerca"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Vista per esportati"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Ultima utilizzata"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Audiodescrizione"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Sfoglia i contenuti con audiodescrizione."
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Vista per la mia lista"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Elementi menu principale"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "La mia lista"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Continua a guardare"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Scelti per te"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Nuove uscite"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "I titoli del momento"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "I più visti su Netflix"
+
+msgctxt "#30173"
+msgid "NETFLIX ORIGINALS"
+msgstr "ORIGINALI NETFLIX"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Generi di Serie Tv"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Generi di Film"

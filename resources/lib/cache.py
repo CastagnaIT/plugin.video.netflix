@@ -49,6 +49,7 @@ class UnknownCacheBucketError(Exception):
     """The requested cahce bucket does ot exist"""
     pass
 
+
 '''
 Logic to get the identifier
 cache_output: called without params, use the first argument value of the function as identifier
@@ -58,6 +59,8 @@ identify_append_from_kwarg_name - if specified append the value after the kwarg 
 identify_fallback_arg_index - to change the default fallback arg index (0), where the identifier get the value from the func arguments
 fixed_identifier - note if specified all other params are ignored
 '''
+
+
 def cache_output(g, bucket, fixed_identifier=None,
                  identify_from_kwarg_name='videoid',
                  identify_append_from_kwarg_name=None,
@@ -92,9 +95,9 @@ def cache_output(g, bucket, fixed_identifier=None,
 def _get_identifier(fixed_identifier, identify_from_kwarg_name,
                     identify_append_from_kwarg_name, identify_fallback_arg_index, args, kwargs):
     """Return the identifier to use with the caching_decorator"""
-    #import resources.lib.common as common
-    #common.debug('Get_identifier args: {}'.format(args))
-    #common.debug('Get_identifier kwargs: {}'.format(kwargs))
+    # import resources.lib.common as common
+    # common.debug('Get_identifier args: {}'.format(args))
+    # common.debug('Get_identifier kwargs: {}'.format(kwargs))
     if fixed_identifier:
         identifier = fixed_identifier
     else:
@@ -103,7 +106,7 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
             identifier = identifier + '_' + kwargs.get(identify_append_from_kwarg_name)
         if not identifier and len(args) > 0:
             identifier = args[identify_fallback_arg_index]
-    #common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
+    # common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
     return identifier
 
 

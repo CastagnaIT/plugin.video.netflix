@@ -42,7 +42,8 @@ def save(account_hash, cookie_jar):
 def delete(account_hash):
     """Delete cookies for an account from in-memory storage and the disk"""
     # pylint: disable=broad-except
-    del g.COOKIES[account_hash]
+    if g.COOKIES.get(account_hash):
+        del g.COOKIES[account_hash]
     try:
         xbmcvfs.delete(cookie_filename(account_hash))
     except Exception as exc:

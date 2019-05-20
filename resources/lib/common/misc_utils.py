@@ -10,6 +10,7 @@ from functools import wraps
 from time import clock
 import gzip
 import base64
+import re
 from StringIO import StringIO
 
 import xbmc
@@ -38,7 +39,9 @@ def find_episode_metadata(videoid, metadata):
 def select_port(service):
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
+    g.SETTINGS_MONITOR_IGNORE = True
     g.ADDON.setSetting('{}_service_port'.format(service.lower()), str(port))
+    g.SETTINGS_MONITOR_IGNORE = False
     info('[{}] Picked Port: {}'.format(service, port))
     return port
 
@@ -81,7 +84,7 @@ def get_user_agent():
     :returns: str -- User agent string
     """
     import platform
-    chrome_version = 'Chrome/59.0.3071.115'
+    chrome_version = 'Chrome/73.0.3683.103'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -206,7 +209,7 @@ def compress_data(data):
 
 def merge_dicts(dict_to_merge, merged_dict):
     """Recursively merge the contents of dict_to_merge into merged_dict.
-    Values that are already present in merged_dict will not be overwritten
+    Values that are already present in merged_dict will be overwritten
     if they are also present in dict_to_merge"""
     for key, value in dict_to_merge.iteritems():
         if isinstance(merged_dict.get(key), dict):
@@ -280,3 +283,46 @@ def make_list(arg):
             else ([arg]
                   if arg is not None
                   else []))
+
+
+def get_system_platform():
+    platform = "unknown"
+    if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
+        platform = "linux"
+    elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
+        platform = "android"
+    elif xbmc.getCondVisibility('system.platform.xbox'):
+        platform = "xbox"
+    elif xbmc.getCondVisibility('system.platform.windows'):
+        platform = "windows"
+    elif xbmc.getCondVisibility('system.platform.osx'):
+        platform = "osx"
+    elif xbmc.getCondVisibility('system.platform.ios'):
+        platform = "ios"
+    return platform
+
+
+class GetKodiVersion(object):
+    """Get the kodi version, git date, stage name"""
+
+    def __init__(self):
+        # Examples of some types of supported strings:
+        # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
+        # 0422-f2643566d0                        19.0-ALPHA1 Git:20190419-c963b64487
+        build_version_str = xbmc.getInfoLabel('System.BuildVersion')
+        re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
+        if re_kodi_version:
+            self.version = re_kodi_version.group(0)
+        else:
+            self.version = 'Unknown'
+        re_git_date = re.search('(Git:)(\\d+?(?=(-|$)))', build_version_str)
+        if re_git_date and len(re_git_date.groups()) >= 2:
+            self.date = int(re_git_date.group(2))
+        else:
+            self.date = 0
+        re_stage = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', build_version_str)
+        if not re_stage:
+            re_stage = re.search('^(.+)(-\\d+\\.\\d+)', build_version_str)
+            self.stage = re_stage.group(1) if re_stage else ''
+        else:
+            self.stage = re_stage.group(2) if re_stage else ''

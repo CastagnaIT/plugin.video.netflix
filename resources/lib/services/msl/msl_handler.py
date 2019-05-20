@@ -26,7 +26,7 @@ from .exceptions import MSLError
 
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
-    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router', #"pbo_manifests/^1.0.0/router"
+    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
     'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router'
 }
 
@@ -68,7 +68,7 @@ class MSLHandler(object):
             self.request_builder = MSLRequestBuilder()
             if self.perform_key_handshake():
                 self.request_builder = MSLRequestBuilder(json.loads(
-            	    common.load_file('msl_data.json')))
+                    common.load_file('msl_data.json')))
                 common.debug('Loaded renewed MSL data from disk')
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
@@ -160,8 +160,8 @@ class MSLHandler(object):
             'id': id,
             'esn': esn,
             'languages' : [g.PERSISTENT_STORAGE['locale_id']],
-            'uiVersion': 'shakti-v25d2fa21',
-            'clientVersion': '6.0011.474.011',
+            'uiVersion': 'shakti-v5bca5cd3',
+            'clientVersion': '6.0013.315.051',
             'params': {
                 'type': 'standard',
                 'viewableId': [viewable_id],
@@ -173,8 +173,9 @@ class MSLHandler(object):
                 'isBranching': False,
                 'useHttpsStreams': False,
                 'imageSubtitleHeight': 1080,
-                'uiVersion': 'shakti-vb45817f4',
-                'clientVersion': '6.0011.511.011',
+                'uiVersion': 'shakti-v5bca5cd3',
+                'uiPlatform': 'SHAKTI',
+                'clientVersion': '6.0013.315.051',
                 'supportsPreReleasePin': True,
                 'supportsWatermark': True,
                 'showAllSubDubTracks': False,
@@ -215,8 +216,8 @@ class MSLHandler(object):
             'id': id,
             'esn': g.get_esn(),
             'languages': [g.PERSISTENT_STORAGE['locale_id']],
-            'uiVersion': 'shakti-v25d2fa21',
-            'clientVersion': '6.0011.511.011',
+            'uiVersion': 'shakti-v5bca5cd3',
+            'clientVersion': '6.0013.315.051',
             'params': [{
                 'sessionId': sid,
                 'clientTime': int(id / 10000),

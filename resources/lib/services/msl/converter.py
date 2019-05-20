@@ -144,10 +144,13 @@ def _convert_audio_track(audio_track, period, init_length, default):
 
 def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
                                 channels_count):
+    codec_type = 'aac'
+    if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
+        codec_type = 'ec-3'
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
-        codecs='ec-3' if 'ddplus' in downloadable['content_profile'] else 'aac',
+        codecs=codec_type,
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
     ET.SubElement(
@@ -163,7 +166,7 @@ def _convert_text_track(text_track, period, default):
     if text_track.get('ttDownloadables'):
         # Only one subtitle representation per adaptationset
         downloadable = text_track['ttDownloadables']
-        #common.save_file('downloadable.log', str(downloadable))
+        # common.save_file('downloadable.log', str(downloadable))
 
         content_profile = downloadable.keys()[0]
         is_ios8 = content_profile == 'webvtt-lssdh-ios8'
@@ -197,12 +200,14 @@ def _add_base_url(representation, base_url):
         parent=representation,
         tag='BaseURL').text = base_url
 
+
 def _add_segment_base(representation, init_length):
     ET.SubElement(
         parent=representation,
         tag='SegmentBase',
         indexRange='0-' + str(init_length),
         indexRangeExact='true')
+
 
 def _get_default_audio_language(manifest):
     channelList = {'1.0': '1', '2.0': '2'}
@@ -236,6 +241,7 @@ def _get_default_audio_language(manifest):
             return index
     return 0
 
+
 def _get_default_subtitle_language(manifest):
     subtitle_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
@@ -253,6 +259,7 @@ def _get_default_subtitle_language(manifest):
                 return index
         return -1
 
+
 def _fix_locale_languages(data_list):
     """Replace locale code, Kodi does not understand the country code"""
     # Get all the ISO 639-1 codes (without country)
@@ -269,6 +276,7 @@ def _fix_locale_languages(data_list):
         if len(item['language']) == 2:
             continue
         item['language'] = _adjust_locale(item['language'], item['language'][0:2] in locale_list_nocountry)
+
 
 def _adjust_locale(locale_code, lang_code_without_country_exists):
     """

@@ -25,10 +25,15 @@ Please make sure to read the licence agreement that is presented upon Widevine i
 
 ## Installation & Updates
 
-I don't have a repository that provides automatic updates.
-Daily build and Release build can be downloaded from here:
-http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon
+Repository that provides automatic updates for release builds:
+[repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.0.zip)
 
+- First download the repository zip
+- Open Kodi, go to menu Add-ons, select "Install from zip file", and select the downloaded zip
+- Last step, go to "Install from repository", select CastagnaIT repository and Netflix addon
+
+For those who prefer to stay up to date with the daily build should do the manual installation, or use other repositories
+[Daily builds](http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon)
 
 ## Functionality
 
@@ -84,12 +89,12 @@ Depending on your setup, there may be some tinkering required to get HDR to work
 if you are using an AV-Receiver, which device Kodi is running on, etc. Please make sure to search the issues and available forum threads for a solution before opening an issue!
 
 ### Does it support 5.1 audio?
-Yes, enable `Use Dolby Sound` in addon settings (is enabled by default).
+Yes, enable the option `Enable Dolby Digital Plus` in addon settings (is enabled by default).
 
 ### Is Dolby Atmos supported?
-Yes. It's enabled by default, when option `Use Dolby Sound` is enabled.
+Yes. It's enabled by default, when option `Enable Dolby Digital Plus` is enabled.
 But only some videos have Atmos, they can be distinguished from the skin media-flag "Dolby-HD".
-Note: concerning the audio streams have descriptions equal to the normal Dolby, if you see two tracks 5.1 in your language means that one of the two is Atmos (in the future it is hoped in a support from kodi to distinguish them).
+Note: Need a premium netflix account.
 
 ### Are image based subtitles (Hebrew, Arabic, ...) supported?
 No. They are provided in a different format, which requires some work to support, either on Kodi or the addon side.

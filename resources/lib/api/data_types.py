@@ -16,8 +16,8 @@ class LoLoMo(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
-        common.debug('LoLoMo data: ' + str(self.data))
-        _filterout_contexts(self.data, ['billboard','showAsARow'])
+        common.debug('LoLoMo data: {}'.format(self.data))
+        _filterout_contexts(self.data, ['billboard', 'showAsARow'])
         self.id = (lolomoid
                    if lolomoid
                    else next(self.data['lolomos'].iterkeys()))
@@ -68,7 +68,7 @@ class VideoList(object):
             videoid=(list_id
                      if list_id
                      else next(self.data['lists'].iterkeys())))
-        #self.title = self['displayName']   Not more used
+        # self.title = self['displayName']   Not more used
         self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
         if self.videos:
             self.artitem = next(self.videos.itervalues())
@@ -89,10 +89,11 @@ class VideoList(object):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data['lists'][self.id.value].get(key, default))
 
+
 class VideoListSorted(object):
     """A video list"""
     # pylint: disable=invalid-name
-    def __init__(self, path_response, context_name, context_id):
+    def __init__(self, path_response, context_name, context_id, req_sort_order_type):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
@@ -100,8 +101,8 @@ class VideoListSorted(object):
                                 and path_response[context_name].get(context_id)) or \
                                 (not context_id and path_response.get(context_name)) else False
         if data_present:
-            self.data_lists = path_response[context_name][context_id][g.REQ_SORT_ORDER_TYPE] \
-                if context_id else path_response[context_name][g.REQ_SORT_ORDER_TYPE]
+            self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
+                if context_id else path_response[context_name][req_sort_order_type]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
         else:
             self.data_lists = {}
@@ -124,6 +125,7 @@ class VideoListSorted(object):
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data_lists.get(key, default))
+
 
 class SearchVideoList(object):
     """A video list with search results"""
@@ -196,6 +198,18 @@ class EpisodeList(object):
             resolve_refs(self.season['episodes'], self.data))
 
 
+class SubgenreList(object):
+    """A list of subgenre."""
+    def __init__(self, path_response):
+        common.debug('Subgenre data: {}'.format(path_response))
+        self.lists = {}
+        if path_response:
+            self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
+            genre_id = next(path_response.get('genres', {}).iterkeys())
+            self.subgenre_data = path_response['genres'].get(genre_id, {}).get('subgenres')
+            self.lists = path_response['genres'].get(genre_id, {}).get('subgenres').items()
+
+
 def _check_sentinel(value):
     return (None
             if isinstance(value, dict) and value.get('$type') == 'sentinel'
@@ -220,15 +234,16 @@ def _get_videoids(videos):
     return [common.VideoId.from_videolist_item(video)
             for video in videos.itervalues()]
 
+
 def _filterout_contexts(data, contexts):
     """Deletes from the data all records related to the specified contexts"""
     id = next(data['lolomos'].iterkeys())
     for context in contexts:
         for listid in data.get('lists', {}).keys():
-            if data['lists'][listid]['context'] == context:
-                for idkey in data['lolomos'][id].keys():
-                    if listid in data['lolomos'][id][idkey]:
-                        del data['lolomos'][id][idkey]
-                        break
-                del data['lists'][listid]
-
+            if data['lists'][listid].get('context'):
+                if data['lists'][listid]['context'] == context:
+                    for idkey in data['lolomos'][id].keys():
+                        if listid in data['lolomos'][id][idkey]:
+                            del data['lolomos'][id][idkey]
+                            break
+                    del data['lists'][listid]

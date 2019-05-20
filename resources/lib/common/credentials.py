@@ -112,14 +112,18 @@ def set_credentials(email, password):
     Does nothing if either email or password are not supplied.
     """
     if email and password:
+        g.SETTINGS_MONITOR_IGNORE = True
         g.ADDON.setSetting('email', encrypt_credential(email))
         g.ADDON.setSetting('password', encrypt_credential(password))
+        g.SETTINGS_MONITOR_IGNORE = False
 
 
 def purge_credentials():
     """Delete the stored credentials"""
+    g.SETTINGS_MONITOR_IGNORE = True
     g.ADDON.setSetting('email', '')
     g.ADDON.setSetting('password', '')
+    g.SETTINGS_MONITOR_IGNORE = False
 
 
 def verify_credentials(credential):

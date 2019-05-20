@@ -34,7 +34,7 @@ def add_info(videoid, list_item, item, raw_data):
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
-    if infos['mediatype'] in ['episode', 'movie']:
+    if infos.get('mediatype') in ['episode', 'movie']:
         list_item.setProperty('IsPlayable', 'true')
     for stream_type, quality_infos in quality_infos.iteritems():
         list_item.addStreamInfo(stream_type, quality_infos)
@@ -69,12 +69,11 @@ def parse_info(videoid, item, raw_data):
             hasattr(item, 'contained_titles')):
         # Special handling for VideoLists
         return {
-            'mediatype': 'video',
             'plot':
                 common.get_local_string(30087).format(
                     ', '.join(item.contained_titles))
                 if item.contained_titles
-                else common.get_local_string(30087)
+                else common.get_local_string(30111)
         }, {}
 
     infos = {'mediatype': ('tvshow'
@@ -173,11 +172,10 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
     # pylint: disable=too-many-arguments
     art = {'poster': _best_art([poster]),
            'fanart': _best_art([fanart, interesting_moment, boxart_large,
-                                boxart_small])}
-    art['thumb'] = ((interesting_moment
-                     if videoid.mediatype == common.VideoId.EPISODE else '') or
-                    boxart_large or
-                    boxart_small)
+                                boxart_small]),
+           'thumb': ((interesting_moment
+                     if videoid.mediatype == common.VideoId.EPISODE else '')
+                     or boxart_large or boxart_small)}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:
         art['clearlogo'] = _best_art([clearlogo])
@@ -214,7 +212,7 @@ def add_info_from_library(videoid, list_item):
     _sanitize_infos(details)
     # Resuming for strm files in library is currently broken in Leia Beta
     # keeping this for reference / in hopes this will get fixed
-    resume = details.pop('resume', {})
+    # resume = details.pop('resume', {})
     # if resume:
     #     start_percent = resume['position'] / resume['total'] * 100.0
     #     list_item.setProperty('startPercent', str(start_percent))

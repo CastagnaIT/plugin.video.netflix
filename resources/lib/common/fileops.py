@@ -62,6 +62,14 @@ def load_file(filename, mode='r'):
         file_handle.close()
 
 
+def delete_file(filename):
+    file_path = xbmc.translatePath(os.path.join(g.DATA_PATH, filename))
+    try:
+        xbmcvfs.delete(file_path)
+    finally:
+        pass
+
+
 def list_dir(data_path=g.DATA_PATH):
     """
     List the contents of a folder
@@ -74,6 +82,7 @@ def delete_folder_contents(path):
     """Delete all files in a folder"""
     for filename in list_dir(path)[1]:
         xbmcvfs.delete(filename)
+
 
 def delete_ndb_files(data_path=g.DATA_PATH):
     """Delete all .ndb files in a folder"""

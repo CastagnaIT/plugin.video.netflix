@@ -12,8 +12,8 @@ from functools import wraps
 
 import xbmcplugin
 
-# Import and intiliaze globals right away to avoid stale values from the last
-# addon invocation. Otherwise Kodi's reuseLanguageInvoker will caus some
+# Import and initialize globals right away to avoid stale values from the last
+# addon invocation. Otherwise Kodi's reuseLanguageInvoker will cause some
 # really quirky behavior!
 from resources.lib.globals import g
 g.init_globals(sys.argv)
@@ -86,6 +86,7 @@ if __name__ == '__main__':
     success = False
 
     try:
+        g.initial_addon_configuration()
         route(filter(None, g.PATH.split('/')))
         success = True
     except common.BackendNotReady:

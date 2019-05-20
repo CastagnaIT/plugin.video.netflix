@@ -78,3 +78,7 @@ class SectionSkipper(PlaybackActionManager):
                              skip_to=self.markers[section]['end'],
                              label=common.get_local_string(
                                  SKIPPABLE_SECTIONS[section]))
+
+    def _on_playback_stopped(self):
+        # Close any dialog remaining open
+        xbmc.executebuiltin('Dialog.Close(all,true)')
