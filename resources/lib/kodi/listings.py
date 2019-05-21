@@ -220,7 +220,7 @@ def build_subgenre_listing(subgenre_list, menu_data):
 
 
 @common.time_execution(immediate=False)
-def _create_subgenre_item(video_list_id, subgenre_data, menu_data, static_lists=False):
+def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     """Create a tuple that can be added to a Kodi directory that represents
     a videolist as listed in a subgenre listing"""
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]

@@ -308,7 +308,7 @@ class GetKodiVersion(object):
     def __init__(self):
         # Examples of some types of supported strings:
         # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
-        # 0422-f2643566d0                        19.0-ALPHA1 Git:20190419-c963b64487
+        # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
         build_version_str = xbmc.getInfoLabel('System.BuildVersion')
         re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
         if re_kodi_version:
