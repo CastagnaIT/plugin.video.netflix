@@ -209,10 +209,9 @@ def add_info_from_library(videoid, list_item):
     details = library.get_item(videoid)
     common.debug('Got fileinfo from library: {}'.format(details))
     art = details.pop('art', {})
-    _sanitize_infos(details)
-    # Resuming for strm files in library is currently broken in Leia Beta
+    # Resuming for strm files in library is currently broken in all kodi versions
     # keeping this for reference / in hopes this will get fixed
-    # resume = details.pop('resume', {})
+    resume = details.pop('resume', {})
     # if resume:
     #     start_percent = resume['position'] / resume['total'] * 100.0
     #     list_item.setProperty('startPercent', str(start_percent))
@@ -220,6 +219,8 @@ def add_info_from_library(videoid, list_item):
         'DBID': details.pop('{}id'.format(videoid.mediatype)),
         'mediatype': videoid.mediatype
     }
+    # WARNING!! Remove unsupported ListItem.setInfo keys from 'details' reference ListItem.cpp, using _sanitize_infos
+    _sanitize_infos(details)
     infos.update(details)
     list_item.setInfo('video', infos)
     list_item.setArt(art)
@@ -230,5 +231,5 @@ def _sanitize_infos(details):
     for source, target in JSONRPC_MAPPINGS.items():
         if source in details:
             details[target] = details.pop(source)
-    for prop in ['file', 'label']:
+    for prop in ['file', 'label', 'runtime']:
         details.pop(prop, None)
