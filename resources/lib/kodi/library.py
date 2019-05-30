@@ -76,11 +76,21 @@ def _any_child_library_entry(library_entry):
 
 @common.time_execution(immediate=False)
 def _get_item(mediatype, filename):
-    exported_filepath = os.path.normcase(xbmc.translatePath(filename).decode("utf-8"))
-    for library_item in common.get_library_items(mediatype):
-        if os.path.normcase(library_item['file']) == exported_filepath:
-            return common.get_library_item_details(
-                mediatype, library_item[mediatype + 'id'])
+    # To ensure compatibility with previously exported items, 
+    # make the filename legal
+    fname = xbmc.makeLegalFilename(filename)
+    path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
+    shortname = os.path.basename(xbmc.translatePath(fname).decode("utf-8"))
+    # We get the data from Kodi library using filters.
+    # This is much faster than loading all episodes in memory
+    library_item = common.get_library_items(
+        mediatype,
+        {'and': [ 
+            {'field': 'path', 'operator': 'startswith', 'value': path},
+            {'field': 'filename', 'operator': 'is', 'value': shortname}
+            ]})[0]
+    return common.get_library_item_details(
+         mediatype, library_item[mediatype + 'id'])
     raise ItemNotFound
 
 
@@ -106,8 +116,10 @@ def update_kodi_library(library_operation):
             _remove_from_kodi_library(videoid)
         library_operation(videoid, task_handler, *args, **kwargs)
         if not is_remove:
-            common.debug('Triggering Kodi library scan')
-            xbmc.executebuiltin('UpdateLibrary(video)')
+            # Update kodi library through service
+            # This prevents a second call to cancel the update
+            common.debug('Notify service to update the library')
+            common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
     return kodi_library_update_wrapper
 
 
@@ -115,14 +127,31 @@ def _remove_from_kodi_library(videoid):
     """Remove an item from the Kodi library."""
     common.debug('Removing {} videoid from Kodi library'.format(videoid))
     try:
-        kodi_library_item = get_item(videoid)
-        rpc_params = {
-            'movie': ['VideoLibrary.RemoveMovie', 'movieid'],
-            'show': ['VideoLibrary.RemoveTVShow', 'tvshowid'],
-            'episode': ['VideoLibrary.RemoveEpisode', 'episodeid']
-        }[videoid.mediatype]
-        common.json_rpc(rpc_params[0],
-                        {rpc_params[1]: kodi_library_item[rpc_params[1]]})
+        kodi_library_items = [get_item(videoid)]
+        if videoid.mediatype == common.VideoId.SHOW or videoid.mediatype == common.VideoId.SEASON:
+            # Retreive the all episodes in the export folder
+            filters = {'and': [
+                {'field': 'path', 'operator': 'startswith', 'value': os.path.dirname(kodi_library_items[0]['file'])},
+                {'field': 'filename', 'operator': 'endswith', 'value': '.strm'}
+                ]}
+            if videoid.mediatype == common.VideoId.SEASON:
+                # Add a season filter in case we just want to remove a season
+                filters['and'].append({'field': 'season', 'operator': 'is',
+                                       'value': str(kodi_library_items[0]['season'])})
+            kodi_library_items = common.get_library_items(common.VideoId.EPISODE, filters)
+        for item in kodi_library_items:
+            rpc_params = {
+                'movie': ['VideoLibrary.RemoveMovie', 'movieid'],
+                # We should never remove an entire show
+                # 'show': ['VideoLibrary.RemoveTVShow', 'tvshowid'],
+                # Instead we delete all episodes listed in the JSON query above
+                'show': ['VideoLibrary.RemoveEpisode', 'episodeid'],
+                'season': ['VideoLibrary.RemoveEpisode', 'episodeid'],
+                'episode': ['VideoLibrary.RemoveEpisode', 'episodeid']
+            }[videoid.mediatype]
+            common.debug(item)
+            common.json_rpc(rpc_params[0],
+                            {rpc_params[1]: item[rpc_params[1]]})
     except ItemNotFound:
         common.debug('Cannot remove {} from Kodi library, item not present'
                      .format(videoid))
@@ -215,10 +244,11 @@ def _create_item_task(title, section, videoid, destination, filename):
 @common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
-    destination_folder = os.path.join(
-        library_home, item_task['section'], item_task['destination'])
-    export_filename = os.path.join(
-        destination_folder, item_task['filename'] + '.strm')
+    # Paths must be legal to ensure NFS compatibility
+    destination_folder = xbmc.makeLegalFilename(os.path.join(
+        library_home, item_task['section'], item_task['destination']))
+    export_filename = xbmc.makeLegalFilename(os.path.join(
+        destination_folder.decode('utf-8'), item_task['filename'] + '.strm'))
     _add_to_library(item_task['videoid'], export_filename)
     _create_destination_folder(destination_folder)
     _write_strm_file(item_task, export_filename)
@@ -272,8 +302,10 @@ def remove_item(item_task, library_home=None):
     parent_folder = os.path.dirname(exported_filename)
     try:
         xbmcvfs.delete(xbmc.translatePath(exported_filename).decode("utf-8"))
-        if not os.listdir(parent_folder):
-            os.rmdir(parent_folder)
+        # Fix parent folder not removed
+        dirs, files = xbmcvfs.listdir(xbmc.translatePath(parent_folder).decode("utf-8"))
+        if not dirs and not files: # the destination folder is empty
+            xbmcvfs.rmdir(xbmc.translatePath(parent_folder).decode("utf-8"))
     except Exception:
         common.debug('Cannot delete {}, file does not exist'
                      .format(exported_filename))

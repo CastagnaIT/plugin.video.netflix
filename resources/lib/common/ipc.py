@@ -24,6 +24,7 @@ class Signals(object):
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
     ESN_CHANGED = 'esn_changed'
+    LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
 
 
 def register_slot(callback, signal=None, source_id=None):

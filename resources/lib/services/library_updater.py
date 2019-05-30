@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime, timedelta
 
+import AddonSignals
 import xbmc
 
 from resources.lib.globals import g
@@ -11,13 +12,20 @@ import resources.lib.common as common
 import resources.lib.kodi.library as library
 
 
-class LibraryUpdateService(object):
+class LibraryUpdateService(xbmc.Monitor):
     """
     Checks if a library update is scheduled and triggers it
     """
     def __init__(self):
+        xbmc.Monitor.__init__(self)
+        self.scan_in_progress = False
+        self.scan_awaiting = False
         self.startidle = 0
         self.last_schedule_check = datetime.now()
+
+        AddonSignals.registerSlot(
+            g.ADDON.getAddonInfo('id'), common.Signals.LIBRARY_UPDATE_REQUESTED,
+            self.update_kodi_library)
 
     def on_tick(self):
         """Check if update is due and trigger it"""
@@ -69,3 +77,36 @@ class LibraryUpdateService(object):
             # When there is concurrency between getSettingX and setSettingX at the same time,
             # the get settings fails to read
             return False
+
+
+    def onScanStarted(self, library):
+        """Monitor library scan to avoid multiple calls"""
+        # Kodi cancels the update if called with JSON RPC twice
+        # so we monitor events to ensure we're not cancelling a previous scan
+        if library == 'video':
+            self.scan_in_progress = True
+
+
+    def onScanFinished(self, library):
+        """Monitor library scan to avoid multiple calls"""
+        # Kodi cancels the update if called with JSON RPC twice
+        # so we monitor events to ensure we're not cancelling a previous scan
+        if library == 'video':
+            self.scan_in_progress = False
+            if self.scan_awaiting:
+                self.update_kodi_library()
+
+
+    def update_kodi_library(self, data = None):
+        # Update only the elements in the addon export folder
+        # for faster processing with a large library.
+        # If a scan is already in progress, the scan is delayed until onScanFinished event
+        common.debug('Library update requested for library updater service')
+        if not self.scan_in_progress:
+            self.scan_awaiting = False
+            common.scan_library(
+                    xbmc.makeLegalFilename(
+                        xbmc.translatePath(
+                            library.library_path())))
+        else:
+            self.scan_awaiting = True
