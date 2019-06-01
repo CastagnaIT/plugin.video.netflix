@@ -727,3 +727,7 @@ msgstr ""
 msgctxt "#30177"
 msgid "Ask to resume the video"
 msgstr ""
+
+msgctxt "#30178"
+msgid "Open UpNext Addon settings"
+msgstr ""

@@ -89,6 +89,7 @@
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="true"/>
+    <setting id="is_settings_upnext" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" enable="System.HasAddon(service.upnext)" option="close" visible="eq(-1,true)" subsetting="true"/>
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
   </category>
