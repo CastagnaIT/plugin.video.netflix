@@ -719,3 +719,11 @@ msgstr "Generi di Serie Tv"
 msgctxt "#30175"
 msgid "Movie genres"
 msgstr "Generi di Film"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Abilita STRM workaround 'riprendi da' (solo libreria)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Chiedi per riprendere un video"

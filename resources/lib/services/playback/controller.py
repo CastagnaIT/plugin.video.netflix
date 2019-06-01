@@ -12,6 +12,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 
 from .action_manager import PlaybackActionManager
+from .resume_manager import ResumeManager
 from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
 from .upnext import UpNextNotifier
@@ -41,6 +42,7 @@ class PlaybackController(xbmc.Monitor):
         self.tracking = True
         self.active_player_id = None
         self.action_managers = [
+            ResumeManager(),
             SectionSkipper(),
             StreamContinuityManager(),
             UpNextNotifier()

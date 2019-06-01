@@ -285,6 +285,14 @@ def make_list(arg):
                   else []))
 
 
+def convert_seconds_to_hms_str(time):
+    h = int(time // 3600)
+    time %= 3600
+    m = int(time // 60)
+    s = int(time % 60)
+    return '{:02d}:{:02d}:{:02d}'.format(h, m, s)
+
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):

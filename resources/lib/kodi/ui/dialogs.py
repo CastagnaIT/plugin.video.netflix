@@ -86,6 +86,15 @@ def ask_for_confirmation(title, message):
     return xbmcgui.Dialog().yesno(heading=title, line1=message)
 
 
+def ask_for_resume(resume_position):
+    """Ask the user for resuming a video"""
+    return xbmcgui.Dialog().contextmenu(
+        [
+            common.get_local_string(12022).format(common.convert_seconds_to_hms_str(resume_position)),
+            common.get_local_string(12023)
+        ])
+
+
 def show_backend_not_ready():
     return xbmcgui.Dialog().ok(common.get_local_string(30105),
                                line1=common.get_local_string(30138))

@@ -719,3 +719,11 @@ msgstr ""
 msgctxt "#30175"
 msgid "Movie genres"
 msgstr ""
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr ""
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr ""

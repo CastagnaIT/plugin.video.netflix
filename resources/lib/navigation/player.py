@@ -2,6 +2,7 @@
 """Handle playback requests"""
 from __future__ import unicode_literals
 
+import xbmc
 import xbmcplugin
 import xbmcgui
 import inputstreamhelper
@@ -54,13 +55,30 @@ def play(videoid):
 
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
+
+    # Workaround for resuming strm files from library
+    resume_position = infos.get('resume', {}).get('position') \
+        if xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') \
+        and g.ADDON.getSettingBool('ResumeManager_enabled') else None
+    if resume_position:
+        index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
+        if index_selected == -1:
+            xbmcplugin.setResolvedUrl(
+                handle=g.PLUGIN_HANDLE,
+                succeeded=False,
+                listitem=list_item)
+            return
+        if index_selected == 1:
+            resume_position = None
+
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'infos': infos,
         'art': art,
         'timeline_markers': get_timeline_markers(metadata[0]),
-        'upnext_info': get_upnext_info(videoid, (infos, art), metadata)})
+        'upnext_info': get_upnext_info(videoid, (infos, art), metadata),
+        'resume_position': resume_position})
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
         succeeded=True,
