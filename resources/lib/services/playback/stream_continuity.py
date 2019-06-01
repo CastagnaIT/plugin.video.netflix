@@ -38,7 +38,7 @@ class StreamContinuityManager(PlaybackActionManager):
     def __init__(self):
         super(StreamContinuityManager, self).__init__()
         self.storage = common.PersistentStorage(__name__)
-        self.current_show = None
+        self.current_videoid = None
         self.current_streams = {}
         self.player = xbmc.Player()
         self.did_restore = False
@@ -46,12 +46,15 @@ class StreamContinuityManager(PlaybackActionManager):
     @property
     def show_settings(self):
         """Stored stream settings for the current show"""
-        return self.storage.get(self.current_show, {})
+        return self.storage.get(self.current_videoid, {})
 
     def _initialize(self, data):
         if 'tvshowid' in data['videoid']:
             self.did_restore = False
-            self.current_show = data['videoid']['tvshowid']
+            self.current_videoid = data['videoid']['tvshowid']
+        elif 'movieid' in data['videoid']:
+            self.did_restore = False
+            self.current_videoid = data['videoid']['movieid']
         else:
             self.enabled = False
 
@@ -98,8 +101,9 @@ class StreamContinuityManager(PlaybackActionManager):
         common.debug('Save changed stream {} for {}'.format(stream, stype))
         new_show_settings = self.show_settings.copy()
         new_show_settings[stype] = stream
-        self.storage[self.current_show] = new_show_settings
+        self.storage[self.current_videoid] = new_show_settings
+        self.storage.commit()
 
     def __repr__(self):
-        return ('enabled={}, current_show={}'
-                .format(self.enabled, self.current_show))
+        return ('enabled={}, current_videoid={}'
+                .format(self.enabled, self.current_videoid))

@@ -325,8 +325,8 @@ msgid "Pause when skipping"
 msgstr "Beim Weiterspringen pausieren"
 
 msgctxt "#30082"
-msgid "Save audio / subtitle settings for TV shows"
-msgstr "Sprache und Untertitel für gesamte Serie merken"
+msgid "Remember audio / subtitle preferences"
+msgstr ""
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"

@@ -345,8 +345,8 @@ msgid "Force support of HDCP 2.2 (enable 4K content)"
 msgstr "Forcer l'utilisation du HDCP 2.2 (permet l'accès au contenu 4K)"
 
 msgctxt "#30082"
-msgid "Save audio / subtitle settings for TV shows"
-msgstr "Sauvegarder les paramètres audio/sous-titres pour les séries"
+msgid "Remember audio / subtitle preferences"
+msgstr ""
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"

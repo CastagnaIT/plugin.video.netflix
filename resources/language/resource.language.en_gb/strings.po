@@ -345,7 +345,7 @@ msgid "Force support of HDCP 2.2 (enable 4K content)"
 msgstr ""
 
 msgctxt "#30082"
-msgid "Save audio / subtitle settings for TV shows"
+msgid "Remember audio / subtitle preferences"
 msgstr ""
 
 msgctxt "#30083"

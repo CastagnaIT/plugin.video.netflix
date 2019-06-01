@@ -341,8 +341,8 @@ msgid "Don't pause when skipping"
 msgstr "Não pause quando pulando"
 
 msgctxt "#30082"
-msgid "Save audio / subtitle settings for TV shows"
-msgstr "Salvar ajustes de áudio / legendas para seriados"
+msgid "Remember audio / subtitle preferences"
+msgstr ""
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
