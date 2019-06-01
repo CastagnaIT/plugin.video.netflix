@@ -346,7 +346,7 @@ msgstr "Wymuś wsparcie HDCP 2.2 (uaktywnia treści 4K)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr ""
+msgstr "Zachowuj ustawienia dźwięku i napisów"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -626,7 +626,7 @@ msgstr "Porządek alfabetyczny (Z-A)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "Proponowane dla Ciebie""
+msgstr "Proponowane dla Ciebie"
 
 msgctxt "#30153"
 msgid "Year released"
