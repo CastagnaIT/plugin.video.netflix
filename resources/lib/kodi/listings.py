@@ -237,7 +237,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                        for videoid_value, video
                        in video_list.videos.iteritems()]
     # If genre_id exists add possibility to browse lolomos subgenres
-    if genre_id:
+    if genre_id and genre_id != 'None':
         menu_id = 'subgenre_' + genre_id
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, genre_id]
