@@ -94,12 +94,13 @@ class VideoListSorted(object):
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, context_name, context_id, req_sort_order_type):
+        # common.debug('VideoListSorted data: {}'.format(path_response))
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
         data_present = True if (context_id and path_response.get(context_name)
                                 and path_response[context_name].get(context_id)) or \
-                                (not context_id and path_response.get(context_name)) else False
+                               (not context_id and path_response.get(context_name)) else False
         if data_present:
             self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
                 if context_id else path_response[context_name][req_sort_order_type]

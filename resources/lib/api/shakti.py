@@ -13,7 +13,8 @@ from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, Episode
                          SearchVideoList, CustomVideoList, SubgenreList)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                    GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE)
+                    GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
+                    TRAILER_PARTIAL_PATHS)
 from .exceptions import (InvalidVideoListTypeError, LoginFailedError, APIError,
                          NotLoggedInError, MissingCredentialsError)
 
@@ -218,6 +219,22 @@ def episodes(videoid):
         'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']]
     }
     return EpisodeList(videoid, common.make_call('perpetual_path_request', callargs))
+
+
+@common.time_execution(immediate=False)
+@cache.cache_output(g, cache.CACHE_COMMON)
+def supplemental_video_list(videoid, supplemental_type):
+    """Retrieve a supplemental video list"""
+    if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
+        raise common.InvalidVideoId('Cannot request supplemental list for {}'
+                                    .format(videoid))
+    common.debug('Requesting supplemental ({}) list for {}'
+                 .format(supplemental_type, videoid))
+    callargs = build_paths(
+        ['videos', videoid.value, supplemental_type,
+         {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS)
+    return VideoListSorted(common.make_call('path_request', callargs),
+                           'videos', videoid.value, supplemental_type)
 
 
 @common.time_execution(immediate=False)

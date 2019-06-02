@@ -36,6 +36,9 @@ CONTEXT_MENU_ACTIONS = {
     'remove_from_list': {
         'label': common.get_local_string(30020),
         'url': ctx_item_url(['my_list', 'remove'])},
+    'trailer': {
+        'label': common.get_local_string(30179),
+        'url': ctx_item_url(['trailer'])},
 }
 
 
@@ -43,11 +46,16 @@ def generate_context_menu_items(videoid):
     """Generate context menu items for a listitem"""
     items = _generate_library_ctx_items(videoid)
 
-    if videoid.mediatype != common.VideoId.SEASON:
+    if videoid.mediatype != common.VideoId.SEASON and \
+       videoid.mediatype != common.VideoId.SUPPLEMENTAL:
         items.insert(0, _ctx_item('rate', videoid))
 
-    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]\
-        and g.PERSISTENT_STORAGE.get('profile_have_mylist_menu', False):
+    if videoid.mediatype != common.VideoId.SUPPLEMENTAL and \
+            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+        items.insert(0, _ctx_item('trailer', videoid))
+
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] \
+            and g.PERSISTENT_STORAGE.get('profile_have_mylist_menu', False):
         list_action = ('remove_from_list'
                        if videoid.value in api.mylist_items()
                        else 'add_to_list')
@@ -57,6 +65,8 @@ def generate_context_menu_items(videoid):
 
 
 def _generate_library_ctx_items(videoid):
+    if videoid.mediatype == common.VideoId.SUPPLEMENTAL:
+        return []
     library_actions = (['remove', 'update']
                        if library.is_in_library(videoid)
                        else ['export'])

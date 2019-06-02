@@ -731,3 +731,11 @@ msgstr "Chiedi per riprendere un video"
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
 msgstr "Apri impostazioni UpNext Addon"
+
+msgctxt "#30179"
+msgid "Show the trailers"
+msgstr "Mostra i trailers"
+
+msgctxt "#30180"
+msgid "No trailers available"
+msgstr "Nessun trailer disponibile"

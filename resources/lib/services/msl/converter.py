@@ -19,11 +19,12 @@ def convert_to_dash(manifest):
 
     root = _mpd_manifest_root(duration)
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
-    protection = _protection_info(manifest)
+    protection = _protection_info(manifest) if manifest['hasDrmStreams'] else None
+    drm_streams = manifest['hasDrmStreams']
 
     for video_track in manifest['video_tracks']:
         _convert_video_track(
-            video_track, period, init_length, protection)
+            video_track, period, init_length, protection, drm_streams)
 
     _fix_locale_languages(manifest['audio_tracks'])
     _fix_locale_languages(manifest['timedtexttracks'])
@@ -31,7 +32,7 @@ def convert_to_dash(manifest):
     default_audio_language_index = _get_default_audio_language(manifest)
     for index, audio_track in enumerate(manifest['audio_tracks']):
         _convert_audio_track(audio_track, period, init_length,
-                             default=(index == default_audio_language_index))
+                             (index == default_audio_language_index), drm_streams)
 
     default_subtitle_language_index = _get_default_subtitle_language(manifest)
     for index, text_track in enumerate(manifest['timedtexttracks']):
@@ -66,14 +67,17 @@ def _protection_info(manifest):
     return {'pssh': pssh, 'keyid': keyid}
 
 
-def _convert_video_track(video_track, period, init_length, protection):
+def _convert_video_track(video_track, period, init_length, protection, drm_streams):
     adaptation_set = ET.SubElement(
         parent=period,
         tag='AdaptationSet',
         mimeType='video/mp4',
         contentType='video')
-    _add_protection_info(adaptation_set, **protection)
+    if protection:
+        _add_protection_info(adaptation_set, **protection)
     for downloadable in video_track['streams']:
+        if downloadable['isDrm'] != drm_streams:
+            continue
         _convert_video_downloadable(
             downloadable, adaptation_set, init_length)
 
@@ -123,7 +127,7 @@ def _determine_video_codec(content_profile):
     return 'h264'
 
 
-def _convert_audio_track(audio_track, period, init_length, default):
+def _convert_audio_track(audio_track, period, init_length, default, drm_streams):
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -139,6 +143,8 @@ def _convert_audio_track(audio_track, period, init_length, default):
         original=original,
         default=default)
     for downloadable in audio_track['streams']:
+        if downloadable['isDrm'] != drm_streams:
+            continue
         _convert_audio_downloadable(
             downloadable, adaptation_set, init_length,
             channels_count[downloadable['channels']])

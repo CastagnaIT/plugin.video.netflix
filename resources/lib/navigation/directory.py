@@ -167,6 +167,15 @@ class DirectoryBuilder(object):
             ui.show_notification(common.get_local_string(30013))
             xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
+    @common.time_execution(immediate=False)
+    def supplemental(self, pathitems):
+        """Show supplemental videos (eg. trailers) of a tvshow/movie"""
+        # pathitems indexes: 0 function name, 1 videoid value, 2 videoid mediatype, 3 supplemental_type
+        videoid = common.VideoId.from_path([pathitems[2], pathitems[1]])
+        listings.build_supplemental_listing(api.supplemental_video_list(videoid, pathitems[3]),
+                                            pathitems)
+        _handle_endofdirectory(self.dir_update_listing)
+
 
 def _ask_search_term_and_redirect():
     search_term = ui.ask_for_search_term()

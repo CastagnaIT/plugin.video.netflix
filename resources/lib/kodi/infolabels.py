@@ -34,7 +34,9 @@ def add_info(videoid, list_item, item, raw_data):
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
     list_item.setInfo('video', infos)
-    if infos.get('mediatype') in ['episode', 'movie']:
+    if videoid.mediatype == common.VideoId.EPISODE or \
+       videoid.mediatype == common.VideoId.MOVIE or \
+       videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         list_item.setProperty('isFolder', 'false')
         list_item.setProperty('IsPlayable', 'true')
     for stream_type, quality_infos in quality_infos.iteritems():
@@ -78,7 +80,8 @@ def parse_info(videoid, item, raw_data):
         }, {}
 
     infos = {'mediatype': ('tvshow'
-                           if videoid.mediatype == common.VideoId.SHOW
+                           if videoid.mediatype == common.VideoId.SHOW or
+                           videoid.mediatype == common.VideoId.SUPPLEMENTAL
                            else videoid.mediatype)}
     if videoid.mediatype in common.VideoId.TV_TYPES:
         infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
@@ -175,7 +178,8 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
            'fanart': _best_art([fanart, interesting_moment, boxart_large,
                                 boxart_small]),
            'thumb': ((interesting_moment
-                     if videoid.mediatype == common.VideoId.EPISODE else '')
+                     if videoid.mediatype == common.VideoId.EPISODE or
+                     videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
                      or boxart_large or boxart_small)}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:

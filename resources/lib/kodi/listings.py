@@ -339,6 +339,33 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     return (url, list_item, False)
 
 
+@custom_viewmode(g.VIEW_SHOW)
+@common.time_execution(immediate=False)
+def build_supplemental_listing(video_list, pathitems=None):
+    """Build a supplemental listing (eg. trailers)"""
+    directory_items = [_create_supplemental_item(videoid_value, video, video_list)
+                       for videoid_value, video
+                       in video_list.videos.iteritems()]
+    finalize_directory(directory_items, g.CONTENT_SHOW, 'sort_label',
+                       title='Trailers')
+
+
+@common.time_execution(immediate=False)
+def _create_supplemental_item(videoid_value, video, video_list):
+    """Create a tuple that can be added to a Kodi directory that represents
+    a video as listed in a videolist"""
+    videoid = common.VideoId(
+        **{'supplementalid': videoid_value})
+    list_item = list_item_skeleton(video['title'])
+    add_info(videoid, list_item, video, video_list.data)
+    add_art(videoid, list_item, video)
+    url = common.build_url(videoid=videoid,
+                           mode=g.MODE_PLAY)
+    # replaceItems still look broken because it does not remove the default ctx menu, i hope in the future Kodi fix this
+    list_item.addContextMenuItems(generate_context_menu_items(videoid), replaceItems=True)
+    return (url, list_item, False)
+
+
 def list_item_skeleton(label, icon=None, fanart=None, description=None, customicon=None):
     """Create a rudimentary list item skeleton with icon and fanart"""
     # pylint: disable=unexpected-keyword-arg

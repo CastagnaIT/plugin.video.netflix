@@ -731,3 +731,11 @@ msgstr ""
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
 msgstr ""
+
+msgctxt "#30179"
+msgid "Show the trailers"
+msgstr ""
+
+msgctxt "#30180"
+msgid "No trailers available"
+msgstr ""

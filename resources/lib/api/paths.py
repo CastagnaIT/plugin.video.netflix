@@ -77,6 +77,10 @@ INFO_MAPPINGS = {
     # 'playcount': 'watched'
 }
 
+TRAILER_PARTIAL_PATHS = [
+    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery']]
+] + ART_PARTIAL_PATHS
+
 INFO_TRANSFORMATIONS = {
     'rating': lambda r: r / 10,
     'playcount': lambda w: int(w)
