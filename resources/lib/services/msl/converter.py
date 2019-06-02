@@ -143,8 +143,9 @@ def _convert_audio_track(audio_track, period, init_length, default, drm_streams)
         original=original,
         default=default)
     for downloadable in audio_track['streams']:
-        if downloadable['isDrm'] != drm_streams:
-            continue
+        # Some audio stream has no drm
+        # if downloadable['isDrm'] != drm_streams:
+        #     continue
         _convert_audio_downloadable(
             downloadable, adaptation_set, init_length,
             channels_count[downloadable['channels']])
