@@ -164,6 +164,7 @@ def extract_json(content, name):
         json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
         json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
         json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
+        json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
         json_str = json_str.decode('unicode_escape')  # finally decoding...
         return json.loads(json_str)
     except Exception:
