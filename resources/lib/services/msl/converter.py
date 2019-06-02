@@ -103,11 +103,13 @@ def _convert_video_downloadable(downloadable, adaptation_set,
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
+        id=str(downloadable['urls'][0]['cdn_id']),
         width=str(downloadable['res_w']),
         height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
         nflxContentProfile=str(downloadable['content_profile']),
         codecs=_determine_video_codec(downloadable['content_profile']),
+        frameRate=str(downloadable['framerate_value'] / downloadable['framerate_scale']),
         mimeType='video/mp4')
     _add_base_url(representation, downloadable['urls'][0]['url'])
     _add_segment_base(representation, init_length)
@@ -150,6 +152,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
     representation = ET.SubElement(
         parent=adaptation_set,
         tag='Representation',
+        id=str(downloadable['urls'][0]['cdn_id']),
         codecs=codec_type,
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
