@@ -15,16 +15,13 @@ class InvalidVideoId(Exception):
 class VideoId(object):
     """Universal representation of a video id. Video IDs can be of multiple
     types:
-    - movie: a single identifier only for movieid, all other values must be
-             None
-    - show: a single identifier only for tvshowid, all other values must be
-            None
-    - season: identifiers for seasonid and tvshowid, all other values must
-              be None
-    - episode: identifiers for episodeid, seasonid and tvshowid, all other
-               values must be None
-    - unspecified: a single identifier only for videoid, all other values
-                   must be None"""
+    - supplemental: a single identifier only for supplementalid, all other values must be None
+    - movie: a single identifier only for movieid, all other values must be None
+    - show: a single identifier only for tvshowid, all other values must be None
+    - season: identifiers for seasonid and tvshowid, all other values must be None
+    - episode: identifiers for episodeid, seasonid and tvshowid, all other values must be None
+    - unspecified: a single identifier only for videoid, all other values must be None"""
+    SUPPLEMENTAL = 'supplemental'
     MOVIE = 'movie'
     SHOW = 'show'
     SEASON = 'season'
@@ -33,25 +30,26 @@ class VideoId(object):
     TV_TYPES = [SHOW, SEASON, EPISODE]
 
     VALIDATION_MASKS = {
-        0b10000: UNSPECIFIED,
-        0b01000: MOVIE,
-        0b00001: SHOW,
-        0b00011: SEASON,
-        0b00111: EPISODE
+        0b100000: UNSPECIFIED,
+        0b010000: SUPPLEMENTAL,
+        0b001000: MOVIE,
+        0b000001: SHOW,
+        0b000011: SEASON,
+        0b000111: EPISODE
     }
 
     def __init__(self, **kwargs):
         self._id_values = _get_unicode_kwargs(kwargs)
-        # debug('VideoId validation values: ' + str(self._id_values))
+        # debug('VideoId validation values: {}'.format(self._id_values))
         self._validate()
-        self._menu_parameters = MenuIdParameters(id_values = self._assigned_id_values()[0])
+        self._menu_parameters = MenuIdParameters(id_values=self._assigned_id_values()[0])
 
     def _validate(self):
         validation_mask = 0
         # Example: ('39c9a88a-a56e-4c8a-921c-3c1f86c0ebb9_62682962X28X6548X1551537755876', None, None, None, None)
         # This result in a VALIDATION_MASKS 'unspecified'. Because text data is on index 0, and others are None
         for index, value in enumerate(self._id_values):
-            validation_mask |= (value is not None) << (4-index)
+            validation_mask |= (value is not None) << (5-index)
         try:
             self._mediatype = VideoId.VALIDATION_MASKS[validation_mask]
         except KeyError:
@@ -66,6 +64,8 @@ class VideoId(object):
             return cls(tvshowid=_path_attr(pathitems, 1),
                        seasonid=_path_attr(pathitems, 3),
                        episodeid=_path_attr(pathitems, 5))
+        elif pathitems[0] == VideoId.SUPPLEMENTAL:
+            return cls(supplementalid=pathitems[1])
         return cls(videoid=pathitems[0])
 
     @classmethod
@@ -78,9 +78,11 @@ class VideoId(object):
             return cls(movieid=video_id)
         elif mediatype == VideoId.SHOW:
             return cls(tvshowid=video_id)
+        elif mediatype == VideoId.SUPPLEMENTAL:
+            return cls(supplementalid=video_id)
         else:
             raise InvalidVideoId(
-                'Can only construct a VideoId from a show or movie item')
+                'Can only construct a VideoId from a show/movie/supplemental item')
 
     @property
     def value(self):
@@ -98,29 +100,34 @@ class VideoId(object):
         return self._id_values[0]
 
     @property
+    def supplementalid(self):
+        """The supplemental value, if it exists"""
+        return self._id_values[1]
+
+    @property
     def movieid(self):
         """The movieid value, if it exists"""
-        return self._id_values[1]
+        return self._id_values[2]
 
     @property
     def episodeid(self):
         """The episodeid value, if it exists"""
-        return self._id_values[2]
+        return self._id_values[3]
 
     @property
     def seasonid(self):
         """The seasonid value, if it exists"""
-        return self._id_values[3]
+        return self._id_values[4]
 
     @property
     def tvshowid(self):
         """The tvshowid value, if it exists"""
-        return self._id_values[4]
+        return self._id_values[5]
 
     @property
     def mediatype(self):
         """The mediatype this VideoId instance represents.
-        Either movie, show, season, episode or unspecified"""
+        Either movie, show, season, episode, supplemental or unspecified"""
         return self._mediatype
 
     def to_path(self):
@@ -130,6 +137,8 @@ class VideoId(object):
             return [self.videoid]
         if self.movieid:
             return [self.MOVIE, self.movieid]
+        if self.supplementalid:
+            return [self.SUPPLEMENTAL, self.supplementalid]
 
         pathitems = [self.SHOW, self.tvshowid]
         if self.seasonid:
@@ -150,8 +159,8 @@ class VideoId(object):
         instance"""
         result = {'mediatype': self.mediatype}
         result.update({prop: self.__getattribute__(prop)
-                       for prop in ['videoid', 'movieid', 'tvshowid',
-                                    'seasonid', 'episodeid']
+                       for prop in ['videoid', 'supplementalid', 'movieid',
+                                    'tvshowid', 'seasonid', 'episodeid']
                        if self.__getattribute__(prop) is not None})
         return result
 
@@ -209,13 +218,13 @@ class VideoId(object):
 
 
 def _get_unicode_kwargs(kwargs):
-    # Example of return value: (None, '70084801', None, None, None) this is a movieid
+    # Example of return value: (None, None, '70084801', None, None, None, None) this is a movieid
     return tuple((unicode(kwargs[idpart])
                   if kwargs.get(idpart)
                   else None)
                  for idpart
-                 in ['videoid', 'movieid', 'episodeid', 'seasonid',
-                     'tvshowid'])
+                 in ['videoid', 'supplementalid', 'movieid',
+                     'episodeid', 'seasonid', 'tvshowid'])
 
 
 def _path_attr(pathitems, index):
