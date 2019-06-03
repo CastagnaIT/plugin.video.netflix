@@ -346,7 +346,7 @@ msgstr "Wymuś wsparcie HDCP 2.2 (uaktywnia treści 4K)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr ""
+msgstr "Zachowuj ustawienia dźwięku i napisów"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -626,7 +626,7 @@ msgstr "Porządek alfabetyczny (Z-A)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "Proponowane dla Ciebie""
+msgstr "Proponowane dla Ciebie"
 
 msgctxt "#30153"
 msgid "Year released"
@@ -719,3 +719,23 @@ msgstr "Gatunki seriali"
 msgctxt "#30175"
 msgid "Movie genres"
 msgstr "Gatunki filmów"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Uaktywnij obejście wznawiania STRM (tylko biblioteka)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Pytaj o wznowienie odtwarzania"
+
+msgctxt "#30178"
+msgid "Open UpNext Addon settings"
+msgstr "Otwórz ustawienia dodatku UpNext"
+
+msgctxt "#30179"
+msgid "Show the trailers"
+msgstr "Pokaż zwiastuny"
+
+msgctxt "#30180"
+msgid "No trailers available"
+msgstr "Zwiastuny niedostępne"
