@@ -17,7 +17,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Inputstream.adaptive [>=v2.0.0](https://github.com/peak3d/inputstream.adaptive)
   (with Kodi 18 should be installed automatically, otherwise you will be notified)
 - Cryptdome python library, with Kodi 18 will be installed automatically
-(for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
+(for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi. You may need to use `pip2` instead of `pip`.).
 
 - Widevine DRM
 For non-Android devices, will automatically be installed (by inputstream.helper).
