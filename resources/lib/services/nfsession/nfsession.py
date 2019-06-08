@@ -390,7 +390,7 @@ class NetflixSession(object):
         common.debug('Request returned statuscode {}'
                      .format(response.status_code))
         response.raise_for_status()
-        return (_raise_api_error(response.json())
+        return (_raise_api_error(response.json() if response.content else {})
                 if URLS[component]['is_api_call']
                 else response.content)
 
