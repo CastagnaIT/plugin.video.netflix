@@ -330,9 +330,10 @@ def update_my_list(videoid, operation):
 @common.time_execution(immediate=False)
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
-    if videoid.mediatype != common.VideoId.EPISODE:
-        return _metadata(videoid.value), None
-
+    if videoid.mediatype == common.VideoId.MOVIE:
+        return _metadata(videoid), None
+    if videoid.mediatype == common.VideoId.SEASON:
+        return _metadata(videoid.derive_parent(None)), None
     try:
         return _episode_metadata(videoid)
     except KeyError as exc:
@@ -351,7 +352,7 @@ def metadata(videoid):
 
 @common.time_execution(immediate=False)
 def _episode_metadata(videoid):
-    show_metadata = _metadata(videoid.tvshowid)
+    show_metadata = _metadata(videoid)
     episode_metadata, season_metadata = common.find_episode_metadata(
         videoid, show_metadata)
     return episode_metadata, season_metadata, show_metadata
@@ -364,13 +365,14 @@ def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added
     to a show by Netflix."""
-    common.debug('Requesting metdata for {}'.format(video_id))
+    common.debug('Requesting metadata for {}'.format(video_id))
+    # Always use params 'movieid' to all videoid identifier
     return common.make_call(
         'get',
         {
             'component': 'metadata',
             'req_type': 'api',
-            'params': {'movieid': video_id}
+            'params': {'movieid': video_id.value}
         })['video']
 
 

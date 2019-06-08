@@ -171,7 +171,7 @@ def _create_tv_tasks(videoid, metadata):
         return _compile_show_tasks(videoid, metadata[0])
     elif videoid.mediatype == common.VideoId.SEASON:
         return _compile_season_tasks(videoid, metadata[0],
-                                     common.find(videoid.seasonid, 'id',
+                                     common.find(int(videoid.seasonid), 'id',
                                                  metadata[0]['seasons']))
     return [_create_episode_task(videoid, *metadata)]
 
