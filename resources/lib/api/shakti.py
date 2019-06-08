@@ -330,7 +330,7 @@ def update_my_list(videoid, operation):
 @common.time_execution(immediate=False)
 def metadata(videoid):
     """Retrieve additional metadata for the given VideoId"""
-    if videoid.mediatype == common.VideoId.MOVIE:
+    if videoid.mediatype == common.VideoId.MOVIE or videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         return _metadata(videoid), None
     if videoid.mediatype == common.VideoId.SEASON:
         return _metadata(videoid.derive_parent(None)), None
