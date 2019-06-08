@@ -75,9 +75,10 @@ def build_profiles_listing(profiles):
     html_parser = HTMLParser()
     # The standard kodi theme does not allow to change view type if the content is "files" type,
     # so here we use "images" type, visually better to see
-    finalize_directory([_create_profile_item(guid, profile, html_parser)
-                        for guid, profile
-                        in profiles.iteritems()], g.CONTENT_IMAGES)
+    directory_items = []
+    for index, (guid, profile) in sorted(profiles.items()):
+        directory_items.append(_create_profile_item(guid, profile, html_parser))
+    finalize_directory(directory_items, g.CONTENT_IMAGES)
 
 
 def _create_profile_item(profile_guid, profile, html_parser):

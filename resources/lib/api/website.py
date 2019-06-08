@@ -5,10 +5,12 @@ from __future__ import unicode_literals
 import json
 import traceback
 from re import compile as recompile, DOTALL, sub
+from collections import OrderedDict
 
 import resources.lib.common as common
 
 from resources.lib.globals import g
+from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
                          InvalidMembershipStatusError, WebsiteParsingError)
 
@@ -62,22 +64,21 @@ def extract_profiles(falkor_cache):
     profiles = {}
     active_profile = None
     try:
-        for guid, profile in falkor_cache.get('profiles', {}).items():
-            profiles[guid], is_active = _parse_profile(profile, falkor_cache)
-            if is_active:
+        profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
+        for guid, profile in profiles_list.items():
+            common.debug('Parsing profile {}'.format(guid))
+            avatar_url = _get_avatar(falkor_cache, profile)
+            profile = profile['summary']['value']
+            profile['avatar'] = avatar_url
+            if profile.get('isActive'):
                 active_profile = guid
+            profiles[list(profiles_list.keys()).index(guid)] = (guid, profile)
     except Exception:
         common.error(traceback.format_exc())
+        common.error('Falkor cache: {}'.format(falkor_cache))
         raise InvalidProfilesError
 
     return profiles, active_profile
-
-
-def _parse_profile(profile, falkor_cache):
-    _profile = profile['summary']['value']
-    common.debug('Parsing profile {}'.format(_profile['guid']))
-    _profile['avatar'] = _get_avatar(falkor_cache, profile)
-    return _profile, _profile['isActive']
 
 
 def _get_avatar(falkor_cache, profile):
