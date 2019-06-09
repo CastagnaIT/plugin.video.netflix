@@ -743,3 +743,51 @@ msgstr ""
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
 msgstr ""
+
+msgctxt "#30282"
+msgid "Export NFO files?"
+msgstr ""
+
+msgctxt "#30283"
+msgid "Export NFO files may help to detect movies or episodes from series with specific cut"
+msgstr ""
+
+msgctxt "#30284"
+msgid "NFO Files"
+msgstr ""
+
+msgctxt "#30285"
+msgid "Enable NFO files export"
+msgstr ""
+
+msgctxt "#30286"
+msgid "For Movies"
+msgstr ""
+
+msgctxt "#30287"
+msgid "For TV Show"
+msgstr ""
+
+msgctxt "#30288"
+msgid "Do not export tvshow.nfo, only episodes NFO"
+msgstr ""
+
+msgctxt "#30289"
+msgid "This will export NFO for each {}"
+msgstr ""
+
+msgctxt "#30290"
+msgid "Ask me"
+msgstr ""
+
+msgctxt "#30291"
+msgid "movie"
+msgstr ""
+
+msgctxt "#30292"
+msgid "TV show"
+msgstr ""
+
+msgctxt "#30293"
+msgid "Export NFO files for the item added to 'My List'?"
+msgstr ""
