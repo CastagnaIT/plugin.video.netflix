@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
-"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2018-06-14 13:37+0000\n"
-"Last-Translator: Wanilton <campos.wanilton@gmail.com>\n"
+"PO-Revision-Date: 2019-06-11 20:10+0000\n"
+"Last-Translator: MediaBrasil\n"
 "Language-Team: Portuguese (Brazil)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -66,7 +66,7 @@ msgstr "Por favor, verifique as suas credenciais de acesso"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr ""
+msgstr "Listar todos os tipos"
 
 msgctxt "#30011"
 msgid "Search"
@@ -337,24 +337,28 @@ msgid "Skip automatically"
 msgstr "Pular automaticamente"
 
 msgctxt "#30080"
-msgid "Don't pause when skipping"
-msgstr "Não pause quando pulando"
+msgid "Pause when skipping"
+msgstr "Pausar quando pular"
+
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "Forçar suporte para HDCP 2.2 (habilita conteúdo 4K)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr ""
+msgstr "Lembrar preferências para áudio / legendas"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
 msgstr "Salvar marcadores para itens na coleção / marcar como assistido"
 
 msgctxt "#30084"
-msgid "Enable HDR profiles"
-msgstr "Ativar perfil HDR"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Cache de item time-to-live (minutos)"
 
 msgctxt "#30085"
-msgid "Enable DolbyVision profiles"
-msgstr "Ativar perfil DolbyVision"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Tempo de vida dos metadados para itens em cache (dias)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
@@ -456,6 +460,10 @@ msgctxt "#30110"
 msgid "Background services started"
 msgstr "Serviços em background inicializados"
 
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Sem conteúdos"		 
+
 msgctxt "#30112"
 msgid "You need to be logged in to use this function"
 msgstr "Precisa estar logado para usar esta função"
@@ -547,3 +555,187 @@ msgstr "Expurgar cache na memória e no disco"
 msgctxt "#30134"
 msgid "Enable execution timing"
 msgstr "Ativar tempo de execução"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Cache limpo"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "Ativar desbloqueio 1080p (não recomendado para Android)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
+msgstr "Ativar perfis VP9 (Não utilize com HEVC, desabilite se causar artefatos)"
+
+msgctxt "#30138"
+msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "A ação solicitada expirou. Os serviços de segundo plano podem ainda não estar disponíveis se você acabou de iniciar o Kodi/addon. Neste caso, tente novamente daqui a pouco."
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgstr "Ativar IPC sobre HTTP (usar quando tiver problemas de tempo expirado no AddonSignals)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Migrar coleção para novo formato"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Desativar notificação de inicialização"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Customizado"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "Visualizar Custom ID"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "Desabilitar suporte legendas WebVTT"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Recém adicionados"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Descubra os conteúdos mais recentes."
+
+msgctxt "#30147"
+msgid "Next page >>"
+msgstr "Próxima página >>"
+
+msgctxt "#30148"
+msgid "<< Previous page"
+msgstr "<< Página anterior"
+
+msgctxt "#30149"
+msgid "Sort results by"
+msgstr "Ordenar resultados por"
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "Ordem alfabética A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "Ordem alfabética (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Sugestões para você"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Ano de lançamento"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Configuração do add-on do Netflix"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Tens uma conta Netflix Premium?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\n\O dispositivo deve ter:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k como HDCP 2.2"
+
+msgctxt "#30157"
+msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "O paineil de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado" 
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Mostrar tela de ajustes ao iniciar o add-on"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Visualização para o menu principal"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Visualização para procura"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Visualização para exportar"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Último usado"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Audio descrição"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Navegar nos conteúdos com descrição por áudio"
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Visualização para minha lista"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Itens no menu principal"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Minha lista"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Continuar assistindo"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Recomendados"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Lançamentos"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Tendências"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Popular no Netflix"
+
+msgctxt "#30173"
+msgid "NETFLIX ORIGINALS"
+msgstr "Produções Originais"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Gêneros de seriados"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Gêneros de filmes"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Ativar solução alternativa de retomada do STRM (somente coleção)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Perguntar para retomar o vídeo"
+
+msgctxt "#30178"
+msgid "Open UpNext Addon settings"
+msgstr "Abrir ajustes do add-on UpNext"
+
+msgctxt "#30179"
+msgid "Show the trailers"
+msgstr "Mostrar os trailers"
+
+msgctxt "#30180"
+msgid "No trailers available"
+msgstr "Trailers indisponíveis"
