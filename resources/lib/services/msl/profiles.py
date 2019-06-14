@@ -34,11 +34,10 @@ PROFILES = {
     'base': [
         # Audio
         'heaac-2-dash',
-        'playready-heaac-2-dash',
+        'heaac-2hq-dash',
         # Unknown
         'BIF240', 'BIF320'],
-    # 'dd-5.1-elem' DD 384< Bitrate, currently inputstream fails to manage this profile
-    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-atmos-dash'],
+    'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash', 'ddplus-atmos-dash'],
     'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
              'playready-h264mpl40-dash',
              'playready-h264hpl30-dash', 'playready-h264hpl31-dash',
