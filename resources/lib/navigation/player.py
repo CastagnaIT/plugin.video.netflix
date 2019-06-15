@@ -178,6 +178,8 @@ def _find_next_episode(videoid, metadata):
 
 def upnext_info(videoid, infos, art):
     """Create a data dict for upnext signal"""
+    # Double check to 'rating' key, sometime can be an empty string, not accepted by UpNext Addon
+    rating = infos.get('rating', None)
     return {
         'episodeid': videoid.episodeid,
         'tvshowid': videoid.tvshowid,
@@ -195,6 +197,6 @@ def upnext_info(videoid, infos, art):
         'playcount': infos.get('playcount', 0),
         'season': infos['season'],
         'episode': infos['episode'],
-        'rating': infos.get('rating', infos.get('userrating', '')),
+        'rating': rating if rating else None,
         'firstaired': infos.get('year', infos.get('firstaired', ''))
     }
