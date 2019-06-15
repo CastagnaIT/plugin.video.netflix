@@ -223,7 +223,7 @@ def _get_default_audio_language(manifest):
     channelList = {'1.0': '1', '2.0': '2'}
     channelListDolby = {'5.1': '6', '7.1': '8'}
 
-    # Read language in kodi settings
+    # Read language in Kodi settings
     audio_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
     audio_language = xbmc.convertLanguage(audio_language['value'].encode('utf-8'), xbmc.ISO_639_1)
     audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
@@ -238,9 +238,8 @@ def _get_default_audio_language(manifest):
     for index, audio_track in enumerate(manifest['audio_tracks']):
         if audio_track['language'] == audio_language and audio_track['channels'] in channelList:
             return index
-
     # If there is no matches to preferred language, try to sets the original language track as default
-        # Check if the dolby audio track in selected language exists
+    # Check if the dolby audio track in selected language exists
     if g.ADDON.getSettingBool('enable_dolby_sound'):
         for index, audio_track in enumerate(manifest['audio_tracks']):
             if audio_track['isNative'] and audio_track['channels'] in channelListDolby:
@@ -255,7 +254,14 @@ def _get_default_audio_language(manifest):
 def _get_default_subtitle_language(manifest):
     subtitle_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
-        # Leave the selection of forced subtitles to kodi
+        # When we set "forced only" subtitles in Kodi Player and the forced streams are missing,
+        # Kodi selects the first available non-forced stream. This Kodi behavior is totally non sense.
+        # There is no other solution than to disable the subtitles manually.
+        if g.ADDON.getSettingBool('forced_subtitle_workaround')\
+            and not any(text_track.get('isForcedNarrative', False) is True
+           for text_track in manifest['timedtexttracks']):
+            xbmc.Player().showSubtitles(False)
+        # Leave the selection of forced subtitles to Kodi
         return -1
     else:
         subtitle_language = xbmc.convertLanguage(subtitle_language['value'].encode('utf-8'), xbmc.ISO_639_1)
@@ -275,13 +281,13 @@ def _fix_locale_languages(data_list):
     # Get all the ISO 639-1 codes (without country)
     locale_list_nocountry = []
     for item in data_list:
-        if item.get('isNoneTrack',False):
+        if item.get('isNoneTrack', False):
             continue
         if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
             locale_list_nocountry.append(item['language'])
     # Replace the locale languages with country with a new one
     for item in data_list:
-        if item.get('isNoneTrack',False):
+        if item.get('isNoneTrack', False):
             continue
         if len(item['language']) == 2:
             continue

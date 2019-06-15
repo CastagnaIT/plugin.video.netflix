@@ -739,3 +739,7 @@ msgstr "Mostra i trailers"
 msgctxt "#30180"
 msgid "No trailers available"
 msgstr "Nessun trailer disponibile"
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli \"Solo forzati\")"
