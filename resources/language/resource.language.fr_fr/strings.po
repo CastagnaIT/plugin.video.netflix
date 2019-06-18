@@ -366,7 +366,7 @@ msgstr "Invalider le cache lors d'une modification de 'Ma Liste'"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr "Contient {} ou plus..."
+msgstr "Contient {} et plus encore..."
 
 msgctxt "#30088"
 msgid "Browse related content"
@@ -739,3 +739,7 @@ msgstr "Montrer les bandes annonces"
 msgctxt "#30180"
 msgid "No trailers available"
 msgstr "Pas de bande annonce"
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Désactiver les sous-titres s'il n'y a pas de piste forcée (Fonctionne seulement si Kodi est configuré sur \"Forcé seulement\" pour les sous-titres"
