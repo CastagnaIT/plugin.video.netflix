@@ -223,11 +223,7 @@ def _get_default_audio_language(manifest):
     channelList = {'1.0': '1', '2.0': '2'}
     channelListDolby = {'5.1': '6', '7.1': '8'}
 
-    # Read language in Kodi settings
-    audio_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(audio_language['value'].encode('utf-8'), xbmc.ISO_639_1)
-    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
-    audio_language = audio_language if audio_language else 'en'
+    audio_language = _get_kodi_audio_language()
 
     # Try to find the preferred language with the right channels
     if g.ADDON.getSettingBool('enable_dolby_sound'):
@@ -252,22 +248,21 @@ def _get_default_audio_language(manifest):
 
 
 def _get_default_subtitle_language(manifest):
-    subtitle_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
-    if subtitle_language['value'] == 'forced_only':
-        # When we set "forced only" subtitles in Kodi Player and the forced streams are missing,
-        # Kodi selects the first available non-forced stream. This Kodi behavior is totally non sense.
-        # There is no other solution than to disable the subtitles manually.
-        if g.ADDON.getSettingBool('forced_subtitle_workaround')\
-            and not any(text_track.get('isForcedNarrative', False) is True
-           for text_track in manifest['timedtexttracks']):
-            xbmc.Player().showSubtitles(False)
+    subtitle_language = _get_kodi_subtitle_language()
+    if subtitle_language == 'forced_only':
+        if g.ADDON.getSettingBool('forced_subtitle_workaround'):
+            # When we set "forced only" subtitles in Kodi Player, Kodi use this behavior:
+            # 1) try to select forced subtitle that matches audio language
+            # 2) when missing, try to select the first "regular" subtitle that matches audio language
+            # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
+            # There is no other solution than to disable the subtitles manually.
+            audio_language = _get_kodi_audio_language()
+            if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
+               for text_track in manifest['timedtexttracks']):
+                xbmc.Player().showSubtitles(False)
         # Leave the selection of forced subtitles to Kodi
         return -1
     else:
-        subtitle_language = xbmc.convertLanguage(subtitle_language['value'].encode('utf-8'), xbmc.ISO_639_1)
-        subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
-        subtitle_language = subtitle_language if subtitle_language else 'en'
-
         for index, text_track in enumerate(manifest['timedtexttracks']):
             if text_track['isNoneTrack']:
                 continue
@@ -315,3 +310,26 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
         else:
             common.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
             return locale_code
+
+
+def _get_kodi_audio_language():
+    """
+    Return the audio language from Kodi settings
+    """
+    audio_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
+    audio_language = xbmc.convertLanguage(audio_language['value'].encode('utf-8'), xbmc.ISO_639_1)
+    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    return audio_language if audio_language else 'en'
+
+
+def _get_kodi_subtitle_language():
+    """
+    Return the subtitle language from Kodi settings
+    """
+    subtitle_language = common.json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
+    if subtitle_language['value'] == 'forced_only':
+        return subtitle_language['value']
+    subtitle_language = xbmc.convertLanguage(subtitle_language['value'].encode('utf-8'), xbmc.ISO_639_1)
+    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    subtitle_language = subtitle_language if subtitle_language else 'en'
+    return subtitle_language
