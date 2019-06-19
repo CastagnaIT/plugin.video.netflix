@@ -22,7 +22,7 @@ PAGE_ITEMS = [
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/serverDefs/data/ICHNAEA_ROOT',
     'models/serverDefs/data/API_ROOT',
-    'models/serverDefs/data/API_BASE_URL',
+    'models/playerModel/data/config/ui/initParams/apiUrl',
     'models/esnGeneratorModel/data/esn',
     'models/memberContext/data/geo/preferredLocale'
 ]
@@ -109,11 +109,18 @@ def extract_userdata(content):
 
 
 def _parse_api_data(user_data):
-    return {api_item: user_data[api_item]
+    if 'API_BASE_URL' in user_data:
+        return {api_item: user_data[api_item]
             for api_item in (
                 item.split('/')[-1]
                 for item in PAGE_ITEMS
-                if 'serverDefs' in item)}
+                if ('serverDefs' in item) or ('initParams' in item))}
+    else:
+        return {api_item: user_data[api_item]
+            for api_item in (
+                item.split('/')[-1]
+                for item in PAGE_ITEMS
+                if (('serverDefs' in item) and ('API_BASE_URL' not in item)) or ('initParams' in item))}
 
 
 def assert_valid_auth_url(user_data):

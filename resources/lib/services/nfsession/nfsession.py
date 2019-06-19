@@ -445,11 +445,16 @@ def _document_url(component):
 
 
 def _api_url(component, api_data):
-    return '{apiroot}{baseurl}/{buildid}{componenturl}'.format(
-        apiroot=api_data['API_ROOT'],
-        baseurl=api_data['API_BASE_URL'],
-        buildid=api_data['BUILD_IDENTIFIER'],
-        componenturl=URLS[component]['endpoint'])
+    if 'API_BASE_URL' in api_data:
+        return '{apiroot}{baseurl}/{buildid}{componenturl}'.format(
+            apiroot=api_data['API_ROOT'],
+            baseurl=api_data['API_BASE_URL'],
+            buildid=api_data['BUILD_IDENTIFIER'],
+            componenturl=URLS[component]['endpoint'])
+    else:
+        return '{baseurl}{componenturl}'.format(
+            baseurl=api_data['apiUrl'],
+            componenturl=URLS[component]['endpoint'])
 
 
 def _update_esn(esn):
