@@ -109,6 +109,7 @@ class NetflixSession(object):
         'models/serverDefs/data/ICHNAEA_ROOT',
         'models/serverDefs/data/API_ROOT',
         'models/serverDefs/data/API_BASE_URL',
+        'models/playerModel/data/config/ui/initParams/apiUrl',
         'models/esnGeneratorModel/data/esn',
         'gpsModel',
         'models/userInfo/data/countryOfSignup',
@@ -1731,16 +1732,16 @@ class NetflixSession(object):
         :obj:`str`
             API Url
         """
-        api_root = self.api_data.get('API_ROOT', '')
-        base_url = self.api_data.get('API_BASE_URL', '')
-        build_id = self.api_data.get('BUILD_IDENTIFIER', '')
-        url_component = self.urls.get(component, '')
-        has_base_url = api_root.find(base_url) > -1
-        api_url = api_root
-        api_url += '/' if has_base_url is True else base_url + '/'
-        api_url += build_id
-        api_url += url_component
-        return api_url
+        if 'API_BASE_URL' in self.api_data:
+            return '{apiroot}{baseurl}/{buildid}{componenturl}'.format(
+                apiroot=self.api_data['API_ROOT'],
+                baseurl=self.api_data['API_BASE_URL'],
+                buildid=self.api_data['BUILD_IDENTIFIER'],
+                componenturl=self.urls.get(component, ''))
+        else:
+            return '{baseurl}{componenturl}'.format(
+                baseurl=self.api_data['apiUrl'],
+                componenturl=self.urls.get(component, ''))
 
     def _get_document_url_for(self, component):
         """
@@ -2135,12 +2136,12 @@ class NetflixSession(object):
         if 'preferredLocale' in user_data:
             self.nx_common.set_setting('locale_id', user_data['preferredLocale']['id'])
 
-        self.api_data = {
-            'API_BASE_URL': user_data.get('API_BASE_URL'),
-            'API_ROOT': user_data.get('API_ROOT'),
-            'BUILD_IDENTIFIER': user_data.get('BUILD_IDENTIFIER'),
-            'ICHNAEA_ROOT': user_data.get('ICHNAEA_ROOT'),
-        }
+        self.api_data = {api_item: user_data[api_item]
+            for api_item in (
+                item.split('/')[-1]
+                for item in self.page_items
+                if ('initParams' in item) or ('serverDefs' in item)) if api_item in user_data }
+
         self.profiles = profiles
         self.nx_common.log(msg='Found ESN "' + self.esn + '"')
         return user_data
