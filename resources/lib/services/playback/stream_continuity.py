@@ -79,7 +79,7 @@ class StreamContinuityManager(PlaybackActionManager):
                 common.debug('{} has changed from {} to {}'
                              .format(stype, current_stream, player_stream))
                 self._set_current_stream(stype, player_state)
-                self._save_changed_stream(stype, player_stream)
+                self._save_all_streams(player_state, stype, player_stream)
 
     def _set_current_stream(self, stype, player_state):
         self.current_streams.update({
@@ -99,10 +99,12 @@ class StreamContinuityManager(PlaybackActionManager):
             self.current_streams[stype] = stored_stream
             common.debug('Restored {} to {}'.format(stype, stored_stream))
 
-    def _save_changed_stream(self, stype, stream):
-        common.debug('Save changed stream {} for {}'.format(stream, stype))
-        new_show_settings = self.show_settings.copy()
-        new_show_settings[stype] = stream
+    def _save_all_streams(self, player_state, stype, stream):
+        common.debug('Save all streams because a change of {} for {}'.format(stream, stype))
+        new_show_settings={}
+        for stype in STREAMS:
+            player_stream = player_state.get(STREAMS[stype]['current'])
+            new_show_settings[stype] = player_stream
         self.storage[self.current_videoid] = new_show_settings
         self.storage.commit()
 
