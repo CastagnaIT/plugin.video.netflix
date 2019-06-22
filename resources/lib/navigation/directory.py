@@ -151,22 +151,9 @@ class DirectoryBuilder(object):
         """Ask for a search term if none is given via path, query API
         and display search results"""
         if len(pathitems) == 2:
-            # Show 'search term' window
-            search_term = ui.ask_for_search_term()
-            pathitems.append(search_term)
+            _ask_search_term_and_redirect()
         else:
-            # Do a research
-            search_term = pathitems[2]
-        if search_term:
-            search_results = api.search(search_term, self.perpetual_range_start)
-            if search_results.videos:
-                listings.build_video_listing(search_results, g.MAIN_MENU_ITEMS['search'], pathitems)
-                _handle_endofdirectory(self.dir_update_listing)
-            else:
-                ui.show_notification(common.get_local_string(30013))
-                xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
-        else:
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+            _display_search_results(pathitems, self.perpetual_range_start, self.dir_update_listing)
 
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
@@ -188,6 +175,30 @@ class DirectoryBuilder(object):
         listings.build_supplemental_listing(api.supplemental_video_list(videoid, pathitems[3]),
                                             pathitems)
         _handle_endofdirectory(self.dir_update_listing)
+
+
+def _ask_search_term_and_redirect():
+    search_term = ui.ask_for_search_term()
+    if search_term:
+        url = common.build_url(['search', 'search', search_term],
+                               mode=g.MODE_DIRECTORY)
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
+        xbmc.executebuiltin('Container.Update({},replace)'
+                            .format(url))
+    else:
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+
+
+@common.time_execution(immediate=False)
+def _display_search_results(pathitems, perpetual_range_start, dir_update_listing):
+    search_term = pathitems[2]
+    search_results = api.search(search_term, perpetual_range_start)
+    if search_results.videos:
+        listings.build_video_listing(search_results, g.MAIN_MENU_ITEMS['search'], pathitems)
+        _handle_endofdirectory(dir_update_listing)
+    else:
+        ui.show_notification(common.get_local_string(30013))
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
 
 def _handle_endofdirectory(dir_update_listing):
