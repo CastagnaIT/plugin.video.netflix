@@ -180,11 +180,9 @@ class DirectoryBuilder(object):
 def _ask_search_term_and_redirect():
     search_term = ui.ask_for_search_term()
     if search_term:
-        url = common.build_url(['search', 'search', search_term],
-                               mode=g.MODE_DIRECTORY)
+        url = common.build_url(['search', 'search', search_term], mode=g.MODE_DIRECTORY)
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
-        xbmc.executebuiltin('Container.Update({},replace)'
-                            .format(url))
+        xbmc.executebuiltin('Container.Update({})'.format(url))
     else:
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
