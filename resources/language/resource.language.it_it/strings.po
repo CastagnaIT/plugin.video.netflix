@@ -743,3 +743,47 @@ msgstr "Nessun trailer disponibile"
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
 msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli \"Solo forzati\")"
+
+msgctxt "#30282"
+msgid "Export NFO files"
+msgstr "Esportazione file NFO"
+
+msgctxt "#30283"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "Vuoi esportare i file NFO per {}?"
+
+msgctxt "#30284"
+msgid "NFO Files"
+msgstr "File NFO"
+
+msgctxt "#30285"
+msgid "Enable NFO files export"
+msgstr "Abilita l'esportazione dei file NFO"
+
+msgctxt "#30286"
+msgid "For Movies"
+msgstr "Per i film"
+
+msgctxt "#30287"
+msgid "For TV Show"
+msgstr "Per le Serie TV"
+
+msgctxt "#30288"
+msgid "Ask"
+msgstr "Chiedi"
+
+msgctxt "#30289"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#30290"
+msgid "TV show"
+msgstr "serie tv"
+
+msgctxt "#30291"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "Vuoi esportare i file NFO per {} aggiunti alla 'Mia lista'?"
+
+msgctxt "#30292"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nQuesti file sono utilizzati dai provider informazioni scrapers per integrare info dei film e serie tv, utili per episodi bonus o director's cut"

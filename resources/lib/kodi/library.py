@@ -95,9 +95,10 @@ def _get_item(mediatype, filename):
             {'field': 'path', 'operator': 'startswith', 'value': path},
             {'field': 'filename', 'operator': 'is', 'value': shortname}
             ]})[0]
+    if not library_item:
+        raise ItemNotFound
     return common.get_library_item_details(
          mediatype, library_item[mediatype + 'id'])
-    raise ItemNotFound
 
 
 def list_contents():
@@ -122,7 +123,7 @@ def update_kodi_library(library_operation):
             _remove_from_kodi_library(videoid)
         library_operation(videoid, task_handler, *args, **kwargs)
         if not is_remove:
-            # Update kodi library through service
+            # Update Kodi library through service
             # This prevents a second call to cancel the update
             common.debug('Notify service to update the library')
             common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
@@ -135,7 +136,7 @@ def _remove_from_kodi_library(videoid):
     try:
         kodi_library_items = [get_item(videoid)]
         if videoid.mediatype == common.VideoId.SHOW or videoid.mediatype == common.VideoId.SEASON:
-            # Retreive the all episodes in the export folder
+            # Retrieve the all episodes in the export folder
             filters = {'and': [
                 {'field': 'path', 'operator': 'startswith', 'value': os.path.dirname(kodi_library_items[0]['file'])},
                 {'field': 'filename', 'operator': 'endswith', 'value': '.strm'}
@@ -180,51 +181,44 @@ def purge():
 
 
 @common.time_execution(immediate=False)
-def compile_tasks(videoid, export_nfo=False):
+def compile_tasks(videoid, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
     common.debug('Compiling library tasks for {}'.format(videoid))
     metadata = api.metadata(videoid)
     if videoid.mediatype == common.VideoId.MOVIE:
-        return _create_movie_task(videoid, metadata[0], export_nfo)
+        return _create_movie_task(videoid, metadata[0], nfo_settings)
     elif videoid.mediatype in common.VideoId.TV_TYPES:
-        return _create_tv_tasks(videoid, metadata, export_nfo)
-
+        return _create_tv_tasks(videoid, metadata, nfo_settings)
     raise ValueError('Cannot handle {}'.format(videoid))
 
 
-def _create_movie_task(videoid, movie, export_nfo):
+def _create_movie_task(videoid, movie, nfo_settings):
     """Create a task for a movie"""
     # Reset NFO export to false if we never want movies nfo
-    if g.ADDON.getSettingInt('export_movie_nfo') == 0:
-        export_nfo = False
-
     name = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
     return [_create_item_task(name, FOLDER_MOVIES, videoid, name, name,
-                              nfo.create_movie_nfo(movie) if export_nfo else None)]
+                              nfo.create_movie_nfo(movie) if
+                              nfo_settings and nfo_settings.export_movie_enabled else None)]
 
 
-def _create_tv_tasks(videoid, metadata, export_nfo):
+def _create_tv_tasks(videoid, metadata, nfo_settings):
     """Create tasks for a show, season or episode.
     If videoid represents a show or season, tasks will be generated for
     all contained seasons and episodes"""
-    # Reset NFO export to false if we never want tv shows nfo
-    if g.ADDON.getSettingInt('export_tv_nfo') == 0:
-        export_nfo = False
-
     if videoid.mediatype == common.VideoId.SHOW:
-        tasks = _compile_show_tasks(videoid, metadata[0], export_nfo)
+        tasks = _compile_show_tasks(videoid, metadata[0], nfo_settings)
     elif videoid.mediatype == common.VideoId.SEASON:
        tasks = _compile_season_tasks(videoid,
-                                    metadata[0],
-                                    common.find(int(videoid.seasonid),
-                                                'id',
-                                                metadata[0]['seasons']),
-                                     export_nfo)
+                                     metadata[0],
+                                     common.find(int(videoid.seasonid),
+                                                 'id',
+                                                 metadata[0]['seasons']),
+                                     nfo_settings)
     else:
-        tasks = [_create_episode_task(videoid, task_handler, *metadata, export_nfo=export_nfo)]
+        tasks = [_create_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
 
-    # If we do want the tvshow.nfo file
-    if (export_nfo and not g.ADDON.getSettingBool('export_tv_nfo_disable_tvshownfo')):
+    if nfo_settings and nfo_settings.export_tvshow_enabled:
+        # Create tvshow.nfo file
         tasks.append(_create_item_task('tvshow.nfo', FOLDER_TV, videoid,
                                        metadata[0]['title'],
                                        'tvshow',
@@ -233,30 +227,31 @@ def _create_tv_tasks(videoid, metadata, export_nfo):
     return tasks
 
 
-def _compile_show_tasks(videoid, show, export_nfo):
+def _compile_show_tasks(videoid, show, nfo_settings):
     """Compile a list of task items for all episodes of all seasons
     of a tvshow"""
-    # This nested comprehension is nasty but neccessary. It flattens
+    # This nested comprehension is nasty but necessary. It flattens
     # the task lists for each season into one list
     return [task for season in show['seasons']
             for task in _compile_season_tasks(
-                videoid.derive_season(season['id']), show, season, export_nfo)]
+                videoid.derive_season(season['id']), show, season, nfo_settings)]
 
 
-def _compile_season_tasks(videoid, show, season, export_nfo):
+def _compile_season_tasks(videoid, show, season, nfo_settings):
     """Compile a list of task items for all episodes in a season"""
     return [_create_episode_task(videoid.derive_episode(episode['id']),
-                                 episode, season, show, export_nfo)
+                                 episode, season, show, nfo_settings)
             for episode in season['episodes']]
 
 
-def _create_episode_task(videoid, episode, season, show, export_nfo):
+def _create_episode_task(videoid, episode, season, show, nfo_settings):
     """Export a single episode to the library"""
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
     title = ' - '.join((show['title'], filename, episode['title']))
     return _create_item_task(title, FOLDER_TV, videoid, show['title'],
                              filename,
-                             nfo.create_episode_nfo(episode,season,show) if export_nfo else None)
+                             nfo.create_episode_nfo(episode, season, show)
+                             if nfo_settings and nfo_settings.export_tvshow_enabled else None)
 
 
 def _create_item_task(title, section, videoid, destination, filename, nfo_data=None, is_strm=True):
@@ -289,14 +284,6 @@ def export_item(item_task, library_home):
             destination_folder.decode('utf-8'), item_task['filename'] + '.nfo'))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}'.format(item_task['title']))
-
-@common.time_execution(immediate=False)
-def export_item_show_nfo(item_task, library_home):
-    """Create tvshow.nfo file"""
-    destination_folder = xbmc.makeLegalFilename(os.path.join(
-        library_home, item_task['section'], item_task['destination']))
-    export_filename = xbmc.makeLegalFilename(os.path.join(
-        destination_folder.decode('utf-8'), item_task['filename'] + '.nfo'))
 
 
 def _create_destination_folder(destination_folder):
@@ -345,7 +332,7 @@ def _add_to_library(videoid, export_filename):
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except
-    if item_task['is_strm'] == True: # We don't take care of a tvshow.nfo task if we are running an update
+    if item_task['is_strm']:  # We don't take care of a tvshow.nfo task if we are running an update
         common.debug('Removing {} from library'.format(item_task['title']))
         if not is_in_library(item_task['videoid']):
             common.warn('cannot remove {}, item not in library'
@@ -357,32 +344,21 @@ def remove_item(item_task, library_home=None):
         parent_folder = os.path.dirname(exported_filename)
         try:
             xbmcvfs.delete(xbmc.translatePath(exported_filename).decode("utf-8"))
-            # Remove the NFO file if exists
-            nfo = os.path.splitext(xbmc.translatePath(exported_filename).decode("utf-8"))[0]+'.nfo'
-            if xbmcvfs.exists(nfo):
-                xbmcvfs.delete(nfo)
+            # Remove the NFO files if exists
+            nfo_file = os.path.splitext(xbmc.translatePath(exported_filename).decode("utf-8"))[0]+'.nfo'
+            if xbmcvfs.exists(nfo_file):
+                xbmcvfs.delete(nfo_file)
             dirs, files = xbmcvfs.listdir(xbmc.translatePath(parent_folder).decode("utf-8"))
-            tvshownfo = xbmc.makeLegalFilename(
+            tvshow_nfo_file = xbmc.makeLegalFilename(
                 os.path.join(
-                    xbmc.translatePath(parent_folder).decode("utf-8"),'tvshow.nfo'))
-            # We may want tvshow.nfo to be removed on update:
-            # - If export NFO is off
-            # - If ignore tvshow.nfo is enabled
-            # - If export_tv_nfo is set to Never
-            if ((not g.ADDON.getSettingBool('enable_nfo_export') or
-                 g.ADDON.getSettingInt('export_tv_nfo') == 0 or
-                 g.ADDON.getSettingBool('export_tv_nfo_disable_tvshownfo'))
-                and xbmcvfs.exists(tvshownfo)):
-                xbmcvfs.delete(tvshownfo)
-            # On some file system, it's not possible to remove a folder if not empty
-            # So we need to remove the tvshow.nfo if it's the last file
-            if not dirs and len(files) == 1 and files[0] == 'tvshow.nfo':
-                xbmcvfs.delete(tvshownfo)
-                # tvshow.nfo was the last file so we remove the parent folder
-                # avoiding a call to xbmcvfs.listdir again
+                    xbmc.translatePath(parent_folder).decode("utf-8"), 'tvshow.nfo'))
+            # Remove tvshow_nfo_file only when is the last file (users have the option of removing even single seasons)
+            if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
+                xbmcvfs.delete(tvshow_nfo_file)
+                # Delete parent folder
                 xbmcvfs.rmdir(xbmc.translatePath(parent_folder).decode("utf-8"))
-            # Fix parent folder not removed
-            if not dirs and not files: # the destination folder is empty
+            # Delete parent folder when empty
+            if not dirs and not files:
                 xbmcvfs.rmdir(xbmc.translatePath(parent_folder).decode("utf-8"))
         except Exception:
             common.debug('Cannot delete {}, file does not exist'
@@ -423,10 +399,10 @@ def update_library():
 
 
 @update_kodi_library
-def execute_library_tasks(videoid, task_handler, title, sync_mylist=True, export_nfo=False):
+def execute_library_tasks(videoid, task_handler, title, sync_mylist=True, nfo_settings=None):
     """Execute library tasks for videoid and show errors in foreground"""
     common.execute_tasks(title=title,
-                         tasks=compile_tasks(videoid, export_nfo),
+                         tasks=compile_tasks(videoid, nfo_settings),
                          task_handler=task_handler,
                          notify_errors=True,
                          library_home=library_path())
@@ -434,10 +410,10 @@ def execute_library_tasks(videoid, task_handler, title, sync_mylist=True, export
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handler, sync_mylist, export_nfo=False):
+def execute_library_tasks_silently(videoid, task_handler, sync_mylist, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=broad-except
-    for task in compile_tasks(videoid, export_nfo):
+    for task in compile_tasks(videoid, nfo_settings):
         try:
             task_handler(task, library_path())
         except Exception:

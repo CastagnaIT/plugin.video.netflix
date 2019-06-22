@@ -31,9 +31,8 @@
     <setting id="update_running" type="text" visible="false" default="false"/>
     <setting label="30284" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30285" default="false"/>
-    <setting id="export_movie_nfo" type="enum" label="30286" lvalues="21337|20422|30290" enable="eq(-1,true)" default="1" subsetting="true"/>
-    <setting id="export_tv_nfo" type="enum" label="30287" lvalues="21337|20422|30290" enable="eq(-2,true)" default="1" subsetting="true"/>
-    <setting id="export_tv_nfo_disable_tvshownfo" type="bool" label="30288" enable="eq(-3,true)" default="false" subsetting="true"/>
+    <setting id="export_movie_nfo" type="enum" label="30286" lvalues="21337|20422|30288" enable="eq(-1,true)" default="1" subsetting="true"/>
+    <setting id="export_tvshow_nfo" type="enum" label="30287" lvalues="21337|20422|30288" enable="eq(-2,true)" default="1" subsetting="true"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>

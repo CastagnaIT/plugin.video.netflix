@@ -745,11 +745,11 @@ msgid "Disable subtitles if there are no forced subtitles streams (Works only if
 msgstr ""
 
 msgctxt "#30282"
-msgid "Export NFO files?"
+msgid "Export NFO files"
 msgstr ""
 
 msgctxt "#30283"
-msgid "Export NFO files may help to detect movies or episodes from series with specific cut"
+msgid "Do you want to export NFO files for the {}?"
 msgstr ""
 
 msgctxt "#30284"
@@ -769,25 +769,21 @@ msgid "For TV Show"
 msgstr ""
 
 msgctxt "#30288"
-msgid "Do not export tvshow.nfo, only episodes NFO"
+msgid "Ask"
 msgstr ""
 
 msgctxt "#30289"
-msgid "This will export NFO for each {}"
-msgstr ""
-
-msgctxt "#30290"
-msgid "Ask me"
-msgstr ""
-
-msgctxt "#30291"
 msgid "movie"
 msgstr ""
 
-msgctxt "#30292"
+msgctxt "#30290"
 msgid "TV show"
 msgstr ""
 
-msgctxt "#30293"
-msgid "Export NFO files for the item added to 'My List'?"
+msgctxt "#30291"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr ""
+
+msgctxt "#30292"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
 msgstr ""

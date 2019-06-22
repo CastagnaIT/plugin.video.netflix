@@ -8,6 +8,7 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library as library
+import resources.lib.kodi.nfo as nfo
 
 
 class LibraryActionExecutor(object):
@@ -21,24 +22,31 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def export(self, videoid):
         """Export an item to the Kodi library"""
-        library.execute_library_tasks(videoid, library.export_item,
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype)
+        library.execute_library_tasks(videoid,
+                                      library.export_item,
                                       common.get_local_string(30018),
-                                      export_nfo=self._export_nfo(videoid.mediatype))
+                                      nfo_settings=nfo_settings)
 
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
         if ui.ask_for_removal_confirmation():
-            library.execute_library_tasks(videoid, library.remove_item,
+            library.execute_library_tasks(videoid,
+                                          library.remove_item,
                                           common.get_local_string(30030))
             common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
-        library.execute_library_tasks(videoid, library.update_item,
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype)
+        library.execute_library_tasks(videoid,
+                                      library.update_item,
                                       common.get_local_string(30061),
-                                      export_nfo=self._export_nfo(videoid.mediatype))
+                                      nfo_settings=nfo_settings)
         common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
@@ -46,13 +54,14 @@ class LibraryActionExecutor(object):
         """Silently export an item to the Kodi library
         (without GUI feedback). This will ignore the setting for syncing my
         list and Kodi library and do no sync, if not explicitly asked to.
-        Will only ask for NFO export"""
+        Will only ask for NFO export based on user settings"""
         # pylint: disable=broad-except
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30291))
         library.execute_library_tasks_silently(
             videoid, library.export_item,
             self.params.get('sync_mylist', False),
-            export_nfo=self._export_nfo(videoid.mediatype,
-                                        common.get_local_string(30293)))
+            nfo_settings)
 
     @common.inject_video_id(path_offset=1)
     def remove_silent(self, videoid):
@@ -64,8 +73,8 @@ class LibraryActionExecutor(object):
             self.params.get('sync_mylist', False))
 
     # Not used for now
-    #@common.inject_video_id(path_offset=1)
-    #def update_silent(self, videoid):
+    # @common.inject_video_id(path_offset=1)
+    # def update_silent(self, videoid):
     #    """Silently update an item in the Kodi library
     #    (without GUI feedback). This will ignore the setting for syncing my
     #    list and Kodi library and do no sync, if not explicitly asked to."""
@@ -80,15 +89,16 @@ class LibraryActionExecutor(object):
                                         common.get_local_string(30123))
         if not do_it or not g.ADDON.getSettingBool('mylist_library_sync'):
             return
-
         common.debug('Performing full sync from My List to Kodi library')
         library.purge()
-        for videoid in api.video_list( # What list is used there?
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog()
+        for videoid in api.video_list(
                 api.list_id_for_type('queue')).videoids:
             library.execute_library_tasks(videoid, library.export_item,
                                           common.get_local_string(30018),
                                           sync_mylist=False,
-                                          export_nfo=self._export_nfo())
+                                          nfo_settings=nfo_settings)
 
     def purge(self, pathitems):
         """Delete all previously exported items from the Kodi library"""
@@ -103,28 +113,3 @@ class LibraryActionExecutor(object):
             library.execute_library_tasks(videoid, library.export_item,
                                           common.get_local_string(30018),
                                           sync_mylist=False)
-
-    def _export_nfo(self, mediatype=None, title=common.get_local_string(30282)):
-        if g.ADDON.getSettingBool('enable_nfo_export'):
-            # Default case, we want NFO, unless we ask.
-            # If set to 'Never', it will be reset to false in the task compilation anyway
-            # to allow asking only once in case of massive export (i.e. first library sync)
-            export_nfo = True
-            if ((mediatype == common.VideoId.MOVIE and g.ADDON.getSettingInt('export_movie_nfo') == 2) or
-                (mediatype in common.VideoId.TV_TYPES and g.ADDON.getSettingInt('export_tv_nfo') == 2)):
-                export_nfo = ui.ask_for_confirmation(title, common.get_local_string(30283))
-            elif mediatype == None: # Massive export
-                typelist = []
-                if g.ADDON.getSettingInt('export_movie_nfo') == 2:
-                    typelist.append(common.get_local_string(30291))
-                if g.ADDON.getSettingInt('export_tv_nfo') == 2:
-                    typelist.append(common.get_local_string(30292))
-                if typelist is not None:
-                    message = ' {} '.format(common.get_local_string(1397)).join(typelist)
-                    message = common.get_local_string(30289).format(message)
-                    export_nfo = ui.ask_for_confirmation(title, message)
-                else:
-                    export_nfo = False
-        else:
-            export_nfo = False
-        return export_nfo
