@@ -40,7 +40,7 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            ui.show_error_info(common.get_local_string(30028), exc.message,
+            ui.show_error_info(common.get_local_string(30028), unicode(exc.message),
                                unknown_error=not exc.message,
                                netflix_error=isinstance(exc, MSLError))
             raise
