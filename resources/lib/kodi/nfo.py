@@ -13,6 +13,7 @@ class NFOSettings:
         self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
         self._export_movie_id = g.ADDON.getSettingInt('export_movie_nfo')
         self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
+        self._export_full_tvshow = g.ADDON.getSettingBool('export_full_tvshow_nfo')
 
     @property
     def export_enabled(self):
@@ -21,13 +22,22 @@ class NFOSettings:
 
     @property
     def export_movie_enabled(self):
-        """Return True if Movie NFO Export is enabled"""
+        """Return True if Movie NFO Export is enabled (also depends on the export dialog)"""
         return self._enabled and self._export_movie_id != 0
 
     @property
     def export_tvshow_enabled(self):
-        """Return True if TvShow NFO Export is enabled"""
+        """Return True if TvShow NFO Export is enabled (also depends on the export dialog)"""
         return self._enabled and self._export_tvshow_id != 0
+
+    @property
+    def export_full_tvshow(self):
+        """Return True if full NFO must be exported (also depends on the export dialog)
+         i.e. create tvshow.nfo
+         The file tvshow.nfo should be exported only when 'Local Information' scraper is used,
+         if it is exported while using other scrapers (like TMDB),
+         they will not get the full information for the tv show from the internet database"""
+        return self._enabled and self._export_full_tvshow and self.export_tvshow_enabled
 
     @property
     def movie_prompt_dialog(self):

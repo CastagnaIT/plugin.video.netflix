@@ -787,3 +787,7 @@ msgstr "Vuoi esportare i file NFO per {} aggiunti alla 'Mia lista'?"
 msgctxt "#30292"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
 msgstr "\r\nQuesti file sono utilizzati dai provider informazioni scrapers per integrare info dei film e serie tv, utili per episodi bonus o director's cut"
+
+msgctxt "#30293"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Includi tutte le informazioni nei file NFO (usare solo con scraper 'Local Information')"

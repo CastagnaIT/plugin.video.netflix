@@ -217,7 +217,7 @@ def _create_tv_tasks(videoid, metadata, nfo_settings):
     else:
         tasks = [_create_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
 
-    if nfo_settings and nfo_settings.export_tvshow_enabled:
+    if nfo_settings and nfo_settings.export_full_tvshow:
         # Create tvshow.nfo file
         tasks.append(_create_item_task('tvshow.nfo', FOLDER_TV, videoid,
                                        metadata[0]['title'],

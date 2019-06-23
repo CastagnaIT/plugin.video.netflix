@@ -787,3 +787,7 @@ msgstr ""
 msgctxt "#30292"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
 msgstr ""
+
+msgctxt "#30293"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr ""
