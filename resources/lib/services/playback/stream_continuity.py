@@ -8,6 +8,8 @@ from __future__ import unicode_literals
 
 import xbmc
 
+import json
+
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -37,7 +39,7 @@ class StreamContinuityManager(PlaybackActionManager):
     """
     def __init__(self):
         super(StreamContinuityManager, self).__init__()
-        self.storage = common.PersistentStorage(__name__)
+        self.storage = common.PersistentStorage(__name__, no_save_on_destroy=True)
         self.current_videoid = None
         self.current_streams = {}
         self.player = xbmc.Player()
@@ -50,7 +52,6 @@ class StreamContinuityManager(PlaybackActionManager):
         return self.storage.get(self.current_videoid, {})
 
     def _initialize(self, data):
-        self.resume = data.get('resume', {})
         if 'tvshowid' in data['videoid']:
             self.did_restore = False
             self.current_videoid = data['videoid']['tvshowid']
@@ -61,17 +62,22 @@ class StreamContinuityManager(PlaybackActionManager):
             self.enabled = False
 
     def _on_playback_started(self, player_state):
-        xbmc.sleep(500)
+        xbmc.sleep(500)  # Wait for slower systems
+        subtitle_streams_restored = False
         for stype in STREAMS:
             self._set_current_stream(stype, player_state)
-            self._restore_stream(stype)
+            is_restored = self._restore_stream(stype)
+            if stype != 'audio':
+                subtitle_streams_restored = is_restored
+        if not subtitle_streams_restored and g.ADDON.getSettingBool('forced_subtitle_workaround'):
+            # Use the workaround only when the user did not change the settings
+            _show_only_forced_subtitle()
         self.did_restore = True
 
     def _on_tick(self, player_state):
         if not self.did_restore:
             common.debug('Did not restore streams yet, ignoring tick')
             return
-
         for stype in STREAMS:
             current_stream = self.current_streams[stype]
             player_stream = player_state.get(STREAMS[stype]['current'])
@@ -98,6 +104,8 @@ class StreamContinuityManager(PlaybackActionManager):
                                      else stored_stream))
             self.current_streams[stype] = stored_stream
             common.debug('Restored {} to {}'.format(stype, stored_stream))
+            return True
+        return False
 
     def _save_changed_stream(self, stype, stream):
         common.debug('Save changed stream {} for {}'.format(stream, stype))
@@ -109,3 +117,17 @@ class StreamContinuityManager(PlaybackActionManager):
     def __repr__(self):
         return ('enabled={}, current_videoid={}'
                 .format(self.enabled, self.current_videoid))
+
+
+def _show_only_forced_subtitle():
+    # When we have "forced only" subtitle setting in Kodi Player, Kodi use this behavior:
+    # 1) try to select forced subtitle that matches audio language
+    # 2) when missing, try to select the first "regular" subtitle that matches audio language
+    # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
+    # There is no other solution than to disable the subtitles manually.
+    manifest_data = json.loads(common.load_file('manifest.json'))
+    common.fix_locale_languages(manifest_data['timedtexttracks'])
+    audio_language = common.get_kodi_audio_language()
+    if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
+               for text_track in manifest_data['timedtexttracks']):
+        xbmc.Player().showSubtitles(False)
