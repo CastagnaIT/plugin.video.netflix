@@ -8,6 +8,7 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library as library
+import resources.lib.kodi.nfo as nfo
 
 
 class LibraryActionExecutor(object):
@@ -21,33 +22,46 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def export(self, videoid):
         """Export an item to the Kodi library"""
-        library.execute_library_tasks(videoid, library.export_item,
-                                      common.get_local_string(30018))
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype)
+        library.execute_library_tasks(videoid,
+                                      library.export_item,
+                                      common.get_local_string(30018),
+                                      nfo_settings=nfo_settings)
 
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
         if ui.ask_for_removal_confirmation():
-            library.execute_library_tasks(videoid, library.remove_item,
+            library.execute_library_tasks(videoid,
+                                          library.remove_item,
                                           common.get_local_string(30030))
             common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
-        library.execute_library_tasks(videoid, library.update_item,
-                                      common.get_local_string(30061))
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype)
+        library.execute_library_tasks(videoid,
+                                      library.update_item,
+                                      common.get_local_string(30061),
+                                      nfo_settings=nfo_settings)
         common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def export_silent(self, videoid):
         """Silently export an item to the Kodi library
         (without GUI feedback). This will ignore the setting for syncing my
-        list and Kodi library and do no sync, if not explicitly asked to."""
+        list and Kodi library and do no sync, if not explicitly asked to.
+        Will only ask for NFO export based on user settings"""
         # pylint: disable=broad-except
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30291))
         library.execute_library_tasks_silently(
             videoid, library.export_item,
-            self.params.get('sync_mylist', False))
+            self.params.get('sync_mylist', False),
+            nfo_settings)
 
     @common.inject_video_id(path_offset=1)
     def remove_silent(self, videoid):
@@ -58,14 +72,15 @@ class LibraryActionExecutor(object):
             videoid, library.remove_item,
             self.params.get('sync_mylist', False))
 
-    @common.inject_video_id(path_offset=1)
-    def update_silent(self, videoid):
-        """Silently update an item in the Kodi library
-        (without GUI feedback). This will ignore the setting for syncing my
-        list and Kodi library and do no sync, if not explicitly asked to."""
-        library.execute_library_tasks_silently(
-            videoid, library.update_item,
-            self.params.get('sync_mylist', False))
+    # Not used for now
+    # @common.inject_video_id(path_offset=1)
+    # def update_silent(self, videoid):
+    #    """Silently update an item in the Kodi library
+    #    (without GUI feedback). This will ignore the setting for syncing my
+    #    list and Kodi library and do no sync, if not explicitly asked to."""
+    #    library.execute_library_tasks_silently(
+    #        videoid, library.update_item,
+    #        self.params.get('sync_mylist', False))
 
     def initial_mylist_sync(self, pathitems):
         """Perform an initial sync of My List and the Kodi library"""
@@ -74,14 +89,16 @@ class LibraryActionExecutor(object):
                                         common.get_local_string(30123))
         if not do_it or not g.ADDON.getSettingBool('mylist_library_sync'):
             return
-
         common.debug('Performing full sync from My List to Kodi library')
         library.purge()
+        nfo_settings = nfo.NFOSettings()
+        nfo_settings.show_export_dialog()
         for videoid in api.video_list(
                 api.list_id_for_type('queue')).videoids:
             library.execute_library_tasks(videoid, library.export_item,
                                           common.get_local_string(30018),
-                                          sync_mylist=False)
+                                          sync_mylist=False,
+                                          nfo_settings=nfo_settings)
 
     def purge(self, pathitems):
         """Delete all previously exported items from the Kodi library"""

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="30014">
+  <category label="30014"><!--Account-->
     <setting id="email" type="text" visible="false" default=""/>
     <setting id="password" type="text" visible="false" default=""/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
@@ -13,7 +13,7 @@
     <setting type="sep"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
   </category>
-  <category label="30025">
+  <category label="30025"><!--Library-->
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
     <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
@@ -22,15 +22,20 @@
     <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
     <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting id="invalidate_cache_on_mylist_modify" type="bool" label="No longer in use" default="true" visible="false"/>
-    <setting label="30065" type="lsep"/>
+    <setting label="30065" type="lsep"/><!--Auto-Update-->
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
     <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
     <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
     <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
     <setting id="update_running" type="text" visible="false" default="false"/>
+    <setting label="30284" type="lsep"/><!--NFO Files-->
+    <setting id="enable_nfo_export" type="bool" label="30285" default="false"/>
+    <setting id="export_movie_nfo" type="enum" label="30286" lvalues="21337|20422|30288" enable="eq(-1,true)" default="1" subsetting="true"/>
+    <setting id="export_tvshow_nfo" type="enum" label="30287" lvalues="21337|20422|30288" enable="eq(-2,true)" default="1" subsetting="true"/>
+    <setting id="export_full_tvshow_nfo" type="bool" label="30293" enable="eq(-3,true)" default="false" subsetting="true"/>
   </category>
-  <category label="30166">
+  <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
     <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="false" subsetting="true" default="0"/> <!-- is currently (05-05-2019) no longer supported by the netflix server-->
     <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
@@ -59,7 +64,7 @@
     <setting id="show_menu_search" type="bool" label="30011" default="true"/>
     <setting id="show_menu_exported" type="bool" label="30048" default="true"/>
   </category>
-  <category label="30037">
+  <category label="30037"><!--Views-->
     <setting id="customview" type="bool" label="30038" default="false"/>
     <setting id="viewmodeprofiles" type="select" label="30044" lvalues="30162|30142" default="0" enable="eq(-1,true)"/>
     <setting id="viewmodeprofilesid" type="number" label="30143" visible="eq(-1,1) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>
@@ -82,7 +87,7 @@
     <setting id="viewmodeexported" type="select" label="30161" lvalues="30162|30142" default="0" enable="eq(-19,true)"/>
     <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,1) + eq(-20,true)" enable="eq(-20,true)" subsetting="true"/>
   </category>
-  <category label="30078">
+  <category label="30078"><!--Playback-->
     <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
     <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
@@ -94,7 +99,7 @@
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
   </category>
-  <category label="30023">
+  <category label="30023"><!--Expert-->
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>

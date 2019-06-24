@@ -1,0 +1,160 @@
+# -*- coding: utf-8 -*-
+"""Functions for Kodi library NFO creation"""
+
+from resources.lib.globals import g
+import resources.lib.common as common
+import resources.lib.kodi.ui as ui
+
+import xml.etree.ElementTree as ET
+
+
+class NFOSettings:
+    def __init__(self):
+        self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
+        self._export_movie_id = g.ADDON.getSettingInt('export_movie_nfo')
+        self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
+        self._export_full_tvshow = g.ADDON.getSettingBool('export_full_tvshow_nfo')
+
+    @property
+    def export_enabled(self):
+        """Return True if NFO Export is enabled"""
+        return self._enabled
+
+    @property
+    def export_movie_enabled(self):
+        """Return True if Movie NFO Export is enabled (also depends on the export dialog)"""
+        return self._enabled and self._export_movie_id != 0
+
+    @property
+    def export_tvshow_enabled(self):
+        """Return True if TvShow NFO Export is enabled (also depends on the export dialog)"""
+        return self._enabled and self._export_tvshow_id != 0
+
+    @property
+    def export_full_tvshow(self):
+        """Return True if full NFO must be exported (also depends on the export dialog)
+         i.e. create tvshow.nfo
+         The file tvshow.nfo should be exported only when 'Local Information' scraper is used,
+         if it is exported while using other scrapers (like TMDB),
+         they will not get the full information for the tv show from the internet database"""
+        return self._enabled and self._export_full_tvshow and self.export_tvshow_enabled
+
+    @property
+    def movie_prompt_dialog(self):
+        """Ask to user when export Movie NFO"""
+        return self._enabled and self._export_movie_id == 2
+
+    @property
+    def tvshow_prompt_dialog(self):
+        """Ask to user when export TvShow NFO"""
+        return self._enabled and self._export_tvshow_id == 2
+
+    def show_export_dialog(self, mediatype=None, dialog_message=common.get_local_string(30283)):
+        """Ask the user if he wants to export NFO for movies and/or tvshows, this override the default settings"""
+        if not self.export_enabled or (not self.movie_prompt_dialog and not self.tvshow_prompt_dialog):
+            return
+        ask_message_typelist = []
+        if mediatype == common.VideoId.MOVIE and self.movie_prompt_dialog:
+            ask_message_typelist.append(common.get_local_string(30289))
+        if mediatype in common.VideoId.TV_TYPES and self.tvshow_prompt_dialog:
+            ask_message_typelist.append(common.get_local_string(30290))
+        if not mediatype:
+            # If 'None' a massive export has been requested (i.e. first library sync, manual sync, my list auto-sync...)
+            if self.movie_prompt_dialog:
+                ask_message_typelist.append(common.get_local_string(30289))
+            if self.tvshow_prompt_dialog:
+                ask_message_typelist.append(common.get_local_string(30290))
+        if ask_message_typelist:
+            message = ' {} '.format(common.get_local_string(1397)).join(ask_message_typelist)
+            message = dialog_message.format(message) + common.get_local_string(30292)
+            user_choice = ui.ask_for_confirmation(common.get_local_string(30282), message)
+            if len(ask_message_typelist) == 2 and not user_choice:
+                self._export_movie_id = 0
+                self._export_tvshow_id = 0
+            elif common.get_local_string(30289) in ask_message_typelist and not user_choice:
+                self._export_movie_id = 0
+            elif common.get_local_string(30290) in ask_message_typelist and not user_choice:
+                self._export_tvshow_id = 0
+
+
+def create_episode_nfo(episode, season, show):
+    """Build NFO file for episode"""
+    tags = {
+        'title': episode.get('title'),
+        'showtitle': show.get('title'),
+        'season': season.get('seq'),
+        'episode': episode.get('seq'),
+        'plot': episode.get('synopsis'),
+        'runtime': episode.get('runtime', 0)/60,
+        'year': season.get('year'),
+        'id': episode.get('id')
+        }
+
+    root = _build_root_node('episodedetails', tags)
+    _add_episode_thumb(root, episode)
+    return root
+
+
+def create_show_nfo(show):
+    """Build NFO file for TV Show"""
+    tags = {
+        'title': show['title'],
+        'showtitle': show['title'],
+        'plot': show.get('synopsis'),
+        'id': show['id'],
+        'mpaa': show.get('rating')
+        }
+    root = _build_root_node('tvshow', tags)
+    _add_poster(root, show)
+    _add_fanart(root, show)
+    return root
+
+
+def create_movie_nfo(movie):
+    tags = {
+        'title': movie.get('title'),
+        'plot': movie.get('synopsis'),
+        'id': movie.get('id'),
+        'mpaa': movie.get('rating'),
+        'year': movie.get('year'),
+        'runtime': movie.get('runtime', 0)/60,
+        }
+    root = _build_root_node('movie', tags)
+    _add_poster(root, movie)
+    _add_fanart(root, movie)
+    common.debug(root)
+    return root
+
+
+def _add_episode_thumb(root, episode):
+    if episode.get('thumbs') and len(episode['thumbs']) > 0:
+        for thumb in episode['thumbs']:
+            url = thumb['url']
+            thumbnail = ET.SubElement(root, 'thumb')
+            thumbnail.text = url
+
+
+def _add_poster(root, data):
+    if data.get('boxart') and len(data['boxart']) > 0:
+        for boxart in data['boxart']:
+            url = boxart['url']
+            poster = ET.SubElement(root, 'thumb', {'aspect': 'poster'})
+            poster.text = url
+
+
+def _add_fanart(root, data):
+    if data.get('storyart') and len(data['storyart']) > 0:
+        for storyart in data['storyart']:
+            url = storyart['url']
+            fanart = ET.SubElement(root, 'fanart')
+            thumb = ET.SubElement(fanart, 'thumb')
+            thumb.text = url
+
+
+def _build_root_node(root_name, tags):
+    root = ET.Element(root_name)
+    for (k, v) in tags.items():
+        if v:
+            tag = ET.SubElement(root, k)
+            tag.text = unicode(v)
+    return root
