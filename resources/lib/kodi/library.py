@@ -275,13 +275,13 @@ def export_item(item_task, library_home):
         library_home, item_task['section'], item_task['destination']))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
-        export_filename = xbmc.makeLegalFilename(os.path.join(
-            destination_folder.decode('utf-8'), item_task['filename'] + '.strm'))
+        export_filename = xbmc.makeLegalFilename('/'.join(
+            [destination_folder.decode('utf-8'), item_task['filename'] + '.strm']))
         _add_to_library(item_task['videoid'], export_filename)
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
-        nfo_filename = xbmc.makeLegalFilename(os.path.join(
-            destination_folder.decode('utf-8'), item_task['filename'] + '.nfo'))
+        nfo_filename = xbmc.makeLegalFilename('/'.join(
+            [destination_folder.decode('utf-8'), item_task['filename'] + '.nfo']))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}'.format(item_task['title']))
 
