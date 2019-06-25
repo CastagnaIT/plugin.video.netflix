@@ -29,11 +29,11 @@
     <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
     <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
     <setting id="update_running" type="text" visible="false" default="false"/>
-    <setting label="30284" type="lsep"/><!--NFO Files-->
-    <setting id="enable_nfo_export" type="bool" label="30285" default="false"/>
-    <setting id="export_movie_nfo" type="enum" label="30286" lvalues="21337|20422|30288" enable="eq(-1,true)" default="1" subsetting="true"/>
-    <setting id="export_tvshow_nfo" type="enum" label="30287" lvalues="21337|20422|30288" enable="eq(-2,true)" default="1" subsetting="true"/>
-    <setting id="export_full_tvshow_nfo" type="bool" label="30293" enable="eq(-3,true)" default="false" subsetting="true"/>
+    <setting label="30184" type="lsep"/><!--NFO Files-->
+    <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
+    <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" enable="eq(-1,true)" default="1" subsetting="true"/>
+    <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" enable="eq(-2,true)" default="1" subsetting="true"/>
+    <setting id="export_full_tvshow_nfo" type="bool" label="30193" enable="eq(-3,true)" default="false" subsetting="true"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>

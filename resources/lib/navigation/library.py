@@ -57,7 +57,7 @@ class LibraryActionExecutor(object):
         Will only ask for NFO export based on user settings"""
         # pylint: disable=broad-except
         nfo_settings = nfo.NFOSettings()
-        nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30291))
+        nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
         library.execute_library_tasks_silently(
             videoid, library.export_item,
             self.params.get('sync_mylist', False),
