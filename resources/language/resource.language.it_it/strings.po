@@ -744,50 +744,50 @@ msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
 msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli \"Solo forzati\")"
 
-msgctxt "#30282"
+msgctxt "#30182"
 msgid "Export NFO files"
 msgstr "Esportazione file NFO"
 
-msgctxt "#30283"
+msgctxt "#30183"
 msgid "Do you want to export NFO files for the {}?"
 msgstr "Vuoi esportare i file NFO per {}?"
 
-msgctxt "#30284"
+msgctxt "#30184"
 msgid "NFO Files"
 msgstr "File NFO"
 
-msgctxt "#30285"
+msgctxt "#30185"
 msgid "Enable NFO files export"
 msgstr "Abilita l'esportazione dei file NFO"
 
-msgctxt "#30286"
+msgctxt "#30186"
 msgid "For Movies"
 msgstr "Per i film"
 
-msgctxt "#30287"
+msgctxt "#30187"
 msgid "For TV Show"
 msgstr "Per le Serie TV"
 
-msgctxt "#30288"
+msgctxt "#30188"
 msgid "Ask"
 msgstr "Chiedi"
 
-msgctxt "#30289"
+msgctxt "#30189"
 msgid "movie"
 msgstr "film"
 
-msgctxt "#30290"
+msgctxt "#30190"
 msgid "TV show"
 msgstr "serie tv"
 
-msgctxt "#30291"
+msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
 msgstr "Vuoi esportare i file NFO per {} aggiunti alla 'Mia lista'?"
 
-msgctxt "#30292"
+msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
 msgstr "\r\nQuesti file sono utilizzati dai provider informazioni scrapers per integrare info dei film e serie tv, utili per episodi bonus o director's cut"
 
-msgctxt "#30293"
+msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
 msgstr "Includi tutte le informazioni nei file NFO (usare solo con scraper 'Local Information')"

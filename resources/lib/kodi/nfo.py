@@ -49,31 +49,31 @@ class NFOSettings:
         """Ask to user when export TvShow NFO"""
         return self._enabled and self._export_tvshow_id == 2
 
-    def show_export_dialog(self, mediatype=None, dialog_message=common.get_local_string(30283)):
+    def show_export_dialog(self, mediatype=None, dialog_message=common.get_local_string(30183)):
         """Ask the user if he wants to export NFO for movies and/or tvshows, this override the default settings"""
         if not self.export_enabled or (not self.movie_prompt_dialog and not self.tvshow_prompt_dialog):
             return
         ask_message_typelist = []
         if mediatype == common.VideoId.MOVIE and self.movie_prompt_dialog:
-            ask_message_typelist.append(common.get_local_string(30289))
+            ask_message_typelist.append(common.get_local_string(30189))
         if mediatype in common.VideoId.TV_TYPES and self.tvshow_prompt_dialog:
-            ask_message_typelist.append(common.get_local_string(30290))
+            ask_message_typelist.append(common.get_local_string(30190))
         if not mediatype:
             # If 'None' a massive export has been requested (i.e. first library sync, manual sync, my list auto-sync...)
             if self.movie_prompt_dialog:
-                ask_message_typelist.append(common.get_local_string(30289))
+                ask_message_typelist.append(common.get_local_string(30189))
             if self.tvshow_prompt_dialog:
-                ask_message_typelist.append(common.get_local_string(30290))
+                ask_message_typelist.append(common.get_local_string(30190))
         if ask_message_typelist:
             message = ' {} '.format(common.get_local_string(1397)).join(ask_message_typelist)
-            message = dialog_message.format(message) + common.get_local_string(30292)
-            user_choice = ui.ask_for_confirmation(common.get_local_string(30282), message)
+            message = dialog_message.format(message) + common.get_local_string(30192)
+            user_choice = ui.ask_for_confirmation(common.get_local_string(30182), message)
             if len(ask_message_typelist) == 2 and not user_choice:
                 self._export_movie_id = 0
                 self._export_tvshow_id = 0
-            elif common.get_local_string(30289) in ask_message_typelist and not user_choice:
+            elif common.get_local_string(30189) in ask_message_typelist and not user_choice:
                 self._export_movie_id = 0
-            elif common.get_local_string(30290) in ask_message_typelist and not user_choice:
+            elif common.get_local_string(30190) in ask_message_typelist and not user_choice:
                 self._export_tvshow_id = 0
 
 
