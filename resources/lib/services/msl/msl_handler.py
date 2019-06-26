@@ -159,7 +159,7 @@ class MSLHandler(object):
             'url': '/manifest',
             'id': id,
             'esn': esn,
-            'languages' : [g.PERSISTENT_STORAGE['locale_id']],
+            'languages': [g.PERSISTENT_STORAGE['locale_id']],
             'uiVersion': 'shakti-v5bca5cd3',
             'clientVersion': '6.0013.315.051',
             'params': {
@@ -241,9 +241,9 @@ class MSLHandler(object):
     @common.time_execution(immediate=True)
     def _chunked_request(self, endpoint, request_data, esn):
         """Do a POST request and process the chunked response"""
-        return self._process_chunked_response(
-            self._post(endpoint,
-                       self.request_builder.msl_request(request_data, esn)))
+        chunked_response = self._process_chunked_response(
+            self._post(endpoint, self.request_builder.msl_request(request_data, esn)))
+        return chunked_response['result']
 
     @common.time_execution(immediate=True)
     def _post(self, endpoint, request_data):
@@ -284,14 +284,10 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
-    common.debug('decoded_response: ' + str(decoded_response))
-    if 'errordata' in decoded_response:
+    if ('error' or 'errordata') in decoded_response:
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
-    if isinstance(decoded_response, list):
-        if decoded_response[0].get('error'):
-            raise MSLError(_get_error_details(decoded_response[0]))
     return decoded_response
 
 
@@ -300,12 +296,9 @@ def _get_error_details(decoded_response):
         return json.loads(
             base64.standard_b64decode(
                 decoded_response['errordata']))['errormsg']
-    elif decoded_response.get('result', {}).get('errorDisplayMessage'):
-        return decoded_response['result']['errorDisplayMessage']
-    elif decoded_response.get('result', {}).get('errorDetails'):
-        return decoded_response['result']['errorDetails']
-    elif decoded_response.get('error', {}).get('errorDisplayMessage'):
-        return decoded_response['error']['errorDisplayMessage']
+    if 'error' in decoded_response:
+        if decoded_response['error'].get('errorDisplayMessage'):
+            return decoded_response['error']['errorDisplayMessage']
     return 'Unhandled error check log.'
 
 
@@ -346,16 +339,7 @@ def _decrypt_chunks(chunks, crypto):
         else:
             decrypted_payload += data
 
-    decrypted_payload = json.loads(decrypted_payload)
-    if 'result' in decrypted_payload:
-        return decrypted_payload['result']
-
-    decrypted_payload = decrypted_payload[1]['payload']
-    if 'json' in decrypted_payload:
-        return decrypted_payload['json']['result']
-    else:
-        decrypted_payload = base64.standard_b64decode(decrypted_payload['data'])
-        return json.JSONDecoder().decode(decrypted_payload)
+    return json.loads(decrypted_payload)
 
 
 def has_1080p(manifest):
