@@ -12,7 +12,6 @@ import json
 
 from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.kodi.ui as ui
 
 from .action_manager import PlaybackActionManager
 
@@ -37,6 +36,7 @@ class StreamContinuityManager(PlaybackActionManager):
     Detects changes in audio / subtitle streams during playback, saves them
     for the currently playing show and restores them on subsequent episodes.
     """
+
     def __init__(self):
         super(StreamContinuityManager, self).__init__()
         self.storage = common.PersistentStorage(__name__, no_save_on_destroy=True)
@@ -63,14 +63,12 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _on_playback_started(self, player_state):
         xbmc.sleep(500)  # Wait for slower systems
-        subtitle_streams_restored = False
         for stype in STREAMS:
             self._set_current_stream(stype, player_state)
-            is_restored = self._restore_stream(stype)
-            if stype != 'audio':
-                subtitle_streams_restored = is_restored
-        if not subtitle_streams_restored and g.ADDON.getSettingBool('forced_subtitle_workaround'):
-            # Use the workaround only when the user did not change the settings
+            self._restore_stream(stype)
+        if (self.show_settings.get('subtitleenabled', None) is None
+                and g.ADDON.getSettingBool('forced_subtitle_workaround')):
+            # Use the workaround only when the user did not change the show subtitle setting
             _show_only_forced_subtitle()
         self.did_restore = True
 
@@ -104,8 +102,6 @@ class StreamContinuityManager(PlaybackActionManager):
                                      else stored_stream))
             self.current_streams[stype] = stored_stream
             common.debug('Restored {} to {}'.format(stype, stored_stream))
-            return True
-        return False
 
     def _save_changed_stream(self, stype, stream):
         common.debug('Save changed stream {} for {}'.format(stream, stype))
