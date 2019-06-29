@@ -39,8 +39,8 @@ clean-coverage:
 
 lint:
 		flake8 --filename=$(FLAKE_FILES)
-		pylint $(PYLINT_FILES) --ignore=test,UniversalAnalytics || exit 0		
-		pylint $(PYLINT_FILES) --ignore=test,UniversalAnalytics --output-format=html > $(LINT_REPORT_FILE)
+		pylint $(PYLINT_FILES) --ignore=test || exit 0
+		pylint $(PYLINT_FILES) --ignore=test --output-format=html > $(LINT_REPORT_FILE)
 		radon cc $(RADON_FILES)
 		dennis-cmd lint $(I18N_FILES)
 		rst-lint docs/index.rst --level=severe		

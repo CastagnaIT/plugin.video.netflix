@@ -19,7 +19,6 @@ ratings:
 exclude_paths:
   - "docs"
   - "resources/test/"
-  - "resources/lib/UniversalAnalytics/"
   - "resources/language/"
   - "resources/media/"
   - "resources/skins/"
