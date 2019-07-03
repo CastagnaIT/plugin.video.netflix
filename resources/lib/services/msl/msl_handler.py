@@ -284,7 +284,7 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
-    if ('error' or 'errordata') in decoded_response:
+    if any(key in decoded_response for key in ['error', 'errordata']):
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
