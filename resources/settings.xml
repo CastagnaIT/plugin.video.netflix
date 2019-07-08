@@ -31,9 +31,9 @@
     <setting id="update_running" type="text" visible="false" default="false"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
-    <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" enable="eq(-1,true)" default="1" subsetting="true"/>
-    <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" enable="eq(-2,true)" default="1" subsetting="true"/>
-    <setting id="export_full_tvshow_nfo" type="bool" label="30193" enable="eq(-3,true)" default="false" subsetting="true"/>
+    <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
+    <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" visible="eq(-2,true)" default="1" subsetting="true"/>
+    <setting id="export_full_tvshow_nfo" type="bool" label="30193" visible="eq(-3,true)" default="false" subsetting="true"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
@@ -103,8 +103,8 @@
     <setting label="30115" type="lsep"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
-    <setting id="enable_vp9_profiles" type="bool" label="30137" default="true"/>
-    <setting id="enable_hevc_profiles" type="bool" label="30060" default="false"/>
+    <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
+    <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
