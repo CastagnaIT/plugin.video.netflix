@@ -1,13 +1,13 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon Provider: libdev + jojo + asciidisco
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-06-11 20:10+0000\n"
+"PO-Revision-Date: 2019-07-08 22:15+0000\n"
 "Last-Translator: MediaBrasil\n"
 "Language-Team: Portuguese (Brazil)\n"
 "MIME-Version: 1.0\n"
@@ -565,8 +565,8 @@ msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr "Ativar desbloqueio 1080p (não recomendado para Android)"
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
-msgstr "Ativar perfis VP9 (Não utilize com HEVC, desabilite se causar artefatos)"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Ativar perfis VP9 (desabilite se causar artefatos)"
 
 msgctxt "#30138"
 msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -739,3 +739,55 @@ msgstr "Mostrar os trailers"
 msgctxt "#30180"
 msgid "No trailers available"
 msgstr "Trailers indisponíveis"
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Desativar legendas se não houver fluxos de legendas forçadas (Funciona somente se o Kodi Player estiver configurado para legendas \"Somente forçadas\")"
+
+msgctxt "#30182"
+msgid "Export NFO files"
+msgstr "Exportar arquivos NFO"
+
+msgctxt "#30183"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "Deseja exportar os arquivos NFO para este {}?"
+
+msgctxt "#30184"
+msgid "NFO Files"
+msgstr "Arquivos NFO"
+
+msgctxt "#30185"
+msgid "Enable NFO files export"
+msgstr "Ativar exportar arquivos NFO"
+
+msgctxt "#30186"
+msgid "For Movies"
+msgstr "Para filmes"
+
+msgctxt "#30187"
+msgid "For TV Show"
+msgstr "Para seriados"
+
+msgctxt "#30188"
+msgid "Ask"
+msgstr "Perguntar"
+
+msgctxt "#30189"
+msgid "movie"
+msgstr "filme"
+
+msgctxt "#30190"
+msgid "TV show"
+msgstr "seriado"
+
+msgctxt "#30191"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "Deseja exportar arquivos NFO para o {} adicionado em 'Minha Lista'?"
+
+msgctxt "#30192"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nEsses arquivos são usados ​​pelos raspadores de informações para integrar informações sobre filmes e programas de TV, úteis para episódios de bônus ou para cortes do diretor"
+
+msgctxt "#30193"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o raspador 'Local Information Only')"

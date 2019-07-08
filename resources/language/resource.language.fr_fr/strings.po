@@ -1,13 +1,13 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon Provider: libdev + jojo + asciidisco + CastagnaIT
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
-"PO-Revision-Date: 2019-06-02 16:30+0000\n"
+"PO-Revision-Date: 2019-07-08 22:15+0000\n"
 "Last-Translator: Smeulf <smeulf@hotmail.fr>\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
@@ -565,8 +565,8 @@ msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr "Activer le déblocage 1080p (non recommandé pour Android)"
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
-msgstr "Activer les profils VP9 (ne pas utiliser avec HEVC, à désactiver en cas d'artefacts)"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Activer les profils VP9 (à désactiver en cas d'artefacts)"
 
 msgctxt "#30138"
 msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -709,8 +709,8 @@ msgid "Popular on Netflix"
 msgstr "Les plus gros succès Netflix"
 
 msgctxt "#30173"
-msgid "NETFLIX ORIGINALS"
-msgstr "PROGRAMMES ORIGINAUX NETFLIX"
+msgid "Netflix Originals"
+msgstr "Programmes Originaux Netflix"
 
 msgctxt "#30174"
 msgid "Tv Show genres"

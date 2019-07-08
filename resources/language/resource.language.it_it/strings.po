@@ -1,13 +1,13 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon Provider: libdev + jojo + asciidisco + castagnait
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-06-24 16:15+0000\n"
+"PO-Revision-Date: 2019-07-08 22:15+0000\n"
 "Last-Translator: Stefano Gottardo <>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -565,8 +565,8 @@ msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr "Abilita sblocco 1080p (non raccomandato per Android)"
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (not use with HEVC, disable if it causes artifacts)"
-msgstr "Abilita profili VP9 (non usare con HEVC, disabilitare se causa artefatti)"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Abilita profili VP9 (disabilitare se causa artefatti)"
 
 msgctxt "#30138"
 msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -709,8 +709,8 @@ msgid "Popular on Netflix"
 msgstr "I più visti su Netflix"
 
 msgctxt "#30173"
-msgid "NETFLIX ORIGINALS"
-msgstr "ORIGINALI NETFLIX"
+msgid "Netflix Originals"
+msgstr "Originali Netflix"
 
 msgctxt "#30174"
 msgid "Tv Show genres"

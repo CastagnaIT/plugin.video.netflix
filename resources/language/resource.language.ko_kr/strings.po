@@ -1,13 +1,13 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
-# Addon Provider: libdev + jojo + asciidisco
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
-"Report-Msgid-Bugs-To: https://github.com/asciidisco/plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2019-07-08 22:15+0000\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
