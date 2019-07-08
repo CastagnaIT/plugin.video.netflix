@@ -63,3 +63,16 @@ def _branch(path, search_space, default):
     return {k: get_multiple_paths([k] + path[1:], search_space, default)
             for k in path[0]
             if k in search_space}
+
+
+def check_path_exists(path, search_space):
+    """Return True if the path exists in search_space"""
+    if not isinstance(search_space, dict):
+        return False
+    if path[0] in search_space:
+        if len(path) > 1:
+            current_value = search_space.get(path[0])
+            return check_path_exists(path[1:], current_value)
+        else:
+            return True
+    return False

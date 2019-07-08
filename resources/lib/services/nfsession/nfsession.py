@@ -289,20 +289,23 @@ class NetflixSession(object):
 
         for n_req in range(number_of_requests):
             path_response = self._path_request(_set_range_selector(paths, range_start, range_end))
-            if len(path_response) != 0:
-                common.merge_dicts(path_response, merged_response)
-                response_count = response_length(path_response, *length_args)
-                if response_count >= response_size:
-                    range_start += response_size
-                    if n_req == (number_of_requests - 1):
-                        merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                        common.debug('{} has other elements, added _perpetual_range_selector item'.format(response_type))
-                    else:
-                        range_end = range_start + request_size
+            if len(path_response) == 0:
+                break
+            if not common.check_path_exists(length_args, path_response):
+                # It may happen that the number of items to be received is equal to the number of the response_size
+                # so a second round will be performed, which will return an empty list
+                break
+            common.merge_dicts(path_response, merged_response)
+            response_count = response_length(path_response, *length_args)
+            if response_count >= response_size:
+                range_start += response_size
+                if n_req == (number_of_requests - 1):
+                    merged_response['_perpetual_range_selector'] = {'next_start': range_start}
+                    common.debug('{} has other elements, added _perpetual_range_selector item'.format(response_type))
                 else:
-                    # There are no other elements to request
-                    break
+                    range_end = range_start + request_size
             else:
+                # There are no other elements to request
                 break
 
         if perpetual_range_start > 0:
