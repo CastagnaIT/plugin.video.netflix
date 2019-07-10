@@ -323,8 +323,13 @@ def update_my_list(videoid, operation):
 
 
 @common.time_execution(immediate=False)
-def metadata(videoid):
+def metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
+
+    # Invalidate cache if we need to refresh the all metadata
+    if refresh:
+        g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid, True)
+
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
         return _metadata(videoid), None
     if videoid.mediatype == common.VideoId.SEASON:

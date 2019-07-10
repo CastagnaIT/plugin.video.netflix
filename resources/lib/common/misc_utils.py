@@ -217,11 +217,11 @@ def merge_dicts(dict_to_merge, merged_dict):
     return merged_dict
 
 
-def any_value_except(mapping, excluded_key):
+def any_value_except(mapping, excluded_keys):
     """Return a random value from a dict that is not associated with
     excluded_key. Raises StopIteration if there are no other keys than
     excluded_key"""
-    return next(mapping[key] for key in mapping if key != excluded_key)
+    return next(mapping[key] for key in mapping if key not in excluded_keys)
 
 
 def time_execution(immediate):
