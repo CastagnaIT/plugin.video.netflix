@@ -796,3 +796,14 @@ msgctxt "#30194"
 msgid "Limit video stream resolution to"
 msgstr ""
 
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr ""
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr ""
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr ""
