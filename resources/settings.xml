@@ -23,9 +23,6 @@
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
     <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
-    <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
-    <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
-    <setting id="update_running" type="text" visible="false" default="false"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>

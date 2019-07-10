@@ -9,10 +9,19 @@ import xml.etree.ElementTree as ET
 
 
 class NFOSettings:
-    def __init__(self):
-        self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
+    def __init__(self, enforce=None):
+        """
+        :param force: Used for export new episode, to force the nfo export status
+        """
+        if enforce is None:
+            self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
+            self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
+        else:
+            common.debug('Export NFO enforced to {}'.format(enforce))
+            self._enabled = enforce
+            self._export_tvshow_id = enforce
+
         self._export_movie_id = g.ADDON.getSettingInt('export_movie_nfo')
-        self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
         self._export_full_tvshow = g.ADDON.getSettingBool('export_full_tvshow_nfo')
 
     @property

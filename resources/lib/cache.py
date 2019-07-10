@@ -214,10 +214,10 @@ class Cache(object):
                 self.common.delete_folder_contents(
                     os.path.join(self.cache_path, bucket))
 
-    def invalidate_entry(self, bucket, identifier):
+    def invalidate_entry(self, bucket, identifier, on_disk=False):
         """Remove an item from a bucket"""
         try:
-            self._purge_entry(bucket, identifier)
+            self._purge_entry(bucket, identifier, on_disk)
             self.common.debug('Invalidated {} in {}'
                               .format(identifier, bucket))
         except KeyError:
@@ -337,12 +337,20 @@ class Cache(object):
             self._purge_entry(bucket, identifier)
             raise CacheMiss()
 
-    def _purge_entry(self, bucket, identifier):
+    def _purge_entry(self, bucket, identifier, on_disk=False):
+        # To ensure removing disk cache, it must be loaded first or it will trigger an exception
+        cache_filename = self._entry_filename(bucket, identifier)
+        cache_exixts = os.path.exists(cache_filename)
+
+        if on_disk and cache_exixts:
+            cache_entry = self._get_from_disk(bucket, identifier)
+            self.add(bucket, identifier, cache_entry['content'])
+
         # Remove from in-memory cache
         del self._get_bucket(bucket)[identifier]
         # Remove from disk cache if it exists
-        cache_filename = self._entry_filename(bucket, identifier)
-        if os.path.exists(cache_filename):
+
+        if cache_exixts:
             os.remove(cache_filename)
 
 

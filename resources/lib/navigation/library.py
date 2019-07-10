@@ -113,3 +113,20 @@ class LibraryActionExecutor(object):
             library.execute_library_tasks(videoid, library.export_item,
                                           common.get_local_string(30018),
                                           sync_mylist=False)
+
+    def exportallnewepisodes(self, pathitems):
+        library.export_all_new_episodes()
+
+    @common.inject_video_id(path_offset=1)
+    def exportnewepisodes(self, videoid):
+        library.export_new_episodes(videoid)
+
+    @common.inject_video_id(path_offset=1)
+    def excludefromautoupdate(self, videoid):
+        library.exclude_show_from_auto_update(videoid, True)
+        common.refresh_container()
+
+    @common.inject_video_id(path_offset=1)
+    def includeinautoupdate(self, videoid):
+        library.exclude_show_from_auto_update(videoid, False)
+        common.refresh_container()
