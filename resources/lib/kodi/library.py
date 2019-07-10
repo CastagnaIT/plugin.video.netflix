@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import os
 import re
-import sys
+import random
 
 from datetime import datetime, timedelta
 from functools import wraps
@@ -77,7 +77,7 @@ def _get_library_entry(videoid):
 
 def _any_child_library_entry(library_entry):
     """Return a random library entry that is a child of library_entry"""
-    return common.any_value_except(library_entry, 'videoid')
+    return common.any_value_except(library_entry, ['videoid', 'nfo_export', 'exclude_from_update'])
 
 
 @common.time_execution(immediate=False)
@@ -110,6 +110,22 @@ def list_contents():
 def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     return common.get_path_safe(videoid.to_list(), g.library()) is not None
+
+
+def show_excluded_from_auto_update(videoid):
+    """
+    Return true if the videoid is excluded from auto update
+    """
+    if videoid.value in g.library().keys():
+        return g.library()[videoid.value].get('exclude_from_update', False)
+    return False
+
+
+@common.time_execution(immediate=False)
+def exclude_show_from_auto_update(videoid, exclude):
+    if videoid.value in g.library().keys():
+        g.library()[videoid.value]['exclude_from_update'] = exclude
+        g.save_library()
 
 
 def update_kodi_library(library_operation):
@@ -208,22 +224,30 @@ def _create_tv_tasks(videoid, metadata, nfo_settings):
     if videoid.mediatype == common.VideoId.SHOW:
         tasks = _compile_show_tasks(videoid, metadata[0], nfo_settings)
     elif videoid.mediatype == common.VideoId.SEASON:
-       tasks = _compile_season_tasks(videoid,
-                                     metadata[0],
-                                     common.find(int(videoid.seasonid),
-                                                 'id',
-                                                 metadata[0]['seasons']),
-                                     nfo_settings)
+        tasks = _compile_season_tasks(videoid,
+                                      metadata[0],
+                                      common.find(int(videoid.seasonid),
+                                                  'id',
+                                                  metadata[0]['seasons']),
+                                      nfo_settings)
     else:
         tasks = [_create_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
 
     if nfo_settings and nfo_settings.export_full_tvshow:
         # Create tvshow.nfo file
-        tasks.append(_create_item_task('tvshow.nfo', FOLDER_TV, videoid,
-                                       metadata[0]['title'],
-                                       'tvshow',
-                                       nfo.create_show_nfo(metadata[0]),
-                                       False))
+        # In episode metadata, show data is at 3rd position,
+        # while it's at first position in show metadata.
+        # Best is to enumerate values to find the correct
+        key_index = -1
+        for i in range(len(metadata)):
+            if metadata[i] and metadata[i].get('type', None) == 'show':
+                key_index = i
+        if key_index > -1:
+            tasks.append(_create_item_task('tvshow.nfo', FOLDER_TV, videoid,
+                                           metadata[key_index]['title'],
+                                           'tvshow',
+                                           nfo.create_show_nfo(metadata[key_index]),
+                                           False))
     return tasks
 
 
@@ -267,6 +291,36 @@ def _create_item_task(title, section, videoid, destination, filename, nfo_data=N
     }
 
 
+def _create_new_episodes_tasks(videoid, metadata):
+    tasks = []
+    library_node = g.library()
+    for season in metadata[0]['seasons']:
+        # If the season is missing, build task for the season
+        if str(season['id']) not in library_node[str(videoid.value)]:
+            tasks += _compile_season_tasks(
+                videoid=videoid.derive_season(season['id']),
+                show=metadata[0],
+                season=season,
+                nfo_settings=nfo.NFOSettings(library_node[str(videoid.value)]
+                                             .get('nfo_export', False))
+            )
+            common.debug('Auto exporting season {}'.format(season['id']))
+        else:
+            # We enumerate episodes and try to find any missing one
+            for episode in season['episodes']:
+                if str(episode['id']) not in library_node[videoid.value][str(season['id'])]:
+                    tasks.append(_create_episode_task(
+                        videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
+                        episode=episode,
+                        season=season,
+                        show=metadata[0],
+                        nfo_settings=nfo.NFOSettings(library_node[str(videoid.value)]
+                                                     .get('nfo_export', False))
+                    ))
+                    common.debug('Auto exporting episode {}'.format(episode['id']))
+    return tasks
+
+
 @common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
@@ -277,7 +331,7 @@ def export_item(item_task, library_home):
     if item_task['is_strm']:
         export_filename = xbmc.makeLegalFilename('/'.join(
             [destination_folder.decode('utf-8'), item_task['filename'] + '.strm']))
-        _add_to_library(item_task['videoid'], export_filename)
+        _add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
         nfo_filename = xbmc.makeLegalFilename('/'.join(
@@ -313,15 +367,19 @@ def _write_nfo_file(nfo_data, nfo_filename):
         filehandle.close()
 
 
-def _add_to_library(videoid, export_filename):
+def _add_to_library(videoid, export_filename, nfo_export):
     """Add an exported file to the library"""
     library_node = g.library()
     for depth, id_item in enumerate(videoid.to_list()):
         if id_item not in library_node:
             # No entry yet at this level, create a new one and assign
             # it an appropriate videoid for later reference
+            parent_video_id = videoid.derive_parent(depth)
             library_node[id_item] = {
-                'videoid': videoid.derive_parent(depth)}
+                'videoid': parent_video_id}
+            if parent_video_id.mediatype == common.VideoId.SHOW:
+                library_node[id_item]['nfo_export'] = nfo_export
+                library_node[id_item]['exclude_from_update'] = False
         library_node = library_node[id_item]
     library_node['file'] = export_filename
     library_node['videoid'] = videoid
@@ -363,7 +421,15 @@ def remove_item(item_task, library_home=None):
         except Exception:
             common.debug('Cannot delete {}, file does not exist'
                          .format(exported_filename))
-        common.remove_path(id_path, g.library(), lambda e: e.keys() == ['videoid'])
+
+        # lambda e: (e.keys() == ['videoid']
+        # or all(k in e.keys() for k in ['videoid', 'nfo_export']))
+        # is not working and causes issues.
+        # Reverted.
+        common.remove_path(id_path, g.library(), lambda e: (
+            e.keys() == ['videoid']
+            or len(set(e.keys()) - {'videoid', 'nfo_export'}) == 0
+            or len(set(e.keys()) - {'videoid', 'nfo_export', 'exclude_from_update'}) == 0))
         g.save_library()
 
 
@@ -373,29 +439,70 @@ def update_item(item_task, library_home):
     export_item(item_task, library_home)
 
 
-def _update_running():
-    update = g.ADDON.getSetting('update_running') or None
+def _export_all_new_episodes_running():
+    update = g.PERSISTENT_STORAGE.get('export_all_new_episodes_running', False)
     if update:
-        starttime = common.strp(update, '%Y-%m-%d %H:%M')
-        if (starttime + timedelta(hours=6)) <= datetime.now():
-            g.ADDON.setSetting('update_running', 'false')
+        start_time = common.strp(g.PERSISTENT_STORAGE.get('export_all_new_episodes_start_time'),
+                                 '%Y-%m-%d %H:%M')
+        if datetime.now() >= start_time + timedelta(hours=6):
+            g.PERSISTENT_STORAGE['export_all_new_episodes_running'] = False
             common.warn('Canceling previous library update: duration >6 hours')
         else:
-            common.debug('DB Update already running')
+            common.debug('Export all new episodes is already running')
             return True
     return False
 
 
-def update_library():
+def export_all_new_episodes():
     """
-    Update the local Kodi library with new episodes of exported shows
+    Update the local Kodi library with new episodes of every exported shows
     """
-    if not _update_running():
-        common.info('Triggering library update')
-        xbmc.executebuiltin(
-            ('XBMC.RunPlugin(plugin://{}/?action=export-new-episodes'
-             '&inbackground=True)')
-            .format(g.ADDON_ID))
+    if not _export_all_new_episodes_running():
+        common.log('Starting to export new episodes for all tv shows')
+        g.PERSISTENT_STORAGE['export_all_new_episodes_running'] = True
+        g.PERSISTENT_STORAGE['export_all_new_episodes_start_time'] = datetime.now()\
+            .strftime('%Y-%m-%d %H:%M')
+
+        for library_item in g.library().values():
+            if library_item['videoid'].mediatype == common.VideoId.SHOW\
+                    and not library_item.get('exclude_from_update', False):
+                export_new_episodes(library_item['videoid'], False)
+            # add some randomness between show analysis to limit servers load and ban risks
+            xbmc.sleep(random.randint(1000, 5001))
+
+        g.PERSISTENT_STORAGE['export_all_new_episodes_running'] = False
+        common.debug('Notify service to update the library')
+        common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+
+
+def export_new_episodes(videoid, scan=True):
+    """
+    Export new episodes for a tv show by it's video id
+    :param videoid: The videoid of the tv show to process
+    :param scan: Whether or not to scan the library after exporting, useful for a single show
+    :return: None
+    """
+    if videoid.mediatype == common.VideoId.SHOW:
+        common.debug('Exporting new episodes for {}'.format(videoid))
+        # First let's fetch metadata of the show from api
+        metadata = api.metadata(videoid, True)
+        if metadata and 'seasons' in metadata[0]:
+            for task in _create_new_episodes_tasks(videoid, metadata):
+                try:
+                    export_item(task, library_path())
+                except Exception:
+                    import traceback
+                    common.error(traceback.format_exc())
+                    common.error('{} of {} failed'
+                                 .format(export_item.__name__, task['title']))
+
+            if scan:
+                common.debug('Notify service to update the library')
+                common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+        else:
+            common.debug('No tv show {} or no season returned from servers'.format(videoid))
+    else:
+        common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
 
 
 @update_kodi_library
