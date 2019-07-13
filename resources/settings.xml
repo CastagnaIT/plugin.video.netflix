@@ -100,7 +100,7 @@
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
   </category>
   <category label="30023"><!--Expert-->
-    <setting label="30115" type="lsep"/>
+    <setting id="StreamType" type="enum" label="30195" lvalues="30196|30197|30198|30199|30200|30201" default="0"/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
