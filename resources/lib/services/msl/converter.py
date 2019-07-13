@@ -73,13 +73,40 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
         tag='AdaptationSet',
         mimeType='video/mp4',
         contentType='video')
+    streamtype = g.ADDON.getSettingInt('StreamType')
+    if streamtype == 0:
+        res_limit = 639
+    elif streamtype == 1:
+        res_limit = 640
+    elif streamtype == 2:
+        res_limit = 720
+    elif streamtype == 3:
+        res_limit = 1080
+    elif streamtype == 4:
+        res_limit = 4096
+    else:
+        res_limit=1
+    security_count = 0
+    available_resolutions_fallback = []
     if protection:
         _add_protection_info(adaptation_set, **protection)
     for downloadable in video_track['streams']:
-        if downloadable['isDrm'] != drm_streams:
+        if downloadable['isDrm'] != drm_streams or int(downloadable['res_h']) > res_limit :
+            if int(downloadable['res_h']) not in available_resolutions_fallback:
+                available_resolutions_fallback.append(int(downloadable['res_h'])) 
             continue
+        security_count += 1
         _convert_video_downloadable(
-            downloadable, adaptation_set, init_length)
+            downloadable, adaptation_set, init_length)        
+    if security_count == 0 :
+        available_resolutions_fallback.sort()
+        res_limit = available_resolutions_fallback[0]
+        for downloadable in video_track['streams']:
+            if downloadable['isDrm'] != drm_streams or int(downloadable['res_h']) > res_limit :
+                continue
+            _convert_video_downloadable(
+                downloadable, adaptation_set, init_length)
+        
 
 
 def _add_protection_info(adaptation_set, pssh, keyid):
