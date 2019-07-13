@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """MSL video profiles"""
 from __future__ import unicode_literals
-
+import xbmc
 import xbmcaddon
 
 from resources.lib.globals import g
@@ -20,8 +20,8 @@ VP9_PROFILE2 = 'vp9-profile2-'
 
 BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 CENC_TL_LEVELS = ['L30-L31-', 'L31-L40-', 'L40-L41-', 'L50-L51-']
-VP9_PROFILE0_LEVELS = ['L21-', 'L30-', 'L31-', 'L40-']
-VP9_PROFILE2_LEVELS = ['L30-', 'L31-', 'L40-', 'L50-', 'L51-']
+VP9_PROFILE0_LEVELS = ['L10-', 'L11-', 'L20-', 'L21-', 'L30-', 'L31-', 'L40-','L41-',  'L50-', 'L51-','L52-','L60-','L61-', 'L62-']
+VP9_PROFILE2_LEVELS = ['L10-', 'L11-', 'L20-', 'L21-', 'L30-', 'L31-', 'L40-','L41-',  'L50-', 'L51-','L52-','L60-','L61-', 'L62-']
 
 
 def _profile_strings(base, tails):
@@ -38,10 +38,17 @@ PROFILES = {
         # Unknown
         'BIF240', 'BIF320'],
     'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash', 'ddplus-atmos-dash'],
-    'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
-             'playready-h264mpl40-dash',
-             'playready-h264hpl30-dash', 'playready-h264hpl31-dash',
-             'playready-h264hpl40-dash'],
+    'h264': [
+            'playready-h264bpl30-dash',
+            'playready-h264hpl30-dash',
+            'playready-h264mpl30-dash',
+            'playready-h264bpl31-dash',
+            'playready-h264mpl31-dash',
+            'playready-h264hpl31-dash',
+            'playready-h264hpl40-dash',
+            'playready-h264mpl40-dash',
+            'playready-h264bpl40-dash',            
+            ],
     'hevc':
         _profile_strings(base=HEVC,
                          tails=[(BASE_LEVELS, CENC),
@@ -70,7 +77,7 @@ PROFILES = {
 
 def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
-    return (PROFILES['base'] +
+    profile_list =  (PROFILES['base'] +
             PROFILES['h264'] +
             _subtitle_profiles() +
             _additional_profiles('vp9profile0', 'enable_vp9_profiles') +
@@ -83,6 +90,7 @@ def enabled_profiles():
             _additional_profiles('dolbyvision',
                                  ['enable_hevc_profiles',
                                   'enable_dolbyvision_profiles']))
+    return profile_list
 
 
 def _subtitle_profiles():
