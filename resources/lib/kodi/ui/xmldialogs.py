@@ -11,7 +11,7 @@ import xbmcgui
 ACTION_PLAYER_STOP = 13
 OS_MACHINE = machine()
 
-CMD_AUTOCLOSE_DIALOG = 'AlarmClock(closedialog,Dialog.Close(all,true),' \
+CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),' \
                        '{:02d}:{:02d},silent)'
 
 
@@ -25,7 +25,7 @@ def show_modal_dialog(dlg_class, xml, path, **kwargs):
     minutes = kwargs.get('minutes', 0)
     seconds = kwargs.get('seconds', 0)
     if minutes > 0 or seconds > 0:
-        xbmc.executebuiltin(CMD_AUTOCLOSE_DIALOG.format(minutes, seconds))
+        xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(minutes, seconds))
     dlg.doModal()
 
 
@@ -48,6 +48,10 @@ class Skip(xbmcgui.WindowXMLDialog):
     def onClick(self, controlID):
         if controlID == 6012:
             xbmc.Player().seekTime(self.skip_to)
+            self.close()
+
+    def onAction(self, action):
+        if action.getId() == 999: # action noop
             self.close()
 
 
