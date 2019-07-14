@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-07-08 22:15+0000\n"
+"PO-Revision-Date: 2019-07-12 05:05+0000\n"
 "Last-Translator: Stefano Gottardo <>\n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -790,4 +790,28 @@ msgstr ""
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr ""
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr ""
+
+msgctxt "#30195"
+msgid "Not limit"
+msgstr ""
+
+msgctxt "#30196"
+msgid "SD 480p"
+msgstr ""
+
+msgctxt "#30197"
+msgid "HD 720p"
+msgstr ""
+
+msgctxt "#30198"
+msgid "FULL HD 1080p"
+msgstr ""
+
+msgctxt "#30199"
+msgid "UHD 4k"
 msgstr ""

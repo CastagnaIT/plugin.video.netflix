@@ -75,11 +75,39 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
         contentType='video')
     if protection:
         _add_protection_info(adaptation_set, **protection)
+
+    limit_res = _limit_video_resolution(video_track['streams'], drm_streams)
+
     for downloadable in video_track['streams']:
         if downloadable['isDrm'] != drm_streams:
             continue
+        if limit_res:
+            if int(downloadable['res_h']) > limit_res:
+                continue
         _convert_video_downloadable(
             downloadable, adaptation_set, init_length)
+
+
+def _limit_video_resolution(video_tracks, drm_streams):
+    """Limit max video resolution to user choice"""
+    stream_limit = g.ADDON.getSettingInt('stream_limit')
+    if stream_limit == 0:    # Disabled
+        return None
+    if stream_limit == 1:    # Limit to SD
+        res_limit = 640
+    elif stream_limit == 2:  # Limit to HD
+        res_limit = 720
+    elif stream_limit == 3:  # Limit to FULL HD
+        res_limit = 1080
+    else:                    # Limit to 4k
+        res_limit = 4096
+    # At least an equal or lower resolution must exist otherwise disable the imposed limit
+    for downloadable in video_tracks:
+        if downloadable['isDrm'] != drm_streams:
+            continue
+        if int(downloadable['res_h']) <= res_limit:
+            return res_limit
+    return None
 
 
 def _add_protection_info(adaptation_set, pssh, keyid):
