@@ -316,7 +316,6 @@ class NetflixSession(object):
                 merged_response['_perpetual_range_selector'] = {'previous_start': previous_start}
         return merged_response
 
-
     @common.time_execution(immediate=True)
     def _path_request(self, paths):
         """Execute a path request with static paths"""
@@ -361,19 +360,22 @@ class NetflixSession(object):
         return self._post(component, **kwargs)
 
     def _get(self, component, **kwargs):
-        return self._request(
+        return self._request_call(
             method=self.session.get,
             component=component,
             **kwargs)
 
     def _post(self, component, **kwargs):
-        return self._request(
+        return self._request_call(
             method=self.session.post,
             component=component,
             **kwargs)
 
     @common.time_execution(immediate=True)
-    def _request(self, method, component, **kwargs):
+    def _request_call(self, method, component, **kwargs):
+        return self._request(method, component, None, **kwargs)
+
+    def _request(self, method, component, session_refreshed, **kwargs):
         url = (_api_url(component, self.session_data['api_data'])
                if URLS[component]['is_api_call']
                else _document_url(component))
@@ -392,6 +394,14 @@ class NetflixSession(object):
         common.debug('Request took {}s'.format(time.clock() - start))
         common.debug('Request returned statuscode {}'
                      .format(response.status_code))
+        if response.status_code == 404 and not session_refreshed:
+            # It may happen that netflix updates the build_identifier version
+            # when you are watching a video or browsing the menu,
+            # this causes the api address to change, and return 'url not found' error
+            # So let's try updating the session data (just once)
+            common.debug('Try refresh session data to update build_identifier version')
+            if self._refresh_session_data():
+                return self._request(method, component, True, **kwargs)
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
                 if URLS[component]['is_api_call']
