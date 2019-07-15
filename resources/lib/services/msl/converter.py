@@ -90,23 +90,24 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
 
 def _limit_video_resolution(video_tracks, drm_streams):
     """Limit max video resolution to user choice"""
-    stream_limit = g.ADDON.getSettingInt('stream_limit')
-    if stream_limit == 0:    # Disabled
-        return None
-    if stream_limit == 1:    # Limit to SD
-        res_limit = 640
-    elif stream_limit == 2:  # Limit to HD
-        res_limit = 720
-    elif stream_limit == 3:  # Limit to FULL HD
-        res_limit = 1080
-    else:                    # Limit to 4k
-        res_limit = 4096
-    # At least an equal or lower resolution must exist otherwise disable the imposed limit
-    for downloadable in video_tracks:
-        if downloadable['isDrm'] != drm_streams:
-            continue
-        if int(downloadable['res_h']) <= res_limit:
-            return res_limit
+    if g.ADDON.getSettingBool('enable_resolution_limit'):
+        max_resolution = g.ADDON.getSettingString('max_resolution')
+        if max_resolution == 'SD 480p':
+            res_limit = 480
+        elif max_resolution == 'SD 576p':
+            res_limit = 576
+        elif max_resolution == 'HD 720p':
+            res_limit = 720
+        elif max_resolution == 'Full HD 1080p':
+            res_limit = 1080
+        elif max_resolution == 'UHD 4K':
+            res_limit = 4096
+        # At least an equal or lower resolution must exist otherwise disable the imposed limit
+        for downloadable in video_tracks:
+            if downloadable['isDrm'] != drm_streams:
+                continue
+            if int(downloadable['res_h']) <= res_limit:
+                return res_limit
     return None
 
 

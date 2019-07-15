@@ -793,25 +793,9 @@ msgid "Include all information in NFO files (use only with 'Local Information' s
 msgstr ""
 
 msgctxt "#30194"
-msgid "Limit video stream resolution to"
+msgid "Enable video stream resolution limit"
 msgstr ""
 
 msgctxt "#30195"
-msgid "Not limit"
-msgstr ""
-
-msgctxt "#30196"
-msgid "SD 480p"
-msgstr ""
-
-msgctxt "#30197"
-msgid "HD 720p"
-msgstr ""
-
-msgctxt "#30198"
-msgid "FULL HD 1080p"
-msgstr ""
-
-msgctxt "#30199"
-msgid "UHD 4k"
+msgid "Limit to"
 msgstr ""
