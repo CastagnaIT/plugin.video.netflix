@@ -104,7 +104,7 @@
     <setting id="enable_resolution_limit" type="bool" label="30194" default="false"/>
     <setting id="max_resolution" type="labelenum" label="30195"
              values="SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K"
-             default="SD 480p"/>
+             default="SD 480p" visible="eq(-1,true)" subsetting="true"/>/>
     <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
