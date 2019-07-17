@@ -39,7 +39,7 @@ class DirectoryBuilder(object):
             common.debug('Performing auto-login for selected profile {}'
                          .format(profile_id))
             api.activate_profile(profile_id)
-            self.home()
+            self.home(None, False)
         else:
             self.profiles()
 
@@ -51,12 +51,12 @@ class DirectoryBuilder(object):
         _handle_endofdirectory(False)
 
     @common.time_execution(immediate=False)
-    def home(self, pathitems=None):
+    def home(self, pathitems=None, cache_to_disc=True):
         """Show home listing"""
         # pylint: disable=unused-argument
         common.debug('Showing root video lists')
         listings.build_main_menu_listing(api.root_lists())
-        _handle_endofdirectory(False)
+        _handle_endofdirectory(False, cache_to_disc)
 
     @common.time_execution(immediate=False)
     def video_list(self, pathitems):
@@ -199,6 +199,9 @@ def _display_search_results(pathitems, perpetual_range_start, dir_update_listing
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
 
-def _handle_endofdirectory(dir_update_listing):
+def _handle_endofdirectory(dir_update_listing, cache_to_disc=True):
     # If dir_update_listing=True overwrite the history list, so we can get back to the main page
-    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True, updateListing=dir_update_listing)
+    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE,
+                              succeeded=True,
+                              updateListing=dir_update_listing,
+                              cacheToDisc=cache_to_disc)

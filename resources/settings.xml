@@ -6,10 +6,10 @@
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
     <setting label="30053" type="lsep"/>
-    <setting id="autologin_enable" type="bool" label="30054" default="false"/>
+    <setting id="info" type="text" label="30057" default="" enable="false"/>
+    <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>
     <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="info" type="text" label="30057" default="" enable="false" visible="eq(-3,true)"/>
     <setting type="sep"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
   </category>
