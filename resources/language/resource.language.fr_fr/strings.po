@@ -791,3 +791,7 @@ msgstr "\r\nCes fichiers sont utilisés par le fournisseur d'information pour in
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
 msgstr "Inclure toutes les informations dans les fichiers NFO (utiliser uniquement avec le fournisseur d'information 'Local Information only')"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Limiter la résolution du flux vidéo à"
