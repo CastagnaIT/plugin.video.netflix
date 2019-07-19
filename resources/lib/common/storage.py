@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import json
 
-from .logging import debug, warn
+from .logging import debug, warn, error
 from .fileops import save_file, load_file
 
 
@@ -60,6 +60,14 @@ class PersistentStorage(object):
         """
         save_file(self.backing_file, json.dumps(self._contents))
         debug('Committed changes to backing file')
+
+        # Let's try to catch locale_id key removed if still exists
+        if (self.backing_file == 'resources.lib.globals.ndb'
+              and self._contents.get('locale_id', None) is None):
+            error('locale_id was removed from persistent storage')
+            import traceback
+            error(traceback.format_exc())
+
 
     def clear(self):
         """
