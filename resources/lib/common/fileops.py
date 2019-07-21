@@ -34,6 +34,20 @@ def file_exists(filename, data_path=g.DATA_PATH):
     return xbmcvfs.exists(xbmc.translatePath(os.path.join(data_path, filename)))
 
 
+def copy_file(from_path, to_path):
+    """
+    Copy a file to destination
+    :param from_path: File path to copy
+    :param to_path: Destination file path
+    :return: True if copied
+    """
+    try:
+        return xbmcvfs.copy(xbmc.translatePath(from_path),
+                            xbmc.translatePath(to_path))
+    finally:
+        pass
+
+
 def save_file(filename, content, mode='w'):
     """
     Saves the given content under given filename
