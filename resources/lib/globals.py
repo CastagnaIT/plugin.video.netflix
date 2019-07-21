@@ -190,7 +190,8 @@ class GlobalVariables(object):
         self.VERSION = self.ADDON.getAddonInfo('version')
         self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
         self.ICON = self.ADDON.getAddonInfo('icon')
-        self.DATA_PATH = self.ADDON.getAddonInfo('profile')
+        self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
+        self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
