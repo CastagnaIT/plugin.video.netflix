@@ -45,7 +45,7 @@ def get_item(videoid):
     Kodi DBID and mediatype"""
     # pylint: disable=broad-except
     try:
-        library_entry, entry_type = _get_library_entry(videoid)
+        library_entry, entry_type = get_library_entry(videoid)
         return _get_item(entry_type, library_entry['file'])
     except (KeyError, AttributeError, IndexError, ItemNotFound):
         raise ItemNotFound(
@@ -54,7 +54,7 @@ def get_item(videoid):
 
 
 @common.time_execution(immediate=False)
-def _get_library_entry(videoid):
+def get_library_entry(videoid):
     """Get the first leaf-entry for videoid from the library.
     For shows and seasons this will return the first contained episode"""
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:

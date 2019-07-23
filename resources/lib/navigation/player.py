@@ -13,6 +13,8 @@ import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 from resources.lib.services.playback import get_timeline_markers
+from resources.lib.kodi.library import is_in_library
+from resources.lib.kodi.library import get_library_entry
 
 SERVICE_URL_FORMAT = 'http://localhost:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
@@ -147,10 +149,16 @@ def get_upnext_info(videoid, current_episode, metadata):
                                                     xbmcgui.ListItem())
     next_info = {
         'current_episode': upnext_info(videoid, *current_episode),
-        'next_episode': upnext_info(next_episode_id, *next_episode),
-        'play_info': {'play_path': common.build_url(videoid=next_episode_id,
-                                                    mode=g.MODE_PLAY)},
+        'next_episode': upnext_info(next_episode_id, *next_episode)
     }
+    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id')
+            and is_in_library(next_episode_id)):
+        library_entry, _ = get_library_entry(next_episode_id)
+        next_info['play_info'] = {'play_path': xbmc.translatePath(library_entry['file'])}
+    else:
+        next_info['play_info'] = {'play_path': common.build_url(
+            videoid=next_episode_id, mode=g.MODE_PLAY)}
+
     if 'creditsOffset' in metadata[0]:
         next_info['notification_time'] = (metadata[0]['runtime'] -
                                           metadata[0]['creditsOffset'])
