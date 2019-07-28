@@ -296,6 +296,12 @@ def convert_seconds_to_hms_str(time):
     return '{:02d}:{:02d}:{:02d}'.format(h, m, s)
 
 
+def remove_html_tags(raw_html):
+    h = re.compile('<.*?>')
+    text = re.sub(h, '', raw_html)
+    return text
+
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
