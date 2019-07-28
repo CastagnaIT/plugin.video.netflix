@@ -94,6 +94,23 @@ def get_credentials():
             'Existing credentials could not be decrypted')
 
 
+# noinspection PyBroadException
+def check_credentials():
+    """
+    Check if account credentials exists and can be decrypted.
+    """
+    email = g.LOCAL_DB.get_value('account_email')
+    password = g.LOCAL_DB.get_value('account_password')
+    try:
+        verify_credentials(email and password)
+        decrypt_credential(email)
+        decrypt_credential(password)
+        return True
+    except Exception:
+        pass
+    return False
+
+
 def set_credentials(email, password):
     """
     Encrypt account credentials and save them to the settings.

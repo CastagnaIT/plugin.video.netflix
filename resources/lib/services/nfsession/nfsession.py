@@ -19,7 +19,7 @@ import resources.lib.api.website as website
 import resources.lib.api.paths as apipaths
 import resources.lib.kodi.ui as ui
 
-from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,
+from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
                                           APIError, MissingCredentialsError)
 
 BASE_URL = 'https://www.netflix.com'
@@ -172,10 +172,10 @@ class NetflixSession(object):
     @common.addonsignals_return_call
     def login(self):
         """AddonSignals interface for login function"""
-        self._login()
+        return self._login(modal_error_message=True)
 
     @common.time_execution(immediate=True)
-    def _login(self):
+    def _login(self, modal_error_message=False):
         """Perform account login"""
         try:
             # First we get the authentication url without logging in, required for login API call
@@ -185,15 +185,25 @@ class NetflixSession(object):
             login_response = self._post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
+            validate_msg = website.validate_login(login_response)
+            if validate_msg:
+                self.session.cookies.clear()
+                common.purge_credentials()
+                if modal_error_message:
+                    ui.show_ok_dialog(common.get_local_string(30008),
+                                      validate_msg)
+                else:
+                    ui.show_notification(common.get_local_string(30009))
+                return False
             website.extract_session_data(login_response)
-        except Exception:
-            common.debug(traceback.format_exc())
+        except Exception as exc:
+            common.error(traceback.format_exc())
             self.session.cookies.clear()
-            raise LoginFailedError
-
+            raise exc
         common.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
         self.update_session_data()
+        return True
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)

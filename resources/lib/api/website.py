@@ -12,8 +12,8 @@ import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
-                         WebsiteParsingError)
+from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
+                         WebsiteParsingError, LoginValidateError)
 
 PAGE_ITEMS_INFO = [
     'models/userInfo/data/name',
@@ -35,6 +35,9 @@ PAGE_ITEMS_API_URL = {
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
     'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl'
 }
+
+PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
+PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 
 JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
@@ -144,6 +147,32 @@ def assert_valid_auth_url(user_data):
     if len(user_data.get('auth_url', '')) != 42:
         raise InvalidAuthURLError('authURL is invalid')
     return user_data
+
+
+def validate_login(content):
+    react_context = extract_json(content, 'reactContext')
+    path_code_list = [path_item for path_item in PAGE_ITEM_ERROR_CODE_LIST.split('\\')]
+    path_error_code = [path_item for path_item in PAGE_ITEM_ERROR_CODE.split('/')]
+    if common.check_path_exists(path_error_code, react_context):
+        # If the path exists, a login error occurs
+        try:
+            error_code_list = common.get_path(path_code_list, react_context)
+            error_code = common.get_path(path_error_code, react_context)
+            common.debug('Login not valid, error code {}'.format(error_code))
+            error_description = common.get_local_string(30102) + error_code
+            if error_code in error_code_list:
+                error_description = error_code_list[error_code]
+            if 'email_' + error_code in error_code_list:
+                error_description = error_code_list['email_' + error_code]
+            if 'login_' + error_code in error_code_list:
+                error_description = error_code_list['login_' + error_code]
+            return common.remove_html_tags(error_description)
+        except (AttributeError, KeyError):
+            common.error(
+                'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
+                'react_context data may have changed.')
+            raise LoginValidateError
+    return None
 
 
 def generate_esn(user_data):
