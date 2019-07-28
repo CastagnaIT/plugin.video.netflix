@@ -44,6 +44,11 @@ class LoginFailedError(Exception):
     pass
 
 
+class LoginValidateError(Exception):
+    """The login validate has generated an error"""
+    pass
+
+
 class NotLoggedInError(Exception):
     """The requested operation requires a valid and active login, which
     is not present"""

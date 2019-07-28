@@ -465,7 +465,7 @@ msgid "There is no contents"
 msgstr ""
 
 msgctxt "#30112"
-msgid "You need to be logged in to use this function"
+msgid "You need to be logged in to use Netflix"
 msgstr ""
 
 msgctxt "#30113"
