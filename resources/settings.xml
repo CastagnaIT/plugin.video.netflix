@@ -19,7 +19,6 @@
     <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
     <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
     <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
-    <setting id="invalidate_cache_on_mylist_modify" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting label="30065" type="lsep"/><!--Auto-Update-->
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
@@ -100,7 +99,6 @@
   <category label="30023"><!--Expert-->
     <setting label="30115" type="lsep"/>
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
-    <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
     <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
@@ -115,11 +113,7 @@
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
-    <setting id="enable_tracking" type="bool" label="30032" default="true" visible="false"/> <!-- Not implemented -->
     <setting id="esn" type="text" label="30034" value="" default=""/>
-    <setting id="hidden_esn" visible="false" value="" />
-    <setting id="tracking_id" value="" visible="false"/> <!-- Not implemented -->
-    <setting id="show_update_db" type="bool" default="false" visible="false"/>
     <setting label="30117" type="lsep"/>
     <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
     <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
