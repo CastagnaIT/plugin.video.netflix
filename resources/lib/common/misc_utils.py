@@ -271,8 +271,13 @@ def is_edge_esn(esn):
 
 
 def is_minimum_version(version, min_version):
-    """Rrturn True if version is equal or greater to min_version"""
+    """Return True if version is equal or greater to min_version"""
     return map(int, version.split('.')) >= map(int, min_version.split('.'))
+
+
+def is_less_version(version, max_version):
+    """Return True if version is less to max_version"""
+    return map(int, version.split('.')) < map(int, max_version.split('.'))
 
 
 def make_list(arg):
