@@ -19,6 +19,7 @@ from resources.lib.globals import g
 g.init_globals(sys.argv)
 
 import resources.lib.common as common
+import resources.lib.upgrade_controller as upgrade_ctrl
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 import resources.lib.navigation as nav
@@ -86,6 +87,7 @@ if __name__ == '__main__':
     success = False
 
     try:
+        upgrade_ctrl.check_addon_upgrade()
         g.initial_addon_configuration()
         route(filter(None, g.PATH.split('/')))
         success = True
