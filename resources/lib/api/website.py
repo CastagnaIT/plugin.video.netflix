@@ -9,23 +9,32 @@ from collections import OrderedDict
 
 import resources.lib.common as common
 
+from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
-                         InvalidMembershipStatusError, WebsiteParsingError)
+                         WebsiteParsingError)
 
-PAGE_ITEMS = [
-    'models/userInfo/data/authURL',
+PAGE_ITEMS_INFO = [
+    'models/userInfo/data/name',
     'models/userInfo/data/guid',
     'models/userInfo/data/countryOfSignup',
     'models/userInfo/data/membershipStatus',
+    'models/userInfo/data/isTestAccount',
+    'models/userInfo/data/deviceTypeId',
+    'models/userInfo/data/isAdultVerified',
+    'models/userInfo/data/pinEnabled',
     'models/serverDefs/data/BUILD_IDENTIFIER',
-    'models/serverDefs/data/ICHNAEA_ROOT',
-    'models/serverDefs/data/API_ROOT',
-    'models/playerModel/data/config/ui/initParams/apiUrl',
     'models/esnGeneratorModel/data/esn',
     'models/memberContext/data/geo/preferredLocale'
 ]
+
+PAGE_ITEMS_API_URL = {
+    'auth_url': 'models/userInfo/data/authURL',
+    # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
+    'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
+    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl'
+}
 
 JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
@@ -38,47 +47,55 @@ def extract_session_data(content):
     the session relevant data from the HTML page
     """
     common.debug('Extracting session data...')
-    profiles, active_profile = extract_profiles(
-        extract_json(content, 'falcorCache'))
-    user_data = extract_userdata(content)
-
-    if user_data.get('preferredLocale'):
-        g.PERSISTENT_STORAGE['locale_id'] = user_data.get('preferredLocale').get('id','en-US')
-
+    falcor_cache = extract_json(content, 'falcorCache')
+    react_context = extract_json(content, 'reactContext')
+    extract_profiles(falcor_cache)
+    user_data = extract_userdata(react_context)
+    api_data = extract_api_data(react_context)
+    # Save only some info of the current profile from user data
+    g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
+    g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
+    g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
+    # Save api urls
+    for key, path in api_data.items():
+        g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         common.debug(user_data)
         # Ignore this for now
         # raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
-    return {
-        'profiles': profiles,
-        'active_profile': active_profile,
-        'user_data': user_data,
-        'esn': generate_esn(user_data),
-        'api_data': _parse_api_data(user_data)
-    }
 
 
 @common.time_execution(immediate=True)
 def extract_profiles(falkor_cache):
     """Extract profile information from Netflix website"""
-    profiles = {}
-    active_profile = None
     try:
         profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
+        _delete_non_existing_profiles(profiles_list)
+        sort_order = 0
         for guid, profile in profiles_list.items():
             common.debug('Parsing profile {}'.format(guid))
             avatar_url = _get_avatar(falkor_cache, profile)
             profile = profile['summary']['value']
-            profile['avatar'] = avatar_url
-            if profile.get('isActive'):
-                active_profile = guid
-            profiles[list(profiles_list.keys()).index(guid)] = (guid, profile)
+            is_active = profile.pop('isActive')
+            g.LOCAL_DB.set_profile(guid, is_active, sort_order)
+            g.SHARED_DB.set_profile(guid, None, sort_order)
+            for key, value in profile.items():
+                g.LOCAL_DB.set_profile_config(key, value, guid)
+            g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
+            sort_order += 1
     except Exception:
         common.error(traceback.format_exc())
         common.error('Falkor cache: {}'.format(falkor_cache))
         raise InvalidProfilesError
 
-    return profiles, active_profile
+
+def _delete_non_existing_profiles(profiles_list):
+    list_guid = g.LOCAL_DB.get_guid_profiles()
+    for guid in list_guid:
+        if guid not in profiles_list.keys():
+            common.debug('Deleting non-existing profile {}'.format(guid))
+            g.LOCAL_DB.delete_profile(guid)
+            g.SHARED_DB.delete_profile(guid)
 
 
 def _get_avatar(falkor_cache, profile):
@@ -92,33 +109,39 @@ def _get_avatar(falkor_cache, profile):
 
 
 @common.time_execution(immediate=True)
-def extract_userdata(content):
+def extract_userdata(react_context):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
     user_data = {}
-    react_context = extract_json(content, 'reactContext')
     for path in ([path_item for path_item in path.split('/')]
-                 for path in PAGE_ITEMS):
+                 for path in PAGE_ITEMS_INFO):
         try:
-            user_data.update({path[-1]: common.get_path(path, react_context)})
-            common.debug('Extracted {}'.format(path))
+            extracted_value = {path[-1]: common.get_path(path, react_context)}
+            user_data.update(extracted_value)
+            common.debug('Extracted {}'.format(extracted_value))
         except (AttributeError, KeyError):
             common.debug('Could not extract {}'.format(path))
+    return user_data
 
-    return assert_valid_auth_url(user_data)
 
-
-def _parse_api_data(user_data):
-    return {api_item: user_data[api_item]
-            for api_item in (
-                item.split('/')[-1]
-                for item in PAGE_ITEMS
-                if ('serverDefs' in item) or ('initParams/apiUrl' in item))}
+def extract_api_data(react_context):
+    """Extract api urls from the reactContext of the webpage"""
+    common.debug('Extracting api urls from webpage')
+    api_data = {}
+    for key, value in PAGE_ITEMS_API_URL.items():
+        path = [path_item for path_item in value.split('/')]
+        try:
+            extracted_value = {key: common.get_path(path, react_context)}
+            api_data.update(extracted_value)
+            common.debug('Extracted {}'.format(extracted_value))
+        except (AttributeError, KeyError):
+            common.debug('Could not extract {}'.format(path))
+    return assert_valid_auth_url(api_data)
 
 
 def assert_valid_auth_url(user_data):
     """Raise an exception if user_data does not contain a valid authURL"""
-    if len(user_data.get('authURL', '')) != 42:
+    if len(user_data.get('auth_url', '')) != 42:
         raise InvalidAuthURLError('authURL is invalid')
     return user_data
 

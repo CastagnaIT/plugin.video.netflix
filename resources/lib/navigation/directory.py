@@ -47,7 +47,7 @@ class DirectoryBuilder(object):
         """Show profiles listing"""
         # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
-        listings.build_profiles_listing(api.profiles())
+        listings.build_profiles_listing()
         _handle_endofdirectory(False)
 
     @common.time_execution(immediate=False)

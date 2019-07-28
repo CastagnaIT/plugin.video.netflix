@@ -60,12 +60,6 @@ def login():
 
 
 @common.time_execution(immediate=False)
-def profiles():
-    """Retrieve the list of available user profiles"""
-    return common.make_call('list_profiles')
-
-
-@common.time_execution(immediate=False)
 @cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""

@@ -66,30 +66,34 @@ def _activate_view(partial_setting_id):
 
 @custom_viewmode(g.VIEW_PROFILES)
 @common.time_execution(immediate=False)
-def build_profiles_listing(profiles):
+def build_profiles_listing():
     """Builds the profiles list Kodi screen"""
     try:
         from HTMLParser import HTMLParser
     except ImportError:
         from html.parser import HTMLParser
     html_parser = HTMLParser()
+    directory_items = []
+    active_guid_profile = g.LOCAL_DB.get_active_profile_guid()
+    for guid in g.LOCAL_DB.get_guid_profiles():
+        directory_items.append(_create_profile_item(guid,
+                                                    (guid == active_guid_profile),
+                                                    html_parser))
     # The standard kodi theme does not allow to change view type if the content is "files" type,
     # so here we use "images" type, visually better to see
-    directory_items = []
-    for index, (guid, profile) in sorted(profiles.items()):
-        directory_items.append(_create_profile_item(guid, profile, html_parser))
     finalize_directory(directory_items, g.CONTENT_IMAGES)
 
 
-def _create_profile_item(profile_guid, profile, html_parser):
+def _create_profile_item(profile_guid, is_active, html_parser):
     """Create a tuple that can be added to a Kodi directory that represents
     a profile as listed in the profiles listing"""
-    profile_name = profile.get('profileName', '')
+    profile_name = g.LOCAL_DB.get_profile_config('profileName', '', guid=profile_guid)
     unescaped_profile_name = html_parser.unescape(profile_name)
     enc_profile_name = profile_name.encode('utf-8')
     list_item = list_item_skeleton(
-        label=unescaped_profile_name, icon=profile.get('avatar'))
-    list_item.select(profile.get('isActive', False))
+        label=unescaped_profile_name,
+        icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid))
+    list_item.select(is_active)
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
         params={'autologin_user': enc_profile_name},
