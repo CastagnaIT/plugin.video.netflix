@@ -15,6 +15,7 @@ from functools import wraps
 import requests
 import xbmcaddon
 
+from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -79,7 +80,7 @@ class MSLHandler(object):
     def perform_key_handshake(self, data=None):
         """Perform a key handshake and initialize crypto keys"""
         # pylint: disable=unused-argument
-        esn = data or g.get_esn()
+        esn = data or g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
         if not esn:
             common.info('Cannot perform key handshake, missing ESN')
             return False
@@ -106,7 +107,7 @@ class MSLHandler(object):
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
         """
-        manifest = self._load_manifest(viewable_id, g.get_esn())
+        manifest = self._load_manifest(viewable_id, g.LOCAL_DB.get_value('esn', table=TABLE_SESSION))
         # Disable 1080p Unlock for now, as it is broken due to Netflix changes
         # if (g.ADDON.getSettingBool('enable_1080p_unlock') and
         #         not g.ADDON.getSettingBool('enable_vp9_profiles') and
@@ -159,7 +160,7 @@ class MSLHandler(object):
             'url': '/manifest',
             'id': id,
             'esn': esn,
-            'languages': [g.PERSISTENT_STORAGE['locale_id']],
+            'languages': [g.LOCAL_DB.get_value('locale_id')],
             'uiVersion': 'shakti-v5bca5cd3',
             'clientVersion': '6.0013.315.051',
             'params': {
@@ -214,8 +215,8 @@ class MSLHandler(object):
             'version': 2,
             'url': self.last_license_url,
             'id': id,
-            'esn': g.get_esn(),
-            'languages': [g.PERSISTENT_STORAGE['locale_id']],
+            'esn': g.LOCAL_DB.get_value('esn', table=TABLE_SESSION),
+            'languages': [g.LOCAL_DB.get_value('locale_id')],
             'uiVersion': 'shakti-v5bca5cd3',
             'clientVersion': '6.0013.315.051',
             'params': [{
@@ -228,7 +229,8 @@ class MSLHandler(object):
         }
 
         response = self._chunked_request(ENDPOINTS['license'],
-                                         license_request_data, g.get_esn())
+                                         license_request_data,
+                                         g.LOCAL_DB.get_value('esn', table=TABLE_SESSION))
         return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)

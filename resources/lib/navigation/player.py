@@ -89,7 +89,7 @@ def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set
     for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
-        port=g.ADDON.getSetting('msl_service_port'))
+        port=g.LOCAL_DB.get_value('msl_service_port', 8000))
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path,
                                  offscreen=True)

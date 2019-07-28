@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="30014"><!--Account-->
-    <setting id="email" type="text" visible="false" default=""/>
-    <setting id="password" type="text" visible="false" default=""/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
     <setting label="30053" type="lsep"/>
@@ -121,8 +119,6 @@
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="hidden_esn" visible="false" value="" />
     <setting id="tracking_id" value="" visible="false"/> <!-- Not implemented -->
-    <setting id="msl_service_port" value="8000" visible="false"/>
-    <setting id="ns_service_port" value="8001" visible="false"/>
     <setting id="show_update_db" type="bool" default="false" visible="false"/>
     <setting label="30117" type="lsep"/>
     <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
