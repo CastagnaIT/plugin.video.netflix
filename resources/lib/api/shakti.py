@@ -51,12 +51,15 @@ def login():
     g.CACHE.invalidate()
     try:
         ui.ask_credentials()
-        common.make_call('login')
-    except (MissingCredentialsError, LoginFailedError) as exc:
-        msg = 30009 if isinstance(exc, LoginFailedError) else 30112
-        ui.show_notification(common.get_local_string(msg))
-        return False
-    return True
+        if not common.make_call('login'):
+            # Login not validated
+            # ui.show_notification(common.get_local_string(30009))
+            return False
+        return True
+    except MissingCredentialsError:
+        # Aborted from user or leave an empty field
+        ui.show_notification(common.get_local_string(30112))
+        raise MissingCredentialsError
 
 
 @common.time_execution(immediate=False)

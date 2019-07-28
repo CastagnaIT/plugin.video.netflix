@@ -29,7 +29,7 @@ import resources.lib.navigation.player as player
 import resources.lib.navigation.actions as actions
 import resources.lib.navigation.library as library
 
-from resources.lib.api.exceptions import NotLoggedInError
+from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError)
 
 NAV_HANDLERS = {
     g.MODE_DIRECTORY: directory.DirectoryBuilder,
@@ -50,11 +50,12 @@ def lazy_login(func):
             return func(*args, **kwargs)
         except NotLoggedInError:
             common.debug('Tried to perform an action without being logged in')
-            if api.login():
+            try:
+                api.login()
                 common.debug('Now that we\'re logged in, let\'s try again')
                 return func(*args, **kwargs)
-            else:
-                common.debug('Login failed or canceled, abort initial action')
+            except MissingCredentialsError:
+                # Aborted from user or left an empty field
                 xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE,
                                           succeeded=False)
     return lazy_login_wrapper
@@ -78,6 +79,21 @@ def route(pathitems):
                     g.REQUEST_PARAMS)
 
 
+def check_valid_credentials():
+    """Check that credentials are valid otherwise request user credentials"""
+    # This function check only if credentials exist, instead lazy_login
+    # only works in conjunction with nfsession and also performs other checks
+    if not common.check_credentials():
+        try:
+            if not api.login():
+                # Wrong login try again
+                return check_valid_credentials()
+        except MissingCredentialsError:
+            # Aborted from user or left an empty field
+            return False
+    return True
+
+
 if __name__ == '__main__':
     # pylint: disable=broad-except
     # Initialize variables in common module scope
@@ -89,8 +105,9 @@ if __name__ == '__main__':
     try:
         upgrade_ctrl.check_addon_upgrade()
         g.initial_addon_configuration()
-        route(filter(None, g.PATH.split('/')))
-        success = True
+        if check_valid_credentials():
+            route(filter(None, g.PATH.split('/')))
+            success = True
     except common.BackendNotReady:
         ui.show_backend_not_ready()
     except Exception as exc:
