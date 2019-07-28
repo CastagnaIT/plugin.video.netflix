@@ -39,9 +39,7 @@ def find_episode_metadata(videoid, metadata):
 def select_port(service):
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
-    g.SETTINGS_MONITOR_IGNORE = True
-    g.ADDON.setSetting('{}_service_port'.format(service.lower()), str(port))
-    g.SETTINGS_MONITOR_IGNORE = False
+    g.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
     info('[{}] Picked Port: {}'.format(service, port))
     return port
 

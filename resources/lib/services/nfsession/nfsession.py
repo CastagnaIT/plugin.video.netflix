@@ -11,6 +11,7 @@ import requests
 
 import xbmc
 
+from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
@@ -71,11 +72,9 @@ class NetflixSession(object):
     """Use SSL verification when performing requests"""
 
     def __init__(self):
-        self._session_data = None
         self.slots = [
             self.login,
             self.logout,
-            self.list_profiles,
             self.activate_profile,
             self.path_request,
             self.perpetual_path_request,
@@ -95,29 +94,16 @@ class NetflixSession(object):
         return urlsafe_b64encode(
             common.get_credentials().get('email', 'NoMail'))
 
-    @property
-    def session_data(self):
-        """The session data extracted from the Netflix webpage.
-        Contains profiles, active_profile, root_lolomo, user_data, esn
-        and api_data"""
-        return self._session_data
-
-    @session_data.setter
-    def session_data(self, new_session_data):
-        self._session_data = new_session_data
+    def update_session_data(self):
         self.session.headers.update(
-            {'x-netflix.request.client.user.guid':
-             new_session_data['active_profile']})
+            {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
         cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(self.session_data['esn'])
+        _update_esn(g.LOCAL_DB.get_value('esn', table=TABLE_SESSION))
 
     @property
     def auth_url(self):
-        """Valid authURL. Raises InvalidAuthURLError if it isn't known."""
-        try:
-            return self.session_data['user_data']['authURL']
-        except (AttributeError, KeyError) as exc:
-            raise website.InvalidAuthURLError(exc)
+        """Return authentication url"""
+        return g.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
 
     @common.time_execution(immediate=True)
     def _init_session(self):
@@ -127,9 +113,6 @@ class NetflixSession(object):
             common.info('Session closed')
         except AttributeError:
             pass
-        # Do not use property setter for session_data because self.session may
-        # be None at this point
-        self._session_data = {}
         self.session = requests.session()
         self.session.headers.update({
             'User-Agent': common.get_user_agent(),
@@ -152,7 +135,7 @@ class NetflixSession(object):
 
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
-        """Check if the user is logged in"""
+        """Check if the user is logged in and if so refresh session data"""
         return (self.session.cookies or
                 (self._load_cookies() and self._refresh_session_data()))
 
@@ -162,8 +145,8 @@ class NetflixSession(object):
         # pylint: disable=broad-except
         try:
             # If we can get session data, cookies are still valid
-            self.session_data = website.extract_session_data(
-                self._get('profiles'))
+            website.extract_session_data(self._get('profiles'))
+            self.update_session_data()
         except Exception:
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired')
@@ -195,13 +178,14 @@ class NetflixSession(object):
     def _login(self):
         """Perform account login"""
         try:
-            auth_url = website.extract_userdata(
-                self._get('profiles'))['authURL']
+            # First we get the authentication url without logging in, required for login API call
+            react_context = website.extract_json(self._get('profiles'), 'reactContext')
+            auth_url = website.extract_api_data(react_context)['auth_url']
             common.debug('Logging in...')
             login_response = self._post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
-            session_data = website.extract_session_data(login_response)
+            website.extract_session_data(login_response)
         except Exception:
             common.debug(traceback.format_exc())
             self.session.cookies.clear()
@@ -209,7 +193,7 @@ class NetflixSession(object):
 
         common.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
-        self.session_data = session_data
+        self.update_session_data()
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)
@@ -227,20 +211,11 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    def list_profiles(self):
-        """Retrieve a list of all profiles in the user's account"""
-        try:
-            return self.session_data['profiles']
-        except (AttributeError, KeyError) as exc:
-            raise website.InvalidProfilesError(exc)
-
-    @common.addonsignals_return_call
-    @needs_login
     @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Activating profile {}'.format(guid))
-        if guid == self.session_data['active_profile']:
+        if guid == g.LOCAL_DB.get_active_profile_guid():
             common.debug('Profile {} is already active'.format(guid))
             return False
         self._get(
@@ -250,7 +225,9 @@ class NetflixSession(object):
                 'switchProfileGuid': guid,
                 '_': int(time.time()),
                 'authURL': self.auth_url})
-        self._refresh_session_data()
+        g.LOCAL_DB.switch_active_profile(guid)
+        self.update_session_data()
+        # self._refresh_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
         return True
 
@@ -292,7 +269,8 @@ class NetflixSession(object):
             if len(path_response) == 0:
                 break
             if not common.check_path_exists(length_args, path_response):
-                # It may happen that the number of items to be received is equal to the number of the response_size
+                # It may happen that the number of items to be received
+                # is equal to the number of the response_size
                 # so a second round will be performed, which will return an empty list
                 break
             common.merge_dicts(path_response, merged_response)
@@ -301,7 +279,8 @@ class NetflixSession(object):
                 range_start += response_size
                 if n_req == (number_of_requests - 1):
                     merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                    common.debug('{} has other elements, added _perpetual_range_selector item'.format(response_type))
+                    common.debug('{} has other elements, added _perpetual_range_selector item'
+                                 .format(response_type))
                 else:
                     range_end = range_start + request_size
             else:
@@ -376,7 +355,7 @@ class NetflixSession(object):
         return self._request(method, component, None, **kwargs)
 
     def _request(self, method, component, session_refreshed, **kwargs):
-        url = (_api_url(component, self.session_data['api_data'])
+        url = (_api_url(component)
                if URLS[component]['is_api_call']
                else _document_url(component))
         common.debug(
@@ -457,16 +436,27 @@ def _document_url(component):
     return BASE_URL + URLS[component]['endpoint']
 
 
-def _api_url(component, api_data):
+def _api_url(component):
     return '{baseurl}{componenturl}'.format(
-        baseurl=api_data['apiUrl'],
+        baseurl=g.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
         componenturl=URLS[component]['endpoint'])
 
 
 def _update_esn(esn):
     """Return True if the esn has changed on Session initialization"""
-    if g.set_esn(esn):
+    if _set_esn(esn):
         common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn)
+
+
+def _set_esn(esn):
+    """
+    Set the ESN in settings if it hasn't been set yet.
+    Return True if the new ESN has been set, False otherwise
+    """
+    if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION) and esn:
+        g.LOCAL_DB.set_value('esn', esn, table=TABLE_SESSION)
+        return True
+    return False
 
 
 def _raise_api_error(decoded_response):

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from resources.lib.globals import g
 from resources.lib.api.exceptions import MissingCredentialsError
 
-from .logging import debug
+from .logging import debug, error
 
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
@@ -79,31 +79,19 @@ def get_credentials():
     Retrieve stored account credentials.
     :return: The stored account credentials or an empty dict if none exist.
     """
-    email = g.ADDON.getSetting('email')
-    password = g.ADDON.getSetting('password')
+    email = g.LOCAL_DB.get_value('account_email')
+    password = g.LOCAL_DB.get_value('account_password')
     verify_credentials(email and password)
     try:
         return {
             'email': decrypt_credential(email),
             'password': decrypt_credential(password)
         }
-    except ValueError:
-        return migrate_credentials(email, password)
-
-
-def migrate_credentials(encrypted_email, encrypted_password):
-    """Try to decrypt stored credentials with the old unsafe secret and update
-    them to new safe format"""
-    unsafe_secret = 'UnsafeStaticSecret'.encode()
-    try:
-        email = decrypt_credential(encrypted_email, secret=unsafe_secret)
-        password = decrypt_credential(encrypted_password, secret=unsafe_secret)
-    except ValueError:
+    except Exception:
+        import traceback
+        error(traceback.format_exc())
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
-    set_credentials(email, password)
-    debug('Migrated old unsafely stored credentials to new safe format')
-    return {'email': email, 'password': password}
 
 
 def set_credentials(email, password):
@@ -112,18 +100,14 @@ def set_credentials(email, password):
     Does nothing if either email or password are not supplied.
     """
     if email and password:
-        g.SETTINGS_MONITOR_IGNORE = True
-        g.ADDON.setSetting('email', encrypt_credential(email))
-        g.ADDON.setSetting('password', encrypt_credential(password))
-        g.SETTINGS_MONITOR_IGNORE = False
+        g.LOCAL_DB.set_value('account_email', encrypt_credential(email))
+        g.LOCAL_DB.set_value('account_password', encrypt_credential(password))
 
 
 def purge_credentials():
     """Delete the stored credentials"""
-    g.SETTINGS_MONITOR_IGNORE = True
-    g.ADDON.setSetting('email', '')
-    g.ADDON.setSetting('password', '')
-    g.SETTINGS_MONITOR_IGNORE = False
+    g.LOCAL_DB.set_value('account_email', None)
+    g.LOCAL_DB.set_value('account_password', None)
 
 
 def verify_credentials(credential):

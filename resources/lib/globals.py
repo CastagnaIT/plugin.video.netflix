@@ -358,20 +358,6 @@ class GlobalVariables(object):
             self.CACHE.add(cache.CACHE_LIBRARY, 'library', self._library,
                            ttl=cache.TTL_INFINITE, to_disk=True)
 
-    def get_esn(self):
-        """Get the ESN from settings"""
-        return self.ADDON.getSetting('esn')
-
-    def set_esn(self, esn):
-        """
-        Set the ESN in settings if it hasn't been set yet.
-        Return True if the new ESN has been set, False otherwise
-        """
-        if not self.get_esn() and esn:
-            self.ADDON.setSetting('esn', esn)
-            return True
-        return False
-
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate
         a new one if none exists"""
