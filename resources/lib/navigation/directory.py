@@ -48,7 +48,7 @@ class DirectoryBuilder(object):
         # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
         listings.build_profiles_listing()
-        _handle_endofdirectory(False)
+        _handle_endofdirectory(False, False)
 
     @common.time_execution(immediate=False)
     def home(self, pathitems=None, cache_to_disc=True):

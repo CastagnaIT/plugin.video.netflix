@@ -39,11 +39,9 @@ def activate_profile(profile_id):
 
 def logout():
     """Logout of the current account"""
-    try:
-        common.make_call('logout')
-        g.CACHE.invalidate()
-    except (MissingCredentialsError, NotLoggedInError):
-        ui.show_notification(common.get_local_string(30112))
+    url = common.build_url(['root'], mode=g.MODE_DIRECTORY)
+    common.make_call('logout', url)
+    g.CACHE.invalidate()
 
 
 def login():
