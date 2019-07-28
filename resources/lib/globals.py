@@ -215,6 +215,17 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
+        import resources.lib.database.db_local as db_local
+        self.LOCAL_DB = db_local.NFLocalDatabase()
+        import resources.lib.database.db_shared as db_shared
+        import resources.lib.database.db_utils as db_utils
+        # TODO: xml settings to specify a custom path
+        #  need to study how better apply to client/service
+        temp_hardcoded_path = xbmc.translatePath(os.path.join(g.DATA_PATH,
+                                                              'database',
+                                                              db_utils.SHARED_DB_FILENAME))
+        self.SHARED_DB = db_shared.NFSharedDatabase(temp_hardcoded_path)
+
         try:
             os.mkdir(self.DATA_PATH)
         except OSError:
