@@ -207,7 +207,7 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)
-    def logout(self):
+    def logout(self, url):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
         cookies.delete(self.account_hash)
@@ -217,7 +217,7 @@ class NetflixSession(object):
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
         xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-        xbmc.executebuiltin('XBMC.ActivateWindow(Home)')
+        xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
 
     @common.addonsignals_return_call
     @needs_login
