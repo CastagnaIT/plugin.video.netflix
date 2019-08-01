@@ -8,7 +8,11 @@ from platform import machine
 import xbmc
 import xbmcgui
 
+ACTION_PREVIOUS_MENU = 10
 ACTION_PLAYER_STOP = 13
+ACTION_NAV_BACK = 92
+ACTION_NOOP = 999
+
 OS_MACHINE = machine()
 
 CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),' \
@@ -36,13 +40,18 @@ class Skip(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         self.skip_to = kwargs['skip_to']
         self.label = kwargs['label']
+
+        self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
+                                   ACTION_PLAYER_STOP,
+                                   ACTION_NAV_BACK,
+                                   ACTION_NOOP]
+
         if OS_MACHINE[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
             xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
 
     def onInit(self):
-        self.action_exitkeys_id = [10, 13]
         self.getControl(6012).setLabel(self.label)
 
     def onClick(self, controlID):
@@ -51,7 +60,7 @@ class Skip(xbmcgui.WindowXMLDialog):
             self.close()
 
     def onAction(self, action):
-        if action.getId() == 999: # action noop
+        if action.getId() in self.action_exitkeys_id:
             self.close()
 
 
