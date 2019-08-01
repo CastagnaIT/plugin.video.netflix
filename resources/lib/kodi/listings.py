@@ -10,6 +10,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -114,21 +115,22 @@ def build_main_menu_listing(lolomo):
     Builds the video lists (my list, continue watching, etc.) Kodi screen
     """
     directory_items = []
-    mylist_menu_exists = False
 
     for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
         show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
         if show_in_menu:
+            menu_title = 'Missing menu title'
             if data['lolomo_known']:
-                for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'], break_on_first=True):
-                    directory_items.append(_create_videolist_item(list_id, user_list, data, static_lists=True))
-                    g.PERSISTENT_STORAGE['menu_titles'][menu_id] = user_list['displayName']
-                    if "queue" in data['lolomo_contexts']:
-                        mylist_menu_exists = True
+                for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'],
+                                                                  break_on_first=True):
+                    directory_items.append(_create_videolist_item(list_id,
+                                                                  user_list,
+                                                                  data,
+                                                                  static_lists=True))
+                    menu_title = user_list['displayName']
             else:
-                menu_title = common.get_local_string(data['label_id']) \
-                    if data['label_id'] is not None else 'Missing menu title'
-                g.PERSISTENT_STORAGE['menu_titles'][menu_id] = menu_title
+                if data['label_id']:
+                    menu_title = common.get_local_string(data['label_id'])
                 menu_description = common.get_local_string(data['description_id']) \
                     if data['description_id'] is not None else ''
                 directory_items.append(
@@ -137,8 +139,7 @@ def build_main_menu_listing(lolomo):
                                         icon=data['icon'],
                                         description=menu_description),
                      True))
-    # g.PERSISTENT_STORAGE.commit()  performed with the next call to PERSISTENT_STORAGE setitem
-    g.PERSISTENT_STORAGE['profile_have_mylist_menu'] = mylist_menu_exists
+            g.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
     finalize_directory(directory_items, g.CONTENT_FOLDER, title=common.get_local_string(30097))
 
 
@@ -167,13 +168,18 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             sub_menu_data['lolomo_contexts'] = None
             sub_menu_data['content_type'] = g.CONTENT_SHOW
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
-            sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-            g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
-            g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
-            directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
-    g.PERSISTENT_STORAGE.commit()
+            sub_menu_data['main_menu'] = menu_data['main_menu']\
+                if menu_data.get('main_menu') else menu_data.copy()
+            sub_menu_data.update({'title': video_list['displayName']})
+            g.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
+            directory_items.append(_create_videolist_item(sel_video_list_id,
+                                                          video_list,
+                                                          sub_menu_data))
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
+                       title=parent_menu_data['title'],
+                       sort_type='sort_label')
     return menu_data.get('view')
 
 
@@ -214,13 +220,18 @@ def build_subgenre_listing(subgenre_list, menu_data):
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
         sub_menu_data['content_type'] = g.CONTENT_SHOW
-        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-        g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
-        g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = subgenre_data['name']
-        directory_items.append(_create_subgenre_item(sel_video_list_id, subgenre_data, sub_menu_data))
-    g.PERSISTENT_STORAGE.commit()
+        sub_menu_data['main_menu'] = menu_data['main_menu']\
+            if menu_data.get('main_menu') else menu_data.copy()
+        sub_menu_data.update({'title': subgenre_data['name']})
+        g.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
+        directory_items.append(_create_subgenre_item(sel_video_list_id,
+                                                     subgenre_data,
+                                                     sub_menu_data))
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
+                       title=parent_menu_data['title'],
+                       sort_type='sort_label')
     return menu_data.get('view')
 
 
@@ -249,10 +260,10 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
         sub_menu_data['content_type'] = g.CONTENT_SHOW
-        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-        g.PERSISTENT_STORAGE['sub_menus'][menu_id] = sub_menu_data
-        g.PERSISTENT_STORAGE['menu_titles'][menu_id] = common.get_local_string(30089)
-        g.PERSISTENT_STORAGE.commit()
+        sub_menu_data['main_menu'] = menu_data['main_menu']\
+            if menu_data.get('main_menu') else menu_data.copy()
+        sub_menu_data.update({'title': common.get_local_string(30089)})
+        g.LOCAL_DB.set_value(menu_id, sub_menu_data, TABLE_MENU_DATA)
         directory_items.insert(0,
                                (common.build_url(['genres', menu_id, genre_id],
                                                  mode=g.MODE_DIRECTORY),
@@ -266,8 +277,11 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     sort_type = 'sort_nothing'
     if menu_data['path'][1] == 'myList':
         sort_type = 'sort_label_ignore_folders'
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type=sort_type)
+                       title=parent_menu_data['title'],
+                       sort_type=sort_type)
     return menu_data.get('view')
 
 

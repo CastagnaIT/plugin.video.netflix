@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import xbmc
 import xbmcplugin
 
+from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -63,7 +64,7 @@ class DirectoryBuilder(object):
         """Show a video list with a listid request"""
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
-            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
+            menu_data = g.LOCAL_DB.get_value(pathitems[1], table=TABLE_MENU_DATA, data_type=dict)
         if g.is_known_menu_context(pathitems[2]):
             list_id = api.list_id_for_type(menu_data['lolomo_contexts'][0])
             listings.build_video_listing(api.video_list(list_id), menu_data)
@@ -78,7 +79,7 @@ class DirectoryBuilder(object):
         """Show a video list with a sorted request"""
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
-            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
+            menu_data = g.LOCAL_DB.get_value(pathitems[1], table=TABLE_MENU_DATA, data_type=dict)
         mainmenu_data = menu_data.copy()
         # If the menu is a sub-menu, we get the parameters of the main menu
         if menu_data.get('main_menu'):
@@ -120,7 +121,7 @@ class DirectoryBuilder(object):
         """Show video lists for a genre"""
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:
-            menu_data = g.PERSISTENT_STORAGE['sub_menus'][pathitems[1]]
+            menu_data = g.LOCAL_DB.get_value(pathitems[1], table=TABLE_MENU_DATA, data_type=dict)
         # pathitems indexes: 0 function name, 1 menu id, 2 optional id
         if len(pathitems) < 3:
             lolomo = api.root_lists()

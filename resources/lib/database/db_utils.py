@@ -17,6 +17,7 @@ SHARED_DB_FILENAME = 'nf_shared.sqlite3'
 # Table mapping: ( Table name, [ columns ] )
 TABLE_APP_CONF = ('AppConfig', ['Name', 'Value'])
 TABLE_SESSION = ('Session', ['Name', 'Value'])
+TABLE_MENU_DATA = ('MenuData', ['ContextId', 'Value'])
 TABLE_SHARED_APP_CONF = ('SharedAppConfig', ['Name', 'Value'])
 
 
