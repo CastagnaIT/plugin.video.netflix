@@ -326,21 +326,8 @@ class GlobalVariables(object):
             self.PERSISTENT_STORAGE['show_menus'] = {}
         if not self.PERSISTENT_STORAGE.get('menu_sortorder'):
             self.PERSISTENT_STORAGE['menu_sortorder'] = {}
-        if not self.PERSISTENT_STORAGE.get('menu_titles'):
-            self.PERSISTENT_STORAGE['menu_titles'] = {}
         if not self.PERSISTENT_STORAGE.get('sub_menus'):
             self.PERSISTENT_STORAGE['sub_menus'] = {}
-
-    def get_menu_title(self, menu_key, fallback_title=''):
-        """
-        Get the menu title from persistent storage,
-        in some situations, such as deleting the persistent file,
-        or context_id/menu_id changed due to netflix changes or addon menu code changes..
-        the list or key may no longer be present
-        """
-        if not g.PERSISTENT_STORAGE.get('menu_titles'):
-            return fallback_title
-        return g.PERSISTENT_STORAGE['menu_titles'].get(menu_key, fallback_title)
 
     def library(self):
         """Get the current library instance"""
