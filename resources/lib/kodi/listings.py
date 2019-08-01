@@ -160,8 +160,10 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             if menu_parameters.type_id != '28':
                 continue
         if menu_parameters.is_menu_id:
-            # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
-            sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
+            # Create a new submenu info in MAIN_MENU_ITEMS
+            # for reference when 'directory' find the menu data
+            sel_video_list_id = menu_parameters.context_id\
+                if menu_parameters.context_id and not force_videolistbyid else video_list_id
             sub_menu_data = menu_data.copy()
             sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
@@ -213,7 +215,8 @@ def build_subgenre_listing(subgenre_list, menu_data):
     """Build a listing of subgenre lists."""
     directory_items = []
     for index, subgenre_data in subgenre_list.lists:
-        # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
+        # Create a new submenu info in MAIN_MENU_ITEMS
+        # for reference when 'directory' find the menu data
         sel_video_list_id = unicode(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
@@ -271,7 +274,8 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                                    icon='DefaultVideoPlaylists.png',
                                                    description=common.get_local_string(30088)),
                                 True))
-    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, genre_id)
+    add_items_previous_next_page(directory_items, pathitems,
+                                 video_list.perpetual_range_selector, genre_id)
     # At the moment it is not possible to make a query with results sorted for the 'mylist',
     # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
@@ -380,7 +384,8 @@ def _create_supplemental_item(videoid_value, video, video_list):
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
                            mode=g.MODE_PLAY)
-    # replaceItems still look broken because it does not remove the default ctx menu, i hope in the future Kodi fix this
+    # replaceItems still look broken because it does not remove the default ctx menu
+    # i hope in the future Kodi fix this
     list_item.addContextMenuItems(generate_context_menu_items(videoid), replaceItems=True)
     return (url, list_item, False)
 
@@ -408,25 +413,29 @@ def list_item_skeleton(label, icon=None, fanart=None, description=None, customic
     return list_item
 
 
-def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, genre_id=None):
+def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector,
+                                 genre_id=None):
     if pathitems and perpetual_range_selector:
         if 'previous_start' in perpetual_range_selector:
-            previous_page_url = \
-                common.build_url(pathitems=pathitems,
-                                 params={'perpetual_range_start': perpetual_range_selector.get('previous_start'),
-                                         'genre_id':
-                                             genre_id if perpetual_range_selector.get('previous_start') == 0 else None},
-                                 mode=g.MODE_DIRECTORY)
+            params = {'perpetual_range_start': perpetual_range_selector.get('previous_start'),
+                      'genre_id':
+                          genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
+            previous_page_url = common.build_url(pathitems=pathitems,
+                                                 params=params,
+                                                 mode=g.MODE_DIRECTORY)
             directory_items.insert(0, (previous_page_url,
                                        list_item_skeleton(common.get_local_string(30148),
-                                                          customicon='FolderPagePrevious.png'), True))
+                                                          customicon='FolderPagePrevious.png'),
+                                       True))
         if 'next_start' in perpetual_range_selector:
-            next_page_url = \
-                common.build_url(pathitems=pathitems,
-                                 params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
-                                 mode=g.MODE_DIRECTORY)
-            directory_items.append((next_page_url, list_item_skeleton(common.get_local_string(30147),
-                                                                      customicon='FolderPageNext.png'), True))
+            params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
+            next_page_url = common.build_url(pathitems=pathitems,
+                                             params=params,
+                                             mode=g.MODE_DIRECTORY)
+            directory_items.append((next_page_url,
+                                    list_item_skeleton(common.get_local_string(30147),
+                                                       customicon='FolderPageNext.png'),
+                                    True))
 
 
 def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_nothing',
