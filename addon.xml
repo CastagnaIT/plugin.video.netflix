@@ -11,6 +11,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.service" library="service.py" start="login" />
+  <extension point="xbmc.python.module" library="modules/enum" />
   <extension point="xbmc.addon.metadata">
     <reuselanguageinvoker>true</reuselanguageinvoker>
     <summary lang="de_DE">Netflix</summary>
