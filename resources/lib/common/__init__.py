@@ -12,3 +12,4 @@ from .fileops import *
 from .kodiops import *
 from .pathops import *
 from .misc_utils import *
+from .data_conversion import *
