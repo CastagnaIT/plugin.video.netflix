@@ -240,7 +240,6 @@ class GlobalVariables(object):
             pass
 
         self._init_cache()
-        self.init_persistent_storage()
 
     def _init_cache(self):
         if not os.path.exists(
@@ -335,25 +334,6 @@ class GlobalVariables(object):
         Returns True when the setting monitor must be suspended
         """
         return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
-
-    def init_persistent_storage(self):
-        """
-        Save on disk the data to keep in memory,
-        at each screen change kodi reinitializes the addon
-        making it impossible to have persistent variables
-        """
-        # This is ugly: Pass the common module into Cache.__init__ to work
-        # around circular import dependencies.
-        import resources.lib.common as common
-        # In PersistentStorage "save on destroy" here cause problems because often gets destroyed by various behaviors
-        self.PERSISTENT_STORAGE = common.PersistentStorage(__name__, no_save_on_destroy=True)
-        # If missing create necessary keys
-        if not self.PERSISTENT_STORAGE.get('show_menus'):
-            self.PERSISTENT_STORAGE['show_menus'] = {}
-        if not self.PERSISTENT_STORAGE.get('menu_sortorder'):
-            self.PERSISTENT_STORAGE['menu_sortorder'] = {}
-        if not self.PERSISTENT_STORAGE.get('sub_menus'):
-            self.PERSISTENT_STORAGE['sub_menus'] = {}
 
     def library(self):
         """Get the current library instance"""
