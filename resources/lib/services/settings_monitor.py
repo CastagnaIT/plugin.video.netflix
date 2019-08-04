@@ -16,7 +16,7 @@ class SettingsMonitor(xbmc.Monitor):
         xbmc.Monitor.__init__(self)
 
     def onSettingsChanged(self):
-        if not g.SETTINGS_MONITOR_IGNORE:
+        if not g.settings_monitor_is_suspended():
             self._on_change()
 
     def _on_change(self):

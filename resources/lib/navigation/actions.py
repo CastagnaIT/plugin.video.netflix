@@ -26,12 +26,12 @@ class AddonActionExecutor(object):
     def save_autologin(self, pathitems):
         """Save autologin data"""
         try:
-            g.SETTINGS_MONITOR_IGNORE = True
+            g.settings_monitor_suspended(True)
             g.ADDON.setSetting('autologin_user',
                                self.params['autologin_user'])
             g.ADDON.setSetting('autologin_id', pathitems[1])
             g.ADDON.setSetting('autologin_enable', 'true')
-            g.SETTINGS_MONITOR_IGNORE = False
+            g.settings_monitor_suspended(False)
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
         g.CACHE.invalidate()
@@ -46,9 +46,9 @@ class AddonActionExecutor(object):
         if api.verify_pin(pin):
             current_setting = {'true': True, 'false': False}.get(
                 g.ADDON.getSetting('adultpin_enable').lower())
-            g.SETTINGS_MONITOR_IGNORE = True
+            g.settings_monitor_suspended(True)
             g.ADDON.setSetting('adultpin_enable', str(not current_setting))
-            g.SETTINGS_MONITOR_IGNORE = False
+            g.settings_monitor_suspended(False)
             g.flush_settings()
             ui.show_notification(
                 common.get_local_string(30107 if current_setting else 30108))
