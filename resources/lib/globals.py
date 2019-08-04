@@ -183,7 +183,6 @@ class GlobalVariables(object):
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
         self._library = None
-        self.SETTINGS_MONITOR_IGNORE = False
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -233,6 +232,8 @@ class GlobalVariables(object):
                                                               db_utils.SHARED_DB_FILENAME))
         self.SHARED_DB = db_shared.NFSharedDatabase(temp_hardcoded_path)
 
+        self.settings_monitor_suspended(False)  # Reset the value in case of addon crash
+
         try:
             os.mkdir(self.DATA_PATH)
         except OSError:
@@ -270,7 +271,8 @@ class GlobalVariables(object):
         if run_initial_config:
             import resources.lib.common as common
             import resources.lib.kodi.ui as ui
-            self.SETTINGS_MONITOR_IGNORE = True
+            self.settings_monitor_suspended(True)
+
             system = common.get_system_platform()
             common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
             if system in ['osx','ios','xbox']:
@@ -315,7 +317,24 @@ class GlobalVariables(object):
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', False)
             self.ADDON.setSettingBool('run_init_configuration', False)
-            self.SETTINGS_MONITOR_IGNORE = False
+            self.settings_monitor_suspended(False)
+
+    def settings_monitor_suspended(self, suspend):
+        """
+        Suspends for the necessary time the settings monitor
+        that otherwise cause the reinitialization of global settings
+        and possible consequent actions to settings changes or unnecessary checks
+        """
+        is_suspended = g.LOCAL_DB.get_value('suspend_settings_monitor', False)
+        if (is_suspended and suspend) or (not is_suspended and not suspend):
+            return
+        g.LOCAL_DB.set_value('suspend_settings_monitor', suspend)
+
+    def settings_monitor_is_suspended(self):
+        """
+        Returns True when the setting monitor must be suspended
+        """
+        return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
 
     def init_persistent_storage(self):
         """
@@ -365,7 +384,9 @@ class GlobalVariables(object):
         for _ in range(0, 30):
             esn.append(random.choice(possible))
         edge_esn = ''.join(esn)
+        self.settings_monitor_suspended(True)
         self.ADDON.setSetting('edge_esn', edge_esn)
+        self.settings_monitor_suspended(False)
         return edge_esn
 
     def is_known_menu_context(self, context):
