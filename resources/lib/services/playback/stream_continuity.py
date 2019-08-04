@@ -2,7 +2,7 @@
 
 """
 Remember and restore audio stream / subtitle settings between individual
-episodes of a tv show
+episodes of a tv show or movie
 """
 from __future__ import unicode_literals
 
@@ -47,17 +47,17 @@ class StreamContinuityManager(PlaybackActionManager):
         self.resume = {}
 
     @property
-    def show_settings(self):
-        """Stored stream settings for the current show"""
-        return self.storage.get(self.current_videoid, {})
+    def sc_settings(self):
+        """Stored stream settings for the current videoid"""
+
+        return g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+                                                 self.current_videoid.value, {})
 
     def _initialize(self, data):
-        if 'tvshowid' in data['videoid']:
+        videoid = common.VideoId.from_dict(data['videoid'])
+        if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.did_restore = False
-            self.current_videoid = data['videoid']['tvshowid']
-        elif 'movieid' in data['videoid']:
-            self.did_restore = False
-            self.current_videoid = data['videoid']['movieid']
+            self.current_videoid = videoid
         else:
             self.enabled = False
 
@@ -66,7 +66,7 @@ class StreamContinuityManager(PlaybackActionManager):
         for stype in STREAMS:
             self._set_current_stream(stype, player_state)
             self._restore_stream(stype)
-        if (self.show_settings.get('subtitleenabled', None) is None
+        if (self.sc_settings.get('subtitleenabled', None) is None
                 and g.ADDON.getSettingBool('forced_subtitle_workaround')):
             # Use the workaround only when the user did not change the show subtitle setting
             _show_only_forced_subtitle()
@@ -93,7 +93,7 @@ class StreamContinuityManager(PlaybackActionManager):
     def _restore_stream(self, stype):
         common.debug('Trying to restore {}...'.format(stype))
         set_stream = STREAMS[stype]['setter']
-        stored_stream = self.show_settings.get(stype)
+        stored_stream = self.sc_settings.get(stype)
         if (stored_stream is not None and
                 self.current_streams[stype] != stored_stream):
             # subtitleenabled is boolean and not a dict
@@ -105,10 +105,11 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _save_changed_stream(self, stype, stream):
         common.debug('Save changed stream {} for {}'.format(stream, stype))
-        new_show_settings = self.show_settings.copy()
-        new_show_settings[stype] = stream
-        self.storage[self.current_videoid] = new_show_settings
-        self.storage.commit()
+        new_sc_settings = self.sc_settings.copy()
+        new_sc_settings[stype] = stream
+        g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+                                          self.current_videoid.value,
+                                          new_sc_settings)
 
     def __repr__(self):
         return ('enabled={}, current_videoid={}'
@@ -119,11 +120,13 @@ def _show_only_forced_subtitle():
     # When we have "forced only" subtitle setting in Kodi Player, Kodi use this behavior:
     # 1) try to select forced subtitle that matches audio language
     # 2) when missing, try to select the first "regular" subtitle that matches audio language
-    # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
+    # This Kodi behavior is totally non sense.
+    # If forced is selected you must not view the regular subtitles
     # There is no other solution than to disable the subtitles manually.
     manifest_data = json.loads(common.load_file('manifest.json'))
     common.fix_locale_languages(manifest_data['timedtexttracks'])
     audio_language = common.get_kodi_audio_language()
-    if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
+    if not any(text_track.get('isForcedNarrative', False) is True and
+               text_track['language'] == audio_language
                for text_track in manifest_data['timedtexttracks']):
         xbmc.Player().showSubtitles(False)
