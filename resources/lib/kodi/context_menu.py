@@ -78,23 +78,20 @@ def _generate_library_ctx_items(videoid):
     if videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         return library_actions
 
-    if g.ADDON.getSettingInt('auto_update') and videoid.mediatype == common.VideoId.SHOW:
-        if library.is_in_library(videoid):
-            library_actions = ['remove', 'update', 'exportnewepisodes']
-            if library.show_excluded_from_auto_update(videoid):
-                library_actions.append('includeinautoupdate')
-            else:
-                library_actions.append('excludefromautoupdate')
-        else:
-            library_actions = ['export']
+    is_in_library = library.is_in_library(videoid)
+    library_actions = ['remove', 'update'] if is_in_library else ['export']
 
-    elif (not g.ADDON.getSettingInt('auto_update')) or videoid.mediatype == common.VideoId.MOVIE:
-        if library.is_in_library(videoid):
-            library_actions = ['remove', 'update']
-            if  videoid.mediatype == common.VideoId.SHOW:
-                library_actions.append('exportnewepisodes')
+    if g.ADDON.getSettingInt('auto_update') and \
+            videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
+        library_actions = []
+
+    if videoid.mediatype == common.VideoId.SHOW and is_in_library:
+        library_actions.append('exportnewepisodes')
+        if library.show_excluded_from_auto_update(videoid):
+            library_actions.append('includeinautoupdate')
         else:
-            library_actions = ['export']
+            library_actions.append('excludefromautoupdate')
+
     return [_ctx_item(action, videoid) for action in library_actions]
 
 
