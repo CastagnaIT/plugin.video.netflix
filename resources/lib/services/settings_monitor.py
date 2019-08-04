@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import xbmc
 import sys
 
+from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR)
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -23,30 +24,33 @@ class SettingsMonitor(xbmc.Monitor):
 
         g.init_globals(sys.argv)
 
-        ps_changed = False
         show_menu_changed = False
         sort_order_type_changed = False
 
         for menu_id, menu_data in g.MAIN_MENU_ITEMS.iteritems():
             # Check settings changes in show menu
             show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
-            show_menu_old_setting = g.PERSISTENT_STORAGE['show_menus'].get(menu_id, True)
+            show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
+                                                         True,
+                                                         TABLE_SETTINGS_MONITOR)
             if show_menu_new_setting != show_menu_old_setting:
-                g.PERSISTENT_STORAGE['show_menus'][menu_id] = show_menu_new_setting
+                g.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
+                                     show_menu_new_setting,
+                                     TABLE_SETTINGS_MONITOR)
                 show_menu_changed = True
-                ps_changed = True
+
             # Check settings changes in sort order of menu
             if menu_data.get('request_context_name'):
                 menu_sortorder_new_setting = int(
                     g.ADDON.getSettingInt('_'.join(('menu_sortorder', menu_data['path'][1]))))
-                menu_sortorder_old_setting = g.PERSISTENT_STORAGE['menu_sortorder'].get(menu_id, 0)
+                menu_sortorder_old_setting = g.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
+                                                                  0,
+                                                                  TABLE_SETTINGS_MONITOR)
                 if menu_sortorder_new_setting != menu_sortorder_old_setting:
-                    g.PERSISTENT_STORAGE['menu_sortorder'][menu_id] = menu_sortorder_new_setting
+                    g.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
+                                         menu_sortorder_new_setting,
+                                         TABLE_SETTINGS_MONITOR)
                     sort_order_type_changed = True
-                    ps_changed = True
-
-        if ps_changed:
-            g.PERSISTENT_STORAGE.commit()
 
         if sort_order_type_changed:
             # We remove the cache to allow get the new results in the chosen order
