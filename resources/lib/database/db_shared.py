@@ -246,3 +246,31 @@ class NFSharedDatabase(db_local.NFLocalDatabase):
                         'SET ' + enum_vid_prop.value + ' = ? WHERE TvShowID = ?')
         value = common.convert_to_string(value)
         cur = self._execute_query(update_query, (value, tvshowid))
+
+    @db_base.sql_connect()
+    def get_stream_continuity(self, profile_guid, videoid, default_value=None, data_type=None):
+        """Get stream continuity value of a given id stored to current profile"""
+        query = 'SELECT Value FROM StreamContinuity WHERE ProfileGuid = ? AND VideoID = ?'
+        cur = self._execute_query(query, (profile_guid, videoid))
+        result = cur.fetchone()
+        if default_value is not None:
+            data_type = type(default_value)
+        elif data_type is None:
+            data_type = str
+        return common.convert_from_string(result[0], data_type) \
+            if result is not None else default_value
+
+    @db_base.sql_connect()
+    def set_stream_continuity(self, profile_guid, videoid, value):
+        """Update or insert a stream continuity value to current profile"""
+        # Update or insert approach, if there is no updated row then insert new one
+        value = common.convert_to_string(value)
+        update_query = ('UPDATE StreamContinuity '
+                        'SET Value = ?, DateLastModified = datetime(\'now\', \'localtime\') '
+                        'WHERE ProfileGuid = ? AND VideoID = ?')
+        cur = self._execute_query(update_query, (value, profile_guid, videoid))
+        if cur.rowcount == 0:
+            insert_query = ('INSERT INTO StreamContinuity '
+                            '(ProfileGuid, VideoID, Value, DateLastModified) '
+                            'VALUES (?, ?, ?, datetime(\'now\', \'localtime\'))')
+            self._execute_non_query(insert_query, (profile_guid, videoid, value))
