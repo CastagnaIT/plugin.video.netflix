@@ -2,7 +2,7 @@
 """Automatic updates of items exported to the Kodi library"""
 from __future__ import unicode_literals
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 import AddonSignals
 import xbmc
@@ -18,7 +18,6 @@ class LibraryUpdateService(xbmc.Monitor):
     """
 
     def __init__(self):
-
         # Export new episodes variables
         self.startidle = 0
         # self.last_schedule_check = datetime.now()
@@ -40,8 +39,7 @@ class LibraryUpdateService(xbmc.Monitor):
             common.debug('Triggering export new episodes')
             xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/exportallnewepisodes/)'
                                 .format(g.ADDON_ID))
-            g.PERSISTENT_STORAGE['library_auto_update_last_start'] = \
-                date.today().strftime('%Y-%m-%d')
+            g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
 
     def is_idle(self):
@@ -105,9 +103,8 @@ def _compute_next_schedule():
         return None
 
     time = g.ADDON.getSetting('update_time') or '00:00'
-    last_run = g.PERSISTENT_STORAGE.get(
-        'library_auto_update_last_start',
-        '1970-01-01')
+    last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
+                                     datetime.now() - timedelta(days=(50*365)))
     last_run = common.strp('{} {}'.format(last_run, time[0:5]),
                            '%Y-%m-%d %H:%M')
     next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
