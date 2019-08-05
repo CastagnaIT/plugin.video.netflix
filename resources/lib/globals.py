@@ -182,7 +182,6 @@ class GlobalVariables(object):
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
-        self._library = None
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -254,12 +253,7 @@ class GlobalVariables(object):
     def _init_filesystem_cache(self):
         # pylint: disable=broad-except
         for bucket in cache.BUCKET_NAMES:
-            if bucket != cache.CACHE_LIBRARY:
-                # Library gets special location in DATA_PATH root because
-                # we don't want users accidentally deleting it.
-                xbmcvfs.mkdirs(
-                    xbmc.translatePath(
-                        os.path.join(self.CACHE_PATH, bucket)))
+            xbmcvfs.mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
     def initial_addon_configuration(self):
         """
@@ -334,22 +328,6 @@ class GlobalVariables(object):
         Returns True when the setting monitor must be suspended
         """
         return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
-
-    def library(self):
-        """Get the current library instance"""
-        # pylint: disable=global-statement, attribute-defined-outside-init
-        if not self._library:
-            try:
-                self._library = self.CACHE.get(cache.CACHE_LIBRARY, 'library')
-            except cache.CacheMiss:
-                self._library = {}
-        return self._library
-
-    def save_library(self):
-        """Save the library to disk via cache"""
-        if self._library is not None:
-            self.CACHE.add(cache.CACHE_LIBRARY, 'library', self._library,
-                           ttl=cache.TTL_INFINITE, to_disk=True)
 
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate

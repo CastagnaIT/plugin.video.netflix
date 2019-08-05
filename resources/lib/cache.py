@@ -30,10 +30,9 @@ CACHE_SUPPLEMENTAL = 'cache_supplemental'
 CACHE_METADATA = 'cache_metadata'
 CACHE_INFOLABELS = 'cache_infolabels'
 CACHE_ARTINFO = 'cache_artinfo'
-CACHE_LIBRARY = 'library'
 
 BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_SUPPLEMENTAL, CACHE_METADATA,
-                CACHE_INFOLABELS, CACHE_ARTINFO, CACHE_LIBRARY]
+                CACHE_INFOLABELS, CACHE_ARTINFO]
 
 BUCKET_LOCKED = 'LOCKED_BY_{:04d}_AT_{}'
 
@@ -156,7 +155,7 @@ class Cache(object):
         """Return a lock marker for this instance and the current time"""
         # Return maximum timestamp for library to prevent stale lock
         # overrides which may lead to inconsistencies
-        timestamp = sys.maxint if bucket == CACHE_LIBRARY else int(time())
+        timestamp = int(time())
         return str(BUCKET_LOCKED.format(self.plugin_handle, timestamp))
 
     def get(self, bucket, identifier):
@@ -167,8 +166,7 @@ class Cache(object):
             cache_entry = self._get_from_disk(bucket, identifier)
             self.add(bucket, identifier, cache_entry['content'])
         # Do not verify TTL on cache library, prevents the loss of exported objects
-        if not bucket == CACHE_LIBRARY:
-            self.verify_ttl(bucket, identifier, cache_entry)
+        self.verify_ttl(bucket, identifier, cache_entry)
         return cache_entry['content']
 
     def add(self, bucket, identifier, content, ttl=None, to_disk=False):
@@ -198,8 +196,6 @@ class Cache(object):
         """Clear all cache buckets"""
         # pylint: disable=global-statement
         for bucket in BUCKET_NAMES:
-            if bucket == CACHE_LIBRARY:
-                continue
             self.window.clearProperty(_window_property(bucket))
             if bucket in self.buckets:
                 del self.buckets[bucket]
@@ -210,9 +206,8 @@ class Cache(object):
 
     def _invalidate_on_disk(self):
         for bucket in BUCKET_NAMES:
-            if bucket != CACHE_LIBRARY:
-                self.common.delete_folder_contents(
-                    os.path.join(self.cache_path, bucket))
+            self.common.delete_folder_contents(
+                os.path.join(self.cache_path, bucket))
 
     def invalidate_entry(self, bucket, identifier, on_disk=False):
         """Remove an item from a bucket"""
@@ -288,12 +283,7 @@ class Cache(object):
             handle.close()
 
     def _entry_filename(self, bucket, identifier):
-        if bucket == CACHE_LIBRARY:
-            # We want a special handling for the library database, so users
-            # dont accidentally delete it when deleting the cache
-            file_loc = [os.path.dirname(self.cache_path), 'library.ndb2']
-        else:
-            file_loc = [self.cache_path, bucket, '{}.cache'.format(identifier)]
+        file_loc = [self.cache_path, bucket, '{}.cache'.format(identifier)]
         return xbmc.translatePath(os.path.join(*file_loc))
 
     def _persist_bucket(self, bucket, contents):
