@@ -3,11 +3,10 @@
 from __future__ import unicode_literals
 
 import os
-
 import xbmc
-
 import resources.lib.common as common
 
+from enum import Enum
 from resources.lib.globals import g
 
 
@@ -19,6 +18,13 @@ TABLE_APP_CONF = ('AppConfig', ['Name', 'Value'])
 TABLE_SESSION = ('Session', ['Name', 'Value'])
 TABLE_MENU_DATA = ('MenuData', ['ContextId', 'Value'])
 TABLE_SHARED_APP_CONF = ('SharedAppConfig', ['Name', 'Value'])
+
+
+# Enum mapping the video library columns of the tables
+class VidLibProp(Enum):
+    exclude_update = 'ExcludeUpdate'
+    nfo_export = 'NfoExport'
+    file_path = 'FilePath'
 
 
 def get_local_db_path():
