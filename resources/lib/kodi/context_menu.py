@@ -27,15 +27,15 @@ CONTEXT_MENU_ACTIONS = {
     'update': {
         'label': common.get_local_string(30061),
         'url': ctx_item_url(['update'], g.MODE_LIBRARY)},
-    'exportnewepisodes': {
+    'export_new_episodes': {
         'label': common.get_local_string(30195),
-        'url': ctx_item_url(['exportnewepisodes'], g.MODE_LIBRARY)},
-    'excludefromautoupdate': {
+        'url': ctx_item_url(['export_new_episodes'], g.MODE_LIBRARY)},
+    'exclude_from_auto_update': {
         'label': common.get_local_string(30196),
-        'url': ctx_item_url(['excludefromautoupdate'], g.MODE_LIBRARY)},
-    'includeinautoupdate': {
+        'url': ctx_item_url(['exclude_from_autou_pdate'], g.MODE_LIBRARY)},
+    'include_in_auto_update': {
         'label': common.get_local_string(30197),
-        'url': ctx_item_url(['includeinautoupdate'], g.MODE_LIBRARY)},
+        'url': ctx_item_url(['include_in_auto_update'], g.MODE_LIBRARY)},
     'rate': {
         'label': common.get_local_string(30019),
         'url': ctx_item_url(['rate'])},
@@ -86,11 +86,11 @@ def _generate_library_ctx_items(videoid):
         library_actions = []
 
     if videoid.mediatype == common.VideoId.SHOW and is_in_library:
-        library_actions.append('exportnewepisodes')
+        library_actions.append('export_new_episodes')
         if library.show_excluded_from_auto_update(videoid):
-            library_actions.append('includeinautoupdate')
+            library_actions.append('include_in_auto_update')
         else:
-            library_actions.append('excludefromautoupdate')
+            library_actions.append('exclude_from_auto_update')
 
     return [_ctx_item(action, videoid) for action in library_actions]
 

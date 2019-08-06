@@ -44,6 +44,35 @@ class NFSharedDatabase(db_local.NFLocalDatabase):
         return result[0] if result is not None else default_value
 
     @db_base.sql_connect()
+    def get_all_episodes_ids_and_filepath_from_tvshow(self, tvshowid):
+        """Get all episodes IDs and filepaths for given id"""
+        query =\
+            ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
+             'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
+             'FROM VideoLibEpisodes '
+             'INNER JOIN VideoLibSeasons ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
+             'WHERE VideoLibSeasons.TvShowID = ?'
+             )
+        cur = self._execute_query(query, (tvshowid,))
+        result = cur.fetchall()
+        return result
+
+    @db_base.sql_connect()
+    def get_all_episodes_ids_and_filepath_from_season(self, tvshowid, seasonid):
+        """Get all episodes IDs and filepaths for given id"""
+        query =\
+            ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
+             'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
+             'FROM VideoLibEpisodes '
+             'INNER JOIN VideoLibSeasons ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
+             'WHERE VideoLibSeasons.TvShowID = ? AND '
+             'VideoLibSeasons.SeasonID = ?'
+             )
+        cur = self._execute_query(query, (tvshowid, seasonid))
+        result = cur.fetchall()
+        return result
+
+    @db_base.sql_connect()
     def get_random_episode_filepath_from_tvshow(self, tvshowid, default_value=None):
         """Get random episode filepath of a show of a given id"""
         query =\
