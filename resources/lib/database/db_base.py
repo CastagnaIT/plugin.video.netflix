@@ -50,7 +50,7 @@ def sql_connect():
     return time_execution_decorator
 
 
-class NFBaseDatabase:
+class NFBaseDatabase(object):
     def __init__(self, db_file_path=db_utils.get_local_db_path()):
         self.conn = None
         self.db_file_path = db_file_path

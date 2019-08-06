@@ -11,16 +11,16 @@ import resources.lib.database.db_utils as db_utils
 class NFSharedDatabase(db_local.NFLocalDatabase):
     def get_value(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF,
                   data_type=None):
-        return super().get_value(key, default_value, table, data_type)
+        return super(NFSharedDatabase, self).get_value(key, default_value, table, data_type)
 
     def get_values(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF):
-        return super().get_values(key, default_value, table)
+        return super(NFSharedDatabase, self).get_values(key, default_value, table)
 
     def set_value(self, key, value, table=db_utils.TABLE_SHARED_APP_CONF):
-        super().set_value(key, value, table)
+        super(NFSharedDatabase, self).set_value(key, value, table)
 
     def delete_key(self, key, table=db_utils.TABLE_SHARED_APP_CONF):
-        super().delete_key(key, table)
+        super(NFSharedDatabase, self).delete_key(key, table)
 
     @db_base.sql_connect()
     def get_movie_filepath(self, movieid, default_value=None):
