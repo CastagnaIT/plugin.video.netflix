@@ -807,3 +807,7 @@ msgstr ""
 msgctxt "#30197"
 msgid "Include in auto update"
 msgstr ""
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr ""
