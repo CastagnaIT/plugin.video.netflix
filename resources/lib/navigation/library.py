@@ -60,8 +60,8 @@ class LibraryActionExecutor(object):
         nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
         library.execute_library_tasks_silently(
             videoid, [library.export_item],
-            self.params.get('sync_mylist', False),
-            nfo_settings)
+            sync_mylist=self.params.get('sync_mylist', False),
+            nfo_settings=nfo_settings)
 
     @common.inject_video_id(path_offset=1)
     def remove_silent(self, videoid):
@@ -70,7 +70,7 @@ class LibraryActionExecutor(object):
         list and Kodi library and do no sync, if not explicitly asked to."""
         library.execute_library_tasks_silently(
             videoid, [library.remove_item],
-            self.params.get('sync_mylist', False))
+            sync_mylist=self.params.get('sync_mylist', False))
 
     # Not used for now
     # @common.inject_video_id(path_offset=1)
@@ -80,7 +80,7 @@ class LibraryActionExecutor(object):
     #    list and Kodi library and do no sync, if not explicitly asked to."""
     #    library.execute_library_tasks_silently(
     #        videoid, [library.remove_item, library.export_item],
-    #        self.params.get('sync_mylist', False))
+    #        sync_mylist=self.params.get('sync_mylist', False))
 
     def initial_mylist_sync(self, pathitems):
         """Perform an initial sync of My List and the Kodi library"""
