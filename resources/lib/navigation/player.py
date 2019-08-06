@@ -11,6 +11,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.infolabels as infolabels
+import resources.lib.kodi.library as library
 import resources.lib.kodi.ui as ui
 from resources.lib.services.playback import get_timeline_markers
 
@@ -147,10 +148,19 @@ def get_upnext_info(videoid, current_episode, metadata):
                                                     xbmcgui.ListItem())
     next_info = {
         'current_episode': upnext_info(videoid, *current_episode),
-        'next_episode': upnext_info(next_episode_id, *next_episode),
-        'play_info': {'play_path': common.build_url(videoid=next_episode_id,
-                                                    mode=g.MODE_PLAY)},
+        'next_episode': upnext_info(next_episode_id, *next_episode)
     }
+
+    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id')
+        and library.is_in_library(next_episode_id)):
+            filepath = g.SHARED_DB.get_episode_filepath(
+                next_episode_id.tvshowid,
+                next_episode_id.seasonid,
+                next_episode_id.episodeid)
+            next_info['play_info'] = {'play_path': xbmc.translatePath(filepath)}
+    else:
+        next_info['play_info'] = {'play_path': common.build_url(
+            videoid = next_episode_id, mode = g.MODE_PLAY)}
     if 'creditsOffset' in metadata[0]:
         next_info['notification_time'] = (metadata[0]['runtime'] -
                                           metadata[0]['creditsOffset'])
