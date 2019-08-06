@@ -45,7 +45,7 @@
 
 ## Debug log
 
-SIMPLE RULES:
+SIMPLE RULES: NO LOGS? NO HELP!
 - Before performing any operation enable Kodi debug logging [Settings->System->Logging->Enable debug logging] only after perform the operations to reproduce the issue
 - Copy here a link to your debug log, use something like [https://paste.kodi.tv/](https://paste.kodi.tv/) or similar
 - Do NOT paste the content of the log here
