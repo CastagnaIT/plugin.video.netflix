@@ -538,7 +538,7 @@ def export_all_new_episodes():
 
         for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, False):
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-            export_new_episodes(videoid, False)
+            export_new_episodes(videoid, True)
             # add some randomness between show analysis to limit servers load and ban risks
             xbmc.sleep(random.randint(1000, 5001))
 
@@ -547,19 +547,22 @@ def export_all_new_episodes():
         common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
 
 
-def export_new_episodes(videoid, scan=True):
+def export_new_episodes(videoid, silent=False):
     """
     Export new episodes for a tv show by it's video id
     :param videoid: The videoid of the tv show to process
     :param scan: Whether or not to scan the library after exporting, useful for a single show
+    :param silent: don't display user interface while exporting
     :return: None
     """
+
+    method = execute_library_tasks_silently if silent else execute_library_tasks
+
     if videoid.mediatype == common.VideoId.SHOW:
         common.debug('Exporting new episodes for {}'.format(videoid))
-        execute_library_tasks_silently(videoid, [export_new_item], False)
-        if scan:
-            common.debug('Notify service to update the library')
-            common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+        method(videoid, [export_new_item],
+               title=common.get_local_string(30198),
+               sync_mylist=False)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
 
@@ -580,7 +583,8 @@ def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_s
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, sync_mylist, nfo_settings=None):
+def execute_library_tasks_silently(videoid, task_handlers, title=None,
+                                   sync_mylist=False, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=broad-except
     for task_handler in task_handlers:
