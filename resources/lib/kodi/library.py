@@ -90,11 +90,11 @@ def _get_item(mediatype, filename):
         {'and': [
             {'field': 'path', 'operator': 'startswith', 'value': path},
             {'field': 'filename', 'operator': 'is', 'value': shortname}
-            ]})[0]
+        ]})[0]
     if not library_item:
         raise ItemNotFound
     return common.get_library_item_details(
-         mediatype, library_item[mediatype + 'id'])
+        mediatype, library_item[mediatype + 'id'])
 
 
 def list_contents():
@@ -159,9 +159,10 @@ def _remove_from_kodi_library(videoid):
         if videoid.mediatype == common.VideoId.SHOW or videoid.mediatype == common.VideoId.SEASON:
             # Retrieve the all episodes in the export folder
             filters = {'and': [
-                {'field': 'path', 'operator': 'startswith', 'value': os.path.dirname(kodi_library_items[0]['file'])},
+                {'field': 'path', 'operator': 'startswith',
+                 'value': os.path.dirname(kodi_library_items[0]['file'])},
                 {'field': 'filename', 'operator': 'endswith', 'value': '.strm'}
-                ]}
+            ]}
             if videoid.mediatype == common.VideoId.SEASON:
                 # Add a season filter in case we just want to remove a season
                 filters['and'].append({'field': 'season', 'operator': 'is',
@@ -515,7 +516,7 @@ def _export_all_new_episodes_running():
     update = g.SHARED_DB.get_value('library_export_new_episodes_running', False)
     if update:
         start_time = g.SHARED_DB.get_value('library_export_new_episode_start_time',
-                                          data_type=datetime)
+                                           data_type=datetime)
         start_time = common.strp(start_time, '%Y-%m-%d %H:%M')
         if datetime.now() >= start_time + timedelta(hours=6):
             g.SHARED_DB.set_value('library_export_new_episodes_running', False)
