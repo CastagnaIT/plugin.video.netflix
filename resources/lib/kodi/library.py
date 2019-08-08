@@ -412,8 +412,8 @@ def export_new_item(item_task, library_home):
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
-    destination_folder = xbmc.makeLegalFilename(os.path.join(
-        library_home, item_task['section'], item_task['destination']))
+    destination_folder = xbmc.makeLegalFilename('/'.join(
+        [library_home, item_task['section'], item_task['destination']]))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
         export_filename = xbmc.makeLegalFilename('/'.join(
@@ -612,7 +612,7 @@ def get_previously_exported_items():
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
         for file in xbmcvfs.listdir(folder)[1]:
-            filepath = os.path.join(folder, file.decode('utf-8'))
+            filepath = xbmc.makeLegalFilename('/'.join([folder, file.decode('utf-8')]))
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}'.format(filepath))
                 try:
@@ -628,8 +628,9 @@ def get_previously_exported_items():
 
 
 def _lib_folders(section):
-    section_dir = xbmc.translatePath(os.path.join(library_path(), section))
-    return [os.path.join(section_dir, folder.decode('utf-8'))
+    section_dir = xbmc.translatePath(
+        xbmc.makeLegalFilename('/'.join([library_path(), section])))
+    return [xbmc.makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')]))
             for folder
             in xbmcvfs.listdir(section_dir)[0]]
 
