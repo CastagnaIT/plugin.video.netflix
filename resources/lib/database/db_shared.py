@@ -2,6 +2,8 @@
 """Local database access and functions"""
 from __future__ import unicode_literals
 
+import sqlite3 as sql
+
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_local as db_local
@@ -42,6 +44,35 @@ class NFSharedDatabase(db_local.NFLocalDatabase):
         cur = self._execute_query(query, (tvshowid, seasonid, episodeid))
         result = cur.fetchone()
         return result[0] if result is not None else default_value
+
+    @db_base.sql_connect()
+    def get_all_episodes_ids_and_filepath_from_tvshow(self, tvshowid):
+        """Get all episodes IDs and filepaths for given id"""
+        self.conn.row_factory = sql.Row
+        query =\
+            ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
+             'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
+             'FROM VideoLibEpisodes '
+             'INNER JOIN VideoLibSeasons ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
+             'WHERE VideoLibSeasons.TvShowID = ?')
+        cur = self._execute_query(query, (tvshowid,))
+        result = cur.fetchall()
+        return result
+
+    @db_base.sql_connect()
+    def get_all_episodes_ids_and_filepath_from_season(self, tvshowid, seasonid):
+        """Get all episodes IDs and filepaths for given id"""
+        self.conn.row_factory = sql.Row
+        query =\
+            ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
+             'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
+             'FROM VideoLibEpisodes '
+             'INNER JOIN VideoLibSeasons ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
+             'WHERE VideoLibSeasons.TvShowID = ? AND '
+             'VideoLibSeasons.SeasonID = ?')
+        cur = self._execute_query(query, (tvshowid, seasonid))
+        result = cur.fetchall()
+        return result
 
     @db_base.sql_connect()
     def get_random_episode_filepath_from_tvshow(self, tvshowid, default_value=None):

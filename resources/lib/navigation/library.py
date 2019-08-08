@@ -25,7 +25,7 @@ class LibraryActionExecutor(object):
         nfo_settings = nfo.NFOSettings()
         nfo_settings.show_export_dialog(videoid.mediatype)
         library.execute_library_tasks(videoid,
-                                      library.export_item,
+                                      [library.export_item],
                                       common.get_local_string(30018),
                                       nfo_settings=nfo_settings)
 
@@ -34,7 +34,7 @@ class LibraryActionExecutor(object):
         """Remove an item from the Kodi library"""
         if ui.ask_for_removal_confirmation():
             library.execute_library_tasks(videoid,
-                                          library.remove_item,
+                                          [library.remove_item],
                                           common.get_local_string(30030))
             common.refresh_container()
 
@@ -44,7 +44,7 @@ class LibraryActionExecutor(object):
         nfo_settings = nfo.NFOSettings()
         nfo_settings.show_export_dialog(videoid.mediatype)
         library.execute_library_tasks(videoid,
-                                      library.update_item,
+                                      [library.remove_item, library.export_item],
                                       common.get_local_string(30061),
                                       nfo_settings=nfo_settings)
         common.refresh_container()
@@ -59,7 +59,7 @@ class LibraryActionExecutor(object):
         nfo_settings = nfo.NFOSettings()
         nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
         library.execute_library_tasks_silently(
-            videoid, library.export_item,
+            videoid, [library.export_item],
             self.params.get('sync_mylist', False),
             nfo_settings)
 
@@ -69,7 +69,7 @@ class LibraryActionExecutor(object):
         (without GUI feedback). This will ignore the setting for syncing my
         list and Kodi library and do no sync, if not explicitly asked to."""
         library.execute_library_tasks_silently(
-            videoid, library.remove_item,
+            videoid, [library.remove_item],
             self.params.get('sync_mylist', False))
 
     # Not used for now
@@ -79,7 +79,7 @@ class LibraryActionExecutor(object):
     #    (without GUI feedback). This will ignore the setting for syncing my
     #    list and Kodi library and do no sync, if not explicitly asked to."""
     #    library.execute_library_tasks_silently(
-    #        videoid, library.update_item,
+    #        videoid, [library.remove_item, library.export_item],
     #        self.params.get('sync_mylist', False))
 
     def initial_mylist_sync(self, pathitems):
@@ -95,7 +95,7 @@ class LibraryActionExecutor(object):
         nfo_settings.show_export_dialog()
         for videoid in api.video_list(
                 api.list_id_for_type('queue')).videoids:
-            library.execute_library_tasks(videoid, library.export_item,
+            library.execute_library_tasks(videoid, [library.export_item],
                                           common.get_local_string(30018),
                                           sync_mylist=False,
                                           nfo_settings=nfo_settings)
@@ -110,7 +110,7 @@ class LibraryActionExecutor(object):
     def migrate(self, pathitems):
         """Migrate exported items from old library format to the new format"""
         for videoid in library.get_previously_exported_items():
-            library.execute_library_tasks(videoid, library.export_item,
+            library.execute_library_tasks(videoid, [library.export_item],
                                           common.get_local_string(30018),
                                           sync_mylist=False)
 

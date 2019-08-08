@@ -133,11 +133,12 @@ def exclude_show_from_auto_update(videoid, exclude):
 
 def update_kodi_library(library_operation):
     """Decorator that ensures an update of the Kodi libarary"""
+
     @wraps(library_operation)
     def kodi_library_update_wrapper(videoid, task_handler, *args, **kwargs):
         """Either trigger an update of the Kodi library or remove the
         items associated with videoid, depending on the invoked task_handler"""
-        is_remove = task_handler == remove_item
+        is_remove = task_handler == [remove_item]
         if is_remove:
             _remove_from_kodi_library(videoid)
         library_operation(videoid, task_handler, *args, **kwargs)
@@ -146,6 +147,7 @@ def update_kodi_library(library_operation):
             # This prevents a second call to cancel the update
             common.debug('Notify service to update the library')
             common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+
     return kodi_library_update_wrapper
 
 
@@ -194,99 +196,116 @@ def purge():
     common.debug('Purging internal database and kodi library')
     for videoid_value in g.SHARED_DB.get_movies_id_list():
         videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
-        execute_library_tasks(videoid, remove_item,
+        execute_library_tasks(videoid, [remove_item],
                               common.get_local_string(30030),
                               sync_mylist=False)
     for videoid_value in g.SHARED_DB.get_tvshows_id_list():
         videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-        execute_library_tasks(videoid, remove_item,
+        execute_library_tasks(videoid, [remove_item],
                               common.get_local_string(30030),
                               sync_mylist=False)
 
 
 @common.time_execution(immediate=False)
-def compile_tasks(videoid, nfo_settings=None):
+def compile_tasks(videoid, task_handler, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
     common.debug('Compiling library tasks for {}'.format(videoid))
-    metadata = api.metadata(videoid)
-    if videoid.mediatype == common.VideoId.MOVIE:
-        return _create_movie_task(videoid, metadata[0], nfo_settings)
-    elif videoid.mediatype in common.VideoId.TV_TYPES:
-        return _create_tv_tasks(videoid, metadata, nfo_settings)
-    raise ValueError('Cannot handle {}'.format(videoid))
+
+    if task_handler == export_item:
+        metadata = api.metadata(videoid)
+        if videoid.mediatype == common.VideoId.MOVIE:
+            return _create_export_movie_task(videoid, metadata[0], nfo_settings)
+        elif videoid.mediatype in common.VideoId.TV_TYPES:
+            return _create_export_tv_tasks(videoid, metadata, nfo_settings)
+        raise ValueError('Cannot handle {}'.format(videoid))
+
+    if task_handler == export_new_item:
+        metadata = api.metadata(videoid, True)
+        return _create_new_episodes_tasks(videoid, metadata)
+
+    if task_handler == remove_item:
+        if videoid.mediatype == common.VideoId.MOVIE:
+            return _create_remove_movie_task(videoid)
+        elif videoid.mediatype == common.VideoId.SHOW:
+            return _compile_remove_tvshow_tasks(videoid)
+        elif videoid.mediatype == common.VideoId.SEASON:
+            return _compile_remove_season_tasks(videoid)
+        elif videoid.mediatype == common.VideoId.EPISODE:
+            return _create_remove_episode_task(videoid)
 
 
-def _create_movie_task(videoid, movie, nfo_settings):
+def _create_export_movie_task(videoid, movie, nfo_settings):
     """Create a task for a movie"""
     # Reset NFO export to false if we never want movies nfo
     name = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
-    return [_create_item_task(name, FOLDER_MOVIES, videoid, name, name,
-                              nfo.create_movie_nfo(movie) if
-                              nfo_settings and nfo_settings.export_movie_enabled else None)]
+    return [_create_export_item_task(name, FOLDER_MOVIES, videoid, name, name,
+                                     nfo.create_movie_nfo(movie) if
+                                     nfo_settings and nfo_settings.export_movie_enabled else None)]
 
 
-def _create_tv_tasks(videoid, metadata, nfo_settings):
+def _create_export_tv_tasks(videoid, metadata, nfo_settings):
     """Create tasks for a show, season or episode.
     If videoid represents a show or season, tasks will be generated for
     all contained seasons and episodes"""
     if videoid.mediatype == common.VideoId.SHOW:
-        tasks = _compile_show_tasks(videoid, metadata[0], nfo_settings)
+        tasks = _compile_export_show_tasks(videoid, metadata[0], nfo_settings)
     elif videoid.mediatype == common.VideoId.SEASON:
-        tasks = _compile_season_tasks(videoid,
-                                      metadata[0],
-                                      common.find(int(videoid.seasonid),
-                                                  'id',
-                                                  metadata[0]['seasons']),
-                                      nfo_settings)
+        tasks = _compile_export_season_tasks(videoid,
+                                             metadata[0],
+                                             common.find(int(videoid.seasonid),
+                                                         'id',
+                                                         metadata[0]['seasons']),
+                                             nfo_settings)
     else:
-        tasks = [_create_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
+        tasks = [_create_export_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
 
     if nfo_settings and nfo_settings.export_full_tvshow:
         # Create tvshow.nfo file
         # In episode metadata, show data is at 3rd position,
         # while it's at first position in show metadata.
-        # Best is to enumerate values to find the correct
+        # Best is to enumerate values to find the correct key position
         key_index = -1
         for i in range(len(metadata)):
             if metadata[i] and metadata[i].get('type', None) == 'show':
                 key_index = i
         if key_index > -1:
-            tasks.append(_create_item_task('tvshow.nfo', FOLDER_TV, videoid,
-                                           metadata[key_index]['title'],
-                                           'tvshow',
-                                           nfo.create_show_nfo(metadata[key_index]),
-                                           False))
+            tasks.append(_create_export_item_task('tvshow.nfo', FOLDER_TV, videoid,
+                                                  metadata[key_index]['title'],
+                                                  'tvshow',
+                                                  nfo.create_show_nfo(metadata[key_index]),
+                                                  False))
     return tasks
 
 
-def _compile_show_tasks(videoid, show, nfo_settings):
+def _compile_export_show_tasks(videoid, show, nfo_settings):
     """Compile a list of task items for all episodes of all seasons
     of a tvshow"""
     # This nested comprehension is nasty but necessary. It flattens
     # the task lists for each season into one list
     return [task for season in show['seasons']
-            for task in _compile_season_tasks(
-                videoid.derive_season(season['id']), show, season, nfo_settings)]
+            for task in _compile_export_season_tasks(
+            videoid.derive_season(season['id']), show, season, nfo_settings)]
 
 
-def _compile_season_tasks(videoid, show, season, nfo_settings):
+def _compile_export_season_tasks(videoid, show, season, nfo_settings):
     """Compile a list of task items for all episodes in a season"""
-    return [_create_episode_task(videoid.derive_episode(episode['id']),
-                                 episode, season, show, nfo_settings)
+    return [_create_export_episode_task(videoid.derive_episode(episode['id']),
+                                        episode, season, show, nfo_settings)
             for episode in season['episodes']]
 
 
-def _create_episode_task(videoid, episode, season, show, nfo_settings):
+def _create_export_episode_task(videoid, episode, season, show, nfo_settings):
     """Export a single episode to the library"""
     filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
     title = ' - '.join((show['title'], filename, episode['title']))
-    return _create_item_task(title, FOLDER_TV, videoid, show['title'],
-                             filename,
-                             nfo.create_episode_nfo(episode, season, show)
-                             if nfo_settings and nfo_settings.export_tvshow_enabled else None)
+    return _create_export_item_task(
+        title, FOLDER_TV, videoid, show['title'], filename,
+        nfo.create_episode_nfo(episode, season, show)
+        if nfo_settings and nfo_settings.export_tvshow_enabled else None)
 
 
-def _create_item_task(title, section, videoid, destination, filename, nfo_data=None, is_strm=True):
+def _create_export_item_task(title, section, videoid, destination, filename, nfo_data=None,
+                             is_strm=True):
     """Create a single task item"""
     return {
         'title': title,
@@ -301,32 +320,92 @@ def _create_item_task(title, section, videoid, destination, filename, nfo_data=N
 
 def _create_new_episodes_tasks(videoid, metadata):
     tasks = []
-    for season in metadata[0]['seasons']:
-        nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp.nfo_export, False)
-        nfo_settings = nfo.NFOSettings(nfo_export)
+    if metadata and 'seasons' in metadata[0]:
+        for season in metadata[0]['seasons']:
+            nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                                                         VidLibProp.nfo_export, False)
+            nfo_settings = nfo.NFOSettings(nfo_export)
 
-        if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
-            # The season exists, try to find any missing episode
-            for episode in season['episodes']:
-                if not g.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
-                    tasks.append(_create_episode_task(
-                        videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
-                        episode=episode,
-                        season=season,
-                        show=metadata[0],
-                        nfo_settings=nfo_settings
-                    ))
-                    common.debug('Auto exporting episode {}'.format(episode['id']))
-        else:
-            # The season does not exist, build task for the season
-            tasks += _compile_season_tasks(
-                videoid=videoid.derive_season(season['id']),
-                show=metadata[0],
-                season=season,
-                nfo_settings=nfo_settings
-            )
-            common.debug('Auto exporting season {}'.format(season['id']))
+            if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
+                # The season exists, try to find any missing episode
+                for episode in season['episodes']:
+                    if not g.SHARED_DB.episode_id_exists(
+                            videoid.value, season['id'], episode['id']):
+                        tasks.append(_create_export_episode_task(
+                            videoid=videoid.derive_season(
+                                season['id']).derive_episode(episode['id']),
+                            episode=episode,
+                            season=season,
+                            show=metadata[0],
+                            nfo_settings=nfo_settings
+                        ))
+                        common.debug('Auto exporting episode {}'.format(episode['id']))
+            else:
+                # The season does not exist, build task for the season
+                tasks += _compile_export_season_tasks(
+                    videoid=videoid.derive_season(season['id']),
+                    show=metadata[0],
+                    season=season,
+                    nfo_settings=nfo_settings
+                )
+                common.debug('Auto exporting season {}'.format(season['id']))
     return tasks
+
+
+def _create_remove_movie_task(videoid):
+    filepath = g.SHARED_DB.get_movie_filepath(videoid.value)
+    title = os.path.splitext(os.path.basename(filepath))[0]
+    return [_create_remove_item_task(title, filepath, videoid)]
+
+
+def _compile_remove_tvshow_tasks(videoid):
+    row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_tvshow(videoid.value)
+    return _create_remove_tv_tasks(row_results)
+
+
+def _compile_remove_season_tasks(videoid):
+    row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_season(
+        videoid.tvshowid, videoid.seasonid)
+    return _create_remove_tv_tasks(row_results)
+
+
+def _create_remove_episode_task(videoid):
+    filepath = g.SHARED_DB.get_episode_filepath(
+        videoid.tvshowid, videoid.seasonid, videoid.episodeid)
+    return [_create_remove_item_task(
+        _episode_title_from_path(filepath),
+        filepath, videoid)]
+
+
+def _create_remove_tv_tasks(row_results):
+    return [_create_remove_item_task(_episode_title_from_path(row[b'FilePath']),
+                                     row[b'FilePath'],
+                                     common.VideoId.from_dict(
+                                         {'mediatype': common.VideoId.SHOW,
+                                          'tvshowid': row[b'TvShowID'],
+                                          'seasonid': row[b'SeasonID'],
+                                          'episodeid': row[b'EpisodeID']}))
+            for row in row_results]
+
+
+def _create_remove_item_task(title, filepath, videoid):
+    """Create a single task item"""
+    return {
+        'title': title,
+        'filepath': filepath,
+        'videoid': videoid
+    }
+
+
+def _episode_title_from_path(filepath):
+    fname = os.path.splitext(os.path.basename(filepath))[0]
+    dir = os.path.split(os.path.split(filepath)[0])[1]
+    return '{} - {}'.format(dir, fname)
+
+
+# We need to differentiate task_handler for task creation, but we use the same export method
+def export_new_item(item_task, library_home):
+    export_item(item_task, library_home)
 
 
 @common.time_execution(immediate=False)
@@ -390,61 +469,46 @@ def _add_to_library(videoid, export_filename, nfo_export):
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except
-    if item_task['is_strm']:  # We don't take care of a tvshow.nfo task if we are running an update
-        common.debug('Removing {} from library'.format(item_task['title']))
-        if not is_in_library(item_task['videoid']):
-            common.warn('cannot remove {}, item not in database library'
-                        .format(item_task['title']))
-            return
-        videoid = item_task['videoid']
-        exported_filename = ''
-        try:
-            file_path, media_type = _get_library_entry(videoid)
 
-            exported_filename = xbmc.translatePath(file_path)
-            parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
+    common.debug('Removing {} from library'.format(item_task['title']))
 
-            xbmcvfs.delete(exported_filename.decode("utf-8"))
-            # Remove the NFO files if exists
-            nfo_file = os.path.splitext(exported_filename.decode("utf-8"))[0] + '.nfo'
-            if xbmcvfs.exists(nfo_file):
-                xbmcvfs.delete(nfo_file)
-            dirs, files = xbmcvfs.listdir(parent_folder.decode("utf-8"))
-            tvshow_nfo_file = xbmc.makeLegalFilename(
-                os.path.join(parent_folder.decode("utf-8"), 'tvshow.nfo'))
-            # Remove tvshow_nfo_file only when is the last file
-            # (users have the option of removing even single seasons)
-            if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
-                xbmcvfs.delete(tvshow_nfo_file)
-                # Delete parent folder
-                xbmcvfs.rmdir(parent_folder.decode("utf-8"))
-            # Delete parent folder when empty
-            if not dirs and not files:
-                xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+    exported_filename = xbmc.translatePath(item_task['filepath'])
+    videoid = item_task['videoid']
+    common.debug('VideoId: {}'.format(videoid))
+    try:
+        parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
+        xbmcvfs.delete(exported_filename.decode("utf-8"))
+        # Remove the NFO files if exists
+        nfo_file = os.path.splitext(exported_filename.decode("utf-8"))[0] + '.nfo'
+        if xbmcvfs.exists(nfo_file):
+            xbmcvfs.delete(nfo_file)
+        dirs, files = xbmcvfs.listdir(parent_folder.decode("utf-8"))
+        tvshow_nfo_file = xbmc.makeLegalFilename(
+            '/'.join([parent_folder.decode("utf-8"), 'tvshow.nfo']))
+        # Remove tvshow_nfo_file only when is the last file
+        # (users have the option of removing even single seasons)
+        if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
+            xbmcvfs.delete(tvshow_nfo_file)
+            # Delete parent folder
+            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+        # Delete parent folder when empty
+        if not dirs and not files:
+            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
 
-            _remove_videoid_from_db(videoid)
-        except ItemNotFound:
-            common.debug('The video with id {} not exists in the database'.format(videoid))
-        except Exception:
-            common.debug('Cannot delete {}, file does not exist'.format(exported_filename))
+        _remove_videoid_from_db(videoid)
+    except ItemNotFound:
+        common.debug('The video with id {} not exists in the database'.format(videoid))
+    except Exception:
+        common.debug('Cannot delete {}, file does not exist'.format(exported_filename))
 
 
 def _remove_videoid_from_db(videoid):
     """Removes records from database in relation to a videoid"""
     if videoid.mediatype == common.VideoId.MOVIE:
         g.SHARED_DB.delete_movie(videoid.value)
-    elif videoid.mediatype == common.VideoId.SHOW:
-        g.SHARED_DB.delete_tvshow(videoid.value)
-    elif videoid.mediatype == common.VideoId.SEASON:
-        g.SHARED_DB.delete_season(videoid.tvshowid, videoid.seasonid)
     elif videoid.mediatype == common.VideoId.EPISODE:
         g.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
 
-
-def update_item(item_task, library_home):
-    """Remove and then re-export an item to the Kodi library"""
-    remove_item(item_task)
-    export_item(item_task, library_home)
 
 
 def _export_all_new_episodes_running():
@@ -491,52 +555,44 @@ def export_new_episodes(videoid, scan=True):
     """
     if videoid.mediatype == common.VideoId.SHOW:
         common.debug('Exporting new episodes for {}'.format(videoid))
-        # First let's fetch metadata of the show from api
-        metadata = api.metadata(videoid, True)
-        if metadata and 'seasons' in metadata[0]:
-            for task in _create_new_episodes_tasks(videoid, metadata):
-                try:
-                    export_item(task, library_path())
-                except Exception:
-                    import traceback
-                    common.error(traceback.format_exc())
-                    common.error('{} of {} failed'
-                                 .format(export_item.__name__, task['title']))
-
-            if scan:
-                common.debug('Notify service to update the library')
-                common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
-        else:
-            common.debug('No tv show {} or no season returned from servers'.format(videoid))
+        execute_library_tasks_silently(videoid, [export_new_item], False)
+        if scan:
+            common.debug('Notify service to update the library')
+            common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
 
 
 @update_kodi_library
-def execute_library_tasks(videoid, task_handler, title, sync_mylist=True, nfo_settings=None):
+def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_settings=None):
     """Execute library tasks for videoid and show errors in foreground"""
-    common.execute_tasks(title=title,
-                         tasks=compile_tasks(videoid, nfo_settings),
-                         task_handler=task_handler,
-                         notify_errors=True,
-                         library_home=library_path())
-    _sync_mylist(videoid, task_handler, sync_mylist)
+    for task_handler in task_handlers:
+        common.execute_tasks(title=title,
+                             tasks=compile_tasks(videoid, task_handler, nfo_settings),
+                             task_handler=task_handler,
+                             notify_errors=True,
+                             library_home=library_path())
+
+        # Exclude update operations
+        if task_handlers != [remove_item, export_item]:
+            _sync_mylist(videoid, task_handler, sync_mylist)
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handler, sync_mylist, nfo_settings=None):
+def execute_library_tasks_silently(videoid, task_handlers, sync_mylist, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=broad-except
-    for task in compile_tasks(videoid, nfo_settings):
-        try:
-            task_handler(task, library_path())
-        except Exception:
-            import traceback
-            common.error(traceback.format_exc())
-            common.error('{} of {} failed'
-                         .format(task_handler.__name__, task['title']))
-    if sync_mylist:
-        _sync_mylist(videoid, task_handler, sync_mylist)
+    for task_handler in task_handlers:
+        for task in compile_tasks(videoid, task_handler, nfo_settings):
+            try:
+                task_handler(task, library_path())
+            except Exception:
+                import traceback
+                common.error(traceback.format_exc())
+                common.error('{} of {} failed'
+                             .format(task_handler.__name__, task['title']))
+        if sync_mylist and (task_handlers != [remove_item, export_item]):
+            _sync_mylist(videoid, task_handler, sync_mylist)
 
 
 def _sync_mylist(videoid, task_handler, enabled):
