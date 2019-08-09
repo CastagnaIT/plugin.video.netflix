@@ -57,7 +57,10 @@ def extract_session_data(content):
     api_data = extract_api_data(react_context)
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
-    g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
+    esn_generated = generate_esn(user_data)
+    if not g.ADDON.getSetting('esn'):
+        g.LOCAL_DB.set_value('esn', esn_generated, TABLE_SESSION)
+    g.LOCAL_DB.set_value('esn_generated', esn_generated, TABLE_SESSION)
     g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Save api urls
     for key, path in api_data.items():
