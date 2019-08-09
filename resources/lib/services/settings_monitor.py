@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import xbmc
 import sys
 
-from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR)
+from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR, TABLE_SESSION)
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -23,6 +23,21 @@ class SettingsMonitor(xbmc.Monitor):
         common.debug('SettingsMonitor: Settings changed, reinitialize global settings')
 
         g.init_globals(sys.argv)
+
+        custom_esn = g.ADDON.getSetting('esn')
+        stored_esn = g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
+        if custom_esn:
+            # Use a custom esn
+            if custom_esn != stored_esn:
+                g.LOCAL_DB.set_value('esn', custom_esn, table=TABLE_SESSION)
+                common.send_signal(signal=common.Signals.ESN_CHANGED, data=custom_esn)
+        else:
+            esn_generated = g.LOCAL_DB.get_value('esn_generated', table=TABLE_SESSION)
+            if stored_esn != esn_generated:
+                # Custom esn erased, use the generated one
+                esn_generated = g.LOCAL_DB.get_value('esn_generated', table=TABLE_SESSION)
+                g.LOCAL_DB.set_value('esn', esn_generated, table=TABLE_SESSION)
+                common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn_generated)
 
         show_menu_changed = False
         sort_order_type_changed = False
