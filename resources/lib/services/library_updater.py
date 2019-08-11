@@ -37,7 +37,7 @@ class LibraryUpdateService(xbmc.Monitor):
                 and self.is_idle()
                 and self.next_schedule <= datetime.now()):
             common.debug('Triggering export new episodes')
-            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/exportallnewepisodes/)'
+            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/export_all_new_episodes/)'
                                 .format(g.ADDON_ID))
             g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()

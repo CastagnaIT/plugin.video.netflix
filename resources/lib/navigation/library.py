@@ -114,19 +114,19 @@ class LibraryActionExecutor(object):
                                           common.get_local_string(30018),
                                           sync_mylist=False)
 
-    def exportallnewepisodes(self, pathitems):
+    def export_all_new_episodes(self, pathitems):
         library.export_all_new_episodes()
 
     @common.inject_video_id(path_offset=1)
-    def exportnewepisodes(self, videoid):
+    def export_new_episodes(self, videoid):
         library.export_new_episodes(videoid)
 
     @common.inject_video_id(path_offset=1)
-    def excludefromautoupdate(self, videoid):
+    def exclude_from_auto_update(self, videoid):
         library.exclude_show_from_auto_update(videoid, True)
         common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
-    def includeinautoupdate(self, videoid):
+    def include_in_auto_update(self, videoid):
         library.exclude_show_from_auto_update(videoid, False)
         common.refresh_container()
