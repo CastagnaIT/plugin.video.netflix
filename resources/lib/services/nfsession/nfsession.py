@@ -98,7 +98,7 @@ class NetflixSession(object):
         self.session.headers.update(
             {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
         cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(g.LOCAL_DB.get_value('esn', table=TABLE_SESSION))
+        _update_esn(g.get_esn())
 
     @property
     def auth_url(self):
@@ -463,7 +463,7 @@ def _set_esn(esn):
     Set the ESN in settings if it hasn't been set yet.
     Return True if the new ESN has been set, False otherwise
     """
-    if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION) and esn:
+    if not g.get_esn() and esn:
         g.LOCAL_DB.set_value('esn', esn, table=TABLE_SESSION)
         return True
     return False

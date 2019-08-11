@@ -8,15 +8,15 @@ All other code executed on module level will only be executed once, when
 the module is first imported on the first addon invocation."""
 from __future__ import unicode_literals
 
+import collections
 import os
 import sys
-from urlparse import urlparse, parse_qsl
 from urllib import unquote
 
-import collections
 import xbmc
 import xbmcaddon
 import xbmcvfs
+from urlparse import urlparse, parse_qsl
 
 import resources.lib.cache as cache
 
@@ -328,6 +328,12 @@ class GlobalVariables(object):
         Returns True when the setting monitor must be suspended
         """
         return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
+
+    def get_esn(self):
+        """Get the generated esn or if set get the custom esn"""
+        from resources.lib.database.db_utils import (TABLE_SESSION)
+        custom_esn = g.ADDON.getSetting('esn')
+        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
 
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate
