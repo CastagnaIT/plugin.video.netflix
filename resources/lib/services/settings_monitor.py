@@ -24,20 +24,12 @@ class SettingsMonitor(xbmc.Monitor):
 
         g.init_globals(sys.argv)
 
+        # Check if the custom esn is changed
         custom_esn = g.ADDON.getSetting('esn')
-        stored_esn = g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
-        if custom_esn:
-            # Use a custom esn
-            if custom_esn != stored_esn:
-                g.LOCAL_DB.set_value('esn', custom_esn, table=TABLE_SESSION)
-                common.send_signal(signal=common.Signals.ESN_CHANGED, data=custom_esn)
-        else:
-            esn_generated = g.LOCAL_DB.get_value('esn_generated', table=TABLE_SESSION)
-            if stored_esn != esn_generated:
-                # Custom esn erased, use the generated one
-                esn_generated = g.LOCAL_DB.get_value('esn_generated', table=TABLE_SESSION)
-                g.LOCAL_DB.set_value('esn', esn_generated, table=TABLE_SESSION)
-                common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn_generated)
+        custom_esn_old = g.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
+        if custom_esn != custom_esn_old:
+            g.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
+            common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
 
         show_menu_changed = False
         sort_order_type_changed = False
