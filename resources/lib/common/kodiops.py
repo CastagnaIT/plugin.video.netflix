@@ -185,5 +185,5 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
         if locale_code in locale_conversion_table:
             return locale_conversion_table[locale_code]
         else:
-            common.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+            debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
             return locale_code
