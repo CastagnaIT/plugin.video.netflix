@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import resources.lib.common as common
 
+import resources.lib.upgrade_actions as upgrade_actions
 from resources.lib.globals import g
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
 
@@ -36,7 +37,6 @@ def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     common.debug('Initialize addon upgrade operations, from version {} to {})'
                  .format(previous_ver, current_ver))
-    # <Do something here>
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
 
@@ -45,7 +45,8 @@ def _perform_service_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     common.debug('Initialize service upgrade operations, from version {} to {})'
                  .format(previous_ver, current_ver))
-    # <Do something here>
+    if previous_ver is None:
+        upgrade_actions.migrate_library_to_db()
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('service_previous_version', current_ver)
 
