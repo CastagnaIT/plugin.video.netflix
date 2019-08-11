@@ -419,7 +419,7 @@ def export_item(item_task, library_home):
     if item_task['is_strm']:
         export_filename = xbmc.makeLegalFilename('/'.join(
             [destination_folder.decode('utf-8'), item_task['filename'] + '.strm']))
-        _add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
+        add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
         nfo_filename = xbmc.makeLegalFilename('/'.join(
@@ -455,10 +455,10 @@ def _write_nfo_file(nfo_data, nfo_filename):
         filehandle.close()
 
 
-def _add_to_library(videoid, export_filename, nfo_export):
+def add_to_library(videoid, export_filename, nfo_export, exclude_update=False):
     """Add an exported file to the library"""
     if videoid.mediatype == common.VideoId.EPISODE:
-        g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, False)
+        g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
         g.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
         g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid, videoid.value,
                                    export_filename.decode("utf-8"))
