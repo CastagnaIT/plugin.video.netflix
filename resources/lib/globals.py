@@ -193,9 +193,13 @@ class GlobalVariables(object):
         self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
 
         # Add absolute paths of embedded py modules to python system directory
-        ENUMPATH = os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum')
-        if ENUMPATH not in sys.path:
-            sys.path.insert(0, ENUMPATH)
+        module_paths = [
+            os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum'),
+            os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
+        ]
+        for path in module_paths:
+            if path not in sys.path:
+                sys.path.insert(0, path)
 
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
