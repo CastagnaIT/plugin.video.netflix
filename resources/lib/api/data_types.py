@@ -64,23 +64,25 @@ class VideoList(object):
     def __init__(self, path_response, list_id=None):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
-        self.id = common.VideoId(
-            videoid=(list_id
-                     if list_id
-                     else next(self.data['lists'].iterkeys())))
-        # self.title = self['displayName']   Not more used
-        self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
-        if self.videos:
-            self.artitem = next(self.videos.itervalues())
-            self.contained_titles = _get_titles(self.videos)
-            try:
-                self.videoids = _get_videoids(self.videos)
-            except KeyError:
-                self.videoids = None
-        else:
-            self.artitem = None
-            self.contained_titles = None
-            self.videoids = None
+        has_data = True if path_response.get('lists') else False
+        self.videos = {}
+        self.artitem = None
+        self.contained_titles = None
+        self.videoids = None
+        if has_data:
+            self.id = common.VideoId(
+                videoid=(list_id
+                         if list_id
+                         else next(self.data['lists'].iterkeys())))
+            # self.title = self['displayName']   Not more used
+            self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
+            if self.videos:
+                self.artitem = next(self.videos.itervalues())
+                self.contained_titles = _get_titles(self.videos)
+                try:
+                    self.videoids = _get_videoids(self.videos)
+                except KeyError:
+                    self.videoids = None
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.id.value][key])
@@ -98,27 +100,25 @@ class VideoListSorted(object):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
-        data_present = True if (context_id and path_response.get(context_name)
-                                and path_response[context_name].get(context_id)) or \
-                               (not context_id and path_response.get(context_name)) else False
-        if data_present:
+        has_data = True if (context_id and path_response.get(context_name)
+                            and path_response[context_name].get(context_id)) or \
+                           (not context_id and path_response.get(context_name)) else False
+        self.data_lists = {}
+        self.videos = {}
+        self.artitem = None
+        self.contained_titles = None
+        self.videoids = None
+        if has_data:
             self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
                 if context_id else path_response[context_name][req_sort_order_type]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
-        else:
-            self.data_lists = {}
-            self.videos = {}
-        if self.videos:
-            self.artitem = next(self.videos.itervalues())
-            self.contained_titles = _get_titles(self.videos)
-            try:
-                self.videoids = _get_videoids(self.videos)
-            except KeyError:
-                self.videoids = None
-        else:
-            self.artitem = None
-            self.contained_titles = None
-            self.videoids = None
+            if self.videos:
+                self.artitem = next(self.videos.itervalues())
+                self.contained_titles = _get_titles(self.videos)
+                try:
+                    self.videoids = _get_videoids(self.videos)
+                except KeyError:
+                    self.videoids = None
 
     def __getitem__(self, key):
         return _check_sentinel(self.data_lists[key])
@@ -134,8 +134,12 @@ class SearchVideoList(object):
     def __init__(self, path_response):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
-        have_data = 'search' in path_response
-        if have_data:
+        has_data = 'search' in path_response
+        self.videos = {}
+        self.videoids = None
+        self.artitem = None
+        self.contained_titles = None
+        if has_data:
             self.title = common.get_local_string(30100).format(self.data['search']['byTerm'].keys()[0][1:])
             self.videos = OrderedDict(resolve_refs(self.data['search']['byReference'].values()[0], self.data))
             self.videoids = _get_videoids(self.videos)
@@ -143,10 +147,6 @@ class SearchVideoList(object):
             self.contained_titles = _get_titles(self.videos)
         else:
             common.debug('SearchVideoList - No data in path_response')
-            self.videos = {}
-            self.videoids = None
-            self.artitem = None
-            self.contained_titles = None
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['search'][key])
