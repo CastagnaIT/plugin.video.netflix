@@ -136,8 +136,7 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
         """Check if the user is logged in and if so refresh session data"""
-        return (self.session.cookies or
-                (self._load_cookies() and self._refresh_session_data()))
+        return self._load_cookies() and self._refresh_session_data()
 
     @common.time_execution(immediate=True)
     def _refresh_session_data(self):
@@ -159,14 +158,15 @@ class NetflixSession(object):
     def _load_cookies(self):
         """Load stored cookies from disk"""
         # pylint: disable=broad-except
-        try:
-            self.session.cookies = cookies.load(self.account_hash)
-        except Exception as exc:
-            common.debug(
-                'Failed to load stored cookies: {}'.format(type(exc).__name__))
-            common.debug(traceback.format_exc())
-            return False
-        common.debug('Successfully loaded stored cookies')
+        if not self.session.cookies:
+            try:
+                self.session.cookies = cookies.load(self.account_hash)
+            except Exception as exc:
+                common.debug(
+                    'Failed to load stored cookies: {}'.format(type(exc).__name__))
+                common.debug(traceback.format_exc())
+                return False
+            common.debug('Successfully loaded stored cookies')
         return True
 
     @common.addonsignals_return_call
