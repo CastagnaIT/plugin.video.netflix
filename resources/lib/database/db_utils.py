@@ -14,11 +14,11 @@ LOCAL_DB_FILENAME = 'nf_local.sqlite3'
 SHARED_DB_FILENAME = 'nf_shared.sqlite3'
 
 # Table mapping: ( Table name, [ columns ] )
-TABLE_APP_CONF = ('AppConfig', ['Name', 'Value'])
-TABLE_SESSION = ('Session', ['Name', 'Value'])
-TABLE_MENU_DATA = ('MenuData', ['ContextId', 'Value'])
-TABLE_SETTINGS_MONITOR = ('SettingsMonitor', ['Name', 'Value'])
-TABLE_SHARED_APP_CONF = ('SharedAppConfig', ['Name', 'Value'])
+TABLE_APP_CONF = ('app_config', ['Name', 'Value'])
+TABLE_SESSION = ('session', ['Name', 'Value'])
+TABLE_MENU_DATA = ('menu_data', ['ContextId', 'Value'])
+TABLE_SETTINGS_MONITOR = ('settings_monitor', ['Name', 'Value'])
+TABLE_SHARED_APP_CONF = ('shared_app_config', ['Name', 'Value'])
 
 
 # Enum mapping the video library columns of the tables
