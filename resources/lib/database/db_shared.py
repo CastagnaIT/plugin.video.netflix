@@ -33,13 +33,13 @@ def get_shareddb_class(force_sqlite=False):
                 query = db_utils.mysql_insert_or_update('profiles', ['Guid'], ['SortOrder'])
                 self._execute_non_query(query, (guid, sort_order), multi=True)
             else:
-                data = db_utils.sql_filtered_update('Profiles',
+                data = db_utils.sql_filtered_update('profiles',
                                                     ['SortOrder'],
                                                     ['Guid'],
                                                     [sort_order, guid])
                 cur = self._execute_query(data[0], data[1])
                 if cur.rowcount == 0:
-                    data = db_utils.sql_filtered_insert('Profiles',
+                    data = db_utils.sql_filtered_insert('profiles',
                                                         ['Guid', 'SortOrder'],
                                                         [guid, sort_order])
                     self._execute_non_query(data[0], data[1])
@@ -47,14 +47,14 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def delete_profile(self, guid):
-            query = 'DELETE FROM Profiles WHERE Guid = ?'
+            query = 'DELETE FROM profiles WHERE Guid = ?'
             self._execute_non_query(query, (guid,))
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def get_movie_filepath(self, movieid, default_value=None):
             """Get movie filepath for given id"""
-            query = 'SELECT FilePath FROM VideoLibMovies WHERE MovieID = ?'
+            query = 'SELECT FilePath FROM video_lib_movies WHERE MovieID = ?'
             cur = self._execute_query(query, (movieid,))
             result = cur.fetchone()
             return result[0] if result else default_value
@@ -64,12 +64,12 @@ def get_shareddb_class(force_sqlite=False):
         def get_episode_filepath(self, tvshowid, seasonid, episodeid, default_value=None):
             """Get movie filepath for given id"""
             query =\
-                ('SELECT FilePath FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'WHERE VideoLibSeasons.TvShowID = ? AND '
-                 'VideoLibSeasons.SeasonID = ? AND '
-                 'VideoLibEpisodes.EpisodeID = ?')
+                ('SELECT FilePath FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'WHERE video_lib_seasons.TvShowID = ? AND '
+                 'video_lib_seasons.SeasonID = ? AND '
+                 'video_lib_episodes.EpisodeID = ?')
             cur = self._execute_query(query, (tvshowid, seasonid, episodeid))
             result = cur.fetchone()
             return result[0] if result is not None else default_value
@@ -80,12 +80,12 @@ def get_shareddb_class(force_sqlite=False):
             """Get all episodes IDs and filepaths for given id"""
             cur = self.get_cursor_for_dict_results()
             query =\
-                ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
-                 'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
-                 'FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'WHERE VideoLibSeasons.TvShowID = ?')
+                ('SELECT video_lib_episodes.FilePath, video_lib_seasons.TvShowID, '
+                 'video_lib_episodes.SeasonID, video_lib_episodes.EpisodeID '
+                 'FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'WHERE video_lib_seasons.TvShowID = ?')
             cur = self._execute_query(query, (tvshowid,), cur)
             return cur.fetchall()
 
@@ -95,13 +95,13 @@ def get_shareddb_class(force_sqlite=False):
             """Get all episodes IDs and filepaths for given id"""
             cur = self.get_cursor_for_dict_results()
             query =\
-                ('SELECT VideoLibEpisodes.FilePath, VideoLibSeasons.TvShowID, '
-                 'VideoLibEpisodes.SeasonID, VideoLibEpisodes.EpisodeID '
-                 'FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'WHERE VideoLibSeasons.TvShowID = ? AND '
-                 'VideoLibSeasons.SeasonID = ?')
+                ('SELECT video_lib_episodes.FilePath, video_lib_seasons.TvShowID, '
+                 'video_lib_episodes.SeasonID, video_lib_episodes.EpisodeID '
+                 'FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'WHERE video_lib_seasons.TvShowID = ? AND '
+                 'video_lib_seasons.SeasonID = ?')
             cur = self._execute_query(query, (tvshowid, seasonid), cur)
             return cur.fetchall()
 
@@ -111,10 +111,10 @@ def get_shareddb_class(force_sqlite=False):
             """Get random episode filepath of a show of a given id"""
             rand_func_name = 'RAND()' if self.is_mysql_database else 'RANDOM()'
             query =\
-                ('SELECT FilePath FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'WHERE VideoLibSeasons.TvShowID = ? '
+                ('SELECT FilePath FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'WHERE video_lib_seasons.TvShowID = ? '
                  'ORDER BY {} LIMIT 1').format(rand_func_name)
             cur = self._execute_query(query, (tvshowid,))
             result = cur.fetchone()
@@ -126,10 +126,10 @@ def get_shareddb_class(force_sqlite=False):
             """Get random episode filepath of a show of a given id"""
             rand_func_name = 'RAND()' if self.is_mysql_database else 'RANDOM()'
             query =\
-                ('SELECT FilePath FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'WHERE VideoLibSeasons.TvShowID = ? AND VideoLibSeasons.SeasonID = ? '
+                ('SELECT FilePath FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'WHERE video_lib_seasons.TvShowID = ? AND video_lib_seasons.SeasonID = ? '
                  'ORDER BY {} LIMIT 1').format(rand_func_name)
             cur = self._execute_query(query, (tvshowid, seasonid))
             result = cur.fetchone()
@@ -140,9 +140,9 @@ def get_shareddb_class(force_sqlite=False):
         def get_all_video_id_list(self):
             """Get all the ids of movies and tvshows contained in the library"""
             cur = self.get_cursor_for_list_results()
-            query = ('SELECT MovieID FROM VideoLibMovies '
+            query = ('SELECT MovieID FROM video_lib_movies '
                      'UNION '
-                     'SELECT TvShowID FROM VideoLibTvShows')
+                     'SELECT TvShowID FROM video_lib_tvshows')
             cur = self._execute_query(query, cursor=cur)
             return self.return_rows_as_list(cur)
 
@@ -157,11 +157,11 @@ def get_shareddb_class(force_sqlite=False):
             """
             cur = self.get_cursor_for_list_results()
             if enum_vid_prop and prop_value:
-                query = ('SELECT TvShowID FROM VideoLibTvShows'
+                query = ('SELECT TvShowID FROM video_lib_tvshows'
                          'WHERE ' + enum_vid_prop.value + ' = ?')
                 cur = self._execute_query(query, (str(prop_value),), cur)
             else:
-                query = 'SELECT TvShowID FROM VideoLibTvShows'
+                query = 'SELECT TvShowID FROM video_lib_tvshows'
                 cur = self._execute_query(query, cursor=cur)
             return self.return_rows_as_list(cur)
 
@@ -170,7 +170,7 @@ def get_shareddb_class(force_sqlite=False):
         def get_movies_id_list(self):
             """Get all the ids of movies contained in the library"""
             cur = self.get_cursor_for_list_results()
-            query = 'SELECT MovieID FROM VideoLibMovies'
+            query = 'SELECT MovieID FROM video_lib_movies'
             cur = self._execute_query(query, cursor=cur)
             return self.return_rows_as_list(cur)
 
@@ -178,7 +178,7 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def movie_id_exists(self, movieid):
             """Return True if a movie id exists"""
-            query = 'SELECT EXISTS(SELECT 1 FROM VideoLibMovies WHERE MovieID = ?)'
+            query = 'SELECT EXISTS(SELECT 1 FROM video_lib_movies WHERE MovieID = ?)'
             cur = self._execute_query(query, (movieid,))
             return bool(cur.fetchone()[0])
 
@@ -186,7 +186,7 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def tvshow_id_exists(self, tvshowid):
             """Return True if a tvshow id exists"""
-            query = 'SELECT EXISTS(SELECT 1 FROM VideoLibTvShows WHERE TvShowID = ?)'
+            query = 'SELECT EXISTS(SELECT 1 FROM video_lib_tvshows WHERE TvShowID = ?)'
             cur = self._execute_query(query, (tvshowid,))
             return bool(cur.fetchone()[0])
 
@@ -196,10 +196,10 @@ def get_shareddb_class(force_sqlite=False):
             """Return True if a tvshow season id exists"""
             query =\
                 ('SELECT EXISTS('
-                 'SELECT 1 FROM VideoLibSeasons '
-                 'INNER JOIN VideoLibTvShows '
-                 'ON VideoLibSeasons.TvShowID = VideoLibTvShows.TvShowID '
-                 'WHERE VideoLibTvShows.TvShowID = ? AND VideoLibSeasons.SeasonID = ?)')
+                 'SELECT 1 FROM video_lib_seasons '
+                 'INNER JOIN video_lib_tvshows '
+                 'ON video_lib_seasons.TvShowID = video_lib_tvshows.TvShowID '
+                 'WHERE video_lib_tvshows.TvShowID = ? AND video_lib_seasons.SeasonID = ?)')
             cur = self._execute_query(query, (tvshowid, seasonid))
             return bool(cur.fetchone()[0])
 
@@ -209,14 +209,14 @@ def get_shareddb_class(force_sqlite=False):
             """Return True if a tvshow episode id exists"""
             query =\
                 ('SELECT EXISTS('
-                 'SELECT 1 FROM VideoLibEpisodes '
-                 'INNER JOIN VideoLibSeasons '
-                 'ON VideoLibEpisodes.SeasonID = VideoLibSeasons.SeasonID '
-                 'INNER JOIN VideoLibTvShows '
-                 'ON VideoLibSeasons.TvShowID = VideoLibTvShows.TvShowID '
-                 'WHERE VideoLibTvShows.TvShowID = ? AND '
-                 'VideoLibSeasons.SeasonID = ? AND '
-                 'VideoLibEpisodes.EpisodeID = ?)')
+                 'SELECT 1 FROM video_lib_episodes '
+                 'INNER JOIN video_lib_seasons '
+                 'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
+                 'INNER JOIN video_lib_tvshows '
+                 'ON video_lib_seasons.TvShowID = video_lib_tvshows.TvShowID '
+                 'WHERE video_lib_tvshows.TvShowID = ? AND '
+                 'video_lib_seasons.SeasonID = ? AND '
+                 'video_lib_episodes.EpisodeID = ?)')
             cur = self._execute_query(query, (tvshowid, seasonid, episodeid))
             return bool(cur.fetchone()[0])
 
@@ -226,16 +226,16 @@ def get_shareddb_class(force_sqlite=False):
             """Update or insert a movie"""
             # Update or insert approach, if there is no updated row then insert new one
             if self.is_mysql_database:
-                query = db_utils.mysql_insert_or_update('VideoLibMovies', ['MovieID'],
+                query = db_utils.mysql_insert_or_update('video_lib_movies', ['MovieID'],
                                                         ['FilePath', 'NfoExport'])
                 self._execute_non_query(query, (movieid, file_path, str(nfo_export)), multi=True)
             else:
-                update_query = ('UPDATE VideoLibMovies SET FilePath = ?, NfoExport = ? '
+                update_query = ('UPDATE video_lib_movies SET FilePath = ?, NfoExport = ? '
                                 'WHERE MovieID = ?')
                 cur = self._execute_query(update_query, (file_path, str(nfo_export), movieid))
                 if cur.rowcount == 0:
-                    insert_query =\
-                        'INSERT INTO VideoLibMovies (MovieID, FilePath, NfoExport) VALUES (?, ?, ?)'
+                    insert_query = ('INSERT INTO video_lib_movies (MovieID, FilePath, NfoExport) '
+                                    'VALUES (?, ?, ?)')
                     self._execute_non_query(insert_query, (movieid, file_path, str(nfo_export)))
 
         @db_base_mysql.handle_connection
@@ -244,18 +244,18 @@ def get_shareddb_class(force_sqlite=False):
             """Update or insert a tvshow"""
             # Update or insert approach, if there is no updated row then insert new one
             if self.is_mysql_database:
-                query = db_utils.mysql_insert_or_update('videolibtvshows', ['TvShowID'],
+                query = db_utils.mysql_insert_or_update('video_lib_tvshows', ['TvShowID'],
                                                         ['ExcludeUpdate', 'NfoExport'])
                 self._execute_non_query(query, (tvshowid, str(exclude_update), str(nfo_export)),
                                         multi=True)
             else:
-                update_query = ('UPDATE VideoLibTvShows SET NfoExport = ?, ExcludeUpdate = ? '
+                update_query = ('UPDATE video_lib_tvshows SET NfoExport = ?, ExcludeUpdate = ? '
                                 'WHERE TvShowID = ?')
                 cur = self._execute_query(update_query, (str(nfo_export),
                                                          str(exclude_update), tvshowid))
                 if cur.rowcount == 0:
-                    insert_query =\
-                        ('INSERT INTO VideoLibTvShows (TvShowID, NfoExport, ExcludeUpdate) '
+                    insert_query = \
+                        ('INSERT INTO video_lib_tvshows (TvShowID, NfoExport, ExcludeUpdate) '
                          'VALUES (?, ?, ?)')
                     self._execute_non_query(insert_query, (tvshowid,
                                                            str(nfo_export),
@@ -266,7 +266,7 @@ def get_shareddb_class(force_sqlite=False):
         def insert_season(self, tvshowid, seasonid):
             """Insert a season if not exists"""
             if not self.season_id_exists(tvshowid, seasonid):
-                insert_query = ('INSERT INTO VideoLibSeasons (TvShowID, SeasonID) '
+                insert_query = ('INSERT INTO video_lib_seasons (TvShowID, SeasonID) '
                                 'VALUES (?, ?)')
                 self._execute_non_query(insert_query, (tvshowid, seasonid))
 
@@ -275,7 +275,7 @@ def get_shareddb_class(force_sqlite=False):
         def insert_episode(self, tvshowid, seasonid, episodeid, file_path):
             """Insert a episode if not exists"""
             if not self.episode_id_exists(tvshowid, seasonid, episodeid):
-                insert_query = ('INSERT INTO VideoLibEpisodes (SeasonID, EpisodeID, FilePath) '
+                insert_query = ('INSERT INTO video_lib_episodes (SeasonID, EpisodeID, FilePath) '
                                 'VALUES (?, ?, ?)')
                 self._execute_non_query(insert_query, (seasonid, episodeid, file_path))
 
@@ -283,24 +283,24 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def delete_movie(self, movieid):
             """Delete a movie from database"""
-            query = 'DELETE FROM VideoLibMovies WHERE MovieID = ?'
+            query = 'DELETE FROM video_lib_movies WHERE MovieID = ?'
             self._execute_query(query, (movieid,))
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def delete_tvshow(self, tvshowid):
             """Delete a tvshow from database"""
-            query = 'DELETE FROM VideoLibTvShows WHERE TvShowID = ?'
+            query = 'DELETE FROM video_lib_tvshows WHERE TvShowID = ?'
             self._execute_query(query, (tvshowid,))
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def delete_season(self, tvshowid, seasonid):
             """Delete a season from database"""
-            query = 'DELETE FROM VideoLibSeasons WHERE TvShowID = ? AND SeasonID = ?'
+            query = 'DELETE FROM video_lib_seasons WHERE TvShowID = ? AND SeasonID = ?'
             self._execute_query(query, (tvshowid, seasonid))
             # if there are no other seasons, delete the tvshow
-            query = 'SELECT EXISTS(SELECT 1 FROM VideoLibSeasons WHERE TvShowID = ?)'
+            query = 'SELECT EXISTS(SELECT 1 FROM video_lib_seasons WHERE TvShowID = ?)'
             cur = self._execute_query(query, (tvshowid,))
             if not bool(cur.fetchone()[0]):
                 self.delete_tvshow(tvshowid)
@@ -309,10 +309,10 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def delete_episode(self, tvshowid, seasonid, episodeid):
             """Delete a episode from database"""
-            query = 'DELETE FROM VideoLibEpisodes WHERE SeasonID = ? AND EpisodeID = ?'
+            query = 'DELETE FROM video_lib_episodes WHERE SeasonID = ? AND EpisodeID = ?'
             self._execute_query(query, (seasonid, episodeid))
             # if there are no other episodes, delete the season
-            query = 'SELECT EXISTS(SELECT 1 FROM VideoLibEpisodes WHERE SeasonID = ?)'
+            query = 'SELECT EXISTS(SELECT 1 FROM video_lib_episodes WHERE SeasonID = ?)'
             cur = self._execute_query(query, (seasonid,))
             if not bool(cur.fetchone()[0]):
                 self.delete_season(tvshowid, seasonid)
@@ -328,7 +328,7 @@ def get_shareddb_class(force_sqlite=False):
             :param data_type: OPTIONAL Used to set data type conversion only when default_value is None
             :return: the property value
             """
-            query = 'SELECT ' + enum_vid_prop.value + ' FROM VideoLibTvShows WHERE TvShowID = ?'
+            query = 'SELECT ' + enum_vid_prop.value + ' FROM video_lib_tvshows WHERE TvShowID = ?'
             cur = self._execute_query(query, (tvshowid,))
             result = cur.fetchone()
             if default_value is not None:
@@ -341,7 +341,7 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def set_tvshow_property(self, tvshowid, enum_vid_prop, value):
-            update_query = ('UPDATE VideoLibTvShows '
+            update_query = ('UPDATE video_lib_tvshows '
                             'SET ' + enum_vid_prop.value + ' = ? WHERE TvShowID = ?')
             value = common.convert_to_string(value)
             cur = self._execute_query(update_query, (value, tvshowid))
@@ -350,7 +350,7 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def get_stream_continuity(self, profile_guid, videoid, default_value=None, data_type=None):
             """Get stream continuity value of a given id stored to current profile"""
-            query = 'SELECT Value FROM StreamContinuity WHERE ProfileGuid = ? AND VideoID = ?'
+            query = 'SELECT Value FROM stream_continuity WHERE ProfileGuid = ? AND VideoID = ?'
             cur = self._execute_query(query, (profile_guid, videoid))
             result = cur.fetchone()
             if default_value is not None:
@@ -368,19 +368,19 @@ def get_shareddb_class(force_sqlite=False):
             value = common.convert_to_string(value)
             date_last_modified = common.convert_to_string(datetime.now())
             if self.is_mysql_database:
-                query = db_utils.mysql_insert_or_update('StreamContinuity',
+                query = db_utils.mysql_insert_or_update('stream_continuity',
                                                         ['ProfileGuid', 'VideoID'],
                                                         ['Value', 'DateLastModified'])
                 self._execute_non_query(query, (profile_guid, videoid, value, date_last_modified),
                                         multi=True)
             else:
-                update_query = ('UPDATE StreamContinuity '
+                update_query = ('UPDATE stream_continuity '
                                 'SET Value = ?, DateLastModified = ? '
                                 'WHERE ProfileGuid = ? AND VideoID = ?')
                 cur = self._execute_query(update_query, (value, date_last_modified,
                                                          profile_guid, videoid))
                 if cur.rowcount == 0:
-                    insert_query = ('INSERT INTO StreamContinuity '
+                    insert_query = ('INSERT INTO stream_continuity '
                                     '(ProfileGuid, VideoID, Value, DateLastModified) '
                                     'VALUES (?, ?, ?, ?)')
                     self._execute_non_query(insert_query, (profile_guid, videoid,
