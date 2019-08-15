@@ -2,13 +2,12 @@
 """Navigation handler for library actions"""
 from __future__ import unicode_literals
 
-
-from resources.lib. globals import g
-import resources.lib.common as common
 import resources.lib.api.shakti as api
-import resources.lib.kodi.ui as ui
+import resources.lib.common as common
 import resources.lib.kodi.library as library
 import resources.lib.kodi.nfo as nfo
+import resources.lib.kodi.ui as ui
+from resources.lib.globals import g
 
 
 class LibraryActionExecutor(object):
@@ -130,3 +129,11 @@ class LibraryActionExecutor(object):
     def include_in_auto_update(self, videoid):
         library.exclude_show_from_auto_update(videoid, False)
         common.refresh_container()
+
+    def mysql_test(self, pathitems):
+        """Perform a MySQL database connection test"""
+        # Todo: when menu action is called, py restart addon and global attempts
+        #  to initialize the database and then the test is also performed
+        #  in addition, you must also wait for the timeout to obtain any connection error
+        #  Perhaps creating a particular modal dialog with connection parameters can help
+        pass

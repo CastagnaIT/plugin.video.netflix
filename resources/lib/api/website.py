@@ -81,7 +81,7 @@ def extract_profiles(falkor_cache):
             profile = profile['summary']['value']
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
-            g.SHARED_DB.set_profile(guid, None, sort_order)
+            g.SHARED_DB.set_profile(guid, sort_order)
             for key, value in profile.items():
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
