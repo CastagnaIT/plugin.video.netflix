@@ -42,12 +42,11 @@ def create_database(config):
     cur.execute(alter_tbl)
 
     table = ('CREATE TABLE netflix_addon.stream_continuity ('
-             'ID INT(11) NOT NULL AUTO_INCREMENT,'
              'ProfileGuid VARCHAR(50) NOT NULL,'
              'VideoID INT(11) NOT NULL,'
              'Value TEXT DEFAULT NULL,'
              'DateLastModified VARCHAR(50) NOT NULL,'
-             'PRIMARY KEY (ID))'
+             'PRIMARY KEY (ProfileGuid, VideoID))'
              'ENGINE = INNODB, CHARACTER SET utf8mb4, COLLATE utf8mb4_unicode_ci;')
     alter_tbl = ('ALTER TABLE netflix_addon.stream_continuity '
                  'ADD CONSTRAINT FK_streamcontinuity_ProfileGuid FOREIGN KEY (ProfileGuid)'
