@@ -192,7 +192,7 @@ class MySQLDatabase(db_base.BaseDatabase):
         table_name = table[0]
         table_columns = table[1]
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
-        query = db_utils.mysql_insert_or_update(table_name, [table_columns[1]], [table_columns[0]])
+        query = db_utils.mysql_insert_or_update(table_name, [table_columns[0]], [table_columns[1]])
         value = common.convert_to_string(value)
         self._execute_non_query(query, (key, value), multi=True)
 
