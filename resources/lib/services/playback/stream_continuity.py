@@ -57,7 +57,9 @@ class StreamContinuityManager(PlaybackActionManager):
         videoid = common.VideoId.from_dict(data['videoid'])
         if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.did_restore = False
-            self.current_videoid = videoid
+            self.current_videoid = videoid \
+                if videoid.mediatype == common.VideoId.MOVIE \
+                else videoid.derive_parent(0)
         else:
             self.enabled = False
 
