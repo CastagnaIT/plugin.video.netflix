@@ -35,6 +35,8 @@
     <setting id="mysql_host" type="ipaddress" label="30203" default="127.0.0.1" visible="eq(-3,true)" subsetting="true"/>
     <setting id="mysql_port" type="number" label="30204" default="3306" visible="eq(-4,true)" subsetting="true"/>
     <setting id="mysql_test" type="action" label="30205" action="RunPlugin(plugin://plugin.video.netflix/library/mysql_test/)" visible="false" subsetting="true" option="close"/>
+    <setting id="mysql_device_auto_update" type="action" label="30207" action="RunPlugin(plugin://plugin.video.netflix/library/set_autoupdate_device/)" visible="eq(-6,true)" subsetting="true"/>
+    <setting id="mysql_check_auto_update_device" type="action" label="30208" action="RunPlugin(plugin://plugin.video.netflix/library/check_autoupdate_device/)" visible="eq(-7,true)" subsetting="true"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>

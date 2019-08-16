@@ -843,3 +843,27 @@ msgstr ""
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - check the connection - fallback to local database"
 msgstr ""
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr ""
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr ""
+
+msgctxt "#30209"
+msgid "This device now handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30210"
+msgid "This device handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Another device handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30212"
+msgid "There is no device that handle the auto-updates of shared-library"
+msgstr ""

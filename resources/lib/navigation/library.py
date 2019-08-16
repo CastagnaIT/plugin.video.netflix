@@ -137,3 +137,19 @@ class LibraryActionExecutor(object):
         #  in addition, you must also wait for the timeout to obtain any connection error
         #  Perhaps creating a particular modal dialog with connection parameters can help
         pass
+
+    def set_autoupdate_device(self, pathitems):
+        """Set the current device to manage auto-update of the shared-library (MySQL)"""
+        g.SHARED_DB.set_value('auto_update_device_uuid', common.get_device_uuid())
+        ui.show_notification(common.get_local_string(30209), time=8000)
+
+    def check_autoupdate_device(self, pathitems):
+        """Check if the current device manage the auto-updates of the shared-library (MySQL)"""
+        uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+        if uuid is None:
+            msg = common.get_local_string(30212)
+        else:
+            current_device_uuid = common.get_device_uuid()
+            msg = common.get_local_string(30210) \
+                if current_device_uuid == uuid else common.get_local_string(30211)
+        ui.show_notification(msg, time=8000)
