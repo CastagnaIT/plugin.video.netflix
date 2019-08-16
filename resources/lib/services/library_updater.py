@@ -111,9 +111,8 @@ def _compute_next_schedule():
 
     time = g.ADDON.getSetting('update_time') or '00:00'
     last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
-                                     datetime.now() - timedelta(days=(50*365)))
-    last_run = common.strp('{} {}'.format(last_run, time[0:5]),
-                           '%Y-%m-%d %H:%M')
+                                     datetime.utcfromtimestamp(0))
+    last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
     next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
     common.debug('Next library auto update is scheduled for {}'.format(next_run))
     return next_run

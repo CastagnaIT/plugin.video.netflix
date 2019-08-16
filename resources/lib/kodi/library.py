@@ -511,13 +511,11 @@ def _remove_videoid_from_db(videoid):
         g.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
 
 
-
 def _export_all_new_episodes_running():
     update = g.SHARED_DB.get_value('library_export_new_episodes_running', False)
     if update:
         start_time = g.SHARED_DB.get_value('library_export_new_episode_start_time',
-                                           data_type=datetime)
-        start_time = common.strp(start_time, '%Y-%m-%d %H:%M')
+                                           datetime.utcfromtimestamp(0))
         if datetime.now() >= start_time + timedelta(hours=6):
             g.SHARED_DB.set_value('library_export_new_episodes_running', False)
             common.warn('Canceling previous library update: duration >6 hours')
