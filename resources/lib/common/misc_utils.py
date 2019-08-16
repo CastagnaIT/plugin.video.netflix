@@ -21,6 +21,16 @@ from .logging import debug, info, error
 from .kodiops import get_local_string
 
 
+def get_device_uuid():
+    """Generate an uuid for the current device based on the device MAC address"""
+    import uuid
+    mac = uuid.getnode()
+    if (mac >> 40) % 2:
+        from platform import node
+        mac = node()
+    return str(uuid.uuid5(uuid.NAMESPACE_DNS, str(mac)))
+
+
 def find(value_to_find, attribute, search_space):
     """Find a video with matching id in a dict or list"""
     for video in search_space:
