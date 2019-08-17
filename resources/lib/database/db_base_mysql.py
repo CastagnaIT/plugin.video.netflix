@@ -9,6 +9,7 @@ import mysql.connector
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_utils as db_utils
+import resources.lib.database.db_create_mysql as db_create_mysql
 from resources.lib.database.db_exceptions import (MySQLConnectionError, MySQLError)
 from resources.lib.globals import g
 
@@ -68,12 +69,14 @@ class MySQLDatabase(db_base.BaseDatabase):
                              .format(db_info))
         except mysql.connector.Error as e:
             if e.errno == 1049 and not self.is_connection_test:
-                # Database does not exist
-                # TODO: create a new one
-                if self.conn and self.conn.is_connected():
-                    self.conn.close()
-                self._initialize_connection()
-                return
+                # Database does not exist, create a new one
+                try:
+                    db_create_mysql.create_database(self.config.copy())
+                    self._initialize_connection()
+                    return
+                except mysql.connector.Error as e:
+                    common.error("MySql error {}:".format(e))
+                    raise MySQLConnectionError
             common.error("MySql error {}:".format(e))
             raise MySQLConnectionError
         finally:
