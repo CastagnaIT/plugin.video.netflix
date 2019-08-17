@@ -28,8 +28,8 @@ class VidLibProp(Enum):
     file_path = 'FilePath'
 
 
-def get_local_db_path():
-    return xbmc.translatePath(os.path.join(g.DATA_PATH, 'database', LOCAL_DB_FILENAME))
+def get_local_db_path(db_filename):
+    return xbmc.translatePath(os.path.join(g.DATA_PATH, 'database', db_filename))
 
 
 def sql_filtered_update(table, set_columns, where_columns, values):
@@ -71,3 +71,20 @@ def sql_filtered_insert(table, set_columns, values):
         ', '.join(values_fields)
     )
     return query, values
+
+
+def mysql_insert_or_update(table, id_columns, columns):
+    """
+    Create a MySQL insert or update query (required multi=True)
+    """
+    columns[0:0] = id_columns
+    sets_columns = ['@' + col for col in columns]
+    sets = [col + ' = %s' for col in sets_columns]
+    query_set = 'SET {};'.format(', '.join(sets))
+    query_insert = 'INSERT INTO {} ({}) VALUES ({})'.format(table,
+                                                            ', '.join(columns),
+                                                            ', '.join(sets_columns))
+    columns = list(set(columns)-set(id_columns))  # Fastest method to remove list to list tested
+    on_duplicate_params = [col + ' = @' + col for col in columns]
+    query_duplicate = 'ON DUPLICATE KEY UPDATE {}'.format(', '.join(on_duplicate_params)) + ';'
+    return ' '.join([query_set, query_insert, query_duplicate])

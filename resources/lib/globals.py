@@ -177,7 +177,7 @@ class GlobalVariables(object):
         """Do nothing on constructing the object"""
         pass
 
-    def init_globals(self, argv):
+    def init_globals(self, argv, skip_database_initialize=False):
         """Initialized globally used module variables.
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
@@ -224,16 +224,22 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
-        import resources.lib.database.db_local as db_local
-        self.LOCAL_DB = db_local.NFLocalDatabase()
-        import resources.lib.database.db_shared as db_shared
-        import resources.lib.database.db_utils as db_utils
-        # TODO: xml settings to specify a custom path
-        #  need to study how better apply to client/service
-        temp_hardcoded_path = xbmc.translatePath(os.path.join(g.DATA_PATH,
-                                                              'database',
-                                                              db_utils.SHARED_DB_FILENAME))
-        self.SHARED_DB = db_shared.NFSharedDatabase(temp_hardcoded_path)
+        if not skip_database_initialize:
+            # Initialize local database
+            import resources.lib.database.db_local as db_local
+            self.LOCAL_DB = db_local.NFLocalDatabase()
+            # Initialize shared database
+            import resources.lib.database.db_shared as db_shared
+            from resources.lib.database.db_exceptions import MySQLConnectionError
+            try:
+                shared_db_class = db_shared.get_shareddb_class()
+                self.SHARED_DB = shared_db_class()
+            except MySQLConnectionError:
+                # The MySQL database cannot be reached, fallback to local SQLite database
+                import resources.lib.kodi.ui as ui
+                ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
+                shared_db_class = db_shared.get_shareddb_class(force_sqlite=True)
+                self.SHARED_DB = shared_db_class()
 
         self.settings_monitor_suspended(False)  # Reset the value in case of addon crash
 

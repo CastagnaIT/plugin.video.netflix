@@ -28,6 +28,13 @@
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
     <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" visible="eq(-2,true)" default="1" subsetting="true"/>
     <setting id="export_full_tvshow_nfo" type="bool" label="30193" visible="eq(-3,true)" default="false" subsetting="true"/>
+    <setting label="30199" type="lsep"/><!--Shared library-->
+    <setting id="use_mysql" type="bool" label="30200" default="false"/>
+    <setting id="mysql_username" type="text" label="30201" default="kodi" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="mysql_password" type="text" label="30202" default="kodi" option="hidden" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="mysql_host" type="ipaddress" label="30203" default="127.0.0.1" visible="eq(-3,true)" subsetting="true"/>
+    <setting id="mysql_port" type="number" label="30204" default="3306" visible="eq(-4,true)" subsetting="true"/>
+    <setting id="mysql_test" type="action" label="30205" action="RunPlugin(plugin://plugin.video.netflix/library/mysql_test/)" visible="false" subsetting="true" option="close"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
