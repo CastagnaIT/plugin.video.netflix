@@ -3,12 +3,22 @@
 from __future__ import unicode_literals
 
 
-class SQLConnectionError(Exception):
+class SQLiteConnectionError(Exception):
     """An error occurred in the database connection"""
     pass
 
 
-class SQLError(Exception):
+class SQLiteError(Exception):
+    """An error occurred in the database operations"""
+    pass
+
+
+class MySQLConnectionError(Exception):
+    """An error occurred in the database connection"""
+    pass
+
+
+class MySQLError(Exception):
     """An error occurred in the database operations"""
     pass
 

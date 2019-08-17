@@ -379,13 +379,13 @@ def _create_remove_episode_task(videoid):
 
 
 def _create_remove_tv_tasks(row_results):
-    return [_create_remove_item_task(_episode_title_from_path(row[b'FilePath']),
-                                     row[b'FilePath'],
+    return [_create_remove_item_task(_episode_title_from_path(row['FilePath']),
+                                     row['FilePath'],
                                      common.VideoId.from_dict(
                                          {'mediatype': common.VideoId.SHOW,
-                                          'tvshowid': row[b'TvShowID'],
-                                          'seasonid': row[b'SeasonID'],
-                                          'episodeid': row[b'EpisodeID']}))
+                                          'tvshowid': row['TvShowID'],
+                                          'seasonid': row['SeasonID'],
+                                          'episodeid': row['EpisodeID']}))
             for row in row_results]
 
 

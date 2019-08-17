@@ -2,14 +2,15 @@
 """Local database access and functions"""
 from __future__ import unicode_literals
 
-import resources.lib.common as common
-import resources.lib.database.db_base as db_base
+import resources.lib.database.db_base_sqlite as db_sqlite
 import resources.lib.database.db_utils as db_utils
-
 from resources.lib.database.db_exceptions import (ProfilesMissing)
 
 
-class NFLocalDatabase(db_base.NFBaseDatabase):
+class NFLocalDatabase(db_sqlite.SQLiteDatabase):
+    def __init__(self):
+        super(NFLocalDatabase, self).__init__(db_utils.LOCAL_DB_FILENAME)
+
     def _get_active_guid_profile(self):
         query = 'SELECT Guid FROM Profiles WHERE IsActive = 1'
         cur = self._execute_query(query)
@@ -18,7 +19,7 @@ class NFLocalDatabase(db_base.NFBaseDatabase):
             raise ProfilesMissing
         return result[0]
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def get_profile_config(self, key, default_value=None, guid=None):
         """Get a value from a profile, if guid is not specified, is obtained from active profile"""
         if guid is None:
@@ -37,7 +38,7 @@ class NFLocalDatabase(db_base.NFBaseDatabase):
         result = cur.fetchone()
         return result[0] if result else default_value
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def set_profile_config(self, key, value, guid=None):
         """Store a value to a profile, if guid is not specified, is stored to active profile"""
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
@@ -49,9 +50,9 @@ class NFLocalDatabase(db_base.NFBaseDatabase):
             insert_query = 'INSERT INTO ProfilesConfig (Guid, Name, Value) VALUES (?, ?, ?)'
             self._execute_non_query(insert_query, (guid, key, value))
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def set_profile(self, guid, is_active, sort_order):
-        """Update or Insert a profile. Use is_active = None with the Shared Database"""
+        """Update or Insert a profile"""
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
         data = db_utils.sql_filtered_update('Profiles',
                                             ['IsActive', 'SortOrder'],
@@ -64,23 +65,23 @@ class NFLocalDatabase(db_base.NFBaseDatabase):
                                                 [guid, is_active, sort_order])
             self._execute_non_query(data[0], data[1])
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def switch_active_profile(self, guid):
         update_query = 'UPDATE Profiles SET IsActive = 0'
         self._execute_non_query(update_query)
         update_query = 'UPDATE Profiles SET IsActive = 1 WHERE Guid = ?'
         self._execute_non_query(update_query, (guid,))
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def delete_profile(self, guid):
         query = 'DELETE FROM Profiles WHERE Guid = ?'
         self._execute_non_query(query, (guid,))
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def get_active_profile_guid(self):
         return self._get_active_guid_profile()
 
-    @db_base.sql_connect()
+    @db_sqlite.handle_connection
     def get_guid_profiles(self):
         query = 'SELECT Guid FROM Profiles ORDER BY SortOrder'
         cur = self._execute_query(query)
