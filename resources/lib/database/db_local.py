@@ -2,6 +2,7 @@
 """Local database access and functions"""
 from __future__ import unicode_literals
 
+import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.database.db_exceptions import (ProfilesMissing)
@@ -20,7 +21,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         return result[0]
 
     @db_sqlite.handle_connection
-    def get_profile_config(self, key, default_value=None, guid=None):
+    def get_profile_config(self, key, default_value=None, guid=None, data_type=None):
         """Get a value from a profile, if guid is not specified, is obtained from active profile"""
         if guid is None:
             query = ('SELECT Value FROM profiles_config '
@@ -36,7 +37,12 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
                      'profiles_config.Name = ?')
             cur = self._execute_query(query, (guid, key))
         result = cur.fetchone()
-        return result[0] if result else default_value
+        if default_value is not None:
+            data_type = type(default_value)
+        elif data_type is None:
+            data_type = str
+        return common.convert_from_string(result[0], data_type) \
+            if result is not None else default_value
 
     @db_sqlite.handle_connection
     def set_profile_config(self, key, value, guid=None):
@@ -45,6 +51,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         if not guid:
             guid = self._get_active_guid_profile()
         update_query = 'UPDATE profiles_config SET Value = ? WHERE Guid = ? AND Name = ?'
+        value = common.convert_to_string(value)
         cur = self._execute_query(update_query, (value, guid, key))
         if cur.rowcount == 0:
             insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
