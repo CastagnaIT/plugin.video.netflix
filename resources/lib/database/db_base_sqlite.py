@@ -8,7 +8,7 @@ from functools import wraps
 
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
-import resources.lib.database.db_create as db_create
+import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.database.db_exceptions import (SQLiteConnectionError, SQLiteError)
 
@@ -62,7 +62,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         # TODO: Temporary when stabilized it will be possible to implement the db code creation
         # If database file do not exist copy a new one
         db_filename = os.path.basename(self.db_file_path)
-        db_create.check_database_file(db_filename)
+        db_create_sqlite.check_database_file(db_filename)
         try:
             common.debug('Trying connection to the database {}'.format(db_filename))
             self.conn = sql.connect(self.db_file_path)
