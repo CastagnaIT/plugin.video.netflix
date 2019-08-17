@@ -414,16 +414,16 @@ def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
     destination_folder = xbmc.makeLegalFilename('/'.join(
-        [library_home, item_task['section'], item_task['destination']]))
+        [library_home, item_task['section'], item_task['destination']])).decode('utf-8')
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
         export_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder.decode('utf-8'), item_task['filename'] + '.strm']))
+            [destination_folder, item_task['filename'] + '.strm'])).decode('utf-8')
         add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
         nfo_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder.decode('utf-8'), item_task['filename'] + '.nfo']))
+            [destination_folder, item_task['filename'] + '.nfo'])).decode('utf-8')
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}'.format(item_task['title']))
 
@@ -460,10 +460,9 @@ def add_to_library(videoid, export_filename, nfo_export, exclude_update=False):
     if videoid.mediatype == common.VideoId.EPISODE:
         g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
         g.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
-        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid, videoid.value,
-                                   export_filename.decode("utf-8"))
+        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid, videoid.value, export_filename)
     elif videoid.mediatype == common.VideoId.MOVIE:
-        g.SHARED_DB.set_movie(videoid.value, export_filename.decode("utf-8"), nfo_export)
+        g.SHARED_DB.set_movie(videoid.value, export_filename, nfo_export)
 
 
 @common.time_execution(immediate=False)
@@ -485,7 +484,7 @@ def remove_item(item_task, library_home=None):
             xbmcvfs.delete(nfo_file)
         dirs, files = xbmcvfs.listdir(parent_folder.decode("utf-8"))
         tvshow_nfo_file = xbmc.makeLegalFilename(
-            '/'.join([parent_folder.decode("utf-8"), 'tvshow.nfo']))
+            '/'.join([parent_folder.decode("utf-8"), 'tvshow.nfo'])).decode("utf-8")
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
         if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
@@ -615,7 +614,7 @@ def get_previously_exported_items():
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
         for file in xbmcvfs.listdir(folder)[1]:
-            filepath = xbmc.makeLegalFilename('/'.join([folder, file.decode('utf-8')]))
+            filepath = xbmc.makeLegalFilename('/'.join([folder, file])).decode('utf-8')
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}'.format(filepath))
                 try:
