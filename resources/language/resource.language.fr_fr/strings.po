@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
-"PO-Revision-Date: 2019-07-08 22:15+0000\n"
+"PO-Revision-Date: 2019-08-17 02:45+0000\n"
 "Last-Translator: Smeulf <smeulf@hotmail.fr>\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
@@ -795,3 +795,75 @@ msgstr "Inclure toutes les informations dans les fichiers NFO (utiliser uniqueme
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
 msgstr "Limiter la résolution du flux vidéo à"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Exporter les nouveaux épisodes"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Exclure de la maj auto"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Inclure dans la maj auto"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Exportation des nouveaux épisodes"
+
+msgctxt "#30199"
+msgid "Shared library (Need Kodi MySql server database)"
+msgstr "Bibliothèque partagée (Nécessite un serveur de base de données MySQL Kodi)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "Utiliser la bibliothèque partagée MySQL"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgctxt "#30202"
+msgid "Password"
+msgstr "Mot de passe"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "IP de l'hôte"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Tester la connexion à la base de données"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - check the connection - fallback to local database"
+msgstr "ERREUR : Le serveur de bases de données MySQL est injoiagnable - vérifier la connexion - mode secours en base de données locale"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Rendre cet ordinateur responsable de la mise à jour automatique"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Vérifier si cet ordinateur est le responsable de la mise à jour automatique"
+
+msgctxt "#30209"
+msgid "This device now handle the auto-updates of shared-library"
+msgstr "Cet ordinateur est maintenant responsable de la mise à jour automatique de la bibliothèque partagée"
+
+msgctxt "#30210"
+msgid "This device handle the auto-updates of shared-library"
+msgstr "Cet ordinateur est responsable de la mise à jour automatique de la bibliothèque partagée"
+
+msgctxt "#30211"
+msgid "Another device handle the auto-updates of shared-library"
+msgstr "Un autre ordinateur est responsable de la mise à jour de la bibliothèque partagée"
+
+msgctxt "#30212"
+msgid "There is no device that handle the auto-updates of shared-library"
+msgstr "Aucun ordinateur n'est responsable de la mise à jour automatique de la bibliothèque partagée"
