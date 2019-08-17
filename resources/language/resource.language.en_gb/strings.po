@@ -465,7 +465,7 @@ msgid "There is no contents"
 msgstr ""
 
 msgctxt "#30112"
-msgid "You need to be logged in to use this function"
+msgid "You need to be logged in to use Netflix"
 msgstr ""
 
 msgctxt "#30113"
@@ -796,3 +796,74 @@ msgctxt "#30194"
 msgid "Limit video stream resolution to"
 msgstr ""
 
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr ""
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr ""
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr ""
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr ""
+
+msgctxt "#30199"
+msgid "Shared library (Need Kodi MySql server database)"
+msgstr ""
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Username"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Port"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr ""
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - check the connection - fallback to local database"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr ""
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr ""
+
+msgctxt "#30209"
+msgid "This device now handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30210"
+msgid "This device handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Another device handle the auto-updates of shared-library"
+msgstr ""
+
+msgctxt "#30212"
+msgid "There is no device that handle the auto-updates of shared-library"
+msgstr ""

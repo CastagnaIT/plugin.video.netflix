@@ -22,6 +22,7 @@ g.init_globals(sys.argv)
 import resources.lib.common as common
 import resources.lib.services as services
 import resources.lib.kodi.ui as ui
+import resources.lib.upgrade_controller as upgrade_ctrl
 
 
 class NetflixService(object):
@@ -109,4 +110,5 @@ class NetflixService(object):
 
 
 if __name__ == '__main__':
+    upgrade_ctrl.check_service_upgrade()
     NetflixService().run()

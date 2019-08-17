@@ -21,6 +21,16 @@ from .logging import debug, info, error
 from .kodiops import get_local_string
 
 
+def get_device_uuid():
+    """Generate an uuid for the current device based on the device MAC address"""
+    import uuid
+    mac = uuid.getnode()
+    if (mac >> 40) % 2:
+        from platform import node
+        mac = node()
+    return str(uuid.uuid5(uuid.NAMESPACE_DNS, str(mac)))
+
+
 def find(value_to_find, attribute, search_space):
     """Find a video with matching id in a dict or list"""
     for video in search_space:
@@ -39,9 +49,7 @@ def find_episode_metadata(videoid, metadata):
 def select_port(service):
     """Select a port for a server and store it in the settings"""
     port = select_unused_port()
-    g.SETTINGS_MONITOR_IGNORE = True
-    g.ADDON.setSetting('{}_service_port'.format(service.lower()), str(port))
-    g.SETTINGS_MONITOR_IGNORE = False
+    g.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
     info('[{}] Picked Port: {}'.format(service, port))
     return port
 
@@ -219,11 +227,11 @@ def merge_dicts(dict_to_merge, merged_dict):
     return merged_dict
 
 
-def any_value_except(mapping, excluded_key):
+def any_value_except(mapping, excluded_keys):
     """Return a random value from a dict that is not associated with
     excluded_key. Raises StopIteration if there are no other keys than
     excluded_key"""
-    return next(mapping[key] for key in mapping if key != excluded_key)
+    return next(mapping[key] for key in mapping if key not in excluded_keys)
 
 
 def time_execution(immediate):
@@ -271,8 +279,13 @@ def is_edge_esn(esn):
 
 
 def is_minimum_version(version, min_version):
-    """Rrturn True if version is equal or greater to min_version"""
+    """Return True if version is equal or greater to min_version"""
     return map(int, version.split('.')) >= map(int, min_version.split('.'))
+
+
+def is_less_version(version, max_version):
+    """Return True if version is less to max_version"""
+    return map(int, version.split('.')) < map(int, max_version.split('.'))
 
 
 def make_list(arg):
@@ -291,6 +304,12 @@ def convert_seconds_to_hms_str(time):
     m = int(time // 60)
     s = int(time % 60)
     return '{:02d}:{:02d}:{:02d}'.format(h, m, s)
+
+
+def remove_html_tags(raw_html):
+    h = re.compile('<.*?>')
+    text = re.sub(h, '', raw_html)
+    return text
 
 
 def get_system_platform():

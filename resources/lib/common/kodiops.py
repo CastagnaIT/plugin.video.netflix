@@ -169,14 +169,16 @@ def fix_locale_languages(data_list):
 def _adjust_locale(locale_code, lang_code_without_country_exists):
     """
     Locale conversion helper
-    Conversion table to prevent Kodi to display es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
+    Conversion table to prevent Kodi to display
+    es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
     """
     locale_conversion_table = {
         'es-ES': 'es-Spain',
         'pt-BR': 'pt-Brazil',
         'fr-CA': 'fr-Canada',
         'ar-EG': 'ar-Egypt',
-        'nl-BE': 'nl-Belgium'
+        'nl-BE': 'nl-Belgium',
+        'en-GB': 'en-UnitedKingdom'
     }
     language_code = locale_code[0:2]
     if not lang_code_without_country_exists:
@@ -185,5 +187,5 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
         if locale_code in locale_conversion_table:
             return locale_conversion_table[locale_code]
         else:
-            common.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+            debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
             return locale_code

@@ -10,6 +10,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -66,30 +67,34 @@ def _activate_view(partial_setting_id):
 
 @custom_viewmode(g.VIEW_PROFILES)
 @common.time_execution(immediate=False)
-def build_profiles_listing(profiles):
+def build_profiles_listing():
     """Builds the profiles list Kodi screen"""
     try:
         from HTMLParser import HTMLParser
     except ImportError:
         from html.parser import HTMLParser
     html_parser = HTMLParser()
+    directory_items = []
+    active_guid_profile = g.LOCAL_DB.get_active_profile_guid()
+    for guid in g.LOCAL_DB.get_guid_profiles():
+        directory_items.append(_create_profile_item(guid,
+                                                    (guid == active_guid_profile),
+                                                    html_parser))
     # The standard kodi theme does not allow to change view type if the content is "files" type,
     # so here we use "images" type, visually better to see
-    directory_items = []
-    for index, (guid, profile) in sorted(profiles.items()):
-        directory_items.append(_create_profile_item(guid, profile, html_parser))
     finalize_directory(directory_items, g.CONTENT_IMAGES)
 
 
-def _create_profile_item(profile_guid, profile, html_parser):
+def _create_profile_item(profile_guid, is_active, html_parser):
     """Create a tuple that can be added to a Kodi directory that represents
     a profile as listed in the profiles listing"""
-    profile_name = profile.get('profileName', '')
+    profile_name = g.LOCAL_DB.get_profile_config('profileName', '', guid=profile_guid)
     unescaped_profile_name = html_parser.unescape(profile_name)
     enc_profile_name = profile_name.encode('utf-8')
     list_item = list_item_skeleton(
-        label=unescaped_profile_name, icon=profile.get('avatar'))
-    list_item.select(profile.get('isActive', False))
+        label=unescaped_profile_name,
+        icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid))
+    list_item.select(is_active)
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
         params={'autologin_user': enc_profile_name},
@@ -110,21 +115,22 @@ def build_main_menu_listing(lolomo):
     Builds the video lists (my list, continue watching, etc.) Kodi screen
     """
     directory_items = []
-    mylist_menu_exists = False
 
     for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
         show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
         if show_in_menu:
+            menu_title = 'Missing menu title'
             if data['lolomo_known']:
-                for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'], break_on_first=True):
-                    directory_items.append(_create_videolist_item(list_id, user_list, data, static_lists=True))
-                    g.PERSISTENT_STORAGE['menu_titles'][menu_id] = user_list['displayName']
-                    if "queue" in data['lolomo_contexts']:
-                        mylist_menu_exists = True
+                for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'],
+                                                                  break_on_first=True):
+                    directory_items.append(_create_videolist_item(list_id,
+                                                                  user_list,
+                                                                  data,
+                                                                  static_lists=True))
+                    menu_title = user_list['displayName']
             else:
-                menu_title = common.get_local_string(data['label_id']) \
-                    if data['label_id'] is not None else 'Missing menu title'
-                g.PERSISTENT_STORAGE['menu_titles'][menu_id] = menu_title
+                if data['label_id']:
+                    menu_title = common.get_local_string(data['label_id'])
                 menu_description = common.get_local_string(data['description_id']) \
                     if data['description_id'] is not None else ''
                 directory_items.append(
@@ -133,8 +139,7 @@ def build_main_menu_listing(lolomo):
                                         icon=data['icon'],
                                         description=menu_description),
                      True))
-    # g.PERSISTENT_STORAGE.commit()  performed with the next call to PERSISTENT_STORAGE setitem
-    g.PERSISTENT_STORAGE['profile_have_mylist_menu'] = mylist_menu_exists
+            g.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
     finalize_directory(directory_items, g.CONTENT_FOLDER, title=common.get_local_string(30097))
 
 
@@ -155,21 +160,28 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             if menu_parameters.type_id != '28':
                 continue
         if menu_parameters.is_menu_id:
-            # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
-            sel_video_list_id = menu_parameters.context_id if menu_parameters.context_id and not force_videolistbyid else video_list_id
+            # Create a new submenu info in MAIN_MENU_ITEMS
+            # for reference when 'directory' find the menu data
+            sel_video_list_id = menu_parameters.context_id\
+                if menu_parameters.context_id and not force_videolistbyid else video_list_id
             sub_menu_data = menu_data.copy()
             sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
             sub_menu_data['lolomo_contexts'] = None
             sub_menu_data['content_type'] = g.CONTENT_SHOW
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
-            sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-            g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
-            g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = video_list['displayName']
-            directory_items.append(_create_videolist_item(sel_video_list_id, video_list, sub_menu_data))
-    g.PERSISTENT_STORAGE.commit()
+            sub_menu_data['main_menu'] = menu_data['main_menu']\
+                if menu_data.get('main_menu') else menu_data.copy()
+            sub_menu_data.update({'title': video_list['displayName']})
+            g.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
+            directory_items.append(_create_videolist_item(sel_video_list_id,
+                                                          video_list,
+                                                          sub_menu_data))
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
+                       title=parent_menu_data['title'],
+                       sort_type='sort_label')
     return menu_data.get('view')
 
 
@@ -203,20 +215,26 @@ def build_subgenre_listing(subgenre_list, menu_data):
     """Build a listing of subgenre lists."""
     directory_items = []
     for index, subgenre_data in subgenre_list.lists:
-        # Create a new submenu info in MAIN_MENU_ITEMS for reference when 'directory' find the menu data
+        # Create a new submenu info in MAIN_MENU_ITEMS
+        # for reference when 'directory' find the menu data
         sel_video_list_id = unicode(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
         sub_menu_data['content_type'] = g.CONTENT_SHOW
-        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-        g.PERSISTENT_STORAGE['sub_menus'][sel_video_list_id] = sub_menu_data
-        g.PERSISTENT_STORAGE['menu_titles'][sel_video_list_id] = subgenre_data['name']
-        directory_items.append(_create_subgenre_item(sel_video_list_id, subgenre_data, sub_menu_data))
-    g.PERSISTENT_STORAGE.commit()
+        sub_menu_data['main_menu'] = menu_data['main_menu']\
+            if menu_data.get('main_menu') else menu_data.copy()
+        sub_menu_data.update({'title': subgenre_data['name']})
+        g.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
+        directory_items.append(_create_subgenre_item(sel_video_list_id,
+                                                     subgenre_data,
+                                                     sub_menu_data))
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type='sort_label')
+                       title=parent_menu_data['title'],
+                       sort_type='sort_label')
     return menu_data.get('view')
 
 
@@ -245,10 +263,10 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
         sub_menu_data['content_type'] = g.CONTENT_SHOW
-        sub_menu_data['main_menu'] = menu_data['main_menu'] if menu_data.get('main_menu') else menu_data.copy()
-        g.PERSISTENT_STORAGE['sub_menus'][menu_id] = sub_menu_data
-        g.PERSISTENT_STORAGE['menu_titles'][menu_id] = common.get_local_string(30089)
-        g.PERSISTENT_STORAGE.commit()
+        sub_menu_data['main_menu'] = menu_data['main_menu']\
+            if menu_data.get('main_menu') else menu_data.copy()
+        sub_menu_data.update({'title': common.get_local_string(30089)})
+        g.LOCAL_DB.set_value(menu_id, sub_menu_data, TABLE_MENU_DATA)
         directory_items.insert(0,
                                (common.build_url(['genres', menu_id, genre_id],
                                                  mode=g.MODE_DIRECTORY),
@@ -256,14 +274,18 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                                    icon='DefaultVideoPlaylists.png',
                                                    description=common.get_local_string(30088)),
                                 True))
-    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, genre_id)
+    add_items_previous_next_page(directory_items, pathitems,
+                                 video_list.perpetual_range_selector, genre_id)
     # At the moment it is not possible to make a query with results sorted for the 'mylist',
     # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
     if menu_data['path'][1] == 'myList':
         sort_type = 'sort_label_ignore_folders'
+    parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
+                                            table=TABLE_MENU_DATA, data_type=dict)
     finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=g.get_menu_title(menu_data['path'][1]), sort_type=sort_type)
+                       title=parent_menu_data['title'],
+                       sort_type=sort_type)
     return menu_data.get('view')
 
 
@@ -362,7 +384,8 @@ def _create_supplemental_item(videoid_value, video, video_list):
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
                            mode=g.MODE_PLAY)
-    # replaceItems still look broken because it does not remove the default ctx menu, i hope in the future Kodi fix this
+    # replaceItems still look broken because it does not remove the default ctx menu
+    # i hope in the future Kodi fix this
     list_item.addContextMenuItems(generate_context_menu_items(videoid), replaceItems=True)
     return (url, list_item, False)
 
@@ -390,25 +413,29 @@ def list_item_skeleton(label, icon=None, fanart=None, description=None, customic
     return list_item
 
 
-def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, genre_id=None):
+def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector,
+                                 genre_id=None):
     if pathitems and perpetual_range_selector:
         if 'previous_start' in perpetual_range_selector:
-            previous_page_url = \
-                common.build_url(pathitems=pathitems,
-                                 params={'perpetual_range_start': perpetual_range_selector.get('previous_start'),
-                                         'genre_id':
-                                             genre_id if perpetual_range_selector.get('previous_start') == 0 else None},
-                                 mode=g.MODE_DIRECTORY)
+            params = {'perpetual_range_start': perpetual_range_selector.get('previous_start'),
+                      'genre_id':
+                          genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
+            previous_page_url = common.build_url(pathitems=pathitems,
+                                                 params=params,
+                                                 mode=g.MODE_DIRECTORY)
             directory_items.insert(0, (previous_page_url,
                                        list_item_skeleton(common.get_local_string(30148),
-                                                          customicon='FolderPagePrevious.png'), True))
+                                                          customicon='FolderPagePrevious.png'),
+                                       True))
         if 'next_start' in perpetual_range_selector:
-            next_page_url = \
-                common.build_url(pathitems=pathitems,
-                                 params={'perpetual_range_start': perpetual_range_selector.get('next_start')},
-                                 mode=g.MODE_DIRECTORY)
-            directory_items.append((next_page_url, list_item_skeleton(common.get_local_string(30147),
-                                                                      customicon='FolderPageNext.png'), True))
+            params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
+            next_page_url = common.build_url(pathitems=pathitems,
+                                             params=params,
+                                             mode=g.MODE_DIRECTORY)
+            directory_items.append((next_page_url,
+                                    list_item_skeleton(common.get_local_string(30147),
+                                                       customicon='FolderPageNext.png'),
+                                    True))
 
 
 def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_nothing',

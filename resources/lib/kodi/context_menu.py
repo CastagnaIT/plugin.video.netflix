@@ -27,6 +27,15 @@ CONTEXT_MENU_ACTIONS = {
     'update': {
         'label': common.get_local_string(30061),
         'url': ctx_item_url(['update'], g.MODE_LIBRARY)},
+    'export_new_episodes': {
+        'label': common.get_local_string(30195),
+        'url': ctx_item_url(['export_new_episodes'], g.MODE_LIBRARY)},
+    'exclude_from_auto_update': {
+        'label': common.get_local_string(30196),
+        'url': ctx_item_url(['exclude_from_auto_update'], g.MODE_LIBRARY)},
+    'include_in_auto_update': {
+        'label': common.get_local_string(30197),
+        'url': ctx_item_url(['include_in_auto_update'], g.MODE_LIBRARY)},
     'rate': {
         'label': common.get_local_string(30019),
         'url': ctx_item_url(['rate'])},
@@ -55,7 +64,7 @@ def generate_context_menu_items(videoid):
         items.insert(0, _ctx_item('trailer', videoid))
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] \
-            and g.PERSISTENT_STORAGE.get('profile_have_mylist_menu', False):
+            and not g.LOCAL_DB.get_profile_config('isKids', False):
         list_action = ('remove_from_list'
                        if videoid.value in api.mylist_items()
                        else 'add_to_list')
@@ -65,11 +74,24 @@ def generate_context_menu_items(videoid):
 
 
 def _generate_library_ctx_items(videoid):
+    library_actions = []
     if videoid.mediatype == common.VideoId.SUPPLEMENTAL:
-        return []
-    library_actions = (['remove', 'update']
-                       if library.is_in_library(videoid)
-                       else ['export'])
+        return library_actions
+
+    is_in_library = library.is_in_library(videoid)
+    library_actions = ['remove', 'update'] if is_in_library else ['export']
+
+    if g.ADDON.getSettingInt('auto_update') and \
+            videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
+        library_actions = []
+
+    if videoid.mediatype == common.VideoId.SHOW and is_in_library:
+        library_actions.append('export_new_episodes')
+        if library.show_excluded_from_auto_update(videoid):
+            library_actions.append('include_in_auto_update')
+        else:
+            library_actions.append('exclude_from_auto_update')
+
     return [_ctx_item(action, videoid) for action in library_actions]
 
 

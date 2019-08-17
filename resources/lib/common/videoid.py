@@ -69,6 +69,20 @@ class VideoId(object):
         return cls(videoid=pathitems[0])
 
     @classmethod
+    def from_dict(cls, dict_items):
+        """Create a VideoId instance from a dict items"""
+        mediatype = dict_items['mediatype']
+        if mediatype == VideoId.MOVIE:
+            return cls(movieid=dict_items['movieid'])
+        elif mediatype in VideoId.TV_TYPES:
+            return cls(tvshowid=_path_attr_dict(dict_items, 'tvshowid'),
+                       seasonid=_path_attr_dict(dict_items, 'seasonid'),
+                       episodeid=_path_attr_dict(dict_items, 'episodeid'))
+        elif mediatype == VideoId.SUPPLEMENTAL:
+            return cls(supplementalid=dict_items['supplementalid'])
+        raise InvalidVideoId
+
+    @classmethod
     def from_videolist_item(cls, video):
         """Create a VideoId from a video item contained in a
         videolist path response"""
@@ -229,6 +243,10 @@ def _get_unicode_kwargs(kwargs):
 
 def _path_attr(pathitems, index):
     return pathitems[index] if len(pathitems) > index else None
+
+
+def _path_attr_dict(pathitems, key):
+    return pathitems[key] if key in pathitems else None
 
 
 def inject_video_id(path_offset, pathitems_arg='pathitems',

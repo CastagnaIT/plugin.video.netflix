@@ -39,11 +39,9 @@ def activate_profile(profile_id):
 
 def logout():
     """Logout of the current account"""
-    try:
-        common.make_call('logout')
-        g.CACHE.invalidate()
-    except (MissingCredentialsError, NotLoggedInError):
-        ui.show_notification(common.get_local_string(30112))
+    url = common.build_url(['root'], mode=g.MODE_DIRECTORY)
+    common.make_call('logout', url)
+    g.CACHE.invalidate()
 
 
 def login():
@@ -51,18 +49,15 @@ def login():
     g.CACHE.invalidate()
     try:
         ui.ask_credentials()
-        common.make_call('login')
-    except (MissingCredentialsError, LoginFailedError) as exc:
-        msg = 30009 if isinstance(exc, LoginFailedError) else 30112
-        ui.show_notification(common.get_local_string(msg))
-        return False
-    return True
-
-
-@common.time_execution(immediate=False)
-def profiles():
-    """Retrieve the list of available user profiles"""
-    return common.make_call('list_profiles')
+        if not common.make_call('login'):
+            # Login not validated
+            # ui.show_notification(common.get_local_string(30009))
+            return False
+        return True
+    except MissingCredentialsError:
+        # Aborted from user or leave an empty field
+        ui.show_notification(common.get_local_string(30112))
+        raise MissingCredentialsError
 
 
 @common.time_execution(immediate=False)
@@ -328,8 +323,13 @@ def update_my_list(videoid, operation):
 
 
 @common.time_execution(immediate=False)
-def metadata(videoid):
+def metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
+
+    # Invalidate cache if we need to refresh the all metadata
+    if refresh:
+        g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid, True)
+
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
         return _metadata(videoid), None
     if videoid.mediatype == common.VideoId.SEASON:

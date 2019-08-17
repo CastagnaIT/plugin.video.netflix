@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="30014"><!--Account-->
-    <setting id="email" type="text" visible="false" default=""/>
-    <setting id="password" type="text" visible="false" default=""/>
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
     <setting label="30053" type="lsep"/>
@@ -21,19 +19,24 @@
     <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
     <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
     <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
-    <setting id="invalidate_cache_on_mylist_modify" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting label="30065" type="lsep"/><!--Auto-Update-->
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
     <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
-    <setting id="schedule_check_interval" type="slider" label="30073" option="int" range="1,30" visible="gt(-3,0)" default="5" subsetting="true"/>
-    <setting id="last_update" type="text" visible="false" default="1970-01-01"/>
-    <setting id="update_running" type="text" visible="false" default="false"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
     <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" visible="eq(-2,true)" default="1" subsetting="true"/>
     <setting id="export_full_tvshow_nfo" type="bool" label="30193" visible="eq(-3,true)" default="false" subsetting="true"/>
+    <setting label="30199" type="lsep"/><!--Shared library-->
+    <setting id="use_mysql" type="bool" label="30200" default="false"/>
+    <setting id="mysql_username" type="text" label="30201" default="kodi" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="mysql_password" type="text" label="30202" default="kodi" option="hidden" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="mysql_host" type="ipaddress" label="30203" default="127.0.0.1" visible="eq(-3,true)" subsetting="true"/>
+    <setting id="mysql_port" type="number" label="30204" default="3306" visible="eq(-4,true)" subsetting="true"/>
+    <setting id="mysql_test" type="action" label="30205" action="RunPlugin(plugin://plugin.video.netflix/library/mysql_test/)" visible="false" subsetting="true" option="close"/>
+    <setting id="mysql_device_auto_update" type="action" label="30207" action="RunPlugin(plugin://plugin.video.netflix/library/set_autoupdate_device/)" visible="eq(-6,true)" subsetting="true"/>
+    <setting id="mysql_check_auto_update_device" type="action" label="30208" action="RunPlugin(plugin://plugin.video.netflix/library/check_autoupdate_device/)" visible="eq(-7,true)" subsetting="true"/>
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
@@ -102,7 +105,6 @@
   <category label="30023"><!--Expert-->
     <setting label="30115" type="lsep"/>
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
-    <setting id="enable_1080p_unlock" type="bool" label="30136" default="false" visible="false"/> <!-- Deprecated (broken) -->
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
     <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
@@ -117,13 +119,7 @@
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
-    <setting id="enable_tracking" type="bool" label="30032" default="true" visible="false"/> <!-- Not implemented -->
     <setting id="esn" type="text" label="30034" value="" default=""/>
-    <setting id="hidden_esn" visible="false" value="" />
-    <setting id="tracking_id" value="" visible="false"/> <!-- Not implemented -->
-    <setting id="msl_service_port" value="8000" visible="false"/>
-    <setting id="ns_service_port" value="8001" visible="false"/>
-    <setting id="show_update_db" type="bool" default="false" visible="false"/>
     <setting label="30117" type="lsep"/>
     <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
     <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>

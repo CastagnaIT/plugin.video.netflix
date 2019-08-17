@@ -8,14 +8,15 @@ All other code executed on module level will only be executed once, when
 the module is first imported on the first addon invocation."""
 from __future__ import unicode_literals
 
+import collections
 import os
-from urlparse import urlparse, parse_qsl
+import sys
 from urllib import unquote
 
-import collections
 import xbmc
 import xbmcaddon
 import xbmcvfs
+from urlparse import urlparse, parse_qsl
 
 import resources.lib.cache as cache
 
@@ -176,13 +177,11 @@ class GlobalVariables(object):
         """Do nothing on constructing the object"""
         pass
 
-    def init_globals(self, argv):
+    def init_globals(self, argv, skip_database_initialize=False):
         """Initialized globally used module variables.
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
-        self._library = None
-        self.SETTINGS_MONITOR_IGNORE = False
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -190,7 +189,18 @@ class GlobalVariables(object):
         self.VERSION = self.ADDON.getAddonInfo('version')
         self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
         self.ICON = self.ADDON.getAddonInfo('icon')
-        self.DATA_PATH = self.ADDON.getAddonInfo('profile')
+        self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
+        self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
+
+        # Add absolute paths of embedded py modules to python system directory
+        module_paths = [
+            os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum'),
+            os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
+        ]
+        for path in module_paths:
+            if path not in sys.path:
+                sys.path.insert(0, path)
+
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
@@ -214,13 +224,31 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
+        if not skip_database_initialize:
+            # Initialize local database
+            import resources.lib.database.db_local as db_local
+            self.LOCAL_DB = db_local.NFLocalDatabase()
+            # Initialize shared database
+            import resources.lib.database.db_shared as db_shared
+            from resources.lib.database.db_exceptions import MySQLConnectionError
+            try:
+                shared_db_class = db_shared.get_shareddb_class()
+                self.SHARED_DB = shared_db_class()
+            except MySQLConnectionError:
+                # The MySQL database cannot be reached, fallback to local SQLite database
+                import resources.lib.kodi.ui as ui
+                ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
+                shared_db_class = db_shared.get_shareddb_class(force_sqlite=True)
+                self.SHARED_DB = shared_db_class()
+
+        self.settings_monitor_suspended(False)  # Reset the value in case of addon crash
+
         try:
             os.mkdir(self.DATA_PATH)
         except OSError:
             pass
 
         self._init_cache()
-        self.init_persistent_storage()
 
     def _init_cache(self):
         if not os.path.exists(
@@ -235,12 +263,7 @@ class GlobalVariables(object):
     def _init_filesystem_cache(self):
         # pylint: disable=broad-except
         for bucket in cache.BUCKET_NAMES:
-            if bucket != cache.CACHE_LIBRARY:
-                # Library gets special location in DATA_PATH root because
-                # we don't want users accidentally deleting it.
-                xbmcvfs.mkdirs(
-                    xbmc.translatePath(
-                        os.path.join(self.CACHE_PATH, bucket)))
+            xbmcvfs.mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
     def initial_addon_configuration(self):
         """
@@ -251,7 +274,8 @@ class GlobalVariables(object):
         if run_initial_config:
             import resources.lib.common as common
             import resources.lib.kodi.ui as ui
-            self.SETTINGS_MONITOR_IGNORE = True
+            self.settings_monitor_suspended(True)
+
             system = common.get_system_platform()
             common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
             if system in ['osx','ios','xbox']:
@@ -296,69 +320,30 @@ class GlobalVariables(object):
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', False)
             self.ADDON.setSettingBool('run_init_configuration', False)
-            self.SETTINGS_MONITOR_IGNORE = False
+            self.settings_monitor_suspended(False)
 
-    def init_persistent_storage(self):
+    def settings_monitor_suspended(self, suspend):
         """
-        Save on disk the data to keep in memory,
-        at each screen change kodi reinitializes the addon
-        making it impossible to have persistent variables
+        Suspends for the necessary time the settings monitor
+        that otherwise cause the reinitialization of global settings
+        and possible consequent actions to settings changes or unnecessary checks
         """
-        # This is ugly: Pass the common module into Cache.__init__ to work
-        # around circular import dependencies.
-        import resources.lib.common as common
-        # In PersistentStorage "save on destroy" here cause problems because often gets destroyed by various behaviors
-        self.PERSISTENT_STORAGE = common.PersistentStorage(__name__, no_save_on_destroy=True)
-        # If missing create necessary keys
-        if not self.PERSISTENT_STORAGE.get('show_menus'):
-            self.PERSISTENT_STORAGE['show_menus'] = {}
-        if not self.PERSISTENT_STORAGE.get('menu_sortorder'):
-            self.PERSISTENT_STORAGE['menu_sortorder'] = {}
-        if not self.PERSISTENT_STORAGE.get('menu_titles'):
-            self.PERSISTENT_STORAGE['menu_titles'] = {}
-        if not self.PERSISTENT_STORAGE.get('sub_menus'):
-            self.PERSISTENT_STORAGE['sub_menus'] = {}
+        is_suspended = g.LOCAL_DB.get_value('suspend_settings_monitor', False)
+        if (is_suspended and suspend) or (not is_suspended and not suspend):
+            return
+        g.LOCAL_DB.set_value('suspend_settings_monitor', suspend)
 
-    def get_menu_title(self, menu_key, fallback_title=''):
+    def settings_monitor_is_suspended(self):
         """
-        Get the menu title from persistent storage,
-        in some situations, such as deleting the persistent file,
-        or context_id/menu_id changed due to netflix changes or addon menu code changes..
-        the list or key may no longer be present
+        Returns True when the setting monitor must be suspended
         """
-        if not g.PERSISTENT_STORAGE.get('menu_titles'):
-            return fallback_title
-        return g.PERSISTENT_STORAGE['menu_titles'].get(menu_key, fallback_title)
-
-    def library(self):
-        """Get the current library instance"""
-        # pylint: disable=global-statement, attribute-defined-outside-init
-        if not self._library:
-            try:
-                self._library = self.CACHE.get(cache.CACHE_LIBRARY, 'library')
-            except cache.CacheMiss:
-                self._library = {}
-        return self._library
-
-    def save_library(self):
-        """Save the library to disk via cache"""
-        if self._library is not None:
-            self.CACHE.add(cache.CACHE_LIBRARY, 'library', self._library,
-                           ttl=cache.TTL_INFINITE, to_disk=True)
+        return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
 
     def get_esn(self):
-        """Get the ESN from settings"""
-        return self.ADDON.getSetting('esn')
-
-    def set_esn(self, esn):
-        """
-        Set the ESN in settings if it hasn't been set yet.
-        Return True if the new ESN has been set, False otherwise
-        """
-        if not self.get_esn() and esn:
-            self.ADDON.setSetting('esn', esn)
-            return True
-        return False
+        """Get the generated esn or if set get the custom esn"""
+        from resources.lib.database.db_utils import (TABLE_SESSION)
+        custom_esn = g.ADDON.getSetting('esn')
+        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
 
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate
@@ -373,7 +358,9 @@ class GlobalVariables(object):
         for _ in range(0, 30):
             esn.append(random.choice(possible))
         edge_esn = ''.join(esn)
+        self.settings_monitor_suspended(True)
         self.ADDON.setSetting('edge_esn', edge_esn)
+        self.settings_monitor_suspended(False)
         return edge_esn
 
     def is_known_menu_context(self, context):

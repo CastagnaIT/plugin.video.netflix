@@ -159,7 +159,7 @@ class MSLHandler(object):
             'url': '/manifest',
             'id': id,
             'esn': esn,
-            'languages': [g.PERSISTENT_STORAGE['locale_id']],
+            'languages': [g.LOCAL_DB.get_value('locale_id')],
             'uiVersion': 'shakti-v5bca5cd3',
             'clientVersion': '6.0013.315.051',
             'params': {
@@ -215,7 +215,7 @@ class MSLHandler(object):
             'url': self.last_license_url,
             'id': id,
             'esn': g.get_esn(),
-            'languages': [g.PERSISTENT_STORAGE['locale_id']],
+            'languages': [g.LOCAL_DB.get_value('locale_id')],
             'uiVersion': 'shakti-v5bca5cd3',
             'clientVersion': '6.0013.315.051',
             'params': [{
@@ -227,8 +227,7 @@ class MSLHandler(object):
             'echo': 'sessionId'
         }
 
-        response = self._chunked_request(ENDPOINTS['license'],
-                                         license_request_data, g.get_esn())
+        response = self._chunked_request(ENDPOINTS['license'], license_request_data, g.get_esn())
         return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)
