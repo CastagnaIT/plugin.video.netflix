@@ -144,6 +144,25 @@ class VideoId(object):
         Either movie, show, season, episode, supplemental or unspecified"""
         return self._mediatype
 
+    @property
+    def convert_old_videoid_type(self):
+        """
+        If the data contained in to videoid comes from the previous version
+        of the videoid class (without supplementalid), then convert the class object
+        to the new type of class or else return same class
+        """
+        if len(self._id_values) == 5:
+            videoid_dict = {
+                'mediatype': self._mediatype,
+                'movieid': self._id_values[1],
+                'episodeid': self._id_values[2],
+                'seasonid': self._id_values[3],
+                'tvshowid': self._id_values[4]
+            }
+            return VideoId.from_dict(videoid_dict)
+        else:
+            return self
+
     def to_path(self):
         """Generate a valid pathitems list (['show', tvshowid, ...]) from
         this instance"""
