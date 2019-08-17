@@ -27,7 +27,7 @@ def migrate_library_to_db():
             lib = pickle.loads(handle.read())
             handle.close()
             for item in lib['content'].values():
-                videoid = item['videoid']
+                videoid = item['videoid'].convert_old_videoid_type()
                 if videoid.mediatype == common.VideoId.MOVIE:
                     library.add_to_library(videoid, item['file'], False, False)
                 elif videoid.mediatype == common.VideoId.SHOW:
