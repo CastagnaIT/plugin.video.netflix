@@ -144,7 +144,6 @@ class VideoId(object):
         Either movie, show, season, episode, supplemental or unspecified"""
         return self._mediatype
 
-    @property
     def convert_old_videoid_type(self):
         """
         If the data contained in to videoid comes from the previous version
