@@ -111,6 +111,17 @@ Only add/remove to My List from within the addon keeps the Kodi library in sync.
 ### My watched status is not being updated?!
 The addon does not report watched status back to Netflix (yet). This is a top priority on our roadmap, but we haven't been able to figure this out just yet.
 
+### Can i share the exported content in the library with multiple devices?
+Yes it is possible share the same library with multiple devices that using netflix addon.
+In order to work it is necessary use Kodi with a MySQL server.
+You can follow the official Kodi MySQL setup instructions at [Kodi Wiki](https://kodi.wiki/view/MySQL).
+When done, in each device that use this addon, open the addon settings and under Library page enable "Use MySQL shared library database",
+then set the same connection parameters used in Kodi MySQL setup.
+If you want also use the auto-update library function, you need also to set up one of the devices as the main library update manager, by using
+the menu "Set this device as main auto-updates manager" from the chosen device.
+WARNING: AN INTENSIVE USE of AUTO-UPDATE function due to many exported tv shows MAY CAUSE A TEMPORARY BAN of the ACCOUNT that varies starting from 24/48 hours. Use at your own risk.
+If it happens often, there is the possibility to exclude the auto-updates from the tv shows, by open context menu on a tv show and selecting "Exclude from auto update".
+
 ## Something doesn't work
 
 If something doesn't work for you, please:
