@@ -236,7 +236,10 @@ class GlobalVariables(object):
                 self.SHARED_DB = shared_db_class()
             except MySQLConnectionError:
                 # The MySQL database cannot be reached, fallback to local SQLite database
+                # When this code is called from addon, is needed apply the change also in the
+                # service, so disabling it run the SettingsMonitor
                 import resources.lib.kodi.ui as ui
+                self.ADDON.setSettingBool('use_mysql', False)
                 ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
                 shared_db_class = db_shared.get_shareddb_class(force_sqlite=True)
                 self.SHARED_DB = shared_db_class()

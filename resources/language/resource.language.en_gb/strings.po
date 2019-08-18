@@ -813,7 +813,7 @@ msgid "Exporting new episodes"
 msgstr ""
 
 msgctxt "#30199"
-msgid "Shared library (Need Kodi MySql server database)"
+msgid "Shared library (Kodi MySQL server is required)"
 msgstr ""
 
 msgctxt "#30200"
@@ -825,7 +825,7 @@ msgid "Username"
 msgstr ""
 
 msgctxt "#30202"
-msgid "Password"
+msgid "Connection to the MySQL database was successful"
 msgstr ""
 
 msgctxt "#30203"
@@ -841,7 +841,7 @@ msgid "Test database connection"
 msgstr ""
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - check the connection - fallback to local database"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
 msgstr ""
 
 msgctxt "#30207"
