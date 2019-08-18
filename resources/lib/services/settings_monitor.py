@@ -26,8 +26,20 @@ class SettingsMonitor(xbmc.Monitor):
         common.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
 
+        use_mysql = g.ADDON.getSettingBool('use_mysql')
+        use_mysql_old = g.LOCAL_DB.get_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
+        use_mysql_turned_on = use_mysql and not use_mysql_old
+
         common.debug('SettingsMonitor: Reinitialization of global settings')
         g.init_globals(sys.argv, reboot_addon)
+
+        # Check the MySQL connection status after reinitialization of global settings
+        use_mysql_after = g.ADDON.getSettingBool('use_mysql')
+        if use_mysql_turned_on and use_mysql_after:
+            g.LOCAL_DB.set_value('use_mysql', True, TABLE_SETTINGS_MONITOR)
+            ui.show_notification(g.ADDON.getLocalizedString(30202))
+        if not use_mysql_after and use_mysql_old:
+            g.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
 
         # Check if the custom esn is changed
         custom_esn = g.ADDON.getSetting('esn')
