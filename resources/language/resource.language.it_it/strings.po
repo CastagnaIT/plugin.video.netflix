@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-07-08 22:15+0000\n"
+"PO-Revision-Date: 2019-08-19 20:40+0000\n"
 "Last-Translator: Stefano Gottardo <>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -466,7 +466,7 @@ msgstr "Non ci sono contenuti"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr ""
+msgstr "Devi effettuare l'accesso per utilizzare Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
@@ -791,3 +791,79 @@ msgstr "\r\nQuesti file sono utilizzati dai provider informazioni scrapers per i
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
 msgstr "Includi tutte le informazioni nei file NFO (usare solo con scraper 'Local Information')"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Limita la risoluzione video a"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Esporta i nuovi episodi"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Escludi dagli aggiornamenti automatici"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Includi negli aggiornamenti automatici"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Esportazione dei nuovi episodi"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Libreria condivisa (E' richiesto Kodi MySQL server)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "Usa MySQL per condividere la libreria"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Nome utente"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "Connessione al database MySQL effettuata con successo"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "IP Host"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Porta"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Prova di connessione al database"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "ERRORE: Il database MySQL non è raggiungibile - sarà utilizzato il database locale"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Usa questo dispositivo per la gestione degli aggiornamenti automatici"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Verifica se questo dispositivo gestisce gli aggiornamenti automatici"
+
+msgctxt "#30209"
+msgid "This device now handle the auto-updates of shared-library"
+msgstr "Questo dispositivo ora gestisce gli aggiornamenti automatici alla libreria"
+
+msgctxt "#30210"
+msgid "This device handle the auto-updates of shared-library"
+msgstr "Questo dispositivo gestisce gli aggiornamenti automatici alla libreria"
+
+msgctxt "#30211"
+msgid "Another device handle the auto-updates of shared-library"
+msgstr "Un'altro dispositivo sta gestendo gli aggiornamenti automatici alla libreria"
+
+msgctxt "#30212"
+msgid "There is no device that handle the auto-updates of shared-library"
+msgstr "Nessun dispositivo sta gestendo gli aggiornamenti automatici alla libreria"
