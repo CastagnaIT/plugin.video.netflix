@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.14.6" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.15.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -38,6 +38,24 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.15.0 (2019-08-20)
+-Implemented data management through database
+-Implemented automatic export of new episodes
+-Implemented a version upgrade system
+-Implemented management of login errors
+-Added a new context menu "Export new episodes" for a single tv show
+-Added ability to exclude (and re-include) a tv show from library auto update
+-Added possibility to share the same library with multiple devices (MySQL server is required)
+-No more concurrency and data loss problems of previous "persistent storage"
+-Fixed continuous "new access" email notification from netflix
+-Fixed locale id error
+-Fixed automatic library updates
+-Fixed logout now the profiles are no longer accessible and you can enter your credentials
+-Fixed exporting tvshow.nfo for a single episode
+-Fixed UpNext watched status from Kodi library
+-Fixed issue with library items that containing % in the path
+-Other minor improvements and fixes
+
 v0.14.6 (2019-06-29)
 -Improved Library Management that include:
 -Fixed TvShow not removed from library
