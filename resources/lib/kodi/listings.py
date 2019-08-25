@@ -38,29 +38,12 @@ def _activate_view(partial_setting_id):
     """Activate the given view if the plugin is run in the foreground"""
     if 'plugin://{}'.format(g.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath'):
         if g.ADDON.getSettingBool('customview'):
-            # Do not change the sequence of this keys, match the return value of the enum xml menu
-            list_views = collections.OrderedDict({
-                '''
-                With Kodi 19 should be implemented a method to get the id of the current skin,
-                so we can use this list only with the default skin,
-                the other skins partially implement the view types of the standard skin of kodi
-                causing also alterations in the translations of the view type names.
-                'List': 50,
-                'Poster': 51,
-                'IconWall': 52,
-                'Shift': 53,
-                'InfoWall': 54,
-                'WideList': 55,
-                'Wall': 500,
-                'Banner': 501,
-                'FanArt': 502,'''
-                'LastUsed': 0, # Leave the management to kodi
-                'Custom': -1
-            })
-            # Force a custom view
-            view_id = list_views.values()[int(g.ADDON.getSettingInt('viewmode' + partial_setting_id))]
-            if view_id == -1:
-                view_id = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id + 'id'))
+            view_mode = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id))
+            if view_mode == 0:
+                # Leave the management to kodi
+                return
+            # Force a custom view, get the id from settings
+            view_id = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id + 'id'))
             if view_id > 0:
                 xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
 
