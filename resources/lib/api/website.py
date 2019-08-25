@@ -17,12 +17,14 @@ from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembe
 
 PAGE_ITEMS_INFO = [
     'models/userInfo/data/name',
-    'models/userInfo/data/guid',
+    'models/userInfo/data/guid',            # Main profile guid
+    'models/userInfo/data/userGuid',        # Current profile guid
     'models/userInfo/data/countryOfSignup',
     'models/userInfo/data/membershipStatus',
     'models/userInfo/data/isTestAccount',
     'models/userInfo/data/deviceTypeId',
     'models/userInfo/data/isAdultVerified',
+    'models/userInfo/data/isKids',
     'models/userInfo/data/pinEnabled',
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/esnGeneratorModel/data/esn',
@@ -79,6 +81,9 @@ def extract_profiles(falkor_cache):
             common.debug('Parsing profile {}'.format(guid))
             avatar_url = _get_avatar(falkor_cache, profile)
             profile = profile['summary']['value']
+            debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
+            for k_info in debug_info:
+                common.debug('Profile info {}'.format({k_info: profile[k_info]}))
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
@@ -121,7 +126,8 @@ def extract_userdata(react_context):
         try:
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
-            common.debug('Extracted {}'.format(extracted_value))
+            if 'esn' not in path:
+                common.debug('Extracted {}'.format(extracted_value))
         except (AttributeError, KeyError):
             common.debug('Could not extract {}'.format(path))
     return user_data
