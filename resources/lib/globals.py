@@ -198,6 +198,7 @@ class GlobalVariables(object):
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
         for path in module_paths:
+            path = xbmc.translatePath(path)
             if path not in sys.path:
                 sys.path.insert(0, path)
 
