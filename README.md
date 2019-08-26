@@ -1,3 +1,6 @@
+# Deprecated
+Please use https://github.com/CastagnaIT/plugin.video.netflix/
+
 # Netflix Plugin for Kodi 18 (plugin.video.netflix)
 
 [![Bitcoin donate button](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://blockchain.info/address/1DHGftMkFXXsDY7UnqQuatWwxQzKVu88sF)
