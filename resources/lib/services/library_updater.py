@@ -96,7 +96,9 @@ class LibraryUpdateService(xbmc.Monitor):
 
 
 def _compute_next_schedule():
-    update_frequency = g.ADDON.getSettingInt('auto_update')
+    # Retrieve 'auto_update' setting value
+    # or None if settings.xml was not created yet, as at first service run
+    update_frequency = g.ADDON.getSettingInt('auto_update') or None
 
     if not update_frequency:
         common.debug('Library auto update scheduled is disabled')
