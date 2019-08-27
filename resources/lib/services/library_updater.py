@@ -96,23 +96,33 @@ class LibraryUpdateService(xbmc.Monitor):
 
 
 def _compute_next_schedule():
-    update_frequency = g.ADDON.getSettingInt('auto_update')
+    try:
+        update_frequency = g.ADDON.getSettingInt('auto_update')
 
-    if not update_frequency:
-        common.debug('Library auto update scheduled is disabled')
-        return None
-    if g.ADDON.getSettingBool('use_mysql'):
-        current_device_uuid = common.get_device_uuid()
-        uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
-        if current_device_uuid != uuid:
-            common.debug('The auto update has been disabled because another device '
-                         'has been set as the main update manager')
+        if not update_frequency:
+            common.debug('Library auto update scheduled is disabled')
             return None
+        if g.ADDON.getSettingBool('use_mysql'):
+            current_device_uuid = common.get_device_uuid()
+            uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+            if current_device_uuid != uuid:
+                common.debug('The auto update has been disabled because another device '
+                             'has been set as the main update manager')
+                return None
 
-    time = g.ADDON.getSetting('update_time') or '00:00'
-    last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
-                                     datetime.utcfromtimestamp(0))
-    last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
-    next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
-    common.debug('Next library auto update is scheduled for {}'.format(next_run))
-    return next_run
+        time = g.ADDON.getSetting('update_time') or '00:00'
+        last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
+                                         datetime.utcfromtimestamp(0))
+        last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
+        next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
+        common.debug('Next library auto update is scheduled for {}'.format(next_run))
+        return next_run
+    except Exception:
+        # If settings.xml was not created yet, as at first service run
+        # g.ADDON.getSettingInt('auto_update') will thrown a TypeError
+        # If any other error appears, we don't want the service to crash,
+        # let's return None in all case
+        import traceback
+        common.debug(traceback.format_exc())
+        common.debug('Managed error at _compute_next_schedule')
+        return None
