@@ -14,6 +14,7 @@ import xbmcvfs
 
 import resources.lib.api.shakti as api
 import resources.lib.common as common
+import resources.lib.database.db_utils as db_utils
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import (VidLibProp)
@@ -511,12 +512,15 @@ def _remove_videoid_from_db(videoid):
 
 
 def _export_all_new_episodes_running():
-    update = g.SHARED_DB.get_value('library_export_new_episodes_running', False)
+    update = g.SHARED_DB.get_value('library_export_new_episodes_running', False,
+                                   table=db_utils.TABLE_SHARED_APP_CONF)
     if update:
         start_time = g.SHARED_DB.get_value('library_export_new_episode_start_time',
-                                           datetime.utcfromtimestamp(0))
+                                           datetime.utcfromtimestamp(0),
+                                           table=db_utils.TABLE_SHARED_APP_CONF)
         if datetime.now() >= start_time + timedelta(hours=6):
-            g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+            g.SHARED_DB.set_value('library_export_new_episodes_running', False,
+                                  table=db_utils.TABLE_SHARED_APP_CONF)
             common.warn('Canceling previous library update: duration >6 hours')
         else:
             common.debug('Export all new episodes is already running')
@@ -530,8 +534,10 @@ def export_all_new_episodes():
     """
     if not _export_all_new_episodes_running():
         common.log('Starting to export new episodes for all tv shows')
-        g.SHARED_DB.set_value('library_export_new_episodes_running', True)
-        g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
+        g.SHARED_DB.set_value('library_export_new_episodes_running', True,
+                              table=db_utils.TABLE_SHARED_APP_CONF)
+        g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now(),
+                              table=db_utils.TABLE_SHARED_APP_CONF)
 
         for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, False):
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
@@ -539,7 +545,8 @@ def export_all_new_episodes():
             # add some randomness between show analysis to limit servers load and ban risks
             xbmc.sleep(random.randint(1000, 5001))
 
-        g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+        g.SHARED_DB.set_value('library_export_new_episodes_running', False,
+                              table=db_utils.TABLE_SHARED_APP_CONF)
         common.debug('Notify service to update the library')
         common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
 

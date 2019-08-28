@@ -9,6 +9,7 @@ import xbmc
 
 from resources.lib.globals import g
 import resources.lib.common as common
+import resources.lib.database.db_utils as db_utils
 import resources.lib.kodi.library as kodi_library
 
 
@@ -39,7 +40,8 @@ class LibraryUpdateService(xbmc.Monitor):
             common.debug('Triggering export new episodes')
             xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/export_all_new_episodes/)'
                                 .format(g.ADDON_ID))
-            g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
+            g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now(),
+                                  table=db_utils.TABLE_SHARED_APP_CONF)
             self.next_schedule = _compute_next_schedule()
 
     def is_idle(self):
@@ -104,7 +106,8 @@ def _compute_next_schedule():
             return None
         if g.ADDON.getSettingBool('use_mysql'):
             current_device_uuid = common.get_device_uuid()
-            uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+            uuid = g.SHARED_DB.get_value('auto_update_device_uuid',
+                                         table=db_utils.TABLE_SHARED_APP_CONF)
             if current_device_uuid != uuid:
                 common.debug('The auto update has been disabled because another device '
                              'has been set as the main update manager')
@@ -112,7 +115,8 @@ def _compute_next_schedule():
 
         time = g.ADDON.getSetting('update_time') or '00:00'
         last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
-                                         datetime.utcfromtimestamp(0))
+                                         datetime.utcfromtimestamp(0),
+                                         table=db_utils.TABLE_SHARED_APP_CONF)
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
         next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
         common.debug('Next library auto update is scheduled for {}'.format(next_run))

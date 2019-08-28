@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import resources.lib.api.shakti as api
 import resources.lib.common as common
+import resources.lib.database.db_utils as db_utils
 import resources.lib.kodi.library as library
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
@@ -140,12 +141,14 @@ class LibraryActionExecutor(object):
 
     def set_autoupdate_device(self, pathitems):
         """Set the current device to manage auto-update of the shared-library (MySQL)"""
-        g.SHARED_DB.set_value('auto_update_device_uuid', common.get_device_uuid())
+        g.SHARED_DB.set_value('auto_update_device_uuid', common.get_device_uuid(),
+                              table=db_utils.TABLE_SHARED_APP_CONF)
         ui.show_notification(common.get_local_string(30209), time=8000)
 
     def check_autoupdate_device(self, pathitems):
         """Check if the current device manage the auto-updates of the shared-library (MySQL)"""
-        uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+        uuid = g.SHARED_DB.get_value('auto_update_device_uuid',
+                                     table=db_utils.TABLE_SHARED_APP_CONF)
         if uuid is None:
             msg = common.get_local_string(30212)
         else:
