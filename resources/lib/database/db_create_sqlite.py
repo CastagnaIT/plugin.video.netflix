@@ -2,40 +2,117 @@
 """Functions to create new databases"""
 from __future__ import unicode_literals
 
-import os
 import sqlite3 as sql
-
-from resources.lib.globals import g
 
 import resources.lib.common as common
 import resources.lib.database.db_utils as db_utils
 
-# TODO: In the future, when the databases are stable, we can create the sql code for db creation
-# TODO: And so removing the db file copy
 
-
-def check_database_file(db_filename):
-    """If database file do not exist copy a new one from addon folder"""
-    if common.file_exists(db_filename, os.path.join(g.ADDON_DATA_PATH, 'database'))\
-       and not common.file_exists(db_filename, os.path.join(g.DATA_PATH, 'database')):
-        common.debug('Database file {} is missing, copy a new one'.format(db_filename))
-
-        common.copy_file(os.path.join(g.ADDON_DATA_PATH, 'database', db_filename),
-                         os.path.join(g.DATA_PATH, 'database', db_filename))
-
-
-def create_database(db_file_path):
-    if db_utils.LOCAL_DB_FILENAME in db_file_path:
+def create_database(db_file_path, db_filename):
+    common.debug('The SQLite database {} is empty, creating tables'.format(db_filename))
+    if db_utils.LOCAL_DB_FILENAME == db_filename:
         _create_local_database(db_file_path)
-    if db_utils.SHARED_DB_FILENAME in db_file_path:
+    if db_utils.SHARED_DB_FILENAME == db_filename:
         _create_shared_database(db_file_path)
 
 
 def _create_local_database(db_file_path):
     """Create a new local database"""
-    pass
+    conn = sql.connect(db_file_path)
+    cur = conn.cursor()
+
+    table = str('CREATE TABLE app_config ('
+                'ID    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+                'Name  TEXT    UNIQUE NOT NULL,'
+                'Value TEXT);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE menu_data ('
+                'ContextId TEXT PRIMARY KEY NOT NULL,'
+                'Value     TEXT);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE profiles ('
+                'ID        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+                'Guid      TEXT    NOT NULL UNIQUE,'
+                'IsActive  BOOLEAN DEFAULT (0) NOT NULL,'
+                'SortOrder INTEGER NOT NULL);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE profiles_config ('
+                'Guid  TEXT NOT NULL,'
+                'Name  TEXT NOT NULL,'
+                'Value TEXT,'
+                'PRIMARY KEY (Guid, Name ),'
+                'FOREIGN KEY (Guid)'
+                'REFERENCES Profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE session ('
+                'Name  TEXT PRIMARY KEY NOT NULL,'
+                'Value TEXT);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE settings_monitor ('
+                'Name  TEXT PRIMARY KEY NOT NULL,'
+                'Value TEXT);')
+    cur.execute(table)
+
+    if conn:
+        conn.close()
 
 
 def _create_shared_database(db_file_path):
     """Create a new shared database"""
-    pass
+    conn = sql.connect(db_file_path)
+    cur = conn.cursor()
+
+    table = str('CREATE TABLE profiles ('
+                'ID        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+                'Guid      TEXT    NOT NULL UNIQUE,'
+                'SortOrder INTEGER NOT NULL);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE shared_app_config ('
+                'ID    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+                'Name  TEXT    NOT NULL UNIQUE,'
+                'Value TEXT);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE stream_continuity ('
+                'ProfileGuid      TEXT    NOT NULL,'
+                'VideoID          INTEGER NOT NULL,'
+                'Value            TEXT,'
+                'DateLastModified TEXT    NOT NULL,'
+                'PRIMARY KEY (ProfileGuid, VideoID ),'
+                'FOREIGN KEY (ProfileGuid)'
+                'REFERENCES Profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE);')
+    cur.execute(table)
+
+    table = str('CREATE TABLE video_lib_episodes ('
+                'EpisodeID INTEGER,'
+                'SeasonID  INTEGER,'
+                'FilePath  TEXT,'
+                'PRIMARY KEY (EpisodeID, SeasonID));')
+    cur.execute(table)
+
+    table = str('CREATE TABLE video_lib_movies ('
+                'MovieID   INTEGER PRIMARY KEY NOT NULL,'
+                'FilePath  TEXT    NOT NULL,'
+                'NfoExport TEXT    NOT NULL DEFAULT (\'False\'));')
+    cur.execute(table)
+
+    table = str('CREATE TABLE video_lib_seasons ('
+                'TvShowID INTEGER NOT NULL,'
+                'SeasonID INTEGER NOT NULL,'
+                'PRIMARY KEY (TvShowID, SeasonID));')
+    cur.execute(table)
+
+    table = str('CREATE TABLE video_lib_tvshows ('
+                'TvShowID      INTEGER PRIMARY KEY NOT NULL,'
+                'ExcludeUpdate TEXT    NOT NULL DEFAULT (\'False\'),'
+                'NfoExport     TEXT    NOT NULL DEFAULT (\'False\'));')
+    cur.execute(table)
+
+    if conn:
+        conn.close()

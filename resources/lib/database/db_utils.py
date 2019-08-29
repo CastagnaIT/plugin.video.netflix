@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import os
 import xbmc
+import xbmcvfs
 import resources.lib.common as common
 
 from enum import Enum
@@ -29,6 +30,10 @@ class VidLibProp(Enum):
 
 
 def get_local_db_path(db_filename):
+    # First ensure database folder exists
+    db_folder = xbmc.translatePath(os.path.join(g.DATA_PATH, 'database'))
+    if not xbmcvfs.exists(db_folder):
+        xbmcvfs.mkdirs(db_folder)
     return xbmc.translatePath(os.path.join(g.DATA_PATH, 'database', db_filename))
 
 
