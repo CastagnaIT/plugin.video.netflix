@@ -76,7 +76,11 @@ def extract_profiles(falkor_cache):
     """Extract profile information from Netflix website"""
     try:
         profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
-        _delete_non_existing_profiles(profiles_list)
+        if not profiles_list:
+            common.error('The profiles list from falkor cache is empty. '
+                         'The profiles were not parsed nor updated!')
+        else:
+            _delete_non_existing_profiles(profiles_list)
         sort_order = 0
         for guid, profile in profiles_list.items():
             common.debug('Parsing profile {}'.format(guid))
