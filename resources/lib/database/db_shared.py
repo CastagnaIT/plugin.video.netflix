@@ -23,6 +23,19 @@ def get_shareddb_class(force_sqlite=False):
             else:
                 super(NFSharedDatabase, self).__init__(db_utils.SHARED_DB_FILENAME)
 
+        def get_value(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF,
+                      data_type=None):
+            return super(NFSharedDatabase, self).get_value(key, default_value, table, data_type)
+
+        def get_values(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF):
+            return super(NFSharedDatabase, self).get_values(key, default_value, table)
+
+        def set_value(self, key, value, table=db_utils.TABLE_SHARED_APP_CONF):
+            super(NFSharedDatabase, self).set_value(key, value, table)
+
+        def delete_key(self, key, table=db_utils.TABLE_SHARED_APP_CONF):
+            super(NFSharedDatabase, self).delete_key(key, table)
+
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
         def set_profile(self, guid, sort_order):

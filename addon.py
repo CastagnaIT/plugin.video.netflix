@@ -103,9 +103,9 @@ if __name__ == '__main__':
     success = False
 
     try:
-        upgrade_ctrl.check_addon_upgrade()
-        g.initial_addon_configuration()
         if check_valid_credentials():
+            upgrade_ctrl.check_addon_upgrade()
+            g.initial_addon_configuration()
             route(filter(None, g.PATH.split('/')))
             success = True
     except common.BackendNotReady:

@@ -94,11 +94,11 @@ class NetflixSession(object):
         return urlsafe_b64encode(
             common.get_credentials().get('email', 'NoMail'))
 
-    def update_session_data(self):
+    def update_session_data(self, old_esn=g.get_esn()):
         self.session.headers.update(
             {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
         cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(g.get_esn())
+        _update_esn(old_esn)
 
     @property
     def auth_url(self):
@@ -177,6 +177,8 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _login(self, modal_error_message=False):
         """Perform account login"""
+        # If exists get the current esn value before extract a new session data
+        current_esn = g.get_esn()
         try:
             # First we get the authentication url without logging in, required for login API call
             react_context = website.extract_json(self._get('profiles'), 'reactContext')
@@ -202,7 +204,7 @@ class NetflixSession(object):
             raise exc
         common.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
-        self.update_session_data()
+        self.update_session_data(current_esn)
         return True
 
     @common.addonsignals_return_call
@@ -237,7 +239,6 @@ class NetflixSession(object):
                 'authURL': self.auth_url})
         g.LOCAL_DB.switch_active_profile(guid)
         self.update_session_data()
-        # self._refresh_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
         return True
 
@@ -452,21 +453,11 @@ def _api_url(component):
         componenturl=URLS[component]['endpoint'])
 
 
-def _update_esn(esn):
-    """Return True if the esn has changed on Session initialization"""
-    if _set_esn(esn):
-        common.send_signal(signal=common.Signals.ESN_CHANGED, data=esn)
-
-
-def _set_esn(esn):
-    """
-    Set the ESN in settings if it hasn't been set yet.
-    Return True if the new ESN has been set, False otherwise
-    """
-    if not g.get_esn() and esn:
-        g.LOCAL_DB.set_value('esn', esn, table=TABLE_SESSION)
-        return True
-    return False
+def _update_esn(old_esn):
+    """Perform key handshake if the esn has changed on Session initialization"""
+    current_esn = g.get_esn()
+    if old_esn != current_esn:
+        common.send_signal(signal=common.Signals.ESN_CHANGED, data=current_esn)
 
 
 def _raise_api_error(decoded_response):

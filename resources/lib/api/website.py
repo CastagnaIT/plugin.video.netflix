@@ -59,7 +59,8 @@ def extract_session_data(content):
     api_data = extract_api_data(react_context)
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
-    g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
+    if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
+        g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
     g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Save api urls
     for key, path in api_data.items():
@@ -75,7 +76,11 @@ def extract_profiles(falkor_cache):
     """Extract profile information from Netflix website"""
     try:
         profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
-        _delete_non_existing_profiles(profiles_list)
+        if not profiles_list:
+            common.error('The profiles list from falkor cache is empty. '
+                         'The profiles were not parsed nor updated!')
+        else:
+            _delete_non_existing_profiles(profiles_list)
         sort_order = 0
         for guid, profile in profiles_list.items():
             common.debug('Parsing profile {}'.format(guid))

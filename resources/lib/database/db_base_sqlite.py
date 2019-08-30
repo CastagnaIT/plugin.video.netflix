@@ -52,24 +52,27 @@ def handle_connection(func):
 class SQLiteDatabase(db_base.BaseDatabase):
     def __init__(self, db_filename):
         self.is_mysql_database = False
+        self.db_filename = db_filename
         self.db_file_path = db_utils.get_local_db_path(db_filename)
         super(SQLiteDatabase, self).__init__()
 
     def _initialize_connection(self):
-        # If database file do not exist create a new one
-        # if not common.file_exists(db_filename, g.DATA_PATH):
-        #     db_utils.create_database(self.db_file_path)
-        # TODO: Temporary when stabilized it will be possible to implement the db code creation
-        # If database file do not exist copy a new one
-        db_filename = os.path.basename(self.db_file_path)
-        db_create_sqlite.check_database_file(db_filename)
         try:
-            common.debug('Trying connection to the database {}'.format(db_filename))
+
+            common.debug('Trying connection to the database {}'.format(self.db_filename))
             self.conn = sql.connect(self.db_file_path)
             cur = self.conn.cursor()
-            cur.execute('SELECT SQLITE_VERSION()')
+            cur.execute(str('SELECT SQLITE_VERSION()'))
             common.debug('Database connection {} was successful (SQLite ver. {})'
-                         .format(db_filename, cur.fetchone()[0]))
+                         .format(self.db_filename, cur.fetchone()[0]))
+            cur.row_factory = lambda cursor, row: row[0]
+            cur.execute(str('SELECT name FROM sqlite_master WHERE type=\'table\' '
+                            'AND name NOT LIKE \'sqlite_%\''))
+            list_tables = cur.fetchall()
+            if len(list_tables) == 0:
+                # If no tables exist create a new one
+                self.conn.close()
+                db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as e:
             common.error("SQLite error {}:".format(e.args[0]))
             raise SQLiteConnectionError
