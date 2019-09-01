@@ -158,10 +158,7 @@ class MSLHandler(object):
             'version': 2,
             'url': '/manifest',
             'id': id,
-            'esn': esn,
             'languages': [g.LOCAL_DB.get_value('locale_id')],
-            'uiVersion': 'shakti-v5bca5cd3',
-            'clientVersion': '6.0013.315.051',
             'params': {
                 'type': 'standard',
                 'viewableId': [viewable_id],
@@ -173,13 +170,19 @@ class MSLHandler(object):
                 'isBranching': False,
                 'useHttpsStreams': False,
                 'imageSubtitleHeight': 1080,
-                'uiVersion': 'shakti-v5bca5cd3',
+                'uiVersion': 'shakti-v93016808',
                 'uiPlatform': 'SHAKTI',
-                'clientVersion': '6.0013.315.051',
+                'clientVersion': '6.0016.426.011',
+                'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
                 'supportsPreReleasePin': True,
                 'supportsWatermark': True,
+                'supportsUnequalizedDownloadables': True,
                 'showAllSubDubTracks': False,
-                'titleSpecificData': {},
+                'titleSpecificData': {
+                    viewable_id: {
+                        'unletterboxed': True
+                    }
+                },
                 'videoOutputInfo': [{
                     'type': 'DigitalVideoOutputDescriptor',
                     'outputType': 'unknown',
@@ -188,7 +191,8 @@ class MSLHandler(object):
                 }],
                 'preferAssistiveAudio': False,
                 'isNonMember': False
-            }
+            },
+            'echo': ''
         }
 
         manifest = self._chunked_request(ENDPOINTS['manifest'],
@@ -214,10 +218,7 @@ class MSLHandler(object):
             'version': 2,
             'url': self.last_license_url,
             'id': id,
-            'esn': g.get_esn(),
             'languages': [g.LOCAL_DB.get_value('locale_id')],
-            'uiVersion': 'shakti-v5bca5cd3',
-            'clientVersion': '6.0013.315.051',
             'params': [{
                 'sessionId': sid,
                 'clientTime': int(id / 10000),
