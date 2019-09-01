@@ -63,6 +63,7 @@ To understand if your device can handle them, you need to check if it has suppor
 - Other platform (Windows, Linux, ...)
 The video is always software decoded due to Netflix licensing restrictions, so **you'll need a CPU that can handle the load of software decoding 1080p video** otherwise you'll have the result of stuttering video playback.
 Which is what happens with certain RPI, 720p is maximum for those devices, and even then you need to make sure to properly cool your RPI or you'll have stuttering playback as well.
+You can limit the resolution in this way: In the addon settings open Expert page and change `Limit video stream resolution to` value to 720p.
 
 ### It only plays videos in 480p/720p, why is that?
 inputstream.adaptive selects the stream to play based on an initial bandwidth measurement and your screen resolution.
