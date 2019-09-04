@@ -1,9 +1,9 @@
 ---
-name: Support request
-about: Request for help to use the add-on
+name: Help request
+about: If you need help on how to use the addon
 
 ---
-## Support request
+## Help request
 
 #### Your Environment
 - Netflix add-on version: <!--- e.g. 14.1 -->

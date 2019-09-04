@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Request for a new feature or to modify an existing one
+about: If you want to propose a new feature or to modify an existing one
 
 ---
 ## Feature request

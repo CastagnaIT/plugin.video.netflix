@@ -1,6 +1,6 @@
 ---
 name: Problem report
-about: Create an extensive report to help us document a problem
+about: If something doesn't work
 
 ---
 ## Bug report
