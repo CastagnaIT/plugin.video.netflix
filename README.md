@@ -1,8 +1,10 @@
-# Netflix Plugin for Kodi 18 (plugin.video.netflix)
-
-
+[![GitHub release](https://img.shields.io/github/release/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/releases)
+[![Build Status](https://travis-ci.org/castagnait/plugin.video.netflix.svg?branch=master)](https://travis-ci.org/castagnait/plugin.video.netflix)
+[![Codecov status](https://img.shields.io/codecov/c/github/castagnait/plugin.video.netflix/master)](https://codecov.io/gh/castagnait/plugin.video.netflix/branch/master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Contributors](https://img.shields.io/github/contributors/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/graphs/contributors)
 
+# Netflix Plugin for Kodi 18 (plugin.video.netflix)
 This source code comes from the [caphm repository](https://github.com/caphm/plugin.video.netflix) given the discontinuity of his work, i'm trying to keep the project alive, help from skilled people are welcome.
 The initial project is on the [repository of asciidisco](https://github.com/asciidisco/plugin.video.netflix) no longer maintained but used as a reference.
 
@@ -140,6 +142,6 @@ Please also use a service like pastebin to provide logs and refrain from uploadi
 [Contributor Code of Conduct](Code_of_Conduct.md)
 By participating in this project you agree to abide by its terms.
 
-## Licence
 
-Licenced under The MIT License.
+## License
+Licensed under The MIT License.

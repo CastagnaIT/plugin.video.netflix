@@ -1,0 +1,14 @@
+[MESSAGES CONTROL]
+disable=
+    bad-option-value,
+    duplicate-code,
+    fixme,
+    invalid-name,
+    line-too-long,
+    missing-docstring,
+    no-self-use,
+    old-style-class,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-instance-attributes,
+    too-many-locals,
