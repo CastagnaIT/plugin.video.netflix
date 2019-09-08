@@ -103,9 +103,9 @@ def _compute_next_schedule():
             common.debug('Library auto update scheduled is disabled')
             return None
         if g.ADDON.getSettingBool('use_mysql'):
-            current_device_uuid = common.get_device_uuid()
+            client_uuid = g.LOCAL_DB.get_value('client_uuid')
             uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
-            if current_device_uuid != uuid:
+            if client_uuid != uuid:
                 common.debug('The auto update has been disabled because another device '
                              'has been set as the main update manager')
                 return None

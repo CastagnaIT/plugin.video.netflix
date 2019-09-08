@@ -140,7 +140,9 @@ class LibraryActionExecutor(object):
 
     def set_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Set the current device to manage auto-update of the shared-library (MySQL)"""
-        g.SHARED_DB.set_value('auto_update_device_uuid', common.get_device_uuid())
+        random_uuid = common.get_random_uuid()
+        g.LOCAL_DB.set_value('client_uuid', random_uuid)
+        g.SHARED_DB.set_value('auto_update_device_uuid', random_uuid)
         ui.show_notification(common.get_local_string(30209), time=8000)
 
     def check_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
@@ -149,7 +151,7 @@ class LibraryActionExecutor(object):
         if uuid is None:
             msg = common.get_local_string(30212)
         else:
-            current_device_uuid = common.get_device_uuid()
+            client_uuid = g.LOCAL_DB.get_value('client_uuid')
             msg = common.get_local_string(30210) \
-                if current_device_uuid == uuid else common.get_local_string(30211)
+                if client_uuid == uuid else common.get_local_string(30211)
         ui.show_notification(msg, time=8000)
