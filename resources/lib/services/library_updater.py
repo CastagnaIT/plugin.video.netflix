@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Automatic updates of items exported to the Kodi library"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from datetime import datetime, timedelta
 
@@ -80,7 +80,7 @@ class LibraryUpdateService(xbmc.Monitor):
             if self.scan_awaiting:
                 self.update_kodi_library()
 
-    def update_kodi_library(self, data=None):
+    def update_kodi_library(self, data=None):  # pylint: disable=unused-argument
         # Update only the elements in the addon export folder
         # for faster processing with a large library.
         # If a scan is already in progress, the scan is delayed until onScanFinished event
@@ -117,7 +117,7 @@ def _compute_next_schedule():
         next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
         common.debug('Next library auto update is scheduled for {}'.format(next_run))
         return next_run
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         # If settings.xml was not created yet, as at first service run
         # g.ADDON.getSettingInt('auto_update') will thrown a TypeError
         # If any other error appears, we don't want the service to crash,

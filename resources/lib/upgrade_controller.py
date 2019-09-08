@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Check if the addon has been updated and make necessary changes"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 

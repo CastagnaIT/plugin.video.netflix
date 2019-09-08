@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """MSL video profiles"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import xbmcaddon
 
@@ -96,8 +96,6 @@ def _subtitle_profiles():
 
 def _additional_profiles(profiles, req_settings=None, forb_settings=None):
     return (PROFILES[profiles]
-            if (all(g.ADDON.getSettingBool(setting)
-                for setting in common.make_list(req_settings)) and
-                not (any(g.ADDON.getSettingBool(setting)
-                     for setting in common.make_list(forb_settings))))
+            if (all(g.ADDON.getSettingBool(setting) for setting in common.make_list(req_settings)) and
+                not any(g.ADDON.getSettingBool(setting) for setting in common.make_list(forb_settings)))
             else [])

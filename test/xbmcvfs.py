@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 import os
+import shutil
 
 
 def File(path, flags='r'):
@@ -27,6 +28,11 @@ def Stat(path):
             return self._stat.st_mtime
 
     return stat(path)
+
+
+def copy(source, destination):
+    ''' A reimplementation of the xbmcvfs copy() function '''
+    return shutil.copyfile(source, destination)
 
 
 def delete(path):
@@ -63,3 +69,13 @@ def mkdir(path):
 def mkdirs(path):
     ''' A reimplementation of the xbmcvfs mkdirs() function '''
     return os.makedirs(path)
+
+
+def rename(file, newFileName):  # pylint: disable=redefined-builtin
+    ''' A reimplementation of the xbmcvfs rename() function '''
+    return os.rename(file, newFileName)
+
+
+def rmdir(path):
+    ''' A reimplementation of the xbmcvfs rmdir() function '''
+    return os.rmdir(path)

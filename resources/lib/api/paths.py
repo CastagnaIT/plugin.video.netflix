@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Path info to query the Shakti pathEvaluator"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
 import resources.lib.common as common
 
 from .exceptions import InvalidReferenceError
 
-MAX_PATH_REQUEST_SIZE = 47 # Stands for 48 results, is the default value defined by netflix for a single request
+MAX_PATH_REQUEST_SIZE = 47  # Stands for 48 results, is the default value defined by netflix for a single request
 
 RANGE_SELECTOR = 'RANGE_SELECTOR'
 
@@ -83,7 +82,7 @@ TRAILER_PARTIAL_PATHS = [
 
 INFO_TRANSFORMATIONS = {
     'rating': lambda r: r / 10,
-    'playcount': lambda w: int(w)
+    'playcount': lambda w: int(w)  # pylint: disable=unnecessary-lambda
 }
 
 REFERENCE_MAPPINGS = {
@@ -122,7 +121,7 @@ def iterate_references(source):
 
 def count_references(source):
     counter = 0
-    for index, ref in sorted({int(k): v
+    for index, ref in sorted({int(k): v  # pylint: disable=unused-variable
                               for k, v in source.iteritems()
                               if common.is_numeric(k)}.iteritems()):
         path = reference_path(ref)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions to generating context menu items"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from resources.lib.globals import g
 import resources.lib.common as common

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """MySQL database"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
@@ -83,7 +83,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             if self.conn and self.conn.is_connected():
                 self.conn.close()
 
-    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
+    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):  # pylint: disable=arguments-differ
         try:
             if cursor is None:
                 cursor = self.get_cursor()
@@ -93,7 +93,8 @@ class MySQLDatabase(db_base.BaseDatabase):
             else:
                 results = cursor.execute(query, kwargs)
             if 'multi' in kwargs:
-                for result in results:  # 'multi' is lazy statement run sql only when needed
+                # 'multi' is lazy statement run sql only when needed
+                for result in results:  # pylint: disable=unused-variable
                     pass
         except mysql.connector.Error as e:
             common.error("MySQL error {}:".format(e))

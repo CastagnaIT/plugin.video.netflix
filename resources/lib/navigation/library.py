@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Navigation handler for library actions"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.api.shakti as api
 import resources.lib.common as common
@@ -106,14 +106,14 @@ class LibraryActionExecutor(object):
                                    common.get_local_string(30126)):
             library.purge()
 
-    def migrate(self, pathitems):
+    def migrate(self, pathitems):  # pylint: disable=unused-argument
         """Migrate exported items from old library format to the new format"""
         for videoid in library.get_previously_exported_items():
             library.execute_library_tasks(videoid, [library.export_item],
                                           common.get_local_string(30018),
                                           sync_mylist=False)
 
-    def export_all_new_episodes(self, pathitems):
+    def export_all_new_episodes(self, pathitems):  # pylint: disable=unused-argument
         library.export_all_new_episodes()
 
     @common.inject_video_id(path_offset=1)
@@ -138,12 +138,12 @@ class LibraryActionExecutor(object):
         #  Perhaps creating a particular modal dialog with connection parameters can help
         pass
 
-    def set_autoupdate_device(self, pathitems):
+    def set_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Set the current device to manage auto-update of the shared-library (MySQL)"""
         g.SHARED_DB.set_value('auto_update_device_uuid', common.get_device_uuid())
         ui.show_notification(common.get_local_string(30209), time=8000)
 
-    def check_autoupdate_device(self, pathitems):
+    def check_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Check if the current device manage the auto-updates of the shared-library (MySQL)"""
         uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
         if uuid is None:

@@ -3,7 +3,7 @@
 # GNU General Public License v3.0 (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 ''' This file implements the Kodi xbmcgui module, either using stubs or alternative functionality '''
 
-# pylint: disable=unused-argument,too-many-arguments
+# pylint: disable=too-many-arguments,unused-argument
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 import os
@@ -48,13 +48,24 @@ class Dialog:
         text = kodi_to_ansi(text)
         print('\033[37;100mTEXTVIEWER:\033[35;0m [%s]\n\033[35;0m%s\033[39;0m' % (heading, text))
 
-    def input(self, heading, defaultt='', type=0, option=0, autoclose=0):
+    def input(self, heading, defaultt='', type=0, option=0, autoclose=0):  # pylint: disable=redefined-builtin
         ''' A stub implementation for the xbmcgui Dialog class input() method '''
         print('\033[37;100mINPUT:\033[39;0m [%s]' % (heading))
         if heading == 'E-mail':
             return os.environ.get('NETFLIX_USERNAME')
         if heading == 'Password':
             return os.environ.get('NETFLIX_PASSWORD')
+        return ''
+
+    @staticmethod
+    def numeric(type, heading, defaultt=''):  # pylint: disable=redefined-builtin
+        ''' A stub implementation for the xbmcgui Dialog class numeric() method '''
+        return
+
+    @staticmethod
+    def contextmenu(list):  # pylint: disable=redefined-builtin
+        ''' A stub implementation for the xbmcgui Dialog class contextmenu() method '''
+        return
 
 
 class DialogProgress:
@@ -62,7 +73,7 @@ class DialogProgress:
 
     def __init__(self):
         ''' A stub constructor for the xbmcgui DialogProgress class '''
-        self.percentage = 0
+        self.percent = 0
 
     @staticmethod
     def close():
@@ -70,28 +81,31 @@ class DialogProgress:
         print()
 
     @staticmethod
-    def create(heading, line1, line2=None, line3=None):
+    def create(heading, line1=None, line2=None, line3=None):
         ''' A stub implementation for the xbmcgui DialogProgress class create() method '''
         heading = kodi_to_ansi(heading)
-        line1 = kodi_to_ansi(line1)
-        print('\033[37;100mPROGRESS:\033[35;0m [%s] \033[35;0m%s\033[39;0m' % (heading, line1))
+        if line1:
+            line1 = kodi_to_ansi(line1)
+            print('\033[37;100mPROGRESS:\033[35;0m [%s] \033[35;0m%s\033[39;0m' % (heading, line1))
+        else:
+            print('\033[37;100mPROGRESS:\033[39;0m [%s]' % heading)
 
     @staticmethod
     def iscanceled():
         ''' A stub implementation for the xbmcgui DialogProgress class iscanceled() method '''
 
-    def update(self, percentage, line1=None, line2=None, line3=None):
+    def update(self, percent, line1=None, line2=None, line3=None):
         ''' A stub implementation for the xbmcgui DialogProgress class update() method '''
-        if (percentage - 5) < self.percentage:
+        if (percent - 5) < self.percent:
             return
-        self.percentage = percentage
+        self.percent = percent
         line1 = kodi_to_ansi(line1)
         line2 = kodi_to_ansi(line2)
         line3 = kodi_to_ansi(line3)
         if line1 or line2 or line3:
-            print('\033[37;100mPROGRESS:\033[35;0m [%d%%] \033[35;0m%s\033[39;0m' % (percentage, line1 or line2 or line3))
+            print('\033[37;100mPROGRESS:\033[35;0m [%d%%] \033[35;0m%s\033[39;0m' % (percent, line1 or line2 or line3))
         else:
-            print('\033[1G\033[37;100mPROGRESS:\033[35;0m [%d%%]\033[39;0m' % (percentage), end='')
+            print('\033[1G\033[37;100mPROGRESS:\033[35;0m [%d%%]\033[39;0m' % (percent), end='')
 
 
 class DialogBusy:
@@ -125,7 +139,12 @@ class ListItem:
 
     @staticmethod
     def addStreamInfo(stream_type, stream_values):
-        ''' A stub implementation for the xbmcgui LitItem class addStreamInfo() method '''
+        ''' A stub implementation for the xbmcgui ListItem class addStreamInfo() method '''
+        return
+
+    @staticmethod
+    def select(selected):
+        ''' A stub implementation for the xbmcgui ListItem class select() method '''
         return
 
     @staticmethod
@@ -159,15 +178,27 @@ class ListItem:
         return
 
 
-class WindowXMLDialog:
-    ''' A reimplementation of the xbmcgui WindowXMLDialog '''
-
-
 class Window:
     ''' A reimplementation of the xbmcgui Window '''
 
     def __init__(self, timeout=0):
         ''' A stub constructor for the xbmcgui Window class '''
 
-    def clearProperty(self, stub):
+    def clearProperty(self, key):
         ''' A stub implementation for the xbmcgui Window class clearProperty() method '''
+
+    def close(self):
+        ''' A stub implementation for the xbmcgui Window class close() method '''
+
+    def getControl(self, controlId):
+        ''' A stub implementation for the xbmcgui Window class getControl() method '''
+
+    def getProperty(self, key):
+        ''' A stub implementation for the xbmcgui Window class getProperty() method '''
+
+    def setProperty(self, key, value):
+        ''' A stub implementation for the xbmcgui Window class setProperty() method '''
+
+
+class WindowXMLDialog(Window):
+    ''' A reimplementation of the xbmcgui WindowXMLDialog '''

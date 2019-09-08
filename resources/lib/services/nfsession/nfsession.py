@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Stateful Netflix session management"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import traceback
 import time
@@ -19,7 +19,7 @@ import resources.lib.api.website as website
 import resources.lib.api.paths as apipaths
 import resources.lib.kodi.ui as ui
 
-from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
+from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,
                                           APIError, MissingCredentialsError)
 
 BASE_URL = 'https://www.netflix.com'
@@ -40,9 +40,8 @@ URLS = {
     # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
     # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
 }
-"""List of all static endpoints for HTML/JSON POST/GET requests"""
-
-"""How many entries of a list will be fetched with one path request"""
+# List of all static endpoints for HTML/JSON POST/GET requests
+# How many entries of a list will be fetched with one path request
 
 
 def needs_login(func):
@@ -277,7 +276,7 @@ class NetflixSession(object):
 
         for n_req in range(number_of_requests):
             path_response = self._path_request(_set_range_selector(paths, range_start, range_end))
-            if len(path_response) == 0:
+            if not path_response:
                 break
             if not common.check_path_exists(length_args, path_response):
                 # It may happen that the number of items to be received
@@ -286,16 +285,17 @@ class NetflixSession(object):
                 break
             common.merge_dicts(path_response, merged_response)
             response_count = response_length(path_response, *length_args)
-            if response_count >= response_size:
-                range_start += response_size
-                if n_req == (number_of_requests - 1):
-                    merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                    common.debug('{} has other elements, added _perpetual_range_selector item'
-                                 .format(response_type))
-                else:
-                    range_end = range_start + request_size
-            else:
+            if response_count < response_size:
                 # There are no other elements to request
+                break
+
+            range_start += response_size
+            if n_req == (number_of_requests - 1):
+                merged_response['_perpetual_range_selector'] = {'next_start': range_start}
+                common.debug('{} has other elements, added _perpetual_range_selector item'
+                             .format(response_type))
+            else:
+                range_end = range_start + request_size
                 break
 
         if perpetual_range_start > 0:
@@ -314,14 +314,12 @@ class NetflixSession(object):
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
 
-        '''
-        params:
-        drmSystem       drm used
-        falcor_server   json responses like browser
-        withSize        puts the 'size' field inside each dictionary
-        materialize     if true, when a path that no longer exists is requested (like 'storyarts'),
-                           it is still added in an 'empty' form in the response
-        '''
+        # params:
+        # drmSystem       drm used
+        # falcor_server   json responses like browser
+        # withSize        puts the 'size' field inside each dictionary
+        # materialize     if true, when a path that no longer exists is requested (like 'storyarts'),
+        #                    it is still added in an 'empty' form in the response
         params = {
             'drmSystem': 'widevine',
             # 'falcor_server': '0.1.0',

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Miscellaneous database utility functions"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import os
+from enum import Enum
+
 import xbmc
 import xbmcvfs
-import resources.lib.common as common
 
-from enum import Enum
 from resources.lib.globals import g
 
 
@@ -89,7 +89,7 @@ def mysql_insert_or_update(table, id_columns, columns):
     query_insert = 'INSERT INTO {} ({}) VALUES ({})'.format(table,
                                                             ', '.join(columns),
                                                             ', '.join(sets_columns))
-    columns = list(set(columns)-set(id_columns))  # Fastest method to remove list to list tested
+    columns = list(set(columns) - set(id_columns))  # Fastest method to remove list to list tested
     on_duplicate_params = [col + ' = @' + col for col in columns]
     query_duplicate = 'ON DUPLICATE KEY UPDATE {}'.format(', '.join(on_duplicate_params)) + ';'
     return ' '.join([query_set, query_insert, query_duplicate])

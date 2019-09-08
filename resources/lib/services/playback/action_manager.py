@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Common base for all playback action managers"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from resources.lib.globals import g
 import resources.lib.common as common

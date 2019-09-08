@@ -28,6 +28,7 @@ SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE = 27
 SORT_METHOD_STUDIO = 33
 SORT_METHOD_STUDIO_IGNORE_THE = 34
 SORT_METHOD_FULLPATH = 35
+SORT_METHOD_LABEL_IGNORE_FOLDERS = 36
 SORT_METHOD_LASTPLAYED = 37
 SORT_METHOD_PLAYCOUNT = 38
 SORT_METHOD_UNSORTED = 40
@@ -36,7 +37,7 @@ SORT_METHOD_BITRATE = 43
 SORT_METHOD_DATE_TAKEN = 44
 
 
-def addDirectoryItems(handle, listing, length):
+def addDirectoryItems(handle, listing, length=None):
     ''' A reimplementation of the xbmcplugin addDirectoryItems() function '''
     for item in listing:
         label = kodi_to_ansi(item[1].label)

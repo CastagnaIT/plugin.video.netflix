@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for retrieving values from nested dicts"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 
 def get_path(path, search_space, include_key=False):
@@ -73,6 +73,5 @@ def check_path_exists(path, search_space):
         if len(path) > 1:
             current_value = search_space.get(path[0])
             return check_path_exists(path[1:], current_value)
-        else:
-            return True
+        return True
     return False

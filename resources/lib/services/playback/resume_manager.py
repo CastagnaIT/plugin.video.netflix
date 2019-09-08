@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Force resume when item played from the library"""
+from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 

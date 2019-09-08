@@ -4,11 +4,10 @@
 Remember and restore audio stream / subtitle settings between individual
 episodes of a tv show or movie
 """
-from __future__ import unicode_literals
-
-import xbmc
+from __future__ import absolute_import, division, unicode_literals
 
 import json
+import xbmc
 
 from resources.lib.globals import g
 import resources.lib.common as common

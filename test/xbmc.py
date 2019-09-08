@@ -13,10 +13,18 @@ import json
 import time
 from xbmcextra import global_settings, import_language
 
+ISO_639_1 = 0
+ISO_639_2 = 1
+ENGLISH_NAME = 2
+
 LOGDEBUG = 'Debug'
-LOGERROR = 'Error'
 LOGINFO = 'Info'
 LOGNOTICE = 'Notice'
+LOGWARNING = 'Warning'
+LOGERROR = 'Error'
+LOGSEVERE = 'Severe'
+LOGFATAL = 'Fatal'
+LOGNONE = 'None'
 
 INFO_LABELS = {
     'System.BuildVersion': '18.2',
@@ -68,15 +76,20 @@ class Player:
     def __init__(self):
         self._count = 0
 
+    def pause(self):
+        ''' A stub implementation for the xbmc Player class pause() method '''
+
     def play(self, item='', listitem=None, windowed=False, startpos=-1):
         ''' A stub implementation for the xbmc Player class play() method '''
-        return
 
     def isPlaying(self):
         ''' A stub implementation for the xbmc Player class isPlaying() method '''
         # Return True four times out of five
         self._count += 1
         return bool(self._count % 5 != 0)
+
+    def seekTime(self, seekTime):
+        ''' A stub implementation for the xbmc Player class seekTime() method '''
 
     def showSubtitles(self, bVisible):
         ''' A stub implementation for the xbmc Player class showSubtitles() method '''
@@ -89,7 +102,16 @@ class Player:
         ''' A stub implementation for the xbmc Player class setSubtitleStream() method '''
 
 
-def executebuiltin(string, wait=False):  # pylint: disable=unused-argument
+def convertLanguage(language, format):  # pylint: disable=redefined-builtin
+    ''' A reimplementation of the xbmc convertLanguage() function '''
+    if format == ISO_639_1:
+        return 'en'
+    if format == ISO_639_2:
+        return 'eng'
+    return 'English'
+
+
+def executebuiltin(string, wait=False):
     ''' A stub implementation of the xbmc executebuiltin() function '''
     return
 
@@ -104,16 +126,30 @@ def executeJSONRPC(jsonrpccommand):
     return json.dumps(dict(error=dict(code=-1, message='Not implemented'), id=1, jsonrpc='2.0'))
 
 
-def getCondVisibility(string):  # pylint: disable=unused-argument
+def getCondVisibility(string):
     ''' A reimplementation of the xbmc getCondVisibility() function '''
     if string == 'system.platform.android':
         return False
     return True
 
 
+def getGlobalIdleTime():
+    ''' A reimplementation of the xbmc getGlobalIdleTime() function '''
+    return 1
+
+
 def getInfoLabel(key):
     ''' A reimplementation of the xbmc getInfoLabel() function '''
     return INFO_LABELS.get(key)
+
+
+def getLanguage(format=None, region=None):  # pylint: disable=redefined-builtin
+    ''' A reimplementation of the xbmc getLanguage() function '''
+    if format == ISO_639_1:
+        return 'en'
+    if format == ISO_639_2:
+        return 'eng'
+    return 'English'
 
 
 def getLocalizedString(msgctxt):
@@ -132,6 +168,13 @@ def getRegion(key):
 def log(msg, level):
     ''' A reimplementation of the xbmc log() function '''
     print('[32;1m%s: [32;0m%s[0m' % (level, msg))
+
+
+def makeLegalFilename(filename, fatX=None):
+    ''' A reimplementation of the xbmc makeLegalFilename() function '''
+    if fatX:
+        return filename
+    return os.path.basename(filename)
 
 
 def setContent(self, content):

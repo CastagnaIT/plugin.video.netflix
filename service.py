@@ -5,7 +5,7 @@
 # License: MIT https://goo.gl/5bMj3H
 # pylint: disable=wrong-import-position
 """Kodi plugin for Netflix (https://netflix.com)"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import sys
 import threading

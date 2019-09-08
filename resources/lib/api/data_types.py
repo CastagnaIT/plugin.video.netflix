@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """Convenience representations of datatypes returned by the API"""
 # pylint: disable=too-few-public-methods
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from collections import OrderedDict
 
-from resources.lib.globals import g
 import resources.lib.common as common
 
 from .paths import resolve_refs
@@ -65,7 +64,7 @@ class VideoList(object):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         has_data = True if path_response.get('lists') else False
-        self.videos = {}
+        self.videos = OrderedDict()
         self.artitem = None
         self.contained_titles = None
         self.videoids = None
@@ -104,7 +103,7 @@ class VideoListSorted(object):
                             and path_response[context_name].get(context_id)) or \
                            (not context_id and path_response.get(context_name)) else False
         self.data_lists = {}
-        self.videos = {}
+        self.videos = OrderedDict()
         self.artitem = None
         self.contained_titles = None
         self.videoids = None
@@ -135,7 +134,7 @@ class SearchVideoList(object):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         has_data = 'search' in path_response
-        self.videos = {}
+        self.videos = OrderedDict()
         self.videoids = None
         self.artitem = None
         self.contained_titles = None
@@ -238,13 +237,15 @@ def _get_videoids(videos):
 
 def _filterout_contexts(data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    id = next(data['lolomos'].iterkeys())
+    _id = next(data['lolomos'].iterkeys())
     for context in contexts:
         for listid in data.get('lists', {}).keys():
-            if data['lists'][listid].get('context'):
-                if data['lists'][listid]['context'] == context:
-                    for idkey in data['lolomos'][id].keys():
-                        if listid in data['lolomos'][id][idkey]:
-                            del data['lolomos'][id][idkey]
-                            break
-                    del data['lists'][listid]
+            if not data['lists'][listid].get('context'):
+                continue
+            if data['lists'][listid]['context'] != context:
+                continue
+            for idkey in data['lolomos'][_id].keys():
+                if listid in data['lolomos'][_id][idkey]:
+                    del data['lolomos'][_id][idkey]
+                    break
+            del data['lists'][listid]

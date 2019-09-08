@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for logging"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 

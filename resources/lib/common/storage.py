@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Generic persistent on disk storage"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 

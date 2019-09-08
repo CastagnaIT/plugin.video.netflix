@@ -9,10 +9,9 @@ resources.lib.services
 resources.lib.kodi.ui
 resources.lib.services.nfsession
 """
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import os
-import sys
 from time import time
 from functools import wraps
 try:
@@ -50,16 +49,13 @@ class UnknownCacheBucketError(Exception):
     pass
 
 
-'''
-Logic to get the identifier
-cache_output: called without params, use the first argument value of the function as identifier
-cache_output: with identify_from_kwarg_name specified - get value identifier from kwarg name specified, if None value fallback to first function argument value
+# Logic to get the identifier
+# cache_output: called without params, use the first argument value of the function as identifier
+# cache_output: with identify_from_kwarg_name, get value identifier from kwarg name specified, if None value fallback to first function argument value
 
-identify_append_from_kwarg_name - if specified append the value after the kwarg identify_from_kwarg_name, to creates a more specific identifier
-identify_fallback_arg_index - to change the default fallback arg index (0), where the identifier get the value from the func arguments
-fixed_identifier - note if specified all other params are ignored
-'''
-
+# identify_append_from_kwarg_name - if specified append the value after the kwarg identify_from_kwarg_name, to creates a more specific identifier
+# identify_fallback_arg_index - to change the default fallback arg index (0), where the identifier get the value from the func arguments
+# fixed_identifier - note if specified all other params are ignored
 
 def cache_output(g, bucket, fixed_identifier=None,
                  identify_from_kwarg_name='videoid',
@@ -104,7 +100,7 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
         identifier = kwargs.get(identify_from_kwarg_name)
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
             identifier = identifier + '_' + kwargs.get(identify_append_from_kwarg_name)
-        if not identifier and len(args) > 0:
+        if not identifier and args:
             identifier = args[identify_fallback_arg_index]
     # common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
     return identifier
@@ -151,7 +147,7 @@ class Cache(object):
         self.buckets = {}
         self.window = xbmcgui.Window(10000)
 
-    def lock_marker(self, bucket):
+    def lock_marker(self):
         """Return a lock marker for this instance and the current time"""
         # Return maximum timestamp for library to prevent stale lock
         # overrides which may lead to inconsistencies
@@ -257,7 +253,7 @@ class Cache(object):
 
     def _lock(self, bucket):
         self.window.setProperty(_window_property(bucket),
-                                self.lock_marker(bucket))
+                                self.lock_marker())
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
@@ -308,7 +304,7 @@ class Cache(object):
         # Only persist if we acquired the original lock or if the lock is older
         # than 15 seconds (override stale locks)
         lock = self.window.getProperty(_window_property(bucket))
-        is_own_lock = lock[:14] == self.lock_marker(bucket)[:14]
+        is_own_lock = lock[:14] == self.lock_marker()[:14]
         try:
             is_stale_lock = int(lock[18:] or 1) <= time() - 15
         except ValueError:
