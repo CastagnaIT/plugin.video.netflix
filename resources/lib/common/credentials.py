@@ -44,9 +44,14 @@ def encrypt_credential(raw):
     """
     # pylint: disable=invalid-name,import-error
     import base64
-    from Cryptodome import Random
-    from Cryptodome.Cipher import AES
-    from Cryptodome.Util import Padding
+    try:  # Python 3
+        from Crypto import Random
+        from Crypto.Cipher import AES
+        from Crypto.Util import Padding
+    except ImportError:  # Python 2
+        from Cryptodome import Random
+        from Cryptodome.Cipher import AES
+        from Cryptodome.Util import Padding
     raw = bytes(Padding.pad(data_to_pad=raw, block_size=__BLOCK_SIZE__))
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(__crypt_key(), AES.MODE_CBC, iv)
@@ -70,7 +75,7 @@ def decrypt_credential(enc, secret=None):
     cipher = AES.new(secret or __uniq_id(), AES.MODE_CBC, iv)
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
-        block_size=__BLOCK_SIZE__).decode('utf-8')
+        block_size=__BLOCK_SIZE__)
     return decoded
 
 

@@ -13,7 +13,10 @@ def File(path, flags='r'):
     try:
         return open(path, flags)
     except IOError:
-        from StringIO import StringIO
+        try:  # Python 3
+            from io import StringIO
+        except ImportError:  # Python 2
+            from StringIO import StringIO
         return StringIO('')
 
 

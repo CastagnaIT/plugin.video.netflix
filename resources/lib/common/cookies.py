@@ -17,19 +17,17 @@ import resources.lib.common as common
 
 class MissingCookiesError(Exception):
     """No session cookies have been stored"""
-    pass
 
 
 class CookiesExpiredError(Exception):
     """Stored cookies are expired"""
-    pass
 
 
 def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
     # pylint: disable=broad-except
     g.COOKIES[account_hash] = cookie_jar
-    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'w')
+    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
         pickle.dump(cookie_jar, cookie_file)
     except Exception as exc:
@@ -54,7 +52,7 @@ def load(account_hash):
     try:
         filename = cookie_filename(account_hash)
         common.debug('Loading cookies from {}'.format(filename))
-        cookie_file = xbmcvfs.File(filename, 'r')
+        cookie_file = xbmcvfs.File(filename, 'rb')
         cookie_jar = pickle.loads(cookie_file.read())
     except Exception as exc:
         common.debug('Failed to load cookies from file: {exc}', exc)

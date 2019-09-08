@@ -11,5 +11,5 @@ from .storage import *
 from .fileops import *
 from .kodiops import *
 from .pathops import *
-from .misc_utils import *
-from .data_conversion import *
+from .misc_utils import *  # pylint: disable=redefined-builtin
+from .data_conversion import *  # pylint: disable=redefined-builtin

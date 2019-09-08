@@ -10,6 +10,11 @@ from __future__ import absolute_import, division, unicode_literals
 import sys
 from functools import wraps
 
+try:  # Python 3
+    import itertools.ifilter as filter
+except ImportError:  # Python 2
+    pass
+
 import xbmcplugin
 
 # Import and initialize globals right away to avoid stale values from the last

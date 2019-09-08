@@ -15,7 +15,7 @@ class ResumeManager(PlaybackActionManager):
     Checks if a resume action must be done
     """
 
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(ResumeManager, self).__init__()
         self.resume_position = None
         self.enabled = True

@@ -23,7 +23,7 @@ class DirectoryBuilder(object):
         # After build url the param value is converted as string
         self.perpetual_range_start = None \
             if self.params.get('perpetual_range_start') == 'None' else self.params.get('perpetual_range_start')
-        self.dir_update_listing = True if self.perpetual_range_start else False
+        self.dir_update_listing = bool(self.perpetual_range_start)
         if self.perpetual_range_start == '0':
             # For cache identifier purpose
             self.perpetual_range_start = None

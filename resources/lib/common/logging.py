@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Helper functions for logging"""
 from __future__ import absolute_import, division, unicode_literals
-
 from functools import wraps
+from future.utils import iteritems
 
 import xbmc
 
@@ -14,12 +14,11 @@ def log(msg, exc=None, level=xbmc.LOGDEBUG):
     If msg contains a format placeholder for exc and exc is not none,
     exc will be formatted into the message."""
     msg = msg.format(exc=exc) if exc is not None and '{exc}' in msg else msg
-    if isinstance(msg, str):
-        msg = msg.decode('utf-8')
-    xbmc.log('[{identifier} ({handle})] {msg}'
-             .format(identifier=g.ADDON_ID, handle=g.PLUGIN_HANDLE, msg=msg)
-             .encode('utf-8'),
-             level)
+#    if isinstance(msg, str):
+#        msg = msg.decode('utf-8')
+    if isinstance(msg, bytes):
+        msg = str(msg)
+    xbmc.log('[{identifier} ({handle})] {msg}'.format(identifier=g.ADDON_ID, handle=g.PLUGIN_HANDLE, msg=msg), level)
 
 
 def debug(msg='{exc}', exc=None):
@@ -59,7 +58,7 @@ def logdetails(func):
         that = args[0]
         class_name = that.__class__.__name__
         arguments = [':{} = {}:'.format(key, value)
-                     for key, value in kwargs.iteritems()
+                     for key, value in iteritems(kwargs)
                      if key not in ['account', 'credentials']]
         if arguments:
             log('{cls}::{method} called with arguments {args}'

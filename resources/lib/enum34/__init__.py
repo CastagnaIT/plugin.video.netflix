@@ -1,5 +1,8 @@
 """Python Enumerations"""
 
+# flake8: noqa
+# pylint: skip-file
+
 import sys as _sys
 
 __all__ = ['Enum', 'IntEnum', 'unique']

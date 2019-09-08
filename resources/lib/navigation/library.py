@@ -136,7 +136,6 @@ class LibraryActionExecutor(object):
         #  to initialize the database and then the test is also performed
         #  in addition, you must also wait for the timeout to obtain any connection error
         #  Perhaps creating a particular modal dialog with connection parameters can help
-        pass
 
     def set_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Set the current device to manage auto-update of the shared-library (MySQL)"""

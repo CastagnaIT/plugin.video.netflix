@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """Miscellaneous database utility functions"""
 from __future__ import absolute_import, division, unicode_literals
-
 import os
-from enum import Enum
 
 import xbmc
 import xbmcvfs
 
-from resources.lib.globals import g
+try:  # Python 3
+    from enum import Enum
+except ImportError:  # Python 2
+    from resources.lib.enum34 import Enum
 
+from resources.lib.globals import g
 
 LOCAL_DB_FILENAME = 'nf_local.sqlite3'
 SHARED_DB_FILENAME = 'nf_shared.sqlite3'

@@ -44,5 +44,5 @@ def get_section_markers(metadata):
             'end': int(metadata['creditMarkers'][section]['end'] / 1000)
         }
         for section in SKIPPABLE_SECTIONS
-        if any(i for i in metadata['creditMarkers'][section].values())
+        if any(i for i in list(metadata['creditMarkers'][section].values()))
     }
