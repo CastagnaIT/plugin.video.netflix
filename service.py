@@ -50,11 +50,11 @@ class NetflixService(object):
         self.settings_monitor = None
 
     def init_server(self, server):
-            server['class'].allow_reuse_address = True
-            server['instance'] = server['class'](
-                ('127.0.0.1', common.select_port(server['name'])))
-            server['thread'] = threading.Thread(
-                target=server['instance'].serve_forever)
+        server['class'].allow_reuse_address = True
+        server['instance'] = server['class'](
+            ('127.0.0.1', common.select_port(server['name'])))
+        server['thread'] = threading.Thread(
+            target=server['instance'].serve_forever)
 
     def start_services(self):
         """

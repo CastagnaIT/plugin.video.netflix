@@ -48,6 +48,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
 
 # Translations
 *.mo
@@ -110,3 +111,24 @@ ENV/
 *.pyproj
 *.sln
 .vs/
+
+# Packages
+*.zip
+
+# Logs
+kodi-addon-checker-report.log
+kodi-addon-checker.log
+
+# Credentials
+test/userdata/*.ndb
+test/userdata/COOKIE_*=
+test/userdata/_*=
+test/userdata/addon_settings.json
+test/userdata/credentials.json
+test/userdata/msl_data.json
+test/userdata/cache/
+test/userdata/database/
+test/userdata/imagecache/
+test/userdata/metadata/
+test/userdata/movies/
+test/userdata/shows/

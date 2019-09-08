@@ -1,0 +1,11 @@
+{
+    "autologin_enable": true, 
+    "email": "", 
+    "enable_hevc_profiles": false, 
+    "enable_vp9_profiles": false, 
+    "esn": "", 
+    "hidden_esn": true, 
+    "password": "", 
+    "run_init_configuration": true, 
+    "use_mysql": false
+}

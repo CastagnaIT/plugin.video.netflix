@@ -1,0 +1,215 @@
+v0.15.2 (2019-08-30)
+- Fixed key handshake at addon first run
+- Fixed library update service at first run
+- Local database now dynamically created by code
+- Profile data is not deleted if an problem occurred
+- Minor fixes
+
+v0.15.1 (2019-08-25)
+- Fixed wrong path to linux systems
+
+v0.15.0 (2019-08-20)
+- Implemented data management through database
+- Implemented automatic export of new episodes
+- Implemented a version upgrade system
+- Implemented management of login errors
+- Added a new context menu "Export new episodes" for a single tv show
+- Added ability to exclude (and re-include) a tv show from library auto update
+- Added possibility to share the same library with multiple devices (MySQL server is required)
+- No more concurrency and data loss problems of previous "persistent storage"
+- Fixed continuous "new access" email notification from netflix
+- Fixed locale id error
+- Fixed automatic library updates
+- Fixed logout now the profiles are no longer accessible and you can enter your credentials
+- Fixed exporting tvshow.nfo for a single episode
+- Fixed UpNext watched status from Kodi library
+- Fixed issue with library items that containing % in the path
+- Other minor improvements and fixes
+
+v0.14.6 (2019-06-29)
+- Improved Library Management that include:
+- Fixed TvShow not removed from library
+- Scan with faster processing with large library
+- Fixed TvShow directory not deleted when a TvShow was removed from library
+- Fixed STRM filename to be fully compatible with NFS from Windows
+- Faster database fetching through API using filters
+- Fixed progress bar while exporting/removing items to library
+- Other improvements:
+- Implemented exporting of NFO files for the scrapers
+- Fixed return to main menu after a research
+- Fixed workaround 'forced only subtitle', now works also on slow systems
+- Updated French, Italian, Polish languages
+- Other small fixes
+
+v0.14.5 (2019-06-19)
+- Fixed Login error due to Netflix API changes
+- Fixed return to main menu after a research
+- No more show subtitle when forced subtitle aren't present
+- Fixed rating conversion to UpNext Addon
+- Re-Added DolbyDigital HQ (always enabled on Premium)
+- Updated Portughese-Brasil, french language
+- Fixed error with metadata
+
+v0.14.4 (2019-06-08)
+- Implemented the trailers list to every TvShows and Movies (context menu)
+- Audio/subtitle preferences is now also saved for movies
+- The STRM now can be resumed it's a workaround (can be disabled in settings)
+- Added UpNext settings shortcut in to settings
+- Fixed visibility of non-existing subgenres
+- Fixed order sequence of profiles
+- Many other improvements and fixes
+
+v0.14.3 (2019-05-24)
+- Fixed error when playing from kodi library
+
+v0.14.2 (2019-05-21)
+- Added genres and sub-genres browseable
+- Added customizable sort order by menu in settings
+- Speedup a bit the loading of lists
+- Updated french/polish/italian languages
+- Updated request query parameters
+- Fixed sort order to MyList and lolomo lists
+
+v0.14.1 (2019-04-30)
+- Added customizable main menu items
+- Added audio description menu to help visually impaired people
+- Disabled hevc by default on linux (prevents problems with omsc)
+- Fixed crash on addon start when Inputstream is not installed
+- Fixed missing settings to my list custom view
+- No more skip dialog after stop videos
+- Other minor improvements
+
+v0.14.0 (2019-04-20)
+- Added initial auto-configuration at first run based on the OS type
+- Added initial configuration to Android devices (for 4K support)
+- Some updates to profiles and manifest data
+- Fixed view type and content type
+- Fixed error when fanart missing
+- Fixed "check your credentials" after login (again)
+- Other minor improvements
+
+v0.14.0 beta24 (2019-04-12)
+- Added pagination support of results
+- Added choice of type sorting of results (in settings, views)
+- Added workaround for locale+country problem es. spain-spain pt-breton etc.
+- Updated polish translation
+- Fixed "check your credentials" after login
+- Fixed unicode decode errors with library
+- Fixed loss of tv series and films exported
+- Fixed wrong results with search using special characters
+- Other fixes
+
+v0.14.0 beta23 (2019-03-17)
+- Fixed InvalidVideoId error when try to access a profile
+- Fixed UnicodeEncodeError when play a video with some particular languages
+- Fixed PersistentStorage went to remove existing files
+- Fixed storage of subtitle preference for TV Series
+- Fixed menu_title error when try to open any menu
+- Fixed error when try to open 'My list' when empty
+- Fixed UnicodeDecodeError when migrate library
+- No more double menu in sub-menus
+- Minor fix to Polish translation
+
+v0.14.0 beta22 (2019-03-08)
+- Fixed error when accessing profile (lolomo error due to netflix changes)
+- Exceeded the limit of the lists with only 40 results!
+- It is possible to customize the maximum limit of the results (exp.settings)
+- Reworked menus code (not yet finished)
+- Fixed missing menu titles on all submenus
+- Order of the menus is now respected
+- Fixed children profile menus
+- Added a new menu "recently added"
+- Updated polish translation
+
+v0.14.0 beta21 (2019-02-22)
+- Re-added option to disable VP9 profile
+- Added support to Atmos media flag
+- Added option to disable WebVTT subtitle
+- Added option to use hdcp 2.2 instead of 1.4 for 4K content
+- Fixed wrong number of channels in audio stream
+- Fixed subtitle default selection
+- Some cleaning to hdcp logic
+
+v0.14.0 beta20 (2019-02-10)
+- Update profiles and added VP9 Profile 2
+- Fixed saving preferences of audio/subtitle streams
+- Handle error in license request
+
+v0.14.0 beta19 (2019-01-29)
+- Reintroduced MSLv2 for manifest retrieval
+- Reintroduced get locale language from Netflix settings
+- Re-added h264 profile level 40
+- Fixed the default audio language selection
+- Changes to settings menu Views (works partially)
+- Fixed off-screen "skip recap" dialog
+- Fixed error on mastertoken renewal
+
+v0.14.0 beta18 (2018-11-24)
+- Replace Netflix HTTP Service with AddonSignals
+- Improved code maintainability
+- Improved caching TTL by content type
+- Fully unicode compatible
+- Discover more content (browse video lists for all shows and all movies)
+- Improved library integration (auto-sync with kodi library)
+- No longer an upper limit of 40 for the number of items to be displayed in a single listing
+- Improved error handling
+- Up Next integration (only for tests not yet working)
+- A long list of bugfixes
+
+v0.13.21 (2018-12-03)
+- License request version 2
+- Get locale language from Netflix settings
+- Fixed subtitles for ipsa &lt; 2.3.8
+- VP9 optional
+- Added more VP9 profiles and h264 profile level 40
+
+v0.13.20 (2018-11-29)
+- MSLv2 for manifest retrieval
+
+v0.13.19 (2018-11-24)
+- Fix VTT / VP9 issues
+
+v0.13.18 (2018-11-17)
+- Write correct codec into VP9 MPEG DAS profiles
+
+v0.13.17 (2018-11-16)
+- Add VP9 profiles to avoid PRK exception while downloading manifest
+- Android ESN generation enhanced
+
+v0.13.16 (2018-11-13)
+- WebVTT subtitles
+
+v0.13.13 (2018-09-13)
+- Fix disabling of intro skipping not working
+
+v0.13.12 (2018-08-21)
+- Fix issues with timeline markers
+
+v0.13.11 (2018-08-20)
+- Fix login issues
+- Fix fanarts for non-netflix originals
+- Add Korean translation
+- Update Italian translation
+- Add query parameter widget_display to suppress setting custom view modes when called from a widget
+- Skip intro and recap
+- Remember audio settings across all episodes of a show
+
+v0.13.9 (2018-06-14)
+- fix login issues after typo fix in netflix login page
+
+v0.13.8 (2018-06-07)
+- fix proxy communication
+- fix folder definition for image resources
+
+v0.13.7 (2018-05-28)
+- rework of login info parsing
+
+v0.13.0 (2018-04-26)
+- Android support WIDEVINE Cryptosession for MSL
+
+v0.12.9 (2018-04-16)
+- View for exported
+- Support for inputstreamhelper
+- Grab metadate for episodes on export
+- Auto export new episodes for exported shows
+- Auto update watched status inside kodi library

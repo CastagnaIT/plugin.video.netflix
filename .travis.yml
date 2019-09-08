@@ -3,24 +3,25 @@ sudo: false
 language: python
 
 python:
-  - "2.7"
+- '2.7'
+#- '3.6'
+#- '3.7'
+
+env:
+  PYTHONPATH: .:modules:resources/lib:test
+  PYTHONIOENCODING: utf-8
+
+install:
+- pip install -r requirements.txt
 
 script:
-  - pip install pycryptodomex
-  - make all
-  - touch ./_build/.nojekyll
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then make rere; else exit 0; fi
+#- tox
+#- tox -e flake8
+#- pylint resources/lib/ test/
+#- kodi-addon-checker . --branch=leia
+#- coverage run service.py
+#- coverage run test/run.py /
+- coverage run -m unittest discover
 
-deploy:
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: _build
-    target_branch: gh-pages
-    "on":
-      branch: master
-
-notifications:
-  email:
-    on_success: change
-    on_failure: always
+after_success:
+- codecov
