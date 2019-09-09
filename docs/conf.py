@@ -2,12 +2,11 @@
 #
 # plugin.video.netflix documentation build configuration file, created by
 # sphinx-quickstart on Wed Apr 26 16:27:25 2017.
+from __future__ import absolute_import, division, unicode_literals
 
 
 import os
-import re
 import sys
-from shutil import copyfile
 import sphinx_rtd_theme
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__)) + os.path.sep

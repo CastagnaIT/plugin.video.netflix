@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Persistent cookie management"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
-import os
 from time import time
 try:
     import cPickle as pickle

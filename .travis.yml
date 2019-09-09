@@ -8,16 +8,16 @@ python:
 #- '3.7'
 
 env:
-  PYTHONPATH: .:modules:resources/lib:test
+  PYTHONPATH: .:modules/enum:modules/mysql-connector-python:resources/lib:test
   PYTHONIOENCODING: utf-8
 
 install:
 - pip install -r requirements.txt
 
 script:
-#- tox
-#- tox -e flake8
-#- pylint resources/lib/ test/
+- tox
+- tox -e flake8
+- pylint resources/lib/ test/
 #- kodi-addon-checker . --branch=leia
 #- coverage run service.py
 #- coverage run test/run.py /

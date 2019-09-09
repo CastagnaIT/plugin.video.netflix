@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init
 """XML based dialogs"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from platform import machine
 
@@ -15,8 +15,7 @@ ACTION_NOOP = 999
 
 OS_MACHINE = machine()
 
-CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),' \
-                       '{:02d}:{:02d},silent)'
+CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{:02d}:{:02d},silent)'
 
 
 def show_modal_dialog(dlg_class, xml, path, **kwargs):
@@ -68,7 +67,7 @@ class SaveStreamSettings(xbmcgui.WindowXMLDialog):
     """
     Dialog for skipping video parts (intro, recap, ...)
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pylint: disable=super-on-old-class
         super(SaveStreamSettings, self).__init__(*args, **kwargs)
         self.new_show_settings = kwargs['new_show_settings']
         self.tvshowid = kwargs['tvshowid']

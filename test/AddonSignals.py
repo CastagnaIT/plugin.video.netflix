@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-import xbmc
-import xbmcaddon
+from __future__ import absolute_import, division, unicode_literals
+
 import binascii
 import json
+
+xbmc = __import__('xbmc')
+xbmcaddon = __import__('xbmcaddon')
 
 RECEIVER = None
 
 
 def _getReceiver():
-    global RECEIVER
+    global RECEIVER  # pylint: disable=global-statement
     if not RECEIVER:
         RECEIVER = SignalReceiver()
     return RECEIVER
@@ -18,6 +21,7 @@ def _decodeData(data):
     data = json.loads(data)
     if data:
         return json.loads(binascii.unhexlify(data[0]))
+    return None
 
 
 def _encodeData(data):
@@ -25,7 +29,7 @@ def _encodeData(data):
 
 
 class SignalReceiver(xbmc.Monitor):
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-init-not-called
         self._slots = {}
 
     def registerSlot(self, signaler_id, signal, callback):
@@ -92,7 +96,7 @@ def sendSignal(signal, data=None, source_id=None, sourceID=None):
     if sourceID:
         xbmc.log('++++==== script.module.addon.signals: sourceID keyword is DEPRECATED - use source_id ====++++', xbmc.LOGNOTICE)
     source_id = source_id or sourceID or xbmcaddon.Addon().getAddonInfo('id')
-    command = 'XBMC.NotifyAll({0}.SIGNAL,{1},{2})'.format(source_id, signal,_encodeData(data))
+    command = 'XBMC.NotifyAll({0}.SIGNAL,{1},{2})'.format(source_id, signal, _encodeData(data))
     xbmc.executebuiltin(command)
 
 

@@ -6,17 +6,17 @@ When reusing Kodi languageInvokers, only the code in the main module
 (addon.py or service.py) will be run every time the addon is called.
 All other code executed on module level will only be executed once, when
 the module is first imported on the first addon invocation."""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import collections
 import os
 import sys
 from urllib import unquote
 
+from urlparse import urlparse, parse_qsl
 import xbmc
 import xbmcaddon
 import xbmcvfs
-from urlparse import urlparse, parse_qsl
 
 import resources.lib.cache as cache
 
@@ -282,7 +282,7 @@ class GlobalVariables(object):
 
             system = common.get_system_platform()
             common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
-            if system in ['osx','ios','xbox']:
+            if system in ['osx', 'ios', 'xbox']:
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', True)
             elif system == 'windows':
@@ -369,7 +369,7 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with lolomo_known=True"""
-        for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():
+        for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():  # pylint: disable=unused-variable
             if data['lolomo_known']:
                 if data['lolomo_contexts'][0] == context:
                     return True

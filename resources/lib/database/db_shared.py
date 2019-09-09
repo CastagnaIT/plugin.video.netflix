@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Shared database access and functions"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from datetime import datetime
 
@@ -23,17 +23,16 @@ def get_shareddb_class(force_sqlite=False):
             else:
                 super(NFSharedDatabase, self).__init__(db_utils.SHARED_DB_FILENAME)
 
-        def get_value(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF,
-                      data_type=None):
+        def get_value(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF, data_type=None):  # pylint: disable=useless-super-delegation
             return super(NFSharedDatabase, self).get_value(key, default_value, table, data_type)
 
-        def get_values(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF):
+        def get_values(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
             return super(NFSharedDatabase, self).get_values(key, default_value, table)
 
-        def set_value(self, key, value, table=db_utils.TABLE_SHARED_APP_CONF):
+        def set_value(self, key, value, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
             super(NFSharedDatabase, self).set_value(key, value, table)
 
-        def delete_key(self, key, table=db_utils.TABLE_SHARED_APP_CONF):
+        def delete_key(self, key, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
             super(NFSharedDatabase, self).delete_key(key, table)
 
         @db_base_mysql.handle_connection
@@ -357,7 +356,7 @@ def get_shareddb_class(force_sqlite=False):
             update_query = ('UPDATE video_lib_tvshows '
                             'SET ' + enum_vid_prop.value + ' = ? WHERE TvShowID = ?')
             value = common.convert_to_string(value)
-            cur = self._execute_query(update_query, (value, tvshowid))
+            self._execute_query(update_query, (value, tvshowid))
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection

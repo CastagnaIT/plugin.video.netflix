@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Skipping of video sections (recap, intro)"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 

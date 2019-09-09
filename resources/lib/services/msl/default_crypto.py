@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Crypto handler for non-Android platforms"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 import base64
@@ -11,7 +11,6 @@ from Cryptodome.PublicKey import RSA
 from Cryptodome.Util import Padding
 from Cryptodome.Cipher import AES
 
-from resources.lib.globals import g
 import resources.lib.common as common
 
 from .base_crypto import MSLBaseCrypto

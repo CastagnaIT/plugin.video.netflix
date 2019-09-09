@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for inter-process communication via AddonSignals"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import traceback
 from functools import wraps
@@ -130,9 +130,10 @@ def addonsignals_return_call(func):
             return result
         # Do not return None or AddonSignals will keep waiting till timeout
         if result is None:
-            result = False
+            result = {}
         AddonSignals.returnCall(
             signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
+        return result
     return make_return_call
 
 

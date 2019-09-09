@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """Helper functions to build plugin listings for Kodi"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-import collections
 import os
 import xbmc
 import xbmcgui
@@ -197,7 +196,7 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
 def build_subgenre_listing(subgenre_list, menu_data):
     """Build a listing of subgenre lists."""
     directory_items = []
-    for index, subgenre_data in subgenre_list.lists:
+    for index, subgenre_data in subgenre_list.lists:  # pylint: disable=unused-variable
         # Create a new submenu info in MAIN_MENU_ITEMS
         # for reference when 'directory' find the menu data
         sel_video_list_id = unicode(subgenre_data['id'])
@@ -347,7 +346,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
 
 @custom_viewmode(g.VIEW_SHOW)
 @common.time_execution(immediate=False)
-def build_supplemental_listing(video_list, pathitems=None):
+def build_supplemental_listing(video_list, pathitems=None):  # pylint: disable=unused-argument
     """Build a supplemental listing (eg. trailers)"""
     directory_items = [_create_supplemental_item(videoid_value, video, video_list)
                        for videoid_value, video

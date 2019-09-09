@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for Kodi operations"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 
@@ -57,13 +57,13 @@ def update_library_item_details(dbtype, dbid, details):
     return json_rpc(method, params)
 
 
-def get_library_items(dbtype, filter=None):
+def get_library_items(dbtype, video_filter=None):
     """Return a list of all items in the Kodi library that are of type
     dbtype (either movie or episode)"""
     method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
     params = {'properties': ['file']}
-    if filter:
-        params.update({'filter': filter})
+    if video_filter:
+        params.update({'filter': video_filter})
     return json_rpc(method, params)[dbtype + 's']
 
 
@@ -79,7 +79,7 @@ def get_library_item_details(dbtype, itemid):
 def scan_library(path=""):
     """Start a library scanning in a specified folder"""
     method = 'VideoLibrary.Scan'
-    params = { 'directory': path }
+    params = {'directory': path}
     return json_rpc(method, params)
 
 
@@ -183,9 +183,9 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     language_code = locale_code[0:2]
     if not lang_code_without_country_exists:
         return language_code
-    else:
-        if locale_code in locale_conversion_table:
-            return locale_conversion_table[locale_code]
-        else:
-            debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
-            return locale_code
+
+    if locale_code in locale_conversion_table:
+        return locale_conversion_table[locale_code]
+
+    debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+    return locale_code

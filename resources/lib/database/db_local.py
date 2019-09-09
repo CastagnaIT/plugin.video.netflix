@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Local database access and functions"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite

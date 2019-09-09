@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Various timeline markers provided by Netflix"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}
 OFFSET_WATCHED_TO_END = 'watchedToEndOffset'

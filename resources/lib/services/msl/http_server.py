@@ -4,7 +4,7 @@
 # Created on: 26.01.2017
 # License: MIT https://goo.gl/5bMj3H
 """Handles & translates requests from Inputstream to Netflix"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import traceback
 import base64

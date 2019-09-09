@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """Manifest format conversion"""
-from __future__ import unicode_literals
-from resources.lib.globals import g
-import re
-import base64
+from __future__ import absolute_import, division, unicode_literals
 import uuid
-import xbmc
 import xml.etree.ElementTree as ET
+import xbmc
 
+from resources.lib.globals import g
 import resources.lib.common as common
 
 
@@ -156,7 +154,7 @@ def _determine_video_codec(content_profile):
     return 'h264'
 
 
-def _convert_audio_track(audio_track, period, init_length, default, drm_streams):
+def _convert_audio_track(audio_track, period, init_length, default, drm_streams):  # pylint: disable=unused-argument
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -278,23 +276,27 @@ def _get_default_audio_language(manifest):
 
 def _get_default_subtitle_language(manifest):
     subtitle_language = common.get_kodi_subtitle_language()
-    if subtitle_language == 'forced_only':
-        if g.ADDON.getSettingBool('forced_subtitle_workaround'):
-            # When we set "forced only" subtitles in Kodi Player, Kodi use this behavior:
-            # 1) try to select forced subtitle that matches audio language
-            # 2) when missing, try to select the first "regular" subtitle that matches audio language
-            # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
-            # There is no other solution than to disable the subtitles manually.
-            audio_language = common.get_kodi_audio_language()
-            if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
-               for text_track in manifest['timedtexttracks']):
-                xbmc.Player().showSubtitles(False)
-        # Leave the selection of forced subtitles to Kodi
-        return -1
-    else:
+    if subtitle_language != 'forced_only':
         for index, text_track in enumerate(manifest['timedtexttracks']):
             if text_track['isNoneTrack']:
                 continue
-            if not text_track.get('isForcedNarrative') and text_track['language'] == subtitle_language:
-                return index
+            if text_track.get('isForcedNarrative'):
+                continue
+            if text_track['language'] != subtitle_language:
+                continue
+            return index
         return -1
+
+    if g.ADDON.getSettingBool('forced_subtitle_workaround'):
+        # When we set "forced only" subtitles in Kodi Player, Kodi use this behavior:
+        # 1) try to select forced subtitle that matches audio language
+        # 2) when missing, try to select the first "regular" subtitle that matches audio language
+        # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
+        # There is no other solution than to disable the subtitles manually.
+        audio_language = common.get_kodi_audio_language()
+        if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
+                   for text_track in manifest['timedtexttracks']):
+            xbmc.Player().showSubtitles(False)
+
+    # Leave the selection of forced subtitles to Kodi
+    return -1

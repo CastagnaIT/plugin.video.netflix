@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Kodi library integration"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import random
@@ -216,7 +216,7 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
         metadata = api.metadata(videoid)
         if videoid.mediatype == common.VideoId.MOVIE:
             return _create_export_movie_task(videoid, metadata[0], nfo_settings)
-        elif videoid.mediatype in common.VideoId.TV_TYPES:
+        if videoid.mediatype in common.VideoId.TV_TYPES:
             return _create_export_tv_tasks(videoid, metadata, nfo_settings)
         raise ValueError('Cannot handle {}'.format(videoid))
 
@@ -227,12 +227,15 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
     if task_handler == remove_item:
         if videoid.mediatype == common.VideoId.MOVIE:
             return _create_remove_movie_task(videoid)
-        elif videoid.mediatype == common.VideoId.SHOW:
+        if videoid.mediatype == common.VideoId.SHOW:
             return _compile_remove_tvshow_tasks(videoid)
-        elif videoid.mediatype == common.VideoId.SEASON:
+        if videoid.mediatype == common.VideoId.SEASON:
             return _compile_remove_season_tasks(videoid)
-        elif videoid.mediatype == common.VideoId.EPISODE:
+        if videoid.mediatype == common.VideoId.EPISODE:
             return _create_remove_episode_task(videoid)
+
+    common.debug('compile_tasks: task_handler {} did not match any task for {}'.format(task_handler, videoid))
+    return None
 
 
 def _create_export_movie_task(videoid, movie, nfo_settings):
@@ -266,8 +269,8 @@ def _create_export_tv_tasks(videoid, metadata, nfo_settings):
         # while it's at first position in show metadata.
         # Best is to enumerate values to find the correct key position
         key_index = -1
-        for i in range(len(metadata)):
-            if metadata[i] and metadata[i].get('type', None) == 'show':
+        for i, item in enumerate(metadata):
+            if item and item.get('type', None) == 'show':
                 key_index = i
         if key_index > -1:
             tasks.append(_create_export_item_task('tvshow.nfo', FOLDER_TV, videoid,
@@ -285,7 +288,7 @@ def _compile_export_show_tasks(videoid, show, nfo_settings):
     # the task lists for each season into one list
     return [task for season in show['seasons']
             for task in _compile_export_season_tasks(
-            videoid.derive_season(season['id']), show, season, nfo_settings)]
+                videoid.derive_season(season['id']), show, season, nfo_settings)]
 
 
 def _compile_export_season_tasks(videoid, show, season, nfo_settings):
@@ -400,8 +403,8 @@ def _create_remove_item_task(title, filepath, videoid):
 
 def _episode_title_from_path(filepath):
     fname = os.path.splitext(os.path.basename(filepath))[0]
-    dir = os.path.split(os.path.split(filepath)[0])[1]
-    return '{} - {}'.format(dir, fname)
+    path = os.path.split(os.path.split(filepath)[0])[1]
+    return '{} - {}'.format(path, fname)
 
 
 # We need to differentiate task_handler for task creation, but we use the same export method
@@ -580,7 +583,7 @@ def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_s
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, title=None,
+def execute_library_tasks_silently(videoid, task_handlers, title=None,  # pylint: disable=unused-argument
                                    sync_mylist=False, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=broad-except
@@ -613,8 +616,8 @@ def get_previously_exported_items():
     result = []
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
-        for file in xbmcvfs.listdir(folder)[1]:
-            filepath = xbmc.makeLegalFilename('/'.join([folder, file])).decode('utf-8')
+        for filename in xbmcvfs.listdir(folder)[1]:
+            filepath = xbmc.makeLegalFilename('/'.join([folder, filename])).decode('utf-8')
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}'.format(filepath))
                 try:

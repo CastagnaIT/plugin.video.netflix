@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Parsing of Netflix Website"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 import traceback
@@ -12,7 +12,7 @@ import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
+from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
                          WebsiteParsingError, LoginValidateError)
 
 PAGE_ITEMS_INFO = [

@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 """Checks when settings are changed"""
+from __future__ import absolute_import, division, unicode_literals
 
-from __future__ import unicode_literals
-
-import os
 import sys
 
 import xbmc
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR, TABLE_SESSION)
+from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR)
 from resources.lib.globals import g
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Handle playback requests"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 import xbmcplugin
@@ -151,16 +151,15 @@ def get_upnext_info(videoid, current_episode, metadata):
         'next_episode': upnext_info(next_episode_id, *next_episode)
     }
 
-    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id')
-        and library.is_in_library(next_episode_id)):
-            filepath = g.SHARED_DB.get_episode_filepath(
-                next_episode_id.tvshowid,
-                next_episode_id.seasonid,
-                next_episode_id.episodeid)
-            next_info['play_info'] = {'play_path': xbmc.translatePath(filepath)}
+    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') and
+            library.is_in_library(next_episode_id)):
+        filepath = g.SHARED_DB.get_episode_filepath(
+            next_episode_id.tvshowid,
+            next_episode_id.seasonid,
+            next_episode_id.episodeid)
+        next_info['play_info'] = {'play_path': xbmc.translatePath(filepath)}
     else:
-        next_info['play_info'] = {'play_path': common.build_url(
-            videoid = next_episode_id, mode = g.MODE_PLAY)}
+        next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id, mode=g.MODE_PLAY)}
     if 'creditsOffset' in metadata[0]:
         next_info['notification_time'] = (metadata[0]['runtime'] -
                                           metadata[0]['creditsOffset'])

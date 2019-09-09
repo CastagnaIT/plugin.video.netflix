@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for setting infolabels of list items"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -151,7 +151,7 @@ def get_quality_infos(item):
     return quality_infos
 
 
-def parse_art(videoid, item, raw_data):
+def parse_art(videoid, item, raw_data):  # pylint: disable=unused-argument
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[0] + ['url'], item)
@@ -178,8 +178,8 @@ def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
            'fanart': _best_art([fanart, interesting_moment, boxart_large,
                                 boxart_small]),
            'thumb': ((interesting_moment
-                     if videoid.mediatype == common.VideoId.EPISODE or
-                     videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
+                      if videoid.mediatype == common.VideoId.EPISODE or
+                      videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
                      or boxart_large or boxart_small)}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:

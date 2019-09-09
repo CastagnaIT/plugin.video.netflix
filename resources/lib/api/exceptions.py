@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Common exception types for API operations"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 
 class MissingCredentialsError(Exception):

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """SQLite database"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
-import os
 import sqlite3 as sql
 from functools import wraps
 
@@ -69,7 +68,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             cur.execute(str('SELECT name FROM sqlite_master WHERE type=\'table\' '
                             'AND name NOT LIKE \'sqlite_%\''))
             list_tables = cur.fetchall()
-            if len(list_tables) == 0:
+            if not list_tables:
                 # If no tables exist create a new one
                 self.conn.close()
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)

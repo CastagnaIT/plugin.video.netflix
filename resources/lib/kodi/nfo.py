@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Functions for Kodi library NFO creation"""
+from __future__ import absolute_import, division, unicode_literals
 
+import xml.etree.ElementTree as ET
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-
-import xml.etree.ElementTree as ET
 
 
 class NFOSettings:
@@ -94,10 +94,10 @@ def create_episode_nfo(episode, season, show):
         'season': season.get('seq'),
         'episode': episode.get('seq'),
         'plot': episode.get('synopsis'),
-        'runtime': episode.get('runtime', 0)/60,
+        'runtime': episode.get('runtime', 0) / 60,
         'year': season.get('year'),
         'id': episode.get('id')
-        }
+    }
 
     root = _build_root_node('episodedetails', tags)
     _add_episode_thumb(root, episode)
@@ -112,7 +112,7 @@ def create_show_nfo(show):
         'plot': show.get('synopsis'),
         'id': show['id'],
         'mpaa': show.get('rating')
-        }
+    }
     root = _build_root_node('tvshow', tags)
     _add_poster(root, show)
     _add_fanart(root, show)
@@ -126,8 +126,8 @@ def create_movie_nfo(movie):
         'id': movie.get('id'),
         'mpaa': movie.get('rating'),
         'year': movie.get('year'),
-        'runtime': movie.get('runtime', 0)/60,
-        }
+        'runtime': movie.get('runtime', 0) / 60,
+    }
     root = _build_root_node('movie', tags)
     _add_poster(root, movie)
     _add_fanart(root, movie)
@@ -136,7 +136,7 @@ def create_movie_nfo(movie):
 
 
 def _add_episode_thumb(root, episode):
-    if episode.get('thumbs') and len(episode['thumbs']) > 0:
+    if episode.get('thumbs'):
         for thumb in episode['thumbs']:
             url = thumb['url']
             thumbnail = ET.SubElement(root, 'thumb')
@@ -144,7 +144,7 @@ def _add_episode_thumb(root, episode):
 
 
 def _add_poster(root, data):
-    if data.get('boxart') and len(data['boxart']) > 0:
+    if data.get('boxart'):
         for boxart in data['boxart']:
             url = boxart['url']
             poster = ET.SubElement(root, 'thumb', {'aspect': 'poster'})
@@ -152,7 +152,7 @@ def _add_poster(root, data):
 
 
 def _add_fanart(root, data):
-    if data.get('storyart') and len(data['storyart']) > 0:
+    if data.get('storyart'):
         for storyart in data['storyart']:
             url = storyart['url']
             fanart = ET.SubElement(root, 'fanart')

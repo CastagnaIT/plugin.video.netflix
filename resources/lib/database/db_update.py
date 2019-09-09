@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """Database update functions"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-import resources.lib.database.db_base as db_base
-import resources.lib.database.db_utils as db_utils
+from resources.lib.globals import g
 
 
 def run_local_db_updates(db_version, db_new_version):

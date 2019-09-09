@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=wildcard-import, wrong-import-position
 """Common plugin operations and utilities"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from .logging import *
 from .ipc import *

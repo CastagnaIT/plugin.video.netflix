@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """Universal representation of VideoIds"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
-
-from .logging import debug
 
 
 class InvalidVideoId(Exception):
@@ -49,7 +47,7 @@ class VideoId(object):
         # Example: ('39c9a88a-a56e-4c8a-921c-3c1f86c0ebb9_62682962X28X6548X1551537755876', None, None, None, None)
         # This result in a VALIDATION_MASKS 'unspecified'. Because text data is on index 0, and others are None
         for index, value in enumerate(self._id_values):
-            validation_mask |= (value is not None) << (5-index)
+            validation_mask |= (value is not None) << (5 - index)
         try:
             self._mediatype = VideoId.VALIDATION_MASKS[validation_mask]
         except KeyError:
@@ -159,8 +157,7 @@ class VideoId(object):
                 'tvshowid': self._id_values[4]
             }
             return VideoId.from_dict(videoid_dict)
-        else:
-            return self
+        return self
 
     def to_path(self):
         """Generate a valid pathitems list (['show', tvshowid, ...]) from

@@ -46,6 +46,10 @@ class Addon:
         ''' A working implementation for the xbmcaddon Addon class getSettingInt() method '''
         return int(self.getSetting(key) or 0)
 
+    def getSettingString(self, key):
+        ''' A working implementation for the xbmcaddon Addon class getSettingString() method '''
+        return str(self.getSetting(key) or '')
+
     @staticmethod
     def openSettings():
         ''' A stub implementation for the xbmcaddon Addon class openSettings() method '''

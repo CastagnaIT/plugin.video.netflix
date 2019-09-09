@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Handling of account credentials"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from resources.lib.globals import g
 from resources.lib.api.exceptions import MissingCredentialsError
 
-from .logging import debug, error
+from .logging import error
 
 __BLOCK_SIZE__ = 32
 __CRYPT_KEY__ = None
@@ -106,7 +106,7 @@ def check_credentials():
         decrypt_credential(email)
         decrypt_credential(password)
         return True
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
     return False
 

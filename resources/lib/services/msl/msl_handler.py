@@ -4,7 +4,7 @@
 # Created on: 26.01.2017
 # License: MIT https://goo.gl/5bMj3H
 """Proxy service to convert manifest and provide license data"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import re
 import zlib
@@ -153,11 +153,11 @@ class MSLHandler(object):
         if g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
             hdcp_version = ['2.2']
 
-        id = int(time.time() * 10000)
+        timestamp = int(time.time() * 10000)
         manifest_request_data = {
             'version': 2,
             'url': '/manifest',
-            'id': id,
+            'id': timestamp,
             'languages': [g.LOCAL_DB.get_value('locale_id')],
             'params': {
                 'type': 'standard',
@@ -212,18 +212,18 @@ class MSLHandler(object):
         :return: Base64 representation of the licensekey or False unsuccessfull
         """
         common.debug('Requesting license')
-        id = int(time.time() * 10000)
+        timestamp = int(time.time() * 10000)
 
         license_request_data = {
             'version': 2,
             'url': self.last_license_url,
-            'id': id,
+            'id': timestamp,
             'languages': [g.LOCAL_DB.get_value('locale_id')],
             'params': [{
                 'sessionId': sid,
-                'clientTime': int(id / 10000),
+                'clientTime': int(timestamp / 10000),
                 'challengeBase64': challenge,
-                'xid': str(id + 1610)
+                'xid': str(timestamp + 1610)
             }],
             'echo': 'sessionId'
         }

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Access to Netflix's Shakti API"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
@@ -15,8 +15,7 @@ from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
                     TRAILER_PARTIAL_PATHS)
-from .exceptions import (InvalidVideoListTypeError, LoginFailedError, APIError,
-                         NotLoggedInError, MissingCredentialsError)
+from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError)
 
 
 def catch_api_errors(func):
@@ -269,12 +268,12 @@ def mylist_items():
     """Return a list of all the items currently contained in my list"""
     common.debug('Try to perform a request to get the id list of the videos in my list')
     try:
-        mylist_items = []
-        video_list = custom_video_list_basicinfo(list_id_for_type(g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0]))
-        if video_list:
-            mylist_items = [video_id for video_id, video in video_list.videos.iteritems()
-                            if video['queue'].get('inQueue', False)]
-        return mylist_items
+        items = []
+        videos = custom_video_list_basicinfo(list_id_for_type(g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0]))
+        if videos:
+            items = [video_id for video_id, video in videos.videos.iteritems()
+                     if video['queue'].get('inQueue', False)]
+        return items
     except InvalidVideoListTypeError:
         return []
 

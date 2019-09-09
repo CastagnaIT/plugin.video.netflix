@@ -24,7 +24,7 @@ uri = 'plugin://plugin.video.netflix{path}'.format(path=path)
 sys.argv = [uri, '0', '']
 
 
-import addon
+import addon  # pylint: disable=wrong-import-position
 addon.g.init_globals(sys.argv)
 addon.common.info('Started (Version {})'.format(addon.g.VERSION))
 addon.common.info('URL is {}'.format(addon.g.URL))

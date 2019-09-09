@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Crypto handler for Android platforms"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 from os import urandom
 import base64

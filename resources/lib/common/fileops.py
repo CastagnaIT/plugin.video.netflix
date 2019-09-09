@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper functions for file operations"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 
@@ -8,8 +8,6 @@ import xbmc
 import xbmcvfs
 
 from resources.lib.globals import g
-
-from .logging import debug
 
 
 def check_folder_path(path):

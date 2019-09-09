@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions to create new databases"""
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import mysql.connector
 
@@ -32,7 +32,7 @@ def create_database(config):
 
     table = ('CREATE TABLE netflix_addon.shared_app_config ('
              'ID INT(11) NOT NULL AUTO_INCREMENT,'
-             'Name VARCHAR(100) NOT NULL,'  
+             'Name VARCHAR(100) NOT NULL,'
              'Value TEXT DEFAULT NULL,'
              'PRIMARY KEY (ID))'
              'ENGINE = INNODB, CHARACTER SET utf8mb4, COLLATE utf8mb4_unicode_ci;')
