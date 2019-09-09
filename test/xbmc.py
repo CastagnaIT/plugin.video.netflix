@@ -28,6 +28,7 @@ LOGNONE = 'None'
 
 INFO_LABELS = {
     'System.BuildVersion': '18.2',
+    'Container.FolderPath': 'plugin://plugin.video.netflix/',
 }
 
 REGIONS = {
@@ -135,7 +136,7 @@ def getCondVisibility(string):
 
 def getGlobalIdleTime():
     ''' A reimplementation of the xbmc getGlobalIdleTime() function '''
-    return 1
+    return 0
 
 
 def getInfoLabel(key):
@@ -190,9 +191,9 @@ def sleep(seconds):
 def translatePath(path):
     ''' A stub implementation of the xbmc translatePath() function '''
     if path.startswith('special://home'):
-        return path.replace('special://home', os.path.join(os.getcwd(), 'test/'))
+        return path.replace('special://home', os.path.join(os.getcwd(), 'test'))
     if path.startswith('special://profile'):
-        return path.replace('special://profile', os.path.join(os.getcwd(), 'test/usedata/'))
+        return path.replace('special://profile', os.path.join(os.getcwd(), 'test/usedata'))
     if path.startswith('special://userdata'):
-        return path.replace('special://userdata', os.path.join(os.getcwd(), 'test/userdata/'))
+        return path.replace('special://userdata', os.path.join(os.getcwd(), 'test/userdata'))
     return path

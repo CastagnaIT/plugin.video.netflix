@@ -10,7 +10,11 @@ import shutil
 
 def File(path, flags='r'):
     ''' A reimplementation of the xbmcvfs File() function '''
-    return open(path, flags)
+    try:
+        return open(path, flags)
+    except IOError:
+        from StringIO import StringIO
+        return StringIO('')
 
 
 def Stat(path):
