@@ -221,9 +221,9 @@ class MSLHandler(object):
             'languages': [g.LOCAL_DB.get_value('locale_id')],
             'params': [{
                 'sessionId': sid,
-                'clientTime': int(id / 10000),
+                'clientTime': int(timestamp / 10000),
                 'challengeBase64': challenge,
-                'xid': str(id + 1610)
+                'xid': str(timestamp + 1610)
             }],
             'echo': 'sessionId'
         }
