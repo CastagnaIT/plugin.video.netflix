@@ -202,7 +202,7 @@ class SubgenreList(object):
     """A list of subgenre."""
     def __init__(self, path_response):
         common.debug('Subgenre data: {}'.format(path_response))
-        self.lists = {}
+        self.lists = []
         if path_response:
             self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
             genre_id = next(path_response.get('genres', {}).iterkeys())
