@@ -10,7 +10,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import collections
 import os
-import sys
 from urllib import unquote
 
 from urlparse import urlparse, parse_qsl
@@ -191,17 +190,6 @@ class GlobalVariables(object):
         self.ICON = self.ADDON.getAddonInfo('icon')
         self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
         self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
-
-        # Add absolute paths of embedded py modules to python system directory
-        module_paths = [
-            os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum'),
-            os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
-        ]
-        for path in module_paths:
-            path = xbmc.translatePath(path)
-            if path not in sys.path:
-                sys.path.insert(0, path)
-
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60

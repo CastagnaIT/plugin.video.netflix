@@ -1,5 +1,7 @@
 codecov
+enum34==1.1.6
 kodi-addon-checker
+mysql-connector-python
 polib
 pycrypto==2.6.1
 pycryptodomex==3.4.5
