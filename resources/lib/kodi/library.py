@@ -81,14 +81,25 @@ def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
     fname = xbmc.makeLegalFilename(filename)
-    path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
+    untranslated_path = os.path.dirname(fname).decode("utf-8")
+    translated_path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
     shortname = os.path.basename(xbmc.translatePath(fname).decode("utf-8"))
     # We get the data from Kodi library using filters.
     # This is much faster than loading all episodes in memory
+
+    # First build the path filter, we may have to search in both special and translated path
+    path_filter = {'field': 'path', 'operator': 'startswith', 'value': translated_path} \
+        if fname[:10] != 'special://' \
+        else {'or': [
+            {'field': 'path', 'operator': 'startswith', 'value': translated_path},
+            {'field': 'path', 'operator': 'startswith', 'value': untranslated_path}
+        ]}
+
+    # Now build the all request and call the json-rpc function through common.get_library_items
     library_item = common.get_library_items(
         mediatype,
         {'and': [
-            {'field': 'path', 'operator': 'startswith', 'value': path},
+            path_filter,
             {'field': 'filename', 'operator': 'is', 'value': shortname}
         ]})[0]
     if not library_item:
