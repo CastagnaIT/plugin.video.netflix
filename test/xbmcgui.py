@@ -55,7 +55,9 @@ class Dialog:
             return os.environ.get('NETFLIX_USERNAME')
         if heading == 'Password':
             return os.environ.get('NETFLIX_PASSWORD')
-        return ''
+        if heading == 'Search term':
+            return 'Family'
+        return 'Foobar'
 
     @staticmethod
     def numeric(type, heading, defaultt=''):  # pylint: disable=redefined-builtin
@@ -195,6 +197,8 @@ class Window:
 
     def getProperty(self, key):
         ''' A stub implementation for the xbmcgui Window class getProperty() method '''
+        print('xbmcgui getProperty {key}'.format(key=key))
+        return ''
 
     def setProperty(self, key, value):
         ''' A stub implementation for the xbmcgui Window class setProperty() method '''

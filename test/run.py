@@ -14,13 +14,13 @@ xbmcgui = __import__('xbmcgui')
 xbmcplugin = __import__('xbmcplugin')
 xbmcvfs = __import__('xbmcvfs')
 
-default = '/mainmenu'
+default = 'directory/root'
 
 if len(sys.argv) > 1:
-    path = sys.argv[1] or default
+    path = sys.argv[1].lstrip('/') or default
 else:
     path = default
-uri = 'plugin://plugin.video.netflix{path}'.format(path=path)
+uri = 'plugin://plugin.video.netflix/{path}'.format(path=path)
 sys.argv = [uri, '0', '']
 
 

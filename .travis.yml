@@ -18,10 +18,19 @@ script:
 - tox
 - tox -e flake8
 - pylint resources/lib/ test/
-#- kodi-addon-checker . --branch=leia
-#- coverage run service.py
-#- coverage run test/run.py /
-- coverage run -m unittest discover
+#- coverage run -m unittest discover
+#- coverage run -a service.py
+#- sleep 10
+#- coverage run -a test/run.py /directory/root
+#- coverage run -a test/run.py /directory/profiles
+#- coverage run -a test/run.py /directory/home
+#- coverage run -a test/run.py /directory/video_list_sorted/myList/queue
+#- coverage run -a test/run.py /directory/video_list_sorted/newRelease/newRelease
+#- coverage run -a test/run.py /directory/video_list/continueWatching/continueWatching
+#- coverage run -a test/run.py /directory/video_list/chosenForYou/topTen
+#- coverage run -a test/run.py /directory/video_list/recentlyAdded/1592210
+#- coverage run -a test/run.py /directory/show/80057281/
+#- pkill -f service.py
 
 after_success:
 - codecov

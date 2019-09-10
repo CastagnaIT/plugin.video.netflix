@@ -48,13 +48,25 @@ unit:
 
 run:
 	@echo -e "$(white)=$(blue) Run CLI$(reset)"
-#	python test/run.py /action/purge_cache/
-#	python test/run.py /action/purge_cache/?on_disk=True
-#	python test/run.py /
-#	python test/run.py /directory/root
-#	python test/run.py /directory/search/cartoon
-#	python service.py
-	python test/run.py /
+	coverage run -a service.py &
+	sleep 10
+	coverage run -a test/run.py /action/purge_cache/
+	coverage run -a test/run.py /action/purge_cache/?on_disk=True
+	coverage run -a test/run.py /directory/root
+	coverage run -a test/run.py /directory/profiles
+	coverage run -a test/run.py /directory/home
+	coverage run -a test/run.py /directory/video_list_sorted/myList/queue
+	coverage run -a test/run.py /directory/video_list_sorted/newRelease/newRelease
+	coverage run -a test/run.py /directory/video_list/continueWatching/continueWatching
+	coverage run -a test/run.py /directory/video_list/chosenForYou/topTen
+	coverage run -a test/run.py /directory/video_list/recentlyAdded/1592210
+	coverage run -a test/run.py /directory/show/80057281/
+	coverage run -a test/run.py /directory/show/80057281/season/80186799/
+	coverage run -a test/run.py /directory/genres/tvshows/83/
+	coverage run -a test/run.py /directory/genres/movies/34399/
+	coverage run -a test/run.py /directory/search/search/cool
+	coverage run -a test/run.py /directory/exported/exported
+	pkill -ef service.py
 
 zip: clean
 	@echo -e "$(white)=$(blue) Building new package$(reset)"

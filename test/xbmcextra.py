@@ -113,12 +113,13 @@ def addon_settings():
         with open('test/userdata/credentials.json') as f:
             settings.update(json.load(f))
     except (IOError, OSError) as e:
-        if 'NETFLIX_USERNAME' in os.environ and 'NETFLIX_PASSWORD' in os.environ and 'NETFLIX_ESN' in os.environ:
+        if os.environ.get('NETFLIX_USERNAME') and os.environ.get('NETFLIX_PASSWORD'):
             print('Using credentials from the environment variables NETFLIX_USERNAME, NETFLIX_PASSWORD and NETFLIX_ESN')
             settings['username'] = os.environ.get('NETFLIX_USERNAME')
             settings['password'] = os.environ.get('NETFLIX_PASSWORD')
+        if os.environ.get('NETFLIX_ESN'):
             settings['esn'] = os.environ.get('NETFLIX_ESN')
-        else:
+        if not settings.get('username') and not settings.get('password') or not settings.get('esn'):
             print("Error using 'test/userdata/credentials.json': %s" % e, file=sys.stderr)
     return settings
 
