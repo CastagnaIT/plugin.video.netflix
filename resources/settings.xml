@@ -10,6 +10,7 @@
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
     <setting type="sep"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
+    <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
   </category>
   <category label="30025"><!--Library-->
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>

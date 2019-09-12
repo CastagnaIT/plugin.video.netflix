@@ -153,8 +153,8 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (änderbar, wird autom. gesetzt)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
-msgstr "Inputstream Addon Einstellungen..."
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive Einstellungen..."
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
@@ -559,3 +559,7 @@ msgstr "Bibliothek auf neues Format migrieren"
 msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Deaktiviere Benachrichtigung beim Start der Hintergrunddienste"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper Einstellungen..."

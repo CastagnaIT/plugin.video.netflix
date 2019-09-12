@@ -133,12 +133,12 @@ msgid "Playback error"
 msgstr "Afspeelfout"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
-msgstr "Inputstream niet gevonden”
+msgid "Missing InputStream addon"
+msgstr "InputStream niet gevonden"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "Van de bibliotheek verwijderen”
+msgstr "Van de bibliotheek verwijderen"
 
 msgctxt "#30031"
 msgid "Change library title"
@@ -153,5 +153,9 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (automatisch, kan handmatig aangepast worden)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
-msgstr "Inputstream Addon instellingen…"
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive instellingen…"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper instellingen…"

@@ -133,7 +133,7 @@ msgid "Playback error"
 msgstr "Échec de lecture"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
+msgid "Missing InputStream addon"
 msgstr "Extension InputStream manquante"
 
 msgctxt "#30030"
@@ -157,7 +157,7 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (généré automatiquement, peut être changé manuellement)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
+msgid "InputStream Adaptive settings..."
 msgstr "Paramètres de l'extension InputStream"
 
 msgctxt "#30036"
@@ -201,7 +201,7 @@ msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- PAGE SUIVANTE --[/B][/COLOR]"
 
 msgctxt "#30046"
-msgid "Inputstream addon is not enabled"
+msgid "InputStream addon is not enabled"
 msgstr "L'extension InputStream n'est pas activée"
 
 msgctxt "#30047"
@@ -867,3 +867,7 @@ msgstr "Un autre ordinateur est responsable de la mise à jour de la bibliothèq
 msgctxt "#30212"
 msgid "There is no device that handle the auto-updates of shared-library"
 msgstr "Aucun ordinateur n'est responsable de la mise à jour automatique de la bibliothèque partagée"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "Paramètres de l'extension InputStream Helper..."

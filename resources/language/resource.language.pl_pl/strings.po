@@ -133,7 +133,7 @@ msgid "Playback error"
 msgstr "Błąd odtwarzania"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
+msgid "Missing InputStream addon"
 msgstr "Brakuje wtyczki strumieniowej InputStream Adaptive"
 
 msgctxt "#30030"
@@ -157,7 +157,7 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (ustawiany automatycznie, z możliwością zmiany)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
+msgid "InputStream Adaptive settings..."
 msgstr "Ustawienia wtyczki strumieniowej..."
 
 msgctxt "#30036"
@@ -201,7 +201,7 @@ msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- NASTĘPNA STRONA --[/B][/COLOR]"
 
 msgctxt "#30046"
-msgid "Inputstream addon is not enabled"
+msgid "InputStream addon is not enabled"
 msgstr "Wtyczka strumieniowa nie jest aktywna"
 
 msgctxt "#30047"
@@ -867,3 +867,7 @@ msgstr "Inne urządzenie obsługuje automatyczne aktualizacje biblioteki współ
 msgctxt "#30212"
 msgid "There is no device that handle the auto-updates of shared-library"
 msgstr "Nie ma urządzenia obsługującego automatyczne aktualizacje biblioteki współużytkowanej"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr ""
