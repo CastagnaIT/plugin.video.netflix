@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """Universal representation of VideoIds"""
 from __future__ import absolute_import, division, unicode_literals
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 
 from functools import wraps
 
 
 class InvalidVideoId(Exception):
     """The provided video id is not valid"""
-    pass
 
 
 class VideoId(object):
@@ -58,11 +61,11 @@ class VideoId(object):
         """Create a VideoId instance from pathitems"""
         if pathitems[0] == VideoId.MOVIE:
             return cls(movieid=pathitems[1])
-        elif pathitems[0] == VideoId.SHOW:
+        if pathitems[0] == VideoId.SHOW:
             return cls(tvshowid=_path_attr(pathitems, 1),
                        seasonid=_path_attr(pathitems, 3),
                        episodeid=_path_attr(pathitems, 5))
-        elif pathitems[0] == VideoId.SUPPLEMENTAL:
+        if pathitems[0] == VideoId.SUPPLEMENTAL:
             return cls(supplementalid=pathitems[1])
         return cls(videoid=pathitems[0])
 
@@ -72,11 +75,11 @@ class VideoId(object):
         mediatype = dict_items['mediatype']
         if mediatype == VideoId.MOVIE:
             return cls(movieid=dict_items['movieid'])
-        elif mediatype in VideoId.TV_TYPES:
+        if mediatype in VideoId.TV_TYPES:
             return cls(tvshowid=_path_attr_dict(dict_items, 'tvshowid'),
                        seasonid=_path_attr_dict(dict_items, 'seasonid'),
                        episodeid=_path_attr_dict(dict_items, 'episodeid'))
-        elif mediatype == VideoId.SUPPLEMENTAL:
+        if mediatype == VideoId.SUPPLEMENTAL:
             return cls(supplementalid=dict_items['supplementalid'])
         raise InvalidVideoId
 
@@ -88,13 +91,12 @@ class VideoId(object):
         video_id = video['summary']['id']
         if mediatype == VideoId.MOVIE:
             return cls(movieid=video_id)
-        elif mediatype == VideoId.SHOW:
+        if mediatype == VideoId.SHOW:
             return cls(tvshowid=video_id)
-        elif mediatype == VideoId.SUPPLEMENTAL:
+        if mediatype == VideoId.SUPPLEMENTAL:
             return cls(supplementalid=video_id)
-        else:
-            raise InvalidVideoId(
-                'Can only construct a VideoId from a show/movie/supplemental item')
+        raise InvalidVideoId(
+            'Can only construct a VideoId from a show/movie/supplemental item')
 
     @property
     def value(self):
@@ -187,10 +189,10 @@ class VideoId(object):
         """Return a dict containing the relevant properties of this
         instance"""
         result = {'mediatype': self.mediatype}
-        result.update({prop: self.__getattribute__(prop)
+        result.update({prop: self.__getattribute__(prop)  # pylint: disable=no-member
                        for prop in ['videoid', 'supplementalid', 'movieid',
                                     'tvshowid', 'seasonid', 'episodeid']
-                       if self.__getattribute__(prop) is not None})
+                       if self.__getattribute__(prop) is not None})  # pylint: disable=no-member
         return result
 
     def derive_season(self, seasonid):
@@ -200,7 +202,7 @@ class VideoId(object):
         if self.mediatype != VideoId.SHOW:
             raise InvalidVideoId('Cannot derive season VideoId from {}'
                                  .format(self))
-        return type(self)(tvshowid=self.tvshowid, seasonid=unicode(seasonid))
+        return type(self)(tvshowid=self.tvshowid, seasonid=text(seasonid))
 
     def derive_episode(self, episodeid):
         """Return a new VideoId instance that represents the given episode
@@ -210,7 +212,7 @@ class VideoId(object):
             raise InvalidVideoId('Cannot derive episode VideoId from {}'
                                  .format(self))
         return type(self)(tvshowid=self.tvshowid, seasonid=self.seasonid,
-                          episodeid=unicode(episodeid))
+                          episodeid=text(episodeid))
 
     def derive_parent(self, depth):
         """Returns a new videoid for the parent mediatype (season for episodes,
@@ -248,7 +250,7 @@ class VideoId(object):
 
 def _get_unicode_kwargs(kwargs):
     # Example of return value: (None, None, '70084801', None, None, None, None) this is a movieid
-    return tuple((unicode(kwargs[idpart])
+    return tuple((text(kwargs[idpart])
                   if kwargs.get(idpart)
                   else None)
                  for idpart

@@ -11,9 +11,15 @@ from __future__ import absolute_import, division, unicode_literals
 import collections
 import os
 import sys
-from urllib import unquote
 
-from urlparse import urlparse, parse_qsl
+try:  # Python 3
+    from urllib.parse import parse_qsl, unquote, urlparse
+except ImportError:  # Python 2
+    from urllib2 import unquote
+    from urlparse import parse_qsl, urlparse
+
+from future.utils import iteritems
+
 import xbmc
 import xbmcaddon
 import xbmcvfs
@@ -175,7 +181,6 @@ class GlobalVariables(object):
 
     def __init__(self):
         """Do nothing on constructing the object"""
-        pass
 
     def init_globals(self, argv, skip_database_initialize=False):
         """Initialized globally used module variables.
@@ -214,7 +219,7 @@ class GlobalVariables(object):
             self.PLUGIN_HANDLE = 0
         self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
                                                      netloc=self.URL[1])
-        self.PATH = unquote(self.URL[2][1:]).decode('utf-8')
+        self.PATH = unquote(self.URL[2][1:])
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -254,8 +259,7 @@ class GlobalVariables(object):
         self._init_cache()
 
     def _init_cache(self):
-        if not os.path.exists(
-                xbmc.translatePath(self.CACHE_PATH).decode('utf-8')):
+        if not os.path.exists(xbmc.translatePath(self.CACHE_PATH)):
             self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
@@ -368,7 +372,7 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with lolomo_known=True"""
-        for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():  # pylint: disable=unused-variable
+        for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
             if data['lolomo_known']:
                 if data['lolomo_contexts'][0] == context:
                     return True

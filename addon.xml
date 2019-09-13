@@ -3,6 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
+    <import addon="script.module.future" version="0.16.0.4"/> <!-- version 0.17.1 currently does not work -->
     <import addon="script.module.inputstreamhelper" version="0.3.3"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.requests" version="2.12.4"/>

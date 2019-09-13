@@ -36,7 +36,7 @@ class StreamContinuityManager(PlaybackActionManager):
     for the currently playing show and restores them on subsequent episodes.
     """
 
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(StreamContinuityManager, self).__init__()
         self.storage = common.PersistentStorage(__name__, no_save_on_destroy=True)
         self.current_videoid = None

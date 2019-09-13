@@ -19,4 +19,3 @@ class HubBrowser(object):
 
     def browse(self, pathitems):
         """Browse the hub at a given location"""
-        pass

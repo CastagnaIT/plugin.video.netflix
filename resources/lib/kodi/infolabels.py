@@ -4,12 +4,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 import copy
 import re
-
 import resources.lib.api.paths as paths
 import resources.lib.api.shakti as api
 import resources.lib.cache as cache
 import resources.lib.common as common
 import resources.lib.kodi.library as library
+from future.utils import iteritems, itervalues
 from resources.lib.globals import g
 
 try:  # Python 2
@@ -52,7 +52,7 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
         list_item.setProperty('IsPlayable', 'true')
     else:
         list_item.setProperty('isFolder', 'true')
-    for stream_type, quality_infos in quality_infos.iteritems():
+    for stream_type, quality_infos in iteritems(quality_infos):
         list_item.addStreamInfo(stream_type, quality_infos)
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
@@ -117,8 +117,7 @@ def parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accesible from
     the item dict"""
     return {target: _get_and_transform(source, target, item)
-            for target, source
-            in paths.INFO_MAPPINGS.iteritems()}
+            for target, source in iteritems(paths.INFO_MAPPINGS)}
 
 
 def _get_and_transform(source, target, item):
@@ -137,14 +136,14 @@ def parse_referenced_infos(item, raw_data):
     return {target: [person['name']
                      for _, person
                      in paths.resolve_refs(item.get(source, {}), raw_data)]
-            for target, source in paths.REFERENCE_MAPPINGS.iteritems()}
+            for target, source in iteritems(paths.REFERENCE_MAPPINGS)}
 
 
 def parse_tags(item):
     """Parse the tags"""
     return {'tag': [tagdef['name']
                     for tagdef
-                    in item.get('tags', {}).itervalues()
+                    in itervalues(item.get('tags', {}))
                     if isinstance(tagdef.get('name', {}), unicode)]}
 
 
@@ -251,7 +250,7 @@ def add_info_from_library(videoid, list_item):
 
 
 def _sanitize_infos(details):
-    for source, target in JSONRPC_MAPPINGS.items():
+    for source, target in iteritems(JSONRPC_MAPPINGS):
         if source in details:
             details[target] = details.pop(source)
     for prop in ['file', 'label', 'runtime']:

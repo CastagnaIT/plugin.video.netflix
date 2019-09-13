@@ -149,7 +149,7 @@ def _convert_video_downloadable(downloadable, adaptation_set,
 def _determine_video_codec(content_profile):
     if 'hevc' in content_profile:
         return 'hevc'
-    elif 'vp9' in content_profile:
+    if 'vp9' in content_profile:
         return 'vp9.0.' + content_profile[14:16]
     return 'h264'
 
@@ -205,7 +205,7 @@ def _convert_text_track(text_track, period, default):
         downloadable = text_track['ttDownloadables']
         # common.save_file('downloadable.log', str(downloadable))
 
-        content_profile = downloadable.keys()[0]
+        content_profile = list(downloadable)[0]
         is_ios8 = content_profile == 'webvtt-lssdh-ios8'
 
         adaptation_set = ET.SubElement(
@@ -229,7 +229,7 @@ def _convert_text_track(text_track, period, default):
             parent=adaptation_set,
             tag='Representation',
             nflxProfile=content_profile)
-        _add_base_url(representation, downloadable[content_profile]['downloadUrls'].values()[0])
+        _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[0])
 
 
 def _add_base_url(representation, base_url):

@@ -26,10 +26,10 @@ def migrate_library_to_db():
         return
 
     handle = xbmcvfs.File(library_file, 'r')
-    lib = pickle.loads(handle.read())
+    lib = pickle.loads(handle.read().encode('utf-8'))
     handle.close()
 
-    for item in lib['content'].values():
+    for item in list(lib['content'].values()):
         videoid = item['videoid'].convert_old_videoid_type()
 
         if videoid.mediatype == common.VideoId.MOVIE:
@@ -38,11 +38,11 @@ def migrate_library_to_db():
         if videoid.mediatype != common.VideoId.SHOW:
             continue
 
-        for season_key in item.keys():
+        for season_key in list(item):
             if season_key in ['videoid', 'nfo_export', 'exclude_from_update']:
                 continue
 
-            for episode_key in item[season_key].keys():
+            for episode_key in list(item[season_key]):
                 if episode_key in ['videoid', 'nfo_export']:
                     continue
 

@@ -69,7 +69,7 @@ def load_file(filename, mode='r'):
     file_handle = xbmcvfs.File(
         xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
     try:
-        return file_handle.read().decode('utf-8')
+        return file_handle.read().encode('utf-8')
     finally:
         file_handle.close()
 
