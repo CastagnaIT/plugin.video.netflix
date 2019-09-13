@@ -5,20 +5,30 @@
 # License: MIT https://goo.gl/5bMj3H
 """Handles & translates requests from Inputstream to Netflix"""
 from __future__ import absolute_import, division, unicode_literals
-
-import traceback
 import base64
-import BaseHTTPServer
-from urlparse import urlparse, parse_qs
 
-from SocketServer import TCPServer
+try:  # Python 3
+    from urllib.parse import parse_qs, urlparse
+except ImportError:  # Python 2
+    from urlparse import urlparse, parse_qs
+
+try:  # Python 3
+    from http.server import BaseHTTPRequestHandler
+except ImportError:
+    from BaseHTTPServer import BaseHTTPRequestHandler
+
+try:  # Python 3
+    from socketserver import TCPServer
+except ImportError:
+    from SocketServer import TCPServer
+
 import resources.lib.common as common
 
 from .msl_handler import MSLHandler
 from .exceptions import MSLError
 
 
-class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class MSLHttpRequestHandler(BaseHTTPRequestHandler):
     """Handles & translates requests from Inputstream to Netflix"""
     # pylint: disable=invalid-name, broad-except
     def do_HEAD(self):
@@ -37,6 +47,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.wfile.write(base64.standard_b64decode(b64license))
             self.finish()
         except Exception as exc:
+            import traceback
             common.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
 
@@ -50,13 +61,12 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
         except Exception as exc:
+            import traceback
             common.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
 
-    def log_message(self, *args):
-        # pylint: disable=arguments-differ
+    def log_message(self, *args):  # pylint: disable=arguments-differ
         """Disable the BaseHTTPServer Log"""
-        pass
 
 
 class MSLTCPServer(TCPServer):

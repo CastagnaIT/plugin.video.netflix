@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Checks when settings are changed"""
 from __future__ import absolute_import, division, unicode_literals
-
 import sys
+from future.utils import iteritems
 
 import xbmc
 
@@ -48,7 +48,7 @@ class SettingsMonitor(xbmc.Monitor):
 
         # Check menu settings changes
         sort_order_type_changed = False
-        for menu_id, menu_data in g.MAIN_MENU_ITEMS.iteritems():
+        for menu_id, menu_data in iteritems(g.MAIN_MENU_ITEMS):
             # Check settings changes in show menu
             show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
             show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),

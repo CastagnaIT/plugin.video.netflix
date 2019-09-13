@@ -1,6 +1,7 @@
 [MESSAGES CONTROL]
 disable=
     bad-option-value,
+    comparison-with-callable,
     cyclic-import,
     duplicate-code,
     fixme,
@@ -17,3 +18,4 @@ disable=
     too-many-public-methods,
     too-many-return-statements,
     too-many-statements,
+    useless-object-inheritance,

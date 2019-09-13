@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """Helper functions to build plugin listings for Kodi"""
 from __future__ import absolute_import, division, unicode_literals
-
-from functools import wraps
-
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 import os
+from functools import wraps
+from future.utils import iteritems
+
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -98,7 +102,7 @@ def build_main_menu_listing(lolomo):
     """
     directory_items = []
 
-    for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
+    for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
         show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
         if show_in_menu:
             menu_title = 'Missing menu title'
@@ -133,7 +137,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
     contexts = menu_data['lolomo_contexts']
     lists = (lolomo.lists_by_context(contexts)
              if contexts
-             else lolomo.lists.iteritems())
+             else iter(list(lolomo.lists.items())))
     directory_items = []
     for video_list_id, video_list in lists:
         menu_parameters = common.MenuIdParameters(id_values=video_list_id)
@@ -186,7 +190,7 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
     if video_list.artitem:
         add_art(video_list.id, list_item, video_list.artitem)
     url = common.build_url(pathitems,
-                           params={'genre_id': unicode(video_list.get('genreId'))},
+                           params={'genre_id': text(video_list.get('genreId'))},
                            mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
@@ -199,7 +203,7 @@ def build_subgenre_listing(subgenre_list, menu_data):
     for index, subgenre_data in subgenre_list.lists:  # pylint: disable=unused-variable
         # Create a new submenu info in MAIN_MENU_ITEMS
         # for reference when 'directory' find the menu data
-        sel_video_list_id = unicode(subgenre_data['id'])
+        sel_video_list_id = text(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['lolomo_known'] = False
@@ -236,7 +240,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list)
                        for videoid_value, video
-                       in video_list.videos.iteritems()]
+                       in list(video_list.videos.items())]
     # If genre_id exists add possibility to browse lolomos subgenres
     if genre_id and genre_id != 'None':
         menu_id = 'subgenre_' + genre_id
@@ -296,7 +300,7 @@ def build_season_listing(tvshowid, season_list, pathitems=None):
     directory_items = [_create_season_item(tvshowid, seasonid_value, season,
                                            season_list)
                        for seasonid_value, season
-                       in season_list.seasons.iteritems()]
+                       in list(season_list.seasons.items())]
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector)
     finalize_directory(directory_items, g.CONTENT_SEASON, 'sort_only_label',
                        title=' - '.join((season_list.tvshow['title'],
@@ -323,7 +327,7 @@ def build_episode_listing(seasonid, episode_list, pathitems=None):
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode,
                                             episode_list)
                        for episodeid_value, episode
-                       in episode_list.episodes.iteritems()]
+                       in list(episode_list.episodes.items())]
     add_items_previous_next_page(directory_items, pathitems, episode_list.perpetual_range_selector)
     finalize_directory(directory_items, g.CONTENT_EPISODE, 'sort_episodes',
                        title=' - '.join(
@@ -350,7 +354,7 @@ def build_supplemental_listing(video_list, pathitems=None):  # pylint: disable=u
     """Build a supplemental listing (eg. trailers)"""
     directory_items = [_create_supplemental_item(videoid_value, video, video_list)
                        for videoid_value, video
-                       in video_list.videos.iteritems()]
+                       in list(video_list.videos.items())]
     finalize_directory(directory_items, g.CONTENT_SHOW, 'sort_label',
                        title='Trailers')
 

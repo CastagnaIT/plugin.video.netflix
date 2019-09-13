@@ -10,10 +10,11 @@ resources.lib.kodi.ui
 resources.lib.services.nfsession
 """
 from __future__ import absolute_import, division, unicode_literals
-
 import os
 from time import time
 from functools import wraps
+from future.utils import iteritems
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -41,12 +42,10 @@ TTL_INFINITE = 60 * 60 * 24 * 365 * 100
 
 class CacheMiss(Exception):
     """Requested item is not in the cache"""
-    pass
 
 
 class UnknownCacheBucketError(Exception):
-    """The requested cahce bucket does ot exist"""
-    pass
+    """The requested cache bucket does not exist"""
 
 
 # Logic to get the identifier
@@ -180,7 +179,7 @@ class Cache(object):
     def commit(self):
         """Persist cache contents in window properties"""
         # pylint: disable=global-statement
-        for bucket, contents in self.buckets.items():
+        for bucket, contents in iteritems(self.buckets):
             self._persist_bucket(bucket, contents)
             # The self.buckets dict survives across addon invocations if the
             # same languageInvoker thread is being used so we MUST clear its
@@ -259,7 +258,7 @@ class Cache(object):
         """Load a cache entry from disk and add it to the in memory bucket"""
         handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'r')
         try:
-            return pickle.loads(handle.read())
+            return pickle.loads(handle.read().encode('utf-8'))
         except Exception:
             raise CacheMiss()
         finally:
@@ -269,7 +268,7 @@ class Cache(object):
         """Write a cache entry to disk"""
         # pylint: disable=broad-except
         cache_filename = self._entry_filename(bucket, identifier)
-        handle = xbmcvfs.File(cache_filename, 'w')
+        handle = xbmcvfs.File(cache_filename, 'wb')
         try:
             return pickle.dump(cache_entry, handle)
         except Exception as exc:

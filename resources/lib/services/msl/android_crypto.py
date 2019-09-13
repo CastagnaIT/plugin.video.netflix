@@ -17,7 +17,7 @@ from .exceptions import MSLError
 
 class AndroidMSLCrypto(MSLBaseCrypto):
     """Crypto handler for Android platforms"""
-    def __init__(self, msl_data=None):
+    def __init__(self, msl_data=None):  # pylint: disable=super-on-old-class
         # pylint: disable=broad-except
         try:
             self.crypto_session = xbmcdrm.CryptoSession(
@@ -58,7 +58,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         """Return a key request dict"""
         # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
-        key_request = self.crypto_session.GetKeyRequest(
+        key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
             bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
 
         if not key_request:
@@ -76,7 +76,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
     def _provide_key_response(self, data):
         if not data:
             raise MSLError('Missing key response data')
-        self.keyset_id = self.crypto_session.ProvideKeyResponse(data)
+        self.keyset_id = self.crypto_session.ProvideKeyResponse(data)  # pylint: disable=assignment-from-none
         if not self.keyset_id:
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
         common.debug('Widevine CryptoSession provideKeyResponse successful')

@@ -27,7 +27,6 @@ ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
 
 class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
-    pass
 
 
 def library_path():
@@ -118,17 +117,16 @@ def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     if videoid.mediatype == common.VideoId.MOVIE:
         return g.SHARED_DB.movie_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SHOW:
+    if videoid.mediatype == common.VideoId.SHOW:
         return g.SHARED_DB.tvshow_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SEASON:
+    if videoid.mediatype == common.VideoId.SEASON:
         return g.SHARED_DB.season_id_exists(videoid.tvshowid,
                                             videoid.seasonid)
-    elif videoid.mediatype == common.VideoId.EPISODE:
+    if videoid.mediatype == common.VideoId.EPISODE:
         return g.SHARED_DB.episode_id_exists(videoid.tvshowid,
                                              videoid.seasonid,
                                              videoid.episodeid)
-    else:
-        raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
+    raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
 
 
 def show_excluded_from_auto_update(videoid):

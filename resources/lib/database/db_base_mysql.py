@@ -39,7 +39,7 @@ def handle_connection(func):
 
 
 class MySQLDatabase(db_base.BaseDatabase):
-    def __init__(self, test_config=None):
+    def __init__(self, test_config=None):  # pylint: disable=super-on-old-class
         self.is_mysql_database = True
         self.database = 'netflix_addon'
         if test_config:

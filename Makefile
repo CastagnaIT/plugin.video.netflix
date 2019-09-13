@@ -40,7 +40,7 @@ pylint:
 
 addon: clean
 	@echo -e "$(white)=$(blue) Starting sanity addon tests$(reset)"
-	kodi-addon-checker . --branch=leia
+	kodi-addon-checker --branch=leia
 
 unit:
 	@echo -e "$(white)=$(blue) Starting unit tests$(reset)"
@@ -48,10 +48,10 @@ unit:
 
 run:
 	@echo -e "$(white)=$(blue) Run CLI$(reset)"
-	coverage run -a service.py &
-	sleep 10
 	coverage run -a test/run.py /action/purge_cache/
 	coverage run -a test/run.py /action/purge_cache/?on_disk=True
+	coverage run -a service.py &
+	sleep 10
 	coverage run -a test/run.py /directory/root
 	coverage run -a test/run.py /directory/profiles
 	coverage run -a test/run.py /directory/home

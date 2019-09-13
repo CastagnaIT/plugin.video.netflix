@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Functions for Kodi library NFO creation"""
 from __future__ import absolute_import, division, unicode_literals
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 
 import xml.etree.ElementTree as ET
 from resources.lib.globals import g
@@ -8,7 +12,7 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
 
-class NFOSettings:
+class NFOSettings(object):
     def __init__(self, enforce=None):
         """
         :param force: Used for export new episode, to force the nfo export status
@@ -162,8 +166,8 @@ def _add_fanart(root, data):
 
 def _build_root_node(root_name, tags):
     root = ET.Element(root_name)
-    for (k, v) in tags.items():
+    for (k, v) in list(tags.items()):
         if v:
             tag = ET.SubElement(root, k)
-            tag.text = unicode(v)
+            tag.text = text(v)
     return root

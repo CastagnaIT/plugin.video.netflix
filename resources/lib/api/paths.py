@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Path info to query the Shakti pathEvaluator"""
 from __future__ import absolute_import, division, unicode_literals
+from future.utils import iteritems
 
 import resources.lib.common as common
 
@@ -17,8 +18,9 @@ ART_SIZE_SD = '_665x375'
 LENGTH_ATTRIBUTES = {
     'stdlist': lambda r, context, key: len(r[context][key]),
     'stdlist_wid': lambda r, context, uid, key: len(r[context][uid][key]),
-    'searchlist': lambda r, context, key: len(next(r[context][key].itervalues()))
+    'searchlist': lambda r, context, key: len(list(r[context][key].values())[0]),
 }
+
 """Predefined lambda expressions that return the number of video results within a path response dict"""
 
 ART_PARTIAL_PATHS = [
@@ -107,31 +109,29 @@ def iterate_references(source):
     list.
     Items with a key that do not represent an integer are ignored."""
     for index, ref in sorted({int(k): v
-                              for k, v in source.iteritems()
-                              if common.is_numeric(k)}.iteritems()):
+                              for k, v in iteritems(source)
+                              if common.is_numeric(k)}.items()):
         path = reference_path(ref)
         if path is None:
             break
-        elif path[0] == 'characters':
+        if path[0] == 'characters':
             # TODO: Implement handling of character references in Kids profiles
             continue
-        else:
-            yield (index, path)
+        yield (index, path)
 
 
 def count_references(source):
     counter = 0
     for index, ref in sorted({int(k): v  # pylint: disable=unused-variable
-                              for k, v in source.iteritems()
-                              if common.is_numeric(k)}.iteritems()):
+                              for k, v in iteritems(source)
+                              if common.is_numeric(k)}.items()):
         path = reference_path(ref)
 
         if path is None:
             continue
-        elif path[0] == 'characters':
+        if path[0] == 'characters':
             continue
-        else:
-            counter += 1
+        counter += 1
     return counter
 
 
@@ -196,7 +196,7 @@ def reference_path(ref):
     ref = _remove_nesting(ref)
     if isinstance(ref, list):
         return ref
-    elif isinstance(ref, dict):
+    if isinstance(ref, dict):
         return ref['value'] if ref.get('$type') == 'ref' else None
     raise InvalidReferenceError(
         'Unexpected reference format encountered: {}'.format(ref))

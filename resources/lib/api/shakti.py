@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Access to Netflix's Shakti API"""
 from __future__ import absolute_import, division, unicode_literals
-
 from functools import wraps
+from future.utils import iteritems
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -85,7 +85,8 @@ def root_lists():
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
     try:
-        list_id = next(root_lists().lists_by_context(list_type))[0]
+        # list_id = next(root_lists().lists_by_context(list_type))[0]
+        list_id = list(root_lists().lists_by_context(list_type))[0][0]
     except StopIteration:
         raise InvalidVideoListTypeError(
             'No lists of type {} available'.format(list_type))
@@ -271,7 +272,7 @@ def mylist_items():
         items = []
         videos = custom_video_list_basicinfo(list_id_for_type(g.MAIN_MENU_ITEMS['myList']['lolomo_contexts'][0]))
         if videos:
-            items = [video_id for video_id, video in videos.videos.iteritems()
+            items = [video_id for video_id, video in iteritems(videos.videos)
                      if video['queue'].get('inQueue', False)]
         return items
     except InvalidVideoListTypeError:

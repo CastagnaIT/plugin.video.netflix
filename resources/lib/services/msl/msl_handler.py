@@ -5,6 +5,10 @@
 # License: MIT https://goo.gl/5bMj3H
 """Proxy service to convert manifest and provide license data"""
 from __future__ import absolute_import, division, unicode_literals
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 
 import re
 import zlib
@@ -40,8 +44,8 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            ui.show_error_info(common.get_local_string(30028), unicode(exc.message),
-                               unknown_error=not exc.message,
+            ui.show_error_info(common.get_local_string(30028), text(exc),
+                               unknown_error=not(text(exc)),
                                netflix_error=isinstance(exc, MSLError))
             raise
     return error_catching_wrapper
@@ -335,7 +339,7 @@ def _decrypt_chunks(chunks, crypto):
             data = base64.standard_b64decode(data)
 
         if isinstance(data, str):
-            decrypted_payload += unicode(data, 'utf-8')
+            decrypted_payload += text(data).encode('utf-8')
         else:
             decrypted_payload += data
 

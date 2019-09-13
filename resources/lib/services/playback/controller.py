@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """Playback tracking and coordination of several actions during playback"""
 from __future__ import absolute_import, division, unicode_literals
-
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 import json
 
 import xbmc
@@ -59,7 +62,7 @@ class PlaybackController(xbmc.Monitor):
         try:
             if method == 'Player.OnAVStart':
                 self._on_playback_started(
-                    json.loads(unicode(data, 'utf-8', errors='ignore')))
+                    json.loads(text(data).encode('utf-8')))
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:

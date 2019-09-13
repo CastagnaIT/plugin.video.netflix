@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """Helper functions for Kodi operations"""
 from __future__ import absolute_import, division, unicode_literals
-
+try:  # Python 2
+    from __builtin__ import str as text
+except ImportError:  # Python 3
+    from builtins import str as text
 import json
 
 import xbmc
@@ -37,7 +40,7 @@ def json_rpc(method, params=None):
                     'params': params or {}}
     request = json.dumps(request_data)
     debug('Executing JSON-RPC: {}'.format(request))
-    raw_response = unicode(xbmc.executeJSONRPC(request), 'utf-8')
+    raw_response = text(xbmc.executeJSONRPC(request)).encode('utf-8')
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
     if 'error' in response:
