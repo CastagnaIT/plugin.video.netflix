@@ -194,7 +194,6 @@ class GlobalVariables(object):
 
         # Add absolute paths of embedded py modules to python system directory
         module_paths = [
-            os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum'),
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
         for path in module_paths:

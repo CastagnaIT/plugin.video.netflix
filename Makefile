@@ -1,5 +1,5 @@
 ENVS := flake8,py27,py36
-export PYTHONPATH := .:$(CURDIR)/modules/enum:$(CURDIR)/modules/mysql-connector-python:$(CURDIR)/resources/lib:$(CURDIR)/test
+export PYTHONPATH := .:$(CURDIR)/modules/mysql-connector-python:$(CURDIR)/resources/lib:$(CURDIR)/test
 addon_xml := addon.xml
 
 # Collect information to build as sensible package name

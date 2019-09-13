@@ -138,13 +138,13 @@ def is_in_library(videoid):
 
 def show_excluded_from_auto_update(videoid):
     """Return true if the videoid is excluded from auto-update"""
-    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp.exclude_update, False)
+    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
 @common.time_execution(immediate=False)
 def exclude_show_from_auto_update(videoid, exclude):
     """Set if a tvshow is excluded from auto-update"""
-    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp.exclude_update, exclude)
+    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], exclude)
 
 
 def update_kodi_library(library_operation):
@@ -344,7 +344,7 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
         for season in metadata[0]['seasons']:
             if not nfo_settings:
                 nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                             VidLibProp.nfo_export, False)
+                                                             VidLibProp['nfo_export'], False)
                 nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
@@ -558,7 +558,7 @@ def export_all_new_episodes():
     # Get the list of the tvshows exported to kodi library
     exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
     # Get the list of the tvshows exported but to exclude from updates
-    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, True)
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
 
     # Before start to get updated mylist items, you have to select the owner account
     # TODO: in the future you can also add the possibility to synchronize from a chosen profile
@@ -596,7 +596,7 @@ def export_all_new_episodes():
         if videoid.value in exported_videoids_values:
             # It is possible that the user has chosen not to export nfo for a tvshow
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
+                                                         VidLibProp['nfo_export'], False)
             nfo_settings = nfo.NFOSettings(nfo_export)
         else:
             nfo_settings = nfo.NFOSettings()
