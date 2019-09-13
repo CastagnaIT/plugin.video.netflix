@@ -133,13 +133,13 @@ def is_in_library(videoid):
 
 def show_excluded_from_auto_update(videoid):
     """Return true if the videoid is excluded from auto-update"""
-    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp.exclude_update, False)
+    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
 @common.time_execution(immediate=False)
 def exclude_show_from_auto_update(videoid, exclude):
     """Set if a tvshow is excluded from auto-update"""
-    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp.exclude_update, exclude)
+    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], exclude)
 
 
 def update_kodi_library(library_operation):
@@ -338,7 +338,7 @@ def _create_new_episodes_tasks(videoid, metadata):
     if metadata and 'seasons' in metadata[0]:
         for season in metadata[0]['seasons']:
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
+                                                         VidLibProp['nfo_export'], False)
             nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
@@ -547,7 +547,7 @@ def export_all_new_episodes():
         g.SHARED_DB.set_value('library_export_new_episodes_running', True)
         g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
 
-        for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, False):
+        for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], False):
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
             export_new_episodes(videoid, True)
             # add some randomness between show analysis to limit servers load and ban risks
