@@ -76,7 +76,6 @@ def get_credentials():
             'Existing credentials could not be decrypted')
 
 
-# noinspection PyBroadException
 def check_credentials():
     """
     Check if account credentials exists and can be decrypted.
