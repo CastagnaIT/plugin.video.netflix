@@ -61,22 +61,3 @@ class Skip(xbmcgui.WindowXMLDialog):
     def onAction(self, action):
         if action.getId() in self.action_exitkeys_id:
             self.close()
-
-
-class SaveStreamSettings(xbmcgui.WindowXMLDialog):
-    """
-    Dialog for skipping video parts (intro, recap, ...)
-    """
-    def __init__(self, *args, **kwargs):  # pylint: disable=super-on-old-class
-        super(SaveStreamSettings, self).__init__(*args, **kwargs)
-        self.new_show_settings = kwargs['new_show_settings']
-        self.tvshowid = kwargs['tvshowid']
-        self.storage = kwargs['storage']
-
-    def onInit(self):
-        self.action_exitkeys_id = [10, 13]
-
-    def onClick(self, controlID):
-        if controlID == 6012:
-            self.storage[self.tvshowid] = self.new_show_settings
-            self.close()
