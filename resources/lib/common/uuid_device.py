@@ -63,7 +63,7 @@ def _get_windows_uuid():
         try:  # Python 2
             import _winreg as winreg
         except ImportError:  # Python 3
-            import winreg as winreg
+            import winreg
         registry = winreg.HKEY_LOCAL_MACHINE
         address = 'SOFTWARE\\Microsoft\\Cryptography'
         keyargs = winreg.KEY_READ | winreg.KEY_WOW64_64KEY
@@ -159,12 +159,12 @@ def _parse_osx_xml_plist_data(data):
 
     items_dict = xml_data[0]['_items'][0]
     r = re.compile(r'.*UUID.*')  # Find to example "platform_UUID" key
-    uuid_keys = filter(r.match, items_dict.keys())
+    uuid_keys = list(filter(r.match, items_dict.keys()))
     if uuid_keys:
         dict_values['UUID'] = items_dict[uuid_keys[0]]
     if not uuid_keys:
         r = re.compile(r'.*serial.*number.*')  # Find to example "serial_number" key
-        serialnumber_keys = filter(r.match, items_dict.keys())
+        serialnumber_keys = list(filter(r.match, items_dict.keys()))
         if serialnumber_keys:
             dict_values['serialnumber'] = items_dict[serialnumber_keys[0]]
     return dict_values
