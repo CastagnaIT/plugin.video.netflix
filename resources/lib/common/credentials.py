@@ -6,32 +6,9 @@ from resources.lib.globals import g
 from resources.lib.api.exceptions import MissingCredentialsError
 
 from .logging import error
+from .uuid_device import get_crypt_key
 
 __BLOCK_SIZE__ = 32
-__CRYPT_KEY__ = None
-
-
-def __crypt_key():
-    """
-    Lazily generate the crypt key and return it
-    """
-    # pylint: disable=global-statement
-    global __CRYPT_KEY__
-    if not __CRYPT_KEY__:
-        __CRYPT_KEY__ = __uniq_id()
-    return __CRYPT_KEY__
-
-
-def __uniq_id():
-    """
-    Returns a unique id based on the devices MAC address
-    """
-    import uuid
-    mac = uuid.getnode()
-    if (mac >> 40) % 2:
-        from platform import node
-        mac = node()
-    return uuid.uuid5(uuid.NAMESPACE_DNS, str(mac)).bytes
 
 
 def encrypt_credential(raw):
@@ -49,7 +26,7 @@ def encrypt_credential(raw):
     from Cryptodome.Util import Padding
     raw = bytes(Padding.pad(data_to_pad=raw, block_size=__BLOCK_SIZE__))
     iv = Random.new().read(AES.block_size)
-    cipher = AES.new(__crypt_key(), AES.MODE_CBC, iv)
+    cipher = AES.new(get_crypt_key(), AES.MODE_CBC, iv)
     return base64.b64encode(iv + cipher.encrypt(raw))
 
 
@@ -67,7 +44,7 @@ def decrypt_credential(enc, secret=None):
     from Cryptodome.Util import Padding
     enc = base64.b64decode(enc)
     iv = enc[:AES.block_size]
-    cipher = AES.new(secret or __uniq_id(), AES.MODE_CBC, iv)
+    cipher = AES.new(secret or get_crypt_key(), AES.MODE_CBC, iv)
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
         block_size=__BLOCK_SIZE__).decode('utf-8')
