@@ -62,6 +62,9 @@ class LibraryUpdateService(xbmc.Monitor):
         As settings changed, we will compute next schedule again
         to ensure it's still correct
         """
+        # wait for slow system (like Raspberry Pi) to write the settings
+        xbmc.sleep(500)
+        # then compute the next schedule
         self.next_schedule = _compute_next_schedule()
 
     def onScanStarted(self, library):
