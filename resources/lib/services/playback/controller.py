@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """Playback tracking and coordination of several actions during playback"""
 from __future__ import absolute_import, division, unicode_literals
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
+
 import json
 
 import xbmc
@@ -18,6 +15,11 @@ from .resume_manager import ResumeManager
 from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
 from .upnext import UpNextNotifier
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 class PlaybackController(xbmc.Monitor):
@@ -62,7 +64,7 @@ class PlaybackController(xbmc.Monitor):
         try:
             if method == 'Player.OnAVStart':
                 self._on_playback_started(
-                    json.loads(text(data).encode('utf-8')))
+                    json.loads(unicode(data, 'utf-8')))
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:

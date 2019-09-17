@@ -6,9 +6,9 @@ from .logging import debug
 from .misc_utils import get_system_platform
 
 try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 __CRYPT_KEY__ = None
 
@@ -30,7 +30,7 @@ def get_random_uuid():
     :return: a string of a random uuid
     """
     import uuid
-    return text(uuid.uuid4())
+    return unicode(uuid.uuid4())
 
 
 def _get_system_uuid():
@@ -52,7 +52,7 @@ def _get_system_uuid():
     if not uuid_value:
         debug('It is not possible to get a system UUID creating a new UUID')
         uuid_value = _get_fake_uuid(system != 'android')
-    return uuid.uuid5(uuid.NAMESPACE_DNS, text(uuid_value)).bytes
+    return uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_value)).bytes
 
 
 def _get_windows_uuid():

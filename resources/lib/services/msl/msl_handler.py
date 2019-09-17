@@ -5,10 +5,6 @@
 # License: MIT https://goo.gl/5bMj3H
 """Proxy service to convert manifest and provide license data"""
 from __future__ import absolute_import, division, unicode_literals
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
 
 import re
 import zlib
@@ -34,6 +30,7 @@ try:  # Python 2
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
+
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
     'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
@@ -50,8 +47,8 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            ui.show_error_info(common.get_local_string(30028), text(exc),
-                               unknown_error=not(text(exc)),
+            ui.show_error_info(common.get_local_string(30028), unicode(exc),
+                               unknown_error=not(unicode(exc)),
                                netflix_error=isinstance(exc, MSLError))
             raise
     return error_catching_wrapper
@@ -407,7 +404,7 @@ def _decrypt_chunks(chunks, crypto):
             data = base64.standard_b64decode(data)
 
         if isinstance(data, str):
-            decrypted_payload += text(data).encode('utf-8')
+            decrypted_payload += unicode(data).encode('utf-8')
         else:
             decrypted_payload += data
 

@@ -4,16 +4,16 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 import AddonSignals
 
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
-
 from resources.lib.globals import g
 import resources.lib.api.exceptions as apierrors
 
 from .logging import debug, error
 from .misc_utils import time_execution
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 class BackendNotReady(Exception):
@@ -129,7 +129,7 @@ def addonsignals_return_call(func):
             error(traceback.format_exc())
             result = {
                 'error': exc.__class__.__name__,
-                'message': text(exc),
+                'message': unicode(exc),
             }
         if g.IPC_OVER_HTTP:
             return result

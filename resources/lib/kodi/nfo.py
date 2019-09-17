@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """Functions for Kodi library NFO creation"""
 from __future__ import absolute_import, division, unicode_literals
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
 
 import xml.etree.ElementTree as ET
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 class NFOSettings(object):
@@ -169,5 +170,5 @@ def _build_root_node(root_name, tags):
     for (k, v) in list(tags.items()):
         if v:
             tag = ET.SubElement(root, k)
-            tag.text = text(v)
+            tag.text = unicode(v)
     return root

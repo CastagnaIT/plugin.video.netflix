@@ -7,11 +7,6 @@ from ast import literal_eval
 from .logging import error
 
 try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
-
-try:  # Python 2
     unicode
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
@@ -30,7 +25,7 @@ def convert_to_string(value):
     if value is None:
         return None
     data_type = type(value)
-    if data_type in (str, unicode, text):
+    if data_type in (str, unicode):
         return value
     converter = None
     if data_type in (int, float, bool, tuple, datetime.datetime):
@@ -46,7 +41,7 @@ def convert_to_string(value):
 def convert_from_string(value, to_data_type):
     if value is None:
         return None
-    if to_data_type in (str, unicode, text, int, float):
+    if to_data_type in (str, unicode, int, float):
         return to_data_type(value)
     if to_data_type in (bool, list, tuple):
         return literal_eval(value)

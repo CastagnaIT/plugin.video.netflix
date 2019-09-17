@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper functions to build plugin listings for Kodi"""
 from __future__ import absolute_import, division, unicode_literals
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
+
 import os
 from functools import wraps
 from future.utils import iteritems
@@ -19,6 +16,11 @@ import resources.lib.common as common
 
 from .infolabels import add_info, add_art, add_highlighted_title
 from .context_menu import generate_context_menu_items, generate_context_menu_mainmenu
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 def custom_viewmode(partial_setting_id):
@@ -201,7 +203,7 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
     if video_list.artitem:
         add_art(video_list.id, list_item, video_list.artitem)
     url = common.build_url(pathitems,
-                           params={'genre_id': text(video_list.get('genreId'))},
+                           params={'genre_id': unicode(video_list.get('genreId'))},
                            mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
@@ -214,7 +216,7 @@ def build_subgenre_listing(subgenre_list, menu_data):
     for index, subgenre_data in subgenre_list.lists:  # pylint: disable=unused-variable
         # Create a new submenu info in MAIN_MENU_ITEMS
         # for reference when 'directory' find the menu data
-        sel_video_list_id = text(subgenre_data['id'])
+        sel_video_list_id = unicode(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['lolomo_known'] = False

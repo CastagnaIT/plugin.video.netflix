@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """Universal representation of VideoIds"""
 from __future__ import absolute_import, division, unicode_literals
-try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
 
 from functools import wraps
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 class InvalidVideoId(Exception):
@@ -202,7 +203,7 @@ class VideoId(object):
         if self.mediatype != VideoId.SHOW:
             raise InvalidVideoId('Cannot derive season VideoId from {}'
                                  .format(self))
-        return type(self)(tvshowid=self.tvshowid, seasonid=text(seasonid))
+        return type(self)(tvshowid=self.tvshowid, seasonid=unicode(seasonid))
 
     def derive_episode(self, episodeid):
         """Return a new VideoId instance that represents the given episode
@@ -212,7 +213,7 @@ class VideoId(object):
             raise InvalidVideoId('Cannot derive episode VideoId from {}'
                                  .format(self))
         return type(self)(tvshowid=self.tvshowid, seasonid=self.seasonid,
-                          episodeid=text(episodeid))
+                          episodeid=unicode(episodeid))
 
     def derive_parent(self, depth):
         """Returns a new videoid for the parent mediatype (season for episodes,
@@ -250,7 +251,7 @@ class VideoId(object):
 
 def _get_unicode_kwargs(kwargs):
     # Example of return value: (None, None, '70084801', None, None, None, None) this is a movieid
-    return tuple((text(kwargs[idpart])
+    return tuple((unicode(kwargs[idpart])
                   if kwargs.get(idpart)
                   else None)
                  for idpart
