@@ -296,7 +296,6 @@ class NetflixSession(object):
                              .format(response_type))
             else:
                 range_end = range_start + request_size
-                break
 
         if perpetual_range_start > 0:
             previous_start = perpetual_range_start - (response_size * number_of_requests)
