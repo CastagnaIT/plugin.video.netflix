@@ -35,7 +35,7 @@ def migrate_library_to_db():
         if videoid.mediatype == common.VideoId.MOVIE:
             library.add_to_library(videoid, item['file'], False, False)
 
-        elif videoid.mediatype != common.VideoId.SHOW:
+        if videoid.mediatype != common.VideoId.SHOW:
             continue
 
         for season_key in item.keys():
