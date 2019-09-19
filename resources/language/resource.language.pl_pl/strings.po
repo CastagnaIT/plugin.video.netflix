@@ -853,17 +853,17 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "Sprawdź czy to urządzenie jest głównym w autoaktulizacji"
 
 msgctxt "#30209"
-msgid "This device now handle the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of shared-library"
 msgstr "To urządzenie obsługuje teraz automatyczne aktualizacje biblioteki współużytkowanej"
 
 msgctxt "#30210"
-msgid "This device handle the auto-updates of shared-library"
+msgid "This device handles the auto-updates of shared-library"
 msgstr "To urządzenie obsługuje automatyczne aktualizacje biblioteki współużytkowanej"
 
 msgctxt "#30211"
-msgid "Another device handle the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of shared-library"
 msgstr "Inne urządzenie obsługuje automatyczne aktualizacje biblioteki współużytkowanej"
 
 msgctxt "#30212"
-msgid "There is no device that handle the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of shared-library"
 msgstr "Nie ma urządzenia obsługującego automatyczne aktualizacje biblioteki współużytkowanej"
