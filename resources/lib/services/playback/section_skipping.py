@@ -69,11 +69,9 @@ class SectionSkipper(PlaybackActionManager):
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         seconds = dialog_duration % 60
-        minutes = (dialog_duration - seconds) / 60
         ui.show_modal_dialog(ui.xmldialogs.Skip,
                              "plugin-video-netflix-Skip.xml",
                              g.ADDON.getAddonInfo('path'),
-                             minutes=minutes,
                              seconds=seconds,
                              skip_to=self.markers[section]['end'],
                              label=common.get_local_string(

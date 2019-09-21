@@ -34,15 +34,15 @@ def get_offset_markers(metadata):
 
 def get_section_markers(metadata):
     """Extract section start and end markers from metadata if they exist"""
-    if not metadata.get('creditMarkers'):
+    if not metadata.get('skipMarkers'):
         return {}
 
     return {
         section: {
-            'start': int(metadata['creditMarkers'][section]['start'] /
+            'start': int(metadata['skipMarkers'][section]['start'] /
                          1000),
-            'end': int(metadata['creditMarkers'][section]['end'] / 1000)
+            'end': int(metadata['skipMarkers'][section]['end'] / 1000)
         }
         for section in SKIPPABLE_SECTIONS
-        if any(i for i in metadata['creditMarkers'][section].values())
+        if any(i for i in metadata['skipMarkers'][section].values())
     }

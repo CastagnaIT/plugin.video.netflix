@@ -15,7 +15,7 @@ ACTION_NOOP = 999
 
 OS_MACHINE = machine()
 
-CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{:02d}:{:02d},silent)'
+CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{:02d},silent)'
 
 
 def show_modal_dialog(dlg_class, xml, path, **kwargs):
@@ -25,10 +25,9 @@ def show_modal_dialog(dlg_class, xml, path, **kwargs):
     close after the specified time.
     """
     dlg = dlg_class(xml, path, 'default', '1080i', **kwargs)
-    minutes = kwargs.get('minutes', 0)
     seconds = kwargs.get('seconds', 0)
-    if minutes > 0 or seconds > 0:
-        xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(minutes, seconds))
+    if seconds > 0:
+        xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(seconds))
     dlg.doModal()
 
 
