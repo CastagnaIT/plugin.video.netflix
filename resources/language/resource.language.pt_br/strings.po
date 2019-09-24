@@ -462,7 +462,7 @@ msgstr "Serviços em background inicializados"
 
 msgctxt "#30111"
 msgid "There is no contents"
-msgstr "Sem conteúdos"		 
+msgstr "Sem conteúdos" 
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
@@ -646,7 +646,7 @@ msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\nO dispositivo deve
 
 msgctxt "#30157"
 msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O paineil de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado" 
+msgstr "O painel de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado" 
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -794,7 +794,7 @@ msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o ras
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr ""
+msgstr "Limite a resolução do stream de vídeo para"
 
 msgctxt "#30195"
 msgid "Export new episodes"
