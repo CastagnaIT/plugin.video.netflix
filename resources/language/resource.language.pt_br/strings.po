@@ -646,7 +646,7 @@ msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\nO dispositivo deve
 
 msgctxt "#30157"
 msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O painel de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado" 
+msgstr "O painel de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
