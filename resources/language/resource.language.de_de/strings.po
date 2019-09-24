@@ -646,11 +646,11 @@ msgstr "Zuletzt benutzt"
 
 msgctxt "#30163"
 msgid "Audio description"
-msgstr "Hörfilme"
+msgstr "Audiobeschreibung"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr ""
+msgstr "Durchsuche Inhalte mit Audiobeschreibung"
 
 msgctxt "#30165"
 msgid "View for my list"
