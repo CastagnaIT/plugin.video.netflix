@@ -466,7 +466,7 @@ msgstr "Sem conteúdos"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr ""
+msgstr "Precisa estar logado para usar Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
@@ -642,11 +642,11 @@ msgstr "Tens uma conta Netflix Premium?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\n\O dispositivo deve ter:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k como HDCP 2.2"
+msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\nO dispositivo deve ter:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k como HDCP 2.2"
 
 msgctxt "#30157"
 msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O paineil de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
+msgstr "O painel de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -791,3 +791,79 @@ msgstr "\r\nEsses arquivos são usados ​​pelos raspadores de informações p
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
 msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o raspador 'Local Information Only')"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Limite a resolução do stream de vídeo para"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Exportar novos episódios"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Excluir da auto atualização"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Incluir na atualiazação automática"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Exportando novos episódios"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Compartilhar coleção (Kodi MySQL é requerido)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "Usar banco de dados da coleção compartilhada MYSQL"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Usuário"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "Conexão para o banco de dados do MySQL efetuado com sucesso"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "IP do Host"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Porta"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Testar conexão do banco de dados"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "ERRO: O banco de dados MySQL não está acessível - o banco de dados local será usado"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Definir este dispositivo como gerenciador principal das atualizações automáticas"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Verificar se este dispositivo é o gerenciador principal das atualizações automáticas"
+
+msgctxt "#30209"
+msgid "This device now handles the auto-updates of shared-library"
+msgstr "Este dispositivo agora lida com as atualizações automáticas da biblioteca compartilhada"
+
+msgctxt "#30210"
+msgid "This device handles the auto-updates of shared-library"
+msgstr "Este dispositivo lida com as atualizações automáticas da biblioteca compartilhada"
+
+msgctxt "#30211"
+msgid "Another device handles the auto-updates of shared-library"
+msgstr "Outro dispositivo lida com as atualizações automáticas da biblioteca compartilhada"
+
+msgctxt "#30212"
+msgid "There is no device that handles the auto-updates of shared-library"
+msgstr "Nenhum dispositivo lida com as atualizações automáticas da biblioteca compartilhada"
