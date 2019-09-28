@@ -37,6 +37,8 @@ def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     common.debug('Initialize addon upgrade operations, from version {} to {})'
                  .format(previous_ver, current_ver))
+    # Clear cache (prevents problems when netflix change data structures)
+    g.CACHE.invalidate(True)
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
 
