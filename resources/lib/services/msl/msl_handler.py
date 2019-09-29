@@ -18,11 +18,17 @@ import xbmcaddon
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+import resources.lib.cache as cache
 
 from .request_builder import MSLRequestBuilder
 from .profiles import enabled_profiles
 from .converter import convert_to_dash
 from .exceptions import MSLError
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
@@ -132,6 +138,17 @@ class MSLHandler(object):
 
     @common.time_execution(immediate=True)
     def _load_manifest(self, viewable_id, esn):
+        cache_identifier = esn + '_' + unicode(viewable_id)
+        try:
+            # The manifest must be requested once and maintained for its entire duration
+            manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
+            common.debug('Manifest for {} with ESN {} obtained from the cache'
+                         .format(viewable_id, esn))
+            # Save the manifest to disk as reference
+            common.save_file('manifest.json', json.dumps(manifest))
+            return manifest
+        except cache.CacheMiss:
+            pass
         common.debug('Requesting manifest for {} with ESN {}'
                      .format(viewable_id, esn))
         profiles = enabled_profiles()
@@ -197,7 +214,11 @@ class MSLHandler(object):
 
         manifest = self._chunked_request(ENDPOINTS['manifest'],
                                          manifest_request_data, esn)
+        # Save the manifest to disk as reference
         common.save_file('manifest.json', json.dumps(manifest))
+        # Save the manifest to the cache to retrieve it during its validity
+        expiration = int(manifest['expiration'] / 1000)
+        g.CACHE.add(cache.CACHE_MANIFESTS, cache_identifier, manifest, eol=expiration)
         if 'result' in manifest:
             return manifest['result']
         return manifest
