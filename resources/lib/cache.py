@@ -155,14 +155,15 @@ class Cache(object):
         timestamp = int(time())
         return str(BUCKET_LOCKED.format(self.plugin_handle, timestamp))
 
-    def get(self, bucket, identifier):
+    def get(self, bucket, identifier, use_disk_fallback=True):
         """Retrieve an item from a cache bucket"""
         try:
             cache_entry = self._get_bucket(bucket)[identifier]
         except KeyError:
+            if not use_disk_fallback:
+                raise CacheMiss()
             cache_entry = self._get_from_disk(bucket, identifier)
             self.add(bucket, identifier, cache_entry['content'])
-        # Do not verify TTL on cache library, prevents the loss of exported objects
         self.verify_ttl(bucket, identifier, cache_entry)
         return cache_entry['content']
 
