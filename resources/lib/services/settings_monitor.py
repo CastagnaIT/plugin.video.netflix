@@ -11,6 +11,11 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR)
 from resources.lib.globals import g
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 class SettingsMonitor(xbmc.Monitor):
     def __init__(self):
@@ -23,6 +28,7 @@ class SettingsMonitor(xbmc.Monitor):
     def _on_change(self):
         common.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
+        clean_cache = False
 
         use_mysql = g.ADDON.getSettingBool('use_mysql')
         use_mysql_old = g.LOCAL_DB.get_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
@@ -47,7 +53,6 @@ class SettingsMonitor(xbmc.Monitor):
             common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
 
         # Check menu settings changes
-        sort_order_type_changed = False
         for menu_id, menu_data in g.MAIN_MENU_ITEMS.iteritems():
             # Check settings changes in show menu
             show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
@@ -71,10 +76,24 @@ class SettingsMonitor(xbmc.Monitor):
                     g.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
                                          menu_sortorder_new_setting,
                                          TABLE_SETTINGS_MONITOR)
-                    sort_order_type_changed = True
+                    # We remove the cache to allow get the new results in the chosen order
+                    clean_cache = True
 
-        if sort_order_type_changed:
-            # We remove the cache to allow get the new results in the chosen order
+        # Check changes on content profiles
+        # This is necessary because it is possible that some manifests
+        # could be cached using the previous settings (see msl_handler - load_manifest)
+        menu_keys = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
+                     'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
+                     'disable_webvtt_subtitle']
+        collect_int = ''
+        for menu_key in menu_keys:
+            collect_int += unicode(int(g.ADDON.getSettingBool(menu_key)))
+        collect_int_old = g.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
+        if collect_int != collect_int_old:
+            g.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
+            clean_cache = True
+
+        if clean_cache:
             common.run_plugin('plugin://plugin.video.netflix/action/purge_cache/'
                               '?on_disk=True&no_notification=True')
 

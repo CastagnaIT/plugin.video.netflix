@@ -29,9 +29,10 @@ CACHE_SUPPLEMENTAL = 'cache_supplemental'
 CACHE_METADATA = 'cache_metadata'
 CACHE_INFOLABELS = 'cache_infolabels'
 CACHE_ARTINFO = 'cache_artinfo'
+CACHE_MANIFESTS = 'cache_manifests'
 
 BUCKET_NAMES = [CACHE_COMMON, CACHE_GENRES, CACHE_SUPPLEMENTAL, CACHE_METADATA,
-                CACHE_INFOLABELS, CACHE_ARTINFO]
+                CACHE_INFOLABELS, CACHE_ARTINFO, CACHE_MANIFESTS]
 
 BUCKET_LOCKED = 'LOCKED_BY_{:04d}_AT_{}'
 
@@ -154,21 +155,23 @@ class Cache(object):
         timestamp = int(time())
         return str(BUCKET_LOCKED.format(self.plugin_handle, timestamp))
 
-    def get(self, bucket, identifier):
+    def get(self, bucket, identifier, use_disk_fallback=True):
         """Retrieve an item from a cache bucket"""
         try:
             cache_entry = self._get_bucket(bucket)[identifier]
         except KeyError:
+            if not use_disk_fallback:
+                raise CacheMiss()
             cache_entry = self._get_from_disk(bucket, identifier)
             self.add(bucket, identifier, cache_entry['content'])
-        # Do not verify TTL on cache library, prevents the loss of exported objects
         self.verify_ttl(bucket, identifier, cache_entry)
         return cache_entry['content']
 
-    def add(self, bucket, identifier, content, ttl=None, to_disk=False):
+    def add(self, bucket, identifier, content, ttl=None, to_disk=False, eol=None):
         """Add an item to a cache bucket"""
         # pylint: disable=too-many-arguments
-        eol = int(time() + (ttl if ttl else self.ttl))
+        if not eol:
+            eol = int(time() + (ttl if ttl else self.ttl))
         # self.common.debug('Adding {} to {} (valid until {})'
         #              .format(identifier, bucket, eol))
         cache_entry = {'eol': eol, 'content': content}

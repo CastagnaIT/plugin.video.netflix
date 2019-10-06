@@ -104,6 +104,7 @@
   </category>
   <category label="30023"><!--Expert-->
     <setting label="30115" type="lsep"/>
+    <!--If something is changed in this group remember to make the changes also on settings_monitor.py "content profiles"-->
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
     <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
