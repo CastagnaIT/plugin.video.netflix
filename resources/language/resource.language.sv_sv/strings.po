@@ -132,7 +132,7 @@ msgid "Playback error"
 msgstr "Uppspelningsfel"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
+msgid "Missing InputStream addon"
 msgstr "Saknar tillägget InputStream"
 
 msgctxt "#30030"
@@ -152,5 +152,9 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (ändra automatiskt, kan ändras manuellt)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
+msgid "InputStream Adaptive settings..."
 msgstr "Inställningar för tillägget InputStream..."
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "Inställningar för tillägget InputStream Helper..."
