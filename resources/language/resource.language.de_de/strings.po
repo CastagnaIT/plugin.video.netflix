@@ -153,8 +153,8 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (änderbar, wird autom. gesetzt)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
-msgstr "Inputstream Addon Einstellungen..."
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive Einstellungen..."
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
@@ -621,8 +621,8 @@ msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netfl
 msgstr "Unterstützt Ihr Gerät den 4K-Standard?\r\nGeräte-Anforderung:\r\nNetflix-Zertifiziert, Unterstützung für Widevine Sicherheitslevel L1 und ein 4K-Bildschirm mit Unterstützung von HDCP 2.2"
 
 msgctxt "#30157"
-msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Die Einstellungen des Inputstream-Addons werden jetzt geöffnet. Ändern Sie die Einstellung \"HDCP-Status überschreiben\" auf EIN"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Die Einstellungen des Inputstream Adaptive-Addons werden jetzt geöffnet. Ändern Sie die Einstellung \"HDCP-Status überschreiben\" auf EIN"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -843,3 +843,7 @@ msgstr "Ein anderes Gerät verwaltet das Autoupdate der Datenbank"
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
 msgstr "Es ist kein Gerät definiert für die Verwaltung des Autoupdates der Datenbank"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper Einstellungen..."

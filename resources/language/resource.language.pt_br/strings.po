@@ -133,8 +133,8 @@ msgid "Playback error"
 msgstr "Erro de reprodução"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
-msgstr "Addon Inputstream ausente"
+msgid "Missing InputStream addon"
+msgstr "Addon InputStream ausente"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -157,8 +157,8 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (definido automaticamente, pode ser alterado manualmente)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
-msgstr "Ajustes do addon Inputstream"
+msgid "InputStream Adaptive settings..."
+msgstr "Ajustes do addon InputStream"
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
@@ -201,8 +201,8 @@ msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- PÁGINA SEGUINTE --[/B][/COLOR]"
 
 msgctxt "#30046"
-msgid "Inputstream addon is not enabled"
-msgstr "O addon Inputstream não está ativo"
+msgid "InputStream addon is not enabled"
+msgstr "O addon InputStream não está ativo"
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -645,8 +645,8 @@ msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netfl
 msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\nO dispositivo deve ter:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k como HDCP 2.2"
 
 msgctxt "#30157"
-msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O painel de ajustes do Inputstream será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "O painel de ajustes do Inputstream Adaptive será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -867,3 +867,7 @@ msgstr "Outro dispositivo lida com as atualizações automáticas da biblioteca 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
 msgstr "Nenhum dispositivo lida com as atualizações automáticas da biblioteca compartilhada"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "Ajustes do addon InputStream Helper..."

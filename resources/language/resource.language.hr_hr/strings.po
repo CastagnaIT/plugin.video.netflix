@@ -133,7 +133,7 @@ msgid "Playback error"
 msgstr "Greška reprodukcije"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
+msgid "Missing InputStream addon"
 msgstr "Nedostaje dodatak ulaznog strujanja"
 
 msgctxt "#30030"
@@ -153,7 +153,7 @@ msgid "ESN (set automatically, can be changed manually)"
 msgstr "ESN (postavi automatski, može se promijeniti ručno)"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
+msgid "InputStream Adaptive settings..."
 msgstr "Postavke dodatka ulaznog strujanja..."
 
 msgctxt "#30036"
@@ -197,7 +197,7 @@ msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- SLJEDEĆA STRANICA --[/B][/COLOR]"
 
 msgctxt "#30046"
-msgid "Inputstream addon is not enabled"
+msgid "InputStream addon is not enabled"
 msgstr "Dodatak ulaznog strujanja nije omogućen"
 
 msgctxt "#30047"
@@ -263,3 +263,7 @@ msgstr "Nadopuni unutar videoteke"
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
 msgstr "Omogući/Onemogući pin sadržaja za odrasle. Aktivan:"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr ""

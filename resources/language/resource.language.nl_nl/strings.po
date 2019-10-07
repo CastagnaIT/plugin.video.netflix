@@ -133,8 +133,8 @@ msgid "Playback error"
 msgstr "Afspeelfout"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
-msgstr "Inputstream niet gevonden"
+msgid "Missing InputStream addon"
+msgstr "InputStream niet gevonden"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -645,7 +645,7 @@ msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netfl
 msgstr "Ondersteunt jouw toestel 4K?\nDan moet je toestel:\nNetflix gecertifieerd zijn, Widevine Security level L1 ondersteunen én een 4K display met HDCP 2.2 hebben"
 
 msgctxt "#30157"
-msgid "The InputStream settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
 msgstr "The InputStream Adaptive instellingen worden geopend zodat je optie \"Override HDCP status\" kan inschakelen"
 
 msgctxt "#30158"
@@ -867,3 +867,7 @@ msgstr "Een ander device handelt de automatische updates van de gedeelde-bibliot
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
 msgstr "Er is geen device dat automatische updates van de gedeelde-bibliotheek kan afhandelen"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper instellingen…"
