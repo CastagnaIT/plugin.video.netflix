@@ -250,7 +250,8 @@ class NetflixSession(object):
     @common.addonsignals_return_call
     @needs_login
     @common.time_execution(immediate=True)
-    def perpetual_path_request(self, paths, length_params, perpetual_range_start=None):
+    def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
+                               no_limit_req=False):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
         larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
@@ -268,7 +269,7 @@ class NetflixSession(object):
         if context_name == 'genres':
             response_size += 1
 
-        number_of_requests = 2
+        number_of_requests = 100 if no_limit_req else 2
         perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
         range_start = perpetual_range_start
         range_end = range_start + request_size
