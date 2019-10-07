@@ -256,7 +256,8 @@ def custom_video_list_basicinfo(list_id):
     callargs = {
         'paths': paths,
         'length_params': ['stdlist', ['lists', list_id]],
-        'perpetual_range_start': None
+        'perpetual_range_start': None,
+        'no_limit_req': True
     }
     # When the list is empty the server returns an empty response
     path_response = common.make_call('perpetual_path_request', callargs)
