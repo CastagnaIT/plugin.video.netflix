@@ -1677,7 +1677,7 @@ class NetflixSession(object):
             Response from a POST call made with Requests
         """
         headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*',
         }
 
