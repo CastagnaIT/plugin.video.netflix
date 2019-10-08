@@ -22,11 +22,11 @@ msgstr ""
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Addon para Netflix"
+msgstr "Addon de servicios VBD de Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Algunas partes de este addon puede que sean ilegales en tu país de residencia, por favor, consulta con tus autoridades locales antes de instalarlo."
+msgstr "Algunas partes de este addon puede que sean ilegales en tu país de residencia - por favor, consulta con tus leyes locales antes de instalarlo."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -66,7 +66,7 @@ msgstr "Por favor, comprueba que el e-mail y la contraseña son correctos"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr ""
+msgstr "Listas de todos tipos"
 
 msgctxt "#30011"
 msgid "Search"
@@ -94,7 +94,7 @@ msgstr "Exportar a biblioteca"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "Valorar en Netflix"
+msgstr "Clasificar en Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
@@ -122,7 +122,7 @@ msgstr "Biblioteca"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "Activar un directorio para la biblioteca personalizado"
+msgstr "Activar un carpeta para la biblioteca personalizada"
 
 msgctxt "#30027"
 msgid "Custom library path"
@@ -146,11 +146,11 @@ msgstr "Cambiar nombre de la biblioteca"
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr ""
+msgstr "Reastrando"
 
 msgctxt "#30034"
 msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (establecido automáticamente, pero se puede cambiar de forma manual)"
+msgstr "ESN (establecido automáticamente, se puede cambiar manualmente)"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -162,11 +162,11 @@ msgstr "Utilizar siempre el título original para exportar"
 
 msgctxt "#30037"
 msgid "Views"
-msgstr "Reproduciones"
+msgstr "Vistas"
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr ""
+msgstr "Activar vistas personalizadas"
 
 msgctxt "#30039"
 msgid "View for folders"
@@ -178,11 +178,11 @@ msgstr "Vista para las películas"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vista para los shows"
+msgstr "Vista para las series"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "Vista para la temporadas"
+msgstr "Vista para las temporadas"
 
 msgctxt "#30043"
 msgid "View for episodes"
@@ -214,7 +214,7 @@ msgstr "Actualizar base de datos"
 
 msgctxt "#30050"
 msgid "Update successful"
-msgstr "Actualización correcta"
+msgstr "Actualización exitoso"
 
 msgctxt "#30051"
 msgid "Request Error"
@@ -286,7 +286,7 @@ msgstr "diariamente"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "cualquier otro día"
+msgstr "cada dos días"
 
 msgctxt "#30069"
 msgid "every 5 days"
