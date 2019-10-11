@@ -2,13 +2,10 @@
 """Common base for crypto handlers"""
 from __future__ import absolute_import, division, unicode_literals
 
-import time
 import json
 import base64
 
 import resources.lib.common as common
-
-from .exceptions import MastertokenExpired
 
 
 class MSLBaseCrypto(object):
@@ -18,6 +15,27 @@ class MSLBaseCrypto(object):
     def __init__(self, msl_data=None):
         if msl_data:
             self._set_mastertoken(msl_data['tokens']['mastertoken'])
+
+    def compare_mastertoken(self, mastertoken):
+        """Check if the new mastertoken is different from current due to renew"""
+        if not self._mastertoken_is_newer_that(mastertoken):
+            common.debug('MSL mastertoken is changed due to renew')
+            self._set_mastertoken(mastertoken)
+            self._save_msl_data()
+
+    def _mastertoken_is_newer_that(self, mastertoken):
+        """Check if current mastertoken is newer than mastertoken specified"""
+        # Based on cadmium player sourcecode and ref. to [isNewerThan] in:
+        # https://github.com/Netflix/msl/blob/master/core/src/main/java/com/netflix/msl/tokens/MasterToken.java
+        new_tokendata = json.loads(
+            base64.standard_b64decode(mastertoken['tokendata']))
+        if new_tokendata['sequencenumber'] == self.sequence_number:
+            return new_tokendata['expiration'] > self.expiration
+        if new_tokendata['sequencenumber'] > self.sequence_number:
+            cut_off = new_tokendata['sequencenumber'] - pow(2, 53) + 127
+            return self.sequence_number >= cut_off
+        cut_off = self.sequence_number - pow(2, 53) + 127
+        return new_tokendata['sequencenumber'] < cut_off
 
     def parse_key_response(self, headerdata, save_to_disk):
         """Parse a key response and update crypto keys"""
@@ -30,13 +48,11 @@ class MSLBaseCrypto(object):
         """Set the mastertoken and check it for validity"""
         tokendata = json.loads(
             base64.standard_b64decode(mastertoken['tokendata']))
-        remaining_ttl = (int(tokendata['expiration']) - time.time())
-        if remaining_ttl / 60 / 60 >= 10:
-            self.mastertoken = mastertoken
-            self.sequence_number = tokendata.get('sequencenumber', 0)
-        else:
-            common.error('Mastertoken has expired')
-            raise MastertokenExpired
+        self.mastertoken = mastertoken
+        self.serial_number = tokendata['serialnumber']
+        self.sequence_number = tokendata.get('sequencenumber', 0)
+        self.renewal_window = tokendata['renewalwindow']
+        self.expiration = tokendata['expiration']
 
     def _save_msl_data(self):
         """Save crypto keys and mastertoken to disk"""

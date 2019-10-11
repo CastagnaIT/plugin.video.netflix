@@ -64,21 +64,39 @@ class MSLHandler(object):
     def __init__(self):
         # pylint: disable=broad-except
         try:
+            self.request_builder = None
             msl_data = json.loads(common.load_file('msl_data.json'))
             self.request_builder = MSLRequestBuilder(msl_data)
             common.debug('Loaded MSL data from disk')
+        except ValueError:
+            self.check_mastertoken_validity()
         except Exception:
             import traceback
             common.debug(traceback.format_exc())
-            common.debug('Stored MSL data expired or not available')
-            self.request_builder = MSLRequestBuilder()
-            if self.perform_key_handshake():
-                self.request_builder = MSLRequestBuilder(json.loads(
-                    common.load_file('msl_data.json')))
-                common.debug('Loaded renewed MSL data from disk')
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
+
+    def check_mastertoken_validity(self):
+        """Return the mastertoken validity and executes a new key handshake when necessary"""
+        if self.request_builder:
+            time_now = time.time()
+            renewable = self.request_builder.crypto.renewal_window < time_now
+            expired = self.request_builder.crypto.expiration <= time_now
+        else:
+            renewable = False
+            expired = True
+        if expired:
+            if not self.request_builder:
+                common.debug('Stored MSL data not available, a new key handshake will be performed')
+                self.request_builder = MSLRequestBuilder()
+            else:
+                common.debug('Stored MSL data is expired, a new key handshake will be performed')
+            if self.perform_key_handshake():
+                self.request_builder = MSLRequestBuilder(json.loads(
+                    common.load_file('msl_data.json')))
+            return self.check_mastertoken_validity()
+        return {'renewable': renewable, 'expired': expired}
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -262,8 +280,11 @@ class MSLHandler(object):
     @common.time_execution(immediate=True)
     def _chunked_request(self, endpoint, request_data, esn):
         """Do a POST request and process the chunked response"""
+        # Get and check mastertoken validity
+        mt_validity = self.check_mastertoken_validity()
         chunked_response = self._process_chunked_response(
-            self._post(endpoint, self.request_builder.msl_request(request_data, esn)))
+            self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
+            mt_validity['renewable'])
         return chunked_response['result']
 
     @common.time_execution(immediate=True)
@@ -278,8 +299,9 @@ class MSLHandler(object):
         response.raise_for_status()
         return response
 
+    # pylint: disable=unused-argument
     @common.time_execution(immediate=True)
-    def _process_chunked_response(self, response):
+    def _process_chunked_response(self, response, mt_renewable):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
         try:
@@ -290,6 +312,10 @@ class MSLHandler(object):
             # json() failed so parse and decrypt the chunked response
             common.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
+            # TODO: sending for the renewal request is not yet implemented
+            # if mt_renewable:
+            #     # Check if mastertoken is renewed
+            #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
             decrypted_response = _decrypt_chunks(response['payloads'],
                                                  self.request_builder.crypto)
             return _raise_if_error(decrypted_response)

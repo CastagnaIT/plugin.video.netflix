@@ -11,7 +11,6 @@ import xbmcdrm
 import resources.lib.common as common
 
 from .base_crypto import MSLBaseCrypto
-from .exceptions import MastertokenExpired
 from .exceptions import MSLError
 
 
@@ -36,9 +35,6 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             self.hmac_key_id = base64.standard_b64decode(
                 msl_data['hmac_key_id'])
             self.crypto_session.RestoreKeys(self.keyset_id)
-
-        except MastertokenExpired as me:
-            raise me
         except Exception:
             self.keyset_id = None
             self.key_id = None
