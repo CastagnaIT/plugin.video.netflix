@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.15.3" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.15.4" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -41,6 +41,15 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.15.4 (2019-10-11)
+-Added InputStream Helper settings in settings menu
+-Fixed add/remove to mylist on huge lists
+-Fixed expired mastertoken key issue
+-Fixed skipping sections due to netflix changes
+-Manifests now are requested only once
+-Updated pt-br, de, es translations
+-Minor improvements
+
 v0.15.3 (2019-09-19)
 -Initial conversion to python 3
 -Initial integration tests
