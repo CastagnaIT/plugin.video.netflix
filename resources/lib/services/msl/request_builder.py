@@ -4,8 +4,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import base64
-import subprocess
 import random
+import subprocess
+import time
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -71,7 +72,6 @@ class MSLRequestBuilder(object):
         header_data = {
             'sender': esn,
             'handshake': is_handshake,
-            'nonreplayable': False,
             'capabilities': {
                 'languages': [g.LOCAL_DB.get_value('locale_id')],
                 'compressionalgos': [compression] if compression else []
@@ -79,7 +79,7 @@ class MSLRequestBuilder(object):
             'recipient': 'Netflix',
             'renewable': True,
             'messageid': self.current_message_id,
-            'timestamp': 1467733923
+            'timestamp': int(time.time())
         }
 
         # If this is a keyrequest act different then other requests
