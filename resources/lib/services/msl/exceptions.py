@@ -13,7 +13,3 @@ class LicenseError(MSLError):
 
 class ManifestError(MSLError):
     pass
-
-
-class MastertokenExpired(MSLError):
-    pass

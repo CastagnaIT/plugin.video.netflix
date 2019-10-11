@@ -8,8 +8,6 @@ import base64
 
 import resources.lib.common as common
 
-from .exceptions import MastertokenExpired
-
 
 class MSLBaseCrypto(object):
     """Common base class for MSL crypto operations.
@@ -30,13 +28,11 @@ class MSLBaseCrypto(object):
         """Set the mastertoken and check it for validity"""
         tokendata = json.loads(
             base64.standard_b64decode(mastertoken['tokendata']))
-        remaining_ttl = (int(tokendata['expiration']) - time.time())
-        if remaining_ttl / 60 / 60 >= 10:
-            self.mastertoken = mastertoken
-            self.sequence_number = tokendata.get('sequencenumber', 0)
-        else:
-            common.error('Mastertoken has expired')
-            raise MastertokenExpired
+        self.mastertoken = mastertoken
+        self.serial_number = tokendata['serialnumber']
+        self.sequence_number = tokendata.get('sequencenumber', 0)
+        self.renewal_window = tokendata['renewalwindow']
+        self.expiration = tokendata['expiration']
 
     def _save_msl_data(self):
         """Save crypto keys and mastertoken to disk"""
