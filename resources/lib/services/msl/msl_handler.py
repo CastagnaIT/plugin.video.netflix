@@ -283,7 +283,8 @@ class MSLHandler(object):
         # Get and check mastertoken validity
         mt_validity = self.check_mastertoken_validity()
         chunked_response = self._process_chunked_response(
-            self._post(endpoint, self.request_builder.msl_request(request_data, esn)))
+            self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
+            mt_validity['renewable'])
         return chunked_response['result']
 
     @common.time_execution(immediate=True)
@@ -298,8 +299,9 @@ class MSLHandler(object):
         response.raise_for_status()
         return response
 
+    # pylint: disable=unused-argument
     @common.time_execution(immediate=True)
-    def _process_chunked_response(self, response):
+    def _process_chunked_response(self, response, mt_renewable):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
         try:
@@ -310,6 +312,10 @@ class MSLHandler(object):
             # json() failed so parse and decrypt the chunked response
             common.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
+            # TODO: sending for the renewal request is not yet implemented
+            # if mt_renewable:
+            #     # Check if mastertoken is renewed
+            #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
             decrypted_response = _decrypt_chunks(response['payloads'],
                                                  self.request_builder.crypto)
             return _raise_if_error(decrypted_response)
