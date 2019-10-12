@@ -93,7 +93,8 @@ class NetflixSession(object):
         return urlsafe_b64encode(
             common.get_credentials().get('email', 'NoMail'))
 
-    def update_session_data(self, old_esn=g.get_esn()):
+    def update_session_data(self, old_esn=None):
+        old_esn = old_esn or g.get_esn()
         self.session.headers.update(
             {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
         cookies.save(self.account_hash, self.session.cookies)
