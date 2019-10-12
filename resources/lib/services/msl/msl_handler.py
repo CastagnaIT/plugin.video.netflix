@@ -63,13 +63,17 @@ class MSLHandler(object):
 
     def __init__(self):
         # pylint: disable=broad-except
+        self.request_builder = None
         try:
-            self.request_builder = None
             msl_data = json.loads(common.load_file('msl_data.json'))
-            self.request_builder = MSLRequestBuilder(msl_data)
             common.debug('Loaded MSL data from disk')
-        except ValueError:
-            self.check_mastertoken_validity()
+        except Exception:
+            msl_data = None
+        try:
+            self.request_builder = MSLRequestBuilder(msl_data)
+            # Addon just installed, the service starts but there is no esn
+            if g.get_esn():
+                self.check_mastertoken_validity()
         except Exception:
             import traceback
             common.debug(traceback.format_exc())
@@ -79,7 +83,7 @@ class MSLHandler(object):
 
     def check_mastertoken_validity(self):
         """Return the mastertoken validity and executes a new key handshake when necessary"""
-        if self.request_builder:
+        if self.request_builder.crypto.mastertoken:
             time_now = time.time()
             renewable = self.request_builder.crypto.renewal_window < time_now
             expired = self.request_builder.crypto.expiration <= time_now
@@ -87,7 +91,7 @@ class MSLHandler(object):
             renewable = False
             expired = True
         if expired:
-            if not self.request_builder:
+            if not self.request_builder.crypto.mastertoken:
                 common.debug('Stored MSL data not available, a new key handshake will be performed')
                 self.request_builder = MSLRequestBuilder()
             else:
