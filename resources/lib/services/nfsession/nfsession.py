@@ -43,6 +43,8 @@ URLS = {
 # List of all static endpoints for HTML/JSON POST/GET requests
 # How many entries of a list will be fetched with one path request
 
+LOGIN_COOKIES = ['nfvdid', 'SecureNetflixId', 'NetflixId']
+
 
 def needs_login(func):
     """
@@ -74,6 +76,7 @@ class NetflixSession(object):
         self.slots = [
             self.login,
             self.logout,
+            self.update_profiles_data,
             self.activate_profile,
             self.path_request,
             self.perpetual_path_request,
@@ -95,10 +98,13 @@ class NetflixSession(object):
 
     def update_session_data(self, old_esn=None):
         old_esn = old_esn or g.get_esn()
-        self.session.headers.update(
-            {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
+        self.set_session_header_data()
         cookies.save(self.account_hash, self.session.cookies)
         _update_esn(old_esn)
+
+    def set_session_header_data(self):
+        self.session.headers.update(
+            {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
 
     @property
     def auth_url(self):
@@ -128,6 +134,8 @@ class NetflixSession(object):
             common.get_credentials()
             if not self._is_logged_in():
                 self._login()
+            else:
+                self.set_session_header_data()
         except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
         except LoginFailedError:
@@ -136,14 +144,56 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
         """Check if the user is logged in and if so refresh session data"""
-        return self._load_cookies() and self._refresh_session_data()
+        return self._load_cookies() and \
+            self._verify_session_cookies() and \
+            self._verify_esn_existence()
+
+    @common.time_execution(immediate=True)
+    def _verify_session_cookies(self):
+        """Verify that the session cookies have not expired"""
+        # pylint: disable=broad-except
+        fallback_to_validate = False
+        if not self.session.cookies:
+            return False
+        for cookie_name in LOGIN_COOKIES:
+            if cookie_name not in self.session.cookies.keys():
+                common.error(
+                    'The cookie "{}" do not exist. It is not possible to check expiration. '
+                    'Fallback to old validate method.'
+                    .format(cookie_name))
+                fallback_to_validate = True
+                break
+            for cookie in list(self.session.cookies):
+                if cookie.name != cookie_name:
+                    continue
+                if cookie.expires <= time.time():
+                    common.info('Login is expired')
+                    return False
+        if fallback_to_validate:
+            # Old method, makes a request at every time an user change page on Kodi
+            # and try to re-extract all, working but slows down navigation.
+            # If we can get session data, cookies are still valid
+            try:
+                website.validate_session_data(self._get('profiles'))
+                self.update_session_data()
+            except Exception:
+                common.debug(traceback.format_exc())
+                common.info('Failed to validate session data, login is expired')
+                self.session.cookies.clear()
+                return False
+        return True
+
+    def _verify_esn_existence(self):
+        # if for any reason esn is no longer exist get one
+        if not g.get_esn():
+            return self._refresh_session_data()
+        return True
 
     @common.time_execution(immediate=True)
     def _refresh_session_data(self):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
         try:
-            # If we can get session data, cookies are still valid
             website.extract_session_data(self._get('profiles'))
             self.update_session_data()
         except Exception:
@@ -220,6 +270,12 @@ class NetflixSession(object):
         self._init_session()
         xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
         xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+
+    @common.addonsignals_return_call
+    @needs_login
+    @common.time_execution(immediate=True)
+    def update_profiles_data(self):
+        return self._refresh_session_data()
 
     @common.addonsignals_return_call
     @needs_login

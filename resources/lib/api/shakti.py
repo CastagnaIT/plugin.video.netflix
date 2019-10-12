@@ -30,12 +30,6 @@ def catch_api_errors(func):
     return api_error_wrapper
 
 
-def activate_profile(profile_id):
-    """Activate the profile with the given ID"""
-    if common.make_call('activate_profile', profile_id):
-        g.CACHE.invalidate()
-
-
 def logout():
     """Logout of the current account"""
     url = common.build_url(['root'], mode=g.MODE_DIRECTORY)
@@ -57,6 +51,17 @@ def login():
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
         raise MissingCredentialsError
+
+
+def update_profiles_data():
+    """Fetch profiles data from website"""
+    return common.make_call('update_profiles_data')
+
+
+def activate_profile(profile_id):
+    """Activate the profile with the given ID"""
+    if common.make_call('activate_profile', profile_id):
+        g.CACHE.invalidate()
 
 
 @common.time_execution(immediate=False)
