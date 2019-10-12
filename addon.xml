@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.15.4" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.15.5" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -41,6 +41,12 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.15.5 (2019-10-12)
+-Speedup loading lists due to the new login validity check
+-Cookies expires are now used to check a valid login
+-Fixed an issue introduced with previous version causing login error
+-Fixed double handshake request on first run
+
 v0.15.4 (2019-10-11)
 -Added InputStream Helper settings in settings menu
 -Fixed add/remove to mylist on huge lists
