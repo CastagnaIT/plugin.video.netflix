@@ -71,6 +71,17 @@ def extract_session_data(content):
         # raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
 
 
+def validate_session_data(content):
+    """
+    Try calling the parsers to extract the session data, to verify the login
+    """
+    common.debug('Validating session data...')
+    extract_json(content, 'falcorCache')
+    react_context = extract_json(content, 'reactContext')
+    extract_userdata(react_context, False)
+    extract_api_data(react_context, False)
+
+
 @common.time_execution(immediate=True)
 def extract_profiles(falkor_cache):
     """Extract profile information from Netflix website"""
@@ -122,7 +133,7 @@ def _get_avatar(falkor_cache, profile):
 
 
 @common.time_execution(immediate=True)
-def extract_userdata(react_context):
+def extract_userdata(react_context, debug_log=True):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
     user_data = {}
@@ -131,14 +142,14 @@ def extract_userdata(react_context):
         try:
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
-            if 'esn' not in path:
+            if 'esn' not in path and debug_log:
                 common.debug('Extracted {}'.format(extracted_value))
         except (AttributeError, KeyError):
             common.debug('Could not extract {}'.format(path))
     return user_data
 
 
-def extract_api_data(react_context):
+def extract_api_data(react_context, debug_log=True):
     """Extract api urls from the reactContext of the webpage"""
     common.debug('Extracting api urls from webpage')
     api_data = {}
@@ -147,7 +158,8 @@ def extract_api_data(react_context):
         try:
             extracted_value = {key: common.get_path(path, react_context)}
             api_data.update(extracted_value)
-            common.debug('Extracted {}'.format(extracted_value))
+            if debug_log:
+                common.debug('Extracted {}'.format(extracted_value))
         except (AttributeError, KeyError):
             common.debug('Could not extract {}'.format(path))
     return assert_valid_auth_url(api_data)

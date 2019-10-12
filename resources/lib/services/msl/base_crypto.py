@@ -15,6 +15,8 @@ class MSLBaseCrypto(object):
     def __init__(self, msl_data=None):
         if msl_data:
             self._set_mastertoken(msl_data['tokens']['mastertoken'])
+        else:
+            self.mastertoken = None
 
     def compare_mastertoken(self, mastertoken):
         """Check if the new mastertoken is different from current due to renew"""
