@@ -66,10 +66,14 @@ def load(account_hash):
         cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
     except KeyError:
         pass
-    common.debug('Loaded cookies:\n' + '\n'.join(
-        ['{} ({}m remaining TTL'.format(cookie.name,
-                                        ((cookie.expires or 0) - time() / 60))
-         for cookie in cookie_jar]))
+
+    debug_output = 'Loaded cookies:\n'
+    for cookie in cookie_jar:
+        remaining_ttl = ((cookie.expires or 0) - time() / 60) if cookie.expires else None
+        debug_output += '{} (expires {} - remaining TTL {})\n'.format(cookie.name,
+                                                                      cookie.expires,
+                                                                      remaining_ttl)
+    common.debug(debug_output)
     if expired(cookie_jar):
         raise CookiesExpiredError()
     return cookie_jar
