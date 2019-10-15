@@ -179,6 +179,7 @@ class NetflixSession(object):
                 website.validate_session_data(self._get('profiles'))
                 self.update_session_data()
             except Exception:
+                import traceback
                 common.debug(traceback.format_exc())
                 common.info('Failed to validate session data, login is expired')
                 self.session.cookies.clear()
@@ -202,11 +203,13 @@ class NetflixSession(object):
             # it is possible that cookies may not work anymore,
             # it should be due to updates in the website,
             # this can happen when opening the addon while executing update_profiles_data
+            import traceback
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired (WebsiteParsingError)')
             self.session.cookies.clear()
             return self._login()
         except Exception:
+            import traceback
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired (Exception)')
             self.session.cookies.clear()
