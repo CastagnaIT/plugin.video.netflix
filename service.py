@@ -24,6 +24,11 @@ import resources.lib.services as services
 import resources.lib.kodi.ui as ui
 import resources.lib.upgrade_controller as upgrade_ctrl
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 class NetflixService(object):
     """
@@ -104,8 +109,7 @@ class NetflixService(object):
             self.library_updater.on_tick()
         except Exception as exc:
             common.error(traceback.format_exc())
-            ui.show_notification(': '.join((exc.__class__.__name__,
-                                            exc.message)))
+            ui.show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 
 
