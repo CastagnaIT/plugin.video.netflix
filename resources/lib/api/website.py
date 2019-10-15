@@ -142,8 +142,8 @@ def extract_userdata(react_context, debug_log=True):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
     user_data = {}
-    for path in ([path_item for path_item in path.split('/')]
-                 for path in PAGE_ITEMS_INFO):
+
+    for path in (path.split('/') for path in PAGE_ITEMS_INFO):
         try:
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
@@ -159,7 +159,7 @@ def extract_api_data(react_context, debug_log=True):
     common.debug('Extracting api urls from webpage')
     api_data = {}
     for key, value in list(PAGE_ITEMS_API_URL.items()):
-        path = [path_item for path_item in value.split('/')]
+        path = value.split('/')
         try:
             extracted_value = {key: common.get_path(path, react_context)}
             api_data.update(extracted_value)
@@ -179,8 +179,8 @@ def assert_valid_auth_url(user_data):
 
 def validate_login(content):
     react_context = extract_json(content, 'reactContext')
-    path_code_list = [path_item for path_item in PAGE_ITEM_ERROR_CODE_LIST.split('\\')]
-    path_error_code = [path_item for path_item in PAGE_ITEM_ERROR_CODE.split('/')]
+    path_code_list = PAGE_ITEM_ERROR_CODE_LIST.split('\\')
+    path_error_code = PAGE_ITEM_ERROR_CODE.split('/')
     if common.check_path_exists(path_error_code, react_context):
         # If the path exists, a login error occurs
         try:
