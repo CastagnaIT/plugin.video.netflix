@@ -13,7 +13,7 @@ from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 import resources.lib.common as common
 
-from .infolabels import add_info, add_art
+from .infolabels import add_info, add_art, add_highlighted_title
 from .context_menu import generate_context_menu_items, generate_context_menu_mainmenu
 
 
@@ -182,7 +182,10 @@ def _create_videolist_item(video_list_id, video_list, menu_data, static_lists=Fa
             path = 'video_list_sorted'
         pathitems = [path, menu_data['path'][1], video_list_id]
     list_item = list_item_skeleton(video_list['displayName'])
-    add_info(video_list.id, list_item, video_list, video_list.data)
+    infos = add_info(video_list.id, list_item, video_list, video_list.data)
+    if not static_lists:
+        add_highlighted_title(list_item, video_list.id, infos)
+    list_item.setInfo('video', infos)
     if video_list.artitem:
         add_art(video_list.id, list_item, video_list.artitem)
     url = common.build_url(pathitems,
@@ -234,7 +237,7 @@ def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
 @common.time_execution(immediate=False)
 def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     """Build a video listing"""
-    directory_items = [_create_video_item(videoid_value, video, video_list)
+    directory_items = [_create_video_item(videoid_value, video, video_list, menu_data)
                        for videoid_value, video
                        in video_list.videos.iteritems()]
     # If genre_id exists add possibility to browse lolomos subgenres
@@ -272,14 +275,17 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
 
 
 @common.time_execution(immediate=False)
-def _create_video_item(videoid_value, video, video_list):
+def _create_video_item(videoid_value, video, video_list, menu_data):
     """Create a tuple that can be added to a Kodi directory that represents
     a video as listed in a videolist"""
     is_movie = video['summary']['type'] == 'movie'
     videoid = common.VideoId(
         **{('movieid' if is_movie else 'tvshowid'): videoid_value})
     list_item = list_item_skeleton(video['title'])
-    add_info(videoid, list_item, video, video_list.data)
+    infos = add_info(videoid, list_item, video, video_list.data)
+    if menu_data['path'][1] != 'myList':
+        add_highlighted_title(list_item, videoid, infos)
+    list_item.setInfo('video', infos)
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
                            mode=(g.MODE_PLAY
@@ -309,7 +315,7 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list):
     a season as listed in a season listing"""
     seasonid = tvshowid.derive_season(seasonid_value)
     list_item = list_item_skeleton(season['summary']['name'])
-    add_info(seasonid, list_item, season, season_list.data)
+    add_info(seasonid, list_item, season, season_list.data, True)
     add_art(tvshowid, list_item, season_list.tvshow)
     list_item.addContextMenuItems(generate_context_menu_items(seasonid))
     url = common.build_url(videoid=seasonid, mode=g.MODE_DIRECTORY)
@@ -337,7 +343,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     an episode as listed in an episode listing"""
     episodeid = seasonid.derive_episode(episodeid_value)
     list_item = list_item_skeleton(episode['title'])
-    add_info(episodeid, list_item, episode, episode_list.data)
+    add_info(episodeid, list_item, episode, episode_list.data, True)
     add_art(episodeid, list_item, episode)
     list_item.addContextMenuItems(generate_context_menu_items(episodeid))
     url = common.build_url(videoid=episodeid, mode=g.MODE_PLAY)
@@ -362,7 +368,7 @@ def _create_supplemental_item(videoid_value, video, video_list):
     videoid = common.VideoId(
         **{'supplementalid': videoid_value})
     list_item = list_item_skeleton(video['title'])
-    add_info(videoid, list_item, video, video_list.data)
+    add_info(videoid, list_item, video, video_list.data, True)
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
                            mode=g.MODE_PLAY)

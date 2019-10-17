@@ -13,6 +13,8 @@
     <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
   </category>
   <category label="30025"><!--Library-->
+    <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
+    <setting type="sep"/>
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
     <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
