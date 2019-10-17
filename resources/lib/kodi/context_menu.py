@@ -66,7 +66,7 @@ def generate_context_menu_items(videoid):
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] \
             and not g.LOCAL_DB.get_profile_config('isKids', False):
         list_action = ('remove_from_list'
-                       if videoid.value in api.mylist_items()
+                       if videoid in api.mylist_items()
                        else 'add_to_list')
         items.insert(0, _ctx_item(list_action, videoid))
 
