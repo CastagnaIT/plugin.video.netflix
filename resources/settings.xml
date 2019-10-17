@@ -123,7 +123,7 @@
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting label="30117" type="lsep"/>
-    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="10"/>
+    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="120"/>
     <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
     <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
     <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/?on_disk=True)"/>
