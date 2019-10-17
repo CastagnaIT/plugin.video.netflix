@@ -871,3 +871,11 @@ msgstr "Nessun dispositivo sta gestendo gli aggiornamenti automatici alla librer
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
 msgstr "Configurazione InputStream Helper..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Forza l'aggiornamento della mia lista"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Evidenzia con un colore i titoli inclusi nella mia lista"
