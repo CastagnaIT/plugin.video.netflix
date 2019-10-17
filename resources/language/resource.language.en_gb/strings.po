@@ -876,3 +876,6 @@ msgctxt "#30214"
 msgid "Force the update of my list"
 msgstr ""
 
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr ""

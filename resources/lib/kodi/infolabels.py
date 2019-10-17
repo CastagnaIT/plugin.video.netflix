@@ -2,11 +2,14 @@
 """Helper functions for setting infolabels of list items"""
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
-import resources.lib.common as common
-import resources.lib.cache as cache
+import re
+
 import resources.lib.api.paths as paths
+import resources.lib.api.shakti as api
+import resources.lib.cache as cache
+import resources.lib.common as common
 import resources.lib.kodi.library as library
+from resources.lib.globals import g
 
 QUALITIES = [
     {'codec': 'h264', 'width': '960', 'height': '540'},
@@ -20,7 +23,7 @@ JSONRPC_MAPPINGS = {
 }
 
 
-def add_info(videoid, list_item, item, raw_data):
+def add_info(videoid, list_item, item, raw_data, set_info=False):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
     # pylint: disable=too-many-locals
@@ -33,15 +36,19 @@ def add_info(videoid, list_item, item, raw_data):
         g.CACHE.add(cache.CACHE_INFOLABELS, videoid,
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
-    list_item.setInfo('video', infos)
     if videoid.mediatype == common.VideoId.EPISODE or \
        videoid.mediatype == common.VideoId.MOVIE or \
        videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         list_item.setProperty('isFolder', 'false')
         list_item.setProperty('IsPlayable', 'true')
+    else:
+        list_item.setProperty('isFolder', 'true')
+    if set_info:
+        list_item.setInfo('video', infos)
     for stream_type, quality_infos in quality_infos.iteritems():
         list_item.addStreamInfo(stream_type, quality_infos)
-    return infos
+    # Return a copy to not reflect next changes to the dictionary also to the cache
+    return infos.copy()
 
 
 def add_art(videoid, list_item, item, raw_data=None):
@@ -196,15 +203,13 @@ def _best_art(arts):
 def add_info_from_netflix(videoid, list_item):
     """Apply infolabels with info from Netflix API"""
     try:
-        infos = add_info(videoid, list_item, None, None)
+        infos = add_info(videoid, list_item, None, None, True)
         art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
     except (AttributeError, TypeError):
         common.info('Infolabels or art were not in cache, retrieving from API')
-        import resources.lib.api.shakti as api
         api_data = api.single_info(videoid)
-        infos = add_info(videoid, list_item, api_data['videos'][videoid.value],
-                         api_data)
+        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data, True)
         art = add_art(videoid, list_item, api_data['videos'][videoid.value])
     return infos, art
 
@@ -240,3 +245,32 @@ def _sanitize_infos(details):
             details[target] = details.pop(source)
     for prop in ['file', 'label', 'runtime']:
         details.pop(prop, None)
+
+
+def add_highlighted_title(list_item, videoid, infos):
+    """Highlight menu item title when the videoid is contained in my-list"""
+    highlight_index = g.ADDON.getSettingInt('highlight_mylist_titles')
+    if not highlight_index:
+        return
+    highlight_color = ['black', 'blue', 'red', 'green', 'white', 'yellow'][highlight_index]
+    remove_color = videoid not in api.mylist_items()
+    if list_item.getProperty('isFolder') == 'true':
+        updated_title = _colorize_title(list_item.getVideoInfoTag().getTitle().decode("utf-8"),
+                                        highlight_color,
+                                        remove_color)
+        list_item.setLabel(updated_title)
+        infos['title'] = updated_title
+    else:
+        # When menu item is not a folder 'label' is replaced by 'title' property of infoLabel
+        infos['title'] = _colorize_title(infos['title'], highlight_color, remove_color)
+
+
+def _colorize_title(text, color, remove_color=False):
+    matches = re.match(r'(\[COLOR\s.+\])(.*)(\[/COLOR\])', text)
+    if remove_color:
+        if matches:
+            return matches.groups()[1]
+    else:
+        if not matches:
+            return '[COLOR {}]{}[/COLOR]'.format(color, text)
+    return text
