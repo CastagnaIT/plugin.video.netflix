@@ -96,6 +96,13 @@ class AddonActionExecutor(object):
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 
+    def force_update_mylist(self, pathitems=None):
+        """Clear the cache of my list to force the update"""
+        # pylint: disable=unused-argument
+        from resources.lib.cache import CACHE_COMMON
+        g.CACHE.invalidate_entry(CACHE_COMMON, 'mylist')
+        g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+
 
 def _sync_library(videoid, operation):
     operation = {

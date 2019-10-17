@@ -48,7 +48,20 @@ CONTEXT_MENU_ACTIONS = {
     'trailer': {
         'label': common.get_local_string(30179),
         'url': ctx_item_url(['trailer'])},
+    'force_update_mylist': {
+        'label': common.get_local_string(30214),
+        'url': ctx_item_url(['force_update_mylist'])}
 }
+
+
+def generate_context_menu_mainmenu(menu_id):
+    """Generate context menu items for a listitem"""
+    items = []
+
+    if menu_id == 'myList':
+        items.append(_ctx_item('force_update_mylist', None))
+
+    return items
 
 
 def generate_context_menu_items(videoid):
@@ -66,7 +79,7 @@ def generate_context_menu_items(videoid):
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] \
             and not g.LOCAL_DB.get_profile_config('isKids', False):
         list_action = ('remove_from_list'
-                       if videoid.value in api.mylist_items()
+                       if videoid in api.mylist_items()
                        else 'add_to_list')
         items.insert(0, _ctx_item(list_action, videoid))
 
