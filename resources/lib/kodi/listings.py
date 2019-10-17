@@ -14,7 +14,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 
 from .infolabels import add_info, add_art
-from .context_menu import generate_context_menu_items
+from .context_menu import generate_context_menu_items, generate_context_menu_mainmenu
 
 
 def custom_viewmode(partial_setting_id):
@@ -105,10 +105,10 @@ def build_main_menu_listing(lolomo):
             if data['lolomo_known']:
                 for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'],
                                                                   break_on_first=True):
-                    directory_items.append(_create_videolist_item(list_id,
-                                                                  user_list,
-                                                                  data,
-                                                                  static_lists=True))
+                    videolist_item = _create_videolist_item(list_id, user_list, data,
+                                                            static_lists=True)
+                    videolist_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+                    directory_items.append(videolist_item)
                     menu_title = user_list['displayName']
             else:
                 if data['label_id']:
