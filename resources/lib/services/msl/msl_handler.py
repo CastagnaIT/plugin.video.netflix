@@ -234,8 +234,12 @@ class MSLHandler(object):
             'echo': ''
         }
 
+        # Get and check mastertoken validity
+        mt_validity = self.check_mastertoken_validity()
         manifest = self._chunked_request(ENDPOINTS['manifest'],
-                                         manifest_request_data, esn)
+                                         manifest_request_data,
+                                         esn,
+                                         mt_validity)
         # Save the manifest to disk as reference
         common.save_file('manifest.json', json.dumps(manifest))
         # Save the manifest to the cache to retrieve it during its validity
@@ -282,13 +286,11 @@ class MSLHandler(object):
         return convert_to_dash(manifest)
 
     @common.time_execution(immediate=True)
-    def _chunked_request(self, endpoint, request_data, esn):
+    def _chunked_request(self, endpoint, request_data, esn, mt_validity=None):
         """Do a POST request and process the chunked response"""
-        # Get and check mastertoken validity
-        mt_validity = self.check_mastertoken_validity()
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
-            mt_validity['renewable'])
+            mt_validity['renewable'] if mt_validity else None)
         return chunked_response['result']
 
     @common.time_execution(immediate=True)
@@ -335,7 +337,15 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
+    raise_error = False
+    # Catch a manifest/chunk error
     if any(key in decoded_response for key in ['error', 'errordata']):
+        raise_error = True
+    # Catch a license error
+    if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
+        if 'error' in decoded_response['result'][0]:
+            raise_error = True
+    if raise_error:
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
@@ -343,13 +353,20 @@ def _raise_if_error(decoded_response):
 
 
 def _get_error_details(decoded_response):
+    # Catch a chunk error
     if 'errordata' in decoded_response:
         return json.loads(
             base64.standard_b64decode(
                 decoded_response['errordata']))['errormsg']
+    # Catch a manifest error
     if 'error' in decoded_response:
         if decoded_response['error'].get('errorDisplayMessage'):
             return decoded_response['error']['errorDisplayMessage']
+    # Catch a license error
+    if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
+        if 'error' in decoded_response['result'][0]:
+            if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
+                return decoded_response['result'][0]['error']['errorDisplayMessage']
     return 'Unhandled error check log.'
 
 
