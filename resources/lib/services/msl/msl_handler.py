@@ -234,8 +234,12 @@ class MSLHandler(object):
             'echo': ''
         }
 
+        # Get and check mastertoken validity
+        mt_validity = self.check_mastertoken_validity()
         manifest = self._chunked_request(ENDPOINTS['manifest'],
-                                         manifest_request_data, esn)
+                                         manifest_request_data,
+                                         esn,
+                                         mt_validity)
         # Save the manifest to disk as reference
         common.save_file('manifest.json', json.dumps(manifest))
         # Save the manifest to the cache to retrieve it during its validity
@@ -282,13 +286,11 @@ class MSLHandler(object):
         return convert_to_dash(manifest)
 
     @common.time_execution(immediate=True)
-    def _chunked_request(self, endpoint, request_data, esn):
+    def _chunked_request(self, endpoint, request_data, esn, mt_validity=None):
         """Do a POST request and process the chunked response"""
-        # Get and check mastertoken validity
-        mt_validity = self.check_mastertoken_validity()
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
-            mt_validity['renewable'])
+            mt_validity['renewable'] if mt_validity else None)
         return chunked_response['result']
 
     @common.time_execution(immediate=True)
