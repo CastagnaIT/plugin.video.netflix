@@ -4,12 +4,14 @@ from __future__ import absolute_import, division, unicode_literals
 
 import copy
 import re
+
+from future.utils import iteritems, itervalues
+
 import resources.lib.api.paths as paths
 import resources.lib.api.shakti as api
 import resources.lib.cache as cache
 import resources.lib.common as common
 import resources.lib.kodi.library as library
-from future.utils import iteritems, itervalues
 from resources.lib.globals import g
 
 try:  # Python 2
