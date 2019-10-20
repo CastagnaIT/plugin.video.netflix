@@ -335,7 +335,15 @@ def _process_json_response(response):
 
 
 def _raise_if_error(decoded_response):
+    raise_error = False
+    # Catch a manifest/chunk error
     if any(key in decoded_response for key in ['error', 'errordata']):
+        raise_error = True
+    # Catch a license error
+    if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
+        if 'error' in decoded_response['result'][0]:
+            raise_error = True
+    if raise_error:
         common.error('Full MSL error information:')
         common.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
@@ -343,13 +351,20 @@ def _raise_if_error(decoded_response):
 
 
 def _get_error_details(decoded_response):
+    # Catch a chunk error
     if 'errordata' in decoded_response:
         return json.loads(
             base64.standard_b64decode(
                 decoded_response['errordata']))['errormsg']
+    # Catch a manifest error
     if 'error' in decoded_response:
         if decoded_response['error'].get('errorDisplayMessage'):
             return decoded_response['error']['errorDisplayMessage']
+    # Catch a license error
+    if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
+        if 'error' in decoded_response['result'][0]:
+            if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
+                return decoded_response['result'][0]['error']['errorDisplayMessage']
     return 'Unhandled error check log.'
 
 
