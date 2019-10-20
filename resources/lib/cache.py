@@ -99,10 +99,10 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
         identifier = fixed_identifier
     else:
         identifier = kwargs.get(identify_from_kwarg_name)
-        if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier = identifier + '_' + kwargs.get(identify_append_from_kwarg_name)
         if not identifier and args:
             identifier = args[identify_fallback_arg_index]
+        if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
+            identifier += '_' + kwargs.get(identify_append_from_kwarg_name)
     # common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
     return identifier
 
