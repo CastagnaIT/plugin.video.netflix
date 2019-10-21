@@ -94,6 +94,8 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:
+            import traceback
+            common.error(traceback.format_exc())
             ui.show_addon_error_info(exc)
             return
 
