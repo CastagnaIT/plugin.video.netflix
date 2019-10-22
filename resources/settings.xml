@@ -11,6 +11,7 @@
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
     <setting label="30015" type="lsep"/><!--Other options-->
     <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
+    <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
   </category>
   <category label="30025"><!--Library-->
     <setting label="30065" type="lsep"/><!--Auto-Update-->
@@ -106,7 +107,7 @@
   <category label="30023"><!--Expert-->
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
     <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
-    <setting label="30115" type="lsep"/>
+    <setting label="30115" type="lsep"/><!--Content Profiles-->
     <!--If something is changed in this group remember to make the changes also on settings_monitor.py "content profiles"-->
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
     <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
@@ -116,15 +117,17 @@
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
-    <setting label="30116" type="lsep"/>
+    <setting label="30016" type="lsep"/><!--ESN-->
+    <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://plugin.video.netflix/action/view_esn/)"/>
+    <setting id="esn" type="text" label="30034" value="" default=""/>
+    <setting id="reset_esn" type="action" label="30217" action="RunPlugin(plugin://plugin.video.netflix/action/reset_esn/)" option="close"/>
+    <setting label="30116" type="lsep"/><!--Advanced Addon Configuration-->
     <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
-    <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true"/>
-    <setting id="esn" type="text" label="30034" value="" default=""/>
-    <setting label="30117" type="lsep"/>
+    <setting label="30117" type="lsep"/><!--Cache-->
     <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="120"/>
     <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
     <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
