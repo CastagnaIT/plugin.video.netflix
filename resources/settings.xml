@@ -9,19 +9,14 @@
     <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>
     <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting label="30015" type="lsep"/>
+    <setting label="30015" type="lsep"/><!--Other options-->
     <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
   </category>
   <category label="30025"><!--Library-->
-    <setting type="sep"/>
-    <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
-    <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
+    <setting label="30065" type="lsep"/><!--Auto-Update-->
     <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
     <setting id="initial_mylist_sync" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/initial_mylist_sync/)" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
-    <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
-    <setting label="30065" type="lsep"/><!--Auto-Update-->
-    <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
+    <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0" enable="eq(-2,true)"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
     <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
@@ -29,6 +24,11 @@
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
     <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" visible="eq(-2,true)" default="1" subsetting="true"/>
     <setting id="export_full_tvshow_nfo" type="bool" label="30193" visible="eq(-3,true)" default="false" subsetting="true"/>
+    <setting label="30015" type="lsep"/><!--Other options-->
+    <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
+    <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
+    <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
+    <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
     <setting label="30199" type="lsep"/><!--Shared library-->
     <setting id="use_mysql" type="bool" label="30200" default="false"/>
     <setting id="mysql_username" type="text" label="30201" default="kodi" visible="eq(-1,true)" subsetting="true"/>
