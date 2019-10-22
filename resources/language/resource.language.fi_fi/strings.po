@@ -141,8 +141,8 @@ msgid "Remove from library"
 msgstr "Poista kirjastosta"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "Muokkaa kirjastonimeä"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"

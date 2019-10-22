@@ -141,8 +141,8 @@ msgid "Remove from library"
 msgstr "라이브러리에서 지우기"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "라이브러리 이름 바꾸기"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"

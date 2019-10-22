@@ -142,8 +142,8 @@ msgid "Remove from library"
 msgstr "הסר מהספרייה"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "שנה כותרת ספרייה"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"

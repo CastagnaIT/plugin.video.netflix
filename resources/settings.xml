@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="30014"><!--Account-->
+  <category label="30031"><!--General-->
+    <setting label="30014" type="lsep"/><!--Account-->
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
-    <setting label="30053" type="lsep"/>
+    <setting label="30053" type="lsep"/><!--Auto login-->
     <setting id="info" type="text" label="30057" default="" enable="false"/>
     <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>
     <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
@@ -21,7 +22,6 @@
     <setting id="initial_mylist_sync" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/initial_mylist_sync/)" visible="eq(-1,true)" subsetting="true"/>
     <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
     <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
-    <setting id="customexportname" type="bool" label="No longer in use" default="true" visible="false"/>
     <setting label="30065" type="lsep"/><!--Auto-Update-->
     <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0"/>
     <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>

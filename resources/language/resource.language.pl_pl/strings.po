@@ -141,8 +141,8 @@ msgid "Remove from library"
 msgstr "Usuń z biblioteki"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "Zmień tytuł"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"
