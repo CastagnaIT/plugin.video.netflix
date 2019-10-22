@@ -84,6 +84,10 @@ msgctxt "#30014"
 msgid "Account"
 msgstr ""
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr ""
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr ""

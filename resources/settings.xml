@@ -9,12 +9,10 @@
     <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>
     <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting type="sep"/>
-    <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
-    <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
+    <setting label="30015" type="lsep"/>
+    <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
   </category>
   <category label="30025"><!--Library-->
-    <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
     <setting type="sep"/>
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
@@ -106,6 +104,8 @@
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
   </category>
   <category label="30023"><!--Expert-->
+    <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
+    <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
     <setting label="30115" type="lsep"/>
     <!--If something is changed in this group remember to make the changes also on settings_monitor.py "content profiles"-->
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
