@@ -77,7 +77,7 @@ INFO_MAPPINGS = {
 }
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery']]
+    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
 ] + ART_PARTIAL_PATHS
 
 INFO_TRANSFORMATIONS = {
