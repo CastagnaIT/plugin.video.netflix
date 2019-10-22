@@ -240,7 +240,8 @@ def supplemental_video_list(videoid, supplemental_type):
 @cache.cache_output(g, cache.CACHE_COMMON)
 def single_info(videoid):
     """Retrieve info for a single episode"""
-    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE]:
+    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE,
+                                 common.VideoId.SUPPLEMENTAL]:
         raise common.InvalidVideoId('Cannot request info for {}'
                                     .format(videoid))
     common.debug('Requesting info for {}'.format(videoid))
