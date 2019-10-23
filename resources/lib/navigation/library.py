@@ -87,7 +87,7 @@ class LibraryActionExecutor(object):
         from resources.lib.cache import CACHE_COMMON
         do_it = ui.ask_for_confirmation(common.get_local_string(30122),
                                         common.get_local_string(30123))
-        if not do_it or not g.ADDON.getSettingBool('mylist_library_sync'):
+        if not do_it:
             return
         common.debug('Performing full sync from My List to Kodi library')
         library.purge()
