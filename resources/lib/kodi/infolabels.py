@@ -11,6 +11,11 @@ import resources.lib.common as common
 import resources.lib.kodi.library as library
 from resources.lib.globals import g
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 QUALITIES = [
     {'codec': 'h264', 'width': '960', 'height': '540'},
     {'codec': 'h264', 'width': '1920', 'height': '1080'},
@@ -27,14 +32,15 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
     # pylint: disable=too-many-locals
+    cache_identifier = unicode(videoid) + '_' + g.LOCAL_DB.get_profile_config('language', '')
     try:
-        cache_entry = g.CACHE.get(cache.CACHE_INFOLABELS, videoid)
+        cache_entry = g.CACHE.get(cache.CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except cache.CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
         # Use a copy of dict to not reflect future changes to the dictionary also to the cache
-        g.CACHE.add(cache.CACHE_INFOLABELS, videoid,
+        g.CACHE.add(cache.CACHE_INFOLABELS, cache_identifier,
                     {'infos': infos.copy(), 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
     if videoid.mediatype == common.VideoId.EPISODE or \
