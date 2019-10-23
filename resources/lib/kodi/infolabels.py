@@ -2,6 +2,7 @@
 """Helper functions for setting infolabels of list items"""
 from __future__ import absolute_import, division, unicode_literals
 
+import copy
 import re
 
 import resources.lib.api.paths as paths
@@ -39,10 +40,11 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
         quality_infos = cache_entry['quality_infos']
     except cache.CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        # Use a copy of dict to not reflect future changes to the dictionary also to the cache
         g.CACHE.add(cache.CACHE_INFOLABELS, cache_identifier,
-                    {'infos': infos.copy(), 'quality_infos': quality_infos},
+                    {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
+    # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
+    infos_copy = copy.deepcopy(infos)
     if videoid.mediatype == common.VideoId.EPISODE or \
        videoid.mediatype == common.VideoId.MOVIE or \
        videoid.mediatype == common.VideoId.SUPPLEMENTAL:
@@ -50,14 +52,14 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
         list_item.setProperty('IsPlayable', 'true')
     else:
         list_item.setProperty('isFolder', 'true')
-    if set_info:
-        list_item.setInfo('video', infos)
     for stream_type, quality_infos in quality_infos.iteritems():
         list_item.addStreamInfo(stream_type, quality_infos)
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
-        infos['plot'] += ' [COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
-    return infos
+        infos_copy['plot'] += ' [COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
+    if set_info:
+        list_item.setInfo('video', infos_copy)
+    return infos_copy
 
 
 def add_art(videoid, list_item, item, raw_data=None):
