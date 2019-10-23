@@ -37,11 +37,12 @@ def logout():
     g.CACHE.invalidate()
 
 
-def login():
+def login(ask_credentials=True):
     """Perform a login"""
     g.CACHE.invalidate()
     try:
-        ui.ask_credentials()
+        if ask_credentials:
+            ui.ask_credentials()
         if not common.make_call('login'):
             # Login not validated
             # ui.show_notification(common.get_local_string(30009))

@@ -67,13 +67,6 @@ def _ask_for_input(heading):
         type=xbmcgui.INPUT_ALPHANUM).decode('utf-8') or None
 
 
-def ask_for_custom_title(original_title):
-    """Ask the user for a custom title (for library export)"""
-    if g.ADDON.getSettingBool('customexportname'):
-        return original_title
-    return _ask_for_input(common.get_local_string(30031)) or original_title
-
-
 def ask_for_removal_confirmation():
     """Ask the user to finally remove title from the Kodi library"""
     return ask_for_confirmation(

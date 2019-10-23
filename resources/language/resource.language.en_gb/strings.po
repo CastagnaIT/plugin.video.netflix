@@ -84,6 +84,14 @@ msgctxt "#30014"
 msgid "Account"
 msgstr ""
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr ""
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr ""
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr ""
@@ -141,7 +149,7 @@ msgid "Remove from library"
 msgstr ""
 
 msgctxt "#30031"
-msgid "Change library title"
+msgid "General"
 msgstr ""
 
 msgctxt "#30032"
@@ -153,7 +161,7 @@ msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr ""
 
 msgctxt "#30034"
-msgid "ESN (set automatically, can be changed manually)"
+msgid "Manual ESN"
 msgstr ""
 
 msgctxt "#30035"
@@ -878,4 +886,16 @@ msgstr ""
 
 msgctxt "#30215"
 msgid "Highlight titles included in my list with a color"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr ""
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr ""
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
 msgstr ""

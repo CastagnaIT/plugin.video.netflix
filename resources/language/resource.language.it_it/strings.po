@@ -84,6 +84,10 @@ msgctxt "#30014"
 msgid "Account"
 msgstr ""
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Altre opzioni"
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr "Disconnetti"
@@ -141,8 +145,8 @@ msgid "Remove from library"
 msgstr "Rimuovi dalla libreria"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "Modifica il titolo della libreria"
+msgid "General"
+msgstr "Generale"
 
 msgctxt "#30032"
 msgid "Tracking"

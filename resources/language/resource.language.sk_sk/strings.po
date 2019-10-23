@@ -141,8 +141,8 @@ msgid "Remove from library"
 msgstr "Odstrániť z knižnice"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "Zmeniť názov v knižnici"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"

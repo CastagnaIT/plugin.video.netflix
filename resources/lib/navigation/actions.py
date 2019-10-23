@@ -18,9 +18,8 @@ class AddonActionExecutor(object):
                      .format(params))
         self.params = params
 
-    def logout(self, pathitems=None):
+    def logout(self, pathitems=None):  # pylint: disable=unused-argument
         """Perform account logout"""
-        # pylint: disable=unused-argument
         api.logout()
 
     def save_autologin(self, pathitems):
@@ -37,9 +36,8 @@ class AddonActionExecutor(object):
         g.CACHE.invalidate()
         common.refresh_container()
 
-    def toggle_adult_pin(self, pathitems=None):
+    def toggle_adult_pin(self, pathitems=None):  # pylint: disable=no-member, unused-argument
         """Toggle adult PIN verification"""
-        # pylint: disable=no-member, unused-argument
         pin = ui.ask_for_pin()
         if pin is None:
             return
@@ -86,22 +84,45 @@ class AddonActionExecutor(object):
             ui.show_notification(common.get_local_string(30180))
 
     @common.time_execution(immediate=False)
-    def purge_cache(self, pathitems=None):
+    def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""
-        # pylint: disable=unused-argument
         g.CACHE.invalidate(self.params.get('on_disk', False))
         if self.params.get('on_disk', False):
             common.delete_file('resources.lib.services.playback.stream_continuity.ndb')
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 
-    def force_update_mylist(self, pathitems=None):
+    def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        # pylint: disable=unused-argument
         from resources.lib.cache import CACHE_COMMON
         g.CACHE.invalidate_entry(CACHE_COMMON, 'mylist')
         g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+
+    def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
+        """Show the ESN in use"""
+        ui.show_ok_dialog(common.get_local_string(30016), g.get_esn())
+
+    def reset_esn(self, pathitems=None):  # pylint: disable=unused-argument
+        """Reset the ESN stored (retrieved from website and manual)"""
+        from resources.lib.database.db_utils import (TABLE_SESSION, TABLE_SETTINGS_MONITOR)
+        if not ui.ask_for_confirmation(common.get_local_string(30217),
+                                       common.get_local_string(30218)):
+            return
+        g.settings_monitor_suspended(True)
+        # Reset the ESN obtained from website/generated
+        g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
+        # Reset the custom ESN (manual ESN from settings)
+        g.ADDON.setSetting('esn', '')
+        # Reset the custom ESN (backup of manual ESN from settings, used in settings_monitor.py)
+        g.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
+        g.settings_monitor_suspended(False)
+        # Perform a new login to get/generate a new ESN
+        api.login(ask_credentials=False)
+        # Warning after login netflix switch to the main profile! so return to the main screen
+        url = 'plugin://plugin.video.netflix/directory/root'
+        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
+        xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
 
 
 def _sync_library(videoid, operation):

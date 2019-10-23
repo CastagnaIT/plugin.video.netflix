@@ -141,8 +141,8 @@ msgid "Remove from library"
 msgstr "Ukloni iz videoteke"
 
 msgctxt "#30031"
-msgid "Change library title"
-msgstr "Promijeni naslov videoteke"
+msgid "General"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"
