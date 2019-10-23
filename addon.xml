@@ -32,6 +32,8 @@
       <screenshot>resources/media/screenshot-01.jpg</screenshot>
       <screenshot>resources/media/screenshot-02.jpg</screenshot>
       <screenshot>resources/media/screenshot-03.jpg</screenshot>
+      <screenshot>resources/media/screenshot-04.jpg</screenshot>
+      <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
     <language>en de es he hr it nl pl pt sk sv</language>
     <platform>all</platform>
