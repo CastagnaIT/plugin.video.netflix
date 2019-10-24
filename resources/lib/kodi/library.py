@@ -238,7 +238,7 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
 
     if task_handler == export_new_item:
         metadata = api.metadata(videoid, True)
-        return _create_new_episodes_tasks(videoid, metadata)
+        return _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
     if task_handler == remove_item:
         if videoid.mediatype == common.VideoId.MOVIE:
@@ -338,13 +338,14 @@ def _create_export_item_task(title, section, videoid, destination, filename, nfo
     }
 
 
-def _create_new_episodes_tasks(videoid, metadata):
+def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
     tasks = []
     if metadata and 'seasons' in metadata[0]:
         for season in metadata[0]['seasons']:
-            nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
-            nfo_settings = nfo.NFOSettings(nfo_export)
+            if not nfo_settings:
+                nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                                                             VidLibProp.nfo_export, False)
+                nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
                 # The season exists, try to find any missing episode
@@ -592,7 +593,14 @@ def export_all_new_episodes():
             continue
         if videoid.value in excluded_videoids_values:
             continue
-        export_new_episodes(videoid, True)
+        if videoid.value in exported_videoids_values:
+            # It is possible that the user has chosen not to export nfo for a tvshow
+            nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                                                         VidLibProp.nfo_export, False)
+            nfo_settings = nfo.NFOSettings(nfo_export)
+        else:
+            nfo_settings = nfo.NFOSettings()
+        export_new_episodes(videoid, True, nfo_settings)
         # add some randomness between show analysis to limit servers load and ban risks
         xbmc.sleep(random.randint(1000, 5001))
 
@@ -603,12 +611,13 @@ def export_all_new_episodes():
     common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
 
 
-def export_new_episodes(videoid, silent=False):
+def export_new_episodes(videoid, silent=False, nfo_settings=None):
     """
     Export new episodes for a tv show by it's video id
     :param videoid: The videoid of the tv show to process
     :param scan: Whether or not to scan the library after exporting, useful for a single show
     :param silent: don't display user interface while exporting
+    :param nfo_settings: the nfo settings
     :return: None
     """
 
@@ -618,7 +627,8 @@ def export_new_episodes(videoid, silent=False):
         common.debug('Exporting new episodes for {}'.format(videoid))
         method(videoid, [export_new_item],
                title=common.get_local_string(30198),
-               sync_mylist=False)
+               sync_mylist=False,
+               nfo_settings=nfo_settings)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
 
