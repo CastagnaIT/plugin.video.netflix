@@ -19,6 +19,11 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import (VidLibProp)
 from resources.lib.globals import g
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 LIBRARY_HOME = 'library'
 FOLDER_MOVIES = 'movies'
 FOLDER_TV = 'shows'
@@ -542,13 +547,36 @@ def export_all_new_episodes():
     """
     Update the local Kodi library with new episodes of every exported shows
     """
+    from resources.lib.cache import CACHE_COMMON
     if not _export_all_new_episodes_running():
         common.log('Starting to export new episodes for all tv shows')
         g.SHARED_DB.set_value('library_export_new_episodes_running', True)
         g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
 
-        for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, False):
+        # Get the list of the tvshows exported to kodi library
+        exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
+        # Get the list of the tvshows exported but to exclude from updates
+        excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, True)
+        # Retrieve updated items from "my list"
+        # Invalidate my-list cached data to force to obtain new data
+        g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+        mylist_videoids = api.mylist_items()
+
+        # Check if any tvshow have been removed from the mylist
+        for videoid_value in exported_videoids_values:
+            if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                continue
+            # Tvshow no more exist in mylist so remove it from library
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
+            execute_library_tasks_silently(videoid, [remove_item], sync_mylist=False)
+
+        # Update or add tvshow in kodi library
+        for videoid in mylist_videoids:
+            # Only tvshows require be updated
+            if videoid.mediatype != common.VideoId.SHOW:
+                continue
+            if videoid.value in excluded_videoids_values:
+                continue
             export_new_episodes(videoid, True)
             # add some randomness between show analysis to limit servers load and ban risks
             xbmc.sleep(random.randint(1000, 5001))
