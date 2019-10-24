@@ -148,8 +148,8 @@ msgid "Tracking"
 msgstr "Spårning"
 
 msgctxt "#30034"
-msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (ändra automatiskt, kan ändras manuellt)"
+msgid "Manual ESN"
+msgstr ""
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."

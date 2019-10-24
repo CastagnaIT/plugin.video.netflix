@@ -154,8 +154,8 @@ msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "תשתמש בפורמט דולבי"
 
 msgctxt "#30034"
-msgid "ESN (set automatically, can be changed manually)"
-msgstr "רשת ESN (ברירת מחדל אוטומטי, ניתן לשנות ידנית)"
+msgid "Manual ESN"
+msgstr ""
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
