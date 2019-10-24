@@ -21,6 +21,17 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         return result[0]
 
     @db_sqlite.handle_connection
+    def get_guid_owner_profile(self):
+        """Get the guid of owner account profile"""
+        query = 'SELECT Guid FROM profiles_config WHERE ' \
+                'Name = \'isAccountOwner\' AND Value = \'True\''
+        cur = self._execute_query(query)
+        result = cur.fetchone()
+        if result is None:
+            raise ProfilesMissing
+        return result[0]
+
+    @db_sqlite.handle_connection
     def get_profile_config(self, key, default_value=None, guid=None, data_type=None):
         """Get a value from a profile, if guid is not specified, is obtained from active profile"""
         if guid is None:
