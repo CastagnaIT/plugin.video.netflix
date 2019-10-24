@@ -72,10 +72,18 @@ def _create_profile_item(profile_guid, is_active, html_parser):
     a profile as listed in the profiles listing"""
     profile_name = g.LOCAL_DB.get_profile_config('profileName', '', guid=profile_guid)
     unescaped_profile_name = html_parser.unescape(profile_name)
+    is_account_owner = g.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid)
+    is_kids = g.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid)
+    description = []
+    if is_account_owner:
+        description.append(common.get_local_string(30221))
+    if is_kids:
+        description.append(common.get_local_string(30222))
     enc_profile_name = profile_name.encode('utf-8')
     list_item = list_item_skeleton(
         label=unescaped_profile_name,
-        icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid))
+        icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid),
+        description=', '.join(description))
     list_item.select(is_active)
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
