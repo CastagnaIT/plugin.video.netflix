@@ -169,7 +169,7 @@ def get_shareddb_class(force_sqlite=False):
             """
             cur = self.get_cursor_for_list_results()
             if enum_vid_prop and prop_value:
-                query = ('SELECT TvShowID FROM video_lib_tvshows'
+                query = ('SELECT TvShowID FROM video_lib_tvshows '
                          'WHERE ' + enum_vid_prop.value + ' = ?')
                 cur = self._execute_query(query, (str(prop_value),), cur)
             else:
