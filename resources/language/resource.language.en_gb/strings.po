@@ -915,3 +915,7 @@ msgstr ""
 msgctxt "#30222"
 msgid "Kid account"
 msgstr ""
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
+msgstr ""
