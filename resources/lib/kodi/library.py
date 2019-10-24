@@ -582,6 +582,8 @@ def export_all_new_episodes():
             xbmc.sleep(random.randint(1000, 5001))
 
         g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+        if not g.ADDON.getSettingBool('disable_library_sync_notification'):
+            ui.show_notification(common.get_local_string(30220), time=5000)
         common.debug('Notify service to update the library')
         common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
 
