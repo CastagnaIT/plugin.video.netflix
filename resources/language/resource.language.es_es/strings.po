@@ -149,8 +149,8 @@ msgid "Tracking"
 msgstr "Reastrando"
 
 msgctxt "#30034"
-msgid "ESN (set automatically, can be changed manually)"
-msgstr "ESN (establecido automáticamente, se puede cambiar manualmente)"
+msgid "Manual ESN"
+msgstr ""
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
