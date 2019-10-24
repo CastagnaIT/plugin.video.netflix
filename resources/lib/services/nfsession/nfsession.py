@@ -111,6 +111,10 @@ class NetflixSession(object):
         """Return authentication url"""
         return g.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
 
+    @auth_url.setter
+    def auth_url(self, value):
+        g.LOCAL_DB.set_value('auth_url', value, TABLE_SESSION)
+
     @common.time_execution(immediate=True)
     def _init_session(self):
         """Initialize the session to use for all future connections"""
@@ -286,13 +290,14 @@ class NetflixSession(object):
         if guid == g.LOCAL_DB.get_active_profile_guid():
             common.debug('Profile {} is already active'.format(guid))
             return False
-        self._get(
-            component='activate_profile',
-            req_type='api',
-            params={
-                'switchProfileGuid': guid,
-                '_': int(time.time()),
-                'authURL': self.auth_url})
+        self._get(component='activate_profile',
+                  req_type='api',
+                  params={'switchProfileGuid': guid,
+                          '_': int(time.time()),
+                          'authURL': self.auth_url})
+        # When switch profile is performed the authURL change
+        react_context = website.extract_json(self._get('browse'), 'reactContext')
+        self.auth_url = website.extract_api_data(react_context)['auth_url']
         g.LOCAL_DB.switch_active_profile(guid)
         self.update_session_data()
         common.debug('Successfully activated profile {}'.format(guid))
