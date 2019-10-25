@@ -203,23 +203,26 @@ def generate_esn(user_data):
     import subprocess
     try:
         manufacturer = subprocess.check_output(
-            ['/system/bin/getprop', 'ro.product.manufacturer'])
+            ['/system/bin/getprop', 'ro.product.manufacturer']).strip(' \t\n\r')
         if manufacturer:
-            esn = ('NFANDROID1-PRV-'
-                   if subprocess.check_output(
-                       ['/system/bin/getprop', 'ro.build.characteristics']
-                   ).strip(' \t\n\r') != 'tv'
-                   else 'NFANDROID2-PRV-')
-            inp = subprocess.check_output(
+            model = subprocess.check_output(
+                ['/system/bin/getprop', 'ro.product.model']).strip(' \t\n\r')
+            product_characteristics = subprocess.check_output(
+                ['/system/bin/getprop', 'ro.build.characteristics']).strip(' \t\n\r')
+            # Property ro.build.characteristics may also contain more then one value
+            has_product_characteristics_tv = any(
+                value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+            # Netflix Ready Device Platform (NRDP)
+            nrdp_modelgroup = subprocess.check_output(
                 ['/system/bin/getprop', 'ro.nrdp.modelgroup']).strip(' \t\n\r')
-            if not inp:
+
+            esn = ('NFANDROID2-PRV-' if has_product_characteristics_tv else 'NFANDROID1-PRV-')
+            if not nrdp_modelgroup:
                 esn += 'T-L3-'
             else:
-                esn += inp + '-'
-            esn += '{:=<5}'.format(manufacturer.strip(' \t\n\r').upper())
-            inp = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.product.model'])
-            esn += inp.strip(' \t\n\r').replace(' ', '=').upper()
+                esn += nrdp_modelgroup + '-'
+            esn += '{:=<5.5}'.format(manufacturer.upper())
+            esn += model.replace(' ', '=').upper()
             esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
             common.debug('Android generated ESN:' + esn)
             return esn
