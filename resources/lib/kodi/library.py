@@ -19,6 +19,11 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import (VidLibProp)
 from resources.lib.globals import g
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 LIBRARY_HOME = 'library'
 FOLDER_MOVIES = 'movies'
 FOLDER_TV = 'shows'
@@ -233,7 +238,7 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
 
     if task_handler == export_new_item:
         metadata = api.metadata(videoid, True)
-        return _create_new_episodes_tasks(videoid, metadata)
+        return _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
     if task_handler == remove_item:
         if videoid.mediatype == common.VideoId.MOVIE:
@@ -333,13 +338,14 @@ def _create_export_item_task(title, section, videoid, destination, filename, nfo
     }
 
 
-def _create_new_episodes_tasks(videoid, metadata):
+def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
     tasks = []
     if metadata and 'seasons' in metadata[0]:
         for season in metadata[0]['seasons']:
-            nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
-            nfo_settings = nfo.NFOSettings(nfo_export)
+            if not nfo_settings:
+                nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                                                             VidLibProp.nfo_export, False)
+                nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
                 # The season exists, try to find any missing episode
@@ -542,28 +548,76 @@ def export_all_new_episodes():
     """
     Update the local Kodi library with new episodes of every exported shows
     """
-    if not _export_all_new_episodes_running():
-        common.log('Starting to export new episodes for all tv shows')
-        g.SHARED_DB.set_value('library_export_new_episodes_running', True)
-        g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
+    from resources.lib.cache import CACHE_COMMON
+    from resources.lib.database.db_exceptions import ProfilesMissing
+    if _export_all_new_episodes_running():
+        return
+    common.log('Starting to export new episodes for all tv shows')
+    g.SHARED_DB.set_value('library_export_new_episodes_running', True)
+    g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
+    # Get the list of the tvshows exported to kodi library
+    exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
+    # Get the list of the tvshows exported but to exclude from updates
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, True)
 
-        for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, False):
-            videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-            export_new_episodes(videoid, True)
-            # add some randomness between show analysis to limit servers load and ban risks
-            xbmc.sleep(random.randint(1000, 5001))
+    # Before start to get updated mylist items, you have to select the owner account
+    # TODO: in the future you can also add the possibility to synchronize from a chosen profile
+    try:
+        guid_owner_profile = g.LOCAL_DB.get_guid_owner_profile()
+    except ProfilesMissing as exc:
+        import traceback
+        common.error(traceback.format_exc())
+        ui.show_addon_error_info(exc)
+        return
+    if guid_owner_profile != g.LOCAL_DB.get_active_profile_guid():
+        common.debug('Switching to owner account profile')
+        api.activate_profile(guid_owner_profile)
 
-        g.SHARED_DB.set_value('library_export_new_episodes_running', False)
-        common.debug('Notify service to update the library')
-        common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+    # Retrieve updated items from "my list"
+    # Invalidate my-list cached data to force to obtain new data
+    g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+    mylist_videoids = api.mylist_items()
+
+    # Check if any tvshow have been removed from the mylist
+    for videoid_value in exported_videoids_values:
+        if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+            continue
+        # Tvshow no more exist in mylist so remove it from library
+        videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
+        execute_library_tasks_silently(videoid, [remove_item], sync_mylist=False)
+
+    # Update or add tvshow in kodi library
+    for videoid in mylist_videoids:
+        # Only tvshows require be updated
+        if videoid.mediatype != common.VideoId.SHOW:
+            continue
+        if videoid.value in excluded_videoids_values:
+            continue
+        if videoid.value in exported_videoids_values:
+            # It is possible that the user has chosen not to export nfo for a tvshow
+            nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                                                         VidLibProp.nfo_export, False)
+            nfo_settings = nfo.NFOSettings(nfo_export)
+        else:
+            nfo_settings = nfo.NFOSettings()
+        export_new_episodes(videoid, True, nfo_settings)
+        # add some randomness between show analysis to limit servers load and ban risks
+        xbmc.sleep(random.randint(1000, 5001))
+
+    g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+    if not g.ADDON.getSettingBool('disable_library_sync_notification'):
+        ui.show_notification(common.get_local_string(30220), time=5000)
+    common.debug('Notify service to update the library')
+    common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
 
 
-def export_new_episodes(videoid, silent=False):
+def export_new_episodes(videoid, silent=False, nfo_settings=None):
     """
     Export new episodes for a tv show by it's video id
     :param videoid: The videoid of the tv show to process
     :param scan: Whether or not to scan the library after exporting, useful for a single show
     :param silent: don't display user interface while exporting
+    :param nfo_settings: the nfo settings
     :return: None
     """
 
@@ -573,7 +627,8 @@ def export_new_episodes(videoid, silent=False):
         common.debug('Exporting new episodes for {}'.format(videoid))
         method(videoid, [export_new_item],
                title=common.get_local_string(30198),
-               sync_mylist=False)
+               sync_mylist=False,
+               nfo_settings=nfo_settings)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
 

@@ -209,7 +209,7 @@ msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr ""
 
 msgctxt "#30046"
-msgid "Inputstream addon is not enabled"
+msgid "InputStream addon is not enabled"
 msgstr ""
 
 msgctxt "#30047"
@@ -898,4 +898,24 @@ msgstr ""
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr ""
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Kodi library is now synchronized with My list"
+msgstr ""
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr ""
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr ""
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
 msgstr ""

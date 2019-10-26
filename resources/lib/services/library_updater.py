@@ -102,7 +102,7 @@ def _compute_next_schedule():
     try:
         update_frequency = g.ADDON.getSettingInt('auto_update')
 
-        if not update_frequency:
+        if not update_frequency or not g.ADDON.getSettingBool('mylist_library_sync'):
             common.debug('Library auto update scheduled is disabled')
             return None
         if g.ADDON.getSettingBool('use_mysql'):

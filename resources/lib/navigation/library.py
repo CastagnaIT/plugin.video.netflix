@@ -85,9 +85,15 @@ class LibraryActionExecutor(object):
         """Perform an initial sync of My List and the Kodi library"""
         # pylint: disable=unused-argument
         from resources.lib.cache import CACHE_COMMON
+        # This is a temporary workaround to prevent sync from mylist of non owner account profiles
+        # TODO: in the future you can also add the possibility to synchronize from a chosen profile
+        is_account_owner = g.LOCAL_DB.get_profile_config('isAccountOwner', False)
+        if not is_account_owner:
+            ui.show_ok_dialog('Netflix', common.get_local_string(30223))
+            return
         do_it = ui.ask_for_confirmation(common.get_local_string(30122),
                                         common.get_local_string(30123))
-        if not do_it or not g.ADDON.getSettingBool('mylist_library_sync'):
+        if not do_it:
             return
         common.debug('Performing full sync from My List to Kodi library')
         library.purge()
