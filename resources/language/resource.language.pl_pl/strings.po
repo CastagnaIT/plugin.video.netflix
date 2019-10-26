@@ -84,6 +84,14 @@ msgctxt "#30014"
 msgid "Account"
 msgstr "Konto"
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Pozostałe opcje"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr "Wyloguj"
@@ -134,7 +142,7 @@ msgstr "Błąd odtwarzania"
 
 msgctxt "#30029"
 msgid "Missing InputStream addon"
-msgstr "Brakuje wtyczki strumieniowej InputStream Adaptive"
+msgstr "Brakuje wtyczki InputStream"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -142,7 +150,7 @@ msgstr "Usuń z biblioteki"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Ogólne"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -154,7 +162,7 @@ msgstr "Aktywuj Dolby Digital Plus (DDPlus HQ i Atmos na Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "Własny ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -870,4 +878,44 @@ msgstr "Nie ma urządzenia obsługującego automatyczne aktualizacje biblioteki 
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
-msgstr ""
+msgstr "Ustawienia InputStream Helper..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Wymuś aktualizację mojej listy"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Podświetl tytuły znajdujące się na Mojej liście kolorem"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Pokaż używane ESN"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Resetuj ESN"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Czy na pewno chcesz zresetować ESN?\r\nJeśli potwierdzisz, poczekaj, aż pojawi się komunikat logowania."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Wyłącz powiadomienie o zakończeniu synchronizacji"
+
+msgctxt "#30220"
+msgid "Kodi library is now synchronized with My list"
+msgstr "Biblioteka Kodi jest teraz zsynchronizowana z Moją listą"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Profil właściciela"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Profil dziecka"
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
+msgstr "Synchronizację można rozpocząć tylko poprzez wybranie profilu właściciela"
