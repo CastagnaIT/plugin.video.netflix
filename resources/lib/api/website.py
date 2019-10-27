@@ -189,13 +189,14 @@ def validate_login(content):
                 error_description = error_code_list['email_' + error_code]
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
-            return common.remove_html_tags(error_description)
+            raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
-            common.error(
+            common.error(traceback.format_exc())
+            error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
-            raise LoginValidateError
-    return None
+            common.error(error_msg)
+            raise LoginValidateError(error_msg)
 
 
 def generate_esn(user_data):

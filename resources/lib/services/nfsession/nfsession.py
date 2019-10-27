@@ -19,7 +19,7 @@ import resources.lib.api.website as website
 import resources.lib.api.paths as apipaths
 import resources.lib.kodi.ui as ui
 
-from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError,
+from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
                                           APIError, MissingCredentialsError)
 
 BASE_URL = 'https://www.netflix.com'
@@ -142,7 +142,7 @@ class NetflixSession(object):
                 self.set_session_header_data()
         except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
-        except LoginFailedError:
+        except (LoginFailedError, LoginValidateError):
             ui.show_notification(common.get_local_string(30009))
 
     @common.time_execution(immediate=True)
@@ -241,16 +241,16 @@ class NetflixSession(object):
             login_response = self._post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
-            validate_msg = website.validate_login(login_response)
-            if validate_msg:
+            try:
+                website.validate_login(login_response)
+            except LoginValidateError as exc:
                 self.session.cookies.clear()
                 common.purge_credentials()
                 if modal_error_message:
-                    ui.show_ok_dialog(common.get_local_string(30008),
-                                      validate_msg)
+                    ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
+                    return False
                 else:
-                    ui.show_notification(common.get_local_string(30009))
-                return False
+                    raise
             website.extract_session_data(login_response)
         except Exception as exc:
             common.error(traceback.format_exc())
