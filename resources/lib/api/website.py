@@ -196,6 +196,7 @@ def validate_login(content):
                 error_description = error_code_list['login_' + error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
+            import traceback
             common.error(traceback.format_exc())
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'

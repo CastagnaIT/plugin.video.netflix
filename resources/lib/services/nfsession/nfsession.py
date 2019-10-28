@@ -21,6 +21,11 @@ import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
                                           APIError, MissingCredentialsError, WebsiteParsingError)
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
 
@@ -259,8 +264,7 @@ class NetflixSession(object):
                 if modal_error_message:
                     ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
                     return False
-                else:
-                    raise
+                raise
             website.extract_session_data(login_response)
         except Exception as exc:
             import traceback

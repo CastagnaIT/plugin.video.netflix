@@ -9,7 +9,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import sys
 import threading
-import traceback
 
 # Import and initialize globals right away to avoid stale values from the last
 # addon invocation. Otherwise Kodi's reuseLanguageInvoker option will cause
@@ -110,6 +109,7 @@ class NetflixService(object):
             self.controller.on_playback_tick()
             self.library_updater.on_tick()
         except Exception as exc:
+            import traceback
             common.error(traceback.format_exc())
             ui.show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
