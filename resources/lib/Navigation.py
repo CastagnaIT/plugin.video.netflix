@@ -15,15 +15,25 @@ import ast
 import re
 import os
 import json
-import urllib
-import urllib2
-from urlparse import parse_qsl, urlparse
+
+try:
+    from urllib.parse import parse_qsl, urlparse, unquote, urlencode
+except ImportError:
+    from urllib import unquote, urlencode
+    from urlparse import parse_qsl, urlparse
+
+try:
+    import urllib.request as Request
+except ImportError:
+    import urllib2 as Request
+
 from datetime import datetime
 from collections import OrderedDict
 from distutils.util import strtobool
 
 import xbmc
 import resources.lib.NetflixSession as Netflix
+from resources.lib.compat import itername
 from resources.lib.utils import log, find_episode
 from resources.lib.KodiHelper import KodiHelper
 from resources.lib.Library import Library
@@ -193,7 +203,7 @@ class Navigation(object):
         elif action == 'export':
             # adds a title to the users list on Netflix
             alt_title = self.kodi_helper.dialogs.show_add_library_title_dialog(
-                original_title=urllib.unquote(params['title']).decode('utf8'))
+                original_title=unquote(params['title']).decode('utf8'))
             self.export_to_library(video_id=params['id'], alt_title=alt_title)
             return self.kodi_helper.refresh()
         elif action == 'remove':
@@ -204,7 +214,7 @@ class Navigation(object):
             # adds a title to the users list on Netflix
             self.remove_from_library(video_id=params['id'])
             alt_title = self.kodi_helper.dialogs.show_add_library_title_dialog(
-                original_title=urllib.unquote(params['title']).decode('utf8'))
+                original_title=unquote(params['title']).decode('utf8'))
             self.export_to_library(video_id=params['id'], alt_title=alt_title)
             return self.kodi_helper.refresh()
         elif action == 'removeexported':
@@ -742,7 +752,7 @@ class Navigation(object):
     def export_new_episodes(self, in_background):
         update_started_at = datetime.today().strftime('%Y-%m-%d %H:%M')
         self.nx_common.set_setting('update_running', update_started_at)
-        for title, meta in self.library.list_exported_shows().iteritems():
+        for title, meta in getattr(self.library.list_exported_shows(), itername)():
             try:
                 netflix_id = meta.get('netflix_id',
                                       self._get_netflix_id(meta['alt_title']))
@@ -1003,7 +1013,7 @@ class Navigation(object):
         str
             Url + querystring based on the param
         """
-        return self.base_url + '?' + urllib.urlencode(query)
+        return self.base_url + '?' + urlencode(query)
 
     def get_netflix_service_url(self):
         """Returns URL & Port of the internal Netflix HTTP Proxy service
@@ -1032,7 +1042,7 @@ class Navigation(object):
             Netflix Service RPC result
         """
         cache = params.pop('cache', None)
-        values = urllib.urlencode(params)
+        values = urlencode(params)
         # check for cached items
         if cache:
             cached_value = self.kodi_helper.get_cached_item(
@@ -1048,9 +1058,9 @@ class Navigation(object):
         full_url = url + '?' + values
         # don't use proxy for localhost
         if urlparse(url).hostname in ('localhost', '127.0.0.1', '::1'):
-            opener = urllib2.build_opener(urllib2.ProxyHandler({}))
-            urllib2.install_opener(opener)
-        data = urllib2.urlopen(full_url).read()
+            opener = Request.build_opener(Request.ProxyHandler({}))
+            Request.install_opener(opener)
+        data = Request.urlopen(full_url).read()
         parsed_json = json.loads(data, object_pairs_hook=OrderedDict)
         if 'error' in parsed_json:
             result = {'error': parsed_json.get('error')}

@@ -7,9 +7,22 @@
 """Oppionionated internal proxy that dispatches requests to Netflix"""
 
 import json
-import BaseHTTPServer
-from SocketServer import TCPServer
-from urlparse import urlparse, parse_qs
+
+try:
+    from http.server import BaseHTTPRequestHandler
+except ImportError:
+    from BaseHTTPServer import BaseHTTPRequestHandler
+
+try:
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, parse_qs
+
+try:
+    from socketserver import TCPServer
+except ImportError:
+    from SocketServer import TCPServer
+
 from resources.lib.utils import get_class_methods
 from resources.lib.NetflixSession import NetflixSession
 from resources.lib.NetflixHttpSubRessourceHandler import \
@@ -20,7 +33,7 @@ from resources.lib.NetflixHttpSubRessourceHandler import \
 METHODS = get_class_methods(class_item=NetflixHttpSubRessourceHandler)
 
 
-class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
     """Oppionionated internal proxy that dispatches requests to Netflix"""
 
     # pylint: disable=invalid-name
@@ -53,7 +66,7 @@ class NetflixHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         return self.wfile.write(json.dumps({
             'method': method,
-            'result': result}))
+            'result': result}).encode())
 
     def log_message(self, *args):
         """Disable the BaseHTTPServer Log"""

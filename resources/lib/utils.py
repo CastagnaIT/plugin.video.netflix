@@ -11,6 +11,7 @@ from functools import wraps
 from types import FunctionType
 import xbmc
 
+from resources.lib.compat import itername
 
 class LoggingComponent(object):
     """
@@ -41,7 +42,7 @@ def log(func):
     :type delay: int
     :returns:  string -- Devices MAC address
     """
-    name = func.func_name
+    name = func.__name__
 
     @wraps(func)
     def wrapped(*args, **kwargs):
@@ -49,7 +50,7 @@ def log(func):
         that = args[0]
         class_name = that.__class__.__name__
         arguments = ''
-        for key, value in kwargs.iteritems():
+        for key, value in getattr(kwargs, itername)():
             if key != 'account' and key != 'credentials':
                 arguments += ":%s = %s:" % (key, value)
         if arguments != '':

@@ -13,10 +13,16 @@ import time
 import base64
 import random
 import uuid
-from StringIO import StringIO
+
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
+from resources.lib.compat import string_encoding
 
 import xbmcaddon
 
@@ -29,9 +35,9 @@ except:
     sdkversion = 0
 
 if sdkversion >= 18:
-  from MSLMediaDrm import MSLMediaDrmCrypto as MSLHandler
+  from resources.lib.MSLMediaDrm import MSLMediaDrmCrypto as MSLHandler
 else:
-  from MSLCrypto import MSLCrypto as MSLHandler
+  from resources.lib.MSLCrypto import MSLCrypto as MSLHandler
 
 class MSL(object):
     # Is a handshake already performed and the keys loaded
@@ -123,7 +129,7 @@ class MSL(object):
         profiles = ['playready-h264mpl30-dash', 'playready-h264mpl31-dash', 'playready-h264mpl40-dash', 'playready-h264hpl30-dash', 'playready-h264hpl31-dash', 'playready-h264hpl40-dash', 'heaac-2-dash', 'BIF240', 'BIF320']
 
         # subtitles
-        if ia_addon and self.nx_common.compare_versions(map(int, ia_addon.getAddonInfo('version').split('.')), [2, 3, 8]) >= 0:
+        if ia_addon and self.nx_common.compare_versions(list(map(int, ia_addon.getAddonInfo('version').split('.'))), [2, 3, 8]) >= 0:
             profiles.append('webvtt-lssdh-ios8')
         else:
             profiles.append('simplesdh')
@@ -263,14 +269,13 @@ class MSL(object):
             'uiVersion': 'shakti-v25d2fa21',
             'clientVersion': '6.0011.511.011',
             'params': [{
-                'sessionId': sid,
+                'sessionId': sid.decode('utf-8'),
                 'clientTime': int(id / 10000),
-                'challengeBase64': challenge,
+                'challengeBase64': challenge.decode('utf-8'),
                 'xid': str(id + 1610)
             }],
             'echo': 'sessionId'
         }
-        #print license_request_data
 
         request_data = self.__generate_msl_request_data(license_request_data)
 
@@ -282,7 +287,7 @@ class MSL(object):
             self.nx_common.log(
                 msg='[MSL][POST] Error {} {}'.format(exc[0], exc[1]))
 
-        print resp
+        #print resp
 
         if resp:
             try:
@@ -303,17 +308,17 @@ class MSL(object):
         return False
 
     def __decrypt_payload_chunks(self, payloadchunks):
-        decrypted_payload = ''
+        decrypted_payload = b''
         for chunk in payloadchunks:
-            payloadchunk = json.JSONDecoder().decode(chunk)
+            payloadchunk = json.loads(chunk)
             payload = payloadchunk.get('payload')
             decoded_payload = base64.standard_b64decode(payload)
-            encryption_envelope = json.JSONDecoder().decode(decoded_payload)
+            encryption_envelope = json.loads(decoded_payload)
             # Decrypt the text
             plaintext = self.crypto.decrypt(base64.standard_b64decode(encryption_envelope['iv']),
               base64.standard_b64decode(encryption_envelope.get('ciphertext')))
             # unpad the plaintext
-            plaintext = json.JSONDecoder().decode(plaintext)
+            plaintext = json.loads(plaintext)
             data = plaintext.get('data')
 
             # uncompress data if compressed
@@ -324,7 +329,7 @@ class MSL(object):
                 data = base64.standard_b64decode(data)
             decrypted_payload += data
 
-        decrypted_payload = json.JSONDecoder().decode(decrypted_payload)
+        decrypted_payload = json.loads(decrypted_payload)
 
         if 'result' in decrypted_payload:
             return decrypted_payload['result']
@@ -362,10 +367,10 @@ class MSL(object):
         # One Adaption Set for Video
         for video_track in manifest['video_tracks']:
             video_adaption_set = ET.SubElement(
-                parent=period,
-                tag='AdaptationSet',
+                period,
+                'AdaptationSet',
                 mimeType='video/mp4',
-                contentType="video")
+                contentType='video')
 
             # Content Protection
             keyid = None
@@ -376,20 +381,20 @@ class MSL(object):
 
             if keyid:
                 protection = ET.SubElement(
-                    parent=video_adaption_set,
-                    tag='ContentProtection',
+                    video_adaption_set,
+                    'ContentProtection',
                     value='cenc',
                     schemeIdUri='urn:mpeg:dash:mp4protection:2011')
                 protection.set('cenc:default_KID', str(uuid.UUID(bytes=base64.standard_b64decode(keyid))))
 
             protection = ET.SubElement(
-                parent=video_adaption_set,
-                tag='ContentProtection',
+                video_adaption_set,
+                'ContentProtection',
                 schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')
 
             ET.SubElement(
-                parent=protection,
-                tag='widevine:license',
+                protection,
+                'widevine:license',
                 robustness_level='HW_SECURE_CODECS_REQUIRED')
 
             if pssh:
@@ -410,8 +415,8 @@ class MSL(object):
                 #        hdcp_versions = hdcp if hdcp != 'any' else '1.0'
 
                 rep = ET.SubElement(
-                    parent=video_adaption_set,
-                    tag='Representation',
+                    video_adaption_set,
+                    'Representation',
                     width=str(stream['res_w']),
                     height=str(stream['res_h']),
                     bandwidth=str(stream['bitrate']*1024),
@@ -432,8 +437,8 @@ class MSL(object):
                     initSize = sidx['offset'] + sidx['size']
 
                 segment_base = ET.SubElement(
-                    parent=rep,
-                    tag='SegmentBase',
+                    rep,
+                    'SegmentBase',
                     indexRange='0-' + str(initSize),
                     indexRangeExact='true')
 
@@ -448,8 +453,8 @@ class MSL(object):
             languageMap[audio_track['language']] = True
 
             audio_adaption_set = ET.SubElement(
-                parent=period,
-                tag='AdaptationSet',
+                period,
+                'AdaptationSet',
                 lang=audio_track['language'],
                 contentType='audio',
                 mimeType='audio/mp4',
@@ -465,16 +470,16 @@ class MSL(object):
                     codec = 'ec-3'
                 #self.nx_common.log(msg='codec is: ' + codec)
                 rep = ET.SubElement(
-                    parent=audio_adaption_set,
-                    tag='Representation',
+                    audio_adaption_set,
+                    'Representation',
                     codecs=codec,
                     bandwidth=str(stream['bitrate']*1024),
                     mimeType='audio/mp4')
 
                 # AudioChannel Config
                 ET.SubElement(
-                    parent=rep,
-                    tag='AudioChannelConfiguration',
+                    rep,
+                    'AudioChannelConfiguration',
                     schemeIdUri='urn:mpeg:dash:23003:3:audio_channel_configuration:2011',
                     value=channelCount[stream['channels']])
 
@@ -483,8 +488,8 @@ class MSL(object):
                 ET.SubElement(rep, 'BaseURL').text = base_url
                 # Index range
                 segment_base = ET.SubElement(
-                    parent=rep,
-                    tag='SegmentBase',
+                    rep,
+                    'SegmentBase',
                     indexRange='0-' + str(init_length),
                     indexRangeExact='true')
 
@@ -495,29 +500,35 @@ class MSL(object):
                 continue
             # Only one subtitle representation per adaptationset
             downloadable = text_track['ttDownloadables']
-            content_profile = downloadable.keys()[0]
+            try:
+              content_profile = next(iter(downloadable.keys()))
+            except NameError:
+              content_profile = downloadable.keys()[0]
 
             subtiles_adaption_set = ET.SubElement(
-                parent=period,
-                tag='AdaptationSet',
+                period,
+                'AdaptationSet',
                 lang=text_track.get('language'),
                 codecs='wvtt' if content_profile == 'webvtt-lssdh-ios8' else 'stpp',
                 contentType='text',
                 mimeType='text/vtt' if content_profile == 'webvtt-lssdh-ios8' else 'application/ttml+xml')
             role = ET.SubElement(
-                parent=subtiles_adaption_set,
-                tag = 'Role',
+                subtiles_adaption_set,
+                'Role',
                 schemeIdUri = 'urn:mpeg:dash:role:2011',
                 value = 'forced' if text_track.get('isForcedNarrative') else 'main')
             rep = ET.SubElement(
-                parent=subtiles_adaption_set,
-                tag='Representation',
+                subtiles_adaption_set,
+                'Representation',
                 nflxProfile=content_profile)
 
-            base_url = downloadable[content_profile]['downloadUrls'].values()[0]
+            try:
+                base_url = next(iter(downloadable[content_profile]['downloadUrls'].values()))
+            except NameError:
+                base_url = downloadable[content_profile]['downloadUrls'].values()[0]
             ET.SubElement(rep, 'BaseURL').text = base_url
 
-        xml = ET.tostring(root, encoding='utf-8', method='xml')
+        xml = ET.tostring(root, encoding=string_encoding, method='xml')
         xml = xml.replace('\n', '').replace('\r', '')
 
         self.nx_common.save_file(
@@ -544,10 +555,9 @@ class MSL(object):
     def __generate_msl_request_data(self, data):
         #self.__load_msl_data()
         header_encryption_envelope = self.__encrypt(
-            plaintext=self.__generate_msl_header())
-        headerdata = base64.standard_b64encode(header_encryption_envelope)
+            plaintext=self.__generate_msl_header()).encode()
         header = {
-            'headerdata': headerdata,
+            'headerdata': base64.standard_b64encode(header_encryption_envelope).decode('ascii'),
             'signature': self.__sign(header_encryption_envelope),
             'mastertoken': self.mastertoken,
         }
@@ -555,15 +565,15 @@ class MSL(object):
         # Create FIRST Payload Chunks
         first_payload = {
             'messageid': self.current_message_id,
-            'data': base64.standard_b64encode(json.dumps(data)),
+            'data': base64.standard_b64encode(json.dumps(data).encode()).decode('ascii'),
             'sequencenumber': 1,
             'endofmsg': True
         }
+
         first_payload_encryption_envelope = self.__encrypt(
-            plaintext=json.dumps(first_payload))
-        payload = base64.standard_b64encode(first_payload_encryption_envelope)
+            plaintext=json.dumps(first_payload)).encode()
         first_payload_chunk = {
-            'payload': payload,
+            'payload': base64.standard_b64encode(first_payload_encryption_envelope).decode('ascii'),
             'signature': self.__sign(first_payload_encryption_envelope),
         }
         request_data = json.dumps(header) + json.dumps(first_payload_chunk)
@@ -615,7 +625,6 @@ class MSL(object):
                         'password': account['password']
                     }
                 }
-
         return json.dumps(header_data)
 
     def __encrypt(self, plaintext):
@@ -629,7 +638,7 @@ class MSL(object):
         :param text:
         :return: Base64 encoded signature
         """
-        return base64.standard_b64encode(self.crypto.sign(text))
+        return base64.standard_b64encode(self.crypto.sign(text)).decode('ascii')
 
     def perform_key_handshake(self):
         self.__perform_key_handshake()
@@ -654,7 +663,7 @@ class MSL(object):
                     'identity': esn
                 }
             },
-            'headerdata': base64.standard_b64encode(header),
+            'headerdata': base64.standard_b64encode(header.encode()).decode('ascii'),
             'signature': '',
         }
         #self.nx_common.log(msg='Key Handshake Request:')
@@ -677,7 +686,7 @@ class MSL(object):
                 self.nx_common.log(
                     msg=base64.standard_b64decode(resp['errordata']))
                 return False
-            base_head = base64.standard_b64decode(resp['headerdata'])
+            base_head = base64.standard_b64decode(resp['headerdata']).decode()
 
             headerdata=json.JSONDecoder().decode(base_head)
             self.__set_master_token(headerdata['keyresponsedata']['mastertoken'])
@@ -685,7 +694,8 @@ class MSL(object):
             self.__save_msl_data()
         else:
             self.nx_common.log(msg='Key Exchange failed')
-            self.nx_common.log(msg=resp.text)
+            if resp:
+                self.nx_common.log(msg=resp.text)
 
     def init_msl_data(self):
         self.nx_common.log(msg='MSL Data exists. Use old Tokens.')
@@ -700,7 +710,7 @@ class MSL(object):
         # Check expire date of the token
         raw_token = msl_data['tokens']['mastertoken']['tokendata']
         base_token = base64.standard_b64decode(raw_token)
-        master_token = json.JSONDecoder().decode(base_token)
+        master_token = json.JSONDecoder().decode(base_token.decode('utf-8'))
         exp = int(master_token['expiration'])
         valid_until = datetime.utcfromtimestamp(exp)
         present = datetime.now()
@@ -739,5 +749,5 @@ class MSL(object):
         self.mastertoken = master_token
         raw_token = master_token['tokendata']
         base_token = base64.standard_b64decode(raw_token)
-        decoded_token = json.JSONDecoder().decode(base_token)
+        decoded_token = json.JSONDecoder().decode(base_token.decode('utf-8'))
         self.sequence_number = decoded_token.get('sequencenumber')

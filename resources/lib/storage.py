@@ -70,7 +70,7 @@ class PersistentStorage(LoggingComponent):
         Write current contents to disk
         """
         f = xbmcvfs.File(self.backing_file, 'wb')
-        pickle.dump(self._contents, f)
+        f.write(bytearray(pickle.dumps(self._contents, protocol=2)))
         f.close()
         self.log('Committed changes to backing file')
 

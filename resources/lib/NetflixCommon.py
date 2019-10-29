@@ -4,6 +4,7 @@ import xbmcvfs
 import json
 
 from resources.lib.storage import PersistentStorage
+from resources.lib.compat import compat_unicode
 
 
 class Signals(object):
@@ -64,7 +65,7 @@ class NetflixCommon(object):
         return False
 
     def get_credentials(self):
-        from NetflixCredentials import NetflixCredentials
+        from resources.lib.NetflixCredentials import NetflixCredentials
         email = self.get_setting('email')
         password = self.get_setting('password')
 
@@ -75,7 +76,7 @@ class NetflixCommon(object):
         return NetflixCredentials().decode_credentials(email, password)
 
     def set_credentials(self, email, password):
-        from NetflixCredentials import NetflixCredentials
+        from resources.lib.NetflixCredentials import NetflixCredentials
         encoded = NetflixCredentials().encode_credentials(email, password)
         self.set_setting('email',encoded['email'])
         self.set_setting('password',encoded['password'])
@@ -91,7 +92,7 @@ class NetflixCommon(object):
         level : :obj:`int`
             Kodi log level
         """
-        if isinstance(msg, unicode):
+        if isinstance(msg, str):
             msg = msg.encode('utf-8')
         xbmc.log('[%s] %s' % (self.plugin, msg.__str__()), level)
 
@@ -101,20 +102,20 @@ class NetflixCommon(object):
         Check if folderpath ends with path delimator
         If not correct it (makes sure xbmcvfs.exists is working correct)
         """
-        if isinstance(path, unicode):
+        if isinstance(path, compat_unicode):
             check = path.encode('ascii', 'ignore')
-            if '/' in check and not str(check).endswith('/'):
+            if b'/' in check and not str(check).endswith('/'):
                 end = u'/'
                 path = path + end
                 return path
-            if '\\' in check and not str(check).endswith('\\'):
+            if b'\\' in check and not str(check).endswith('\\'):
                 end = u'\\'
                 path = path + end
                 return path
-        if '/' in path and not str(path).endswith('/'):
+        if '/' in path and not compat_unicode(path).endswith('/'):
             path = path + '/'
             return path
-        if '\\' in path and not str(path).endswith('\\'):
+        if '\\' in path and not compat_unicode(path).endswith('\\'):
             path = path + '\\'
             return path
 

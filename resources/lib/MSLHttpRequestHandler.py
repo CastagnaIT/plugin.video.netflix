@@ -7,14 +7,26 @@
 """Handles & translates requests from Inputstream to Netflix"""
 
 import base64
-import BaseHTTPServer
-from urlparse import urlparse, parse_qs
 
-from SocketServer import TCPServer
+try:
+    from http.server import BaseHTTPRequestHandler
+except ImportError:
+    from BaseHTTPServer import BaseHTTPRequestHandler
+
+try:
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, parse_qs
+
+try:
+    from socketserver import TCPServer
+except ImportError:
+    from SocketServer import TCPServer
+
 from resources.lib.MSLv2 import MSL
 
 
-class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class MSLHttpRequestHandler(BaseHTTPRequestHandler):
     """Handles & translates requests from Inputstream to Netflix"""
 
     # pylint: disable=invalid-name
@@ -27,7 +39,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """Loads the licence for the requested resource"""
         length = int(self.headers.get('content-length'))
         post = self.rfile.read(length)
-        data = post.split('!')
+        data = post.split(b'!')
         if len(data) is 2:
             challenge = data[0]
             sid = base64.standard_b64decode(data[1])
@@ -71,7 +83,7 @@ class MSLHttpRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'application/xml')
             self.end_headers()
-            self.wfile.write(data)
+            self.wfile.write(data.encode('utf-8'))
 
     def log_message(self, *args):
         """Disable the BaseHTTPServer Log"""

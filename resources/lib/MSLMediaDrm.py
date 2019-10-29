@@ -2,7 +2,6 @@ from os import urandom
 import json
 import base64
 import xbmcdrm
-import pprint
 
 class MSLMediaDrmCrypto:
 
@@ -45,7 +44,7 @@ class MSLMediaDrmCrypto:
         if len(data) == 0:
             return false
 
-        self.keySetId = self.cryptoSession.ProvideKeyResponse(data)
+        self.keySetId = self.cryptoSession.ProvideKeyResponse(bytearray(data))
 
         if self.keySetId:
             self.kodi_helper.log(msg='Widevine CryptoSession provideKeyResponse successful, keySetId:'
@@ -53,14 +52,16 @@ class MSLMediaDrmCrypto:
         else:
             self.kodi_helper.log(msg='Widevine CryptoSession provideKeyResponse failed!')
 
+        self.keySetId = self.keySetId.encode()
+
         return self.keySetId != None
 
     def toDict(self):
         self.kodi_helper.log(msg='Provide Widevine keys to dict')
         data = {
-            "key_set_id": base64.standard_b64encode(self.keySetId),
-            'key_id': base64.standard_b64encode(self.keyId),
-            'hmac_key_id': base64.standard_b64encode(self.hmacKeyId)
+            "key_set_id": base64.standard_b64encode(self.keySetId).decode('ascii'),
+            'key_id': base64.standard_b64encode(self.keyId).decode('ascii'),
+            'hmac_key_id': base64.standard_b64encode(self.hmacKeyId).decode('ascii')
         }
         return data
 
@@ -84,12 +85,12 @@ class MSLMediaDrmCrypto:
         return need_handshake
 
     def get_key_request(self):
-        drmKeyRequest = self.__getKeyRequest(bytes([10, 122, 0, 108, 56, 43]))
+        drmKeyRequest = self.__getKeyRequest(bytearray([10, 122, 0, 108, 56, 43]))
 
         key_request = [{
         'scheme': 'WIDEVINE',
         'keydata': {
-            'keyrequest': base64.standard_b64encode(drmKeyRequest)
+            'keyrequest': base64.standard_b64encode(drmKeyRequest).decode('ascii')
         }
         }]
 
@@ -106,7 +107,7 @@ class MSLMediaDrmCrypto:
         self.hmacKeyId = base64.standard_b64decode(headerdata['keyresponsedata']['keydata']['hmackeyid'])
 
     def decrypt(self, iv, data):
-        decrypted = self.cryptoSession.Decrypt(self.keyId, data, iv)
+        decrypted = self.cryptoSession.Decrypt(bytearray(self.keyId), bytearray(data), bytearray(iv))
 
         if decrypted:
             self.kodi_helper.log(msg='Widevine CryptoSession decrypt successful: '
@@ -121,13 +122,13 @@ class MSLMediaDrmCrypto:
 
     def encrypt(self, data, esn, sequence_number):
 
-        iv = urandom(16)
+        iv = bytearray(urandom(16))
 
         # Add PKCS5Padding
         pad = 16 - len(data) % 16
         newData = data + ''.join([chr(pad)] * pad)
 
-        encrypted = self.cryptoSession.Encrypt(self.keyId, newData, iv)
+        encrypted = self.cryptoSession.Encrypt(bytearray(self.keyId), newData, iv)
 
         if encrypted:
             self.kodi_helper.log(msg='Widevine CryptoSession encrypt successful: '
@@ -135,18 +136,18 @@ class MSLMediaDrmCrypto:
 
             encryption_envelope = {
                 'version' : 1,
-                'ciphertext': base64.standard_b64encode(encrypted),
+                'ciphertext': base64.standard_b64encode(encrypted).decode('ascii'),
                 'sha256': 'AA==',
-                'keyid': base64.standard_b64encode(self.keyId),
+                'keyid': base64.standard_b64encode(self.keyId).decode('ascii'),
                 #'cipherspec' : 'AES/CBC/PKCS5Padding',
-                'iv': base64.standard_b64encode(iv)
+                'iv': base64.standard_b64encode(iv).decode('ascii')
             }
             return encryption_envelope
         else:
          self.kodi_helper.log(msg='Widevine CryptoSession encrypt failed!')
 
     def sign(self, message):
-        signature = self.cryptoSession.Sign(self.hmacKeyId, message)
+        signature = self.cryptoSession.Sign(bytearray(self.hmacKeyId), bytearray(message))
         if signature:
             self.kodi_helper.log(msg='Widevine CryptoSession sign success: length:'
                                  + str(len(signature)))
@@ -155,4 +156,4 @@ class MSLMediaDrmCrypto:
             self.kodi_helper.log(msg='Widevine CryptoSession sign failed!')
 
     def verify(self, message, signature):
-        return self.cryptoSession.Verify(self.hmacKeyId, message, signature)
+        return self.cryptoSession.Verify(bytearray(self.hmacKeyId), bytearray(message), bytearray(signature))

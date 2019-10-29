@@ -1,1 +1,1 @@
-import Tracker
+import resources.lib.UniversalAnalytics.Tracker

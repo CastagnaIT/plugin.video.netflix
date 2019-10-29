@@ -9,16 +9,20 @@ import base64
 import hashlib
 from os import remove
 from uuid import uuid4
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 import AddonSignals
 import xbmc
 import xbmcgui
 import xbmcplugin
 import inputstreamhelper
+from resources.lib.compat import compat_unicode
 from resources.lib.ui.Dialogs import Dialogs
 from resources.lib.NetflixCommon import Signals
-from utils import get_user_agent
-from UniversalAnalytics import Tracker
+from resources.lib.utils import get_user_agent
+from resources.lib.UniversalAnalytics import Tracker
 try:
     import cPickle as pickle
 except:
@@ -115,18 +119,21 @@ class KodiHelper(object):
         try:
             cached_items = window.getProperty('memcache')
             # no cache setup yet, create one
-            if len(cached_items) < 1:
-                window.setProperty('memcache', pickle.dumps({}))
-        except EOFError:
+            if len(cached_items) >= 1:
+                return
+        except (EOFError, UnicodeDecodeError):
+            self.nx_common.log(msg='setup_memcache failed, recreating')
             pass
+        window.setProperty('memcache', pickle.dumps({}, protocol=0).decode('latin-1'))
 
     def invalidate_memcache(self):
         """Invalidates the memory cache"""
         current_window = xbmcgui.getCurrentWindowId()
         window = xbmcgui.Window(current_window)
         try:
-            window.setProperty('memcache', pickle.dumps({}))
+            window.setProperty('memcache', pickle.dumps({}, protocol=0).decode('latin-1'))
         except EOFError:
+            self.nx_common.log(msg='invalidate_memcache failed')
             pass
 
     def get_cached_item(self, cache_id):
@@ -146,9 +153,10 @@ class KodiHelper(object):
         current_window = xbmcgui.getCurrentWindowId()
         window = xbmcgui.Window(current_window)
         try:
-            cached_items = pickle.loads(window.getProperty('memcache'))
+            cached_items = pickle.loads(window.getProperty('memcache').encode('latin-1'))
             ret = cached_items.get(cache_id)
-        except EOFError:
+        except (EOFError, UnicodeDecodeError) as e:
+            self.nx_common.log(msg='memcache: get_cached_items failed' + str(e))
             ret = None
         return ret
 
@@ -166,10 +174,11 @@ class KodiHelper(object):
         current_window = xbmcgui.getCurrentWindowId()
         window = xbmcgui.Window(current_window)
         try:
-            cached_items = pickle.loads(window.getProperty('memcache'))
+            cached_items = pickle.loads(window.getProperty('memcache').encode('latin-1'))
             cached_items.update({cache_id: contents})
-            window.setProperty('memcache', pickle.dumps(cached_items))
-        except EOFError:
+            window.setProperty('memcache', pickle.dumps(cached_items, protocol=0).decode('latin-1'))
+        except (EOFError, UnicodeDecodeError) as e:
+            self.nx_common.log(msg='memcache: add_cached_items failed' + str(e))
             pass
 
     def set_custom_view(self, content):
@@ -224,7 +233,7 @@ class KodiHelper(object):
         # build menu items for every profile
         for profile in profiles:
             # load & encode profile data
-            enc_profile_name = profile.get('profileName', '').encode('utf-8')
+            enc_profile_name = profile.get('profileName', '')
             unescaped_profile_name = html_parser.unescape(enc_profile_name)
             profile_guid = profile.get('guid')
 
@@ -1166,7 +1175,7 @@ class KodiHelper(object):
             li_infos['quality'] = quality
         if 'tvshowtitle' in entry_keys:
             title = entry.get('tvshowtitle', '')
-            if not isinstance(title, unicode):
+            if not isinstance(title, compat_unicode):
                 title = base64.urlsafe_b64decode(title).decode('utf-8')
             infos.update({'tvshowtitle': title})
         self.library.write_metadata_file(
@@ -1429,7 +1438,7 @@ class KodiHelper(object):
         """
         src = xbmc if string_id < 30000 else self.nx_common.get_addon()
         locString = src.getLocalizedString(string_id)
-        if isinstance(locString, unicode):
+        if isinstance(locString, compat_unicode):
             locString = locString.encode('utf-8')
         return locString
 

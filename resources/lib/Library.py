@@ -11,8 +11,8 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import requests
-from utils import noop
-from KodiHelper import KodiHelper
+from resources.lib.utils import noop
+from resources.lib.KodiHelper import KodiHelper
 try:
     import cPickle as pickle
 except:
@@ -146,7 +146,7 @@ class Library(object):
         meta_file = os.path.join(self.metadata_path, video_id+'.meta')
         if not xbmcvfs.exists(meta_file):
             f = xbmcvfs.File(meta_file, 'wb')
-            pickle.dump(content, f)
+            f.write(bytearray(pickle.dumps(content, protocol=2)))
             f.close()
 
     def read_metadata_file(self, video_id):
@@ -203,7 +203,7 @@ class Library(object):
         meta_file = os.path.join(self.metadata_path, video_id+'.art')
         if not xbmcvfs.exists(meta_file):
             f = xbmcvfs.File(meta_file, 'wb')
-            pickle.dump(content, f)
+            f.write(bytearray(pickle.dumps(content, protocol=2)))
             f.close()
 
     def _load_local_db(self, filename):
@@ -226,7 +226,7 @@ class Library(object):
             self._update_local_db(filename=filename, db=data)
             return data
 
-        with open(filename) as f:
+        with open(filename, 'rb') as f:
             data = pickle.load(f)
             if data:
                 return data
@@ -251,9 +251,9 @@ class Library(object):
         """
         if not os.path.isdir(os.path.dirname(filename)):
             return False
-        with open(filename, 'w') as f:
+        with open(filename, 'wb') as f:
             f.truncate()
-            pickle.dump(db, f)
+            pickle.dump(db, f, protocol=2)
         return True
 
     def movie_exists(self, title, year):
@@ -809,7 +809,7 @@ class Library(object):
         bool
             Download triggered
         """
-        title = re.sub(r'[?|$|!|:|#]', r'', title)
+        title = re.sub(r'[?|$|!|:|#]', r'', title.decode('utf-8'))
         imgfile = title + '.jpg'
         file = os.path.join(self.imagecache_path, imgfile)
         folder_movies = self.nx_common.check_folder_path(

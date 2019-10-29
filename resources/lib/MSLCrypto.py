@@ -44,9 +44,9 @@ class MSLCrypto():
         encrypted_key = self.rsa_key.exportKey()
 
         data = {
-            "encryption_key": base64.standard_b64encode(self.encryption_key),
-            'sign_key': base64.standard_b64encode(self.sign_key),
-            'rsa_key': base64.standard_b64encode(encrypted_key)
+            "encryption_key": base64.standard_b64encode(self.encryption_key).decode('ascii'),
+            'sign_key': base64.standard_b64encode(self.sign_key).decode('ascii'),
+            'rsa_key': base64.standard_b64encode(encrypted_key).decode('ascii')
         }
         return data
 
@@ -74,7 +74,7 @@ class MSLCrypto():
 
     def get_key_request(self):
         raw_key = self.rsa_key.publickey().exportKey(format='DER')
-        public_key = base64.standard_b64encode(raw_key)
+        public_key = base64.standard_b64encode(raw_key).decode('ascii')
 
         key_request = [{
         'scheme': 'ASYMMETRIC_WRAPPED',
@@ -96,12 +96,12 @@ class MSLCrypto():
 
         # Decrypt encryption key
         cipher_raw = cipher_rsa.decrypt(encrypted_encryption_key)
-        encryption_key_data = json.JSONDecoder().decode(cipher_raw)
+        encryption_key_data = json.JSONDecoder().decode(cipher_raw.decode())
         self.encryption_key = self.__base64key_decode(encryption_key_data['k'])
 
         # Decrypt sign key
         sign_key_raw = cipher_rsa.decrypt(encrypted_sign_key)
-        sign_key_data = json.JSONDecoder().decode(sign_key_raw)
+        sign_key_data = json.JSONDecoder().decode(sign_key_raw.decode())
         self.sign_key = self.__base64key_decode(sign_key_data['k'])
 
     def decrypt(self, iv, data):
@@ -119,14 +119,14 @@ class MSLCrypto():
                 'ciphertext': '',
                 'keyid': esn + '_' + str(sequence_number),
                 'sha256': 'AA==',
-                'iv': base64.standard_b64encode(iv)
+                'iv': base64.standard_b64encode(iv).decode('ascii')
         }
         # Padd the plaintext
-        plaintext = Padding.pad(data, 16)
+        plaintext = Padding.pad(data.encode('utf-8'), 16)
         # Encrypt the text
         cipher = AES.new(self.encryption_key, AES.MODE_CBC, iv)
         citext = cipher.encrypt(plaintext)
-        encryption_envelope['ciphertext'] = base64.standard_b64encode(citext)
+        encryption_envelope['ciphertext'] = base64.standard_b64encode(citext).decode('ascii')
 
         return encryption_envelope;
 

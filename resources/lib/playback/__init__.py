@@ -15,7 +15,6 @@ import AddonSignals
 from resources.lib.NetflixCommon import Signals
 from resources.lib.utils import LoggingComponent
 
-
 def json_rpc(method, params=None):
     """
     Executes a JSON-RPC in Kodi
@@ -29,8 +28,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    response = json.loads(unicode(xbmc.executeJSONRPC(request), 'utf-8',
-                                  errors='ignore'))
+    response = json.loads(xbmc.executeJSONRPC(request))
     if 'error' in response:
         raise IOError('JSONRPC-Error {}: {}'
                       .format(response['error']['code'],
@@ -75,7 +73,7 @@ class PlaybackController(xbmc.Monitor, LoggingComponent):
             try:
                 if method == 'Player.OnAVStart':
                     self._on_playback_started(
-                        json.loads(unicode(data, 'utf-8', errors='ignore')))
+                        json.loads(data))
                 elif method == 'Player.OnStop':
                     self._on_playback_stopped()
             except RuntimeError as exc:

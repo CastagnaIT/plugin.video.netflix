@@ -2,7 +2,7 @@ import base64
 from Cryptodome import Random
 from Cryptodome.Cipher import AES
 from Cryptodome.Util import Padding
-from utils import uniq_id
+from resources.lib.utils import uniq_id
 
 class NetflixCredentials(object):
     """
@@ -62,7 +62,7 @@ class NetflixCredentials(object):
         :type data: str
         :returns:  string -- Encoded data
         """
-        raw = bytes(Padding.pad(data_to_pad=raw, block_size=self.bs))
+        raw = bytes(Padding.pad(data_to_pad=raw.encode('utf-8'), block_size=self.bs))
         iv = Random.new().read(AES.block_size)
         cipher = AES.new(self.crypt_key, AES.MODE_CBC, iv)
         return base64.b64encode(iv + cipher.encrypt(raw))

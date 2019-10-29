@@ -11,11 +11,17 @@ import os
 import sys
 import json
 from time import time
-from urllib import quote, unquote
+
+try:
+    from urllib.parse import quote, unquote
+except ImportError:
+    from urllib import quote, unquote
+
 from re import compile as recompile, DOTALL
 from base64 import urlsafe_b64encode
 from requests import session, cookies
-from utils import noop, get_user_agent
+from resources.lib.compat import itername
+from resources.lib.utils import noop, get_user_agent
 from collections import OrderedDict
 try:
     import cPickle as pickle
@@ -148,7 +154,7 @@ class NetflixSession(object):
         json_str = json_array[0]
         json_str = json_str.replace('\"', '\\"')  # Hook for escape double-quotes
         json_str = json_str.replace('\\s', '\\\\s')  # Hook for escape \s in json regex
-        json_str = json_str.decode('unicode_escape')  # finally decoding...
+        json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
         return json.loads(json_str, encoding='utf-8', strict=False)
 
     def extract_inline_netflix_page_data(self, content='', items=None):
@@ -170,6 +176,7 @@ class NetflixSession(object):
         self.nx_common.log(msg='Parsing inline data...')
         items = self.page_items if items is None else items
         user_data = {'gpsModel': 'harris'}
+        content = content.decode('utf-8');
         react_context = self.extract_json(content, 'reactContext')
         # iterate over all wanted item keys & try to fetch them
         for item in items:
@@ -984,8 +991,7 @@ class NetflixSession(object):
             List of genres
         """
         video_genres = []
-
-        for video_key, video_genre in video.get('genres', {}).iteritems():
+        for video_key, video_genre in getattr(video.get('genres', {}), itername)():
             is_size_key = self._is_size_key(key=video_key)
             if is_size_key is False and video_key != 'summary':
                 name = genres.get(video_genre[1], {}).get('name')
@@ -1143,13 +1149,13 @@ class NetflixSession(object):
 
         # get art video key
         video = {}
-        for key, video_candidate in videos.iteritems():
+        for key, video_candidate in getattr(videos, itername)():
             if not self._is_size_key(key):
                 video = video_candidate
 
         # get season index
         sorting = {}
-        for idx, season_list_entry in video['seasonList'].iteritems():
+        for idx, season_list_entry in getattr(video['seasonList'], itername)():
             if self._is_size_key(key=idx) is False and idx != 'summary':
                 sorting[int(season_list_entry[1])] = int(idx)
 
@@ -1871,7 +1877,7 @@ class NetflixSession(object):
         """
         if not os.path.isdir(os.path.dirname(filename)):
             return False
-        with open(filename, 'w') as f:
+        with open(filename, 'wb') as f:
             f.truncate()
             pickle.dump({
                 'user_data': self.user_data,
@@ -1904,7 +1910,7 @@ class NetflixSession(object):
         """
         if not os.path.isdir(os.path.dirname(filename)):
             return False
-        with open(filename, 'w') as file_handle:
+        with open(filename, 'wb') as file_handle:
             _cookies = self.session.cookies._cookies
             jar = self.session.cookies
             file_handle.truncate()
@@ -1932,7 +1938,7 @@ class NetflixSession(object):
             return False
 
         # open the cookies file & set the loaded cookies
-        with open(filename) as f:
+        with open(filename, 'rb') as f:
             self.nx_common.log(msg='Loading cookies from file')
             _cookies = pickle.load(f)
             if _cookies:
@@ -1967,7 +1973,7 @@ class NetflixSession(object):
         :type account: dict
         :returns: str -- Account data hash
         """
-        return urlsafe_b64encode(account.get('email', 'NoMail'))
+        return urlsafe_b64encode(account.get('email', 'NoMail').encode()).decode('utf-8')
 
     def _session_post(self, component, type='document', data={}, headers={}, params={}):
         """
@@ -2094,18 +2100,18 @@ class NetflixSession(object):
         import re
         try:
             manufacturer = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.product.manufacturer'])
+                ['/system/bin/getprop', 'ro.product.manufacturer']).decode('utf-8')
             model = subprocess.check_output(
                 ['/system/bin/getprop', 'ro.product.model']
-                ).strip(' \t\n\r')
+                ).decode('utf-8').strip(' \t\n\r')
 
             if manufacturer:
                 esn = 'NFANDROID1-PRV-' if subprocess.check_output(
                     ['/system/bin/getprop', 'ro.build.characteristics']
-                    ).strip(' \t\n\r') != 'tv' else 'NFANDROID2-PRV-'
+                    ).decode('utf-8').strip(' \t\n\r') != 'tv' else 'NFANDROID2-PRV-'
                 input = subprocess.check_output(
                     ['/system/bin/getprop', 'ro.nrdp.modelgroup']
-                    ).strip(' \t\n\r')
+                    ).decode('utf-8').strip(' \t\n\r')
                 if not input:
                     if model:
                         esn += model.replace(' ', '').upper() + '-'
