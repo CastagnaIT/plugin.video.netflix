@@ -157,7 +157,7 @@ def get_upnext_info(videoid, current_episode, metadata):
             next_episode_id.tvshowid,
             next_episode_id.seasonid,
             next_episode_id.episodeid)
-        next_info['play_info'] = {'play_path': xbmc.translatePath(filepath)}
+        next_info['play_info'] = {'play_path': xbmc.translatePath(filepath).decode('utf-8')}
     else:
         next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id, mode=g.MODE_PLAY)}
     if 'creditsOffset' in metadata[0]:

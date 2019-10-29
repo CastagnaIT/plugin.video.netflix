@@ -117,7 +117,7 @@ def schedule_builtin(time, command, name='NetflixTask'):
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin('PlayMedia({})'.format(media))
+    xbmc.executebuiltin('PlayMedia({})'.format(media).encode("utf-8"))
 
 
 def stop_playback():
