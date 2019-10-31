@@ -20,7 +20,7 @@ import resources.lib.api.paths as apipaths
 import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
-                                          APIError, MissingCredentialsError)
+                                          APIError, MissingCredentialsError, WebsiteParsingError)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -170,7 +170,7 @@ class NetflixSession(object):
             for cookie in list(self.session.cookies):
                 if cookie.name != cookie_name:
                     continue
-                if cookie.expires <= time.time():
+                if cookie.expires <= int(time.time()):
                     common.info('Login is expired')
                     return False
         if fallback_to_validate:
@@ -200,9 +200,17 @@ class NetflixSession(object):
         try:
             website.extract_session_data(self._get('profiles'))
             self.update_session_data()
+        except WebsiteParsingError:
+            # it is possible that cookies may not work anymore,
+            # it should be due to updates in the website,
+            # this can happen when opening the addon while executing update_profiles_data
+            common.debug(traceback.format_exc())
+            common.info('Failed to refresh session data, login expired (WebsiteParsingError)')
+            self.session.cookies.clear()
+            return self._login()
         except Exception:
             common.debug(traceback.format_exc())
-            common.info('Failed to refresh session data, login expired')
+            common.info('Failed to refresh session data, login expired (Exception)')
             self.session.cookies.clear()
             return False
         common.debug('Successfully refreshed session data')
