@@ -671,7 +671,7 @@ msgstr ""
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Panel prilagodljivih postavki InputStream sada će se otvoriti, morate promijeniti opciju \"Override HDCP status \" u ON"
+msgstr "Panel prilagodljivih postavki InputStream sada će se otvoriti, morate promijeniti opciju \"Override HDCP status\" u ON"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -767,7 +767,7 @@ msgstr "Nema dostupnih trailera"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Onemogućite titlove ako nema prisiljenih titlova (Radi samo ako je Kodi Player postavljen na \"Samo prisilni \" titlovi)"
+msgstr "Onemogućite titlove ako nema prisiljenih titlova (Radi samo ako je Kodi Player postavljen na \"Samo prisilni\" titlovi)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
