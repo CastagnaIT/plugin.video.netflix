@@ -54,7 +54,7 @@ msgstr "Kindersicherungs-PIN nicht korrekt"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr "Bitter überprüfen Sie Ihre Kindersicherungs-PIN"
+msgstr "Bitte überprüfen Sie Ihre Kindersicherungs-PIN"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -83,6 +83,14 @@ msgstr "Keine Titel gefunden"
 msgctxt "#30014"
 msgid "Account"
 msgstr "Konto"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Andere Einstellungen"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -148,9 +156,13 @@ msgctxt "#30032"
 msgid "Tracking"
 msgstr "Nachverfolgung"
 
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Aktiviere Dolby Digital Plus (DDPlus HQ und Atom mit Premium)"
+
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "Manuelle ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -196,6 +208,10 @@ msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
 msgstr "[COLOR cyan][B]-- NÄCHSTE SEITE --[/B][/COLOR]"
 
+msgctxt "#30046"
+msgid "InputStream addon is not enabled"
+msgstr "InputStream-Addon ist nicht aktiviert"
+
 msgctxt "#30047"
 msgid "Finally remove?"
 msgstr "Endgültig entfernen?"
@@ -212,6 +228,14 @@ msgctxt "#30050"
 msgid "Update successful"
 msgstr "Aktualisierung erfolgreich"
 
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Anfragefehler"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Konnte Anfrage aktuell nicht abschließen"
+
 msgctxt "#30053"
 msgid "Auto Login"
 msgstr "Automatisch Anmelden"
@@ -226,7 +250,7 @@ msgstr "Profil"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
@@ -242,7 +266,7 @@ msgstr "Accounts wechseln"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "Aktiviere HEVC profile (4k in Android/HDR/DolbyVision)"
+msgstr "Aktiviere HEVC-Profile (4k in Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -324,6 +348,10 @@ msgctxt "#30080"
 msgid "Pause when skipping"
 msgstr "Beim Weiterspringen pausieren"
 
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "Unterstützung für HDCP 2.2 erzwingen (aktiviert 4K-Inhalte)"
+
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
 msgstr "Audio- und Untertitel-Einstellungen beibehalten"
@@ -331,10 +359,6 @@ msgstr "Audio- und Untertitel-Einstellungen beibehalten"
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
 msgstr "Fortschritt für Bibliothekseinträge speichern und als gesehen markieren"
-
-msgctxt "#30084"
-msgid "Advanced"
-msgstr "Fortgeschritten"
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
@@ -438,11 +462,15 @@ msgstr "PIN-Abfrage aktiviert"
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Login erfolgreich"
+msgstr "Erfolgreich angemeldet"
 
 msgctxt "#30110"
 msgid "Background services started"
 msgstr "Hintergrunddienste gestartet"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Es gibt keine Inhalte"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
@@ -450,11 +478,11 @@ msgstr "Sie müssen angemeldet sein um Netflix zu benutzen"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr "Logout erfolgreich"
+msgstr "Erfolgreich abgemeldet"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Meine Liste und Kodi Library synchronisieren"
+msgstr "Meine Liste und Kodi-Bibliothek synchronisieren"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -478,7 +506,7 @@ msgstr "Meine Liste erfolgreich aktualisiert"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Staffeln können nicht automatisch aus der Kodi Bilbiothek entfernt werden. Bitte tue dies manuell."
+msgstr "Staffeln können nicht automatisch aus der Kodi-Bilbiothek entfernt werden. Bitte tue dies manuell."
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -543,6 +571,10 @@ msgstr "Cache geleert"
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
 msgstr "Aktiviere 1080p Unlock (nicht empfohlen auf Android)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Aktiviere VP9-Profile (deaktivieren wenn es Artefakte verursacht)"
 
 msgctxt "#30138"
 msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -610,11 +642,11 @@ msgstr "Erscheinungsjahr"
 
 msgctxt "#30154"
 msgid "Netflix addon configuration"
-msgstr "Netflix Adon-Konfiguration"
+msgstr "Netflix-Addon-Konfiguration"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
-msgstr "Haben Sie einen Netflix Premiumkonto?"
+msgstr "Haben Sie ein Netflix-Premiumkonto?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
@@ -686,7 +718,7 @@ msgstr "Beliebt auf Netflix"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
-msgstr "Netflix Original"
+msgstr "Netflix-Originale"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
@@ -847,3 +879,43 @@ msgstr "Es ist kein Gerät definiert für die Verwaltung des Autoupdates der Dat
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
 msgstr "InputStream Helper Einstellungen..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Aktualisierung meiner Liste erzwingen"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Titel aus meiner Liste farblich hervorheben"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Verwendete ESN anzeigen"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "ESN zurücksetzen"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Wollen Sie die ESN wirklich zurücksetzen?\r\nFalls Sie bestätigen, warten Sie, bis Sie die Anmelde-Nachricht erhalten."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Deaktiviere Benachrichtigung für abgeschlossene Synchronisierung"
+
+msgctxt "#30220"
+msgid "Kodi library is now synchronized with My list"
+msgstr "Kodi-Bibliothek ist nun mit meiner Liste synchronisiert."
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Besitzer-Account"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Kinder-Account"
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
+msgstr "Sie können die Synchronisierung nur mit dem Besitzer-Account starten"

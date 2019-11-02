@@ -1,4 +1,4 @@
-# Croatian translation for Kodi Media Center Netfilx addon
+# Kodi Media Center language file
 # Addon Name: Netflix
 # Addon id: plugin.video.netflix
 # Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
@@ -7,26 +7,27 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-07-08 22:15+0000\n"
-"Last-Translator: gogo\n"
+"PO-Revision-Date: 2019-10-31 11:59+0100\n"
+"Last-Translator: arvvoid <>\n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hr\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: hr_HR\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 2.2.3\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Netflix dodatak za uslugu (VOD) videa na zahtjev"
+msgstr "Dodatak za Netflix VOD usluge"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Neki dijelovi ovog dodatka možda nisu legalni u vašoj zemlji ili kraju - provjerite vaše lokalne zakone prije instalacije."
+msgstr "Neki dijelovi ovog dodatka možda nisu legalni u vašoj zemlji prebivališta - prije instalacije provjerite lokalne zakone."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -34,11 +35,11 @@ msgstr "Preporuke"
 
 msgctxt "#30002"
 msgid "Adult Pin"
-msgstr "Pin sadržaja za odrasle"
+msgstr "Pin za odrasle"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr "Izraz pretrage"
+msgstr "Pojam za pretraživanje"
 
 msgctxt "#30004"
 msgid "Password"
@@ -46,31 +47,31 @@ msgstr "Lozinka"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-pošta"
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Neuspjela ovjera sadržaja za odrasle"
+msgstr "Provjera za odrasle nije uspjela"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
-msgstr "Provjerite svoj pin sadržaja za odrasle"
+msgstr "Provjerite Vaš PIN za odrasle"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Neuspjela prijava"
+msgstr "Prijava nije uspjela"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Provjereite svoje podatke ovjere"
+msgstr "Provjerite Vaše vjerodajnice"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr ""
+msgstr "Popisi raznih vrsta"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr "Pretraga"
+msgstr "Traži"
 
 msgctxt "#30012"
 msgid "No seasons available"
@@ -78,11 +79,19 @@ msgstr "Nema dostupnih sezona"
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr "Nema pronađenih podudaranja"
+msgstr "Nema rezultata"
 
 msgctxt "#30014"
 msgid "Account"
 msgstr "Račun"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Druge opcije"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -90,19 +99,19 @@ msgstr "Odjava"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "Izvezi u videoteku"
+msgstr "Izvoz u zbirku"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "Ocjeni na Netflixu"
+msgstr "Ocijenite na Netflixu"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Ukloni s 'Moj popis'"
+msgstr "Ukloni s \"Mog popisa\""
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Dodaj na 'Moj popis'"
+msgstr "Dodaj u \"Moj popis\""
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -110,51 +119,55 @@ msgstr "(između 0 i 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "Stručno"
+msgstr "Stručnjak"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL ovjera"
+msgstr "SSL provjera"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "Videoteka"
+msgstr "Zbirka"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "Omogući prilagođenu mapu videoteke"
+msgstr "Omogući prilagođenu mapu zbirke"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Prilagođena putanja videoteke"
+msgstr "Prilagođeni put zbirke"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr "Greška reprodukcije"
+msgstr "Pogreška prilikom reprodukcije"
 
 msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Nedostaje dodatak ulaznog strujanja"
+msgid "Missing Inputstream addon"
+msgstr "Nedostaje Inputstream dodatak"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "Ukloni iz videoteke"
+msgstr "Ukloni iz zbirke"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Opće"
 
 msgctxt "#30032"
 msgid "Tracking"
 msgstr "Praćenje"
 
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Omogući Dolby Digital Plus (DDPlus HQ i Atmos on Premium)"
+
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "Ručni ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "Postavke dodatka ulaznog strujanja..."
+msgstr "Prilagodi postavke InputStream ..."
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
@@ -162,7 +175,7 @@ msgstr "Uvijek koristi izvorni naslov pri izvozu"
 
 msgctxt "#30037"
 msgid "Views"
-msgstr "Prikazi"
+msgstr "Posjete"
 
 msgctxt "#30038"
 msgid "Enable custom views"
@@ -170,39 +183,39 @@ msgstr "Omogući prilagođene prikaze"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "Prikaz mapa"
+msgstr "Pogledajte mape"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "Prikaz filmova"
+msgstr "Prikaz za filmove"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Prikaz serija"
+msgstr "Prikaz za emisije"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "Prikaz sezona"
+msgstr "Prikaz za sezone"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "Prikaz epizoda"
+msgstr "Prikaz za epizode"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "Prikaz profila"
+msgstr "Prikaz za profile"
 
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
-msgstr "[COLOR cyan][B]-- SLJEDEĆA STRANICA --[/B][/COLOR]"
+msgstr "[COLOR cyan][B] -- Sljedeća stranica -- [/B][/COLOR]"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
-msgstr "Dodatak ulaznog strujanja nije omogućen"
+msgstr "Dodatak InputStream nije omogućen"
 
 msgctxt "#30047"
 msgid "Finally remove?"
-msgstr "Konačno ukloni?"
+msgstr "Konačno ukloniti?"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -210,19 +223,19 @@ msgstr "Izvezeno"
 
 msgctxt "#30049"
 msgid "Update DB"
-msgstr "Nadopuni bazu podataka"
+msgstr "Ažurirajte DB"
 
 msgctxt "#30050"
 msgid "Update successful"
-msgstr "Nadopuna uspješna"
+msgstr "Uspješno ažurirano"
 
 msgctxt "#30051"
 msgid "Request Error"
-msgstr "Greška zahtjeva"
+msgstr "Pogreška u zahtijevu"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr "Nemoguće je trenutno završavanje zahtjeva"
+msgstr "Trenutačno nije moguće ispuniti zahtjev"
 
 msgctxt "#30053"
 msgid "Auto Login"
@@ -238,15 +251,15 @@ msgstr "Profil"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "Odaberi profil u popisu profila -> sadržajni izbornik"
+msgstr "Odaberite profil na popisu profila -> kontekstni izbornik"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr "Automatska prijava omogućena!"
+msgstr "Omogućeno je automatsko prijavljivanje!"
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -254,16 +267,681 @@ msgstr "Zamijeni račune"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "Omogući HEVC profile (4k za Android/HDR/DolbyVision)"
+msgstr "Omogući HEVC profile (4 k za Android / HDR / DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "Nadopuni unutar videoteke"
+msgstr "Ažuriranje u zbirci"
 
 msgctxt "#30062"
 msgid "Enable/disable adult pin. Active:"
-msgstr "Omogući/Onemogući pin sadržaja za odrasle. Aktivan:"
+msgstr "Omogući / onemogući PIN za odrasle Aktivan:"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "nove epizode su dodane u zbirku"
+
+msgctxt "#30064"
+msgid "Export new episodes"
+msgstr "Izvezite nove epizode"
+
+msgctxt "#30065"
+msgid "Auto-update"
+msgstr "Automatsko ažuriranje"
+
+msgctxt "#30066"
+msgid "never"
+msgstr "nikada"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "dnevno"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "svaki drugi dan"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "svakih 5 dana"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "tjedni"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Vrijeme dana"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Počnite tek nakon 5 minuta mirovanja"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Provjerite svaka X minuta ako je ažuriranje zakazano"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Prikaz za izvezeno"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Pitaj za preskakanje uvoda i rezimea"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Preskoči uvod"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Preskoči rezime"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Reprodukcija"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Preskoči automatski"
+
+msgctxt "#30080"
+msgid "Pause when skipping"
+msgstr "Pauzirajte prilikom preskakanja"
+
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "Prisilna podrška HDCP 2.2 (omogući 4K sadržaj)"
+
+msgctxt "#30082"
+msgid "Remember audio / subtitle preferences"
+msgstr "Zapamti postavke zvuka / titlova"
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr "Spremi status gledanja za predmete zbirke / označi kao gledane"
+
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Vrijeme opstanka u cache-u (minute)"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Vrijeme opstanka metapodataka u cache-u (dana)"
+
+msgctxt "#30086"
+msgid "Invalidate entire cache on modification of My List"
+msgstr "Poništi cijeli cache kod izmjene Mog popisa"
+
+msgctxt "#30087"
+msgid "Contains {} and more..."
+msgstr "Sadrži {} i još ..."
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr "Pregledajte povezani sadržaj"
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr "Pregledajte podžanrove"
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr "Pregledajte povezane popise videozapisa i otkrijte više sadržaja."
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr "Pregledajte i upravljajte sadržajem koji je izvezen u Kodi zbirku."
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr "Pretražite sadržaj i lako pronađite ono što želite gledati."
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr "Pregledavajte sadržaj po žanru i lako otkrijte povezani sadržaj."
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr "Pregledajte preporuke i pronađite nešto novo što bi vam se moglo svidjeti."
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr "Sve TV emisije"
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr "Svi filmovi"
+
+msgctxt "#30097"
+msgid "Main Menu"
+msgstr "Glavni izbornik"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "Omogući HDR profile"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "Omogući DolbyVision profile"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "Rezultati za \"{}\""
+
+msgctxt "#30101"
+msgid "Netflix returned an unknown error."
+msgstr "Netflix je vratio nepoznatu pogrešku."
+
+msgctxt "#30102"
+msgid "Netflix returned the following error:"
+msgstr "Netflix je vratio sljedeću pogrešku:"
+
+msgctxt "#30103"
+msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgstr "Pojedinosti o pogrešci zapisane su u Kodi logfile. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \\ \"Debug Logging \" u Kodi postavkama)."
+
+msgctxt "#30104"
+msgid "The addon encountered to following error:"
+msgstr "Addon je naišao na sljedeću pogrešku:"
+
+msgctxt "#30105"
+msgid "Netflix Addon Error"
+msgstr "Pogreška Netflix Addon-a"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Nevažeći PIN"
+
+msgctxt "#30107"
+msgid "Disabled PIN verfication"
+msgstr "Isključi provijeru PIN-a"
+
+msgctxt "#30108"
+msgid "Enabled PIN verfication"
+msgstr "Uključi provijeru PIN-a"
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Prijava je uspješna"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Pokrenuti pozadinski servisi"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Nema sadržaja"
+
+msgctxt "#30112"
+msgid "You need to be logged in to use Netflix"
+msgstr "Za upotrebu Netflixa morate biti prijavljeni"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Odjava je uspješna"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "Sinkroniziraj Moj popis i Kodi zbirku"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "Sadržajni profili"
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr "Napredna konfiguracija Addon-a"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Cache"
+
+msgctxt "#30118"
+msgid "API operation failed: {}"
+msgstr "Operacija API-a nije uspjela: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Operacija Mog popisa uspješna"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Ne može se automatski ukloniti sezona iz Kodi zbirke, učinite to ručno"
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Odmah izvedite potpunu sinkronizaciju"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Sinkroniziraj Moju Listu sa Kodi zbirkom"
+
+msgctxt "#30123"
+msgid ""
+"Do you really want to proceed?\n"
+"This will delete all previously exported items and export all items from My List for the currently active profile.\n"
+"This operation may take some time..."
+msgstr ""
+"Želite li stvarno nastaviti?\n"
+"Ovim ćete izbrisati sve prethodno izvezene stavke i izvesti sve stavke s Mog popisa za trenutno aktivni profil.\n"
+"Ova radnja može potrajati neko vrijeme ..."
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr "Želite li stvarno ukloniti taj predmet?"
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Izbriši Kodi zbirku"
+
+msgctxt "#30126"
+msgid ""
+"Do you really want to purge your library?\n"
+"All exported items will be deleted."
+msgstr ""
+"Doista želite očistiti zbirku?\n"
+"Sve izvezene stavke bit će izbrisane."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Dodijeljena ocjena {}"
+
+msgctxt "#30128"
+msgid "No contained titles yet..."
+msgstr "Još nema sadržanih naslova ..."
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "Omogući Up Next integraciju"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Pokažite obavijest umjesto modalnog dijaloga za pogreške"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "Provjerite logfile za detaljne informacije"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "Pročistite cache iz memorije"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "Pročistite cache iz memorije i diska"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "Omogući vrijeme izvršenja"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Cache je očišćen"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "Omogući 1080p otključavanje (ne preporučuje se za Android)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
+
+msgctxt "#30138"
+msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "Zatražena radnja istekla je. Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgstr "Omogući IPC preko HTTP-a (koristi se kad iskusite vremenska ograničenja AddonSignals)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Pretvori zbirku u novi format"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Onemogući obavijest o pokretanju"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Prilagođen"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "ID prilagođenog pogleda"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "Onemogući podršku za WebVTT titlove"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Nedavno dodano"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Otkrijte najnoviji dodani sadržaj."
+
+msgctxt "#30147"
+msgid "Next page >>"
+msgstr "Sljedeća stranica >>"
+
+msgctxt "#30148"
+msgid "<< Previous page"
+msgstr "<< Prethodna stranica"
+
+msgctxt "#30149"
+msgid "Sort results by"
+msgstr "Poredaj rezultate po"
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "Abecedni red (A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "Abecedni red (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Prijedlozi za vas"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Godina izdavanja"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Konfiguracija dodatka Netflix"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Imate li Netflix Premium račun?"
+
+msgctxt "#30156"
+msgid ""
+"Does your device support the 4K standard?\r\n"
+"The device must:\r\n"
+"Be Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr ""
+"Podržava li vaš uređaj 4K standard?\r\n"
+"Uređaj mora:\r\n"
+"Biti Netflix certificiran, imati podršku za Widevine razinu sigurnosti L1 i 4K ekran sa HDCP 2.2 podrškom"
+
+msgctxt "#30157"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Panel prilagodljivih postavki InputStream sada će se otvoriti, morate promijeniti opciju \"Override HDCP status\" u ON"
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Prikaži zaslon konfiguracije pri pokretanju dodatka"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Prikaz za glavni izbornik"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Prikaz za pretraživanje"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Prikaz za izvezene"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Zadnji upotrijebljeni"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Opis zvuka"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Pregledavajte sadržaj s audio opisom."
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Pogledajte moj popis"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Stavke glavnog izbornika"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Moj popis"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Nastavite gledati"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Top izbor"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Nova izdanja"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Sada u trendu"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Popularno na Netflixu"
+
+msgctxt "#30173"
+msgid "Netflix Originals"
+msgstr "Netflix Originals"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Tv Emisije žanrovi"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Filmovi žanrovi"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Omogući STRM nastavak (samo zbirka)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Zatražite da nastavite videozapis"
+
+msgctxt "#30178"
+msgid "Open UpNext Addon settings"
+msgstr "Otvorite postavke UpNext dodatka"
+
+msgctxt "#30179"
+msgid "Show the trailers"
+msgstr "Pokažite trailere"
+
+msgctxt "#30180"
+msgid "No trailers available"
+msgstr "Nema dostupnih trailera"
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Onemogućite titlove ako nema prisiljenih titlova (Radi samo ako je Kodi Player postavljen na \"Samo prisilni\" titlovi)"
+
+msgctxt "#30182"
+msgid "Export NFO files"
+msgstr "Izvoz NFO datoteka"
+
+msgctxt "#30183"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "Želite li izvesti NFO datoteke za {}?"
+
+msgctxt "#30184"
+msgid "NFO Files"
+msgstr "NFO datoteke"
+
+msgctxt "#30185"
+msgid "Enable NFO files export"
+msgstr "Omogući izvoz NFO datoteka"
+
+msgctxt "#30186"
+msgid "For Movies"
+msgstr "Za filmove"
+
+msgctxt "#30187"
+msgid "For TV Show"
+msgstr "Za TV emisije"
+
+msgctxt "#30188"
+msgid "Ask"
+msgstr "Pitaj"
+
+msgctxt "#30189"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#30190"
+msgid "TV show"
+msgstr "TV emisija"
+
+msgctxt "#30191"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "Želite li izvesti NFO datoteke za {} dodanu u \"Moj popis\"?"
+
+msgctxt "#30192"
+msgid ""
+"\r\n"
+"These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr ""
+"\r\n"
+"Ove datoteke dobavljači informacija dobavljača koriste za integraciju filmova i informacija o TV emisijama, korisno za bonus epizode ili director's cut"
+
+msgctxt "#30193"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Uključite sve podatke u NFO datoteke (koristite samo s strugačem 'Lokalne informacije')"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Ograničite razlučivost video strima na"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Izvezite nove epizode"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Izuzmi se iz automatskog ažuriranja"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Uključi se u automatsko ažuriranje"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Izvoz novih epizoda"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Zajednička zbirka (potreban je Kodi MySQL poslužitelj)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "Koristite MySQL bazu podataka zajedničke zbirke"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Korisničko ime"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "Povezivanje s MySQL bazom podataka bilo je uspješno"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "Host IP"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Testiranje baze podataka"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "GREŠKA: MySQL baza podataka nije dostupna - koristit će se lokalna baza podataka"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Postavite ovaj uređaj kao glavnog upravitelja automatskog ažuriranja"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Provjerite je li ovaj uređaj glavni upravitelj automatskog ažuriranja"
+
+msgctxt "#30209"
+msgid "This device now handles the auto-updates of shared-library"
+msgstr "Ovaj uređaj sada upravlja automatskim ažuriranjima biblioteke za dijeljenje"
+
+msgctxt "#30210"
+msgid "This device handles the auto-updates of shared-library"
+msgstr "Ovaj uređaj upravlja automatskim ažuriranjima biblioteke za dijeljenje"
+
+msgctxt "#30211"
+msgid "Another device handles the auto-updates of shared-library"
+msgstr "Drugi uređaj upravlja automatskim ažuriranjima biblioteke za dijeljenje"
+
+msgctxt "#30212"
+msgid "There is no device that handles the auto-updates of shared-library"
+msgstr "Ne postoji uređaj koji rukuje automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
+msgstr "Postavke InputStream Helper ..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Prisilite ažuriranje popisa"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Označite naslove uključene na moj popis bojom"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Prikaži ESN u upotrebi"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Poništite ESN"
+
+msgctxt "#30218"
+msgid ""
+"Are you sure you want to reset the ESN?\r\n"
+"If you confirm, wait until you receive the login message."
 msgstr ""
+"Jeste li sigurni da želite resetirati ESN?\r\n"
+"Ako potvrdite, pričekajte dok ne primite poruku o prijavi."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Onemogući obavijest o sinkronizaciji je dovršena"
+
+msgctxt "#30220"
+msgid "Kodi library is now synchronized with My list"
+msgstr "Kodi zbirka sada je sinkronizirana s Mojim popisom"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Vlasnički račun"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Dječji račun"
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
+msgstr "Možete pokrenuti sinkronizaciju samo odabirom profila vlasnika"
+
