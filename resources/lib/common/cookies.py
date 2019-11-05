@@ -50,9 +50,12 @@ def delete(account_hash):
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
+    filename = cookie_filename(account_hash)
+    common.debug('Loading cookies from {}'.format(filename))
+    if not xbmcvfs.exists(xbmc.translatePath(filename)):
+        common.debug('Cookies file does not exist')
+        raise MissingCookiesError()
     try:
-        filename = cookie_filename(account_hash)
-        common.debug('Loading cookies from {}'.format(filename))
         cookie_file = xbmcvfs.File(filename, 'rb')
         if g.PY_IS_VER2:
             # pickle.loads on py2 wants string
@@ -60,7 +63,9 @@ def load(account_hash):
         else:
             cookie_jar = pickle.loads(cookie_file.readBytes())
     except Exception as exc:
-        common.debug('Failed to load cookies from file: {exc}', exc)
+        import traceback
+        common.error('Failed to load cookies from file: {exc}', exc)
+        common.error(traceback.format_exc())
         raise MissingCookiesError()
     finally:
         cookie_file.close()

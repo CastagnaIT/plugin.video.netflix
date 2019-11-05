@@ -229,11 +229,13 @@ class NetflixSession(object):
         if not self.session.cookies:
             try:
                 self.session.cookies = cookies.load(self.account_hash)
+            except cookies.MissingCookiesError:
+                return False
             except Exception as exc:
-                common.debug(
-                    'Failed to load stored cookies: {}'.format(type(exc).__name__))
                 import traceback
-                common.debug(traceback.format_exc())
+                common.error(
+                    'Failed to load stored cookies: {}'.format(type(exc).__name__))
+                common.error(traceback.format_exc())
                 return False
             common.debug('Successfully loaded stored cookies')
         return True
