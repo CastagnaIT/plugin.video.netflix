@@ -267,7 +267,7 @@ def add_highlighted_title(list_item, videoid, infos):
     highlight_color = ['black', 'blue', 'red', 'green', 'white', 'yellow'][highlight_index]
     remove_color = videoid not in api.mylist_items()
     if list_item.getProperty('isFolder') == 'true':
-        updated_title = _colorize_title(list_item.getVideoInfoTag().getTitle().decode("utf-8"),
+        updated_title = _colorize_title(g.py2_decode(list_item.getVideoInfoTag().getTitle()),
                                         highlight_color,
                                         remove_color)
         list_item.setLabel(updated_title)

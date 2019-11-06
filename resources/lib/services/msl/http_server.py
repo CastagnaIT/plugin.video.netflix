@@ -39,9 +39,9 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
         """Loads the licence for the requested resource"""
         try:
             length = int(self.headers.get('content-length', 0))
-            data = self.rfile.read(length).split('!')
+            data = self.rfile.read(length).decode('utf-8').split('!')
             b64license = self.server.msl_handler.get_license(
-                challenge=data[0], sid=base64.standard_b64decode(data[1]))
+                challenge=data[0], sid=base64.standard_b64decode(data[1]).decode('utf-8'))
             self.send_response(200)
             self.end_headers()
             self.wfile.write(base64.standard_b64decode(b64license))

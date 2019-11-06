@@ -10,6 +10,7 @@ resources.lib.kodi.ui
 resources.lib.services.nfsession
 """
 from __future__ import absolute_import, division, unicode_literals
+import base64
 import os
 from time import time
 from functools import wraps
@@ -23,6 +24,11 @@ except ImportError:
 import xbmc
 import xbmcgui
 import xbmcvfs
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 CACHE_COMMON = 'cache_common'
 CACHE_GENRES = 'cache_genres'
@@ -152,7 +158,7 @@ class Cache(object):
         # Return maximum timestamp for library to prevent stale lock
         # overrides which may lead to inconsistencies
         timestamp = int(time())
-        return str(BUCKET_LOCKED.format(self.plugin_handle, timestamp))
+        return BUCKET_LOCKED.format(self.plugin_handle, timestamp)
 
     def get(self, bucket, identifier, use_disk_fallback=True):
         """Retrieve an item from a cache bucket"""
@@ -227,12 +233,17 @@ class Cache(object):
         return self.buckets[key]
 
     def _load_bucket(self, bucket):
-        wnd_property = ''
+        wnd_property = None
         # Try 10 times to acquire a lock
         for _ in range(1, 10):
-            wnd_property = self.window.getProperty(_window_property(bucket))
-            # pickle stores byte data, so we must compare against a str
-            if wnd_property.startswith(str('LOCKED')):
+            wnd_property_data = base64.b64decode(self.window.getProperty(_window_property(bucket)))
+            if wnd_property_data:
+                try:
+                    wnd_property = pickle.loads(wnd_property_data)
+                except Exception:  # pylint: disable=broad-except
+                    self.common.debug('No instance of {} found. Creating new instance.'
+                                      .format(bucket))
+            if isinstance(wnd_property, unicode) and wnd_property.startswith('LOCKED'):
                 self.common.debug('Waiting for release of {}'.format(bucket))
                 xbmc.sleep(50)
             else:
@@ -242,26 +253,27 @@ class Cache(object):
         return {}
 
     def _load_bucket_from_wndprop(self, bucket, wnd_property):
-        # pylint: disable=broad-except
-        try:
-            bucket_instance = pickle.loads(wnd_property)
-        except Exception:
-            self.common.debug('No instance of {} found. Creating new instance.'
-                              .format(bucket))
+        if wnd_property is None:
             bucket_instance = {}
+        else:
+            bucket_instance = wnd_property
         self._lock(bucket)
         self.common.debug('Acquired lock on {}'.format(bucket))
         return bucket_instance
 
     def _lock(self, bucket):
+        # Note pickle.dumps produces byte not str cannot be passed as is in setProperty (with py3)
+        # because with getProperty cause UnicodeDecodeError due to not decodable characters
+        # an Py2/Py3 compatible way is encode pickle data in to base64 string
+        # requires additional conversion step work but works
         self.window.setProperty(_window_property(bucket),
-                                self.lock_marker())
+                                base64.b64encode(pickle.dumps(self.lock_marker())).decode('utf-8'))
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
-        handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'r')
+        handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'rb')
         try:
-            return pickle.loads(handle.read().encode('utf-8'))
+            return pickle.loads(handle.readBytes().decode('utf-8'))
         except Exception:
             raise CacheMiss()
         finally:
@@ -273,7 +285,8 @@ class Cache(object):
         cache_filename = self._entry_filename(bucket, identifier)
         handle = xbmcvfs.File(cache_filename, 'wb')
         try:
-            return pickle.dump(cache_entry, handle)
+            # return pickle.dump(cache_entry, handle)
+            handle.write(bytearray(pickle.dumps(cache_entry)))
         except Exception as exc:
             self.common.error('Failed to write cache entry to {}: {}'
                               .format(cache_filename, exc))
@@ -293,8 +306,12 @@ class Cache(object):
             return
 
         try:
+            # Note pickle.dumps produces byte not str cannot be passed as is in setProperty (with py3)
+            # because with getProperty cause UnicodeDecodeError due to not decodable characters
+            # an Py2/Py3 compatible way is encode pickle data in to base64 string
+            # requires additional conversion step work but works
             self.window.setProperty(_window_property(bucket),
-                                    pickle.dumps(contents))
+                                    base64.b64encode(pickle.dumps(contents)).decode('utf-8'))
         except Exception as exc:
             self.common.error('Failed to persist {} to wnd properties: {}'
                               .format(bucket, exc))
@@ -305,7 +322,10 @@ class Cache(object):
     def is_safe_to_persist(self, bucket):
         # Only persist if we acquired the original lock or if the lock is older
         # than 15 seconds (override stale locks)
-        lock = self.window.getProperty(_window_property(bucket))
+        lock_data = base64.b64decode(self.window.getProperty(_window_property(bucket)))
+        lock = ''
+        if lock_data:
+            lock = pickle.loads(lock_data)
         is_own_lock = lock[:14] == self.lock_marker()[:14]
         try:
             is_stale_lock = int(lock[18:] or 1) <= time() - 15

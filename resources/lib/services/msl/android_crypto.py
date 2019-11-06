@@ -65,7 +65,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
-                'keyrequest': base64.standard_b64encode(key_request)
+                'keyrequest': base64.standard_b64encode(key_request).decode('utf-8')
             }
         }]
 
@@ -98,11 +98,11 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
         return json.dumps({
             'version': 1,
-            'ciphertext': base64.standard_b64encode(encrypted_data),
+            'ciphertext': base64.standard_b64encode(encrypted_data).decode('utf-8'),
             'sha256': 'AA==',
-            'keyid': base64.standard_b64encode(self.key_id),
+            'keyid': base64.standard_b64encode(self.key_id).decode('utf-8'),
             # 'cipherspec' : 'AES/CBC/PKCS5Padding',
-            'iv': base64.standard_b64encode(init_vector)
+            'iv': base64.standard_b64encode(init_vector).decode('utf-8')
         })
 
     def decrypt(self, init_vector, ciphertext):
@@ -118,10 +118,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def sign(self, message):
         """Sign a message"""
-        signature = self.crypto_session.Sign(self.hmac_key_id, message)
+        signature = self.crypto_session.Sign(self.hmac_key_id, message.encode('utf-8'))
         if not signature:
             raise MSLError('Widevine CryptoSession sign failed!')
-        return base64.standard_b64encode(signature)
+        return base64.standard_b64encode(signature).decode('utf-8')
 
     def verify(self, message, signature):
         """Verify a message's signature"""
@@ -138,7 +138,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def _export_keys(self):
         return {
-            'key_set_id': base64.standard_b64encode(self.keyset_id),
-            'key_id': base64.standard_b64encode(self.key_id),
-            'hmac_key_id': base64.standard_b64encode(self.hmac_key_id)
+            'key_set_id': base64.standard_b64encode(self.keyset_id).decode('utf-8'),
+            'key_id': base64.standard_b64encode(self.key_id).decode('utf-8'),
+            'hmac_key_id': base64.standard_b64encode(self.hmac_key_id).decode('utf-8')
         }

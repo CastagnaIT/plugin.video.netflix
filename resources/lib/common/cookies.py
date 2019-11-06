@@ -29,7 +29,8 @@ def save(account_hash, cookie_jar):
     g.COOKIES[account_hash] = cookie_jar
     cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
-        pickle.dump(cookie_jar, cookie_file)
+        #pickle.dump(cookie_jar, cookie_file)
+        cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
     except Exception as exc:
         common.error('Failed to save cookies to file: {exc}', exc)
     finally:
@@ -53,7 +54,11 @@ def load(account_hash):
         filename = cookie_filename(account_hash)
         common.debug('Loading cookies from {}'.format(filename))
         cookie_file = xbmcvfs.File(filename, 'rb')
-        cookie_jar = pickle.loads(cookie_file.read())
+        if g.PY_IS_VER2:
+            # pickle.loads on py2 wants string
+            cookie_jar = pickle.loads(cookie_file.read())
+        else:
+            cookie_jar = pickle.loads(cookie_file.readBytes())
     except Exception as exc:
         common.debug('Failed to load cookies from file: {exc}', exc)
         raise MissingCookiesError()

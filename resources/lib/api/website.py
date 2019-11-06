@@ -45,7 +45,7 @@ PAGE_ITEMS_API_URL = {
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
 PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 
-JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
+JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
 
 
@@ -245,13 +245,13 @@ def extract_json(content, name):
     common.debug('Extracting {} JSON'.format(name))
     json_str = None
     try:
-        json_array = recompile(JSON_REGEX % name, DOTALL).findall(content)
+        json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
         json_str = json_array[0]
         json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
         json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
         json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
         json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
-        json_str = json_str.decode('unicode_escape')  # finally decoding...
+        json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
         return json.loads(json_str)
     except Exception:
         if json_str:

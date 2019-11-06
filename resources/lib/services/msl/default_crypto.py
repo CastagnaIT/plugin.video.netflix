@@ -50,7 +50,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             self.rsa_key.publickey().exportKey(format='DER'))
         return [{'scheme': 'ASYMMETRIC_WRAPPED',
                  'keydata': {
-                     'publickey': public_key,
+                     'publickey': public_key.decode('utf-8'),
                      'mechanism': 'JWK_RSA',
                      'keypairid': 'superKeyPair'
                  }}]
@@ -67,10 +67,10 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             'ciphertext': '',
             'keyid': '_'.join((esn, str(self.sequence_number))),
             'sha256': 'AA==',
-            'iv': base64.standard_b64encode(init_vector)
+            'iv': base64.standard_b64encode(init_vector).decode('utf-8')
         }
         encryption_envelope['ciphertext'] = base64.standard_b64encode(
-            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16)))
+            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16))).decode('utf-8')
 
         return json.dumps(encryption_envelope)
 
@@ -82,7 +82,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
     def sign(self, message):
         """Sign a message"""
         return base64.standard_b64encode(
-            HMAC.new(self.sign_key, message, SHA256).digest())
+            HMAC.new(self.sign_key, message.encode('utf-8'), SHA256).digest()).decode('utf-8')
 
     def _init_keys(self, key_response_data):
         cipher = PKCS1_OAEP.new(self.rsa_key)
@@ -95,9 +95,9 @@ class DefaultMSLCrypto(MSLBaseCrypto):
 
     def _export_keys(self):
         return {
-            'encryption_key': base64.standard_b64encode(self.encryption_key),
-            'sign_key': base64.standard_b64encode(self.sign_key),
-            'rsa_key': base64.standard_b64encode(self.rsa_key.exportKey())
+            'encryption_key': base64.standard_b64encode(self.encryption_key).decode('utf-8'),
+            'sign_key': base64.standard_b64encode(self.sign_key).decode('utf-8'),
+            'rsa_key': base64.standard_b64encode(self.rsa_key.exportKey()).decode('utf-8')
         }
 
 

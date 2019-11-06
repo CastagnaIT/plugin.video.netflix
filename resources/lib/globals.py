@@ -187,6 +187,7 @@ class GlobalVariables(object):
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
+        self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -219,7 +220,7 @@ class GlobalVariables(object):
             self.PLUGIN_HANDLE = 0
         self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
                                                      netloc=self.URL[1])
-        self.PATH = unquote(self.URL[2][1:])
+        self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -259,7 +260,7 @@ class GlobalVariables(object):
         self._init_cache()
 
     def _init_cache(self):
-        if not os.path.exists(xbmc.translatePath(self.CACHE_PATH)):
+        if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
@@ -395,6 +396,20 @@ class GlobalVariables(object):
     def remove_time_trace_level(self):
         """Remove a level from the time trace"""
         self.time_trace_level -= 2
+
+    def py2_decode(self, value):
+        """Decode text only on python 2"""
+        # To remove when Kodi 18 support is over / Py2 dead
+        if self.PY_IS_VER2:
+            return value.decode('utf-8')
+        return value
+
+    def py2_encode(self, value):
+        """Encode text only on python 2"""
+        # To remove when Kodi 18 support is over / Py2 dead
+        if self.PY_IS_VER2:
+            return value.encode('utf-8')
+        return value
 
 
 # pylint: disable=invalid-name

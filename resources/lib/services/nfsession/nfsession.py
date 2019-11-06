@@ -97,7 +97,7 @@ class NetflixSession(object):
     @property
     def account_hash(self):
         """The unique hash of the current account"""
-        return urlsafe_b64encode(common.get_credentials().get('email', 'NoMail')).decode('utf-8')
+        return urlsafe_b64encode(common.get_credentials().get('email', 'NoMail').encode('utf-8')).decode('utf-8')
 
     def update_session_data(self, old_esn=None):
         old_esn = old_esn or g.get_esn()
@@ -386,7 +386,7 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _path_request(self, paths):
         """Execute a path request with static paths"""
-        common.debug('Executing path request: {}'.format(json.dumps(paths, ensure_ascii=False)))
+        common.debug('Executing path request: {}'.format(json.dumps(paths)))
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
@@ -403,14 +403,14 @@ class NetflixSession(object):
             'withSize': 'false',
             'materialize': 'false'
         }
-        data = 'path=' + '&path='.join(json.dumps(path, ensure_ascii=False) for path in paths)
+        data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
         data += '&authURL=' + self.auth_url
         return self._post(
             component='shakti',
             req_type='api',
             params=params,
             headers=headers,
-            data=data.encode('utf-8'))['value']
+            data=data)['value']
 
     @common.addonsignals_return_call
     @needs_login

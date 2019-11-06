@@ -167,7 +167,8 @@ class CustomVideoList:
         self.title = common.get_local_string(30048)
         self.videos = self.data['videos']
         self.videoids = _get_videoids(self.videos)
-        self.artitem = next(itervalues(self.videos))
+        # self.artitem = next(itervalues(self.videos))
+        self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):

@@ -168,7 +168,7 @@ class MSLHandler(object):
             common.debug('Manifest for {} with ESN {} obtained from the cache'
                          .format(viewable_id, esn))
             # Save the manifest to disk as reference
-            common.save_file('manifest.json', json.dumps(manifest))
+            common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
         except cache.CacheMiss:
             pass
@@ -242,7 +242,7 @@ class MSLHandler(object):
                                          esn,
                                          mt_validity)
         # Save the manifest to disk as reference
-        common.save_file('manifest.json', json.dumps(manifest))
+        common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity
         expiration = int(manifest['expiration'] / 1000)
         g.CACHE.add(cache.CACHE_MANIFESTS, cache_identifier, manifest, eol=expiration)
@@ -399,14 +399,11 @@ def _decrypt_chunks(chunks, crypto):
         # uncompress data if compressed
         if plaintext.get('compressionalgo') == 'GZIP':
             decoded_data = base64.standard_b64decode(data)
-            data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS)
+            data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS).decode('utf-8')
         else:
-            data = base64.standard_b64decode(data)
+            data = base64.standard_b64decode(data).decode('utf-8')
 
-        if isinstance(data, str):
-            decrypted_payload += unicode(data).encode('utf-8')
-        else:
-            decrypted_payload += data
+        decrypted_payload += data
 
     return json.loads(decrypted_payload)
 

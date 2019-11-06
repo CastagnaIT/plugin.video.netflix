@@ -30,7 +30,7 @@ class MSLBaseCrypto(object):
         # Based on cadmium player sourcecode and ref. to [isNewerThan] in:
         # https://github.com/Netflix/msl/blob/master/core/src/main/java/com/netflix/msl/tokens/MasterToken.java
         new_tokendata = json.loads(
-            base64.standard_b64decode(mastertoken['tokendata']))
+            base64.standard_b64decode(mastertoken['tokendata'].encode('utf-8')).decode('utf-8'))
         if new_tokendata['sequencenumber'] == self.sequence_number:
             return new_tokendata['expiration'] > self.expiration
         if new_tokendata['sequencenumber'] > self.sequence_number:
@@ -49,7 +49,7 @@ class MSLBaseCrypto(object):
     def _set_mastertoken(self, mastertoken):
         """Set the mastertoken and check it for validity"""
         tokendata = json.loads(
-            base64.standard_b64decode(mastertoken['tokendata']))
+            base64.standard_b64decode(mastertoken['tokendata'].encode('utf-8')).decode('utf-8'))
         self.mastertoken = mastertoken
         self.serial_number = tokendata['serialnumber']
         self.sequence_number = tokendata.get('sequencenumber', 0)
@@ -60,7 +60,7 @@ class MSLBaseCrypto(object):
         """Save crypto keys and mastertoken to disk"""
         msl_data = {'tokens': {'mastertoken': self.mastertoken}}
         msl_data.update(self._export_keys())
-        common.save_file('msl_data.json', json.dumps(msl_data))
+        common.save_file('msl_data.json', json.dumps(msl_data).encode('utf-8'))
         common.debug('Successfully saved MSL data to disk')
 
     def _init_keys(self, key_response_data):

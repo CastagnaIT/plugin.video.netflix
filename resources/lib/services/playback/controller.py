@@ -16,11 +16,6 @@ from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
 from .upnext import UpNextNotifier
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class PlaybackController(xbmc.Monitor):
     """
@@ -63,8 +58,7 @@ class PlaybackController(xbmc.Monitor):
             return
         try:
             if method == 'Player.OnAVStart':
-                self._on_playback_started(
-                    json.loads(unicode(data, 'utf-8')))
+                self._on_playback_started(json.loads(data))
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:
