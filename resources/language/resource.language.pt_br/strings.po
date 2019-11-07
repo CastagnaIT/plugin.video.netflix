@@ -86,7 +86,7 @@ msgstr "Conta"
 
 msgctxt "#30015"
 msgid "Other options"
-msgstr "Outras opçÕes"
+msgstr "Outras opções"
 
 msgctxt "#30016"
 msgid "ESN"
@@ -150,7 +150,7 @@ msgstr "Remover da coleção"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -162,7 +162,7 @@ msgstr "Ativar Dolby Digital Plus (DDPlus HQ e Atmos on Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "ESN Manual"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
