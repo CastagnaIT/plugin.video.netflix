@@ -84,6 +84,14 @@ msgctxt "#30014"
 msgid "Account"
 msgstr "Conta"
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Outras opções"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr "Terminar sessão"
@@ -142,7 +150,7 @@ msgstr "Remover da coleção"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -154,7 +162,7 @@ msgstr "Ativar Dolby Digital Plus (DDPlus HQ e Atmos on Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "ESN Manual"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -871,3 +879,43 @@ msgstr "Nenhum dispositivo lida com as atualizações automáticas da biblioteca
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
 msgstr "Ajustes do addon InputStream Helper..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Forçar a atualização da minha lista"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Destacar os títulos incluídos em minha lista com uma cor"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Mostrar ESN em uso"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Resetar ESN"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Tem certeza que deseja resetar o ESN?\r\nSe confirmar, aguarde até receber a mensagem de login."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Desativar notificação para sincronização finalizada"
+
+msgctxt "#30220"
+msgid "Kodi library is now synchronized with My list"
+msgstr "Coleção do Kodi está agora sincronizada com minha lista"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Conta principal"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Conta infantil"
+
+msgctxt "#30223"
+msgid "You can start the synchronization only by selecting the owner profile"
+msgstr "Deseja iniciar a sincronização somente por selecionada pelo perfil principal"
