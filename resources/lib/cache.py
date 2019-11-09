@@ -280,8 +280,8 @@ class Cache(object):
             if sys.version_info.major == 2:
                 # pickle.loads on py2 wants string
                 return pickle.loads(handle.read())
-            else:
-                return pickle.loads(handle.readBytes())
+            # py3
+            return pickle.loads(handle.readBytes())
         except Exception as exc:
             self.common.error('Failed get cache from disk {}: {}'
                               .format(cache_filename, exc))

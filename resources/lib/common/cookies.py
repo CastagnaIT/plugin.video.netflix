@@ -29,7 +29,7 @@ def save(account_hash, cookie_jar):
     g.COOKIES[account_hash] = cookie_jar
     cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
-        #pickle.dump(cookie_jar, cookie_file)
+        # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
     except Exception as exc:
         common.error('Failed to save cookies to file: {exc}', exc)
