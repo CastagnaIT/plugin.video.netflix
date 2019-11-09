@@ -273,6 +273,8 @@ class Cache(object):
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
         cache_filename = self._entry_filename(bucket, identifier)
+        if not xbmcvfs.exists(cache_filename):
+            raise CacheMiss()
         handle = xbmcvfs.File(cache_filename, 'rb')
         try:
             if sys.version_info.major == 2:
