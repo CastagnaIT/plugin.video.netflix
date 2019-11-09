@@ -3,6 +3,9 @@
 from __future__ import absolute_import, division, unicode_literals
 import json
 import datetime
+# Workaround for http://bugs.python.org/issue8098 only to py2 caused by _conv_string_to_datetime()
+# Error: ImportError: Failed to import _strptime because the import lockis held by another thread.
+import _strptime  # pylint: disable=unused-import
 from ast import literal_eval
 from .logging import error
 
