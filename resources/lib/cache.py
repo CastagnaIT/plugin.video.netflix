@@ -12,6 +12,7 @@ resources.lib.services.nfsession
 from __future__ import absolute_import, division, unicode_literals
 import base64
 import os
+import sys
 from time import time
 from functools import wraps
 from future.utils import iteritems
@@ -271,10 +272,17 @@ class Cache(object):
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
-        handle = xbmcvfs.File(self._entry_filename(bucket, identifier), 'rb')
+        cache_filename = self._entry_filename(bucket, identifier)
+        handle = xbmcvfs.File(cache_filename, 'rb')
         try:
-            return pickle.loads(handle.readBytes().decode('utf-8'))
-        except Exception:
+            if sys.version_info.major == 2:
+                # pickle.loads on py2 wants string
+                return pickle.loads(handle.read())
+            else:
+                return pickle.loads(handle.readBytes())
+        except Exception as exc:
+            self.common.error('Failed get cache from disk {}: {}'
+                              .format(cache_filename, exc))
             raise CacheMiss()
         finally:
             handle.close()
@@ -356,8 +364,8 @@ class Cache(object):
 
         # Remove from in-memory cache
         del self._get_bucket(bucket)[identifier]
-        # Remove from disk cache if it exists
 
+        # Remove from disk cache if it exists
         if cache_exixts:
             os.remove(cache_filename)
 
