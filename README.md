@@ -60,7 +60,7 @@ This table explains compatibility of high resolutions between devices and operat
 \*4 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.<br/>
 \*5 To get 1080P resolution and hardware video decoding is needed a Widevine security level L1 capable device.
 
-[Click here to view the list of tested Android devices that currently working in 1080P and 4K](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
+[Click here to view the list of tested Android devices that currently known to working in 1080P and 4K](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
 ### Video playback problems like frame drops, slowdown, stuttering
 Usually happens to those devices where hardware video decoding is not available (due to Netflix licensing restrictions) and the CPU fails to process the video stream properly due to the high load.
@@ -127,14 +127,25 @@ If you prefer you can disable `Remember audio / subtitle preferences` in the add
 ### My watched status is not being updated on website or apps
 The addon does not report watched status back to Netflix (yet).
 
+### How to export to Kodi library
+The export of TV shows and movies in Kodi library allows you to take advantage of Kodi powerful browser, with the features offered by the information providers like TMDB TV show screaper.
+
+To enhance this experience, Netflix add-on offers two export automation features:<br/>
+- Auto-updates of the TV shows, in order to export automatically new seasons and episodes.
+- Auto-sync with Netflix "My List" of an profile, in order to automatically synchronize the content of Kodi library.
+
+[Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-to-export-and-sync-tv-shows-and-movies-in-Kodi-library)
+
 ### How to share the exported content in the library with multiple devices
 Is possible to share the same Kodi/Netflix library with multiple devices where each device has its own Kodi installation.
 In order to work it is necessary use Kodi with a MySQL server.
+
 [Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Library-settings)
 
-### Notice for the use of auto-update feature
-WARNING: AN INTENSIVE USE of AUTO-UPDATE function due to many exported tv shows MAY CAUSE A TEMPORARY BAN of the ACCOUNT that varies starting from 24/48 hours. Use at your own risk.<br/>
-If it happens often, there is the possibility to exclude the auto-updates from the tv shows, by open context menu on a tv show and selecting "Exclude from auto update".
+### Notice for the use of auto-update and auto-sync with Netflix "My List" feature
+AN INTENSIVE USE OF THIS FEATURES due to many exported tv shows MAY CAUSE A TEMPORARY BAN OF THE ACCOUNT that varies starting from 24/48 hours. Use at your own risk.
+
+If it happens often, there is the possibility to exclude the auto update from the tv shows, by open context menu on a tv show and selecting `Exclude from auto update`.
 
 ## Something doesn't work
 If something doesn't work for you, please:
