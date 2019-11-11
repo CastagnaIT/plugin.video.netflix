@@ -95,7 +95,7 @@ def get_user_agent():
     :returns: str -- User agent string
     """
     import platform
-    chrome_version = 'Chrome/73.0.3683.103'
+    chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -103,13 +103,14 @@ def get_user_agent():
     system = platform.system()
     # Mac OSX
     if system == 'Darwin':
-        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_10_1)')
+        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
     # Windows
     if system == 'Windows':
         return base.replace('%PL%', '(Windows NT 6.1; WOW64)')
     # ARM based Linux
     if platform.machine().startswith('arm'):
-        return base.replace('%PL%', '(X11; CrOS armv7l 7647.78.0)')
+        # Last number is the platform version of Chrome OS
+        return base.replace('%PL%', '(X11; CrOS armv7l 12371.89.0)')
     # x86 Linux
     return base.replace('%PL%', '(X11; Linux x86_64)')
 
