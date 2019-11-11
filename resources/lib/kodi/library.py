@@ -32,7 +32,6 @@ ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
 
 class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
-    pass
 
 
 def library_path():
@@ -123,28 +122,27 @@ def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     if videoid.mediatype == common.VideoId.MOVIE:
         return g.SHARED_DB.movie_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SHOW:
+    if videoid.mediatype == common.VideoId.SHOW:
         return g.SHARED_DB.tvshow_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SEASON:
+    if videoid.mediatype == common.VideoId.SEASON:
         return g.SHARED_DB.season_id_exists(videoid.tvshowid,
                                             videoid.seasonid)
-    elif videoid.mediatype == common.VideoId.EPISODE:
+    if videoid.mediatype == common.VideoId.EPISODE:
         return g.SHARED_DB.episode_id_exists(videoid.tvshowid,
                                              videoid.seasonid,
                                              videoid.episodeid)
-    else:
-        raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
+    raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
 
 
 def show_excluded_from_auto_update(videoid):
     """Return true if the videoid is excluded from auto-update"""
-    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp.exclude_update, False)
+    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
 @common.time_execution(immediate=False)
 def exclude_show_from_auto_update(videoid, exclude):
     """Set if a tvshow is excluded from auto-update"""
-    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp.exclude_update, exclude)
+    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], exclude)
 
 
 def update_kodi_library(library_operation):
@@ -344,7 +342,7 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
         for season in metadata[0]['seasons']:
             if not nfo_settings:
                 nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                             VidLibProp.nfo_export, False)
+                                                             VidLibProp['nfo_export'], False)
                 nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
@@ -433,17 +431,17 @@ def export_new_item(item_task, library_home):
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
-    destination_folder = xbmc.makeLegalFilename('/'.join(
-        [library_home, item_task['section'], item_task['destination']])).decode('utf-8')
+    destination_folder = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        [library_home, item_task['section'], item_task['destination']])))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
-        export_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder, item_task['filename'] + '.strm'])).decode('utf-8')
+        export_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+            [destination_folder, item_task['filename'] + '.strm'])))
         add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
-        nfo_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder, item_task['filename'] + '.nfo'])).decode('utf-8')
+        nfo_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+            [destination_folder, item_task['filename'] + '.nfo'])))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}'.format(item_task['title']))
 
@@ -457,20 +455,20 @@ def _create_destination_folder(destination_folder):
 
 def _write_strm_file(item_task, export_filename):
     """Write the playable URL to a strm file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'w')
+    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'wb')
     try:
-        filehandle.write(common.build_url(videoid=item_task['videoid'],
-                                          mode=g.MODE_PLAY).encode('utf-8'))
+        filehandle.write(bytearray(common.build_url(videoid=item_task['videoid'],
+                                                    mode=g.MODE_PLAY).encode('utf-8')))
     finally:
         filehandle.close()
 
 
 def _write_nfo_file(nfo_data, nfo_filename):
     """Write the NFO file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(nfo_filename), 'w')
+    filehandle = xbmcvfs.File(xbmc.translatePath(nfo_filename), 'wb')
     try:
-        filehandle.write('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8'))
-        filehandle.write(ET.tostring(nfo_data, encoding='utf-8', method='xml'))
+        filehandle.write(bytearray('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8')))
+        filehandle.write(bytearray(ET.tostring(nfo_data, encoding='utf-8', method='xml')))
     finally:
         filehandle.close()
 
@@ -480,7 +478,8 @@ def add_to_library(videoid, export_filename, nfo_export, exclude_update=False):
     if videoid.mediatype == common.VideoId.EPISODE:
         g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
         g.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
-        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid, videoid.value, export_filename)
+        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid,
+                                   videoid.value, export_filename)
     elif videoid.mediatype == common.VideoId.MOVIE:
         g.SHARED_DB.set_movie(videoid.value, export_filename, nfo_export)
 
@@ -497,29 +496,35 @@ def remove_item(item_task, library_home=None):
     common.debug('VideoId: {}'.format(videoid))
     try:
         parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
-        xbmcvfs.delete(exported_filename.decode("utf-8"))
+        if xbmcvfs.exists(exported_filename):
+            xbmcvfs.delete(exported_filename)
+        else:
+            common.debug(
+                'Cannot delete {}, file does not exist'.format(g.py2_decode(exported_filename)))
         # Remove the NFO files if exists
-        nfo_file = os.path.splitext(exported_filename.decode("utf-8"))[0] + '.nfo'
+        nfo_file = os.path.splitext(g.py2_decode(exported_filename))[0] + '.nfo'
         if xbmcvfs.exists(nfo_file):
             xbmcvfs.delete(nfo_file)
-        dirs, files = xbmcvfs.listdir(parent_folder.decode("utf-8"))
+        dirs, files = xbmcvfs.listdir(parent_folder)
         tvshow_nfo_file = xbmc.makeLegalFilename(
-            '/'.join([parent_folder.decode("utf-8"), 'tvshow.nfo'])).decode("utf-8")
+            '/'.join([g.py2_decode(parent_folder), 'tvshow.nfo']))
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
         if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
             xbmcvfs.delete(tvshow_nfo_file)
             # Delete parent folder
-            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+            xbmcvfs.rmdir(parent_folder)
         # Delete parent folder when empty
         if not dirs and not files:
-            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+            xbmcvfs.rmdir(parent_folder)
 
         _remove_videoid_from_db(videoid)
     except ItemNotFound:
         common.debug('The video with id {} not exists in the database'.format(videoid))
-    except Exception:
-        common.debug('Cannot delete {}, file does not exist'.format(exported_filename))
+    except Exception as exc:
+        import traceback
+        common.error(traceback.format_exc())
+        ui.show_addon_error_info(exc)
 
 
 def _remove_videoid_from_db(videoid):
@@ -558,7 +563,7 @@ def export_all_new_episodes():
     # Get the list of the tvshows exported to kodi library
     exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
     # Get the list of the tvshows exported but to exclude from updates
-    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, True)
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
 
     # Before start to get updated mylist items, you have to select the owner account
     # TODO: in the future you can also add the possibility to synchronize from a chosen profile
@@ -596,7 +601,7 @@ def export_all_new_episodes():
         if videoid.value in exported_videoids_values:
             # It is possible that the user has chosen not to export nfo for a tvshow
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
+                                                         VidLibProp['nfo_export'], False)
             nfo_settings = nfo.NFOSettings(nfo_export)
         else:
             nfo_settings = nfo.NFOSettings()

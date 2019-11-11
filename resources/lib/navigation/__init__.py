@@ -7,7 +7,6 @@ import resources.lib.common as common
 
 class InvalidPathError(Exception):
     """The requested path is invalid and could not be routed"""
-    pass
 
 
 def execute(executor_type, pathitems, params):

@@ -3,7 +3,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-import traceback
 from re import compile as recompile, DOTALL, sub
 from collections import OrderedDict
 
@@ -14,6 +13,11 @@ from resources.lib.globals import g
 from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
                          WebsiteParsingError, LoginValidateError)
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 PAGE_ITEMS_INFO = [
     'models/userInfo/data/name',
@@ -41,7 +45,7 @@ PAGE_ITEMS_API_URL = {
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
 PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 
-JSON_REGEX = r'netflix\.%s\s*=\s*(.*?);\s*</script>'
+JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
 
 
@@ -63,7 +67,7 @@ def extract_session_data(content):
         g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
     g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Save api urls
-    for key, path in api_data.items():
+    for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         common.debug(user_data)
@@ -93,7 +97,7 @@ def extract_profiles(falkor_cache):
         else:
             _delete_non_existing_profiles(profiles_list)
         sort_order = 0
-        for guid, profile in profiles_list.items():
+        for guid, profile in list(profiles_list.items()):
             common.debug('Parsing profile {}'.format(guid))
             avatar_url = _get_avatar(falkor_cache, profile)
             profile = profile['summary']['value']
@@ -103,11 +107,12 @@ def extract_profiles(falkor_cache):
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
-            for key, value in profile.items():
+            for key, value in list(profile.items()):
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
     except Exception:
+        import traceback
         common.error(traceback.format_exc())
         common.error('Falkor cache: {}'.format(falkor_cache))
         raise InvalidProfilesError
@@ -116,7 +121,7 @@ def extract_profiles(falkor_cache):
 def _delete_non_existing_profiles(profiles_list):
     list_guid = g.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
-        if guid not in profiles_list.keys():
+        if guid not in list(profiles_list):
             common.debug('Deleting non-existing profile {}'.format(guid))
             g.LOCAL_DB.delete_profile(guid)
             g.SHARED_DB.delete_profile(guid)
@@ -137,8 +142,8 @@ def extract_userdata(react_context, debug_log=True):
     """Extract essential userdata from the reactContext of the webpage"""
     common.debug('Extracting userdata from webpage')
     user_data = {}
-    for path in ([path_item for path_item in path.split('/')]
-                 for path in PAGE_ITEMS_INFO):
+
+    for path in (path.split('/') for path in PAGE_ITEMS_INFO):
         try:
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
@@ -153,8 +158,8 @@ def extract_api_data(react_context, debug_log=True):
     """Extract api urls from the reactContext of the webpage"""
     common.debug('Extracting api urls from webpage')
     api_data = {}
-    for key, value in PAGE_ITEMS_API_URL.items():
-        path = [path_item for path_item in value.split('/')]
+    for key, value in list(PAGE_ITEMS_API_URL.items()):
+        path = value.split('/')
         try:
             extracted_value = {key: common.get_path(path, react_context)}
             api_data.update(extracted_value)
@@ -174,8 +179,8 @@ def assert_valid_auth_url(user_data):
 
 def validate_login(content):
     react_context = extract_json(content, 'reactContext')
-    path_code_list = [path_item for path_item in PAGE_ITEM_ERROR_CODE_LIST.split('\\')]
-    path_error_code = [path_item for path_item in PAGE_ITEM_ERROR_CODE.split('/')]
+    path_code_list = PAGE_ITEM_ERROR_CODE_LIST.split('\\')
+    path_error_code = PAGE_ITEM_ERROR_CODE.split('/')
     if common.check_path_exists(path_error_code, react_context):
         # If the path exists, a login error occurs
         try:
@@ -191,6 +196,7 @@ def validate_login(content):
                 error_description = error_code_list['login_' + error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
+            import traceback
             common.error(traceback.format_exc())
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
@@ -239,16 +245,17 @@ def extract_json(content, name):
     common.debug('Extracting {} JSON'.format(name))
     json_str = None
     try:
-        json_array = recompile(JSON_REGEX % name, DOTALL).findall(content)
+        json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
         json_str = json_array[0]
         json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
         json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
         json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
         json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
-        json_str = json_str.decode('unicode_escape')  # finally decoding...
+        json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
         return json.loads(json_str)
     except Exception:
         if json_str:
             common.error('JSON string trying to load: {}'.format(json_str))
+        import traceback
         common.error(traceback.format_exc())
         raise WebsiteParsingError('Unable to extract {}'.format(name))

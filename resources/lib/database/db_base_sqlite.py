@@ -5,6 +5,11 @@ from __future__ import absolute_import, division, unicode_literals
 import sqlite3 as sql
 from functools import wraps
 
+try:  # Python 2
+    from itertools import izip as zip  # pylint: disable=redefined-builtin
+except ImportError:
+    pass
+
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_create_sqlite as db_create_sqlite
@@ -49,7 +54,7 @@ def handle_connection(func):
 
 
 class SQLiteDatabase(db_base.BaseDatabase):
-    def __init__(self, db_filename):
+    def __init__(self, db_filename):  # pylint: disable=super-on-old-class
         self.is_mysql_database = False
         self.db_filename = db_filename
         self.db_file_path = db_utils.get_local_db_path(db_filename)

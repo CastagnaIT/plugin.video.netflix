@@ -2,7 +2,6 @@
 """Stateful Netflix session management"""
 from __future__ import absolute_import, division, unicode_literals
 
-import traceback
 import time
 from base64 import urlsafe_b64encode
 from functools import wraps
@@ -21,6 +20,11 @@ import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
                                           APIError, MissingCredentialsError, WebsiteParsingError)
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -93,8 +97,7 @@ class NetflixSession(object):
     @property
     def account_hash(self):
         """The unique hash of the current account"""
-        return urlsafe_b64encode(
-            common.get_credentials().get('email', 'NoMail'))
+        return urlsafe_b64encode(common.get_credentials().get('email', 'NoMail').encode('utf-8')).decode('utf-8')
 
     def update_session_data(self, old_esn=None):
         old_esn = old_esn or g.get_esn()
@@ -181,6 +184,7 @@ class NetflixSession(object):
                 website.validate_session_data(self._get('profiles'))
                 self.update_session_data()
             except Exception:
+                import traceback
                 common.debug(traceback.format_exc())
                 common.info('Failed to validate session data, login is expired')
                 self.session.cookies.clear()
@@ -204,11 +208,13 @@ class NetflixSession(object):
             # it is possible that cookies may not work anymore,
             # it should be due to updates in the website,
             # this can happen when opening the addon while executing update_profiles_data
+            import traceback
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired (WebsiteParsingError)')
             self.session.cookies.clear()
             return self._login()
         except Exception:
+            import traceback
             common.debug(traceback.format_exc())
             common.info('Failed to refresh session data, login expired (Exception)')
             self.session.cookies.clear()
@@ -223,10 +229,13 @@ class NetflixSession(object):
         if not self.session.cookies:
             try:
                 self.session.cookies = cookies.load(self.account_hash)
+            except cookies.MissingCookiesError:
+                return False
             except Exception as exc:
-                common.debug(
+                import traceback
+                common.error(
                     'Failed to load stored cookies: {}'.format(type(exc).__name__))
-                common.debug(traceback.format_exc())
+                common.error(traceback.format_exc())
                 return False
             common.debug('Successfully loaded stored cookies')
         return True
@@ -257,10 +266,10 @@ class NetflixSession(object):
                 if modal_error_message:
                     ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
                     return False
-                else:
-                    raise
+                raise
             website.extract_session_data(login_response)
         except Exception as exc:
+            import traceback
             common.error(traceback.format_exc())
             self.session.cookies.clear()
             raise exc
@@ -379,7 +388,7 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _path_request(self, paths):
         """Execute a path request with static paths"""
-        common.debug('Executing path request: {}'.format(json.dumps(paths, ensure_ascii=False)))
+        common.debug('Executing path request: {}'.format(json.dumps(paths)))
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
@@ -396,14 +405,14 @@ class NetflixSession(object):
             'withSize': 'false',
             'materialize': 'false'
         }
-        data = 'path=' + '&path='.join(json.dumps(path, ensure_ascii=False) for path in paths)
+        data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
         data += '&authURL=' + self.auth_url
         return self._post(
             component='shakti',
             req_type='api',
             params=params,
             headers=headers,
-            data=data.encode('utf-8'))['value']
+            data=data)['value']
 
     @common.addonsignals_return_call
     @needs_login
@@ -497,9 +506,9 @@ def _set_range_selector(paths, range_start, range_end):
 
 def _login_payload(credentials, auth_url):
     return {
-        'userLoginId': credentials['email'],
-        'email': credentials['email'],
-        'password': credentials['password'],
+        'userLoginId': credentials.get('email'),
+        'email': credentials.get('email'),
+        'password': credentials.get('password'),
         'rememberMe': 'true',
         'flow': 'websiteSignUp',
         'mode': 'login',

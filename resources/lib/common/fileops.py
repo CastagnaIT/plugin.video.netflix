@@ -46,7 +46,7 @@ def copy_file(from_path, to_path):
         pass
 
 
-def save_file(filename, content, mode='w'):
+def save_file(filename, content, mode='wb'):
     """
     Saves the given content under given filename
     :param filename: The filename
@@ -55,12 +55,12 @@ def save_file(filename, content, mode='w'):
     file_handle = xbmcvfs.File(
         xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
     try:
-        file_handle.write(content.encode('utf-8'))
+        file_handle.write(bytearray(content))
     finally:
         file_handle.close()
 
 
-def load_file(filename, mode='r'):
+def load_file(filename, mode='rb'):
     """
     Loads the content of a given filename
     :param filename: The file to load
@@ -69,7 +69,7 @@ def load_file(filename, mode='r'):
     file_handle = xbmcvfs.File(
         xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
     try:
-        return file_handle.read().decode('utf-8')
+        return file_handle.readBytes().decode('utf-8')
     finally:
         file_handle.close()
 

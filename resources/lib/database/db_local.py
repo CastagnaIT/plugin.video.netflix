@@ -9,7 +9,7 @@ from resources.lib.database.db_exceptions import (ProfilesMissing)
 
 
 class NFLocalDatabase(db_sqlite.SQLiteDatabase):
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(NFLocalDatabase, self).__init__(db_utils.LOCAL_DB_FILENAME)
 
     def _get_active_guid_profile(self):

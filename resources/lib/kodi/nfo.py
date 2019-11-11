@@ -7,8 +7,13 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
-class NFOSettings:
+
+class NFOSettings(object):
     def __init__(self, enforce=None):
         """
         :param force: Used for export new episode, to force the nfo export status
@@ -162,7 +167,7 @@ def _add_fanart(root, data):
 
 def _build_root_node(root_name, tags):
     root = ET.Element(root_name)
-    for (k, v) in tags.items():
+    for (k, v) in list(tags.items()):
         if v:
             tag = ET.SubElement(root, k)
             tag.text = unicode(v)

@@ -58,8 +58,7 @@ class PlaybackController(xbmc.Monitor):
             return
         try:
             if method == 'Player.OnAVStart':
-                self._on_playback_started(
-                    json.loads(unicode(data, 'utf-8', errors='ignore')))
+                self._on_playback_started(json.loads(data))
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:

@@ -10,6 +10,11 @@ from __future__ import absolute_import, division, unicode_literals
 import sys
 from functools import wraps
 
+try:  # Python 3
+    import itertools.ifilter as filter
+except ImportError:  # Python 2
+    pass
+
 import xbmcplugin
 
 # Import and initialize globals right away to avoid stale values from the last
@@ -106,7 +111,7 @@ if __name__ == '__main__':
         if check_valid_credentials():
             upgrade_ctrl.check_addon_upgrade()
             g.initial_addon_configuration()
-            route(filter(None, g.PATH.split('/')))
+            route(list(filter(None, g.PATH.split('/'))))
             success = True
     except common.BackendNotReady:
         ui.show_backend_not_ready()

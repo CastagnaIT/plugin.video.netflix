@@ -6,9 +6,9 @@ from .logging import debug
 from .misc_utils import get_system_platform
 
 try:  # Python 2
-    from __builtin__ import str as text
-except ImportError:  # Python 3
-    from builtins import str as text
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 __CRYPT_KEY__ = None
 
@@ -30,7 +30,7 @@ def get_random_uuid():
     :return: a string of a random uuid
     """
     import uuid
-    return text(uuid.uuid4())
+    return unicode(uuid.uuid4())
 
 
 def _get_system_uuid():
@@ -52,7 +52,7 @@ def _get_system_uuid():
     if not uuid_value:
         debug('It is not possible to get a system UUID creating a new UUID')
         uuid_value = _get_fake_uuid(system != 'android')
-    return uuid.uuid5(uuid.NAMESPACE_DNS, text(uuid_value)).bytes
+    return uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_value)).bytes
 
 
 def _get_windows_uuid():
@@ -63,7 +63,7 @@ def _get_windows_uuid():
         try:  # Python 2
             import _winreg as winreg
         except ImportError:  # Python 3
-            import winreg as winreg
+            import winreg
         registry = winreg.HKEY_LOCAL_MACHINE
         address = 'SOFTWARE\\Microsoft\\Cryptography'
         keyargs = winreg.KEY_READ | winreg.KEY_WOW64_64KEY
@@ -159,12 +159,12 @@ def _parse_osx_xml_plist_data(data):
 
     items_dict = xml_data[0]['_items'][0]
     r = re.compile(r'.*UUID.*')  # Find to example "platform_UUID" key
-    uuid_keys = filter(r.match, items_dict.keys())
+    uuid_keys = list(filter(r.match, items_dict.keys()))
     if uuid_keys:
         dict_values['UUID'] = items_dict[uuid_keys[0]]
     if not uuid_keys:
         r = re.compile(r'.*serial.*number.*')  # Find to example "serial_number" key
-        serialnumber_keys = filter(r.match, items_dict.keys())
+        serialnumber_keys = list(filter(r.match, items_dict.keys()))
         if serialnumber_keys:
             dict_values['serialnumber'] = items_dict[serialnumber_keys[0]]
     return dict_values

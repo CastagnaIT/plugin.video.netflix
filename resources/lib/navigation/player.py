@@ -38,7 +38,6 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
 
 class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
-    pass
 
 
 @common.inject_video_id(path_offset=0)
@@ -125,8 +124,7 @@ def get_inputstream_listitem(videoid):
 
 
 def _verify_pin(pin_required):
-    if (not pin_required or
-            g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
+    if (not pin_required or g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
         return True
     pin = ui.ask_for_pin()
     return pin is not None and api.verify_pin(pin)
