@@ -43,7 +43,7 @@
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
-    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="false" subsetting="true" default="0"/> <!-- is currently (05-05-2019) no longer supported by the netflix server-->
+    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|13106" visible="eq(-1,true)" subsetting="true" default="0"/> <!-- sort order is supported only to US country-->
     <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
     <setting id="show_menu_chosenforyou" type="bool" label="30169" default="true"/>
     <setting id="show_menu_recentlyadded" type="bool" label="30145" default="true"/>

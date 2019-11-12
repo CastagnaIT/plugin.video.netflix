@@ -275,10 +275,11 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                 True))
     add_items_previous_next_page(directory_items, pathitems,
                                  video_list.perpetual_range_selector, genre_id)
-    # At the moment it is not possible to make a query with results sorted for the 'mylist',
-    # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
-    if menu_data['path'][1] == 'myList':
+    if menu_data['path'][1] == 'myList' and \
+        int(g.ADDON.getSettingInt('menu_sortorder_mylist')) == 0:
+        # At the moment it is not possible to make a query with results sorted for the 'mylist',
+        # so we adding the sort order of kodi
         sort_type = 'sort_label_ignore_folders'
     parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
                                             table=TABLE_MENU_DATA, data_type=dict)
