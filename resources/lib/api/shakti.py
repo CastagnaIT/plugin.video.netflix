@@ -135,7 +135,8 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
         response_type = 'stdlist_wid'
 
     # enum order: AZ|ZA|Suggested|Year
-    sort_order_types = ['az', 'za', 'su', 'yr']
+    # sort order the "mylist" is supported only in US country, the only way to query is use 'az'
+    sort_order_types = ['az', 'za', 'su', 'yr'] if not context_name == 'mylist' else ['az', 'az']
     req_sort_order_type = sort_order_types[
         int(g.ADDON.getSettingInt('_'.join(('menu_sortorder', menu_data['path'][1]))))]
     base_path.append(req_sort_order_type)
