@@ -398,4 +398,17 @@ def get_shareddb_class(force_sqlite=False):
                     self._execute_non_query(insert_query, (profile_guid, videoid,
                                                            value, date_last_modified))
 
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
+        def purge_library(self):
+            """Delete all records from library tables"""
+            query = 'DELETE FROM video_lib_movies'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_episodes'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_seasons'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_tvshows'
+            self._execute_non_query(query)
+
     return NFSharedDatabase
