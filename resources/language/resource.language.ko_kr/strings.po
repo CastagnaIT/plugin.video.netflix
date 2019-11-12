@@ -273,12 +273,12 @@ msgid "new episodes added to library"
 msgstr "새 에피소드가 라이브러리에 추가되었습니다."
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "새 에피소드를 내보냅니다."
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "자동으로 새로 고칩니다."
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"

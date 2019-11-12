@@ -273,12 +273,12 @@ msgid "new episodes added to library"
 msgstr "Nouveaux épisodes ajoutés à la médiathèque"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Exporter les nouveaux épisodes"
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Mise à jour automatique"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"

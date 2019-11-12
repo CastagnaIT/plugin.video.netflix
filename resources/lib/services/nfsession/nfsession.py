@@ -84,6 +84,7 @@ class NetflixSession(object):
             self.activate_profile,
             self.path_request,
             self.perpetual_path_request,
+            self.perpetual_path_request_switch_profiles,
             self.get,
             self.post,
         ]
@@ -331,6 +332,35 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                no_limit_req=False):
+        return self._perpetual_path_request(paths, length_params, perpetual_range_start,
+                                            no_limit_req)
+
+    @common.addonsignals_return_call
+    @needs_login
+    @common.time_execution(immediate=True)
+    def perpetual_path_request_switch_profiles(self, paths, length_params,
+                                               perpetual_range_start=None, no_limit_req=False):
+        """
+        Perform a perpetual path request,
+        Used exclusively to get My List of a profile other than the current one
+        """
+        # Profile chosen by the user for the synchronization from which to get My List videos
+        mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                    g.LOCAL_DB.get_guid_owner_profile())
+        # Current profile active
+        current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        # Switch profile (only if necessary) in order to get My List videos
+        is_profile_switched = self.activate_profile(mylist_profile_guid)
+        # Get the My List data
+        path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
+                                                     no_limit_req)
+        if is_profile_switched:
+            # Reactive again the previous profile
+            self.activate_profile(current_profile_guid)
+        return path_response
+
+    def _perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
+                                no_limit_req=False):
         """Perform a perpetual path request against the Shakti API to retrieve
         a possibly large video list. If the requested video list's size is
         larger than MAX_PATH_REQUEST_SIZE, multiple path requests will be
@@ -355,7 +385,8 @@ class NetflixSession(object):
         merged_response = {}
 
         for n_req in range(number_of_requests):
-            path_response = self._path_request(_set_range_selector(paths, range_start, range_end))
+            path_response = self._path_request(
+                _set_range_selector(paths, range_start, range_end))
             if not path_response:
                 break
             if not common.check_path_exists(length_args, path_response):
@@ -382,7 +413,8 @@ class NetflixSession(object):
             if '_perpetual_range_selector' in merged_response:
                 merged_response['_perpetual_range_selector']['previous_start'] = previous_start
             else:
-                merged_response['_perpetual_range_selector'] = {'previous_start': previous_start}
+                merged_response['_perpetual_range_selector'] = {
+                    'previous_start': previous_start}
         return merged_response
 
     @common.time_execution(immediate=True)

@@ -269,12 +269,12 @@ msgid "new episodes added to library"
 msgstr "uutta jaksoa lisätty kirjastoon"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Vie uudet jaksot"
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Automaattinen päivitys"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"
