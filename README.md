@@ -60,7 +60,7 @@ This table explains compatibility of high resolutions between devices and operat
 \*4 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.<br/>
 \*5 To get 1080P resolution and hardware video decoding is needed a Widevine security level L1 capable device.
 
-[Click here to view the list of tested Android devices that currently known to working in 1080P and 4K](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
+[Click here to view the list of known and tested android devices for 1080P and 4K playback](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
 ### Video playback problems like frame drops, slowdown, stuttering
 Usually happens to those devices where hardware video decoding is not available (due to Netflix licensing restrictions) and the CPU fails to process the video stream properly due to the high load.
