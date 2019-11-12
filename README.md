@@ -24,7 +24,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Export new seasons/episodes to (Kodi) local library when they become available on Netflix
 - Share/Sync the (Kodi) local library and netflix addon data with multiple devices that running Kodi
 - Possibility of playback with high resolutions 1080P and 4K (see table)
-- Support of hi-res audio Dolby Digital Plus 5.1 and Dolby Digital Atmos (on Premium accounts)
+- Support of hi-res audio Dolby Digital Plus and Dolby Digital Atmos (on Premium accounts)
 - Support of HDR and Dolby Vision (only on capable android devices, on Premium accounts)
 - Support integration with Up Next add-on (proposes to play the next episode automatically)
 
@@ -73,8 +73,6 @@ You can try to solve this problem by trying one of these solutions:
 In the addon settings go to Expert page and change `Limit video stream resolution to` value to 720p.
 - Limit InputStream Adaptive max bandwidth<br/>
 In the addon settings go to Expert page open InputStream Adaptive settings and try to set Max Bandwidth between 2.500.000 and 4.000.000
-- Only to RPI: Cooling and overclock - NOT recommended for non-experts<br/>
-On RPI devices, some users have adopted adequate cooling and slightly overclocked to achieve improvements, reminder NOT recommended for non-experts.
 
 ### My android device supports 4K but does not playback
 First, make sure that:
