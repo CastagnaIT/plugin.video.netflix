@@ -219,6 +219,14 @@ def purge():
         execute_library_tasks(videoid, [remove_item],
                               common.get_local_string(30030),
                               sync_mylist=False)
+    # If for some reason such as improper use of the add-on, unexpected error or other
+    # has caused inconsistencies with the contents of the database or stored files,
+    # make sure that everything is removed
+    g.SHARED_DB.purge_library()
+    for folder_name in [FOLDER_MOVIES, FOLDER_TV]:
+        section_dir = xbmc.translatePath(
+            xbmc.makeLegalFilename('/'.join([library_path(), folder_name])))
+        common.delete_folder_contents(section_dir, delete_subfolders=True)
 
 
 @common.time_execution(immediate=False)
