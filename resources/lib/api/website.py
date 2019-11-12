@@ -224,10 +224,13 @@ def generate_esn(user_data):
                 ['/system/bin/getprop', 'ro.nrdp.modelgroup']).strip(' \t\n\r')
 
             esn = ('NFANDROID2-PRV-' if has_product_characteristics_tv else 'NFANDROID1-PRV-')
-            if not nrdp_modelgroup:
-                esn += 'T-L3-'
+            if has_product_characteristics_tv:
+                if nrdp_modelgroup:
+                    esn += nrdp_modelgroup + '-'
+                else:
+                    esn += model.replace(' ', '').upper() + '-'
             else:
-                esn += nrdp_modelgroup + '-'
+                esn += 'T-L3-'
             esn += '{:=<5.5}'.format(manufacturer.upper())
             esn += model.replace(' ', '=').upper()
             esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
