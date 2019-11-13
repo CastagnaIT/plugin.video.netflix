@@ -103,6 +103,7 @@ if __name__ == '__main__':
     # pylint: disable=broad-except
     # Initialize variables in common module scope
     # (necessary when reusing language invoker)
+    common.reset_log_level_global_var()
     common.info('Started (Version {})'.format(g.VERSION))
     common.info('URL is {}'.format(g.URL))
     success = False

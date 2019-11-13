@@ -128,6 +128,7 @@
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="reset_esn" type="action" label="30217" action="RunPlugin(plugin://plugin.video.netflix/action/reset_esn/)" option="close"/>
     <setting label="30116" type="lsep"/><!--Advanced Addon Configuration-->
+    <setting id="debug_log_level" type="labelenum" label="30066" values="Disabled|Info|Verbose" default="0"/>
     <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
