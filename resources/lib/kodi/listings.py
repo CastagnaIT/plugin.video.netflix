@@ -277,7 +277,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                  video_list.perpetual_range_selector, genre_id)
     sort_type = 'sort_nothing'
     if menu_data['path'][1] == 'myList' and \
-        int(g.ADDON.getSettingInt('menu_sortorder_mylist')) == 0:
+       int(g.ADDON.getSettingInt('menu_sortorder_mylist')) == 0:
         # At the moment it is not possible to make a query with results sorted for the 'mylist',
         # so we adding the sort order of kodi
         sort_type = 'sort_label_ignore_folders'
