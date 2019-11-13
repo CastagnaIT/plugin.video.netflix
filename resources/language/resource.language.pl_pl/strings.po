@@ -282,11 +282,11 @@ msgstr "nowe odcinki dodane do biblioteki"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "Wykonaj autoaktualizację"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Autoaktulizacja dla sezonów i odcinków seriali "
 
 msgctxt "#30066"
 msgid "never"
@@ -906,7 +906,7 @@ msgstr "Wyłącz powiadomienie o zakończeniu synchronizacji"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr ""
+msgstr "Biblioteka Kodi została zaktualizowana"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -918,4 +918,4 @@ msgstr "Profil dziecka"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr ""
+msgstr "Synchronizacja używa teraz \"Mojej list\" z profilu {}"
