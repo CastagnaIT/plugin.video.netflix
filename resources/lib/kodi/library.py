@@ -586,8 +586,9 @@ def auto_update_library(sync_with_mylist, silent):
     if _is_auto_update_library_running():
         return
     execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
-    common.log('Starting auto update library - check updates for tv shows (sync with My List is {})'
-               .format(sync_with_mylist))
+    common.debug(
+        'Starting auto update library - check updates for tv shows (sync with My List is {})'
+        .format(sync_with_mylist))
     g.SHARED_DB.set_value('library_auto_update_is_running', True)
     g.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
     try:

@@ -47,6 +47,6 @@ class NetflixTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
     def __init__(self, server_address):
         """Initialization of MSLTCPServer"""
-        common.log('Constructing NetflixTCPServer')
+        common.info('Constructing NetflixTCPServer')
         self.netflix_session = NetflixSession()
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)

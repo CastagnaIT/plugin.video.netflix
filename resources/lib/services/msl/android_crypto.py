@@ -60,8 +60,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         if not key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
 
-        common.log('Widevine CryptoSession getKeyRequest successful. Size: {}'
-                   .format(len(key_request)))
+        common.debug('Widevine CryptoSession getKeyRequest successful. Size: {}'
+                     .format(len(key_request)))
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
