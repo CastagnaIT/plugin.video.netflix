@@ -947,3 +947,7 @@ msgstr ""
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr ""
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr ""

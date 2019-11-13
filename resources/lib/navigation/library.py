@@ -93,6 +93,9 @@ class LibraryActionExecutor(object):
         """
         Perform an auto update of Kodi library to add new seasons/episodes of tv shows
         """
+        if not ui.ask_for_confirmation(common.get_local_string(30065),
+                                       common.get_local_string(30231)):
+            return
         library.auto_update_library(False, False)
 
     def service_auto_upd_run_now(self, pathitems):  # pylint: disable=unused-argument
