@@ -3,6 +3,7 @@
 from __future__ import absolute_import, division, unicode_literals
 import json
 import datetime
+import time
 from ast import literal_eval
 # Workaround for http://bugs.python.org/issue8098 only to py2 caused by _conv_string_to_datetime()
 # Error: ImportError: Failed to import _strptime because the import lockis held by another thread.
@@ -72,4 +73,8 @@ def _conv_string_to_json(value):
 
 
 def _conv_string_to_datetime(value):
-    return datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
+    try:
+        return datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
+    except TypeError:
+        # Python bug https://bugs.python.org/issue27400
+        return datetime.datetime(*(time.strptime(value, '%Y-%m-%d %H:%M:%S.%f')[0:6]))

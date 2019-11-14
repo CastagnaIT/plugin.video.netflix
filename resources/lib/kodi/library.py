@@ -219,6 +219,14 @@ def purge():
         execute_library_tasks(videoid, [remove_item],
                               common.get_local_string(30030),
                               sync_mylist=False)
+    # If for some reason such as improper use of the add-on, unexpected error or other
+    # has caused inconsistencies with the contents of the database or stored files,
+    # make sure that everything is removed
+    g.SHARED_DB.purge_library()
+    for folder_name in [FOLDER_MOVIES, FOLDER_TV]:
+        section_dir = xbmc.translatePath(
+            xbmc.makeLegalFilename('/'.join([library_path(), folder_name])))
+        common.delete_folder_contents(section_dir, delete_subfolders=True)
 
 
 @common.time_execution(immediate=False)
@@ -535,85 +543,139 @@ def _remove_videoid_from_db(videoid):
         g.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
 
 
-def _export_all_new_episodes_running():
-    update = g.SHARED_DB.get_value('library_export_new_episodes_running', False)
+def _is_auto_update_library_running():
+    update = g.SHARED_DB.get_value('library_auto_update_is_running', False)
     if update:
-        start_time = g.SHARED_DB.get_value('library_export_new_episode_start_time',
+        start_time = g.SHARED_DB.get_value('library_auto_update_start_time',
                                            datetime.utcfromtimestamp(0))
         if datetime.now() >= start_time + timedelta(hours=6):
-            g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+            g.SHARED_DB.set_value('library_auto_update_is_running', False)
             common.warn('Canceling previous library update: duration >6 hours')
         else:
-            common.debug('Export all new episodes is already running')
+            common.debug('Library auto update is already running')
             return True
     return False
 
 
-def export_all_new_episodes():
+def sync_mylist_to_library():
     """
-    Update the local Kodi library with new episodes of every exported shows
+    Perform a full sync of Netflix "My List" with the Kodi library
+    by deleting everything that was previously exported
     """
-    from resources.lib.cache import CACHE_COMMON
-    from resources.lib.database.db_exceptions import ProfilesMissing
-    if _export_all_new_episodes_running():
-        return
-    common.log('Starting to export new episodes for all tv shows')
-    g.SHARED_DB.set_value('library_export_new_episodes_running', True)
-    g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
-    # Get the list of the tvshows exported to kodi library
-    exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
-    # Get the list of the tvshows exported but to exclude from updates
-    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
+    common.debug('Performing full sync of Netflix "My List" with the Kodi library')
+    purge()
+    nfo_settings = nfo.NFOSettings()
+    nfo_settings.show_export_dialog()
+    for videoid in _get_mylist_videoids():
+        execute_library_tasks(videoid, [export_item],
+                              common.get_local_string(30018),
+                              sync_mylist=False,
+                              nfo_settings=nfo_settings)
 
-    # Before start to get updated mylist items, you have to select the owner account
-    # TODO: in the future you can also add the possibility to synchronize from a chosen profile
+
+def auto_update_library(sync_with_mylist, silent):
+    """
+    Perform an auto update of the exported items to Kodi library,
+    so check if there is new seasons/episodes.
+    If sync_with_mylist is enabled the Kodi library will be also synchronized
+    with the Netflix "My List".
+    :param sync_with_mylist: True to enable sync with My List
+    :param silent: don't display user interface while performing an operation
+    :return: None
+    """
+    if _is_auto_update_library_running():
+        return
+    execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
+    common.log('Starting auto update library - check updates for tv shows (sync with My List is {})'
+               .format(sync_with_mylist))
+    g.SHARED_DB.set_value('library_auto_update_is_running', True)
+    g.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
     try:
-        guid_owner_profile = g.LOCAL_DB.get_guid_owner_profile()
-    except ProfilesMissing as exc:
+        videoids_to_update = []
+
+        # Get My List videoids of the chosen profile
+        mylist_videoids = _get_mylist_videoids() if sync_with_mylist else []
+        # Get the list of the exported items to Kodi library
+        exported_tvshows_videoids_values = g.SHARED_DB.get_tvshows_id_list()
+        exported_movies_videoids_values = g.SHARED_DB.get_movies_id_list()
+
+        if sync_with_mylist:
+            # Check if tv shows have been removed from the My List
+            for videoid_value in exported_tvshows_videoids_values:
+                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                    continue
+                # The tv show no more exist in My List so remove it from library
+                videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
+                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+
+            # Check if movies have been removed from the My List
+            for videoid_value in exported_movies_videoids_values:
+                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                    continue
+                # The movie no more exist in My List so remove it from library
+                videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
+                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+
+            # Add missing tv shows / movies of My List to library
+            for videoid in mylist_videoids:
+                if videoid.value not in exported_tvshows_videoids_values and \
+                   videoid.value not in exported_movies_videoids_values:
+                    videoids_to_update.append(videoid)
+
+        # Add the exported tv shows to be updated to the list..
+        tvshows_videoids_to_upd = [common.VideoId.from_path([common.VideoId.SHOW,
+                                                             videoid_value]) for
+                                   videoid_value in
+                                   g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
+                                                                   False)]
+        # ..and avoids any duplication caused by possible unexpected errors
+        videoids_to_update.extend(list(set(tvshows_videoids_to_upd) - set(videoids_to_update)))
+
+        # Add missing tv shows/movies or update existing tv shows
+        _update_library(videoids_to_update, exported_tvshows_videoids_values, silent)
+
+        common.debug('Auto update of the library completed')
+        g.SHARED_DB.set_value('library_auto_update_is_running', False)
+        if not g.ADDON.getSettingBool('lib_auto_upd_disable_notification'):
+            ui.show_notification(common.get_local_string(30220), time=5000)
+        common.debug('Notify service to communicate to Kodi of update the library')
+        common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+    except Exception:  # pylint: disable=broad-except
         import traceback
+        common.error('An error has occurred in the library auto update')
         common.error(traceback.format_exc())
-        ui.show_addon_error_info(exc)
-        return
-    if guid_owner_profile != g.LOCAL_DB.get_active_profile_guid():
-        common.debug('Switching to owner account profile')
-        api.activate_profile(guid_owner_profile)
+        g.SHARED_DB.set_value('library_auto_update_is_running', False)
 
-    # Retrieve updated items from "my list"
-    # Invalidate my-list cached data to force to obtain new data
-    g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
-    mylist_videoids = api.mylist_items()
 
-    # Check if any tvshow have been removed from the mylist
-    for videoid_value in exported_videoids_values:
-        if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
-            continue
-        # Tvshow no more exist in mylist so remove it from library
-        videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-        execute_library_tasks_silently(videoid, [remove_item], sync_mylist=False)
-
-    # Update or add tvshow in kodi library
-    for videoid in mylist_videoids:
-        # Only tvshows require be updated
-        if videoid.mediatype != common.VideoId.SHOW:
-            continue
+def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent):
+    execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
+    # Get the list of the Tv Shows exported to exclude from updates
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
+                                                               True)
+    for videoid in videoids_to_update:
+        # Check if current videoid is excluded from updates
         if videoid.value in excluded_videoids_values:
             continue
-        if videoid.value in exported_videoids_values:
-            # It is possible that the user has chosen not to export nfo for a tvshow
+        if videoid.value in exported_tvshows_videoids_values:
+            # It is possible that the user has chosen not to export NFO files for a tv show
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
                                                          VidLibProp['nfo_export'], False)
             nfo_settings = nfo.NFOSettings(nfo_export)
         else:
             nfo_settings = nfo.NFOSettings()
-        export_new_episodes(videoid, True, nfo_settings)
-        # add some randomness between show analysis to limit servers load and ban risks
+        if videoid.mediatype == common.VideoId.SHOW:
+            export_new_episodes(videoid, silent, nfo_settings)
+        if videoid.mediatype == common.VideoId.MOVIE:
+            execute_lib_tasks_method(videoid, [export_item],
+                                     sync_mylist=False,
+                                     nfo_settings=nfo_settings)
+        # Add some randomness between operations to limit servers load and ban risks
         xbmc.sleep(random.randint(1000, 5001))
 
-    g.SHARED_DB.set_value('library_export_new_episodes_running', False)
-    if not g.ADDON.getSettingBool('disable_library_sync_notification'):
-        ui.show_notification(common.get_local_string(30220), time=5000)
-    common.debug('Notify service to update the library')
-    common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+
+def _get_mylist_videoids():
+    """Get My List videoids of an chosen profile"""
+    return api.mylist_items_switch_profiles()
 
 
 def export_new_episodes(videoid, silent=False, nfo_settings=None):
@@ -654,15 +716,15 @@ def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_s
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, title=None,  # pylint: disable=unused-argument
+def execute_library_tasks_silently(videoid, task_handlers, title=None,
                                    sync_mylist=False, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
-    # pylint: disable=broad-except
+    # pylint: disable=unused-argument
     for task_handler in task_handlers:
         for task in compile_tasks(videoid, task_handler, nfo_settings):
             try:
                 task_handler(task, library_path())
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 import traceback
                 common.error(traceback.format_exc())
                 common.error('{} of {} failed'

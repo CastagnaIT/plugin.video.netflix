@@ -79,7 +79,7 @@ def ask_for_removal_confirmation():
 
 
 def ask_for_confirmation(title, message):
-    """Ask the user to finally remove title from the Kodi library"""
+    """Ask the user to confirm an operation"""
     return xbmcgui.Dialog().yesno(heading=title, line1=message)
 
 

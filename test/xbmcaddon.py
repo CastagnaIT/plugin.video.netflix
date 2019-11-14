@@ -66,3 +66,7 @@ class Addon:
     def setSettingBool(self, key, value):
         ''' A stub implementation for the xbmcaddon Addon class setSettingBool() method '''
         self.setSetting(key, bool(value))
+
+    def setSettingInt(self, key, value):
+        ''' A stub implementation for the xbmcaddon Addon class setSettingInt() method '''
+        self.setSetting(key, int(value))

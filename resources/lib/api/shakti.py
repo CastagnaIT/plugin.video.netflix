@@ -255,7 +255,7 @@ def single_info(videoid):
     return common.make_call('path_request', paths)
 
 
-def custom_video_list_basicinfo(context_name):
+def custom_video_list_basicinfo(context_name, switch_profiles=False):
     """
     Retrieve a single video list
     used only to know which videos are in my list without requesting additional information
@@ -270,7 +270,9 @@ def custom_video_list_basicinfo(context_name):
         'no_limit_req': True
     }
     # When the list is empty the server returns an empty response
-    path_response = common.make_call('perpetual_path_request', callargs)
+    callname = 'perpetual_path_request_switch_profiles'\
+        if switch_profiles else 'perpetual_path_request'
+    path_response = common.make_call(callname, callargs)
     return {} if not path_response else VideoListSorted(path_response, context_name, None, 'az')
 
 
@@ -285,6 +287,31 @@ def mylist_items():
     try:
         items = []
         videos = custom_video_list_basicinfo(g.MAIN_MENU_ITEMS['myList']['request_context_name'])
+        if videos:
+            # pylint: disable=unused-variable
+            items = [common.VideoId.from_videolist_item(video)
+                     for video_id, video in iteritems(videos.videos)
+                     if video['queue'].get('inQueue', False)]
+        return items
+    except InvalidVideoListTypeError:
+        return []
+
+
+# Used only to library auto update with the sync to Netflix "My List" enabled
+# It may happen that the user browses the frontend with a different profile used by library sync,
+# and it could cause a wrong query request to nf server.
+# So this is an attempt to find a workaround to avoid conflict between frontend navigation
+# and the library auto update from the service.
+# The scope is (when necessary): switch the profile, get My List items and restore previous
+# active profile in a single call to try limit execution in faster way.
+def mylist_items_switch_profiles():
+    """Return a list of all the items currently contained in my list"""
+    common.debug('Perform a request to get the id list'
+                 'of the videos in my list with profiles switching')
+    try:
+        items = []
+        videos = custom_video_list_basicinfo(g.MAIN_MENU_ITEMS['myList']['request_context_name'],
+                                             True)
         if videos:
             # pylint: disable=unused-variable
             items = [common.VideoId.from_videolist_item(video)
