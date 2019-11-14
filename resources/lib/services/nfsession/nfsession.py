@@ -284,9 +284,18 @@ class NetflixSession(object):
     def logout(self, url):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
+
+        # Disable and reset auto-update / auto-sync features
+        g.settings_monitor_suspended(True)
+        g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
+        g.ADDON.setSettingBool('lib_sync_mylist', False)
+        g.settings_monitor_suspended(False)
+        g.SHARED_DB.delete_key('sync_mylist_profile_guid')
+
         cookies.delete(self.account_hash)
         self._get('logout')
         common.purge_credentials()
+
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
