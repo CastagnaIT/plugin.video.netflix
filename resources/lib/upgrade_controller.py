@@ -37,7 +37,7 @@ def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     common.debug('Initialize addon upgrade operations, from version {} to {})'
                  .format(previous_ver, current_ver))
-    if common.is_less_version(previous_ver, '0.15.9'):
+    if previous_ver and common.is_less_version(previous_ver, '0.15.9'):
         import resources.lib.kodi.ui as ui
         msg = ('This update resets the settings to auto-update library.\r\n'
                'Therefore only in case you are using auto-update must be reconfigured.')
