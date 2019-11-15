@@ -380,10 +380,10 @@ class NetflixSession(object):
 
         request_size = apipaths.MAX_PATH_REQUEST_SIZE
         response_size = request_size + 1
-        # Note: when the request is made with 'genres' context,
+        # Note: when the request is made with 'genres' or 'seasons' context,
         # the response strangely does not respect the number of objects
         # requested, returning 1 more item, i couldn't understand why
-        if context_name == 'genres':
+        if context_name in ['genres', 'seasons']:
             response_size += 1
 
         number_of_requests = 100 if no_limit_req else 2

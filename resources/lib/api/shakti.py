@@ -202,8 +202,9 @@ def seasons(videoid):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(g, cache.CACHE_COMMON)
-def episodes(videoid):
+@cache.cache_output(g, cache.CACHE_COMMON, identify_from_kwarg_name='videoid_value',
+                    identify_append_from_kwarg_name='perpetual_range_start')
+def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: disable=unused-argument
     """Retrieve episodes of a season"""
     if videoid.mediatype != common.VideoId.SEASON:
         raise common.InvalidVideoId('Cannot request episode list for {}'
@@ -216,7 +217,8 @@ def episodes(videoid):
                              ART_PARTIAL_PATHS + [['title']]))
     callargs = {
         'paths': paths,
-        'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']]
+        'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']],
+        'perpetual_range_start': perpetual_range_start
     }
     return EpisodeList(videoid, common.make_call('perpetual_path_request', callargs))
 
