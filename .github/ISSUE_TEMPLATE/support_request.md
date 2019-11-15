@@ -19,8 +19,6 @@ Used Operating system:
 * [ ] Windows
 
 ### Describe your help request
-<!--- A bug report that is not clear will be closed -->
-<!--- WHEN APPROPRIATE (MOST OF THE CASES) ALWAYS ATTACH THE LINK FOR KODI LOG FILE, SEE BELOW -->
 <!--- Put your text below this line -->
 
 #### Screenshots

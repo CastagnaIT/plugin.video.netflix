@@ -32,7 +32,7 @@ def save(account_hash, cookie_jar):
         # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
     except Exception as exc:
-        common.error('Failed to save cookies to file: {exc}', exc)
+        common.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
         cookie_file.close()
 
@@ -45,13 +45,13 @@ def delete(account_hash):
     try:
         xbmcvfs.delete(cookie_filename(account_hash))
     except Exception as exc:
-        common.error('Failed to delete cookies on disk: {exc}', exc)
+        common.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
     filename = cookie_filename(account_hash)
-    common.debug('Loading cookies from {}'.format(filename))
+    common.debug('Loading cookies from {}', filename)
     if not xbmcvfs.exists(xbmc.translatePath(filename)):
         common.debug('Cookies file does not exist')
         raise MissingCookiesError()
@@ -64,7 +64,7 @@ def load(account_hash):
             cookie_jar = pickle.loads(cookie_file.readBytes())
     except Exception as exc:
         import traceback
-        common.error('Failed to load cookies from file: {exc}', exc)
+        common.error('Failed to load cookies from file: {exc}', exc=exc)
         common.error(traceback.format_exc())
         raise MissingCookiesError()
     finally:

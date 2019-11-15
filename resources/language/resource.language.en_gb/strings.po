@@ -288,8 +288,8 @@ msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
 msgstr ""
 
-msgctxt "#30066" # No more used
-msgid "never"
+msgctxt "#30066"
+msgid "Debug logging level"
 msgstr ""
 
 msgctxt "#30067"

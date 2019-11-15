@@ -99,17 +99,18 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
                     identify_append_from_kwarg_name, identify_fallback_arg_index, args, kwargs):
     """Return the identifier to use with the caching_decorator"""
     # import resources.lib.common as common
-    # common.debug('Get_identifier args: {}'.format(args))
-    # common.debug('Get_identifier kwargs: {}'.format(kwargs))
+    # common.debug('Get_identifier args: {}', args)
+    # common.debug('Get_identifier kwargs: {}', kwargs)
     if fixed_identifier:
         identifier = fixed_identifier
     else:
         identifier = kwargs.get(identify_from_kwarg_name)
         if not identifier and args:
             identifier = args[identify_fallback_arg_index]
-        if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
+        if identifier and identify_append_from_kwarg_name and \
+           kwargs.get(identify_append_from_kwarg_name):
             identifier += '_' + kwargs.get(identify_append_from_kwarg_name)
-    # common.debug('Get_identifier identifier value: {}'.format(identifier if identifier else 'None'))
+    # common.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return identifier
 
 
@@ -178,8 +179,8 @@ class Cache(object):
         # pylint: disable=too-many-arguments
         if not eol:
             eol = int(time() + (ttl if ttl else self.ttl))
-        # self.common.debug('Adding {} to {} (valid until {})'
-        #              .format(identifier, bucket, eol))
+        # self.common.debug('Adding {} to {} (valid until {})',
+        #                   identifier, bucket, eol)
         cache_entry = {'eol': eol, 'content': content}
         self._get_bucket(bucket).update(
             {identifier: cache_entry})
@@ -218,11 +219,9 @@ class Cache(object):
         """Remove an item from a bucket"""
         try:
             self._purge_entry(bucket, identifier, on_disk)
-            self.common.debug('Invalidated {} in {}'
-                              .format(identifier, bucket))
+            self.common.debug('Invalidated {} in {}', identifier, bucket)
         except KeyError:
-            self.common.debug('Nothing to invalidate, {} was not in {}'
-                              .format(identifier, bucket))
+            self.common.debug('Nothing to invalidate, {} was not in {}', identifier, bucket)
 
     def _get_bucket(self, key):
         """Get a cache bucket.
@@ -242,15 +241,13 @@ class Cache(object):
                 try:
                     wnd_property = pickle.loads(wnd_property_data)
                 except Exception:  # pylint: disable=broad-except
-                    self.common.debug('No instance of {} found. Creating new instance.'
-                                      .format(bucket))
+                    self.common.debug('No instance of {} found. Creating new instance.', bucket)
             if isinstance(wnd_property, unicode) and wnd_property.startswith('LOCKED'):
-                self.common.debug('Waiting for release of {}'.format(bucket))
+                self.common.debug('Waiting for release of {}', bucket)
                 xbmc.sleep(50)
             else:
                 return self._load_bucket_from_wndprop(bucket, wnd_property)
-        self.common.warn('{} is locked. Working with an empty instance...'
-                         .format(bucket))
+        self.common.warn('{} is locked. Working with an empty instance...', bucket)
         return {}
 
     def _load_bucket_from_wndprop(self, bucket, wnd_property):
@@ -259,7 +256,7 @@ class Cache(object):
         else:
             bucket_instance = wnd_property
         self._lock(bucket)
-        self.common.debug('Acquired lock on {}'.format(bucket))
+        self.common.debug('Acquired lock on {}', bucket)
         return bucket_instance
 
     def _lock(self, bucket):
@@ -283,8 +280,7 @@ class Cache(object):
             # py3
             return pickle.loads(handle.readBytes())
         except Exception as exc:
-            self.common.error('Failed get cache from disk {}: {}'
-                              .format(cache_filename, exc))
+            self.common.error('Failed get cache from disk {}: {}', cache_filename, exc)
             raise CacheMiss()
         finally:
             handle.close()
@@ -298,8 +294,7 @@ class Cache(object):
             # return pickle.dump(cache_entry, handle)
             handle.write(bytearray(pickle.dumps(cache_entry)))
         except Exception as exc:
-            self.common.error('Failed to write cache entry to {}: {}'
-                              .format(cache_filename, exc))
+            self.common.error('Failed to write cache entry to {}: {}', cache_filename, exc)
         finally:
             handle.close()
 
@@ -323,11 +318,10 @@ class Cache(object):
             self.window.setProperty(_window_property(bucket),
                                     base64.b64encode(pickle.dumps(contents)).decode('utf-8'))
         except Exception as exc:
-            self.common.error('Failed to persist {} to wnd properties: {}'
-                              .format(bucket, exc))
+            self.common.error('Failed to persist {} to wnd properties: {}', bucket, exc)
             self.window.clearProperty(_window_property(bucket))
         finally:
-            self.common.debug('Released lock on {}'.format(bucket))
+            self.common.debug('Released lock on {}', bucket)
 
     def is_safe_to_persist(self, bucket):
         # Only persist if we acquired the original lock or if the lock is older
@@ -342,16 +336,15 @@ class Cache(object):
         except ValueError:
             is_stale_lock = False
         if is_stale_lock:
-            self.common.info('Overriding stale cache lock {} on {}'
-                             .format(lock, bucket))
+            self.common.info('Overriding stale cache lock {} on {}', lock, bucket)
         return is_own_lock or is_stale_lock
 
     def verify_ttl(self, bucket, identifier, cache_entry):
         """Verify if cache_entry has reached its EOL.
         Remove from in-memory and disk cache if so and raise CacheMiss"""
         if cache_entry['eol'] < int(time()):
-            self.common.debug('Cache entry {} in {} has expired => cache miss'
-                              .format(identifier, bucket))
+            self.common.debug('Cache entry {} in {} has expired => cache miss',
+                              identifier, bucket)
             self._purge_entry(bucket, identifier)
             raise CacheMiss()
 

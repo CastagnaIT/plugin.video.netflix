@@ -67,7 +67,7 @@ class MSLHandler(object):
         self.request_builder = None
         try:
             msl_data = json.loads(common.load_file('msl_data.json'))
-            common.debug('Loaded MSL data from disk')
+            common.info('Loaded MSL data from disk')
         except Exception:
             msl_data = None
         try:
@@ -77,7 +77,7 @@ class MSLHandler(object):
                 self.check_mastertoken_validity()
         except Exception:
             import traceback
-            common.debug(traceback.format_exc())
+            common.error(traceback.format_exc())
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
@@ -113,7 +113,7 @@ class MSLHandler(object):
             common.info('Cannot perform key handshake, missing ESN')
             return False
 
-        common.debug('Performing key handshake. ESN: {}'.format(esn))
+        common.debug('Performing key handshake. ESN: {}', esn)
 
         response = _process_json_response(
             self._post(ENDPOINTS['manifest'],
@@ -165,19 +165,16 @@ class MSLHandler(object):
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
-            common.debug('Manifest for {} with ESN {} obtained from the cache'
-                         .format(viewable_id, esn))
+            common.debug('Manifest for {} with ESN {} obtained from the cache', viewable_id, esn)
             # Save the manifest to disk as reference
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
         except cache.CacheMiss:
             pass
-        common.debug('Requesting manifest for {} with ESN {}'
-                     .format(viewable_id, esn))
+        common.debug('Requesting manifest for {} with ESN {}', viewable_id, esn)
         profiles = enabled_profiles()
         import pprint
-        common.debug('Requested profiles:\n{}'
-                     .format(pprint.pformat(profiles, indent=2)))
+        common.info('Requested profiles:\n{}', pprint.pformat(profiles, indent=2))
 
         ia_addon = xbmcaddon.Addon('inputstream.adaptive')
         hdcp = ia_addon is not None and ia_addon.getSetting('HDCPOVERRIDE') == 'true'
@@ -297,12 +294,11 @@ class MSLHandler(object):
     @common.time_execution(immediate=True)
     def _post(self, endpoint, request_data):
         """Execute a post request"""
-        common.debug('Executing POST request to {}'.format(endpoint))
+        common.debug('Executing POST request to {}', endpoint)
         start = time.clock()
         response = self.session.post(endpoint, request_data)
-        common.debug('Request took {}s'.format(time.clock() - start))
-        common.debug('Request returned response with status {}'
-                     .format(response.status_code))
+        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request returned response with status {}', response.status_code)
         response.raise_for_status()
         return response
 

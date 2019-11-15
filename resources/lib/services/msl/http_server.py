@@ -73,6 +73,6 @@ class MSLTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
     def __init__(self, server_address):
         """Initialization of MSLTCPServer"""
-        common.log('Constructing MSLTCPServer')
+        common.info('Constructing MSLTCPServer')
         self.msl_handler = MSLHandler()
         TCPServer.__init__(self, server_address, MSLHttpRequestHandler)

@@ -15,7 +15,7 @@ class LoLoMo(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
-        common.debug('LoLoMo data: {}'.format(self.data))
+        common.debug('LoLoMo data: {}', self.data)
         _filterout_contexts(self.data, ['billboard', 'showAsARow'])
         self.id = (lolomoid
                    if lolomoid
@@ -96,7 +96,7 @@ class VideoListSorted:
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, context_name, context_id, req_sort_order_type):
-        # common.debug('VideoListSorted data: {}'.format(path_response))
+        # common.debug('VideoListSorted data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
@@ -147,8 +147,6 @@ class SearchVideoList:
             # self.artitem = next(itervalues(self.videos), None)
             self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
-        else:
-            common.debug('SearchVideoList - No data in path_response')
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['search'][key])
@@ -205,7 +203,7 @@ class EpisodeList:
 class SubgenreList:
     """A list of subgenre."""
     def __init__(self, path_response):
-        common.debug('Subgenre data: {}'.format(path_response))
+        common.debug('Subgenre data: {}', path_response)
         self.lists = []
         if path_response:
             self.perpetual_range_selector = path_response.get('_perpetual_range_selector')

@@ -26,6 +26,7 @@ class SettingsMonitor(xbmc.Monitor):
             self._on_change()
 
     def _on_change(self):
+        common.reset_log_level_global_var()
         common.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
         clean_cache = False

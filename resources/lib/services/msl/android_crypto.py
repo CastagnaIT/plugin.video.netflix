@@ -40,12 +40,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             self.key_id = None
             self.hmac_key_id = None
 
-        common.debug('Widevine CryptoSession systemId: {}'
-                     .format(
-                         self.crypto_session.GetPropertyString('systemId')))
-        common.debug('Widevine CryptoSession algorithms: {}'
-                     .format(
-                         self.crypto_session.GetPropertyString('algorithms')))
+        common.debug('Widevine CryptoSession systemId: {}',
+                     self.crypto_session.GetPropertyString('systemId'))
+        common.debug('Widevine CryptoSession algorithms: {}',
+                     self.crypto_session.GetPropertyString('algorithms'))
 
     def __del__(self):
         self.crypto_session = None
@@ -60,8 +58,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         if not key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
 
-        common.log('Widevine CryptoSession getKeyRequest successful. Size: {}'
-                   .format(len(key_request)))
+        common.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
@@ -76,7 +73,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         if not self.keyset_id:
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
         common.debug('Widevine CryptoSession provideKeyResponse successful')
-        common.debug('keySetId: {}'.format(self.keyset_id))
+        common.debug('keySetId: {}', self.keyset_id)
 
     def encrypt(self, plaintext, esn):
         """

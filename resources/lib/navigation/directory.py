@@ -18,7 +18,7 @@ class DirectoryBuilder(object):
     """Builds directory listings"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing directory builder: {}'.format(params))
+        common.debug('Initializing directory builder: {}', params)
         self.params = params
         # After build url the param value is converted as string
         self.perpetual_range_start = None \
@@ -37,8 +37,7 @@ class DirectoryBuilder(object):
         autologin = g.ADDON.getSettingBool('autologin_enable')
         profile_id = g.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
-            common.debug('Performing auto-login for selected profile {}'
-                         .format(profile_id))
+            common.info('Performing auto-login for selected profile {}', profile_id)
             api.activate_profile(profile_id)
             self.home(None, False)
         else:

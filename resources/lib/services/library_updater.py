@@ -127,14 +127,14 @@ def _compute_next_schedule():
 
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
         next_run = last_run + timedelta(days=[1, 2, 5, 7][update_frequency])
-        common.debug('Next library auto update is scheduled for {}'.format(next_run))
+        common.info('Next library auto update is scheduled for {}', next_run)
         return next_run
     except Exception:  # pylint: disable=broad-except
         # If settings.xml was not created yet, as at first service run
         # g.ADDON.getSettingBool('use_mysql') will thrown a TypeError
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
-        import traceback
-        common.debug(traceback.format_exc())
-        common.debug('Managed error at _compute_next_schedule')
+        # import traceback
+        # common.debug(traceback.format_exc())
+        common.warn('Managed error at _compute_next_schedule')
         return None

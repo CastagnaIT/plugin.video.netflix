@@ -81,8 +81,8 @@ def add_info_for_playback(videoid, list_item):
     """Retrieve infolabels and art info and add them to the list_item"""
     try:
         return add_info_from_library(videoid, list_item)
-    except library.ItemNotFound as exc:
-        common.debug(exc)
+    except library.ItemNotFound:
+        common.debug('Can not get infolabels from the library, submit a request to netflix')
         return add_info_from_netflix(videoid, list_item)
 
 
@@ -219,7 +219,7 @@ def add_info_from_netflix(videoid, list_item):
         art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
     except (AttributeError, TypeError):
-        common.info('Infolabels or art were not in cache, retrieving from API')
+        common.debug('Infolabels or art were not in cache, retrieving from API')
         api_data = api.single_info(videoid)
         infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data, True)
         art = add_art(videoid, list_item, api_data['videos'][videoid.value])
@@ -229,7 +229,7 @@ def add_info_from_netflix(videoid, list_item):
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
     details = library.get_item(videoid)
-    common.debug('Got fileinfo from library: {}'.format(details))
+    common.debug('Got file info from library: {}'.format(details))
     art = details.pop('art', {})
     # Resuming for strm files in library is currently broken in all kodi versions
     # keeping this for reference / in hopes this will get fixed
@@ -241,7 +241,8 @@ def add_info_from_library(videoid, list_item):
         'DBID': details.pop('{}id'.format(videoid.mediatype)),
         'mediatype': videoid.mediatype
     }
-    # WARNING!! Remove unsupported ListItem.setInfo keys from 'details' reference ListItem.cpp, using _sanitize_infos
+    # WARNING!! Remove unsupported ListItem.setInfo keys from 'details' by using _sanitize_infos
+    # reference to Kodi ListItem.cpp
     _sanitize_infos(details)
     infos.update(details)
     list_item.setInfo('video', infos)
