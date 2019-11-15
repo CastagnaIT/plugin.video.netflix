@@ -11,7 +11,7 @@ import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError,
+from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
                          WebsiteParsingError, LoginValidateError)
 
 try:  # Python 2
@@ -56,11 +56,19 @@ def extract_session_data(content):
     the session relevant data from the HTML page
     """
     common.debug('Extracting session data...')
-    falcor_cache = extract_json(content, 'falcorCache')
     react_context = extract_json(content, 'reactContext')
-    extract_profiles(falcor_cache)
     user_data = extract_userdata(react_context)
+    if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
+        # When NEVER_MEMBER it is possible that the account has not been confirmed or renewed
+        common.error('Can not login, the Membership status is {}',
+                     user_data.get('membershipStatus'))
+        raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
+
     api_data = extract_api_data(react_context)
+    # Note: falcor cache does not exist if membershipStatus is not CURRENT_MEMBER
+    falcor_cache = extract_json(content, 'falcorCache')
+    extract_profiles(falcor_cache)
+
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
@@ -69,10 +77,6 @@ def extract_session_data(content):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
-    if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
-        common.warn('Membership status is not CURRENT_MEMBER: ', user_data)
-        # Ignore this for now
-        # raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
 
 
 def validate_session_data(content):
