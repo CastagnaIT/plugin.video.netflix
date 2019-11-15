@@ -282,15 +282,15 @@ msgstr "nowe odcinki dodane do biblioteki"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "Wykonaj autoaktualizację"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Automatyczna aktualizacja odcinków i epizodów serial"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "nigdy"
+msgid "Debug logging level"
+msgstr "Poziom rejestrowania logów"
 
 msgctxt "#30067"
 msgid "daily"
@@ -742,11 +742,11 @@ msgstr "Otwórz ustawienia dodatku UpNext"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
-msgstr "Pokaż zwiastuny"
+msgstr "Pokaż zwiastuny i więcej"
 
 msgctxt "#30180"
-msgid "NotUsed"
-msgstr ""
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Wystąpił problem z logowaniem, możliwe że twoje konto nie zostało potwierdzone lub odnowione."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -906,7 +906,7 @@ msgstr "Wyłącz powiadomienie o zakończeniu synchronizacji"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr ""
+msgstr "Biblioteka Kodi została zaktualizowana"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -918,4 +918,36 @@ msgstr "Profil dziecka"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr ""
+msgstr "Synchronizacja używa teraz \"Mojej Listy\" z profilu {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Tryb automatycznej aktualizacji"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Ręcznie"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Zaplanowana"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Synchronizuj bibliotekę Kodi z Moją Listą"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Użyj \"Mojej Listy\" bieżacego profilu"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Pokaż nazwę wybranego profilu"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Sprawdź aktualizacje teraz"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Czy chcesz teraz sprawdzić aktualizację?"
