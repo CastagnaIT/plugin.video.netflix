@@ -88,8 +88,8 @@ class PlaybackController(xbmc.Monitor):
 
     def _notify_all(self, notification, data=None):
         # pylint: disable=broad-except
-        common.debug('Notifying all managers of {} (data={})'
-                     .format(notification.__name__, data))
+        common.debug('Notifying all managers of {} (data={})',
+                     notification.__name__, data)
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
@@ -126,7 +126,6 @@ def _notify_managers(manager, notification, data):
         else:
             notify_method()
     except Exception as exc:
-        common.error('{} disabled due to exception: {}'
-                     .format(manager.name, exc))
+        common.error('{} disabled due to exception: {}', manager.name, exc)
         manager.enabled = False
         raise

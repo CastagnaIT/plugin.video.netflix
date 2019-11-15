@@ -43,8 +43,8 @@ def handle_connection(func):
                 args[0].is_connected = True
                 conn = args[0].conn
             return func(*args, **kwargs)
-        except sql.Error as e:
-            common.error("SQLite error {}:".format(e.args[0]))
+        except sql.Error as exc:
+            common.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
             if conn:
@@ -63,12 +63,12 @@ class SQLiteDatabase(db_base.BaseDatabase):
     def _initialize_connection(self):
         try:
 
-            common.debug('Trying connection to the database {}'.format(self.db_filename))
+            common.debug('Trying connection to the database {}', self.db_filename)
             self.conn = sql.connect(self.db_file_path)
             cur = self.conn.cursor()
             cur.execute(str('SELECT SQLITE_VERSION()'))
-            common.debug('Database connection {} was successful (SQLite ver. {})'
-                         .format(self.db_filename, cur.fetchone()[0]))
+            common.debug('Database connection {} was successful (SQLite ver. {})',
+                         self.db_filename, cur.fetchone()[0])
             cur.row_factory = lambda cursor, row: row[0]
             cur.execute(str('SELECT name FROM sqlite_master WHERE type=\'table\' '
                             'AND name NOT LIKE \'sqlite_%\''))
@@ -77,8 +77,8 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 # If no tables exist create a new one
                 self.conn.close()
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
-        except sql.Error as e:
-            common.error("SQLite error {}:".format(e.args[0]))
+        except sql.Error as exc:
+            common.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
             if self.conn:
@@ -92,12 +92,12 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query, params)
             else:
                 cursor.execute(query)
-        except sql.Error as e:
-            common.error("SQLite error {}:".format(e.args[0]))
+        except sql.Error as exc:
+            common.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:
-            common.error('Value {}'.format(str(params)))
-            common.error('Value type {}'.format(type(params)))
+            common.error('Value {}', str(params))
+            common.error('Value type {}', type(params))
             raise exc_ve
 
     def _execute_query(self, query, params=None, cursor=None):
@@ -109,12 +109,12 @@ class SQLiteDatabase(db_base.BaseDatabase):
             else:
                 cursor.execute(query)
             return cursor
-        except sql.Error as e:
-            common.error("SQLite error {}:".format(e.args[0]))
+        except sql.Error as exc:
+            common.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:
-            common.error('Value {}'.format(str(params)))
-            common.error('Value type {}'.format(type(params)))
+            common.error('Value {}', str(params))
+            common.error('Value type {}', type(params))
             raise exc_ve
 
     def get_cursor(self):

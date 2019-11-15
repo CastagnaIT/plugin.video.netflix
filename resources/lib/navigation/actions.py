@@ -14,8 +14,7 @@ class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing AddonActionExecutor: {}'
-                     .format(params))
+        common.debug('Initializing AddonActionExecutor: {}', params)
         self.params = params
 
     def logout(self, pathitems=None):  # pylint: disable=unused-argument

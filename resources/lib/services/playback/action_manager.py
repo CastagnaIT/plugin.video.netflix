@@ -41,7 +41,7 @@ class PlaybackActionManager(object):
         Initialize the manager with data when the addon initiates a playback.
         """
         self._call_if_enabled(self._initialize, data=data)
-        common.debug('Initialiized {}: {}'.format(self.name, self))
+        common.debug('Initialized {}: {}', self.name, self)
 
     def on_playback_started(self, player_state):
         """

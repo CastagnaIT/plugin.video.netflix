@@ -70,7 +70,7 @@ def extract_session_data(content):
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
-        common.debug(user_data)
+        common.warn('Membership status is not CURRENT_MEMBER: ', user_data)
         # Ignore this for now
         # raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
 
@@ -98,12 +98,12 @@ def extract_profiles(falkor_cache):
             _delete_non_existing_profiles(profiles_list)
         sort_order = 0
         for guid, profile in list(profiles_list.items()):
-            common.debug('Parsing profile {}'.format(guid))
+            common.debug('Parsing profile {}', guid)
             avatar_url = _get_avatar(falkor_cache, profile)
             profile = profile['summary']['value']
             debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
             for k_info in debug_info:
-                common.debug('Profile info {}'.format({k_info: profile[k_info]}))
+                common.debug('Profile info {}', {k_info: profile[k_info]})
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
@@ -114,7 +114,7 @@ def extract_profiles(falkor_cache):
     except Exception:
         import traceback
         common.error(traceback.format_exc())
-        common.error('Falkor cache: {}'.format(falkor_cache))
+        common.error('Falkor cache: {}', falkor_cache)
         raise InvalidProfilesError
 
 
@@ -122,7 +122,7 @@ def _delete_non_existing_profiles(profiles_list):
     list_guid = g.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
         if guid not in list(profiles_list):
-            common.debug('Deleting non-existing profile {}'.format(guid))
+            common.debug('Deleting non-existing profile {}', guid)
             g.LOCAL_DB.delete_profile(guid)
             g.SHARED_DB.delete_profile(guid)
 
@@ -148,9 +148,9 @@ def extract_userdata(react_context, debug_log=True):
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
             if 'esn' not in path and debug_log:
-                common.debug('Extracted {}'.format(extracted_value))
+                common.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            common.debug('Could not extract {}'.format(path))
+            common.error('Could not extract {}', path)
     return user_data
 
 
@@ -164,9 +164,9 @@ def extract_api_data(react_context, debug_log=True):
             extracted_value = {key: common.get_path(path, react_context)}
             api_data.update(extracted_value)
             if debug_log:
-                common.debug('Extracted {}'.format(extracted_value))
+                common.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            common.debug('Could not extract {}'.format(path))
+            common.error('Could not extract {}', path)
     return assert_valid_auth_url(api_data)
 
 
@@ -186,7 +186,7 @@ def validate_login(content):
         try:
             error_code_list = common.get_path(path_code_list, react_context)
             error_code = common.get_path(path_error_code, react_context)
-            common.debug('Login not valid, error code {}'.format(error_code))
+            common.error('Login not valid, error code {}', error_code)
             error_description = common.get_local_string(30102) + error_code
             if error_code in error_code_list:
                 error_description = error_code_list[error_code]
@@ -234,7 +234,7 @@ def generate_esn(user_data):
             esn += '{:=<5.5}'.format(manufacturer.upper())
             esn += model.replace(' ', '=').upper()
             esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-            common.debug('Android generated ESN:' + esn)
+            common.debug('Android generated ESN: {}', esn)
             return esn
     except OSError:
         pass
@@ -245,7 +245,7 @@ def generate_esn(user_data):
 @common.time_execution(immediate=True)
 def extract_json(content, name):
     """Extract json from netflix content page"""
-    common.debug('Extracting {} JSON'.format(name))
+    common.debug('Extracting {} JSON', name)
     json_str = None
     try:
         json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
@@ -258,7 +258,7 @@ def extract_json(content, name):
         return json.loads(json_str)
     except Exception:
         if json_str:
-            common.error('JSON string trying to load: {}'.format(json_str))
+            common.error('JSON string trying to load: {}', json_str)
         import traceback
         common.error(traceback.format_exc())
         raise WebsiteParsingError('Unable to extract {}'.format(name))

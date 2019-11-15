@@ -22,7 +22,7 @@ class NFOSettings(object):
             self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
             self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
         else:
-            common.debug('Export NFO enforced to {}'.format(enforce))
+            common.debug('Export NFO enforced to {}', enforce)
             self._enabled = enforce
             self._export_tvshow_id = enforce
 
@@ -136,7 +136,6 @@ def create_movie_nfo(movie):
     root = _build_root_node('movie', tags)
     _add_poster(root, movie)
     _add_fanart(root, movie)
-    common.debug(root)
     return root
 
 

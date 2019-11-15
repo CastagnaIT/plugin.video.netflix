@@ -26,7 +26,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Loads the licence for the requested resource"""
-        common.debug('Handling HTTP IPC call to {}'.format(self.path[1:]))
+        common.debug('Handling HTTP IPC call to {}', self.path[1:])
         func = getattr(NetflixSession, self.path[1:])
         length = int(self.headers.get('content-length', 0))
         data = json.loads(self.rfile.read(length)) or None

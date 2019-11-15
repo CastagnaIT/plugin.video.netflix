@@ -285,7 +285,7 @@ class GlobalVariables(object):
             self.settings_monitor_suspended(True)
 
             system = common.get_system_platform()
-            common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
+            common.debug('Running initial addon configuration dialogs on system: {}', system)
             if system in ['osx', 'ios', 'xbox']:
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', True)

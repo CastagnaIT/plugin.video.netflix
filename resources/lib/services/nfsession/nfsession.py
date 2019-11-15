@@ -167,8 +167,8 @@ class NetflixSession(object):
             if cookie_name not in self.session.cookies.keys():
                 common.error(
                     'The cookie "{}" do not exist. It is not possible to check expiration. '
-                    'Fallback to old validate method.'
-                    .format(cookie_name))
+                    'Fallback to old validate method.',
+                    cookie_name)
                 fallback_to_validate = True
                 break
             for cookie in list(self.session.cookies):
@@ -187,7 +187,7 @@ class NetflixSession(object):
             except Exception:
                 import traceback
                 common.debug(traceback.format_exc())
-                common.info('Failed to validate session data, login is expired')
+                common.warn('Failed to validate session data, login is expired')
                 self.session.cookies.clear()
                 return False
         return True
@@ -211,13 +211,13 @@ class NetflixSession(object):
             # this can happen when opening the addon while executing update_profiles_data
             import traceback
             common.debug(traceback.format_exc())
-            common.info('Failed to refresh session data, login expired (WebsiteParsingError)')
+            common.warn('Failed to refresh session data, login expired (WebsiteParsingError)')
             self.session.cookies.clear()
             return self._login()
         except Exception:
             import traceback
             common.debug(traceback.format_exc())
-            common.info('Failed to refresh session data, login expired (Exception)')
+            common.warn('Failed to refresh session data, login expired (Exception)')
             self.session.cookies.clear()
             return False
         common.debug('Successfully refreshed session data')
@@ -234,11 +234,10 @@ class NetflixSession(object):
                 return False
             except Exception as exc:
                 import traceback
-                common.error(
-                    'Failed to load stored cookies: {}'.format(type(exc).__name__))
+                common.error('Failed to load stored cookies: {}', type(exc).__name__)
                 common.error(traceback.format_exc())
                 return False
-            common.debug('Successfully loaded stored cookies')
+            common.info('Successfully loaded stored cookies')
         return True
 
     @common.addonsignals_return_call
@@ -313,9 +312,9 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
-        common.debug('Activating profile {}'.format(guid))
+        common.info('Activating profile {}', guid)
         if guid == g.LOCAL_DB.get_active_profile_guid():
-            common.debug('Profile {} is already active'.format(guid))
+            common.debug('Profile {} is already active', guid)
             return False
         self._get(component='activate_profile',
                   req_type='api',
@@ -327,7 +326,7 @@ class NetflixSession(object):
         self.auth_url = website.extract_api_data(react_context)['auth_url']
         g.LOCAL_DB.switch_active_profile(guid)
         self.update_session_data()
-        common.debug('Successfully activated profile {}'.format(guid))
+        common.debug('Successfully activated profile {}', guid)
         return True
 
     @common.addonsignals_return_call
@@ -412,8 +411,8 @@ class NetflixSession(object):
             range_start += response_size
             if n_req == (number_of_requests - 1):
                 merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                common.debug('{} has other elements, added _perpetual_range_selector item'
-                             .format(response_type))
+                common.debug('{} has other elements, added _perpetual_range_selector item',
+                             response_type)
             else:
                 range_end = range_start + request_size
 
@@ -429,7 +428,7 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _path_request(self, paths):
         """Execute a path request with static paths"""
-        common.debug('Executing path request: {}'.format(json.dumps(paths)))
+        common.debug('Executing path request: {}', json.dumps(paths))
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/javascript, */*'}
@@ -438,7 +437,7 @@ class NetflixSession(object):
         # drmSystem       drm used
         # falcor_server   json responses like browser
         # withSize        puts the 'size' field inside each dictionary
-        # materialize     if true, when a path that no longer exists is requested (like 'storyarts'),
+        # materialize     if true, when a path that no longer exists is requested (like 'storyarts')
         #                    it is still added in an 'empty' form in the response
         params = {
             'drmSystem': 'widevine',
@@ -487,9 +486,8 @@ class NetflixSession(object):
         url = (_api_url(component)
                if URLS[component]['is_api_call']
                else _document_url(component))
-        common.debug(
-            'Executing {verb} request to {url}'.format(
-                verb='GET' if method == self.session.get else 'POST', url=url))
+        common.debug('Executing {verb} request to {url}',
+                     verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(component,
                                                                  kwargs)
         start = time.clock()
@@ -499,15 +497,14 @@ class NetflixSession(object):
             headers=headers,
             params=params,
             data=data)
-        common.debug('Request took {}s'.format(time.clock() - start))
-        common.debug('Request returned statuscode {}'
-                     .format(response.status_code))
+        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request returned statuscode {}', response.status_code)
         if response.status_code == 404 and not session_refreshed:
             # It may happen that netflix updates the build_identifier version
             # when you are watching a video or browsing the menu,
             # this causes the api address to change, and return 'url not found' error
             # So let's try updating the session data (just once)
-            common.debug('Try refresh session data to update build_identifier version')
+            common.warn('Try refresh session data to update build_identifier version')
             if self._refresh_session_data():
                 return self._request(method, component, True, **kwargs)
         response.raise_for_status()
@@ -586,6 +583,6 @@ def _raise_api_error(decoded_response):
 
 def play_callback(data):
     """Callback function used for upnext integration"""
-    common.debug('Received signal from Up Next. Playing next episode...')
+    common.info('Received signal from Up Next. Playing next episode...')
     common.stop_playback()
     common.play_media(data['play_path'])

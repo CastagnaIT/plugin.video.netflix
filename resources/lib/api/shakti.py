@@ -96,8 +96,7 @@ def list_id_for_type(list_type):
     except StopIteration:
         raise InvalidVideoListTypeError(
             'No lists of type {} available'.format(list_type))
-    common.debug(
-        'Resolved list ID for {} to {}'.format(list_type, list_id))
+    common.debug('Resolved list ID for {} to {}', list_type, list_id)
     return list_id
 
 
@@ -108,7 +107,7 @@ def video_list(list_id, perpetual_range_start=None):
     some of this type of request seems to have results fixed at ~40 from netflix
     and the 'length' tag never return to the actual total count of the elements
     """
-    common.debug('Requesting video list {}'.format(list_id))
+    common.debug('Requesting video list {}', list_id)
     paths = build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'],
                         VIDEO_LIST_PARTIAL_PATHS)
     callargs = {
@@ -126,8 +125,8 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
     """
-    common.debug(
-        'Requesting video list sorted for context name: "{}", context id: "{}"'.format(context_name, context_id))
+    common.debug('Requesting video list sorted for context name: "{}", context id: "{}"',
+                 context_name, context_id)
     base_path = [context_name]
     response_type = 'stdlist'
     if context_id:
@@ -154,8 +153,7 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
 def custom_video_list(video_ids):
     """Retrieve a video list which contains the videos specified by
     video_ids"""
-    common.debug('Requesting custom video list with {} videos'
-                 .format(len(video_ids)))
+    common.debug('Requesting custom video list with {} videos', len(video_ids))
     return CustomVideoList(common.make_call(
         'path_request',
         build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
@@ -165,7 +163,7 @@ def custom_video_list(video_ids):
 @cache.cache_output(g, cache.CACHE_GENRES, identify_from_kwarg_name='genre_id')
 def genre(genre_id):
     """Retrieve LoLoMos for the given genre"""
-    common.debug('Requesting LoLoMos for genre {}'.format(genre_id))
+    common.debug('Requesting LoLoMos for genre {}', genre_id)
     return LoLoMo(common.make_call(
         'path_request',
         build_paths(['genres', genre_id, 'rw'], GENRE_PARTIAL_PATHS) +
@@ -181,7 +179,7 @@ def genre(genre_id):
 
 def subgenre(genre_id):
     """Retrieve subgenres for the given genre"""
-    common.debug('Requesting subgenres for genre {}'.format(genre_id))
+    common.debug('Requesting subgenres for genre {}', genre_id)
     return SubgenreList(common.make_call(
         'path_request',
         [['genres', genre_id, 'subgenres', {'from': 0, 'to': 47}, ['id', 'name']]]))
@@ -194,7 +192,7 @@ def seasons(videoid):
     if videoid.mediatype != common.VideoId.SHOW:
         raise common.InvalidVideoId('Cannot request season list for {}'
                                     .format(videoid))
-    common.debug('Requesting season list for show {}'.format(videoid))
+    common.debug('Requesting season list for show {}', videoid)
     paths = build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS)
     callargs = {
         'paths': paths,
@@ -210,7 +208,7 @@ def episodes(videoid):
     if videoid.mediatype != common.VideoId.SEASON:
         raise common.InvalidVideoId('Cannot request episode list for {}'
                                     .format(videoid))
-    common.debug('Requesting episode list for {}'.format(videoid))
+    common.debug('Requesting episode list for {}', videoid)
     paths = [['seasons', videoid.seasonid, 'summary']]
     paths.extend(build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_SELECTOR],
                              EPISODES_PARTIAL_PATHS))
@@ -230,8 +228,7 @@ def supplemental_video_list(videoid, supplemental_type):
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
         raise common.InvalidVideoId('Cannot request supplemental list for {}'
                                     .format(videoid))
-    common.debug('Requesting supplemental ({}) list for {}'
-                 .format(supplemental_type, videoid))
+    common.debug('Requesting supplemental ({}) list for {}', supplemental_type, videoid)
     callargs = build_paths(
         ['videos', videoid.value, supplemental_type,
          {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS)
@@ -247,7 +244,7 @@ def single_info(videoid):
                                  common.VideoId.SUPPLEMENTAL]:
         raise common.InvalidVideoId('Cannot request info for {}'
                                     .format(videoid))
-    common.debug('Requesting info for {}'.format(videoid))
+    common.debug('Requesting info for {}', videoid)
     paths = build_paths(['videos', videoid.value], EPISODES_PARTIAL_PATHS)
     if videoid.mediatype == common.VideoId.EPISODE:
         paths.extend(build_paths(['videos', videoid.tvshowid],
@@ -260,7 +257,7 @@ def custom_video_list_basicinfo(context_name, switch_profiles=False):
     Retrieve a single video list
     used only to know which videos are in my list without requesting additional information
     """
-    common.debug('Requesting custom video list basic info for {}'.format(context_name))
+    common.debug('Requesting custom video list basic info for {}', context_name)
     paths = build_paths([context_name, 'az', RANGE_SELECTOR],
                         VIDEO_LIST_BASIC_PARTIAL_PATHS)
     callargs = {
@@ -326,7 +323,7 @@ def mylist_items_switch_profiles():
 @common.time_execution(immediate=False)
 def rate(videoid, rating):
     """Rate a video on Netflix"""
-    common.debug('Rating {} as {}'.format(videoid.value, rating))
+    common.debug('Rating {} as {}', videoid.value, rating)
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
@@ -342,7 +339,7 @@ def rate(videoid, rating):
 @common.time_execution(immediate=False)
 def update_my_list(videoid, operation):
     """Call API to update my list with either add or remove action"""
-    common.debug('My List: {} {}'.format(operation, videoid))
+    common.debug('My List: {} {}', operation, videoid)
     # We want the tvshowid for seasons and episodes (such videoids may be
     # passed by the mylist/library auto-sync feature)
     videoid_value = (videoid.movieid
@@ -389,7 +386,7 @@ def metadata(videoid, refresh=False):
         # data is outdated. In this case, invalidate the cache entry and
         # try again safely (if it doesn't exist this time, there is no
         # metadata for the episode, so we assign an empty dict).
-        common.debug('{}, refreshing cache'.format(exc))
+        common.debug('{}, refreshing cache', exc)
         g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
         try:
             return _episode_metadata(videoid)
@@ -413,7 +410,7 @@ def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added
     to a show by Netflix."""
-    common.debug('Requesting metadata for {}'.format(video_id))
+    common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
     return common.make_call(
         'get',
@@ -427,7 +424,7 @@ def _metadata(video_id):
 @common.time_execution(immediate=False)
 def search(search_term, perpetual_range_start=None):
     """Retrieve a video list of search results"""
-    common.debug('Searching for {}'.format(search_term))
+    common.debug('Searching for {}', search_term)
     base_path = ['search', 'byTerm', '|' + search_term, 'titles', MAX_PATH_REQUEST_SIZE]
     paths = [base_path + [['id', 'name', 'requestId']]]
     paths.extend(build_paths(base_path + [RANGE_SELECTOR, 'reference'],

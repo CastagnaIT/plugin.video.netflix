@@ -124,7 +124,7 @@ def addonsignals_return_call(func):
         try:
             result = call(instance, func, data)
         except Exception as exc:
-            error('IPC callback raised exception: {exc}', exc)
+            error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
             error(traceback.format_exc())
             result = {
