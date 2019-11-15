@@ -281,8 +281,8 @@ msgid "new episodes added to library"
 msgstr "nowe odcinki dodane do biblioteki"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Eksportuj nowe odcinki"
+msgid "Perform auto-update"
+msgstr "Wykonaj automatyczną aktualizację"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -744,9 +744,9 @@ msgctxt "#30179"
 msgid "Show trailers & more"
 msgstr "Pokaż zwiastuny i więcej"
 
-msgctxt "#30180"  # No more used
-msgid "NotUsed"
-msgstr ""
+msgctxt "#30180"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Wystąpił problem z logowaniem, możliwe że twoje konto nie zostało potwierdzone bądź odnowione"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
