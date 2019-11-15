@@ -744,8 +744,8 @@ msgctxt "#30179"
 msgid "Show trailers & more"
 msgstr ""
 
-msgctxt "#30180"  # No more used
-msgid "NotUsed"
+msgctxt "#30180"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
 msgstr ""
 
 msgctxt "#30181"

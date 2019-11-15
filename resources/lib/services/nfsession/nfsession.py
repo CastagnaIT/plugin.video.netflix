@@ -19,7 +19,8 @@ import resources.lib.api.paths as apipaths
 import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
-                                          APIError, MissingCredentialsError, WebsiteParsingError)
+                                          APIError, MissingCredentialsError, WebsiteParsingError,
+                                          InvalidMembershipStatusError)
 
 try:  # Python 2
     unicode
@@ -148,6 +149,8 @@ class NetflixSession(object):
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
             ui.show_notification(common.get_local_string(30009))
+        except InvalidMembershipStatusError:
+            ui.show_notification(common.get_local_string(30180), time=10000)
 
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
@@ -205,6 +208,8 @@ class NetflixSession(object):
         try:
             website.extract_session_data(self._get('profiles'))
             self.update_session_data()
+        except InvalidMembershipStatusError:
+            raise
         except WebsiteParsingError:
             # it is possible that cookies may not work anymore,
             # it should be due to updates in the website,
@@ -268,6 +273,11 @@ class NetflixSession(object):
                     return False
                 raise
             website.extract_session_data(login_response)
+        except InvalidMembershipStatusError:
+            ui.show_error_info(common.get_local_string(30008),
+                               common.get_local_string(30180),
+                               False, True)
+            return False
         except Exception as exc:
             import traceback
             common.error(traceback.format_exc())
