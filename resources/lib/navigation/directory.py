@@ -13,6 +13,11 @@ import resources.lib.kodi.listings as listings
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library as library
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 class DirectoryBuilder(object):
     """Builds directory listings"""
@@ -115,7 +120,12 @@ class DirectoryBuilder(object):
 
     def season(self, videoid, pathitems):
         """Show episodes of a season"""
-        listings.build_episode_listing(videoid, api.episodes(videoid), pathitems)
+        listings.build_episode_listing(videoid,
+                                       api.episodes(
+                                           videoid,
+                                           videoid_value=unicode(videoid),
+                                           perpetual_range_start=self.perpetual_range_start),
+                                       pathitems)
         _handle_endofdirectory(self.dir_update_listing)
 
     @common.time_execution(immediate=False)
