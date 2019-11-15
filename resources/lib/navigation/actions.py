@@ -80,7 +80,7 @@ class AddonActionExecutor(object):
                                    mode=g.MODE_DIRECTORY)
             xbmc.executebuiltin('Container.Update({})'.format(url))
         else:
-            ui.show_notification(common.get_local_string(30180))
+            ui.show_notification(common.get_local_string(30111))
 
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument

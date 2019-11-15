@@ -733,12 +733,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Open de Up Next add-on instellingen"
 
 msgctxt "#30179"
-msgid "Show the trailers"
+msgid "Show trailers & more"
 msgstr "Toon voorfilmpjes"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Geen voorfilmpjes beschikbaar"
+msgid "NotUsed"
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"

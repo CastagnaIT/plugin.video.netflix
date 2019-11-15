@@ -17,6 +17,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Search Netflix (incl. suggestions)
 - Netflix categories, recommendations, "my list" & continue watching
 - Browse all movies and all TV shows Netflix style includes genres
+- Browse trailers & more of TV shows and movies (by context menu)
 - Rate show/movie
 - Add & remove to/from "my list"
 - Export of complete shows & movies in (Kodi) local database

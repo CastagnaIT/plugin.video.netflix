@@ -733,12 +733,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Ouvrir les paramètres de l'addon 'UpNext'"
 
 msgctxt "#30179"
-msgid "Show the trailers"
+msgid "Show trailers & more"
 msgstr "Montrer les bandes annonces"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Pas de bande annonce"
+msgid "NotUsed"
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
