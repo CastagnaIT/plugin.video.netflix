@@ -938,7 +938,7 @@ msgstr "Synchronisiere Kodi-Bibliothek mit Meiner Liste"
 
 msgctxt "#30228"
 msgid "Use \"My list\" of the current profile"
-msgstr "Verwende \"Meine Liste\" des aktuellen Profils
+msgstr "Verwende \"Meine Liste\" des aktuellen Profils"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
