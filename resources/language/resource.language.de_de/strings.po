@@ -141,7 +141,7 @@ msgid "Playback error"
 msgstr "Fehler beim Abspielen"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
+msgid "Missing InputStream addon"
 msgstr "InputStream-Addon nicht gefunden"
 
 msgctxt "#30030"
