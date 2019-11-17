@@ -286,11 +286,11 @@ msgstr ""
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Atualizar temporadas e episódios dos seriados automaticamente"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "nunca"
+msgid "Debug logging level"
+msgstr "Nível do log de depuração"
 
 msgctxt "#30067"
 msgid "daily"
@@ -742,11 +742,11 @@ msgstr "Abrir ajustes do add-on UpNext"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
-msgstr "Mostrar os trailers"
+msgstr "Mostrar os trailers & mais"
 
 msgctxt "#30180"
-msgid "NotUsed"
-msgstr ""
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Houve um problema com o login, é possível que sua conta não tenha sido confirmada ou renovada."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -906,7 +906,7 @@ msgstr "Desativar notificação para sincronização finalizada"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr ""
+msgstr "A coleção do Kodi foi atualizada"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -919,3 +919,35 @@ msgstr "Conta infantil"
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
 msgstr ""
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Modo de atualização automática"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Manual"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Agendada"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Sincroniza coleção do Kodi com minha lista"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Usar \"Minha lista\" do perfil atual"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Mostrar o nome do perfil selecionado"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr ""
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Deseja verificar por atualizações agora?"
