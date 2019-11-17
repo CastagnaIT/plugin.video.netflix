@@ -403,8 +403,11 @@ class MSL(object):
             for stream in video_track['streams']:
 
                 codec = 'h264'
-                if 'hevc' in stream['content_profile']:
-                    codec = 'hevc'
+                if stream['content_profile'].startswith('hevc'):
+                    if stream['content_profile'].startswith('hevc-dv'):
+                        codec = 'dvhe'
+                    else:
+                        codec = 'hevc'
                 elif 'vp9' in stream['content_profile']:
                     lp = re.search('vp9-profile(.+?)-L(.+?)-dash', stream['content_profile'])
                     codec = 'vp9.' + lp.group(1) + '.' + lp.group(2)
