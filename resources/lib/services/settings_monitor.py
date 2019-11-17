@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Checks when settings are changed"""
 from __future__ import absolute_import, division, unicode_literals
-
 import sys
+from future.utils import iteritems
 
 import xbmc
 
@@ -26,6 +26,7 @@ class SettingsMonitor(xbmc.Monitor):
             self._on_change()
 
     def _on_change(self):
+        common.reset_log_level_global_var()
         common.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
         clean_cache = False
@@ -53,7 +54,7 @@ class SettingsMonitor(xbmc.Monitor):
             common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
 
         # Check menu settings changes
-        for menu_id, menu_data in g.MAIN_MENU_ITEMS.iteritems():
+        for menu_id, menu_data in iteritems(g.MAIN_MENU_ITEMS):
             # Check settings changes in show menu
             show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
             show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),

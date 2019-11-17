@@ -2,8 +2,8 @@
 """Convenience representations of datatypes returned by the API"""
 # pylint: disable=too-few-public-methods
 from __future__ import absolute_import, division, unicode_literals
-
 from collections import OrderedDict
+from future.utils import iteritems, itervalues
 
 import resources.lib.common as common
 
@@ -15,11 +15,11 @@ class LoLoMo(object):
     # pylint: disable=invalid-name
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
-        common.debug('LoLoMo data: {}'.format(self.data))
+        common.debug('LoLoMo data: {}', self.data)
         _filterout_contexts(self.data, ['billboard', 'showAsARow'])
         self.id = (lolomoid
                    if lolomoid
-                   else next(self.data['lolomos'].iterkeys()))
+                   else next(iter(self.data['lolomos'])))
         self.lists = OrderedDict(
             (key, VideoList(self.data, key))
             for key, _
@@ -49,21 +49,21 @@ class LoLoMo(object):
         # Keep sort order of context list
         lists = {}
         for context_name in context:
-            for list_id, video_list in self.lists.iteritems():
+            for list_id, video_list in iteritems(self.lists):
                 if match_context(video_list['context'], context_name):
                     lists.update({list_id: VideoList(self.data, list_id)})
                     if break_on_first:
                         break
-        return iter(lists.iteritems())
+        return iteritems(lists)
 
 
-class VideoList(object):
+class VideoList:
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, list_id=None):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
-        has_data = True if path_response.get('lists') else False
+        has_data = bool(path_response.get('lists'))
         self.videos = OrderedDict()
         self.artitem = None
         self.contained_titles = None
@@ -72,11 +72,12 @@ class VideoList(object):
             self.id = common.VideoId(
                 videoid=(list_id
                          if list_id
-                         else next(self.data['lists'].iterkeys())))
+                         else next(iter(self.data['lists']))))
             # self.title = self['displayName']   Not more used
             self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
             if self.videos:
-                self.artitem = next(self.videos.itervalues())
+                # self.artitem = next(itervalues(self.videos))
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -91,17 +92,17 @@ class VideoList(object):
         return _check_sentinel(self.data['lists'][self.id.value].get(key, default))
 
 
-class VideoListSorted(object):
+class VideoListSorted:
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response, context_name, context_id, req_sort_order_type):
-        # common.debug('VideoListSorted data: {}'.format(path_response))
+        # common.debug('VideoListSorted data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
-        has_data = True if (context_id and path_response.get(context_name)
-                            and path_response[context_name].get(context_id)) or \
-                           (not context_id and path_response.get(context_name)) else False
+        has_data = bool((context_id and path_response.get(context_name)
+                         and path_response[context_name].get(context_id))
+                        or (not context_id and path_response.get(context_name)))
         self.data_lists = {}
         self.videos = OrderedDict()
         self.artitem = None
@@ -112,7 +113,8 @@ class VideoListSorted(object):
                 if context_id else path_response[context_name][req_sort_order_type]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
-                self.artitem = next(self.videos.itervalues())
+                # self.artitem = next(itervalues(self.videos))
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -127,7 +129,7 @@ class VideoListSorted(object):
         return _check_sentinel(self.data_lists.get(key, default))
 
 
-class SearchVideoList(object):
+class SearchVideoList:
     """A video list with search results"""
     # pylint: disable=invalid-name
     def __init__(self, path_response):
@@ -139,13 +141,12 @@ class SearchVideoList(object):
         self.artitem = None
         self.contained_titles = None
         if has_data:
-            self.title = common.get_local_string(30100).format(self.data['search']['byTerm'].keys()[0][1:])
-            self.videos = OrderedDict(resolve_refs(self.data['search']['byReference'].values()[0], self.data))
+            self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
+            self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
             self.videoids = _get_videoids(self.videos)
-            self.artitem = next(self.videos.itervalues(), None)
+            # self.artitem = next(itervalues(self.videos), None)
+            self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
-        else:
-            common.debug('SearchVideoList - No data in path_response')
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['search'][key])
@@ -155,7 +156,7 @@ class SearchVideoList(object):
         return _check_sentinel(self.data['search'].get(key, default))
 
 
-class CustomVideoList(object):
+class CustomVideoList:
     """A video list"""
     # pylint: disable=invalid-name
     def __init__(self, path_response):
@@ -164,7 +165,8 @@ class CustomVideoList(object):
         self.title = common.get_local_string(30048)
         self.videos = self.data['videos']
         self.videoids = _get_videoids(self.videos)
-        self.artitem = next(self.videos.itervalues())
+        # self.artitem = next(itervalues(self.videos))
+        self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
@@ -175,7 +177,7 @@ class CustomVideoList(object):
         return _check_sentinel(self.data.get(key, default))
 
 
-class SeasonList(object):
+class SeasonList:
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
@@ -186,7 +188,7 @@ class SeasonList(object):
             resolve_refs(self.tvshow['seasonList'], self.data))
 
 
-class EpisodeList(object):
+class EpisodeList:
     """A list of episodes. Includes tvshow art."""
     def __init__(self, videoid, path_response):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
@@ -198,16 +200,16 @@ class EpisodeList(object):
             resolve_refs(self.season['episodes'], self.data))
 
 
-class SubgenreList(object):
+class SubgenreList:
     """A list of subgenre."""
     def __init__(self, path_response):
-        common.debug('Subgenre data: {}'.format(path_response))
+        common.debug('Subgenre data: {}', path_response)
         self.lists = []
         if path_response:
             self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
-            genre_id = next(path_response.get('genres', {}).iterkeys())
+            genre_id = next(iter(path_response.get('genres', {})))
             self.subgenre_data = path_response['genres'].get(genre_id, {}).get('subgenres')
-            self.lists = path_response['genres'].get(genre_id, {}).get('subgenres').items()
+            self.lists = list(path_response['genres'].get(genre_id, {}).get('subgenres').items())
 
 
 def _check_sentinel(value):
@@ -225,26 +227,26 @@ def _get_title(video):
 def _get_titles(videos):
     """Return a list of videos' titles"""
     return [_get_title(video)
-            for video in videos.itervalues()
+            for video in itervalues(videos)
             if _get_title(video)]
 
 
 def _get_videoids(videos):
-    """Return a list of VideoId objects for the videos"""
+    """Return a list of VideoId s for the videos"""
     return [common.VideoId.from_videolist_item(video)
-            for video in videos.itervalues()]
+            for video in itervalues(videos)]
 
 
 def _filterout_contexts(data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    _id = next(data['lolomos'].iterkeys())
+    _id = next(iter(data['lolomos']))
     for context in contexts:
-        for listid in data.get('lists', {}).keys():
+        for listid in list(data.get('lists', {})):
             if not data['lists'][listid].get('context'):
                 continue
             if data['lists'][listid]['context'] != context:
                 continue
-            for idkey in data['lolomos'][_id].keys():
+            for idkey in list(data['lolomos'][_id]):
                 if listid in data['lolomos'][_id][idkey]:
                     del data['lolomos'][_id][idkey]
                     break

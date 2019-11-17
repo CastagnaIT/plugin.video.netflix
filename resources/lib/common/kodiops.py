@@ -10,6 +10,11 @@ from resources.lib.globals import g
 
 from .logging import debug
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 LIBRARY_PROPS = {
     'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
                 'episode', 'originaltitle', 'showtitle', 'lastplayed', 'file',
@@ -37,7 +42,7 @@ def json_rpc(method, params=None):
                     'params': params or {}}
     request = json.dumps(request_data)
     debug('Executing JSON-RPC: {}'.format(request))
-    raw_response = unicode(xbmc.executeJSONRPC(request), 'utf-8')
+    raw_response = xbmc.executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
     if 'error' in response:
@@ -117,7 +122,7 @@ def schedule_builtin(time, command, name='NetflixTask'):
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin('PlayMedia({})'.format(media).encode("utf-8"))
+    xbmc.executebuiltin(g.py2_encode('PlayMedia({})'.format(media)))
 
 
 def stop_playback():
@@ -130,7 +135,7 @@ def get_kodi_audio_language():
     Return the audio language from Kodi settings
     """
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(audio_language['value'].encode('utf-8'), xbmc.ISO_639_1)
+    audio_language = xbmc.convertLanguage(g.py2_encode(audio_language['value']), xbmc.ISO_639_1)
     audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
     return audio_language if audio_language else 'en'
 
@@ -142,8 +147,10 @@ def get_kodi_subtitle_language():
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    subtitle_language = xbmc.convertLanguage(subtitle_language['value'].encode('utf-8'), xbmc.ISO_639_1)
-    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    subtitle_language = xbmc.convertLanguage(g.py2_encode(subtitle_language['value']),
+                                             xbmc.ISO_639_1)
+    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1,
+                                                                                     False)
     subtitle_language = subtitle_language if subtitle_language else 'en'
     return subtitle_language
 
@@ -163,7 +170,8 @@ def fix_locale_languages(data_list):
             continue
         if len(item['language']) == 2:
             continue
-        item['language'] = _adjust_locale(item['language'], item['language'][0:2] in locale_list_nocountry)
+        item['language'] = _adjust_locale(item['language'],
+                                          item['language'][0:2] in locale_list_nocountry)
 
 
 def _adjust_locale(locale_code, lang_code_without_country_exists):

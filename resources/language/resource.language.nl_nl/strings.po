@@ -273,12 +273,12 @@ msgid "new episodes added to library"
 msgstr "niewe afleveringen werden toegevoegd in de bibliotheek"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Exporteer nieuwe afleveringen"
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Automatisch updaten"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"
@@ -733,12 +733,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Open de Up Next add-on instellingen"
 
 msgctxt "#30179"
-msgid "Show the trailers"
+msgid "Show trailers & more"
 msgstr "Toon voorfilmpjes"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Geen voorfilmpjes beschikbaar"
+msgid "NotUsed"
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"

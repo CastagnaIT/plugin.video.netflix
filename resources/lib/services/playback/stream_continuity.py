@@ -36,7 +36,7 @@ class StreamContinuityManager(PlaybackActionManager):
     for the currently playing show and restores them on subsequent episodes.
     """
 
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(StreamContinuityManager, self).__init__()
         self.storage = common.PersistentStorage(__name__, no_save_on_destroy=True)
         self.current_videoid = None
@@ -81,8 +81,8 @@ class StreamContinuityManager(PlaybackActionManager):
             current_stream = self.current_streams[stype]
             player_stream = player_state.get(STREAMS[stype]['current'])
             if player_stream != current_stream:
-                common.debug('{} has changed from {} to {}'
-                             .format(stype, current_stream, player_stream))
+                common.debug('{} has changed from {} to {}',
+                             stype, current_stream, player_stream)
                 self._set_current_stream(stype, player_state)
                 self._save_changed_stream(stype, player_stream)
 
@@ -92,7 +92,7 @@ class StreamContinuityManager(PlaybackActionManager):
         })
 
     def _restore_stream(self, stype):
-        common.debug('Trying to restore {}...'.format(stype))
+        common.debug('Trying to restore {}...', stype)
         set_stream = STREAMS[stype]['setter']
         stored_stream = self.sc_settings.get(stype)
         if (stored_stream is not None and
@@ -102,10 +102,10 @@ class StreamContinuityManager(PlaybackActionManager):
                                      if isinstance(stored_stream, dict)
                                      else stored_stream))
             self.current_streams[stype] = stored_stream
-            common.debug('Restored {} to {}'.format(stype, stored_stream))
+            common.debug('Restored {} to {}', stype, stored_stream)
 
     def _save_changed_stream(self, stype, stream):
-        common.debug('Save changed stream {} for {}'.format(stream, stype))
+        common.debug('Save changed stream {} for {}', stream, stype)
         new_sc_settings = self.sc_settings.copy()
         new_sc_settings[stype] = stream
         g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),

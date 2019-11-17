@@ -141,8 +141,8 @@ msgid "Playback error"
 msgstr "Fehler beim Abspielen"
 
 msgctxt "#30029"
-msgid "Missing Inputstream addon"
-msgstr "Inputstream-Addon nicht gefunden"
+msgid "Missing InputStream addon"
+msgstr "InputStream-Addon nicht gefunden"
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -278,19 +278,19 @@ msgstr "Kindersicherungs PIN Abfrage ein-/ausschalten. Aktiv:"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
-msgstr "neue Folgen zur Bilbiothek hinzugefügt"
+msgstr "neue Folgen zur Bibliothek hinzugefügt"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Neue Folgen der Bibliothek hinzufügen"
+msgid "Perform auto-update"
+msgstr "Aktiviere Automatische Aktualisierung"
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Automatische Aktualisierung"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr "Automatische Aktualisierung für Serien-Staffeln und -Episoden"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "niemals"
+msgid "Debug logging level"
+msgstr "Fehler-Aufzeichnungs-Stufe"
 
 msgctxt "#30067"
 msgid "daily"
@@ -618,7 +618,7 @@ msgstr "Nächste Seite >>"
 
 msgctxt "#30148"
 msgid "<< Previous page"
-msgstr "<< Letzte Seite"
+msgstr "<< Vorherige Seite"
 
 msgctxt "#30149"
 msgid "Sort results by"
@@ -654,7 +654,7 @@ msgstr "Unterstützt Ihr Gerät den 4K-Standard?\r\nGeräte-Anforderung:\r\nNetf
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Die Einstellungen des Inputstream Adaptive-Addons werden jetzt geöffnet. Ändern Sie die Einstellung \"HDCP-Status überschreiben\" auf EIN"
+msgstr "Die Einstellungen des InputStream-Adaptive-Addons werden jetzt geöffnet. Ändern Sie die Einstellung \"HDCP-Status überschreiben\" auf EIN"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -741,12 +741,12 @@ msgid "Open UpNext Addon settings"
 msgstr "UpNext Addon-Einstellungen öffnen"
 
 msgctxt "#30179"
-msgid "Show the trailers"
-msgstr "Zeige die Trailer"
+msgid "Show trailers & more"
+msgstr "Zeige Trailer & Mehr"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Keine Trailer verfügbar"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Es gab ein Problem bei der Anmeldung, möglicherweise ist Ihr Account nicht bestätigt oder erneuert."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -905,8 +905,8 @@ msgid "Disable notification for synchronization completed"
 msgstr "Deaktiviere Benachrichtigung für abgeschlossene Synchronisierung"
 
 msgctxt "#30220"
-msgid "Kodi library is now synchronized with My list"
-msgstr "Kodi-Bibliothek ist nun mit meiner Liste synchronisiert."
+msgid "The Kodi library has been updated"
+msgstr "Die Kodi-Bibliothek wurde aktualisiert"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -917,5 +917,37 @@ msgid "Kid account"
 msgstr "Kinder-Account"
 
 msgctxt "#30223"
-msgid "You can start the synchronization only by selecting the owner profile"
-msgstr "Sie können die Synchronisierung nur mit dem Besitzer-Account starten"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "Synchronisierung verwendet nun \"Meine Liste\" des Profils {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Auto-Aktualisierungs-Modus"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Manuell"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Geplant"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Synchronisiere Kodi-Bibliothek mit Meiner Liste"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Verwende \"Meine Liste\" des aktuellen Profils"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Name des ausgewählten Profils anzeigen"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Jetzt auf Aktualisierungen prüfen"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Möchten Sie jetzt auf Aktualisierungen prüfen?"

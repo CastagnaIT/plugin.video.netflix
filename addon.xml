@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.15.8" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.15.9" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
+    <import addon="script.module.future" version="0.17.1"/>
     <import addon="script.module.inputstreamhelper" version="0.3.3"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -11,7 +12,6 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.service" library="service.py"/>
-  <extension point="xbmc.python.module" library="modules/enum"/>
   <extension point="xbmc.python.module" library="modules/mysql-connector-python"/>
   <extension point="xbmc.addon.metadata">
     <reuselanguageinvoker>true</reuselanguageinvoker>
@@ -43,6 +43,22 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.15.9 (2019-11-16)
+-Removed limit to perform auto-update and auto-sync with my list only with main profile
+-Added possibility to choose the profile to perform auto-sync with my list
+-Auto-sync with my list now sync also the movies
+-Auto-update now can be performed in manual and scheduled mode
+-Purge library now ensures complete cleaning of the database and files
+-Added possibility to disable sort order of my list from addon settings
+-Updated user agents
+-Modified debug logging in order to save cpu load
+-Fixed pagination of episodes
+-Fixed unhandled error of membership user account status
+-When set to one profile the Kodi library is no longer modified by other profiles
+-A lot of fixes/improvements to compatibility between py2 and py3
+-Updated it, pl, pt_BR, hr_HR translations
+-Minor fixes
+
 v0.15.8 (2019-10-31)
 -Fixed addon open issue caused to a broken cookies
 -Updated de translations

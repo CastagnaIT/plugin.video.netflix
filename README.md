@@ -9,139 +9,155 @@ This source code comes from the [caphm repository](https://github.com/caphm/plug
 The initial project is on the [repository of asciidisco](https://github.com/asciidisco/plugin.video.netflix) no longer maintained but used as a reference.
 
 ## Disclaimer
-
 This plugin is not officially commisioned/supported by Netflix.
 The trademark "Netflix" is registered by "Netflix, Inc."
 
-## Prerequisites
-
-- Kodi 18 [official download](https://kodi.tv/download)
-- Inputstream.adaptive [>=v2.0.0](https://github.com/peak3d/inputstream.adaptive)
-  (with Kodi 18 should be installed automatically, otherwise you will be notified)
-- Cryptdome python library, with Kodi 18 will be installed automatically
-(for Linux systems, install using `pip install --user pycryptodomex` as the user that will run Kodi)
-
-- Widevine DRM
-For non-Android devices, will automatically be installed (by inputstream.helper).
-Please make sure to read the licence agreement that is presented upon Widevine installation, so you know what you´re getting yourself into.
-
-## Installation & Updates
-
-Repository that provides automatic updates for release builds:
-[repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.0.zip)
-
-- First download the repository zip
-- Open Kodi, go to menu Add-ons, select "Install from zip file", and select the downloaded zip
-- Last step, go to "Install from repository", select CastagnaIT repository and Netflix addon
-
-For those who prefer to stay up to date with the daily build should do the manual installation, or use other repositories
-[Daily builds](http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon)
-
-## Functionality
-
-- Multiple profiles
+## Features
+- Access to multiple profiles
 - Search Netflix (incl. suggestions)
 - Netflix categories, recommendations, "my list" & continue watching
-- Browse all movies and all TV shows Netflix style
+- Browse all movies and all TV shows Netflix style includes genres
+- Browse trailers & more of TV shows and movies (by context menu)
 - Rate show/movie
 - Add & remove to/from "my list"
-- Export of complete shows & movies in local database
-- Keep My List and local database in sync
-- Export new seasons/episodes to local database when they become available on Netflix
+- Export of complete shows & movies in (Kodi) local database
+- Keep My List and (Kodi) local library in sync
+- Export new seasons/episodes to (Kodi) local library when they become available on Netflix
+- Share/Sync the (Kodi) local library and netflix addon data with multiple devices that running Kodi
+- Possibility of playback with high resolutions 1080P and 4K (see table)
+- Support of hi-res audio Dolby Digital Plus and Dolby Digital Atmos (on Premium accounts)
+- Support of HDR and Dolby Vision (only on capable android devices, on Premium accounts)
+- Support integration with Up Next add-on (proposes to play the next episode automatically)
+
+## Installation & Updates
+You can use this addon on any device and any type of operating system capable of running Kodi.<br/>
+**[Click here to open the Wiki page with installation instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-install-the-addon)**
+
+#### Quick download links
+
+Install add-on via repository - provide automatic installation of updates:
+* [CastagnaIT Repository - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.0.zip)
+
+Install add-on manually - updates should always be installed manually:
+* [Add-on download links to current and previous releases](https://github.com/CastagnaIT/plugin.video.netflix/releases)
+* [Daily build - Add-on download link to get latest fixes](http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon) (not always published see dates)
 
 ## FAQ
 
-### Does it work with Kodi 17?
-No. Netflix's DRM is incompatible with inpustream from Kodi 17.
+### Reference table of high resolutions
+This table explains compatibility of high resolutions between devices and operating systems. This may change over time based on updates made by netflix.
 
-### Does it work on a RPI?
-Yes, but you most likely won't get 1080p playback to work properly (see next FAQ).
+| System                 | 1080P  | 4K     | Video Decoding |
+| ---------------------- | ------ | ------ | -------------- |
+| Windows                | ✔     | ✖\*1  | Software       |
+| Linux (Android) \*4    | ✔❕\*5 | ✔❕\*2 | Hardware \*5   |
+| Linux (OSMC-LibreELEC) | ✔❕\*3 | ✖\*1  | Software       |
+| Linux (Distros)        | ✔❕\*3 | ✖\*1  | Software       |
+| MacOS/IOS              | ✔     | ✖\*1  | Software       |
 
-### Can it play 1080p videos?
-- On Android devices
-Yes, as long as they are available from Netflix and your hardware can handle it.
-To understand if your device can handle them, you need to check if it has support for the Widewine L1 DRM
+\*1 Currently not available due to widevine limitations.<br/>
+\*2 4k is supported only to devices with netflix certification and HDCP2.2 hardware.<br/>
+\*3 Due to Netflix licensing restrictions not all videos are available at 1080P.<br/>
+\*4 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.<br/>
+\*5 To get 1080P resolution and hardware video decoding is needed a Widevine security level L1 capable device.
 
-- Other platform (Windows, Linux, ...)
-The video is always software decoded due to Netflix licensing restrictions, so **you'll need a CPU that can handle the load of software decoding 1080p video** otherwise you'll have the result of stuttering video playback.
-Which is what happens with certain RPI, 720p is maximum for those devices, and even then you need to make sure to properly cool your RPI or you'll have stuttering playback as well.
-You can limit the resolution in this way: In the addon settings open Expert page and change `Limit video stream resolution to` value to 720p.
+[Click here to view the list of known and tested android devices for 1080P and 4K playback](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
-### It only plays videos in 480p/720p, why is that?
-inputstream.adaptive selects the stream to play based on an initial bandwidth measurement and your screen resolution.
-If you want to force 1080p playback, set Min Bandwidth to 8,000,000 in inputstream.adaptive settings.
-Also make sure your display resolution is at least 1080p or enable `Ignore display resolution` in inputstream.adaptive settings.
-If it's still not playing 1080p, the title most probably just isn't available in 1080p.
+### Video playback problems like frame drops, slowdown, stuttering
+Usually happens to those devices where hardware video decoding is not available (due to Netflix licensing restrictions) and the CPU fails to process the video stream properly due to the high load.
+All devices with software video decoding are affected by this problem (see *Reference table of high resolutions*) like personal computers, raspberry, android boxes (with Widevine sec. lev. L3), etc..
 
-### Can it play 4K videos?
-Yes, but only on Android devices with Widevine L1, and you need to set the following parameters:
-- In the addon settings, Expert page:
+So to get a smooth reproduction **you'll need a CPU that can handle the load of software decoding 1080p video** otherwise you'll have the result of stuttering video playback.
+
+You can try to solve this problem by trying one of these solutions:
+- Limit the resolution to 720p<br/>
+In the addon settings go to Expert page and change `Limit video stream resolution to` value to 720p.
+- Limit InputStream Adaptive max bandwidth<br/>
+In the addon settings go to Expert page open InputStream Adaptive settings and try to set Max Bandwidth between 2.500.000 and 4.000.000
+
+### My android device supports 4K but does not playback
+First, make sure that:
+- In the website settings streaming quality is set to High
+- If possible, that Kodi display resolution is set to 4K
+- The device support Widevine security level L1 (use an app like: DRM Info)
+- The device is connected to a display with HDCP 2.2 or higher
+- In the addon settings use these settings, go to Expert page and set:
 `Enable VP9 profiles` to OFF
 `Enable HEVC profiles` to ON
 `Force support to HDCP 2.2` to ON
-- In the Inputstream Addon settings, Account page:
+- Open InputStream Adaptive settings and set:
 `Override HDCP status` to ON
+`Stream selection` to Auto
 
-If you don't get 4k resolution when you play:
-Try to enter the ESN from your Netflix App (can be found unter Settings => About).
+If again you don't get 4k resolution, take note of the ESN of your device, or get it from Netflix App (can be found under Settings => About) and write it down on Expert page, Manual ESN.
 
-### Can it play HDR?
-Yes, as long as the 4K prerequisites are met. Additionally, you must enabled HDR and/or DolbyVision profiles
-in addon settings.
+If again you don't get 4k resolution, open InputStream Adaptive settings and try to set:
+`Ignore Display Resolution` to ON
+`Min Bandwidth` to 18.000.000
+
+### How to enable HDR and Dolby Vision
+If 4K prerequisites are met, you must enabled HDR and/or DolbyVision profiles in addon settings.
+
+- In the addon settings go to Expert page and set:
+`Enable HEVC profiles` to ON
+`Enable HDR profiles` to ON and/or `Enable DolbyVision profiles` to ON
+
 Depending on your setup, there may be some tinkering required to get HDR to work. This depends on your TV,
 if you are using an AV-Receiver, which device Kodi is running on, etc. Please make sure to search the issues and available forum threads for a solution before opening an issue!
 
-### Does it support 5.1 audio?
-Yes, enable the option `Enable Dolby Digital Plus` in addon settings (is enabled by default).
+### How to enable Dolby Atmos
+It's enabled by default, when option `Enable Dolby Digital Plus` is enabled.
+But only some films/tvshows have Atmos streams, they can be distinguished from the skin media-flag "Dolby-HD".
+A premium netflix account is required.
 
-### Is Dolby Atmos supported?
-Yes. It's enabled by default, when option `Enable Dolby Digital Plus` is enabled.
-But only some videos have Atmos, they can be distinguished from the skin media-flag "Dolby-HD".
-Note: Need a premium netflix account.
+### Common problems with subtitles
+#### Problem with asian subtitles like Hebrew, Arabic, Thai, etc..
+Some asian language are working, you can try an easy solution, so set the Arial font in the Kodi Skin and in the Kodi subtitles settings. There are also other solutions that provide for example the replacement of fonts in the Kodi skins, the best thing is to get information through the forum of Kodi.
 
-### Are image based subtitles (Hebrew, Arabic, ...) supported?
-No. They are provided in a different format, which requires some work to support, either on Kodi or the addon side.
-It's on the roadmap but doesn't have an ETA.
-
-### Why do i always see subtitles in every video?
-Just change how Kodi handles subtitles by choosing forced only.
+#### I always see subtitles in every video
+Just change how Kodi handles subtitles by choosing *forced only*.
 In Kodi Settings -> Player -> Language
 set: `Preferred subtitle language` to `Forced only`
 
-### I added/removed something to My List on PC/in the Netflix App but it doesn't show up in my Kodi library?
-Only add/remove to My List from within the addon keeps the Kodi library in sync. Changes made in other clients (PC, App, ...) are not recognized because it's unclear how to handle those actions with multiple profiles.
+#### In TV Shows subtitles don't always keep the language of your choice
+Currently the Kodi framework does not allow to correct this problem. There is no short-term solution.<br/>
+If you prefer you can disable `Remember audio / subtitle preferences` in the addon Playback settings, so in each video you will manually enable the subtitles.
 
-### My watched status is not being updated?!
-The addon does not report watched status back to Netflix (yet). This is a top priority on our roadmap, but we haven't been able to figure this out just yet.
+### My watched status is not being updated on website or apps
+The addon does not report watched status back to Netflix (yet).
 
-### Can i share the exported content in the library with multiple devices?
-Yes it is possible share the same library with multiple devices that using netflix addon.
+### How to export to Kodi library
+The export of TV shows and movies in Kodi library allows you to take advantage of Kodi powerful browser, with the features offered by the information providers like TMDB TV show screaper.
+
+To enhance this experience, Netflix add-on offers two export automation features:<br/>
+- Auto-updates of the TV shows, in order to export automatically new seasons and episodes.
+- Auto-sync with Netflix "My List" of an profile, in order to automatically synchronize the content of Kodi library.
+
+[Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-to-export-and-sync-tv-shows-and-movies-in-Kodi-library)
+
+### How to share the exported content in the library with multiple devices
+Is possible to share the same Kodi/Netflix library with multiple devices where each device has its own Kodi installation.
 In order to work it is necessary use Kodi with a MySQL server.
-You can follow the official Kodi MySQL setup instructions at [Kodi Wiki](https://kodi.wiki/view/MySQL).
-When done, in each device that use this addon, open the addon settings and under Library page:
-- Check "Enable custom library folder", and choose a shared "Custom library path". The path must be the exact same on all devices.
-- Enable "Use MySQL shared library database", then set the same connection parameters used in Kodi MySQL setup.
 
-### Auto-update of exported content
-WARNING: AN INTENSIVE USE of AUTO-UPDATE function due to many exported tv shows MAY CAUSE A TEMPORARY BAN of the ACCOUNT that varies starting from 24/48 hours. Use at your own risk.
-If it happens often, there is the possibility to exclude the auto-updates from the tv shows, by open context menu on a tv show and selecting "Exclude from auto update".
-- If you want to use the auto-update with a shared exported content (to multiple devices), you need to set up one of the devices as the main library update manager, by using the menu "Set this device as main auto-updates manager" from the chosen device under Library page.
+[Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Library-settings)
+
+### Notice for the use of auto-update and auto-sync with Netflix "My List" feature
+AN INTENSIVE USE OF THIS FEATURES due to many exported tv shows MAY CAUSE A TEMPORARY BAN OF THE ACCOUNT that varies starting from 24/48 hours. Use at your own risk.
+
+If it happens often, there is the possibility to exclude the auto update from the tv shows, by open context menu on a tv show and selecting `Exclude from auto update`.
 
 ## Something doesn't work
-
 If something doesn't work for you, please:
 - Make sure all prerequisites are met
 - Enable the Debug log in your Kodi settings
 - Open an issue with a title that summarises your problems and **attach the full debug log**
 
 We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
-Please also use a service like pastebin to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
+Please also use a service like pastebin or better [Kodi paste](http://paste.kodi.tv) to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
 
 ## Code of Conduct
-
 [Contributor Code of Conduct](Code_of_Conduct.md)
 By participating in this project you agree to abide by its terms.
-
 
 ## License
 Licensed under The MIT License.

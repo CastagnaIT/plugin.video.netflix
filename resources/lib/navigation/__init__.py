@@ -7,7 +7,6 @@ import resources.lib.common as common
 
 class InvalidPathError(Exception):
     """The requested path is invalid and could not be routed"""
-    pass
 
 
 def execute(executor_type, pathitems, params):
@@ -17,5 +16,5 @@ def execute(executor_type, pathitems, params):
             pathitems[0] if pathitems else 'root')
     except AttributeError:
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-    common.debug('Invoking action executor {}'.format(executor.__name__))
+    common.debug('Invoking action executor {}', executor.__name__)
     executor(pathitems=pathitems)

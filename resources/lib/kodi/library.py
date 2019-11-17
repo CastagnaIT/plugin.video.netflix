@@ -32,7 +32,6 @@ ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
 
 class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
-    pass
 
 
 def library_path():
@@ -123,28 +122,27 @@ def is_in_library(videoid):
     """Return True if the video is in the local Kodi library, else False"""
     if videoid.mediatype == common.VideoId.MOVIE:
         return g.SHARED_DB.movie_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SHOW:
+    if videoid.mediatype == common.VideoId.SHOW:
         return g.SHARED_DB.tvshow_id_exists(videoid.value)
-    elif videoid.mediatype == common.VideoId.SEASON:
+    if videoid.mediatype == common.VideoId.SEASON:
         return g.SHARED_DB.season_id_exists(videoid.tvshowid,
                                             videoid.seasonid)
-    elif videoid.mediatype == common.VideoId.EPISODE:
+    if videoid.mediatype == common.VideoId.EPISODE:
         return g.SHARED_DB.episode_id_exists(videoid.tvshowid,
                                              videoid.seasonid,
                                              videoid.episodeid)
-    else:
-        raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
+    raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
 
 
 def show_excluded_from_auto_update(videoid):
     """Return true if the videoid is excluded from auto-update"""
-    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp.exclude_update, False)
+    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
 @common.time_execution(immediate=False)
 def exclude_show_from_auto_update(videoid, exclude):
     """Set if a tvshow is excluded from auto-update"""
-    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp.exclude_update, exclude)
+    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], exclude)
 
 
 def update_kodi_library(library_operation):
@@ -169,7 +167,7 @@ def update_kodi_library(library_operation):
 
 def _remove_from_kodi_library(videoid):
     """Remove an item from the Kodi library."""
-    common.debug('Removing {} videoid from Kodi library'.format(videoid))
+    common.info('Removing {} videoid from Kodi library', videoid)
     try:
         kodi_library_items = [get_item(videoid)]
         if videoid.mediatype == common.VideoId.SHOW or videoid.mediatype == common.VideoId.SEASON:
@@ -198,19 +196,16 @@ def _remove_from_kodi_library(videoid):
             common.json_rpc(rpc_params[0],
                             {rpc_params[1]: item[rpc_params[1]]})
     except ItemNotFound:
-        common.debug('Cannot remove {} from Kodi library, item not present'
-                     .format(videoid))
+        common.warn('Cannot remove {} from Kodi library, item not present', videoid)
     except KeyError as exc:
         ui.show_notification(common.get_local_string(30120), time=7500)
-        common.warn('Cannot remove {} from Kodi library, '
-                    'Kodi does not support this (yet)'
-                    .format(exc))
+        common.warn('Cannot remove {} from Kodi library, Kodi does not support this (yet)', exc)
 
 
 @common.time_execution(immediate=False)
 def purge():
     """Purge all items exported to Kodi library and delete internal library database"""
-    common.debug('Purging internal database and kodi library')
+    common.info('Purging internal database and kodi library')
     for videoid_value in g.SHARED_DB.get_movies_id_list():
         videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
         execute_library_tasks(videoid, [remove_item],
@@ -221,12 +216,20 @@ def purge():
         execute_library_tasks(videoid, [remove_item],
                               common.get_local_string(30030),
                               sync_mylist=False)
+    # If for some reason such as improper use of the add-on, unexpected error or other
+    # has caused inconsistencies with the contents of the database or stored files,
+    # make sure that everything is removed
+    g.SHARED_DB.purge_library()
+    for folder_name in [FOLDER_MOVIES, FOLDER_TV]:
+        section_dir = xbmc.translatePath(
+            xbmc.makeLegalFilename('/'.join([library_path(), folder_name])))
+        common.delete_folder_contents(section_dir, delete_subfolders=True)
 
 
 @common.time_execution(immediate=False)
 def compile_tasks(videoid, task_handler, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
-    common.debug('Compiling library tasks for {}'.format(videoid))
+    common.debug('Compiling library tasks for {}', videoid)
 
     if task_handler == export_item:
         metadata = api.metadata(videoid)
@@ -250,7 +253,8 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
         if videoid.mediatype == common.VideoId.EPISODE:
             return _create_remove_episode_task(videoid)
 
-    common.debug('compile_tasks: task_handler {} did not match any task for {}'.format(task_handler, videoid))
+    common.debug('compile_tasks: task_handler {} did not match any task for {}',
+                 task_handler, videoid)
     return None
 
 
@@ -344,7 +348,7 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
         for season in metadata[0]['seasons']:
             if not nfo_settings:
                 nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                             VidLibProp.nfo_export, False)
+                                                             VidLibProp['nfo_export'], False)
                 nfo_settings = nfo.NFOSettings(nfo_export)
 
             if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
@@ -360,7 +364,7 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
                             show=metadata[0],
                             nfo_settings=nfo_settings
                         ))
-                        common.debug('Auto exporting episode {}'.format(episode['id']))
+                        common.debug('Auto exporting episode {}', episode['id'])
             else:
                 # The season does not exist, build task for the season
                 tasks += _compile_export_season_tasks(
@@ -369,7 +373,7 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
                     season=season,
                     nfo_settings=nfo_settings
                 )
-                common.debug('Auto exporting season {}'.format(season['id']))
+                common.debug('Auto exporting season {}', season['id'])
     return tasks
 
 
@@ -433,19 +437,19 @@ def export_new_item(item_task, library_home):
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
-    destination_folder = xbmc.makeLegalFilename('/'.join(
-        [library_home, item_task['section'], item_task['destination']])).decode('utf-8')
+    destination_folder = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        [library_home, item_task['section'], item_task['destination']])))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
-        export_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder, item_task['filename'] + '.strm'])).decode('utf-8')
+        export_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+            [destination_folder, item_task['filename'] + '.strm'])))
         add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
-        nfo_filename = xbmc.makeLegalFilename('/'.join(
-            [destination_folder, item_task['filename'] + '.nfo'])).decode('utf-8')
+        nfo_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+            [destination_folder, item_task['filename'] + '.nfo'])))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
-    common.debug('Exported {}'.format(item_task['title']))
+    common.debug('Exported {}', item_task['title'])
 
 
 def _create_destination_folder(destination_folder):
@@ -457,20 +461,20 @@ def _create_destination_folder(destination_folder):
 
 def _write_strm_file(item_task, export_filename):
     """Write the playable URL to a strm file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'w')
+    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'wb')
     try:
-        filehandle.write(common.build_url(videoid=item_task['videoid'],
-                                          mode=g.MODE_PLAY).encode('utf-8'))
+        filehandle.write(bytearray(common.build_url(videoid=item_task['videoid'],
+                                                    mode=g.MODE_PLAY).encode('utf-8')))
     finally:
         filehandle.close()
 
 
 def _write_nfo_file(nfo_data, nfo_filename):
     """Write the NFO file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(nfo_filename), 'w')
+    filehandle = xbmcvfs.File(xbmc.translatePath(nfo_filename), 'wb')
     try:
-        filehandle.write('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8'))
-        filehandle.write(ET.tostring(nfo_data, encoding='utf-8', method='xml'))
+        filehandle.write(bytearray('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8')))
+        filehandle.write(bytearray(ET.tostring(nfo_data, encoding='utf-8', method='xml')))
     finally:
         filehandle.close()
 
@@ -480,7 +484,8 @@ def add_to_library(videoid, export_filename, nfo_export, exclude_update=False):
     if videoid.mediatype == common.VideoId.EPISODE:
         g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
         g.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
-        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid, videoid.value, export_filename)
+        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid,
+                                   videoid.value, export_filename)
     elif videoid.mediatype == common.VideoId.MOVIE:
         g.SHARED_DB.set_movie(videoid.value, export_filename, nfo_export)
 
@@ -490,36 +495,41 @@ def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except
 
-    common.debug('Removing {} from library'.format(item_task['title']))
+    common.info('Removing {} from library', item_task['title'])
 
     exported_filename = xbmc.translatePath(item_task['filepath'])
     videoid = item_task['videoid']
-    common.debug('VideoId: {}'.format(videoid))
+    common.debug('VideoId: {}', videoid)
     try:
         parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
-        xbmcvfs.delete(exported_filename.decode("utf-8"))
+        if xbmcvfs.exists(exported_filename):
+            xbmcvfs.delete(exported_filename)
+        else:
+            common.warn('Cannot delete {}, file does not exist', g.py2_decode(exported_filename))
         # Remove the NFO files if exists
-        nfo_file = os.path.splitext(exported_filename.decode("utf-8"))[0] + '.nfo'
+        nfo_file = os.path.splitext(g.py2_decode(exported_filename))[0] + '.nfo'
         if xbmcvfs.exists(nfo_file):
             xbmcvfs.delete(nfo_file)
-        dirs, files = xbmcvfs.listdir(parent_folder.decode("utf-8"))
+        dirs, files = xbmcvfs.listdir(parent_folder)
         tvshow_nfo_file = xbmc.makeLegalFilename(
-            '/'.join([parent_folder.decode("utf-8"), 'tvshow.nfo'])).decode("utf-8")
+            '/'.join([g.py2_decode(parent_folder), 'tvshow.nfo']))
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
         if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
             xbmcvfs.delete(tvshow_nfo_file)
             # Delete parent folder
-            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+            xbmcvfs.rmdir(parent_folder)
         # Delete parent folder when empty
         if not dirs and not files:
-            xbmcvfs.rmdir(parent_folder.decode("utf-8"))
+            xbmcvfs.rmdir(parent_folder)
 
         _remove_videoid_from_db(videoid)
     except ItemNotFound:
-        common.debug('The video with id {} not exists in the database'.format(videoid))
-    except Exception:
-        common.debug('Cannot delete {}, file does not exist'.format(exported_filename))
+        common.warn('The video with id {} not exists in the database', videoid)
+    except Exception as exc:
+        import traceback
+        common.error(traceback.format_exc())
+        ui.show_addon_error_info(exc)
 
 
 def _remove_videoid_from_db(videoid):
@@ -530,85 +540,140 @@ def _remove_videoid_from_db(videoid):
         g.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
 
 
-def _export_all_new_episodes_running():
-    update = g.SHARED_DB.get_value('library_export_new_episodes_running', False)
+def _is_auto_update_library_running():
+    update = g.SHARED_DB.get_value('library_auto_update_is_running', False)
     if update:
-        start_time = g.SHARED_DB.get_value('library_export_new_episode_start_time',
+        start_time = g.SHARED_DB.get_value('library_auto_update_start_time',
                                            datetime.utcfromtimestamp(0))
         if datetime.now() >= start_time + timedelta(hours=6):
-            g.SHARED_DB.set_value('library_export_new_episodes_running', False)
+            g.SHARED_DB.set_value('library_auto_update_is_running', False)
             common.warn('Canceling previous library update: duration >6 hours')
         else:
-            common.debug('Export all new episodes is already running')
+            common.debug('Library auto update is already running')
             return True
     return False
 
 
-def export_all_new_episodes():
+def sync_mylist_to_library():
     """
-    Update the local Kodi library with new episodes of every exported shows
+    Perform a full sync of Netflix "My List" with the Kodi library
+    by deleting everything that was previously exported
     """
-    from resources.lib.cache import CACHE_COMMON
-    from resources.lib.database.db_exceptions import ProfilesMissing
-    if _export_all_new_episodes_running():
-        return
-    common.log('Starting to export new episodes for all tv shows')
-    g.SHARED_DB.set_value('library_export_new_episodes_running', True)
-    g.SHARED_DB.set_value('library_export_new_episode_start_time', datetime.now())
-    # Get the list of the tvshows exported to kodi library
-    exported_videoids_values = g.SHARED_DB.get_tvshows_id_list()
-    # Get the list of the tvshows exported but to exclude from updates
-    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp.exclude_update, True)
+    common.info('Performing full sync of Netflix "My List" with the Kodi library')
+    purge()
+    nfo_settings = nfo.NFOSettings()
+    nfo_settings.show_export_dialog()
+    for videoid in _get_mylist_videoids():
+        execute_library_tasks(videoid, [export_item],
+                              common.get_local_string(30018),
+                              sync_mylist=False,
+                              nfo_settings=nfo_settings)
 
-    # Before start to get updated mylist items, you have to select the owner account
-    # TODO: in the future you can also add the possibility to synchronize from a chosen profile
+
+def auto_update_library(sync_with_mylist, silent):
+    """
+    Perform an auto update of the exported items to Kodi library,
+    so check if there is new seasons/episodes.
+    If sync_with_mylist is enabled the Kodi library will be also synchronized
+    with the Netflix "My List".
+    :param sync_with_mylist: True to enable sync with My List
+    :param silent: don't display user interface while performing an operation
+    :return: None
+    """
+    if _is_auto_update_library_running():
+        return
+    execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
+    common.info(
+        'Starting auto update library - check updates for tv shows (sync with My List is {})',
+        sync_with_mylist)
+    g.SHARED_DB.set_value('library_auto_update_is_running', True)
+    g.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
     try:
-        guid_owner_profile = g.LOCAL_DB.get_guid_owner_profile()
-    except ProfilesMissing as exc:
+        videoids_to_update = []
+
+        # Get My List videoids of the chosen profile
+        mylist_videoids = _get_mylist_videoids() if sync_with_mylist else []
+        # Get the list of the exported items to Kodi library
+        exported_tvshows_videoids_values = g.SHARED_DB.get_tvshows_id_list()
+        exported_movies_videoids_values = g.SHARED_DB.get_movies_id_list()
+
+        if sync_with_mylist:
+            # Check if tv shows have been removed from the My List
+            for videoid_value in exported_tvshows_videoids_values:
+                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                    continue
+                # The tv show no more exist in My List so remove it from library
+                videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
+                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+
+            # Check if movies have been removed from the My List
+            for videoid_value in exported_movies_videoids_values:
+                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                    continue
+                # The movie no more exist in My List so remove it from library
+                videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
+                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+
+            # Add missing tv shows / movies of My List to library
+            for videoid in mylist_videoids:
+                if videoid.value not in exported_tvshows_videoids_values and \
+                   videoid.value not in exported_movies_videoids_values:
+                    videoids_to_update.append(videoid)
+
+        # Add the exported tv shows to be updated to the list..
+        tvshows_videoids_to_upd = [common.VideoId.from_path([common.VideoId.SHOW,
+                                                             videoid_value]) for
+                                   videoid_value in
+                                   g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
+                                                                   False)]
+        # ..and avoids any duplication caused by possible unexpected errors
+        videoids_to_update.extend(list(set(tvshows_videoids_to_upd) - set(videoids_to_update)))
+
+        # Add missing tv shows/movies or update existing tv shows
+        _update_library(videoids_to_update, exported_tvshows_videoids_values, silent)
+
+        common.debug('Auto update of the library completed')
+        g.SHARED_DB.set_value('library_auto_update_is_running', False)
+        if not g.ADDON.getSettingBool('lib_auto_upd_disable_notification'):
+            ui.show_notification(common.get_local_string(30220), time=5000)
+        common.debug('Notify service to communicate to Kodi of update the library')
+        common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+    except Exception:  # pylint: disable=broad-except
         import traceback
+        common.error('An error has occurred in the library auto update')
         common.error(traceback.format_exc())
-        ui.show_addon_error_info(exc)
-        return
-    if guid_owner_profile != g.LOCAL_DB.get_active_profile_guid():
-        common.debug('Switching to owner account profile')
-        api.activate_profile(guid_owner_profile)
+        g.SHARED_DB.set_value('library_auto_update_is_running', False)
 
-    # Retrieve updated items from "my list"
-    # Invalidate my-list cached data to force to obtain new data
-    g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
-    mylist_videoids = api.mylist_items()
 
-    # Check if any tvshow have been removed from the mylist
-    for videoid_value in exported_videoids_values:
-        if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
-            continue
-        # Tvshow no more exist in mylist so remove it from library
-        videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-        execute_library_tasks_silently(videoid, [remove_item], sync_mylist=False)
-
-    # Update or add tvshow in kodi library
-    for videoid in mylist_videoids:
-        # Only tvshows require be updated
-        if videoid.mediatype != common.VideoId.SHOW:
-            continue
+def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent):
+    execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
+    # Get the list of the Tv Shows exported to exclude from updates
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
+                                                               True)
+    for videoid in videoids_to_update:
+        # Check if current videoid is excluded from updates
         if videoid.value in excluded_videoids_values:
             continue
-        if videoid.value in exported_videoids_values:
-            # It is possible that the user has chosen not to export nfo for a tvshow
+        if videoid.value in exported_tvshows_videoids_values:
+            # It is possible that the user has chosen not to export NFO files for a tv show
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                         VidLibProp.nfo_export, False)
+                                                         VidLibProp['nfo_export'], False)
             nfo_settings = nfo.NFOSettings(nfo_export)
         else:
             nfo_settings = nfo.NFOSettings()
-        export_new_episodes(videoid, True, nfo_settings)
-        # add some randomness between show analysis to limit servers load and ban risks
+        if videoid.mediatype == common.VideoId.SHOW:
+            export_new_episodes(videoid, silent, nfo_settings)
+        if videoid.mediatype == common.VideoId.MOVIE:
+            execute_lib_tasks_method(videoid, [export_item],
+                                     sync_mylist=False,
+                                     nfo_settings=nfo_settings)
+        # Add some randomness between operations to limit servers load and ban risks
         xbmc.sleep(random.randint(1000, 5001))
 
-    g.SHARED_DB.set_value('library_export_new_episodes_running', False)
-    if not g.ADDON.getSettingBool('disable_library_sync_notification'):
-        ui.show_notification(common.get_local_string(30220), time=5000)
-    common.debug('Notify service to update the library')
-    common.send_signal(common.Signals.LIBRARY_UPDATE_REQUESTED)
+
+def _get_mylist_videoids():
+    """Get My List videoids of an chosen profile"""
+    return api.mylist_items_switch_profiles()
 
 
 def export_new_episodes(videoid, silent=False, nfo_settings=None):
@@ -624,13 +689,13 @@ def export_new_episodes(videoid, silent=False, nfo_settings=None):
     method = execute_library_tasks_silently if silent else execute_library_tasks
 
     if videoid.mediatype == common.VideoId.SHOW:
-        common.debug('Exporting new episodes for {}'.format(videoid))
+        common.debug('Exporting new episodes for {}', videoid)
         method(videoid, [export_new_item],
                title=common.get_local_string(30198),
                sync_mylist=False,
                nfo_settings=nfo_settings)
     else:
-        common.debug('{} is not a tv show, no new episodes will be exported'.format(videoid))
+        common.debug('{} is not a tv show, no new episodes will be exported', videoid)
 
 
 @update_kodi_library
@@ -649,19 +714,18 @@ def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_s
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, title=None,  # pylint: disable=unused-argument
+def execute_library_tasks_silently(videoid, task_handlers, title=None,
                                    sync_mylist=False, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
-    # pylint: disable=broad-except
+    # pylint: disable=unused-argument
     for task_handler in task_handlers:
         for task in compile_tasks(videoid, task_handler, nfo_settings):
             try:
                 task_handler(task, library_path())
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 import traceback
                 common.error(traceback.format_exc())
-                common.error('{} of {} failed'
-                             .format(task_handler.__name__, task['title']))
+                common.error('{} of {} failed', task_handler.__name__, task['title'])
         if sync_mylist and (task_handlers != [remove_item, export_item]):
             _sync_mylist(videoid, task_handler, sync_mylist)
 
@@ -672,7 +736,7 @@ def _sync_mylist(videoid, task_handler, enabled):
         'export_item': 'add',
         'remove_item': 'remove'}.get(task_handler.__name__)
     if enabled and operation and g.ADDON.getSettingBool('mylist_library_sync'):
-        common.debug('Syncing my list due to change of Kodi library')
+        common.info('Syncing my list due to change of Kodi library')
         api.update_my_list(videoid, operation)
 
 
@@ -685,7 +749,7 @@ def get_previously_exported_items():
         for filename in xbmcvfs.listdir(folder)[1]:
             filepath = xbmc.makeLegalFilename('/'.join([folder, filename])).decode('utf-8')
             if filepath.endswith('.strm'):
-                common.debug('Trying to migrate {}'.format(filepath))
+                common.debug('Trying to migrate {}', filepath)
                 try:
                     # Only get a VideoId from the first file in each folder.
                     # For shows, all episodes will result in the same VideoId
@@ -693,7 +757,7 @@ def get_previously_exported_items():
                     result.append(
                         _get_root_videoid(filepath, videoid_pattern))
                 except (AttributeError, IndexError):
-                    common.debug('Item does not conform to old format')
+                    common.warn('Item does not conform to old format')
                 break
     return result
 

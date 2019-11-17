@@ -9,7 +9,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import sys
 import threading
-import traceback
 
 # Import and initialize globals right away to avoid stale values from the last
 # addon invocation. Otherwise Kodi's reuseLanguageInvoker option will cause
@@ -23,6 +22,11 @@ import resources.lib.common as common
 import resources.lib.services as services
 import resources.lib.kodi.ui as ui
 import resources.lib.upgrade_controller as upgrade_ctrl
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 class NetflixService(object):
@@ -89,6 +93,8 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:
+            import traceback
+            common.error(traceback.format_exc())
             ui.show_addon_error_info(exc)
             return
 
@@ -103,9 +109,9 @@ class NetflixService(object):
             self.controller.on_playback_tick()
             self.library_updater.on_tick()
         except Exception as exc:
+            import traceback
             common.error(traceback.format_exc())
-            ui.show_notification(': '.join((exc.__class__.__name__,
-                                            exc.message)))
+            ui.show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 
 

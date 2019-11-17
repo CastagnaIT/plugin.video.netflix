@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper functions for inter-process communication via AddonSignals"""
 from __future__ import absolute_import, division, unicode_literals
-
-import traceback
 from functools import wraps
-
 import AddonSignals
 
 from resources.lib.globals import g
@@ -13,13 +10,17 @@ import resources.lib.api.exceptions as apierrors
 from .logging import debug, error
 from .misc_utils import time_execution
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 class BackendNotReady(Exception):
     """The background services are not started yet"""
-    pass
 
 
-class Signals(object):
+class Signals(object):  # pylint: disable=no-init
     """Signal names for use with AddonSignals"""
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
@@ -66,18 +67,21 @@ def make_http_call(callname, data):
     The contents of data will be expanded to kwargs and passed into the target
     function."""
     from collections import OrderedDict
-    import urllib2
+    try:  # Python 3
+        from urllib.request import build_opener, install_opener, ProxyHandler, URLError, urlopen
+    except ImportError:  # Python 2
+        from urllib2 import build_opener, install_opener, ProxyHandler, URLError, urlopen
     import json
     debug('Handling HTTP IPC call to {}'.format(callname))
     # don't use proxy for localhost
     url = 'http://127.0.0.1:{}/{}'.format(
         g.LOCAL_DB.get_value('ns_service_port', 8001), callname)
-    urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler({})))
+    install_opener(build_opener(ProxyHandler({})))
     try:
         result = json.loads(
-            urllib2.urlopen(url=url, data=json.dumps(data)).read(),
+            urlopen(url=url, data=json.dumps(data).encode('utf-8')).read(),
             object_pairs_hook=OrderedDict)
-    except urllib2.URLError:
+    except URLError:
         raise BackendNotReady
     _raise_for_error(callname, result)
     return result
@@ -120,11 +124,12 @@ def addonsignals_return_call(func):
         try:
             result = call(instance, func, data)
         except Exception as exc:
-            error('IPC callback raised exception: {exc}', exc)
+            error('IPC callback raised exception: {exc}', exc=exc)
+            import traceback
             error(traceback.format_exc())
             result = {
                 'error': exc.__class__.__name__,
-                'message': exc.__unicode__()
+                'message': unicode(exc),
             }
         if g.IPC_OVER_HTTP:
             return result
@@ -140,7 +145,7 @@ def addonsignals_return_call(func):
 def call(instance, func, data):
     if isinstance(data, dict):
         return func(instance, **data)
-    elif data is not None:
+    if data is not None:
         return func(instance, data)
     return func(instance)
 

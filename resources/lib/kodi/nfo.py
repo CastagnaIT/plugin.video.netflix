@@ -7,8 +7,13 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
-class NFOSettings:
+
+class NFOSettings(object):
     def __init__(self, enforce=None):
         """
         :param force: Used for export new episode, to force the nfo export status
@@ -17,7 +22,7 @@ class NFOSettings:
             self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
             self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
         else:
-            common.debug('Export NFO enforced to {}'.format(enforce))
+            common.debug('Export NFO enforced to {}', enforce)
             self._enabled = enforce
             self._export_tvshow_id = enforce
 
@@ -131,7 +136,6 @@ def create_movie_nfo(movie):
     root = _build_root_node('movie', tags)
     _add_poster(root, movie)
     _add_fanart(root, movie)
-    common.debug(root)
     return root
 
 
@@ -162,7 +166,7 @@ def _add_fanart(root, data):
 
 def _build_root_node(root_name, tags):
     root = ET.Element(root_name)
-    for (k, v) in tags.items():
+    for (k, v) in list(tags.items()):
         if v:
             tag = ET.SubElement(root, k)
             tag.text = unicode(v)

@@ -14,8 +14,7 @@ class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing AddonActionExecutor: {}'
-                     .format(params))
+        common.debug('Initializing AddonActionExecutor: {}', params)
         self.params = params
 
     def logout(self, pathitems=None):  # pylint: disable=unused-argument
@@ -81,7 +80,7 @@ class AddonActionExecutor(object):
                                    mode=g.MODE_DIRECTORY)
             xbmc.executebuiltin('Container.Update({})'.format(url))
         else:
-            ui.show_notification(common.get_local_string(30180))
+            ui.show_notification(common.get_local_string(30111))
 
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
@@ -129,17 +128,12 @@ def _sync_library(videoid, operation):
     operation = {
         'add': 'export_silent',
         'remove': 'remove_silent'}.get(operation)
-    if operation and g.ADDON.getSettingBool('mylist_library_sync'):
-        # This is a temporary workaround to prevent export from mylist of non owner account profiles
-        # TODO: in the future you can also add the possibility to synchronize from a chosen profile
-        is_account_owner = g.LOCAL_DB.get_profile_config('isAccountOwner', False)
-        if not is_account_owner:
+    if operation and g.ADDON.getSettingBool('lib_sync_mylist'):
+        sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                         g.LOCAL_DB.get_guid_owner_profile())
+        # Allow to sync library with My List only by chosen profile
+        if sync_mylist_profile_guid != g.LOCAL_DB.get_active_profile_guid():
             return
         common.debug('Syncing library due to change of my list')
-        # We need to wait a little before syncing the library to prevent race
-        # conditions with the Container refresh
-        common.schedule_builtin(
-            '00:03',
-            common.run_plugin_action(
-                common.build_url([operation], videoid, mode=g.MODE_LIBRARY)),
-            name='NetflixLibrarySync')
+        # xbmc.executebuiltin is running with Block, to prevent update the list before op. is done
+        common.run_plugin(common.build_url([operation], videoid, mode=g.MODE_LIBRARY), block=True)

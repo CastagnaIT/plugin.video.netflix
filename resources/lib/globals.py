@@ -11,9 +11,15 @@ from __future__ import absolute_import, division, unicode_literals
 import collections
 import os
 import sys
-from urllib import unquote
 
-from urlparse import urlparse, parse_qsl
+try:  # Python 3
+    from urllib.parse import parse_qsl, unquote, urlparse
+except ImportError:  # Python 2
+    from urllib2 import unquote
+    from urlparse import parse_qsl, urlparse
+
+from future.utils import iteritems
+
 import xbmc
 import xbmcaddon
 import xbmcvfs
@@ -175,13 +181,13 @@ class GlobalVariables(object):
 
     def __init__(self):
         """Do nothing on constructing the object"""
-        pass
 
     def init_globals(self, argv, skip_database_initialize=False):
         """Initialized globally used module variables.
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
+        self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -194,7 +200,6 @@ class GlobalVariables(object):
 
         # Add absolute paths of embedded py modules to python system directory
         module_paths = [
-            os.path.join(self.ADDON_DATA_PATH, 'modules', 'enum'),
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
         for path in module_paths:
@@ -215,7 +220,7 @@ class GlobalVariables(object):
             self.PLUGIN_HANDLE = 0
         self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
                                                      netloc=self.URL[1])
-        self.PATH = unquote(self.URL[2][1:]).decode('utf-8')
+        self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -255,8 +260,7 @@ class GlobalVariables(object):
         self._init_cache()
 
     def _init_cache(self):
-        if not os.path.exists(
-                xbmc.translatePath(self.CACHE_PATH).decode('utf-8')):
+        if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
@@ -281,7 +285,7 @@ class GlobalVariables(object):
             self.settings_monitor_suspended(True)
 
             system = common.get_system_platform()
-            common.debug('Running initial addon configuration dialogs on system: {}'.format(system))
+            common.debug('Running initial addon configuration dialogs on system: {}', system)
             if system in ['osx', 'ios', 'xbox']:
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', True)
@@ -369,7 +373,7 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with lolomo_known=True"""
-        for menu_id, data in self.MAIN_MENU_ITEMS.iteritems():  # pylint: disable=unused-variable
+        for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
             if data['lolomo_known']:
                 if data['lolomo_contexts'][0] == context:
                     return True
@@ -392,6 +396,20 @@ class GlobalVariables(object):
     def remove_time_trace_level(self):
         """Remove a level from the time trace"""
         self.time_trace_level -= 2
+
+    def py2_decode(self, value):
+        """Decode text only on python 2"""
+        # To remove when Kodi 18 support is over / Py2 dead
+        if self.PY_IS_VER2:
+            return value.decode('utf-8')
+        return value
+
+    def py2_encode(self, value):
+        """Encode text only on python 2"""
+        # To remove when Kodi 18 support is over / Py2 dead
+        if self.PY_IS_VER2:
+            return value.encode('utf-8')
+        return value
 
 
 # pylint: disable=invalid-name

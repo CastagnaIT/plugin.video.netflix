@@ -16,7 +16,7 @@ from .exceptions import MSLError
 
 class AndroidMSLCrypto(MSLBaseCrypto):
     """Crypto handler for Android platforms"""
-    def __init__(self, msl_data=None):
+    def __init__(self, msl_data=None):  # pylint: disable=super-on-old-class
         # pylint: disable=broad-except
         try:
             self.crypto_session = xbmcdrm.CryptoSession(
@@ -40,12 +40,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             self.key_id = None
             self.hmac_key_id = None
 
-        common.debug('Widevine CryptoSession systemId: {}'
-                     .format(
-                         self.crypto_session.GetPropertyString('systemId')))
-        common.debug('Widevine CryptoSession algorithms: {}'
-                     .format(
-                         self.crypto_session.GetPropertyString('algorithms')))
+        common.debug('Widevine CryptoSession systemId: {}',
+                     self.crypto_session.GetPropertyString('systemId'))
+        common.debug('Widevine CryptoSession algorithms: {}',
+                     self.crypto_session.GetPropertyString('algorithms'))
 
     def __del__(self):
         self.crypto_session = None
@@ -54,29 +52,28 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         """Return a key request dict"""
         # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
-        key_request = self.crypto_session.GetKeyRequest(
+        key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
             bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
 
         if not key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
 
-        common.log('Widevine CryptoSession getKeyRequest successful. Size: {}'
-                   .format(len(key_request)))
+        common.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
-                'keyrequest': base64.standard_b64encode(key_request)
+                'keyrequest': base64.standard_b64encode(key_request).decode('utf-8')
             }
         }]
 
     def _provide_key_response(self, data):
         if not data:
             raise MSLError('Missing key response data')
-        self.keyset_id = self.crypto_session.ProvideKeyResponse(data)
+        self.keyset_id = self.crypto_session.ProvideKeyResponse(data)  # pylint: disable=assignment-from-none
         if not self.keyset_id:
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
         common.debug('Widevine CryptoSession provideKeyResponse successful')
-        common.debug('keySetId: {}'.format(self.keyset_id))
+        common.debug('keySetId: {}', self.keyset_id)
 
     def encrypt(self, plaintext, esn):
         """
@@ -98,11 +95,11 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
         return json.dumps({
             'version': 1,
-            'ciphertext': base64.standard_b64encode(encrypted_data),
+            'ciphertext': base64.standard_b64encode(encrypted_data).decode('utf-8'),
             'sha256': 'AA==',
-            'keyid': base64.standard_b64encode(self.key_id),
+            'keyid': base64.standard_b64encode(self.key_id).decode('utf-8'),
             # 'cipherspec' : 'AES/CBC/PKCS5Padding',
-            'iv': base64.standard_b64encode(init_vector)
+            'iv': base64.standard_b64encode(init_vector).decode('utf-8')
         })
 
     def decrypt(self, init_vector, ciphertext):
@@ -118,10 +115,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def sign(self, message):
         """Sign a message"""
-        signature = self.crypto_session.Sign(self.hmac_key_id, message)
+        signature = self.crypto_session.Sign(self.hmac_key_id, message.encode('utf-8'))
         if not signature:
             raise MSLError('Widevine CryptoSession sign failed!')
-        return base64.standard_b64encode(signature)
+        return base64.standard_b64encode(signature).decode('utf-8')
 
     def verify(self, message, signature):
         """Verify a message's signature"""
@@ -138,7 +135,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def _export_keys(self):
         return {
-            'key_set_id': base64.standard_b64encode(self.keyset_id),
-            'key_id': base64.standard_b64encode(self.key_id),
-            'hmac_key_id': base64.standard_b64encode(self.hmac_key_id)
+            'key_set_id': base64.standard_b64encode(self.keyset_id).decode('utf-8'),
+            'key_id': base64.standard_b64encode(self.key_id).decode('utf-8'),
+            'hmac_key_id': base64.standard_b64encode(self.hmac_key_id).decode('utf-8')
         }

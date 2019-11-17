@@ -2,9 +2,10 @@
 """Helper functions to build plugin listings for Kodi"""
 from __future__ import absolute_import, division, unicode_literals
 
-from functools import wraps
-
 import os
+from functools import wraps
+from future.utils import iteritems
+
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -15,6 +16,11 @@ import resources.lib.common as common
 
 from .infolabels import add_info, add_art, add_highlighted_title
 from .context_menu import generate_context_menu_items, generate_context_menu_mainmenu
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 def custom_viewmode(partial_setting_id):
@@ -106,7 +112,7 @@ def build_main_menu_listing(lolomo):
     """
     directory_items = []
 
-    for menu_id, data in g.MAIN_MENU_ITEMS.iteritems():
+    for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
         show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
         if show_in_menu:
             menu_title = 'Missing menu title'
@@ -141,7 +147,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
     contexts = menu_data['lolomo_contexts']
     lists = (lolomo.lists_by_context(contexts)
              if contexts
-             else lolomo.lists.iteritems())
+             else iter(list(lolomo.lists.items())))
     directory_items = []
     for video_list_id, video_list in lists:
         menu_parameters = common.MenuIdParameters(id_values=video_list_id)
@@ -247,7 +253,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     """Build a video listing"""
     directory_items = [_create_video_item(videoid_value, video, video_list, menu_data)
                        for videoid_value, video
-                       in video_list.videos.iteritems()]
+                       in list(video_list.videos.items())]
     # If genre_id exists add possibility to browse lolomos subgenres
     if genre_id and genre_id != 'None':
         menu_id = 'subgenre_' + genre_id
@@ -269,10 +275,11 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
                                 True))
     add_items_previous_next_page(directory_items, pathitems,
                                  video_list.perpetual_range_selector, genre_id)
-    # At the moment it is not possible to make a query with results sorted for the 'mylist',
-    # so we adding the sort order of kodi
     sort_type = 'sort_nothing'
-    if menu_data['path'][1] == 'myList':
+    if menu_data['path'][1] == 'myList' and \
+       int(g.ADDON.getSettingInt('menu_sortorder_mylist')) == 0:
+        # At the moment it is not possible to make a query with results sorted for the 'mylist',
+        # so we adding the sort order of kodi
         sort_type = 'sort_label_ignore_folders'
     parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
                                             table=TABLE_MENU_DATA, data_type=dict)
@@ -310,7 +317,7 @@ def build_season_listing(tvshowid, season_list, pathitems=None):
     directory_items = [_create_season_item(tvshowid, seasonid_value, season,
                                            season_list)
                        for seasonid_value, season
-                       in season_list.seasons.iteritems()]
+                       in list(season_list.seasons.items())]
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector)
     finalize_directory(directory_items, g.CONTENT_SEASON, 'sort_only_label',
                        title=' - '.join((season_list.tvshow['title'],
@@ -337,7 +344,7 @@ def build_episode_listing(seasonid, episode_list, pathitems=None):
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode,
                                             episode_list)
                        for episodeid_value, episode
-                       in episode_list.episodes.iteritems()]
+                       in list(episode_list.episodes.items())]
     add_items_previous_next_page(directory_items, pathitems, episode_list.perpetual_range_selector)
     finalize_directory(directory_items, g.CONTENT_EPISODE, 'sort_episodes',
                        title=' - '.join(
@@ -364,7 +371,7 @@ def build_supplemental_listing(video_list, pathitems=None):  # pylint: disable=u
     """Build a supplemental listing (eg. trailers)"""
     directory_items = [_create_supplemental_item(videoid_value, video, video_list)
                        for videoid_value, video
-                       in video_list.videos.iteritems()]
+                       in list(video_list.videos.items())]
     finalize_directory(directory_items, g.CONTENT_SHOW, 'sort_label',
                        title='Trailers')
 

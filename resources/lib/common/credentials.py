@@ -21,13 +21,18 @@ def encrypt_credential(raw):
     """
     # pylint: disable=invalid-name,import-error
     import base64
-    from Cryptodome import Random
-    from Cryptodome.Cipher import AES
-    from Cryptodome.Util import Padding
-    raw = bytes(Padding.pad(data_to_pad=raw, block_size=__BLOCK_SIZE__))
+    try:  # Python 3
+        from Crypto import Random
+        from Crypto.Cipher import AES
+        from Crypto.Util import Padding
+    except ImportError:  # Python 2
+        from Cryptodome import Random
+        from Cryptodome.Cipher import AES
+        from Cryptodome.Util import Padding
+    raw = bytes(Padding.pad(data_to_pad=raw.encode('utf-8'), block_size=__BLOCK_SIZE__))
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(get_crypt_key(), AES.MODE_CBC, iv)
-    return base64.b64encode(iv + cipher.encrypt(raw))
+    return base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
 
 
 def decrypt_credential(enc, secret=None):
@@ -40,14 +45,18 @@ def decrypt_credential(enc, secret=None):
     """
     # pylint: disable=invalid-name,import-error
     import base64
-    from Cryptodome.Cipher import AES
-    from Cryptodome.Util import Padding
+    try:  # Python 3
+        from Crypto.Cipher import AES
+        from Crypto.Util import Padding
+    except ImportError:  # Python 2
+        from Cryptodome.Cipher import AES
+        from Cryptodome.Util import Padding
     enc = base64.b64decode(enc)
     iv = enc[:AES.block_size]
     cipher = AES.new(secret or get_crypt_key(), AES.MODE_CBC, iv)
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
-        block_size=__BLOCK_SIZE__).decode('utf-8')
+        block_size=__BLOCK_SIZE__)
     return decoded
 
 
@@ -61,8 +70,8 @@ def get_credentials():
     verify_credentials(email and password)
     try:
         return {
-            'email': decrypt_credential(email),
-            'password': decrypt_credential(password)
+            'email': decrypt_credential(email).decode('utf-8'),
+            'password': decrypt_credential(password).decode('utf-8')
         }
     except Exception:
         import traceback
@@ -71,7 +80,6 @@ def get_credentials():
             'Existing credentials could not be decrypted')
 
 
-# noinspection PyBroadException
 def check_credentials():
     """
     Check if account credentials exists and can be decrypted.

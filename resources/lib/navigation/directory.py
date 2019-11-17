@@ -13,17 +13,22 @@ import resources.lib.kodi.listings as listings
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library as library
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 class DirectoryBuilder(object):
     """Builds directory listings"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing directory builder: {}'.format(params))
+        common.debug('Initializing directory builder: {}', params)
         self.params = params
         # After build url the param value is converted as string
         self.perpetual_range_start = None \
             if self.params.get('perpetual_range_start') == 'None' else self.params.get('perpetual_range_start')
-        self.dir_update_listing = True if self.perpetual_range_start else False
+        self.dir_update_listing = bool(self.perpetual_range_start)
         if self.perpetual_range_start == '0':
             # For cache identifier purpose
             self.perpetual_range_start = None
@@ -37,8 +42,7 @@ class DirectoryBuilder(object):
         autologin = g.ADDON.getSettingBool('autologin_enable')
         profile_id = g.ADDON.getSetting('autologin_id')
         if autologin and profile_id:
-            common.debug('Performing auto-login for selected profile {}'
-                         .format(profile_id))
+            common.info('Performing auto-login for selected profile {}', profile_id)
             api.activate_profile(profile_id)
             self.home(None, False)
         else:
@@ -116,7 +120,12 @@ class DirectoryBuilder(object):
 
     def season(self, videoid, pathitems):
         """Show episodes of a season"""
-        listings.build_episode_listing(videoid, api.episodes(videoid), pathitems)
+        listings.build_episode_listing(videoid,
+                                       api.episodes(
+                                           videoid,
+                                           videoid_value=unicode(videoid),
+                                           perpetual_range_start=self.perpetual_range_start),
+                                       pathitems)
         _handle_endofdirectory(self.dir_update_listing)
 
     @common.time_execution(immediate=False)

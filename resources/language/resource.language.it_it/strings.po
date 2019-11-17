@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-08-19 20:40+0000\n"
+"PO-Revision-Date: 2019-11-15 10:30+0000\n"
 "Last-Translator: Stefano Gottardo <>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -281,16 +281,16 @@ msgid "new episodes added to library"
 msgstr "nuovi episodi aggiunti alla libreria"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Esporta nuovi episodi"
+msgid "Perform auto-update"
+msgstr "Esegui l'auto-aggiornamento"
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Aggiornamento automatico"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr "Auto-aggiornamento delle stagioni ed episodi delle serie tv"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "mai"
+msgid "Debug logging level"
+msgstr "Livello log di debug"
 
 msgctxt "#30067"
 msgid "daily"
@@ -510,7 +510,7 @@ msgstr "Non è possibile rimuovere automaticamente una stagione dalla libreria K
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr "Esegui sincronizzazione adesso"
+msgstr "Esegui la sincronizzazione completa ora"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
@@ -741,12 +741,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Apri impostazioni UpNext Addon"
 
 msgctxt "#30179"
-msgid "Show the trailers"
-msgstr "Mostra i trailers"
+msgid "Show trailers & more"
+msgstr "Mostra trailer e altro"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Nessun trailer disponibile"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Si è verificato un problema con il login, è possibile che il tuo account non sia stato confermato oppure rinnovato."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -905,8 +905,8 @@ msgid "Disable notification for synchronization completed"
 msgstr "Disabilita notifica per sincronizzazione completata"
 
 msgctxt "#30220"
-msgid "Kodi library is now synchronized with My list"
-msgstr "La libreria di Kodi è sincronizzata con la Mia lista"
+msgid "The Kodi library has been updated"
+msgstr "La libreria di Kodi è stata aggiornata"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -917,5 +917,37 @@ msgid "Kid account"
 msgstr "Account bambini"
 
 msgctxt "#30223"
-msgid "You can start the synchronization only by selecting the owner profile"
-msgstr "Puoi avviare la sincronizzazione solo selezionando il profilo principale"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "La sincronizzazione utilizza la \"Mia Lista\" del profilo {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Modalità di auto aggiornamento"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Manuale"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Programmata"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Sincronizza la libreria Kodi con la Mia Lista"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Utilizza la \"Mia Lista\" del profilo corrente"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Mostra il nome del profilo selezionato"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Verifica gli aggiornamenti ora"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Vuoi verificare gli aggiornamenti ora?"

@@ -18,9 +18,16 @@ class LibraryUpdateService(xbmc.Monitor):
     """
 
     def __init__(self):
-        # Export new episodes variables
+        try:
+            self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 1
+        except Exception:  # pylint: disable=broad-except
+            # If settings.xml was not created yet, as at first service run
+            # g.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
+            # If any other error appears, we don't want the service to crash,
+            # let's return None in all case
+            self.enabled = False
+
         self.startidle = 0
-        # self.last_schedule_check = datetime.now()
         self.next_schedule = _compute_next_schedule()
 
         # Update library variables
@@ -33,11 +40,13 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def on_tick(self):
         """Check if update is due and trigger it"""
+        if not self.enabled:
+            return
         if (self.next_schedule is not None
                 and self.is_idle()
                 and self.next_schedule <= datetime.now()):
-            common.debug('Triggering export new episodes')
-            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/export_all_new_episodes/)'
+            common.debug('Triggering auto update library')
+            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/service_auto_upd_run_now/)'
                                 .format(g.ADDON_ID))
             g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
@@ -46,7 +55,7 @@ class LibraryUpdateService(xbmc.Monitor):
         """
         Check if Kodi has been idle for 5 minutes
         """
-        if not g.ADDON.getSettingBool('wait_idle'):
+        if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
             return True
 
         lastidle = xbmc.getGlobalIdleTime()
@@ -62,10 +71,13 @@ class LibraryUpdateService(xbmc.Monitor):
         As settings changed, we will compute next schedule again
         to ensure it's still correct
         """
-        # wait for slow system (like Raspberry Pi) to write the settings
+        # Wait for slow system (like Raspberry Pi) to write the settings
         xbmc.sleep(500)
-        # then compute the next schedule
-        self.next_schedule = _compute_next_schedule()
+        # Check if the status is changed
+        self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 1
+        # Then compute the next schedule
+        if self.enabled:
+            self.next_schedule = _compute_next_schedule()
 
     def onScanStarted(self, library):
         """Monitor library scan to avoid multiple calls"""
@@ -100,11 +112,6 @@ class LibraryUpdateService(xbmc.Monitor):
 
 def _compute_next_schedule():
     try:
-        update_frequency = g.ADDON.getSettingInt('auto_update')
-
-        if not update_frequency or not g.ADDON.getSettingBool('mylist_library_sync'):
-            common.debug('Library auto update scheduled is disabled')
-            return None
         if g.ADDON.getSettingBool('use_mysql'):
             client_uuid = g.LOCAL_DB.get_value('client_uuid')
             uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
@@ -113,19 +120,21 @@ def _compute_next_schedule():
                              'has been set as the main update manager')
                 return None
 
-        time = g.ADDON.getSetting('update_time') or '00:00'
+        time = g.ADDON.getSetting('lib_auto_upd_start') or '00:00'
         last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
                                          datetime.utcfromtimestamp(0))
+        update_frequency = g.ADDON.getSettingInt('lib_auto_upd_freq')
+
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
-        next_run = last_run + timedelta(days=[0, 1, 2, 5, 7][update_frequency])
-        common.debug('Next library auto update is scheduled for {}'.format(next_run))
+        next_run = last_run + timedelta(days=[1, 2, 5, 7][update_frequency])
+        common.info('Next library auto update is scheduled for {}', next_run)
         return next_run
     except Exception:  # pylint: disable=broad-except
         # If settings.xml was not created yet, as at first service run
-        # g.ADDON.getSettingInt('auto_update') will thrown a TypeError
+        # g.ADDON.getSettingBool('use_mysql') will thrown a TypeError
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
-        import traceback
-        common.debug(traceback.format_exc())
-        common.debug('Managed error at _compute_next_schedule')
+        # import traceback
+        # common.debug(traceback.format_exc())
+        common.warn('Managed error at _compute_next_schedule')
         return None

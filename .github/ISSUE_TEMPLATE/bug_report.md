@@ -20,7 +20,7 @@ Used Operating system:
 
 ### Describe the bug
 <!--- A bug report that is not clear will be closed -->
-<!--- WHEN APPROPRIATE (MOST OF THE CASES) ALWAYS ATTACH THE LINK FOR KODI LOG FILE, SEE BELOW -->
+<!--- ALWAYS ATTACH THE LINK FOR KODI LOG FILE, HOW TO BELOW -->
 <!--- Put your text below this line -->
 
 #### Expected behavior
@@ -33,23 +33,27 @@ Used Operating system:
 
 #### Steps to reproduce the behavior
 <!--- Put your text below this line -->
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 #### Possible fix
 <!--- Not obligatory, but suggest a fix or reason for the bug -->
 <!--- Put your text below this line -->
 
 ### Debug log
-<!--- How to get the log? Read Kodi wiki: https://kodi.wiki/view/Log_file/Easy
+<!--- How to:
+1) Go to add-on settings, in Expert page and change "Debug logging level" to "Verbose"
+2) Enable Kodi debug: go to Kodi Settings > System Settings > Logging, and enable "Enable debug logging"
+3) How to get the log file? Read Kodi wiki: https://kodi.wiki/view/Log_file/Easy
 RESPECT THE RULES!
-- A DEBUG LOG IS ALWAYS MANDATORY WHEN CREATING AN ISSUE. PROVIDE ONE!
-- Do NOT PASTE THE CONTENT of the log HERE
-- Do NOT CUT the log
+- A DEBUG LOG IS ALWAYS MANDATORY WHEN CREATING AN ISSUE. PROVIDE A LINK TO THE LOG!
+- DO NOT PASTE THE CONTENT OF THE LOG HERE
+- DO NOT CUT THE LOG
 - If the log file is really huge (more 1Mb) in Kodi settings disable "Component-specific logging" then create a new log
 -->
-The debug log can be found here: 
+The debug log can be found from this link:
+
 
 ### Additional context or screenshots (if appropriate)
 

@@ -273,12 +273,12 @@ msgid "new episodes added to library"
 msgstr "Nouveaux épisodes ajoutés à la médiathèque"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Exporter les nouveaux épisodes"
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Mise à jour automatique"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"
@@ -733,12 +733,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Ouvrir les paramètres de l'addon 'UpNext'"
 
 msgctxt "#30179"
-msgid "Show the trailers"
+msgid "Show trailers & more"
 msgstr "Montrer les bandes annonces"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Pas de bande annonce"
+msgid "NotUsed"
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"

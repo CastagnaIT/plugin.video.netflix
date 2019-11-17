@@ -170,7 +170,7 @@ def get_shareddb_class(force_sqlite=False):
             cur = self.get_cursor_for_list_results()
             if enum_vid_prop and prop_value:
                 query = ('SELECT TvShowID FROM video_lib_tvshows '
-                         'WHERE ' + enum_vid_prop.value + ' = ?')
+                         'WHERE ' + enum_vid_prop + ' = ?')
                 cur = self._execute_query(query, (str(prop_value),), cur)
             else:
                 query = 'SELECT TvShowID FROM video_lib_tvshows'
@@ -340,7 +340,7 @@ def get_shareddb_class(force_sqlite=False):
             :param data_type: OPTIONAL Used to set data type conversion only when default_value is None
             :return: the property value
             """
-            query = 'SELECT ' + enum_vid_prop.value + ' FROM video_lib_tvshows WHERE TvShowID = ?'
+            query = 'SELECT ' + enum_vid_prop + ' FROM video_lib_tvshows WHERE TvShowID = ?'
             cur = self._execute_query(query, (tvshowid,))
             result = cur.fetchone()
             if default_value is not None:
@@ -354,7 +354,7 @@ def get_shareddb_class(force_sqlite=False):
         @db_base_sqlite.handle_connection
         def set_tvshow_property(self, tvshowid, enum_vid_prop, value):
             update_query = ('UPDATE video_lib_tvshows '
-                            'SET ' + enum_vid_prop.value + ' = ? WHERE TvShowID = ?')
+                            'SET ' + enum_vid_prop + ' = ? WHERE TvShowID = ?')
             value = common.convert_to_string(value)
             self._execute_query(update_query, (value, tvshowid))
 
@@ -397,5 +397,18 @@ def get_shareddb_class(force_sqlite=False):
                                     'VALUES (?, ?, ?, ?)')
                     self._execute_non_query(insert_query, (profile_guid, videoid,
                                                            value, date_last_modified))
+
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
+        def purge_library(self):
+            """Delete all records from library tables"""
+            query = 'DELETE FROM video_lib_movies'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_episodes'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_seasons'
+            self._execute_non_query(query)
+            query = 'DELETE FROM video_lib_tvshows'
+            self._execute_non_query(query)
 
     return NFSharedDatabase

@@ -2,16 +2,29 @@
 # pylint: disable=unused-import
 """Miscellanneous utility functions"""
 from __future__ import absolute_import, division, unicode_literals
-
-import traceback
 from datetime import datetime
-from urllib import urlencode, quote
 from functools import wraps
 from time import clock
 import gzip
 import base64
 import re
-from StringIO import StringIO
+from future.utils import iteritems
+
+try:  # Python 2
+    from itertools import imap as map  # pylint: disable=redefined-builtin
+except ImportError:
+    pass
+
+try:  # Python 3
+    from io import StringIO
+except ImportError:  # Python 2
+    from StringIO import StringIO
+
+try:  # Python 3
+    from urllib.parse import quote, urlencode
+except ImportError:  # Python 2
+    from urllib import urlencode
+    from urllib2 import quote
 
 import xbmc
 import xbmcgui
@@ -69,7 +82,7 @@ def get_class_methods(class_item=None):
     from types import FunctionType
     _type = FunctionType
     return [x
-            for x, y in class_item.__dict__.iteritems()
+            for x, y in iteritems(class_item.__dict__)
             if isinstance(y, _type)]
 
 
@@ -82,7 +95,7 @@ def get_user_agent():
     :returns: str -- User agent string
     """
     import platform
-    chrome_version = 'Chrome/73.0.3683.103'
+    chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -90,13 +103,14 @@ def get_user_agent():
     system = platform.system()
     # Mac OSX
     if system == 'Darwin':
-        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_10_1)')
+        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
     # Windows
     if system == 'Windows':
         return base.replace('%PL%', '(Windows NT 6.1; WOW64)')
     # ARM based Linux
     if platform.machine().startswith('arm'):
-        return base.replace('%PL%', '(X11; CrOS armv7l 7647.78.0)')
+        # Last number is the platform version of Chrome OS
+        return base.replace('%PL%', '(X11; CrOS armv7l 12371.89.0)')
     # x86 Linux
     return base.replace('%PL%', '(X11; Linux x86_64)')
 
@@ -175,12 +189,13 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
         task_title = task.get('title', 'Unknown Task')
         progress.update(percent=int(task_num * 100 / len(tasks)),
                         line1=task_title)
-        xbmc.sleep(25)
+#        xbmc.sleep(25)
         if progress.iscanceled():
             break
         try:
             task_handler(task, **kwargs)
         except Exception as exc:
+            import traceback
             error(traceback.format_exc())
             errors.append({
                 'task_title': task_title,
@@ -209,7 +224,7 @@ def merge_dicts(dict_to_merge, merged_dict):
     """Recursively merge the contents of dict_to_merge into merged_dict.
     Values that are already present in merged_dict will be overwritten
     if they are also present in dict_to_merge"""
-    for key, value in dict_to_merge.iteritems():
+    for key, value in iteritems(dict_to_merge):
         if isinstance(merged_dict.get(key), dict):
             merge_dicts(value, merged_dict[key])
         else:
@@ -239,9 +254,9 @@ def time_execution(immediate):
                     execution_time = int((clock() - start) * 1000)
                     if immediate:
                         debug('Call to {} took {}ms'
-                              .format(func.func_name, execution_time))
+                              .format(func.__name__, execution_time))
                     else:
-                        g.TIME_TRACE.append([func.func_name, execution_time,
+                        g.TIME_TRACE.append([func.__name__, execution_time,
                                              g.time_trace_level])
                 g.remove_time_trace_level()
         return timing_wrapper
@@ -270,12 +285,12 @@ def is_edge_esn(esn):
 
 def is_minimum_version(version, min_version):
     """Return True if version is equal or greater to min_version"""
-    return map(int, version.split('.')) >= map(int, min_version.split('.'))
+    return list(map(int, version.split('.'))) >= list(map(int, min_version.split('.')))
 
 
 def is_less_version(version, max_version):
     """Return True if version is less to max_version"""
-    return map(int, version.split('.')) < map(int, max_version.split('.'))
+    return list(map(int, version.split('.'))) < list(map(int, max_version.split('.')))
 
 
 def make_list(arg):

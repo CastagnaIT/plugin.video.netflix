@@ -1,9 +1,11 @@
 codecov
+future
 kodi-addon-checker
+mysql-connector-python
 polib
-pycrypto==2.6.1
+pycrypto
 pycryptodomex==3.4.5
-pydes==2.0.1
-pylint==1.6.5
-requests==2.12.4
+pydes
+pylint
+requests
 tox-travis

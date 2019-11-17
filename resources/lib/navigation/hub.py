@@ -10,7 +10,7 @@ class HubBrowser(object):
     """Fills window properties for browsing the Netflix style Hub"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing hub browser: {}'.format(params))
+        common.debug('Initializing hub browser: {}', params)
         self.params = params
 
         profile_id = params.get('profile_id')
@@ -19,4 +19,3 @@ class HubBrowser(object):
 
     def browse(self, pathitems):
         """Browse the hub at a given location"""
-        pass

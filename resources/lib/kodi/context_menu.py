@@ -90,19 +90,34 @@ def _generate_library_ctx_items(videoid):
     if videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         return library_actions
 
-    is_in_library = library.is_in_library(videoid)
-    library_actions = ['remove', 'update'] if is_in_library else ['export']
+    allow_lib_operations = True
+    lib_is_sync_with_mylist = g.ADDON.getSettingBool('lib_sync_mylist')
+    if lib_is_sync_with_mylist:
+        # If the synchronization of Netflix "My List" with the Kodi library is enabled
+        # only in the chosen profile allow to do operations in the Kodi library otherwise
+        # it creates inconsistency to the exported elements and increases the work for sync
+        sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                         g.LOCAL_DB.get_guid_owner_profile())
+        allow_lib_operations = sync_mylist_profile_guid == g.LOCAL_DB.get_active_profile_guid()
 
-    if g.ADDON.getSettingInt('auto_update') and \
-            videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
-        library_actions = []
-
-    if videoid.mediatype == common.VideoId.SHOW and is_in_library:
-        library_actions.append('export_new_episodes')
-        if library.show_excluded_from_auto_update(videoid):
-            library_actions.append('include_in_auto_update')
+    if allow_lib_operations:
+        is_in_library = library.is_in_library(videoid)
+        if lib_is_sync_with_mylist:
+            if is_in_library:
+                library_actions = ['update']
         else:
-            library_actions.append('exclude_from_auto_update')
+            library_actions = ['remove', 'update'] if is_in_library else ['export']
+            # If auto-update mode is Manual and mediatype is season/episode do not allow operations
+            if g.ADDON.getSettingInt('lib_auto_upd_mode') == 0 and \
+                    videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
+                library_actions = []
+
+        if videoid.mediatype == common.VideoId.SHOW and is_in_library:
+            library_actions.append('export_new_episodes')
+            if library.show_excluded_from_auto_update(videoid):
+                library_actions.append('include_in_auto_update')
+            else:
+                library_actions.append('exclude_from_auto_update')
 
     return [_ctx_item(action, videoid) for action in library_actions]
 

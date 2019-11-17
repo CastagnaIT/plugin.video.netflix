@@ -17,23 +17,22 @@ import resources.lib.common as common
 
 class MissingCookiesError(Exception):
     """No session cookies have been stored"""
-    pass
 
 
 class CookiesExpiredError(Exception):
     """Stored cookies are expired"""
-    pass
 
 
 def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
     # pylint: disable=broad-except
     g.COOKIES[account_hash] = cookie_jar
-    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'w')
+    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
-        pickle.dump(cookie_jar, cookie_file)
+        # pickle.dump(cookie_jar, cookie_file)
+        cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
     except Exception as exc:
-        common.error('Failed to save cookies to file: {exc}', exc)
+        common.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
         cookie_file.close()
 
@@ -46,18 +45,27 @@ def delete(account_hash):
     try:
         xbmcvfs.delete(cookie_filename(account_hash))
     except Exception as exc:
-        common.error('Failed to delete cookies on disk: {exc}', exc)
+        common.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
+    filename = cookie_filename(account_hash)
+    common.debug('Loading cookies from {}', filename)
+    if not xbmcvfs.exists(xbmc.translatePath(filename)):
+        common.debug('Cookies file does not exist')
+        raise MissingCookiesError()
     try:
-        filename = cookie_filename(account_hash)
-        common.debug('Loading cookies from {}'.format(filename))
-        cookie_file = xbmcvfs.File(filename, 'r')
-        cookie_jar = pickle.loads(cookie_file.read())
+        cookie_file = xbmcvfs.File(filename, 'rb')
+        if g.PY_IS_VER2:
+            # pickle.loads on py2 wants string
+            cookie_jar = pickle.loads(cookie_file.read())
+        else:
+            cookie_jar = pickle.loads(cookie_file.readBytes())
     except Exception as exc:
-        common.debug('Failed to load cookies from file: {exc}', exc)
+        import traceback
+        common.error('Failed to load cookies from file: {exc}', exc=exc)
+        common.error(traceback.format_exc())
         raise MissingCookiesError()
     finally:
         cookie_file.close()

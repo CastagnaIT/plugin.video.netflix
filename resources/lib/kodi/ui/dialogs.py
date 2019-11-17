@@ -9,12 +9,16 @@ import xbmcgui
 from resources.lib.globals import g
 import resources.lib.common as common
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
 
 def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
-    xbmc.executebuiltin('Notification({}, {}, {}, {})'
-                        .format(title, msg, time, g.ICON)
-                        .encode('utf-8'))
+    xbmc.executebuiltin(g.py2_encode('Notification({}, {}, {}, {})'
+                                     .format(title, msg, time, g.ICON)))
 
 
 def ask_credentials():
@@ -62,9 +66,9 @@ def ask_for_search_term():
 
 
 def _ask_for_input(heading):
-    return xbmcgui.Dialog().input(
+    return g.py2_decode(xbmcgui.Dialog().input(
         heading=heading,
-        type=xbmcgui.INPUT_ALPHANUM).decode('utf-8') or None
+        type=xbmcgui.INPUT_ALPHANUM)) or None
 
 
 def ask_for_removal_confirmation():
@@ -75,7 +79,7 @@ def ask_for_removal_confirmation():
 
 
 def ask_for_confirmation(title, message):
-    """Ask the user to finally remove title from the Kodi library"""
+    """Ask the user to confirm an operation"""
     return xbmcgui.Dialog().yesno(heading=title, line1=message)
 
 
@@ -113,6 +117,5 @@ def show_addon_error_info(exc):
                           msg=common.get_local_string(30131))
     else:
         show_error_info(title=common.get_local_string(30105),
-                        message=': '.join((exc.__class__.__name__,
-                                           exc.message)),
+                        message=': '.join((exc.__class__.__name__, unicode(exc))),
                         netflix_error=False)

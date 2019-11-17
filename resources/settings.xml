@@ -15,12 +15,17 @@
   </category>
   <category label="30025"><!--Library-->
     <setting label="30065" type="lsep"/><!--Auto-Update-->
-    <setting id="mylist_library_sync" type="bool" label="30114" default="false"/>
-    <setting id="initial_mylist_sync" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/initial_mylist_sync/)" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="auto_update" type="enum" label="30064" lvalues="30066|30067|30068|30069|30070" default="0" enable="eq(-2,true)"/>
-    <setting id="update_time" type="time" label="30071" visible="gt(-1,0)" default="00:00" subsetting="true"/>
-    <setting id="wait_idle" type="bool" label="30072" visible="gt(-2,0)" default="false" subsetting="true"/>
-    <setting id="disable_library_sync_notification" type="bool" label="30219" default="false" enable="eq(-5,true)"/>
+    <setting id="lib_auto_upd_mode" type="enum" label="30224" lvalues="30225|30226" default="0"/>
+    <setting id="lib_auto_upd_check_now" type="action" label="30230" action="RunPlugin(plugin://plugin.video.netflix/library/auto_upd_run_now/)" subsetting="true"/>
+    <setting id="lib_auto_upd_freq" type="enum" label="30064" lvalues="30067|30068|30069|30070" default="0" visible="gt(-2,0)" subsetting="true"/>
+    <setting id="lib_auto_upd_start" type="time" label="30071" visible="gt(-3,0)" default="00:00" subsetting="true"/>
+    <setting id="lib_auto_upd_wait_idle" type="bool" label="30072" visible="gt(-4,0)" default="false" subsetting="true"/>
+    <setting id="lib_auto_upd_disable_notification" type="bool" label="30219" default="false" visible="gt(-5,0)" subsetting="true"/>
+    <setting label="30227" type="lsep"/><!--Synchronize Kodi library with My List-->
+    <setting id="lib_sync_mylist" type="bool" label="30114" default="false" enable="gt(-7,0)"/>
+    <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_sel_profile/)" enable="eq(-1,true) + gt(-8,0)" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="lib_sync_mylist_shw_profile" type="action" label="30229" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_shw_profile/)" enable="eq(-2,true) + gt(-9,0)" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="lib_sync_mylist_now" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist/)" enable="eq(-3,true) + gt(-10,0)" visible="eq(-3,true)" subsetting="true"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
@@ -43,7 +48,7 @@
   </category>
   <category label="30166"><!--Main menu items-->
     <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
-    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="false" subsetting="true" default="0"/> <!-- is currently (05-05-2019) no longer supported by the netflix server-->
+    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|13106" visible="eq(-1,true)" subsetting="true" default="0"/> <!-- sort order is supported only to US country-->
     <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
     <setting id="show_menu_chosenforyou" type="bool" label="30169" default="true"/>
     <setting id="show_menu_recentlyadded" type="bool" label="30145" default="true"/>
@@ -123,6 +128,7 @@
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="reset_esn" type="action" label="30217" action="RunPlugin(plugin://plugin.video.netflix/action/reset_esn/)" option="close"/>
     <setting label="30116" type="lsep"/><!--Advanced Addon Configuration-->
+    <setting id="debug_log_level" type="labelenum" label="30066" values="Disabled|Info|Verbose" default="0"/>
     <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>

@@ -38,16 +38,15 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
 
 class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
-    pass
 
 
 @common.inject_video_id(path_offset=0)
 @common.time_execution(immediate=False)
 def play(videoid):
     """Play an episode or movie as specified by the path"""
-    common.debug('Playing {}'.format(videoid))
+    common.info('Playing {}', videoid)
     metadata = api.metadata(videoid)
-    common.debug('Metadata is {}'.format(metadata))
+    common.debug('Metadata is {}', metadata)
 
     if not _verify_pin(metadata[0].get('requiresPin', False)):
         ui.show_notification(common.get_local_string(30106))
@@ -125,8 +124,7 @@ def get_inputstream_listitem(videoid):
 
 
 def _verify_pin(pin_required):
-    if (not pin_required or
-            g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
+    if (not pin_required or g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
         return True
     pin = ui.ask_for_pin()
     return pin is not None and api.verify_pin(pin)
@@ -138,12 +136,12 @@ def get_upnext_info(videoid, current_episode, metadata):
     try:
         next_episode_id = _find_next_episode(videoid, metadata)
     except (TypeError, KeyError):
-        import traceback
-        common.debug(traceback.format_exc())
+        # import traceback
+        # common.debug(traceback.format_exc())
         common.debug('There is no next episode, not setting up Up Next')
         return {}
 
-    common.debug('Next episode is {}'.format(next_episode_id))
+    common.debug('Next episode is {}', next_episode_id)
     next_episode = infolabels.add_info_for_playback(next_episode_id,
                                                     xbmcgui.ListItem())
     next_info = {

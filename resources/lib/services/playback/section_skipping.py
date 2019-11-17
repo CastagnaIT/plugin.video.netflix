@@ -16,7 +16,7 @@ class SectionSkipper(PlaybackActionManager):
     """
     Checks if a skippable section has been reached and takes appropriate action
     """
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(SectionSkipper, self).__init__()
         self.markers = {}
         self.auto_skip = False
@@ -37,21 +37,19 @@ class SectionSkipper(PlaybackActionManager):
             self._check_section(section, player_state['elapsed_seconds'])
 
     def _check_section(self, section, elapsed):
-        if (self.markers.get(section) and
-                elapsed >= self.markers[section]['start'] and
-                elapsed <= self.markers[section]['end']):
+        if self.markers.get(section) and self.markers[section]['start'] <= elapsed <= self.markers[section]['end']:
             self._skip_section(section)
             del self.markers[section]
 
     def _skip_section(self, section):
-        common.debug('Entered section {}'.format(section))
+        common.debug('Entered section {}', section)
         if self.auto_skip:
             self._auto_skip(section)
         else:
             self._ask_to_skip(section)
 
     def _auto_skip(self, section):
-        common.info('Auto-skipping {}'.format(section))
+        common.info('Auto-skipping {}', section)
         player = xbmc.Player()
         ui.show_notification(
             common.get_local_string(SKIPPABLE_SECTIONS[section]))
@@ -65,7 +63,7 @@ class SectionSkipper(PlaybackActionManager):
             player.seekTime(self.markers[section]['end'])
 
     def _ask_to_skip(self, section):
-        common.debug('Asking to skip {}'.format(section))
+        common.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         ui.show_modal_dialog(ui.xmldialogs.Skip,

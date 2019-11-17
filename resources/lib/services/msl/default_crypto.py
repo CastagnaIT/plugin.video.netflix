@@ -4,12 +4,20 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import base64
-from Cryptodome.Random import get_random_bytes
-from Cryptodome.Hash import HMAC, SHA256
-from Cryptodome.Cipher import PKCS1_OAEP
-from Cryptodome.PublicKey import RSA
-from Cryptodome.Util import Padding
-from Cryptodome.Cipher import AES
+try:  # Python 3
+    from Crypto.Random import get_random_bytes
+    from Crypto.Hash import HMAC, SHA256
+    from Crypto.Cipher import PKCS1_OAEP
+    from Crypto.PublicKey import RSA
+    from Crypto.Util import Padding
+    from Crypto.Cipher import AES
+except ImportError:  # Python 2
+    from Cryptodome.Random import get_random_bytes
+    from Cryptodome.Hash import HMAC, SHA256
+    from Cryptodome.Cipher import PKCS1_OAEP
+    from Cryptodome.PublicKey import RSA
+    from Cryptodome.Util import Padding
+    from Cryptodome.Cipher import AES
 
 import resources.lib.common as common
 
@@ -18,7 +26,7 @@ from .base_crypto import MSLBaseCrypto
 
 class DefaultMSLCrypto(MSLBaseCrypto):
     """Crypto Handler for non-Android platforms"""
-    def __init__(self, msl_data=None):
+    def __init__(self, msl_data=None):  # pylint: disable=super-on-old-class
         # pylint: disable=broad-except
         try:
             super(DefaultMSLCrypto, self).__init__(msl_data)
@@ -42,7 +50,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             self.rsa_key.publickey().exportKey(format='DER'))
         return [{'scheme': 'ASYMMETRIC_WRAPPED',
                  'keydata': {
-                     'publickey': public_key,
+                     'publickey': public_key.decode('utf-8'),
                      'mechanism': 'JWK_RSA',
                      'keypairid': 'superKeyPair'
                  }}]
@@ -59,10 +67,10 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             'ciphertext': '',
             'keyid': '_'.join((esn, str(self.sequence_number))),
             'sha256': 'AA==',
-            'iv': base64.standard_b64encode(init_vector)
+            'iv': base64.standard_b64encode(init_vector).decode('utf-8')
         }
         encryption_envelope['ciphertext'] = base64.standard_b64encode(
-            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16)))
+            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16))).decode('utf-8')
 
         return json.dumps(encryption_envelope)
 
@@ -74,7 +82,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
     def sign(self, message):
         """Sign a message"""
         return base64.standard_b64encode(
-            HMAC.new(self.sign_key, message, SHA256).digest())
+            HMAC.new(self.sign_key, message.encode('utf-8'), SHA256).digest()).decode('utf-8')
 
     def _init_keys(self, key_response_data):
         cipher = PKCS1_OAEP.new(self.rsa_key)
@@ -87,9 +95,9 @@ class DefaultMSLCrypto(MSLBaseCrypto):
 
     def _export_keys(self):
         return {
-            'encryption_key': base64.standard_b64encode(self.encryption_key),
-            'sign_key': base64.standard_b64encode(self.sign_key),
-            'rsa_key': base64.standard_b64encode(self.rsa_key.exportKey())
+            'encryption_key': base64.standard_b64encode(self.encryption_key).decode('utf-8'),
+            'sign_key': base64.standard_b64encode(self.sign_key).decode('utf-8'),
+            'rsa_key': base64.standard_b64encode(self.rsa_key.exportKey()).decode('utf-8')
         }
 
 

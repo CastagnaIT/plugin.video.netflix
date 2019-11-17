@@ -15,7 +15,7 @@ class ResumeManager(PlaybackActionManager):
     Checks if a resume action must be done
     """
 
-    def __init__(self):
+    def __init__(self):  # pylint: disable=super-on-old-class
         super(ResumeManager, self).__init__()
         self.resume_position = None
         self.enabled = True
@@ -28,7 +28,7 @@ class ResumeManager(PlaybackActionManager):
 
     def _on_playback_started(self, player_state):
         if self.resume_position:
-            common.info('ResumeManager forced resume point to {}'.format(self.resume_position))
+            common.info('ResumeManager forced resume point to {}', self.resume_position)
             xbmc.Player().seekTime(int(self.resume_position))
 
     def _on_tick(self, player_state):

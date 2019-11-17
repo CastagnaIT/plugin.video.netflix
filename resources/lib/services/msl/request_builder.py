@@ -48,7 +48,7 @@ class MSLRequestBuilder(object):
             'headerdata':
                 base64.standard_b64encode(
                     self._headerdata(is_key_request=True, is_handshake=True,
-                                     compression=None, esn=esn)),
+                                     compression=None, esn=esn).encode('utf-8')).decode('utf-8'),
             'signature': ''
         }, sort_keys=True)
 
@@ -57,7 +57,7 @@ class MSLRequestBuilder(object):
         encryption_envelope = self.crypto.encrypt(self._headerdata(esn=esn),
                                                   esn)
         return {
-            'headerdata': base64.standard_b64encode(encryption_envelope),
+            'headerdata': base64.standard_b64encode(encryption_envelope.encode('utf-8')).decode('utf-8'),
             'signature': self.crypto.sign(encryption_envelope),
             'mastertoken': self.crypto.mastertoken,
         }
@@ -94,13 +94,13 @@ class MSLRequestBuilder(object):
     def _encrypted_chunk(self, data, esn):
         payload = {
             'messageid': self.current_message_id,
-            'data': base64.standard_b64encode(json.dumps(data)),
+            'data': base64.standard_b64encode(json.dumps(data).encode('utf-8')).decode('utf-8'),
             'sequencenumber': 1,
             'endofmsg': True
         }
         encryption_envelope = self.crypto.encrypt(json.dumps(payload), esn)
         return {
-            'payload': base64.standard_b64encode(encryption_envelope),
+            'payload': base64.standard_b64encode(encryption_envelope.encode('utf-8')).decode('utf-8'),
             'signature': self.crypto.sign(encryption_envelope),
         }
 

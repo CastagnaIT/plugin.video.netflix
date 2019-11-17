@@ -282,12 +282,12 @@ msgid "new episodes added to library"
 msgstr "nove epizode su dodane u zbirku"
 
 msgctxt "#30064"
-msgid "Export new episodes"
-msgstr "Izvezite nove epizode"
+msgid "Perform auto-update"
+msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update"
-msgstr "Automatsko ažuriranje"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr ""
 
 msgctxt "#30066"
 msgid "never"
@@ -758,12 +758,12 @@ msgid "Open UpNext Addon settings"
 msgstr "Otvorite postavke UpNext dodatka"
 
 msgctxt "#30179"
-msgid "Show the trailers"
+msgid "Show trailers & more"
 msgstr "Pokažite trailere"
 
 msgctxt "#30180"
-msgid "No trailers available"
-msgstr "Nema dostupnih trailera"
+msgid "NotUsed"
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -930,8 +930,8 @@ msgid "Disable notification for synchronization completed"
 msgstr "Onemogući obavijest o sinkronizaciji je dovršena"
 
 msgctxt "#30220"
-msgid "Kodi library is now synchronized with My list"
-msgstr "Kodi zbirka sada je sinkronizirana s Mojim popisom"
+msgid "The Kodi library has been updated"
+msgstr ""
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -942,6 +942,5 @@ msgid "Kid account"
 msgstr "Dječji račun"
 
 msgctxt "#30223"
-msgid "You can start the synchronization only by selecting the owner profile"
-msgstr "Možete pokrenuti sinkronizaciju samo odabirom profila vlasnika"
-
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr ""
