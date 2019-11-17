@@ -918,7 +918,7 @@ msgstr "Conta infantil"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr ""
+msgstr "Sincronize agora usando \"Minha Lista\" do perfil {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
