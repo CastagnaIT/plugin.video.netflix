@@ -148,12 +148,15 @@ If it happens often, there is the possibility to exclude the auto update from th
 
 ## Something doesn't work
 If something doesn't work for you, please:
-- Make sure all prerequisites are met
-- Enable the Debug log in your Kodi settings
-- Open an issue with a title that summarises your problems and **attach the full debug log**
+1. Open add-on settings, go to in Expert page and change "Debug logging level" to "Verbose"
+2. Enable the Debug log in your Kodi settings
+3. Perform the actions that cause the error, so they are written in the log
+4. Open a new github issue (Problem report) by following the instructions in the report
 
 We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
 Please also use a service like pastebin or better [Kodi paste](http://paste.kodi.tv) to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
+
+When the problem will be solved, remember to disable the debug logging, to avoid unnecessary slowing down in your device.
 
 ## Code of Conduct
 [Contributor Code of Conduct](Code_of_Conduct.md)
