@@ -717,8 +717,8 @@ msgid "Popular on Netflix"
 msgstr "Popular no Netflix"
 
 msgctxt "#30173"
-msgid "NETFLIX ORIGINALS"
-msgstr "PRODUÇÕES ORIGINAIS"
+msgid "Netflix Originals"
+msgstr "Produções Originais"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
