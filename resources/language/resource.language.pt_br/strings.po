@@ -946,7 +946,7 @@ msgstr "Mostrar o nome do perfil selecionado"
 
 msgctxt "#30230"
 msgid "Check for updates now"
-msgstr ""
+msgstr "Verificar por atualizações agora"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
