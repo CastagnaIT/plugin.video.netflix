@@ -155,9 +155,10 @@ def get_upnext_info(videoid, current_episode, metadata):
             next_episode_id.tvshowid,
             next_episode_id.seasonid,
             next_episode_id.episodeid)
-        next_info['play_info'] = {'play_path': xbmc.translatePath(filepath).decode('utf-8')}
+        next_info['play_info'] = {'play_path': g.py2_decode(xbmc.translatePath(filepath))}
     else:
-        next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id, mode=g.MODE_PLAY)}
+        next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id,
+                                                                mode=g.MODE_PLAY)}
     if 'creditsOffset' in metadata[0]:
         next_info['notification_time'] = (metadata[0]['runtime'] -
                                           metadata[0]['creditsOffset'])
