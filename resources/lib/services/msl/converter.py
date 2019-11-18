@@ -147,9 +147,11 @@ def _convert_video_downloadable(downloadable, adaptation_set,
 
 
 def _determine_video_codec(content_profile):
-    if 'hevc' in content_profile:
+    if content_profile.startswith('hevc'):
+        if content_profile.startswith('hevc-dv'):
+            return 'dvhe'
         return 'hevc'
-    if 'vp9' in content_profile:
+    if content_profile.startswith('vp9'):
         return 'vp9.0.' + content_profile[14:16]
     return 'h264'
 
