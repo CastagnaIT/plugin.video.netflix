@@ -20,6 +20,8 @@ def get_log_level():
     if __LOG_LEVEL__ is None:
         try:
             __LOG_LEVEL__ = g.ADDON.getSettingString('debug_log_level')
+            if __LOG_LEVEL__ != 'Disabled':
+                _log('Debug logging level is {}'.format(__LOG_LEVEL__), xbmc.LOGINFO)
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
             # g.ADDON.getSettingString('debug_log_level') will thrown a TypeError
