@@ -554,7 +554,7 @@ msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr "Wyczyść pamięć podręczną w pamięci"
+msgstr "Wyczyść pamięć podręczną"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
@@ -570,7 +570,7 @@ msgstr "Pamięć podręczna wyczyszczona"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Włącz odblokowywanie 1080p (niezalecane dla Androida)"
+msgstr "Włącz odblokowanie 1080p (niezalecane dla Androida)"
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
