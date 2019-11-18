@@ -39,7 +39,8 @@ def handle_connection(func):
         try:
             if not args[0].is_connected:
                 args[0].conn = sql.connect(args[0].db_file_path,
-                                           isolation_level=CONN_ISOLATION_LEVEL)
+                                           isolation_level=CONN_ISOLATION_LEVEL,
+                                           check_same_thread=False)
                 args[0].is_connected = True
                 conn = args[0].conn
             return func(*args, **kwargs)
@@ -64,7 +65,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         try:
 
             common.debug('Trying connection to the database {}', self.db_filename)
-            self.conn = sql.connect(self.db_file_path)
+            self.conn = sql.connect(self.db_file_path, check_same_thread=False)
             cur = self.conn.cursor()
             cur.execute(str('SELECT SQLITE_VERSION()'))
             common.debug('Database connection {} was successful (SQLite ver. {})',
