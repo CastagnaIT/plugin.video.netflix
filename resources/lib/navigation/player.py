@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 import xbmcplugin
 import xbmcgui
-import inputstreamhelper
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -96,6 +95,7 @@ def get_inputstream_listitem(videoid):
     list_item.setContentLookup(False)
     list_item.setMimeType('application/dash+xml')
 
+    import inputstreamhelper
     is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
 
     if not is_helper.check_inputstream():

@@ -27,11 +27,9 @@ g.init_globals(sys.argv)
 import resources.lib.common as common
 import resources.lib.upgrade_controller as upgrade_ctrl
 import resources.lib.api.shakti as api
-import resources.lib.kodi.ui as ui
 import resources.lib.navigation as nav
 import resources.lib.navigation.directory as directory
 import resources.lib.navigation.hub as hub
-import resources.lib.navigation.player as player
 import resources.lib.navigation.actions as actions
 import resources.lib.navigation.library as library
 
@@ -73,6 +71,7 @@ def route(pathitems):
     common.debug('Routing navigation request')
     root_handler = pathitems[0] if pathitems else g.MODE_DIRECTORY
     if root_handler == g.MODE_PLAY:
+        import resources.lib.navigation.player as player
         player.play(pathitems=pathitems[1:])
     elif root_handler == 'extrafanart':
         common.debug('Ignoring extrafanart invocation')
@@ -116,8 +115,10 @@ if __name__ == '__main__':
             route(list(filter(None, g.PATH.split('/'))))
             success = True
     except common.BackendNotReady:
+        import resources.lib.kodi.ui as ui
         ui.show_backend_not_ready()
     except Exception as exc:
+        import resources.lib.kodi.ui as ui
         import traceback
         common.error(traceback.format_exc())
         ui.show_addon_error_info(exc)

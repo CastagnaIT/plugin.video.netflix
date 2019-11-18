@@ -2,7 +2,6 @@
 """Crypto handler for Android platforms"""
 from __future__ import absolute_import, division, unicode_literals
 
-from os import urandom
 import base64
 import json
 
@@ -75,13 +74,13 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         common.debug('Widevine CryptoSession provideKeyResponse successful')
         common.debug('keySetId: {}', self.keyset_id)
 
-    def encrypt(self, plaintext, esn):
+    def encrypt(self, plaintext, esn):  # pylint: disable=unused-argument
         """
         Encrypt the given Plaintext with the encryption key
         :param plaintext:
         :return: Serialized JSON String of the encryption Envelope
         """
-        # pylint: disable=unused-argument
+        from os import urandom
         init_vector = urandom(16)
         plaintext = plaintext.encode('utf-8')
         # Add PKCS5Padding

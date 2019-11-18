@@ -2,12 +2,8 @@
 # pylint: disable=unused-import
 """Miscellanneous utility functions"""
 from __future__ import absolute_import, division, unicode_literals
-from datetime import datetime
 from functools import wraps
 from time import clock
-import gzip
-import base64
-import re
 from future.utils import iteritems
 
 try:  # Python 2
@@ -162,12 +158,13 @@ def strp(value, form):
     :return: datetime - parsed datetime object
     """
     # pylint: disable=broad-except
-    from time import strptime
+    from datetime import datetime
     def_value = datetime.utcfromtimestamp(0)
     try:
         return datetime.strptime(value, form)
     except TypeError:
         try:
+            from time import strptime
             return datetime(*(strptime(value, form)[0:6]))
         except ValueError:
             return def_value
@@ -212,12 +209,12 @@ def _show_errors(notify_errors, errors):
                                        for err in errors]))
 
 
-def compress_data(data):
-    """GZIP and b64 encode data"""
-    out = StringIO()
-    with gzip.GzipFile(fileobj=out, mode='w') as outh:
-        outh.write(data)
-    return base64.standard_b64encode(out.getvalue())
+# def compress_data(data):
+#    """GZIP and b64 encode data"""
+#    out = StringIO()
+#    with gzip.GzipFile(fileobj=out, mode='w') as outh:
+#        outh.write(data)
+#    return base64.standard_b64encode(out.getvalue())
 
 
 def merge_dicts(dict_to_merge, merged_dict):
@@ -312,6 +309,7 @@ def convert_seconds_to_hms_str(time):
 
 
 def remove_html_tags(raw_html):
+    import re
     h = re.compile('<.*?>')
     text = re.sub(h, '', raw_html)
     return text
@@ -341,6 +339,7 @@ class GetKodiVersion(object):
         # Examples of some types of supported strings:
         # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
         # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
+        import re
         build_version_str = xbmc.getInfoLabel('System.BuildVersion')
         re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
         if re_kodi_version:
