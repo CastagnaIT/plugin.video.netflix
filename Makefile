@@ -14,6 +14,8 @@ include_paths = $(patsubst %,$(name)/%,$(include_files))
 exclude_files = \*.new \*.orig \*.pyc \*.pyo
 zip_dir = $(name)/
 
+languages := de_de es_es fi_fi fr_fr he_il hr_hr it_it ko_kr nl_nl pl_pl pt_br pt_pt sk_sk sv_sv
+
 blue = \e[1;34m
 white = \e[1;37m
 reset = \e[0m
@@ -28,7 +30,7 @@ clean:
 
 test: sanity unit
 
-sanity: tox pylint
+sanity: tox pylint language
 
 tox:
 	@echo -e "$(white)=$(blue) Starting sanity tox test$(reset)"
@@ -37,6 +39,12 @@ tox:
 pylint:
 	@echo -e "$(white)=$(blue) Starting sanity pylint test$(reset)"
 	pylint resources/lib/ test/
+
+language:
+	@echo -e "$(white)=$(blue) Starting language test$(reset)"
+	@-$(foreach lang,$(languages), \
+		msgcmp resources/language/resource.language.$(lang)/strings.po resources/language/resource.language.en_gb/strings.po; \
+	)
 
 addon: clean
 	@echo -e "$(white)=$(blue) Starting sanity addon tests$(reset)"
