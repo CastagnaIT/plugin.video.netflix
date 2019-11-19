@@ -84,6 +84,14 @@ msgctxt "#30014"
 msgid "Account"
 msgstr "Account"
 
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Andere opties"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr "Uitloggen"
@@ -106,7 +114,7 @@ msgstr "Aan 'Mijn lijst’ toevoegen"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
-msgstr "(tussen 0 & 10)"
+msgstr "(tussen 0 en 10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -142,7 +150,7 @@ msgstr "Uit de bibliotheek verwijderen"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Algemeen"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -154,11 +162,11 @@ msgstr "Dolby Digital Plus inschakelen (DDPlus HQ en Atmos op Netflix Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "Handmatig ESN"
 
 msgctxt "#30035"
-msgid "Inputstream Addon Settings..."
-msgstr "Inputstream Addon instellingen…"
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive instellingen…"
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
@@ -226,7 +234,7 @@ msgstr "Request fout"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr "Het is niet mogelijk om het request uit te voeren op dit moment"
+msgstr "Het is niet mogelijk om de aanvraag op dit moment te voltooien"
 
 msgctxt "#30053"
 msgid "Auto Login"
@@ -274,15 +282,15 @@ msgstr "niewe afleveringen werden toegevoegd in de bibliotheek"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "Voer auto-update uit"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Auto-update voor tvprogrammas"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "nooit"
+msgid "Debug logging level"
+msgstr "Foutopsporing log niveau"
 
 msgctxt "#30067"
 msgid "daily"
@@ -686,7 +694,7 @@ msgstr "Hoofdmenu items"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "Mijn Lijst"
+msgstr "Mijn lijst"
 
 msgctxt "#30168"
 msgid "Continue watching"
@@ -737,8 +745,8 @@ msgid "Show trailers & more"
 msgstr "Toon voorfilmpjes"
 
 msgctxt "#30180"
-msgid "NotUsed"
-msgstr ""
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Er was een probleem met het inloggen. Mogelijk moeten je login gegevens nog bevestigd of hernieuwd worden."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -871,3 +879,75 @@ msgstr "Er is geen device dat automatische updates van de gedeelde-bibliotheek k
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
 msgstr "InputStream Helper instellingen…"
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Forceer de vernieuwing van Mijn lijst"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Benadruk titels uit Mijn lijst met een kleur"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Toon de gebruikte ESN"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Reset ESN"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Ben je zeker dat je het ESN wil resetten?\r\nAls je reset, wacht dan tot je de login bevestiging krijgt."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Melding voor \"Synchronisatie voltooid\" uitschakelen"
+
+msgctxt "#30220"
+msgid "The Kodi library has been updated"
+msgstr "De Kodi bibliotheel werd bijgewerkt"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Eigenaar account"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Kinderen account"
+
+msgctxt "#30223"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "Synchronisatie gebruikt nu \"Mijn lijst\" van profiel {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Automatisch bijwerken modus"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Handmatig"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Ingepland"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Synchroniseer Kodi bibliotheek met My List"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Gebruik \"Mijn lijst\" van het huidige profiel"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Toon de naam van het geselecteerde profiel"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Controleer nu voor updates"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Wil je nu controleren voor een update?"
