@@ -103,7 +103,7 @@ class LibraryActionExecutor(object):
         and if set also synchronize the Netflix "My List" with the Kodi library
         """
         # Executed by the service in the library_updater module
-        library.auto_update_library(True, True)
+        library.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'), True)
 
     def _get_mylist_profile_guid(self):
         return g.SHARED_DB.get_value('sync_mylist_profile_guid',

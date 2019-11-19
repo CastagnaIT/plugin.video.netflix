@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
 "PO-Revision-Date: 2019-08-17 02:45+0000\n"
-"Last-Translator: Smeulf <smeulf@hotmail.fr>\n"
+"Last-Translator: locutus32\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,11 +46,11 @@ msgstr "Mot de passe"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "Mail"
+msgstr "Adresse mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
-msgstr "Échec de la vérification adulte"
+msgstr "Erreur d'authentification adulte"
 
 msgctxt "#30007"
 msgid "Please Check your adult pin"
@@ -83,6 +83,14 @@ msgstr "Pas de résultat"
 msgctxt "#30014"
 msgid "Account"
 msgstr "Compte"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Options supplémentaires"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -142,7 +150,7 @@ msgstr "Supprimer de la médiathèque"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -154,7 +162,7 @@ msgstr "Activer Dolby Digital Plus (DDPlus HQ et Atmos sur Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "Saisie manuelle de l'ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -174,15 +182,15 @@ msgstr "Activer les vues personnalisées"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "Vue pour les dossiers"
+msgstr "Voir les dossiers"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "Vue pour les films"
+msgstr "Voir les films"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vue pour les séries"
+msgstr "Voir les séries"
 
 msgctxt "#30042"
 msgid "View for seasons"
@@ -190,11 +198,11 @@ msgstr "Vue pour les saisons"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "Vue pour les épisodes"
+msgstr "Voir les épisodes"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "Vue pour les profils"
+msgstr "Voir les profils"
 
 msgctxt "#30045"
 msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
@@ -274,15 +282,15 @@ msgstr "Nouveaux épisodes ajoutés à la médiathèque"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "Effectuer une mise à jour automatique"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Mise à jour automatique des saisons et épisodes pour les séries télé"
 
 msgctxt "#30066"
-msgid "never"
-msgstr "jamais"
+msgid "Debug logging level"
+msgstr "Niveau de journalisation de débogage"
 
 msgctxt "#30067"
 msgid "daily"
@@ -290,7 +298,7 @@ msgstr "quotidien"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "tous les autres jours"
+msgstr "un jour sur deux"
 
 msgctxt "#30069"
 msgid "every 5 days"
@@ -302,11 +310,11 @@ msgstr "hebdomadaire"
 
 msgctxt "#30071"
 msgid "Time of Day"
-msgstr "Heure du jour"
+msgstr "A la même heure"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "Démarrer après 5 minutes d'inactivité"
+msgstr "Démarrer uniquement après 5 minutes d'inactivité"
 
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
@@ -474,7 +482,7 @@ msgstr "Déconnexion réussie"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Maintenir 'Ma Liste' et la médiathèque synchronisées"
+msgstr "Maintenir 'Ma Liste' et la médiathèque de Kodi synchronisées"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -498,7 +506,7 @@ msgstr "Opération sur 'Ma Liste' réussie"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Impossible de supprimer automatiquemet une saison de la médiathèque Kodi. Merci de le faire manuellement."
+msgstr "Impossible de supprimer automatiquement une saison de la médiathèque Kodi. Merci de le faire manuellement."
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -534,35 +542,35 @@ msgstr "Pas encore de titres..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr "Activer l'intégration 'Up Next'"
+msgstr "Activer l'incrustation 'Up Next'"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
-msgstr "Afficher une notification au lieu d'une fenêtre modale pour les erreurs"
+msgstr "Afficher une notification au lieu d'une boîte de dialogue pour les erreurs"
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
-msgstr "Vérifier le fichier de log pour les informations détaillées"
+msgstr "Vérifier le fichier journal pour les informations détaillées"
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr "Purger le cache en mémoire"
+msgstr "Purger la mémoire cache"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
-msgstr "Purger le cache en mémoire et sur le disque"
+msgstr "Purger la mémoire cache et le cache disque"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
-msgstr "Activer le temps d'excution"
+msgstr "Activer la synchronisation"
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr "Cache supprimé"
+msgstr "Cache vidé"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Activer le déblocage 1080p (non recommandé pour Android)"
+msgstr "Activer le déblocage 1080p (non recommandé sous Android)"
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -706,11 +714,11 @@ msgstr "Tendances actuelles"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
-msgstr "Les plus gros succès Netflix"
+msgstr "Les plus gros succès sur Netflix"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
-msgstr "Programmes Originaux Netflix"
+msgstr "Programmes originaux Netflix"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
@@ -722,11 +730,11 @@ msgstr "Genres de films"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr "Activer la reprise des fichiers STRM (bibliothèque uniquement)"
+msgstr "Activer la reprise des fichiers STRM (média thèque uniquement)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "Demander à reprendre la vidéo"
+msgstr "Reprendre la lecture de la vidéo"
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
@@ -737,8 +745,8 @@ msgid "Show trailers & more"
 msgstr "Montrer les bandes annonces"
 
 msgctxt "#30180"
-msgid "NotUsed"
-msgstr ""
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Il y a un problème avec vos identifiants, votre compte n'est peut-être pas confirmé ou renouvelé."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -842,32 +850,104 @@ msgstr "Tester la connexion à la base de données"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - the local database will be used"
-msgstr "ERREUR : Le serveur de bases de données MySQL est injoiagnable - la base de données locale sera utilisée"
+msgstr "ERREUR : Le serveur de bases de données MySQL est injoignable - la base de données locale sera utilisée"
 
 msgctxt "#30207"
 msgid "Set this device as main auto-updates manager"
-msgstr "Rendre cet ordinateur responsable de la mise à jour automatique"
+msgstr "Rendre cet appareil responsable de la mise à jour automatique"
 
 msgctxt "#30208"
 msgid "Check if this device is the main auto-update manager"
-msgstr "Vérifier si cet ordinateur est le responsable de la mise à jour automatique"
+msgstr "Vérifier si cet appareil est le responsable de la mise à jour automatique"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
-msgstr "Cet ordinateur est maintenant responsable de la mise à jour automatique de la bibliothèque partagée"
+msgstr "Cet appareil gère maintenant les mises à jour automatique de la bibliothèque partagée"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of shared-library"
-msgstr "Cet ordinateur est responsable de la mise à jour automatique de la bibliothèque partagée"
+msgstr "Cet appareil gère les mises à jour automatique de la bibliothèque partagée"
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of shared-library"
-msgstr "Un autre ordinateur est responsable de la mise à jour de la bibliothèque partagée"
+msgstr "Un autre appareil gère les mises à jour de la bibliothèque partagée"
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
-msgstr "Aucun ordinateur n'est responsable de la mise à jour automatique de la bibliothèque partagée"
+msgstr "Aucun appareil ne gère les mises à jour automatique de la bibliothèque partagée"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
 msgstr "Paramètres de l'extension InputStream Helper..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Forcer la mise à jour de Ma Liste"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Mettre en évidence les titres inclus dans Ma Liste en couleur"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "ESN en cours d'utilisation"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Réinitialiser l'ESN"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Etes-vous sûr de vouloir réinitialiser l'ESN?\r\nSi oui, patientez jusqu'au message de connexion."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Désactiver la notification de synchronisation complète"
+
+msgctxt "#30220"
+msgid "The Kodi library has been updated"
+msgstr "La médiathèque Kodi a été mise à jour"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Compte principal"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Compte enfant"
+
+msgctxt "#30223"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "La synchronisation utilise \"Ma Liste\" du profil {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Mode mise à jour auto"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Manuel"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Programmé"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Synchronisation de la médiathèque Kodi avec "Ma Liste""
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Utiliser \"Ma Liste\" du profil en cours d'utilisation"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Afficher le nom du profil sélectionné"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Vérifier les mises à jour maintenant"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Voulez-vous vérifier les mises à jour maintenant?"
