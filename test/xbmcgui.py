@@ -14,6 +14,51 @@ INPUT_TYPE_NUMBER = 1
 ALPHANUM_HIDE_INPUT = 1
 
 
+class Control:
+    ''' A reimplementation of the xbmcgui Control class '''
+
+    def __init__(self):
+        ''' A stub constructor for the xbmcgui Control class '''
+
+
+class ControlGeneric(Control):
+    ''' A reimplementation of the xbmcgui Control methods of all control classes '''
+
+    def __init__(self):  # pylint: disable=super-init-not-called
+        ''' A stub constructor for the xbmcgui Control class '''
+
+    @staticmethod
+    def getLabel():
+        ''' A stub implementation for the xbmcgui Control Label class getLabel() method '''
+        return 'Label'
+
+    @staticmethod
+    def setLabel(label='', font=None, textColor=None, disabledColor=None, shadowColor=None, focusedColor=None, label2=''):
+        ''' A stub implementation for the xbmcgui Control Label class getLabel() method '''
+
+    @staticmethod
+    def getText():
+        ''' A stub implementation for the xbmcgui Control edit class getLabel() method '''
+        return 'Label'
+
+    @staticmethod
+    def setText(value=''):
+        ''' A stub implementation for the xbmcgui Control edit class getLabel() method '''
+
+    @staticmethod
+    def setType(type=0, heading=''):  # pylint: disable=redefined-builtin
+        ''' A stub implementation for the xbmcgui Control edit class getLabel() method '''
+
+    @staticmethod
+    def getInt():
+        ''' A stub implementation for the xbmcgui Control slider class getLabel() method '''
+        return 0
+
+    @staticmethod
+    def setInt(value=0, min=0, delta=1, max=1):  # pylint: disable=redefined-builtin
+        ''' A stub implementation for the xbmcgui Control slider class getLabel() method '''
+
+
 class Dialog:
     ''' A reimplementation of the xbmcgui Dialog class '''
 
@@ -195,6 +240,7 @@ class Window:
 
     def getControl(self, controlId):
         ''' A stub implementation for the xbmcgui Window class getControl() method '''
+        return ControlGeneric()
 
     def getProperty(self, key):
         ''' A stub implementation for the xbmcgui Window class getProperty() method '''
