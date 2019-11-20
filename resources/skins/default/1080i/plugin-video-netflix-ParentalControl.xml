@@ -42,8 +42,10 @@
 				</control>
 				<!-- Window text header -->
 				<control type="label" id="99">
-					<left>40</left>
+					<posy>0</posy> <!-- estouchy skin with label control use posy/posx tag instead of top/left -->
+					<posx>40</posx>
 					<top>0</top>
+					<left>40</left>
 					<right>100</right>
 					<height>66</height>
 					<textcolor>FF000000</textcolor>
@@ -90,8 +92,10 @@
 
 				<control type="label" id="1">
 					<description>PIN description</description>
-					<left>65</left>
+					<posy>135</posy>
+					<posx>65</posx>
 					<top>135</top>
+					<left>65</left>
 					<width>600</width>
 					<visible>true</visible>
 					<scroll>false</scroll>
@@ -124,11 +128,13 @@
 
 				<control type="label" id="3">
 					<description>Maturity Level description</description>
-					<left>65</left>
+					<posy>296</posy>
+					<posx>65</posx>
 					<top>296</top>
+					<left>65</left>
 					<width>1000</width>
 					<visible>true</visible>
-					<scroll>false</scroll>
+					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30232]</label>
 					<haspath>false</haspath>
 					<font>font14</font>
@@ -151,11 +157,13 @@
 
 				<control type="label" id="201">
 					<description>ML Little Kids</description>
-					<left>75</left>
+					<posy>418</posy>
+					<posx>75</posx>
 					<top>418</top>
+					<left>75</left>
 					<width>262</width>
 					<visible>true</visible>
-					<scroll>false</scroll>
+					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30233]</label>
 					<haspath>false</haspath>
 					<font>font12</font>
@@ -164,11 +172,13 @@
 				</control>
 				<control type="label" id="202">
 					<description>ML Older Kids</description>
-					<left>337</left>
+					<posy>418</posy>
+					<posx>337</posx>
 					<top>418</top>
+					<left>337</left>
 					<width>262</width>
 					<visible>true</visible>
-					<scroll>false</scroll>
+					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30234]</label>
 					<haspath>false</haspath>
 					<font>font12</font>
@@ -177,11 +187,13 @@
 				</control>
 				<control type="label" id="203">
 					<description>ML Teens</description>
-					<left>600</left>
+					<posy>418</posy>
+					<posx>600</posx>
 					<top>418</top>
+					<left>600</left>
 					<width>262</width>
 					<visible>true</visible>
-					<scroll>false</scroll>
+					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30235]</label>
 					<haspath>false</haspath>
 					<font>font12</font>
@@ -190,11 +202,13 @@
 				</control>
 				<control type="label" id="204">
 					<description>ML Adults</description>
-					<left>863</left>
+					<posy>418</posy>
+					<posx>863</posx>
 					<top>418</top>
+					<left>863</left>
 					<width>262</width>
 					<visible>true</visible>
-					<scroll>false</scroll>
+					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30236]</label>
 					<haspath>false</haspath>
 					<font>font12</font>
@@ -203,8 +217,10 @@
 				</control>
 				<control type="label" id="9">
 					<description>ML Current status</description>
-					<left>75</left>
+					<posy>480</posy>
+					<posx>75</posx>
 					<top>480</top>
+					<left>75</left>
 					<width>1050</width>
 					<visible>true</visible>
 					<scroll>true</scroll>
