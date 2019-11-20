@@ -167,7 +167,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.getControl(9).setLabel(status_desc)
 
     def _validate_pin(self, pin_value):
-        if pin_value is not None and len(pin_value) != 4:
+        if len(pin_value or '') != 4:
             show_ok_dialog('PIN', g.ADDON.getLocalizedString(30106))
             return False
         return True

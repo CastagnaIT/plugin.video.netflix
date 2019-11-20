@@ -11,6 +11,7 @@ import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (MissingCredentialsError, WebsiteParsingError)
 
+
 class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
@@ -36,7 +37,7 @@ class AddonActionExecutor(object):
         g.CACHE.invalidate()
         common.refresh_container()
 
-    def parental_control(self, pathitems=None):  # pylint: disable=no-member, unused-argument
+    def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
         password = ui.ask_for_password()
         if not password:
@@ -52,23 +53,6 @@ class AddonActionExecutor(object):
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
         except WebsiteParsingError as exc:
             ui.show_addon_error_info(exc)
-
-    def toggle_adult_pin(self, pathitems=None):  # pylint: disable=no-member, unused-argument
-        """Toggle adult PIN verification"""
-        pin = ui.ask_for_pin()
-        if pin is None:
-            return
-        if api.verify_pin(pin):
-            current_setting = {'true': True, 'false': False}.get(
-                g.ADDON.getSetting('adultpin_enable').lower())
-            g.settings_monitor_suspended(True)
-            g.ADDON.setSetting('adultpin_enable', str(not current_setting))
-            g.settings_monitor_suspended(False)
-            g.flush_settings()
-            ui.show_notification(
-                common.get_local_string(30107 if current_setting else 30108))
-        else:
-            ui.show_notification(common.get_local_string(30106))
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
