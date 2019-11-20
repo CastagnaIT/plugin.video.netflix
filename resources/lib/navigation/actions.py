@@ -9,6 +9,7 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 
+from resources.lib.api.exceptions import (MissingCredentialsError, WebsiteParsingError)
 
 class AddonActionExecutor(object):
     """Executes actions"""
@@ -34,6 +35,23 @@ class AddonActionExecutor(object):
             common.error('Cannot save autologin - invalid params')
         g.CACHE.invalidate()
         common.refresh_container()
+
+    def parental_control(self, pathitems=None):  # pylint: disable=no-member, unused-argument
+        """Open parental control settings dialog"""
+        password = ui.ask_for_password()
+        if not password:
+            return
+        try:
+            parental_control_data = api.get_parental_control_data(password)
+            ui.show_modal_dialog(ui.xmldialogs.ParentalControl,
+                                 'plugin-video-netflix-ParentalControl.xml',
+                                 g.ADDON.getAddonInfo('path'),
+                                 pin=parental_control_data['pin'],
+                                 maturity_level=parental_control_data['maturity_level'])
+        except MissingCredentialsError:
+            ui.show_ok_dialog('Netflix', common.get_local_string(30009))
+        except WebsiteParsingError as exc:
+            ui.show_addon_error_info(exc)
 
     def toggle_adult_pin(self, pathitems=None):  # pylint: disable=no-member, unused-argument
         """Toggle adult PIN verification"""

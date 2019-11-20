@@ -3,7 +3,7 @@
   <category label="30031"><!--General-->
     <setting label="30014" type="lsep"/><!--Account-->
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
-    <setting id="adultpin_enable" type="action" label="30062" default="False" action="RunPlugin(plugin://plugin.video.netflix/action/toggle_adult_pin/)" option="close"/>
+    <setting id="parental_control" type="action" label="30062" action="RunPlugin(plugin://plugin.video.netflix/action/parental_control/)" option="close"/>
     <setting label="30053" type="lsep"/><!--Auto login-->
     <setting id="info" type="text" label="30057" default="" enable="false"/>
     <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>

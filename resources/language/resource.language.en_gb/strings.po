@@ -33,7 +33,7 @@ msgid "Recommendations"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Adult Pin"
+msgid "Enter PIN to watch restricted content"
 msgstr ""
 
 msgctxt "#30003"
@@ -49,11 +49,11 @@ msgid "E-mail"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Adult verification failed"
+msgid "Incorrect PIN. Try again."
 msgstr ""
 
 msgctxt "#30007"
-msgid "Please Check your adult pin"
+msgid "Parental Control PIN (4 digits)"
 msgstr ""
 
 msgctxt "#30008"
@@ -273,7 +273,7 @@ msgid "Update inside library"
 msgstr ""
 
 msgctxt "#30062"
-msgid "Enable/disable adult pin. Active:"
+msgid "Parental controls"
 msgstr ""
 
 msgctxt "#30063"
@@ -453,11 +453,11 @@ msgid "Invalid PIN"
 msgstr ""
 
 msgctxt "#30107"
-msgid "Disabled PIN verfication"
+msgid "PIN protection is off."
 msgstr ""
 
 msgctxt "#30108"
-msgid "Enabled PIN verfication"
+msgid "All content is protected by PIN."
 msgstr ""
 
 msgctxt "#30109"
@@ -950,4 +950,28 @@ msgstr ""
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
+msgstr ""
+
+msgctxt "#30232"
+msgid "Restrict by Maturity Level"
+msgstr ""
+
+msgctxt "#30233"
+msgid "Little Kids [T]"
+msgstr ""
+
+msgctxt "#30234"
+msgid "Older Kids"
+msgstr ""
+
+msgctxt "#30235"
+msgid "Teens [VM14]"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Adults [VM18]"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Content for {} will require the PIN to start playback."
 msgstr ""

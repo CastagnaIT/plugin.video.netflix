@@ -10,6 +10,7 @@ import os
 from xbmcextra import kodi_to_ansi
 
 INPUT_ALPHANUM = 0
+INPUT_TYPE_NUMBER = 1
 ALPHANUM_HIDE_INPUT = 1
 
 

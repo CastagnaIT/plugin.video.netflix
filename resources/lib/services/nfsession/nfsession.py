@@ -36,7 +36,9 @@ URLS = {
     'browse': {'endpoint': '/browse', 'is_api_call': False},
     'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
-    'adult_pin': {'endpoint': '/pin/service', 'is_api_call': True},
+    'pin': {'endpoint': '/pin', 'is_api_call': False},
+    'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
+    'pin_service': {'endpoint': '/pin/service', 'is_api_call': True},
     'metadata': {'endpoint': '/metadata', 'is_api_call': True},
     'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},
     'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
@@ -82,6 +84,7 @@ class NetflixSession(object):
             self.logout,
             self.update_profiles_data,
             self.activate_profile,
+            self.parental_control_data,
             self.path_request,
             self.perpetual_path_request,
             self.perpetual_path_request_switch_profiles,
@@ -288,6 +291,35 @@ class NetflixSession(object):
         ui.show_notification(common.get_local_string(30109))
         self.update_session_data(current_esn)
         return True
+
+    @common.addonsignals_return_call
+    @needs_login
+    def parental_control_data(self, password):
+        # Ask to the service if password is right and get the PIN status
+        try:
+            pin_response = self._post('pin_reset',
+                                      data={'task': 'auth',
+                                            'authURL': self.auth_url,
+                                            'password': password})
+            if pin_response.get('status') != 'ok':
+                common.warn('Parental control status issue: {}', pin_response)
+                raise MissingCredentialsError
+            pin = pin_response.get('pin')
+        except requests.exceptions.HTTPError as exc:
+            if exc.response.status_code == 401:
+                # Unauthorized for url ...
+                raise MissingCredentialsError
+            raise
+        # Parse web page to get the current maturity level
+        # I have not found how to get it through the API
+        pin_response = self._get('pin', data={'password': password})
+        # so counts the number of occurrences of the "maturity-input-item included" class
+        from re import findall
+        num_items = len(findall(r'<div class="maturity-input-item.*?included.*?<\/div>',
+                                pin_response.decode('utf-8')))
+        if not num_items:
+            raise WebsiteParsingError('Unable to find maturity level div tag')
+        return {'pin': pin, 'maturity_level': num_items - 1}
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)
@@ -527,7 +559,7 @@ class NetflixSession(object):
         data = kwargs.get('data', {})
         headers = kwargs.get('headers', {})
         params = kwargs.get('params', {})
-        if component in ['set_video_rating', 'update_my_list', 'adult_pin']:
+        if component in ['set_video_rating', 'update_my_list', 'pin_service']:
             headers.update({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json, text/javascript, */*'})
