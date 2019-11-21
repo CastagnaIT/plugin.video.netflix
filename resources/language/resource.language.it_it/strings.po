@@ -34,7 +34,7 @@ msgstr "Consigliati"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Inserisci il PIN per guardare i contenuti con accesso limitato"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Il PIN è errato. Riprova."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "PIN filtro famiglia (4 cifre)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -274,7 +274,7 @@ msgstr "Aggiorna nella libreria"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Filtro famiglia"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -454,11 +454,11 @@ msgstr "PIN non valido"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "La protezione PIN è disattivata."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Tutti i contenuti sono protetti da PIN."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -954,24 +954,24 @@ msgstr "Vuoi verificare gli aggiornamenti ora?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Limitazione in base alla fascia d'età"
 
 msgctxt "#30233"
 msgid "Little Kids [T]"
-msgstr ""
+msgstr "Bambini piccoli [T]"
 
 msgctxt "#30234"
 msgid "Older Kids"
-msgstr ""
+msgstr "Ragazzi"
 
 msgctxt "#30235"
 msgid "Teens [VM14]"
-msgstr ""
+msgstr "Adolescenti [VM14]"
 
 msgctxt "#30236"
 msgid "Adults [VM18]"
-msgstr ""
+msgstr "Adulti [VM18]"
 
 msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
-msgstr ""
+msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
