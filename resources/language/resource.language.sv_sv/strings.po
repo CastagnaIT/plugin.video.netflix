@@ -32,8 +32,8 @@ msgid "Recommendations"
 msgstr "Rekommendationer"
 
 msgctxt "#30002"
-msgid "Adult Pin"
-msgstr "Barnskydd"
+msgid "Enter PIN to watch restricted content"
+msgstr ""
 
 msgctxt "#30003"
 msgid "Search term"
@@ -48,12 +48,12 @@ msgid "E-mail"
 msgstr "E-post"
 
 msgctxt "#30006"
-msgid "Adult verification failed"
-msgstr "Verifiering av barnskyddet misslyckades"
+msgid "Incorrect PIN. Try again."
+msgstr ""
 
 msgctxt "#30007"
-msgid "Please Check your adult pin"
-msgstr "Kontrollera koden till barnskyddet"
+msgid "Parental Control PIN (4 digits)"
+msgstr ""
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -82,6 +82,14 @@ msgstr "Inga träffar"
 msgctxt "#30014"
 msgid "Account"
 msgstr "Konto"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr ""
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr ""
 
 msgctxt "#30017"
 msgid "Logout"
@@ -146,6 +154,10 @@ msgstr ""
 msgctxt "#30032"
 msgid "Tracking"
 msgstr "Spårning"
+
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr ""
 
 msgctxt "#30034"
 msgid "Manual ESN"

@@ -440,16 +440,36 @@ def search(search_term, perpetual_range_start=None):
 
 
 @common.time_execution(immediate=False)
-def verify_pin(pin):
-    """Send adult PIN to Netflix and verify it."""
-    # pylint: disable=broad-except
+def get_parental_control_data(password):
+    """Get the parental control data"""
+    return common.make_call('parental_control_data', {'password': password})
+
+
+@common.time_execution(immediate=False)
+def set_parental_control_data(data):
+    """Set the parental control data"""
     try:
         return common.make_call(
             'post',
-            {'component': 'adult_pin',
-             'data': {
-                 'pin': pin}}).get('success', False)
-    except Exception:
+            {'component': 'pin_service',
+             'data': {'maturityLevel': data['maturity_level'],
+                      'password': common.get_credentials().get('password'),
+                      'pin': data['pin']}}
+        )
+    except Exception:  # pylint: disable=broad-except
+        return {}
+
+
+@common.time_execution(immediate=False)
+def verify_pin(pin):
+    """Send adult PIN to Netflix and verify it."""
+    try:
+        return common.make_call(
+            'post',
+            {'component': 'pin_service',
+             'data': {'pin': pin}}
+        ).get('success', False)
+    except Exception:  # pylint: disable=broad-except
         return False
 
 

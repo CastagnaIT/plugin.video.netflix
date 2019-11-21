@@ -34,8 +34,8 @@ msgid "Recommendations"
 msgstr "המלצות"
 
 msgctxt "#30002"
-msgid "Adult Pin"
-msgstr "קוד מבוגרים"
+msgid "Enter PIN to watch restricted content"
+msgstr ""
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,12 +50,12 @@ msgid "E-mail"
 msgstr "אי-מייל"
 
 msgctxt "#30006"
-msgid "Adult verification failed"
-msgstr "אימות קוד מבוגרים נכשל"
+msgid "Incorrect PIN. Try again."
+msgstr ""
 
 msgctxt "#30007"
-msgid "Please Check your adult pin"
-msgstr "אנא בדוק את קוד המבוגרים"
+msgid "Parental Control PIN (4 digits)"
+msgstr ""
 
 msgctxt "#30008"
 msgid "Login failed"

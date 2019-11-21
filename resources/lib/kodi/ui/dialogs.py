@@ -29,16 +29,21 @@ def ask_credentials():
         heading=common.get_local_string(30005),
         type=xbmcgui.INPUT_ALPHANUM) or None
     common.verify_credentials(email)
-    password = xbmcgui.Dialog().input(
-        heading=common.get_local_string(30004),
-        type=xbmcgui.INPUT_ALPHANUM,
-        option=xbmcgui.ALPHANUM_HIDE_INPUT) or None
+    password = ask_for_password()
     common.verify_credentials(password)
     common.set_credentials(email, password)
     return {
         'email': email,
         'password': password
     }
+
+
+def ask_for_password():
+    """Ask the user for the password"""
+    return xbmcgui.Dialog().input(
+        heading=common.get_local_string(30004),
+        type=xbmcgui.INPUT_ALPHANUM,
+        option=xbmcgui.ALPHANUM_HIDE_INPUT) or None
 
 
 def ask_for_rating():

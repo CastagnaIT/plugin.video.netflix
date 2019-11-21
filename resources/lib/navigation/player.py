@@ -47,8 +47,11 @@ def play(videoid):
     metadata = api.metadata(videoid)
     common.debug('Metadata is {}', metadata)
 
-    if not _verify_pin(metadata[0].get('requiresPin', False)):
-        ui.show_notification(common.get_local_string(30106))
+    # Parental control PIN
+    pin_result = _verify_pin(metadata[0].get('requiresPin', False))
+    if not pin_result:
+        if pin_result is not None:
+            ui.show_notification(common.get_local_string(30106), time=10000)
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
@@ -124,10 +127,10 @@ def get_inputstream_listitem(videoid):
 
 
 def _verify_pin(pin_required):
-    if (not pin_required or g.ADDON.getSetting('adultpin_enable').lower() == 'false'):
+    if not pin_required:
         return True
     pin = ui.ask_for_pin()
-    return pin is not None and api.verify_pin(pin)
+    return None if not pin else api.verify_pin(pin)
 
 
 @common.time_execution(immediate=False)

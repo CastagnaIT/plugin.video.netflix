@@ -9,6 +9,8 @@ import resources.lib.common as common
 import resources.lib.api.shakti as api
 import resources.lib.kodi.ui as ui
 
+from resources.lib.api.exceptions import (MissingCredentialsError, WebsiteParsingError)
+
 
 class AddonActionExecutor(object):
     """Executes actions"""
@@ -35,22 +37,22 @@ class AddonActionExecutor(object):
         g.CACHE.invalidate()
         common.refresh_container()
 
-    def toggle_adult_pin(self, pathitems=None):  # pylint: disable=no-member, unused-argument
-        """Toggle adult PIN verification"""
-        pin = ui.ask_for_pin()
-        if pin is None:
+    def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
+        """Open parental control settings dialog"""
+        password = ui.ask_for_password()
+        if not password:
             return
-        if api.verify_pin(pin):
-            current_setting = {'true': True, 'false': False}.get(
-                g.ADDON.getSetting('adultpin_enable').lower())
-            g.settings_monitor_suspended(True)
-            g.ADDON.setSetting('adultpin_enable', str(not current_setting))
-            g.settings_monitor_suspended(False)
-            g.flush_settings()
-            ui.show_notification(
-                common.get_local_string(30107 if current_setting else 30108))
-        else:
-            ui.show_notification(common.get_local_string(30106))
+        try:
+            parental_control_data = api.get_parental_control_data(password)
+            ui.show_modal_dialog(ui.xmldialogs.ParentalControl,
+                                 'plugin-video-netflix-ParentalControl.xml',
+                                 g.ADDON.getAddonInfo('path'),
+                                 pin=parental_control_data['pin'],
+                                 maturity_level=parental_control_data['maturity_level'])
+        except MissingCredentialsError:
+            ui.show_ok_dialog('Netflix', common.get_local_string(30009))
+        except WebsiteParsingError as exc:
+            ui.show_addon_error_info(exc)
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)

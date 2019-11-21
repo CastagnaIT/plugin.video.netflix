@@ -33,8 +33,8 @@ msgid "Recommendations"
 msgstr "Odporúčania"
 
 msgctxt "#30002"
-msgid "Adult Pin"
-msgstr "Rodičovský zámok"
+msgid "Enter PIN to watch restricted content"
+msgstr ""
 
 msgctxt "#30003"
 msgid "Search term"
@@ -49,12 +49,12 @@ msgid "E-mail"
 msgstr "E-mail"
 
 msgctxt "#30006"
-msgid "Adult verification failed"
-msgstr "Zlyhalo odomknutie rodičovského zámku"
+msgid "Incorrect PIN. Try again."
+msgstr ""
 
 msgctxt "#30007"
-msgid "Please Check your adult pin"
-msgstr "Prosím skontrolujte heslo k rodičovskému zámku"
+msgid "Parental Control PIN (4 digits)"
+msgstr ""
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -83,6 +83,14 @@ msgstr "Žiadna zhoda vo vyhľadávaní"
 msgctxt "#30014"
 msgid "Account"
 msgstr "Účet"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr ""
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr ""
 
 msgctxt "#30017"
 msgid "Logout"

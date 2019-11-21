@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group">
+			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
+			<top>250</top>
+			<centerleft>50%</centerleft>
+			<width>1520</width>
+			<!-- Screen background -->
+			<control type="image">
+				<left>-2000</left>
+				<top>-2000</top>
+				<width>6000</width>
+				<height>6000</height>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<texture colordiffuse="C2FFFFFF">colors/black.png</texture>
+			</control>
+
+			<control type="group">
+				<width>1520</width>
+				<height>580</height>
+				<!-- Window Background -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="FF1A2123">colors/white.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window header -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<height>66</height>
+					<texture colordiffuse="FFFAFAFA" border="2">colors/white70.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window text header -->
+				<control type="label" id="99">
+					<posy>0</posy> <!-- estouchy skin with label control use posy/posx tag instead of top/left -->
+					<posx>40</posx>
+					<top>0</top>
+					<left>40</left>
+					<right>100</right>
+					<height>66</height>
+					<textcolor>FF000000</textcolor>
+					<font>font32_title</font>
+					<label>$ADDON[plugin.video.netflix 30062]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<shadowcolor>white</shadowcolor>
+				</control>
+				<!-- Window close button -->
+				<control type="button" id="100">
+					<right>10</right>
+					<left>1450</left>
+					<top>11</top>
+					<width>42</width>
+					<height>42</height>
+					<texturefocus>dialogs/close.png</texturefocus>
+					<texturenofocus>nf_icon.png</texturenofocus>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+			<!-- Background color that encloses and highlights the controls of the window -->
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>500</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+
+			<!-- Controls -->
+			<control type="group" id="80">
+				<left>0</left>
+				<top>0</top>
+				<width>1200</width>
+				<height>500</height>
+				<defaultcontrol>2</defaultcontrol>
+				<visible>true</visible>
+				<onright>90</onright>
+
+				<control type="label" id="1">
+					<description>PIN description</description>
+					<posy>135</posy>
+					<posx>65</posx>
+					<top>135</top>
+					<left>65</left>
+					<width>600</width>
+					<visible>true</visible>
+					<scroll>false</scroll>
+					<label>$ADDON[plugin.video.netflix 30007]</label>
+					<haspath>false</haspath>
+					<font>font14</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+
+				<control type="edit" id="2">
+					<description>4 PIN digits</description>
+					<left>45</left>
+					<top>180</top>
+					<width>500</width>
+					<height>110</height>
+					<visible>true</visible>
+					<label>PIN:</label>
+					<hinttext>----</hinttext>
+					<font>font14</font>
+					<textoffsetx>40</textoffsetx>
+					<textcolor>FFB2D4F5</textcolor>
+					<disabledcolor>FF000000</disabledcolor>
+					<invalidcolor>FFFFFFFF</invalidcolor>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<pulseonselect>no</pulseonselect>
+					<onup>90</onup>
+					<ondown>4</ondown>
+				</control>
+
+				<control type="label" id="3">
+					<description>Maturity Level description</description>
+					<posy>296</posy>
+					<posx>65</posx>
+					<top>296</top>
+					<left>65</left>
+					<width>1000</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>$ADDON[plugin.video.netflix 30232]</label>
+					<haspath>false</haspath>
+					<font>font14</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+				<control type="slider" id="4">
+					<description>Maturity Level</description>
+					<left>75</left>
+					<top>360</top>
+					<width>1050</width>
+					<height>30</height>
+					<visible>true</visible>
+					<texturesliderbar border="10">buttons/slider-back.png</texturesliderbar>
+					<textureslidernib>buttons/slider-nib.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="red">buttons/slider-nib.png</textureslidernibfocus>
+					<orientation>horizontal</orientation>
+					<onup>2</onup>
+					<ondown>90</ondown>
+				</control>
+
+				<control type="label" id="201">
+					<description>ML Little Kids</description>
+					<posy>418</posy>
+					<posx>75</posx>
+					<top>418</top>
+					<left>75</left>
+					<width>262</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>$ADDON[plugin.video.netflix 30233]</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>true</wrapmultiline>
+					<align>center</align>
+				</control>
+				<control type="label" id="202">
+					<description>ML Older Kids</description>
+					<posy>418</posy>
+					<posx>337</posx>
+					<top>418</top>
+					<left>337</left>
+					<width>262</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>$ADDON[plugin.video.netflix 30234]</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>true</wrapmultiline>
+					<align>center</align>
+				</control>
+				<control type="label" id="203">
+					<description>ML Teens</description>
+					<posy>418</posy>
+					<posx>600</posx>
+					<top>418</top>
+					<left>600</left>
+					<width>262</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>$ADDON[plugin.video.netflix 30235]</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>true</wrapmultiline>
+					<align>center</align>
+				</control>
+				<control type="label" id="204">
+					<description>ML Adults</description>
+					<posy>418</posy>
+					<posx>863</posx>
+					<top>418</top>
+					<left>863</left>
+					<width>262</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>$ADDON[plugin.video.netflix 30236]</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>true</wrapmultiline>
+					<align>center</align>
+				</control>
+				<control type="label" id="9">
+					<description>ML Current status</description>
+					<posy>480</posy>
+					<posx>75</posx>
+					<top>480</top>
+					<left>75</left>
+					<width>1050</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>--</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>false</wrapmultiline>
+					<align>center</align>
+				</control>
+			</control>
+			<!-- Window default side buttons -->
+			<control type="grouplist" id="90">
+				<left>1210</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>250</height>
+				<itemgap>-10</itemgap>
+				<onleft>80</onleft>
+
+				<control type="button" id="28">
+					<description>OK button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[186]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+				<control type="button" id="29">
+					<description>Cancel button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[222]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
