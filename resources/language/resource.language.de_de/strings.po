@@ -34,7 +34,7 @@ msgstr "Vorschläge"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Geben Sie Ihre PIN ein um beschränkten Inhalt anzusehen"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,19 +50,19 @@ msgstr "E-Mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "PIN ungültig. Bitte versuchen Sie es nochmal."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "Kindersicherungs-PIN (4-stellig)"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Anmeldung nicht erfolgreich"
+msgstr "Anmeldung fehlgeschlagen"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Bitte die Anmeldedaten überprüfen"
+msgstr "Bitte überprüfen Sie Ihre Anmeldedaten"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
@@ -274,7 +274,7 @@ msgstr "In Bibliothek aktualisieren"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Kindersicherung"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -346,7 +346,7 @@ msgstr "Automatisch überspringen"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Beim Weiterspringen pausieren"
+msgstr "Beim Überspringen pausieren"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
@@ -454,11 +454,11 @@ msgstr "Falscher PIN"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "PIN-Schutz ist aus."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Sämtliche Inhalte werden durch eine PIN geschützt."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -954,24 +954,24 @@ msgstr "Möchten Sie jetzt auf Aktualisierungen prüfen?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Einschränkung nach Alterseinstufung"
 
 msgctxt "#30233"
 msgid "Little Kids [T]"
-msgstr ""
+msgstr "Kleine Kinder"
 
 msgctxt "#30234"
 msgid "Older Kids"
-msgstr ""
+msgstr "Ältere Kinder"
 
 msgctxt "#30235"
 msgid "Teens [VM14]"
-msgstr ""
+msgstr "Teenager"
 
 msgctxt "#30236"
 msgid "Adults [VM18]"
-msgstr ""
+msgstr "Erwachsene"
 
 msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
-msgstr ""
+msgstr "Um den Inhalt für {} abzuspielen ist die Eingabe Ihrer PIN erforderlich."
