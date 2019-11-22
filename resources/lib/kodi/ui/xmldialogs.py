@@ -173,6 +173,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         return True
 
 
+# pylint: disable=no-member
 class RatingThumb(xbmcgui.WindowXMLDialog):
     """
     Dialog for rating a tvshow or movie

@@ -62,7 +62,7 @@ class AddonActionExecutor(object):
         from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS
         video_list = api.custom_video_list([videoid.value], VIDEO_LIST_RATING_THUMB_PATHS)
         if video_list.videos:
-            videoid_value, video_data = list(video_list.videos.items())[0]
+            videoid_value, video_data = list(video_list.videos.items())[0]  # pylint: disable=unused-variable
             title = video_data.get('title')
             track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
             is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
