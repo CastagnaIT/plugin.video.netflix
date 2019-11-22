@@ -150,13 +150,14 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
 
 
 @common.time_execution(immediate=False)
-def custom_video_list(video_ids):
+def custom_video_list(video_ids, custom_paths=None):
     """Retrieve a video list which contains the videos specified by
     video_ids"""
     common.debug('Requesting custom video list with {} videos', len(video_ids))
     return CustomVideoList(common.make_call(
         'path_request',
-        build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
+        build_paths(['videos', video_ids],
+                    custom_paths if custom_paths else VIDEO_LIST_PARTIAL_PATHS)))
 
 
 @common.time_execution(immediate=False)
