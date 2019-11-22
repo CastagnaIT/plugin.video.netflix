@@ -1,6 +1,6 @@
 # Kodi Media Center language file
 # Addon Name: Netflix
-# Addon id: plugin.video.netflix
+# Addon id: plugin.video.netflixc
 # Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
 msgid ""
 msgstr ""
@@ -34,7 +34,7 @@ msgstr "Polecane"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Wprowadź PIN żeby oglądać zabezpieczoną zawartość"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr "Adres e-mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Nieprawidłowy PIN. Spróbuj ponownie."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "PIN kontroli rodzicielskiej (4 cyfry)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -62,11 +62,11 @@ msgstr "Nieudane logowanie"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Zweryfikuj poprawność wprowadzonych danych"
+msgstr "Sprawdź dane logowania"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr "Listy wszelkiego rodzaju"
+msgstr "Wszystkie listy"
 
 msgctxt "#30011"
 msgid "Search"
@@ -134,7 +134,7 @@ msgstr "Używaj niestandardowego folderu biblioteki"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Folder niestandardowy"
+msgstr "Własna lokalizacja biblioteki"
 
 msgctxt "#30028"
 msgid "Playback error"
@@ -274,7 +274,7 @@ msgstr "Aktualizuj wewnątrz biblioteki"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Kontrola rodzicielska"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -282,7 +282,7 @@ msgstr "nowe odcinki dodane do biblioteki"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "Wykonaj autoaktualizację"
+msgstr "Wykonaj aktualizację automatycznie"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -326,7 +326,7 @@ msgstr "Zobacz wyeksportowane"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Pytaj o pominiecie czołówki i listy płac"
+msgstr "Pytaj o pominiecie czołówki i podsumowania"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -334,7 +334,7 @@ msgstr "Pomiń czołówkę"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Pomiń listę"
+msgstr "Pomiń podsumowanie"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -354,7 +354,7 @@ msgstr "Wymuś wsparcie HDCP 2.2 (uaktywnia treści 4K)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr "Zachowuj ustawienia dźwięku i napisów"
+msgstr "Pamiętaj ustawienia dźwięku i napisów"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -362,7 +362,7 @@ msgstr "Zachowaj zakładki dla pozycji biblioteki / oznacz jako obejrzane"
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
-msgstr "Utrzymuj pamięć podręczną przez (minuty)"
+msgstr "Utrzymuj w pamięci podręcznej przez (minuty)"
 
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
@@ -454,11 +454,11 @@ msgstr "Nieprawidłowy PIN"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "Zabezpieczenie PIN jest wyłączone."
 
 msgctxt "#30108"
-msgid "All content is protected by PIN."
-msgstr ""
+msgid "Enabled PIN verfication"
+msgstr "Włączona kontrola PIN"
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -470,7 +470,7 @@ msgstr "Uruchomiono usługi w tle"
 
 msgctxt "#30111"
 msgid "There is no contents"
-msgstr "Brak zawartości"
+msgstr "Nie znaleziono treści"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
@@ -478,11 +478,11 @@ msgstr "Musisz być zalogowany żeby używać Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr "Wylogowano pomysłnie"
+msgstr "Wylogowano pomyślnie"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Utrzymaj synchronizację Mojej Listy i biblioteki Kodi"
+msgstr "Utrzymuj synchronizację Mojej Listy i biblioteki Kodi"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -514,7 +514,7 @@ msgstr "Wykonaj teraz pełną synchronizację"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr "Synchronizuj Moją Listę z biblioteką Kodi"
+msgstr "Synchronizuj Moją Listę do biblioteki Kodi"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
@@ -522,7 +522,7 @@ msgstr "Czy na pewno chcesz kontynuować? \nSpowoduje to usunięcie wszystkich w
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
-msgstr "Czy na pewno chcesz usunąć ę pozycję?"
+msgstr "Czy na pewno chcesz usunąć tę pozycję?"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -554,11 +554,11 @@ msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr "Wyczyść pamięć podręczną w pamięci"
+msgstr "Wyczyść pamięć podręczną"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
-msgstr "Wyczyść pamięć podręczną i pamięć podręczną dysku"
+msgstr "Wyczyść pamięć podręczną i pamięć podręczną na dysku"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -654,7 +654,7 @@ msgstr "Czy twoje urządzenie obsługuje standard 4k?\r\nUrządzenie musi:\r\n B
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Zostanie otworzone okno ustawień dodatku InputStream Adaptive, żebyś mógł włączyć opcję \"Override HDCP status\""
+msgstr "Zostanie otworzone okno ustawień dodatku InputStream Adaptive, żeby włączyć opcję \"Override HDCP status\""
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -662,15 +662,15 @@ msgstr "Pokaż ekran konfiguracji przy starcie dodatku"
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr "Widok dla głównego menu"
+msgstr "Widok głównego menu"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr "Widok dla wyszukiwania"
+msgstr "Widok wyszukiwania"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr "Widok dla wyeksportowanych"
+msgstr "Widok wyeksportowanych"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -686,7 +686,7 @@ msgstr "Przeglądaj zawartość z deskrypcją audio"
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr "Widok dla mojej listy"
+msgstr "Widok mojej listy"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -702,7 +702,7 @@ msgstr "Oglądaj dalej"
 
 msgctxt "#30169"
 msgid "Top picks"
-msgstr "Wybrane"
+msgstr "Najczęściej wybierane"
 
 msgctxt "#30170"
 msgid "New releases"
@@ -710,7 +710,7 @@ msgstr "Nowości"
 
 msgctxt "#30171"
 msgid "Trending now"
-msgstr "Popularne teraz"
+msgstr "Aktualne trendy"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
@@ -802,7 +802,7 @@ msgstr "Uwzględnij wszystkie informacje w plikach NFO (używaj tylko ze scraper
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr "Ograniczaj jakość strumienia do"
+msgstr "Ograniczaj rozdzielczość strumieniowania do"
 
 msgctxt "#30195"
 msgid "Export new episodes"
@@ -810,7 +810,7 @@ msgstr "Eksportuj nowe odcinki"
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
-msgstr "Wyłącz z autoaktualizacji"
+msgstr "Wyklucz z autoaktualizacji"
 
 msgctxt "#30197"
 msgid "Include in auto update"
@@ -854,11 +854,11 @@ msgstr "Błąd - baza danych MySQL jest niedostępna - będzie używana lokalna 
 
 msgctxt "#30207"
 msgid "Set this device as main auto-updates manager"
-msgstr "Ustaw to urządzenie jako główne w autoaktualizacji"
+msgstr "Ustaw to urządzenie jako główny manager autoaktualizacji"
 
 msgctxt "#30208"
 msgid "Check if this device is the main auto-update manager"
-msgstr "Sprawdź czy to urządzenie jest głównym w autoaktulizacji"
+msgstr "Sprawdź czy to urządzenie jest głównym managerem autoaktulizacji"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
@@ -890,7 +890,7 @@ msgstr "Podświetl tytuły znajdujące się na Mojej liście kolorem"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
-msgstr "Pokaż używane ESN"
+msgstr "Pokaż używany ESN"
 
 msgctxt "#30217"
 msgid "Reset ESN"
@@ -918,7 +918,7 @@ msgstr "Profil dziecka"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synchronizacja używa teraz \"Mojej Listy\" z profilu {}"
+msgstr "Synchronizacja używa teraz \"Mojej Listy\" profilu {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -954,24 +954,24 @@ msgstr "Czy chcesz teraz sprawdzić aktualizację?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Ogranicz według poziomu dojrzałości"
 
 msgctxt "#30233"
 msgid "Little Kids [T]"
-msgstr ""
+msgstr "Małe dzieci [T]"
 
 msgctxt "#30234"
 msgid "Older Kids"
-msgstr ""
+msgstr "Starsze dzieci"
 
 msgctxt "#30235"
 msgid "Teens [VM14]"
-msgstr ""
+msgstr "Nastolatki [VM14]"
 
 msgctxt "#30236"
 msgid "Adults [VM18]"
-msgstr ""
+msgstr "Dorośli [VM18]"
 
 msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
-msgstr ""
+msgstr "Zawartość {} będzie wymagać kodu PIN, aby rozpocząć odtwarzanie."
