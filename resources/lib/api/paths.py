@@ -82,6 +82,10 @@ TRAILER_PARTIAL_PATHS = [
     [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
 ] + ART_PARTIAL_PATHS
 
+VIDEO_LIST_RATING_THUMB_PATHS = [
+    [['summary', 'title', 'userRating', 'trackIds']]
+]
+
 INFO_TRANSFORMATIONS = {
     'rating': lambda r: r / 10,
     'playcount': lambda w: int(w)  # pylint: disable=unnecessary-lambda

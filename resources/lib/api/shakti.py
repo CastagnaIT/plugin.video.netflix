@@ -332,10 +332,33 @@ def rate(videoid, rating):
     common.make_call(
         'post',
         {'component': 'set_video_rating',
-         'params': {
-             'titleid': videoid.value,
+         'data': {
+             'titleId': int(videoid.value),
              'rating': rating}})
     ui.show_notification(common.get_local_string(30127).format(rating * 2))
+
+
+@catch_api_errors
+@common.time_execution(immediate=False)
+def rate_thumb(videoid, rating, track_id_jaw):
+    """Rate a video on Netflix"""
+    common.debug('Thumb rating {} as {}', videoid.value, rating)
+    event_uuid = common.get_random_uuid()
+    response = common.make_call(
+        'post',
+        {'component': 'set_thumb_rating',
+         'data': {
+             'eventUuid': event_uuid,
+             'titleId': int(videoid.value),
+             'trackId': track_id_jaw,
+             'rating': rating,
+         }})
+    if response.get('status', '') == 'success':
+        ui.show_notification(common.get_local_string(30045).split('|')[rating])
+    else:
+        common.error('Rating thumb error, response detail: {}', response)
+        ui.show_error_info('Rating error', 'Error type: {}' + response.get('status', '--'),
+                           True, True)
 
 
 @catch_api_errors

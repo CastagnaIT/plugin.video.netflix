@@ -40,7 +40,8 @@ URLS = {
     'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
     'pin_service': {'endpoint': '/pin/service', 'is_api_call': True},
     'metadata': {'endpoint': '/metadata', 'is_api_call': True},
-    'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},
+    'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},  # Old rating system
+    'set_thumb_rating': {'endpoint': '/setThumbRating', 'is_api_call': True},
     'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
     # Don't know what these could be used for. Keeping for reference
     # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
@@ -559,7 +560,7 @@ class NetflixSession(object):
         data = kwargs.get('data', {})
         headers = kwargs.get('headers', {})
         params = kwargs.get('params', {})
-        if component in ['set_video_rating', 'update_my_list', 'pin_service']:
+        if component in ['set_video_rating', 'set_thumb_rating', 'update_my_list', 'pin_service']:
             headers.update({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json, text/javascript, */*'})
