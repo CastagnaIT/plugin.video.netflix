@@ -162,8 +162,7 @@ class CustomVideoList:
     def __init__(self, path_response):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
-        self.title = common.get_local_string(30048)
-        self.videos = self.data['videos']
+        self.videos = self.data.get('videos')
         self.videoids = _get_videoids(self.videos)
         # self.artitem = next(itervalues(self.videos))
         self.artitem = list(self.videos.values())[0] if self.videos else None
