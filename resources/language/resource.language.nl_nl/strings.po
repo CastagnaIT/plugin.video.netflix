@@ -577,8 +577,8 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9 profielen inschakelen (schakel dit uit bij schermartifacten)"
 
 msgctxt "#30138"
-msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
-msgstr "The gevraagde actie duurde te lang. De achtergronddiensten zijn mogelijk nog niet beschikbaar als je net Kodi of de add-on hebt gestart. In dat geval, probeer zo meteen opnieuw."
+msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "De achtergronddiensten zijn mogelijk nog niet beschikbaar als je net Kodi of de add-on hebt gestart. In dat geval, probeer zo meteen opnieuw."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"

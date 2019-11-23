@@ -22,9 +22,6 @@ from future.utils import iteritems
 
 import xbmc
 import xbmcaddon
-import xbmcvfs
-
-import resources.lib.cache as cache
 
 
 class GlobalVariables(object):
@@ -265,13 +262,15 @@ class GlobalVariables(object):
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
         import resources.lib.common as common
-        self.CACHE = cache.Cache(common, self.CACHE_PATH, self.CACHE_TTL,
-                                 self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
+        from resources.lib.cache import Cache
+        self.CACHE = Cache(common, self.CACHE_PATH, self.CACHE_TTL,
+                           self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
-        # pylint: disable=broad-except
-        for bucket in cache.BUCKET_NAMES:
-            xbmcvfs.mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
+        from xbmcvfs import mkdirs
+        from resources.lib.cache import BUCKET_NAMES
+        for bucket in BUCKET_NAMES:
+            mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
     def initial_addon_configuration(self):
         """
@@ -280,12 +279,12 @@ class GlobalVariables(object):
         """
         run_initial_config = self.ADDON.getSettingBool('run_init_configuration')
         if run_initial_config:
-            import resources.lib.common as common
-            import resources.lib.kodi.ui as ui
+            from resources.lib.common import (debug, get_system_platform, get_local_string)
+            from resources.lib.kodi.ui import (ask_for_confirmation, show_ok_dialog)
             self.settings_monitor_suspended(True)
 
-            system = common.get_system_platform()
-            common.debug('Running initial addon configuration dialogs on system: {}', system)
+            system = get_system_platform()
+            debug('Running initial addon configuration dialogs on system: {}', system)
             if system in ['osx', 'ios', 'xbox']:
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', True)
@@ -297,20 +296,18 @@ class GlobalVariables(object):
                 self.ADDON.setSettingBool('enable_hevc_profiles', False)
             elif system == 'android':
                 ultrahd_capable_device = False
-                premium_account = ui.ask_for_confirmation(common.get_local_string(30154),
-                                                          common.get_local_string(30155))
+                premium_account = ask_for_confirmation(get_local_string(30154),
+                                                       get_local_string(30155))
                 if premium_account:
-                    ultrahd_capable_device = ui.ask_for_confirmation(common.get_local_string(30154),
-                                                                     common.get_local_string(30156))
+                    ultrahd_capable_device = ask_for_confirmation(get_local_string(30154),
+                                                                  get_local_string(30156))
                 if ultrahd_capable_device:
-                    ui.show_ok_dialog(common.get_local_string(30154),
-                                      common.get_local_string(30157))
+                    show_ok_dialog(get_local_string(30154), get_local_string(30157))
                     ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
                     if ia_enabled:
                         xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
                     else:
-                        ui.show_ok_dialog(common.get_local_string(30154),
-                                          common.get_local_string(30046))
+                        show_ok_dialog(get_local_string(30154), get_local_string(30046))
                     self.ADDON.setSettingBool('enable_vp9_profiles', False)
                     self.ADDON.setSettingBool('enable_hevc_profiles', True)
                 else:
@@ -349,7 +346,7 @@ class GlobalVariables(object):
 
     def get_esn(self):
         """Get the generated esn or if set get the custom esn"""
-        from resources.lib.database.db_utils import (TABLE_SESSION)
+        from resources.lib.database.db_utils import TABLE_SESSION
         custom_esn = g.ADDON.getSetting('esn')
         return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
 
