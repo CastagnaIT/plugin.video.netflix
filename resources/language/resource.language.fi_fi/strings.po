@@ -193,8 +193,8 @@ msgid "View for profiles"
 msgstr "Profiilien näkymä"
 
 msgctxt "#30045"
-msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
-msgstr "[COLOR cyan][B]-- SEURAAVA SIVU --[/B][/COLOR]"
+msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
+msgstr ""
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
