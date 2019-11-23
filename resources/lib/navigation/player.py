@@ -39,7 +39,7 @@ class InputstreamError(Exception):
     """There was an error with setting up inputstream.adaptive"""
 
 
-@common.inject_video_id(path_offset=0)
+@common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
 @common.time_execution(immediate=False)
 def play(videoid):
     """Play an episode or movie as specified by the path"""

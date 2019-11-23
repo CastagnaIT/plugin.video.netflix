@@ -9,13 +9,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 import sys
 from functools import wraps
+from xbmcgui import Window
 
 try:  # Python 3
-    import itertools.ifilter as filter
+    import itertools.ifilter as filter  # pylint: disable=redefined-builtin
 except ImportError:  # Python 2
     pass
-
-import xbmcplugin
 
 # Import and initialize globals right away to avoid stale values from the last
 # addon invocation. Otherwise Kodi's reuseLanguageInvoker will cause some
@@ -24,23 +23,9 @@ import xbmcplugin
 from resources.lib.globals import g
 g.init_globals(sys.argv)
 
-import resources.lib.common as common
-import resources.lib.upgrade_controller as upgrade_ctrl
-import resources.lib.api.shakti as api
-import resources.lib.navigation as nav
-import resources.lib.navigation.directory as directory
-import resources.lib.navigation.hub as hub
-import resources.lib.navigation.actions as actions
-import resources.lib.navigation.library as library
-
-from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError)
-
-NAV_HANDLERS = {
-    g.MODE_DIRECTORY: directory.DirectoryBuilder,
-    g.MODE_ACTION: actions.AddonActionExecutor,
-    g.MODE_LIBRARY: library.LibraryActionExecutor,
-    g.MODE_HUB: hub.HubBrowser
-}
+from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
+                                  log_time_trace, reset_log_level_global_var)
+from resources.lib.upgrade_controller import check_addon_upgrade
 
 
 def lazy_login(func):
@@ -50,81 +35,115 @@ def lazy_login(func):
     # pylint: disable=protected-access, missing-docstring
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
+        from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError)
         try:
             return func(*args, **kwargs)
         except NotLoggedInError:
-            common.debug('Tried to perform an action without being logged in')
+            debug('Tried to perform an action without being logged in')
             try:
-                api.login()
-                common.debug('Now that we\'re logged in, let\'s try again')
+                from resources.lib.api.shakti import login
+                login()
+                debug('Now that we\'re logged in, let\'s try again')
                 return func(*args, **kwargs)
             except MissingCredentialsError:
                 # Aborted from user or left an empty field
-                xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE,
-                                          succeeded=False)
+                _handle_endofdirectory()
     return lazy_login_wrapper
 
 
 @lazy_login
 def route(pathitems):
     """Route to the appropriate handler"""
-    common.debug('Routing navigation request')
+    debug('Routing navigation request')
     root_handler = pathitems[0] if pathitems else g.MODE_DIRECTORY
     if root_handler == g.MODE_PLAY:
-        import resources.lib.navigation.player as player
-        player.play(pathitems=pathitems[1:])
-    elif root_handler == 'extrafanart':
-        common.debug('Ignoring extrafanart invocation')
-        xbmcplugin.endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=False)
-    elif root_handler not in NAV_HANDLERS:
-        raise nav.InvalidPathError(
-            'No root handler for path {}'.format('/'.join(pathitems)))
-    else:
-        nav.execute(NAV_HANDLERS[root_handler], pathitems[1:],
-                    g.REQUEST_PARAMS)
+        from resources.lib.navigation.player import play
+        play(videoid=pathitems[1:])
+        return
+    if root_handler == 'extrafanart':
+        warn('Route: ignoring extrafanart invocation')
+        _handle_endofdirectory()
+        return
+    nav_handler = _get_nav_handler(root_handler)
+    if not nav_handler:
+        from resources.lib.navigation import InvalidPathError
+        raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
+    from resources.lib.navigation import execute
+    execute(_get_nav_handler(root_handler), pathitems[1:], g.REQUEST_PARAMS)
 
 
-def check_valid_credentials():
+def _get_nav_handler(root_handler):
+    if root_handler == g.MODE_DIRECTORY:
+        from resources.lib.navigation.directory import DirectoryBuilder
+        return DirectoryBuilder
+    if root_handler == g.MODE_ACTION:
+        from resources.lib.navigation.actions import AddonActionExecutor
+        return AddonActionExecutor
+    if root_handler == g.MODE_LIBRARY:
+        from resources.lib.navigation.library import LibraryActionExecutor
+        return LibraryActionExecutor
+    if root_handler == g.MODE_HUB:
+        from resources.lib.navigation.hub import HubBrowser
+        return HubBrowser
+    return None
+
+
+def _check_valid_credentials():
     """Check that credentials are valid otherwise request user credentials"""
     # This function check only if credentials exist, instead lazy_login
     # only works in conjunction with nfsession and also performs other checks
-    if not common.check_credentials():
+    if not check_credentials():
+        from resources.lib.api.exceptions import MissingCredentialsError
         try:
-            if not api.login():
+            from resources.lib.api.shakti import login
+            if not login():
                 # Wrong login try again
-                return check_valid_credentials()
+                return _check_valid_credentials()
         except MissingCredentialsError:
             # Aborted from user or left an empty field
             return False
     return True
 
 
+def _handle_endofdirectory(succeeded=False):
+    from xbmcplugin import endOfDirectory
+    endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=succeeded)
+
+
 if __name__ == '__main__':
-    # pylint: disable=broad-except
+    # pylint: disable=broad-except,ungrouped-imports
     # Initialize variables in common module scope
     # (necessary when reusing language invoker)
-    common.reset_log_level_global_var()
-    common.info('Started (Version {})'.format(g.VERSION))
-    common.info('URL is {}'.format(g.URL))
-    success = False
+    reset_log_level_global_var()
+    info('Started (Version {})'.format(g.VERSION))
+    info('URL is {}'.format(g.URL))
+    success = True
 
-    try:
-        if check_valid_credentials():
-            upgrade_ctrl.check_addon_upgrade()
-            g.initial_addon_configuration()
-            route(list(filter(None, g.PATH.split('/'))))
-            success = True
-    except common.BackendNotReady:
-        import resources.lib.kodi.ui as ui
-        ui.show_backend_not_ready()
-    except Exception as exc:
-        import resources.lib.kodi.ui as ui
-        import traceback
-        common.error(traceback.format_exc())
-        ui.show_addon_error_info(exc)
+    window_cls = Window(10000)
+    if not bool(window_cls.getProperty('is_service_running')):
+        from resources.lib.kodi.ui import show_backend_not_ready
+        show_backend_not_ready()
+        success = False
+
+    if success:
+        try:
+            if _check_valid_credentials():
+                check_addon_upgrade()
+                g.initial_addon_configuration()
+                route(list(filter(None, g.PATH.split('/'))))
+        except BackendNotReady:
+            from resources.lib.kodi.ui import show_backend_not_ready
+            show_backend_not_ready()
+            success = False
+        except Exception as exc:
+            import traceback
+            from resources.lib.kodi.ui import show_addon_error_info
+            error(traceback.format_exc())
+            show_addon_error_info(exc)
+            success = False
 
     if not success:
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=success)
+        _handle_endofdirectory()
 
     g.CACHE.commit()
-    common.log_time_trace()
+    log_time_trace()

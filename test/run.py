@@ -26,10 +26,10 @@ sys.argv = [uri, '0', '']
 
 import addon  # pylint: disable=wrong-import-position
 addon.g.init_globals(sys.argv)
-addon.common.info('Started (Version {})'.format(addon.g.VERSION))
-addon.common.info('URL is {}'.format(addon.g.URL))
-if addon.check_valid_credentials():
-    addon.upgrade_ctrl.check_addon_upgrade()
+addon.info('Started (Version {})'.format(addon.g.VERSION))
+addon.info('URL is {}'.format(addon.g.URL))
+if addon._check_valid_credentials():  # pylint: disable=protected-access
+    addon.check_addon_upgrade()
     addon.g.initial_addon_configuration()
     addon.route(path.split('/'))
 addon.g.CACHE.commit()

@@ -18,10 +18,10 @@ g.init_globals(sys.argv)
 
 # Global cache must not be used within these modules, because stale values may
 # be used and cause inconsistencies!
-import resources.lib.common as common
 import resources.lib.services as services
-import resources.lib.kodi.ui as ui
-import resources.lib.upgrade_controller as upgrade_ctrl
+from resources.lib.upgrade_controller import check_service_upgrade
+from resources.lib.common import (info, error, select_port, get_local_string)
+
 
 try:  # Python 2
     unicode
@@ -56,7 +56,7 @@ class NetflixService(object):
     def init_server(self, server):
         server['class'].allow_reuse_address = True
         server['instance'] = server['class'](
-            ('127.0.0.1', common.select_port(server['name'])))
+            ('127.0.0.1', select_port(server['name'])))
         server['thread'] = threading.Thread(
             target=server['instance'].serve_forever)
 
@@ -68,12 +68,17 @@ class NetflixService(object):
             server['instance'].server_activate()
             server['instance'].timeout = 1
             server['thread'].start()
-            common.info('[{}] Thread started'.format(server['name']))
+            info('[{}] Thread started'.format(server['name']))
         self.controller = services.PlaybackController()
         self.library_updater = services.LibraryUpdateService()
         self.settings_monitor = services.SettingsMonitor()
+        # Mark the service as active
+        from xbmcgui import Window
+        window_cls = Window(10000)
+        window_cls.setProperty('is_service_running', 'true')
         if not g.ADDON.getSettingBool('disable_startup_notification'):
-            ui.show_notification(common.get_local_string(30110))
+            from resources.lib.kodi.ui import show_notification
+            show_notification(get_local_string(30110))
 
     def shutdown(self):
         """
@@ -85,7 +90,7 @@ class NetflixService(object):
             server['instance'] = None
             server['thread'].join()
             server['thread'] = None
-        common.info('Stopped MSL Service')
+        info('Stopped MSL Service')
 
     def run(self):
         """Main loop. Runs until xbmc.Monitor requests abort"""
@@ -94,8 +99,9 @@ class NetflixService(object):
             self.start_services()
         except Exception as exc:
             import traceback
-            common.error(traceback.format_exc())
-            ui.show_addon_error_info(exc)
+            from resources.lib.kodi.ui import show_addon_error_info
+            error(traceback.format_exc())
+            show_addon_error_info(exc)
             return
 
         while not self.controller.abortRequested():
@@ -104,17 +110,17 @@ class NetflixService(object):
         self.shutdown()
 
     def _tick_and_wait_for_abort(self):
-        # pylint: disable=broad-except
         try:
             self.controller.on_playback_tick()
             self.library_updater.on_tick()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
-            ui.show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
+            from resources.lib.kodi.ui import show_notification
+            error(traceback.format_exc())
+            show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 
 
 if __name__ == '__main__':
-    upgrade_ctrl.check_service_upgrade()
+    check_service_upgrade()
     NetflixService().run()

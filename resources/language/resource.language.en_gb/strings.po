@@ -577,7 +577,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr ""
 
 msgctxt "#30138"
-msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
 msgstr ""
 
 msgctxt "#30139"

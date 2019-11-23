@@ -583,8 +583,8 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
 
 msgctxt "#30138"
-msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
-msgstr "Zatražena radnja istekla je. Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
+msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
