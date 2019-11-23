@@ -39,6 +39,9 @@ CONTEXT_MENU_ACTIONS = {
     'rate': {
         'label': common.get_local_string(30019),
         'url': ctx_item_url(['rate'])},
+    'rate_thumb': {
+        'label': common.get_local_string(30019),
+        'url': ctx_item_url(['rate_thumb'])},
     'add_to_list': {
         'label': common.get_local_string(30021),
         'url': ctx_item_url(['my_list', 'add'])},
@@ -68,9 +71,13 @@ def generate_context_menu_items(videoid):
     """Generate context menu items for a listitem"""
     items = _generate_library_ctx_items(videoid)
 
-    if videoid.mediatype != common.VideoId.SEASON and \
-       videoid.mediatype != common.VideoId.SUPPLEMENTAL:
-        items.insert(0, _ctx_item('rate', videoid))
+    # Old rating system
+    # if videoid.mediatype != common.VideoId.SEASON and \
+    #    videoid.mediatype != common.VideoId.SUPPLEMENTAL:
+    #     items.insert(0, _ctx_item('rate', videoid))
+
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+        items.insert(0, _ctx_item('rate_thumb', videoid))
 
     if videoid.mediatype != common.VideoId.SUPPLEMENTAL and \
             videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:

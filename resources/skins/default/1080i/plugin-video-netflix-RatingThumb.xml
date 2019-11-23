@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="group">
+			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
+			<!-- Warning using low id numbers cause problems with moving focus an onClick events -->
+			<top>250</top>
+			<centerleft>50%</centerleft>
+			<width>910</width>
+			<!-- Screen background -->
+			<control type="image">
+				<left>-2000</left>
+				<top>-2000</top>
+				<width>6000</width>
+				<height>6000</height>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<texture colordiffuse="C2FFFFFF">colors/black.png</texture>
+			</control>
+
+			<control type="group">
+				<width>910</width>
+				<height>300</height>
+				<!-- Window Background -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="FF1A2123">colors/white.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window header -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<height>66</height>
+					<texture colordiffuse="FFFAFAFA" border="2">colors/white70.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window text header -->
+				<control type="label" id="99">
+					<posy>0</posy> <!-- estouchy skin with label control use posy/posx tag instead of top/left -->
+					<posx>40</posx>
+					<top>0</top>
+					<left>40</left>
+					<right>100</right>
+					<height>66</height>
+					<textcolor>FF000000</textcolor>
+					<font>font32_title</font>
+					<label>$ADDON[plugin.video.netflix 30019]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<shadowcolor>white</shadowcolor>
+				</control>
+				<!-- Window close button -->
+				<control type="button" id="100">
+					<right>10</right>
+					<left>840</left>
+					<top>11</top>
+					<width>42</width>
+					<height>42</height>
+					<texturefocus>dialogs/close.png</texturefocus>
+					<texturenofocus>nf_icon.png</texturenofocus>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+			<!-- Background color that encloses and highlights the controls of the window -->
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>600</width>
+				<height>210</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+
+			<!-- Controls -->
+			<control type="group">
+				<left>0</left>
+				<top>0</top>
+				<width>800</width>
+				<height>300</height>
+
+				<control type="label" id="10000">
+					<description>Title of tvshow-movie</description>
+					<posy>110</posy>
+					<posx>65</posx>
+					<top>110</top>
+					<left>65</left>
+					<width>500</width>
+					<scroll>true</scroll>
+					<label>--</label>
+					<haspath>false</haspath>
+					<font>font12</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+
+				<control type="button" id="10010">
+					<top>190</top>
+					<left>180</left>
+					<description>Thumb up</description>
+					<width>48</width>
+					<height>48</height>
+					<texturefocus border="0" colordiffuse="red">buttons/thumb_up_filled.png</texturefocus>
+					<texturenofocus border="0">buttons/thumb_up.png</texturenofocus>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<onright>10020</onright>
+				</control>
+
+				<control type="button" id="10012">
+					<top>190</top>
+					<left>180</left>
+					<description>Remove previous thumb up</description>
+					<width>48</width>
+					<height>48</height>
+					<texturefocus border="0" colordiffuse="red">buttons/thumb_up.png</texturefocus>
+					<texturenofocus border="0">buttons/thumb_up_filled.png</texturenofocus>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<onright>10020</onright>
+				</control>
+
+				<control type="button" id="10020">
+					<top>190</top>
+					<left>380</left>
+					<description>Thumb down</description>
+					<width>48</width>
+					<height>48</height>
+					<texturefocus border="0" colordiffuse="red">buttons/thumb_down_filled.png</texturefocus>
+					<texturenofocus border="0">buttons/thumb_down.png</texturenofocus>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<onleft>10010</onleft>
+					<onright>10040</onright>
+				</control>
+				
+				<control type="button" id="10022">
+					<top>190</top>
+					<left>380</left>
+					<description>Remove previous thumb down</description>
+					<width>48</width>
+					<height>48</height>
+					<texturefocus border="0" colordiffuse="red">buttons/thumb_down.png</texturefocus>
+					<texturenofocus border="0">buttons/thumb_down_filled.png</texturenofocus>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<onleft>10010</onleft>
+					<onright>10040</onright>
+				</control>
+				
+				<control type="button" id="10040">
+					<top>90</top>
+					<left>600</left>
+					<description>Cancel button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[222]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<onleft>10020</onleft>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

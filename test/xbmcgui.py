@@ -58,6 +58,14 @@ class ControlGeneric(Control):
     def setInt(value=0, min=0, delta=1, max=1):  # pylint: disable=redefined-builtin
         ''' A stub implementation for the xbmcgui Control slider class getLabel() method '''
 
+    @staticmethod
+    def controlRight(control):
+        ''' A stub implementation for the xbmcgui Control class method '''
+
+    @staticmethod
+    def controlLeft(control):
+        ''' A stub implementation for the xbmcgui Control class method '''
+
 
 class Dialog:
     ''' A reimplementation of the xbmcgui Dialog class '''

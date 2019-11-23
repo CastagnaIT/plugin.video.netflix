@@ -150,13 +150,14 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
 
 
 @common.time_execution(immediate=False)
-def custom_video_list(video_ids):
+def custom_video_list(video_ids, custom_paths=None):
     """Retrieve a video list which contains the videos specified by
     video_ids"""
     common.debug('Requesting custom video list with {} videos', len(video_ids))
     return CustomVideoList(common.make_call(
         'path_request',
-        build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS)))
+        build_paths(['videos', video_ids],
+                    custom_paths if custom_paths else VIDEO_LIST_PARTIAL_PATHS)))
 
 
 @common.time_execution(immediate=False)
@@ -331,10 +332,33 @@ def rate(videoid, rating):
     common.make_call(
         'post',
         {'component': 'set_video_rating',
-         'params': {
-             'titleid': videoid.value,
+         'data': {
+             'titleId': int(videoid.value),
              'rating': rating}})
     ui.show_notification(common.get_local_string(30127).format(rating * 2))
+
+
+@catch_api_errors
+@common.time_execution(immediate=False)
+def rate_thumb(videoid, rating, track_id_jaw):
+    """Rate a video on Netflix"""
+    common.debug('Thumb rating {} as {}', videoid.value, rating)
+    event_uuid = common.get_random_uuid()
+    response = common.make_call(
+        'post',
+        {'component': 'set_thumb_rating',
+         'data': {
+             'eventUuid': event_uuid,
+             'titleId': int(videoid.value),
+             'trackId': track_id_jaw,
+             'rating': rating,
+         }})
+    if response.get('status', '') == 'success':
+        ui.show_notification(common.get_local_string(30045).split('|')[rating])
+    else:
+        common.error('Rating thumb error, response detail: {}', response)
+        ui.show_error_info('Rating error', 'Error type: {}' + response.get('status', '--'),
+                           True, True)
 
 
 @catch_api_errors

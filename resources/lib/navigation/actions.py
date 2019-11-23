@@ -56,12 +56,37 @@ class AddonActionExecutor(object):
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
-    def rate(self, videoid):
-        """Rate an item on Netflix. Ask for a rating if there is none supplied
-        in the path."""
-        rating = self.params.get('rating') or ui.ask_for_rating()
-        if rating is not None:
-            api.rate(videoid, rating)
+    def rate_thumb(self, videoid):
+        """Rate an item on Netflix. Ask for a thumb rating"""
+        # Get updated user rating info for this videoid
+        from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS
+        video_list = api.custom_video_list([videoid.value], VIDEO_LIST_RATING_THUMB_PATHS)
+        if video_list.videos:
+            videoid_value, video_data = list(video_list.videos.items())[0]  # pylint: disable=unused-variable
+            title = video_data.get('title')
+            track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
+            is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
+            user_rating = video_data.get('userRating', {}).get('userRating') \
+                if is_thumb_rating else None
+            ui.show_modal_dialog(ui.xmldialogs.RatingThumb,
+                                 'plugin-video-netflix-RatingThumb.xml',
+                                 g.ADDON.getAddonInfo('path'),
+                                 videoid=videoid,
+                                 title=title,
+                                 track_id_jaw=track_id_jaw,
+                                 user_rating=user_rating)
+        else:
+            common.warn('Rating thumb video list api request no got results for {}', videoid)
+
+    # Old rating system
+    # @common.inject_video_id(path_offset=1)
+    # @common.time_execution(immediate=False)
+    # def rate(self, videoid):
+    #     """Rate an item on Netflix. Ask for a rating if there is none supplied
+    #     in the path."""
+    #     rating = self.params.get('rating') or ui.ask_for_rating()
+    #     if rating is not None:
+    #         api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
     @common.time_execution(immediate=False)
