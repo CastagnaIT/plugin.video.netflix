@@ -350,10 +350,10 @@ class NetflixSession(object):
         common.debug('Logging out of current account')
 
         # Disable and reset auto-update / auto-sync features
-        g.settings_monitor_suspended(True)
+        g.settings_monitor_suspend(True)
         g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
         g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.settings_monitor_suspended(False)
+        g.settings_monitor_suspend(False)
         g.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
         cookies.delete(self.account_hash)

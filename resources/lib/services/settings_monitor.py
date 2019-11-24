@@ -22,8 +22,15 @@ class SettingsMonitor(xbmc.Monitor):
         xbmc.Monitor.__init__(self)
 
     def onSettingsChanged(self):
-        if not g.settings_monitor_is_suspended():
-            self._on_change()
+        status = g.settings_monitor_suspend_status()
+        if status == 'First':
+            common.warn('SettingsMonitor: triggered but in suspend status (at first change)')
+            g.settings_monitor_suspend(False)
+            return
+        if status == 'True':
+            common.warn('SettingsMonitor: triggered but in suspend status (permanent)')
+            return
+        self._on_change()
 
     def _on_change(self):
         common.reset_log_level_global_var()
