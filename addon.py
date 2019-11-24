@@ -42,7 +42,9 @@ def lazy_login(func):
             debug('Tried to perform an action without being logged in')
             try:
                 from resources.lib.api.shakti import login
-                login()
+                if not login(ask_credentials=not check_credentials()):
+                    _handle_endofdirectory()
+                    return
                 debug('Now that we\'re logged in, let\'s try again')
                 return func(*args, **kwargs)
             except MissingCredentialsError:
