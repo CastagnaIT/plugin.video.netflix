@@ -207,7 +207,7 @@ class NetflixSession(object):
         return True
 
     @common.time_execution(immediate=True)
-    def _refresh_session_data(self):
+    def _refresh_session_data(self, raise_exception=False):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
         try:
@@ -220,15 +220,24 @@ class NetflixSession(object):
             # it should be due to updates in the website,
             # this can happen when opening the addon while executing update_profiles_data
             import traceback
-            common.debug(traceback.format_exc())
             common.warn('Failed to refresh session data, login expired (WebsiteParsingError)')
+            common.debug(traceback.format_exc())
             self.session.cookies.clear()
             return self._login()
+        except requests.exceptions.RequestException:
+            import traceback
+            common.warn('Failed to refresh session data, request error (RequestException)')
+            common.warn(traceback.format_exc())
+            if raise_exception:
+                raise
+            return False
         except Exception:
             import traceback
-            common.debug(traceback.format_exc())
             common.warn('Failed to refresh session data, login expired (Exception)')
+            common.debug(traceback.format_exc())
             self.session.cookies.clear()
+            if raise_exception:
+                raise
             return False
         common.debug('Successfully refreshed session data')
         return True
@@ -349,7 +358,7 @@ class NetflixSession(object):
     @needs_login
     @common.time_execution(immediate=True)
     def update_profiles_data(self):
-        return self._refresh_session_data()
+        return self._refresh_session_data(raise_exception=True)
 
     @common.addonsignals_return_call
     @needs_login
