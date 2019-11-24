@@ -19,7 +19,7 @@ import resources.lib.kodi.ui as ui
 
 from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
                                           APIError, MissingCredentialsError, WebsiteParsingError,
-                                          InvalidMembershipStatusError)
+                                          InvalidMembershipStatusError, NotConnected)
 
 try:  # Python 2
     unicode
@@ -61,6 +61,10 @@ def needs_login(func):
     @wraps(func)
     def ensure_login(*args, **kwargs):
         session = args[0]
+        # I make sure that the connection is present..
+        if not common.is_internet_connected():
+            raise NotConnected('Internet connection not available')
+        # ..this check verifies only if locally there are the data to correctly perform the login
         if not session._is_logged_in():
             raise NotLoggedInError
         return func(*args, **kwargs)

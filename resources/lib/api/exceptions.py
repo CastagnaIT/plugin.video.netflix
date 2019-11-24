@@ -47,3 +47,7 @@ class NotLoggedInError(Exception):
 
 class APIError(Exception):
     """The requested API operation has resulted in an error"""
+
+
+class NotConnected(Exception):
+    """Internet status not connected"""
