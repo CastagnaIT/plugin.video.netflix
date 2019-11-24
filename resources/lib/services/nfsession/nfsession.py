@@ -206,8 +206,8 @@ class NetflixSession(object):
                 self.update_session_data()
             except Exception:
                 import traceback
-                common.debug(traceback.format_exc())
                 common.warn('Failed to validate session data, login is expired')
+                common.debug(traceback.format_exc())
                 self.session.cookies.clear()
                 return False
         return True
@@ -304,11 +304,11 @@ class NetflixSession(object):
                                common.get_local_string(30180),
                                False, True)
             return False
-        except Exception as exc:
+        except Exception:  # pylint: disable=broad-except
             import traceback
             common.error(traceback.format_exc())
             self.session.cookies.clear()
-            raise exc
+            raise
         common.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
         self.update_session_data(current_esn)
