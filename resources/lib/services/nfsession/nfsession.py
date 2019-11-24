@@ -101,6 +101,7 @@ class NetflixSession(object):
         common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
                              source_id='upnextprovider')
         self._init_session()
+        self.is_prefetch_login = False
         self._prefetch_login()
 
     @property
@@ -152,8 +153,12 @@ class NetflixSession(object):
             common.get_credentials()
             if not self._is_logged_in():
                 self._login()
-            else:
-                self.set_session_header_data()
+            self.is_prefetch_login = True
+        except requests.exceptions.RequestException as exc:
+            # It was not possible to connect to the web service, no connection, network problem, etc
+            import traceback
+            common.error('Login prefetch: request exception {}', exc)
+            common.debug(traceback.format_exc())
         except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
@@ -164,9 +169,12 @@ class NetflixSession(object):
     @common.time_execution(immediate=True)
     def _is_logged_in(self):
         """Check if the user is logged in and if so refresh session data"""
-        return self._load_cookies() and \
+        valid_login = self._load_cookies() and \
             self._verify_session_cookies() and \
             self._verify_esn_existence()
+        if valid_login and not self.is_prefetch_login:
+            self.set_session_header_data()
+        return valid_login
 
     @common.time_execution(immediate=True)
     def _verify_session_cookies(self):
