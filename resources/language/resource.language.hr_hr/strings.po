@@ -1000,3 +1000,11 @@ msgstr "Odrasli [VM18]"
 msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
+
+msgctxt "#30238"
+msgid ""
+msgstr ""
+
+msgctxt "#30239"  # This is a temporary transition option
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u budućim verzijama)"
