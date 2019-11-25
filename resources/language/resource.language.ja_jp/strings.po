@@ -9,11 +9,11 @@ msgstr ""
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
 "PO-Revision-Date: 2019-11-18 22:40+0000\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
-"Language-Team: Korean\n"
+"Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -22,15 +22,15 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Netflix VOD 애드온"
+msgstr "Netflixアドオン"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
+msgstr "一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください"
 
 msgctxt "#30001"
 msgid "Recommendations"
-msgstr "추천"
+msgstr "オススメ"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
@@ -38,55 +38,55 @@ msgstr ""
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr "검색어"
+msgstr ""
 
 msgctxt "#30004"
 msgid "Password"
-msgstr "암호"
+msgstr "暗証番号"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr "メールアドレス"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr "PIN이 틀렸으니, 다시 해보십시오."
+msgstr "PIN誤り、確認してください"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "자녀보호PIN(4자리숫자)"
+msgstr ""
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "로그인 실패"
+msgstr "ログイン失敗"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "로그인 암호를 확인하십시오."
+msgstr "ログインＩＤや暗証番号を確認してください"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr "장르"
+msgstr "ジャンル"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr "검색"
+msgstr "検索"
 
 msgctxt "#30012"
 msgid "No seasons available"
-msgstr "볼 수 있는 시즌이 없습니다."
+msgstr ""
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr "일치하는 것이 없습니다."
+msgstr ""
 
 msgctxt "#30014"
 msgid "Account"
-msgstr "계정"
+msgstr "アカウント"
 
 msgctxt "#30015"
 msgid "Other options"
-msgstr "옵션"
+msgstr ""
 
 msgctxt "#30016"
 msgid "ESN"
@@ -94,71 +94,71 @@ msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
-msgstr "로그아웃"
+msgstr "ログアウト"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "라이브러리로 보내기"
+msgstr ""
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "평점주기"
+msgstr "評価"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "찜한 것들에서 삭제"
+msgstr "マイリストから削除"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "찜한 것들에 추가"
+msgstr "マイリストに追加"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
-msgstr "(0-10 사이)"
+msgstr "(0-10のあいだ)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "고급설정"
+msgstr "エキスパート"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL인증"
+msgstr ""
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "라이브러리"
+msgstr ""
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "개인라이브러리를 사용합니다."
+msgstr ""
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "개인라이브러리 위치"
+msgstr ""
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr "재생 오류"
+msgstr ""
 
 msgctxt "#30029"
 msgid "Missing InputStream addon"
-msgstr "InputStream 애드온이 없군요."
+msgstr "インプットストリームがありませんね"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "라이브러리에서 지우기"
+msgstr ""
 
 msgctxt "#30031"
 msgid "General"
-msgstr "일반설정"
+msgstr ""
 
 msgctxt "#30032"
 msgid "Tracking"
-msgstr "추적"
+msgstr ""
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "돌비사운드 사용"
+msgstr ""
 
 msgctxt "#30034"
 msgid "Manual ESN"
@@ -166,11 +166,11 @@ msgstr ""
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "InputStream 애드온 설정"
+msgstr "インプットストリームアドオン設定"
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
-msgstr "내보낼 때 항상 원래 제목 사용하기"
+msgstr ""
 
 msgctxt "#30037"
 msgid "Views"
@@ -178,7 +178,7 @@ msgstr ""
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr "사용자 설정"
+msgstr ""
 
 msgctxt "#30039"
 msgid "View for folders"
@@ -206,71 +206,71 @@ msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr "엄지평점 없음|별로에요|좋아요"
+msgstr "親指評価なし|サムズアップ|サムズダウン"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
-msgstr "InputStream addon을 설치 혹은 켜십시오."
+msgstr ""
 
 msgctxt "#30047"
 msgid "Finally remove?"
-msgstr "정말로 지울까요?"
+msgstr ""
 
 msgctxt "#30048"
 msgid "Exported"
-msgstr "내보낸 것들"
+msgstr ""
 
 msgctxt "#30049"
 msgid "Update DB"
-msgstr "DB 새로고침"
+msgstr ""
 
 msgctxt "#30050"
 msgid "Update successful"
-msgstr "새로고침 성공"
+msgstr ""
 
 msgctxt "#30051"
 msgid "Request Error"
-msgstr "요청오류"
+msgstr ""
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr "실패했습니다."
+msgstr ""
 
 msgctxt "#30053"
 msgid "Auto Login"
-msgstr "자동로그인"
+msgstr ""
 
 msgctxt "#30054"
 msgid "Enable Auto Login"
-msgstr "자동로그인 켬"
+msgstr ""
 
 msgctxt "#30055"
 msgid "Profile"
-msgstr "프로파일"
+msgstr "プロフィール"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr "아이디"
+msgstr ""
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로파일 리스테에서 하나를 고르세요."
+msgstr ""
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr "자동 로그인이 켜졌습니다!"
+msgstr ""
 
 msgctxt "#30059"
 msgid "Switch accounts"
-msgstr "다른 계정으로"
+msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
+msgstr ""
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "라이브러리 새로 고침"
+msgstr ""
 
 msgctxt "#30062"
 msgid "Parental controls"
@@ -278,15 +278,15 @@ msgstr ""
 
 msgctxt "#30063"
 msgid "new episodes added to library"
-msgstr "새 에피소드가 라이브러리에 추가되었습니다."
+msgstr ""
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "새로 고칩니다."
+msgstr ""
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr "새로운 시즌과 에피소드를 새로 고치는 방법"
+msgstr ""
 
 msgctxt "#30066"
 msgid "Debug logging level"
@@ -294,59 +294,59 @@ msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
-msgstr "매일"
+msgstr "毎日"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "이틀에 한번"
+msgstr "二日に一回"
 
 msgctxt "#30069"
 msgid "every 5 days"
-msgstr "닷새에 한번"
+msgstr "五日に一回"
 
 msgctxt "#30070"
 msgid "weekly"
-msgstr "매주"
+msgstr "毎週"
 
 msgctxt "#30071"
 msgid "Time of Day"
-msgstr "실행 시간"
+msgstr ""
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "5분이상 빈둥거리면 시작합니다."
+msgstr ""
 
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
-msgstr "새로 고칠 때 몇분 마다 확인할까요?"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "내보낸 것들 보기"
+msgstr ""
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "건너뛸 때 물어보기"
+msgstr ""
 
 msgctxt "#30076"
 msgid "Skip intro"
-msgstr "오프닝 건너뛰기"
+msgstr "イントロをスキップ"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "줄거리 건너뛰기"
+msgstr "本編へスキップ"
 
 msgctxt "#30078"
 msgid "Playback"
-msgstr "재생"
+msgstr "再生"
 
 msgctxt "#30079"
 msgid "Skip automatically"
-msgstr "자동으로 건너뛰기"
+msgstr "オートスキップ"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "건너뛸 때 멈추기"
+msgstr "スキップする際に停止"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
@@ -354,7 +354,7 @@ msgstr ""
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr "음성/자막 설정 기억하기"
+msgstr ""
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -382,7 +382,7 @@ msgstr ""
 
 msgctxt "#30089"
 msgid "Browse subgenres"
-msgstr "쟝르"
+msgstr "ジャンル"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
@@ -406,11 +406,11 @@ msgstr ""
 
 msgctxt "#30095"
 msgid "All TV Shows"
-msgstr "TV 프로그램 전체"
+msgstr "全てのTV番組・ドラマ"
 
 msgctxt "#30096"
 msgid "All Movies"
-msgstr "영화 전체"
+msgstr "全ての映画"
 
 msgctxt "#30097"
 msgid "Main Menu"
@@ -426,7 +426,7 @@ msgstr ""
 
 msgctxt "#30100"
 msgid "Results for \"{}\""
-msgstr "\"{}\"의 검색 결과"
+msgstr "\"{}\"の検索結果"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -453,16 +453,16 @@ msgid "Invalid PIN"
 msgstr ""
 
 msgctxt "#30107"
-msgid "PIN protection is off."
+msgid "Disabled PIN verfication"
 msgstr ""
 
 msgctxt "#30108"
-msgid "All content is protected by PIN."
+msgid "Enabled PIN verfication"
 msgstr ""
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr ""
+msgstr "ログイン成功"
 
 msgctxt "#30110"
 msgid "Background services started"
@@ -474,11 +474,11 @@ msgstr ""
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr ""
+msgstr "Netflixを見るのには、ログインしてください"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr ""
+msgstr "ログアウト成功"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
@@ -494,7 +494,7 @@ msgstr ""
 
 msgctxt "#30117"
 msgid "Cache"
-msgstr ""
+msgstr "キャッシュ"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
@@ -566,7 +566,7 @@ msgstr ""
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr ""
+msgstr "キャッシュを削除しました。"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
@@ -606,7 +606,7 @@ msgstr ""
 
 msgctxt "#30145"
 msgid "Recently added"
-msgstr "최신등록콘텐츠"
+msgstr "新着"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
@@ -614,31 +614,31 @@ msgstr ""
 
 msgctxt "#30147"
 msgid "Next page >>"
-msgstr "다음 >>"
+msgstr "次へ >>"
 
 msgctxt "#30148"
 msgid "<< Previous page"
-msgstr "<< 이전"
+msgstr "<< 前へ"
 
 msgctxt "#30149"
 msgid "Sort results by"
-msgstr "정렬"
+msgstr "並び替え"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
-msgstr "오름차순(ㄱ-Z)"
+msgstr "昇順(作品目)"
 
 msgctxt "#30151"
 msgid "Alphabetical order (Z-A)"
-msgstr "내림차순(Z-ㄱ)"
+msgstr "降順(作品目)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "추천콘텐츠"
+msgstr "あなたにオススメ"
 
 msgctxt "#30153"
 msgid "Year released"
-msgstr "출시일순"
+msgstr "公開年"
 
 msgctxt "#30154"
 msgid "Netflix addon configuration"
@@ -678,7 +678,7 @@ msgstr ""
 
 msgctxt "#30163"
 msgid "Audio description"
-msgstr "음성지원"
+msgstr "副音声・音声ガイド付き"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
@@ -690,43 +690,43 @@ msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
-msgstr "첫 화면"
+msgstr "メインメニュー"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "내가 찜한 콘텐츠"
+msgstr "マイリスト"
 
 msgctxt "#30168"
 msgid "Continue watching"
-msgstr "시청 중인 콘텐츠"
+msgstr "視聴中コンテンツ"
 
 msgctxt "#30169"
 msgid "Top picks"
-msgstr "취향 저격 베스트 콘텐츠"
+msgstr "あなたにイチオシ！"
 
 msgctxt "#30170"
 msgid "New releases"
-msgstr "신규콘텐츠"
+msgstr "新作・準新作"
 
 msgctxt "#30171"
 msgid "Trending now"
-msgstr "지금 뜨는 콘텐츠"
+msgstr "人気急上昇中の作品"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
-msgstr "Netflix 인기 콘텐츠"
+msgstr "Netflixでの人気の作品"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
-msgstr "Netflix 오리지널"
+msgstr "Netflixオリジナル作品"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
-msgstr "TV 프로그램"
+msgstr "TV番組・ドラマ"
 
 msgctxt "#30175"
 msgid "Movie genres"
-msgstr "영화"
+msgstr "映画"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
@@ -742,7 +742,7 @@ msgstr ""
 
 msgctxt "#30179"
 msgid "Show trailers & more"
-msgstr "예고편 및 다른 영상"
+msgstr "予告編など"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
@@ -802,7 +802,7 @@ msgstr ""
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr "해상도 제한"
+msgstr ""
 
 msgctxt "#30195"
 msgid "Export new episodes"
@@ -878,7 +878,7 @@ msgstr ""
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
-msgstr "InputStream Helper 애드온 설정"
+msgstr "InputStream Helper アドオン設定"
 
 msgctxt "#30214"
 msgid "Force the update of my list"
@@ -946,19 +946,19 @@ msgstr ""
 
 msgctxt "#30230"
 msgid "Check for updates now"
-msgstr ""
+msgstr "今、更新内容を確認"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
-msgstr ""
+msgstr "更新内容を確認しましょうか。"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "成人向け"
 
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
-msgstr ""
+msgstr "{}を見るのにはPINを入力してください"
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
