@@ -166,7 +166,7 @@ msgstr "Kézi  ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "InputStream Adaptive beállítások...""
+msgstr "InputStream Adaptive beállítások..."
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
