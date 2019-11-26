@@ -11,11 +11,6 @@ import sys
 from functools import wraps
 from xbmcgui import Window
 
-try:  # Python 3
-    import itertools.ifilter as filter  # pylint: disable=redefined-builtin
-except ImportError:  # Python 2
-    pass
-
 # Import and initialize globals right away to avoid stale values from the last
 # addon invocation. Otherwise Kodi's reuseLanguageInvoker will cause some
 # really quirky behavior!
@@ -132,7 +127,7 @@ if __name__ == '__main__':
             if _check_valid_credentials():
                 check_addon_upgrade()
                 g.initial_addon_configuration()
-                route(list(filter(None, g.PATH.split('/'))))
+                route([part for part in g.PATH.split('/') if part])
         except BackendNotReady:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()
