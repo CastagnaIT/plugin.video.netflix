@@ -2,7 +2,6 @@
 """Helper functions for inter-process communication via AddonSignals"""
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
-import AddonSignals
 
 from resources.lib.globals import g
 import resources.lib.api.exceptions as apierrors
@@ -30,8 +29,9 @@ class Signals(object):  # pylint: disable=no-init
 
 def register_slot(callback, signal=None, source_id=None):
     """Register a callback with AddonSignals for return calls"""
+    from AddonSignals import registerSlot
     name = signal if signal else _signal_name(callback)
-    AddonSignals.registerSlot(
+    registerSlot(
         signaler_id=source_id or g.ADDON_ID,
         signal=name,
         callback=callback)
@@ -40,8 +40,9 @@ def register_slot(callback, signal=None, source_id=None):
 
 def unregister_slot(callback, signal=None):
     """Remove a registered callback from AddonSignals"""
+    from AddonSignals import unRegisterSlot
     name = signal if signal else _signal_name(callback)
-    AddonSignals.unRegisterSlot(
+    unRegisterSlot(
         signaler_id=g.ADDON_ID,
         signal=name)
     debug('Unregistered AddonSignals slot {}'.format(name))
@@ -49,7 +50,8 @@ def unregister_slot(callback, signal=None):
 
 def send_signal(signal, data=None):
     """Send a signal via AddonSignals"""
-    AddonSignals.sendSignal(
+    from AddonSignals import sendSignal
+    sendSignal(
         source_id=g.ADDON_ID,
         signal=signal,
         data=data)
@@ -91,8 +93,9 @@ def make_addonsignals_call(callname, data):
     """Make an IPC call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target
     function."""
+    from AddonSignals import makeCall
     debug('Handling AddonSignals IPC call to {}'.format(callname))
-    result = AddonSignals.makeCall(
+    result = makeCall(
         source_id=g.ADDON_ID,
         signal=callname,
         data=data,
@@ -136,8 +139,8 @@ def addonsignals_return_call(func):
         # Do not return None or AddonSignals will keep waiting till timeout
         if result is None:
             result = {}
-        AddonSignals.returnCall(
-            signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
+        from AddonSignals import returnCall
+        returnCall(signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
         return result
     return make_return_call
 

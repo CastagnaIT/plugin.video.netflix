@@ -2,13 +2,8 @@
 """Helper functions to build plugin listings for Kodi"""
 from __future__ import absolute_import, division, unicode_literals
 
-import os
 from functools import wraps
 from future.utils import iteritems
-
-import xbmc
-import xbmcgui
-import xbmcplugin
 
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
@@ -41,7 +36,8 @@ def custom_viewmode(partial_setting_id):
 
 def _activate_view(partial_setting_id):
     """Activate the given view if the plugin is run in the foreground"""
-    if 'plugin://{}'.format(g.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath'):
+    from xbmc import getInfoLabel
+    if 'plugin://{}'.format(g.ADDON_ID) in getInfoLabel('Container.FolderPath'):
         if g.ADDON.getSettingBool('customview'):
             view_mode = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id))
             if view_mode == 0:
@@ -50,7 +46,8 @@ def _activate_view(partial_setting_id):
             # Force a custom view, get the id from settings
             view_id = int(g.ADDON.getSettingInt('viewmode' + partial_setting_id + 'id'))
             if view_id > 0:
-                xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
+                from xbmc import executebuiltin
+                executebuiltin('Container.SetViewMode({})'.format(view_id))
 
 
 @custom_viewmode(g.VIEW_PROFILES)
@@ -401,11 +398,14 @@ def _create_supplemental_item(videoid_value, video, video_list, params):
 def list_item_skeleton(label, icon=None, fanart=None, description=None, customicon=None):
     """Create a rudimentary list item skeleton with icon and fanart"""
     # pylint: disable=unexpected-keyword-arg
-    list_item = xbmcgui.ListItem(label=label, offscreen=True)
+    from xbmcgui import ListItem
+    list_item = ListItem(label=label, offscreen=True)
     list_item.setContentLookup(False)
     art_values = {}
     if customicon:
-        addon_dir = xbmc.translatePath(g.ADDON.getAddonInfo('path'))
+        import os.path
+        from xbmc import translatePath
+        addon_dir = translatePath(g.ADDON.getAddonInfo('path'))
         icon = os.path.join(addon_dir, 'resources', 'media', customicon)
         art_values['thumb'] = icon
     if icon:
@@ -450,6 +450,7 @@ def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_not
                        title=None):
     """Finalize a directory listing.
     Add items, set available sort methods and content type"""
+    import xbmcplugin
     if title:
         xbmcplugin.setPluginCategory(g.PLUGIN_HANDLE, title)
     xbmcplugin.setContent(g.PLUGIN_HANDLE, content_type)
@@ -458,6 +459,7 @@ def finalize_directory(items, content_type=g.CONTENT_FOLDER, sort_type='sort_not
 
 
 def add_sort_methods(sort_type):
+    import xbmcplugin
     if sort_type == 'sort_nothing':
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     if sort_type == 'sort_label':

@@ -2,8 +2,6 @@
 """Navigation handler for actions"""
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -102,9 +100,10 @@ class AddonActionExecutor(object):
         """Get the trailer list"""
         video_list = api.supplemental_video_list(videoid, 'trailers')
         if video_list.videos:
+            from xbmc import executebuiltin
             url = common.build_url(['supplemental', videoid.value, videoid.mediatype, 'trailers'],
                                    mode=g.MODE_DIRECTORY)
-            xbmc.executebuiltin('Container.Update({})'.format(url))
+            executebuiltin('Container.Update({})'.format(url))
         else:
             ui.show_notification(common.get_local_string(30111))
 
@@ -145,8 +144,9 @@ class AddonActionExecutor(object):
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen
         url = 'plugin://plugin.video.netflix/directory/root'
-        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-        xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+        from xbmc import executebuiltin
+        executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
+        executebuiltin('Container.Update({})'.format(url))  # Open root page
 
 
 def _sync_library(videoid, operation):

@@ -4,8 +4,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-import mysql.connector
-
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_utils as db_utils
@@ -23,13 +21,14 @@ def handle_connection(func):
         if not args[0].is_mysql_database:
             # If database is not mysql pass to next decorator
             return func(*args, **kwargs)
+        from mysql.connector import connect, Error
         conn = None
         try:
             if not args[0].conn or (args[0].conn and not args[0].conn.is_connected()):
-                args[0].conn = mysql.connector.connect(**args[0].config)
+                args[0].conn = connect(**args[0].config)
                 conn = args[0].conn
             return func(*args, **kwargs)
-        except mysql.connector.Error as exc:
+        except Error as exc:
             common.error('MySQL error {}:', exc)
             raise MySQLConnectionError
         finally:
@@ -60,21 +59,22 @@ class MySQLDatabase(db_base.BaseDatabase):
         super(MySQLDatabase, self).__init__()
 
     def _initialize_connection(self):
+        from mysql.connector import connect, Error
         try:
             common.debug('Trying connection to the MySQL database {}', self.database)
-            self.conn = mysql.connector.connect(**self.config)
+            self.conn = connect(**self.config)
             if self.conn.is_connected():
                 db_info = self.conn.get_server_info()
                 common.debug('MySQL database connection was successful (MySQL server ver. {})',
                              db_info)
-        except mysql.connector.Error as exc:
+        except Error as exc:
             if exc.errno == 1049 and not self.is_connection_test:
                 # Database does not exist, create a new one
                 try:
                     db_create_mysql.create_database(self.config.copy())
                     self._initialize_connection()
                     return
-                except mysql.connector.Error as e:
+                except Error as e:
                     common.error('MySql error {}:', e)
                     raise MySQLConnectionError
             common.error('MySql error {}:', exc)
@@ -84,6 +84,7 @@ class MySQLDatabase(db_base.BaseDatabase):
                 self.conn.close()
 
     def _execute_non_query(self, query, params=None, cursor=None, **kwargs):  # pylint: disable=arguments-differ
+        from mysql.connector import Error
         try:
             if cursor is None:
                 cursor = self.get_cursor()
@@ -96,7 +97,7 @@ class MySQLDatabase(db_base.BaseDatabase):
                 # 'multi' is lazy statement run sql only when needed
                 for result in results:  # pylint: disable=unused-variable
                     pass
-        except mysql.connector.Error as exc:
+        except Error as exc:
             common.error('MySQL error {}:', exc)
             raise MySQLError
         except ValueError as exc_ve:
@@ -105,6 +106,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             raise exc_ve
 
     def _execute_query(self, query, params=None, cursor=None):
+        from mysql.connector import Error
         try:
             if cursor is None:
                 cursor = self.get_cursor()
@@ -114,7 +116,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             else:
                 cursor.execute(query)
             return cursor
-        except mysql.connector.Error as exc:
+        except Error as exc:
             common.error('MySQL error {}:', exc.args[0])
             raise MySQLError
         except ValueError as exc_ve:

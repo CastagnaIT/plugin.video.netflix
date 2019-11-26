@@ -18,11 +18,6 @@ except ImportError:  # Python 2
     from urllib2 import unquote
     from urlparse import parse_qsl, urlparse
 
-from future.utils import iteritems
-
-import xbmc
-import xbmcaddon
-
 
 class GlobalVariables(object):
     """Encapsulation for global variables to work around quirks with
@@ -184,9 +179,11 @@ class GlobalVariables(object):
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
+        from xbmc import translatePath
+        from xbmcaddon import Addon
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
-        self.ADDON = xbmcaddon.Addon()
+        self.ADDON = Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
         self.PLUGIN = self.ADDON.getAddonInfo('name')
         self.VERSION = self.ADDON.getAddonInfo('version')
@@ -200,7 +197,7 @@ class GlobalVariables(object):
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
         for path in module_paths:
-            path = xbmc.translatePath(path)
+            path = translatePath(path)
             if path not in sys.path:
                 sys.path.insert(0, path)
 
@@ -257,7 +254,8 @@ class GlobalVariables(object):
         self._init_cache()
 
     def _init_cache(self):
-        if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
+        from xbmc import translatePath
+        if not os.path.exists(g.py2_decode(translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
         # This is ugly: Pass the common module into Cache.__init__ to work
         # around circular import dependencies.
@@ -267,10 +265,11 @@ class GlobalVariables(object):
                            self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
+        from xbmc import translatePath
         from xbmcvfs import mkdirs
         from resources.lib.cache import BUCKET_NAMES
         for bucket in BUCKET_NAMES:
-            mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
+            mkdirs(translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
     def initial_addon_configuration(self):
         """
@@ -302,10 +301,12 @@ class GlobalVariables(object):
                     ultrahd_capable_device = ask_for_confirmation(get_local_string(30154),
                                                                   get_local_string(30156))
                 if ultrahd_capable_device:
+                    from xbmc import getCondVisibility
                     show_ok_dialog(get_local_string(30154), get_local_string(30157))
-                    ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
+                    ia_enabled = getCondVisibility('System.HasAddon(inputstream.adaptive)')
                     if ia_enabled:
-                        xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
+                        from xbmc import executebuiltin
+                        executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
                     else:
                         show_ok_dialog(get_local_string(30154), get_local_string(30046))
                     self.ADDON.setSettingBool('enable_vp9_profiles', False)
@@ -379,6 +380,7 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with lolomo_known=True"""
+        from future.utils import iteritems
         for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
             if data['lolomo_known']:
                 if data['lolomo_contexts'][0] == context:
@@ -388,7 +390,8 @@ class GlobalVariables(object):
     def flush_settings(self):
         """Reload the ADDON"""
         # pylint: disable=attribute-defined-outside-init
-        self.ADDON = xbmcaddon.Addon()
+        from xbmcaddon import Addon
+        self.ADDON = Addon()
 
     def reset_time_trace(self):
         """Reset current time trace info"""

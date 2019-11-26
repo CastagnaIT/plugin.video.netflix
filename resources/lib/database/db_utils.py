@@ -2,11 +2,6 @@
 """Miscellaneous database utility functions"""
 from __future__ import absolute_import, division, unicode_literals
 
-import os
-
-import xbmc
-import xbmcvfs
-
 from resources.lib.globals import g
 
 
@@ -31,10 +26,13 @@ VidLibProp = {
 
 def get_local_db_path(db_filename):
     # First ensure database folder exists
-    db_folder = xbmc.translatePath(os.path.join(g.DATA_PATH, 'database'))
-    if not xbmcvfs.exists(db_folder):
-        xbmcvfs.mkdirs(db_folder)
-    return xbmc.translatePath(os.path.join(g.DATA_PATH, 'database', db_filename))
+    import os.path
+    from xbmc import translatePath
+    from xbmcvfs import exists, mkdirs
+    db_folder = translatePath(os.path.join(g.DATA_PATH, 'database'))
+    if not exists(db_folder):
+        mkdirs(db_folder)
+    return translatePath(os.path.join(g.DATA_PATH, 'database', db_filename))
 
 
 def sql_filtered_update(table, set_columns, where_columns, values):

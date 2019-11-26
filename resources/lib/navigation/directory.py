@@ -2,9 +2,6 @@
 """Navigation for classic plugin directory listing mode"""
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-import xbmcplugin
-
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -50,10 +47,11 @@ class DirectoryBuilder(object):
 
     def profiles(self, pathitems=None):
         """Show profiles listing"""
+        from xbmcplugin import endOfDirectory
         # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
         if not api.update_profiles_data():
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+            endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
             return
         listings.build_profiles_listing()
         _handle_endofdirectory(False, False)
@@ -177,8 +175,9 @@ class DirectoryBuilder(object):
             listings.build_video_listing(api.custom_video_list(library_contents), g.MAIN_MENU_ITEMS['exported'])
             _handle_endofdirectory(self.dir_update_listing)
         else:
+            from xbmcplugin import endOfDirectory
             ui.show_notification(common.get_local_string(30013))
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+            endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
     @common.time_execution(immediate=False)
     def supplemental(self, pathitems):
@@ -191,13 +190,15 @@ class DirectoryBuilder(object):
 
 
 def _ask_search_term_and_redirect():
+    from xbmcplugin import endOfDirectory
     search_term = ui.ask_for_search_term()
     if search_term:
         url = common.build_url(['search', 'search', search_term], mode=g.MODE_DIRECTORY)
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
-        xbmc.executebuiltin('Container.Update({})'.format(url))
+        endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
+        from xbmc import executebuiltin
+        executebuiltin('Container.Update({})'.format(url))
     else:
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
 
 @common.time_execution(immediate=False)
@@ -208,13 +209,15 @@ def _display_search_results(pathitems, perpetual_range_start, dir_update_listing
         listings.build_video_listing(search_results, g.MAIN_MENU_ITEMS['search'], pathitems)
         _handle_endofdirectory(dir_update_listing)
     else:
+        from xbmcplugin import endOfDirectory
         ui.show_notification(common.get_local_string(30013))
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
 
 def _handle_endofdirectory(dir_update_listing, cache_to_disc=True):
     # If dir_update_listing=True overwrite the history list, so we can get back to the main page
-    xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE,
-                              succeeded=True,
-                              updateListing=dir_update_listing,
-                              cacheToDisc=cache_to_disc)
+    from xbmcplugin import endOfDirectory
+    endOfDirectory(g.PLUGIN_HANDLE,
+                   succeeded=True,
+                   updateListing=dir_update_listing,
+                   cacheToDisc=cache_to_disc)

@@ -3,8 +3,6 @@
 """Miscellanneous utility functions"""
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
-from time import clock
-from future.utils import iteritems
 
 try:  # Python 2
     from itertools import imap as map  # pylint: disable=redefined-builtin
@@ -21,9 +19,6 @@ try:  # Python 3
 except ImportError:  # Python 2
     from urllib import urlencode
     from urllib2 import quote
-
-import xbmc
-import xbmcgui
 
 from resources.lib.globals import g
 from .logging import debug, info, error
@@ -76,6 +71,7 @@ def get_class_methods(class_item=None):
     :returns: list -- Class methods
     """
     from types import FunctionType
+    from future.utils import iteritems
     _type = FunctionType
     return [x
             for x, y in iteritems(class_item.__dict__)
@@ -177,16 +173,18 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
     dialog in the GUI. Additional kwargs will be passed into task_handler
     on each invocation.
     Returns a list of errors that occured during execution of tasks."""
+    from xbmcgui import DialogProgress
+#    from xbmc import sleep
     errors = []
     notify_errors = kwargs.pop('notify_errors', False)
-    progress = xbmcgui.DialogProgress()
+    progress = DialogProgress()
     progress.create(title)
     for task_num, task in enumerate(tasks):
         # pylint: disable=broad-except
         task_title = task.get('title', 'Unknown Task')
         progress.update(percent=int(task_num * 100 / len(tasks)),
                         line1=task_title)
-#        xbmc.sleep(25)
+#        sleep(25)
         if progress.iscanceled():
             break
         try:
@@ -202,11 +200,12 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
 
 
 def _show_errors(notify_errors, errors):
+    from xbmcgui import Dialog
     if notify_errors and errors:
-        xbmcgui.Dialog().ok(get_local_string(0),
-                            '\n'.join(['{} ({})'.format(err['task_title'],
-                                                        err['error'])
-                                       for err in errors]))
+        Dialog().ok(get_local_string(0),
+                    '\n'.join(['{} ({})'.format(err['task_title'],
+                                                err['error'])
+                               for err in errors]))
 
 
 # def compress_data(data):
@@ -221,6 +220,7 @@ def merge_dicts(dict_to_merge, merged_dict):
     """Recursively merge the contents of dict_to_merge into merged_dict.
     Values that are already present in merged_dict will be overwritten
     if they are also present in dict_to_merge"""
+    from future.utils import iteritems
     for key, value in iteritems(dict_to_merge):
         if isinstance(merged_dict.get(key), dict):
             merge_dicts(value, merged_dict[key])
@@ -242,6 +242,7 @@ def time_execution(immediate):
     def time_execution_decorator(func):
         @wraps(func)
         def timing_wrapper(*args, **kwargs):
+            from time import clock
             g.add_time_trace_level()
             start = clock()
             try:
@@ -316,18 +317,19 @@ def remove_html_tags(raw_html):
 
 
 def get_system_platform():
+    from xbmc import getCondVisibility
     platform = "unknown"
-    if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
+    if getCondVisibility('system.platform.linux') and not getCondVisibility('system.platform.android'):
         platform = "linux"
-    elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
+    elif getCondVisibility('system.platform.linux') and getCondVisibility('system.platform.android'):
         platform = "android"
-    elif xbmc.getCondVisibility('system.platform.xbox'):
+    elif getCondVisibility('system.platform.xbox'):
         platform = "xbox"
-    elif xbmc.getCondVisibility('system.platform.windows'):
+    elif getCondVisibility('system.platform.windows'):
         platform = "windows"
-    elif xbmc.getCondVisibility('system.platform.osx'):
+    elif getCondVisibility('system.platform.osx'):
         platform = "osx"
-    elif xbmc.getCondVisibility('system.platform.ios'):
+    elif getCondVisibility('system.platform.ios'):
         platform = "ios"
     return platform
 
@@ -339,8 +341,9 @@ class GetKodiVersion(object):
         # Examples of some types of supported strings:
         # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
         # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
+        from xbmc import getInfoLabel
         import re
-        build_version_str = xbmc.getInfoLabel('System.BuildVersion')
+        build_version_str = getInfoLabel('System.BuildVersion')
         re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
         if re_kodi_version:
             self.version = re_kodi_version.group(0)

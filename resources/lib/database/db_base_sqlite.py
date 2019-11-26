@@ -2,7 +2,6 @@
 """SQLite database"""
 from __future__ import absolute_import, division, unicode_literals
 
-import sqlite3 as sql
 from functools import wraps
 
 try:  # Python 2
@@ -36,15 +35,16 @@ def handle_connection(func):
             # If database is mysql pass to next decorator
             return func(*args, **kwargs)
         conn = None
+        from sqlite3 import connect, Error
         try:
             if not args[0].is_connected:
-                args[0].conn = sql.connect(args[0].db_file_path,
-                                           isolation_level=CONN_ISOLATION_LEVEL,
-                                           check_same_thread=False)
+                args[0].conn = connect(args[0].db_file_path,
+                                       isolation_level=CONN_ISOLATION_LEVEL,
+                                       check_same_thread=False)
                 args[0].is_connected = True
                 conn = args[0].conn
             return func(*args, **kwargs)
-        except sql.Error as exc:
+        except Error as exc:
             common.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
@@ -62,10 +62,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
         super(SQLiteDatabase, self).__init__()
 
     def _initialize_connection(self):
+        from sqlite3 import connect, Error
         try:
 
             common.debug('Trying connection to the database {}', self.db_filename)
-            self.conn = sql.connect(self.db_file_path, check_same_thread=False)
+            self.conn = connect(self.db_file_path, check_same_thread=False)
             cur = self.conn.cursor()
             cur.execute(str('SELECT SQLITE_VERSION()'))
             common.debug('Database connection {} was successful (SQLite ver. {})',
@@ -78,7 +79,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 # If no tables exist create a new one
                 self.conn.close()
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
-        except sql.Error as exc:
+        except Error as exc:
             common.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
@@ -86,6 +87,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 self.conn.close()
 
     def _execute_non_query(self, query, params=None, cursor=None):
+        from sqlite3 import Error
         try:
             if cursor is None:
                 cursor = self.get_cursor()
@@ -93,7 +95,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query, params)
             else:
                 cursor.execute(query)
-        except sql.Error as exc:
+        except Error as exc:
             common.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:
@@ -102,6 +104,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             raise exc_ve
 
     def _execute_query(self, query, params=None, cursor=None):
+        from sqlite3 import Error
         try:
             if cursor is None:
                 cursor = self.get_cursor()
@@ -110,7 +113,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             else:
                 cursor.execute(query)
             return cursor
-        except sql.Error as exc:
+        except Error as exc:
             common.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:

@@ -2,11 +2,6 @@
 """Helper functions for setting infolabels of list items"""
 from __future__ import absolute_import, division, unicode_literals
 
-import copy
-import re
-
-from future.utils import iteritems, itervalues
-
 import resources.lib.api.paths as paths
 import resources.lib.api.shakti as api
 import resources.lib.cache as cache
@@ -46,7 +41,9 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
-    infos_copy = copy.deepcopy(infos)
+    from copy import deepcopy
+    from future.utils import iteritems
+    infos_copy = deepcopy(infos)
     if videoid.mediatype == common.VideoId.EPISODE or \
        videoid.mediatype == common.VideoId.MOVIE or \
        videoid.mediatype == common.VideoId.SUPPLEMENTAL:
@@ -118,6 +115,7 @@ def parse_info(videoid, item, raw_data):
 def parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accesible from
     the item dict"""
+    from future.utils import iteritems
     return {target: _get_and_transform(source, target, item)
             for target, source in iteritems(paths.INFO_MAPPINGS)}
 
@@ -135,6 +133,7 @@ def _get_and_transform(source, target, item):
 def parse_referenced_infos(item, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
+    from future.utils import iteritems
     return {target: [person['name']
                      for _, person
                      in paths.resolve_refs(item.get(source, {}), raw_data)]
@@ -143,6 +142,7 @@ def parse_referenced_infos(item, raw_data):
 
 def parse_tags(item):
     """Parse the tags"""
+    from future.utils import itervalues
     return {'tag': [tagdef['name']
                     for tagdef
                     in itervalues(item.get('tags', {}))
@@ -253,6 +253,7 @@ def add_info_from_library(videoid, list_item):
 
 
 def _sanitize_infos(details):
+    from future.utils import iteritems
     for source, target in iteritems(JSONRPC_MAPPINGS):
         if source in details:
             details[target] = details.pop(source)
@@ -279,6 +280,7 @@ def add_highlighted_title(list_item, videoid, infos):
 
 
 def _colorize_title(text, color, remove_color=False):
+    import re
     matches = re.match(r'(\[COLOR\s.+\])(.*)(\[/COLOR\])', text)
     if remove_color:
         if matches:

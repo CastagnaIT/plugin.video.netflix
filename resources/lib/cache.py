@@ -10,21 +10,14 @@ resources.lib.kodi.ui
 resources.lib.services.nfsession
 """
 from __future__ import absolute_import, division, unicode_literals
-import base64
 import os
 import sys
-from time import time
 from functools import wraps
-from future.utils import iteritems
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
-
-import xbmc
-import xbmcgui
-import xbmcvfs
 
 try:  # Python 2
     unicode
@@ -143,7 +136,9 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
 
 
 class Cache(object):
-    def __init__(self, common, cache_path, ttl, metadata_ttl, plugin_handle):
+    def __init__(self, common, cache_path, ttl, metadata_ttl, plugin_handle):  # pylint: disable=too-many-arguments
+        from xbmcgui import Window
+
         # pylint: disable=too-many-arguments
         # We have the self.common module injected as a dependency to work
         # around circular dependencies with gloabl variable initialization
@@ -153,12 +148,13 @@ class Cache(object):
         self.ttl = ttl
         self.metadata_ttl = metadata_ttl
         self.buckets = {}
-        self.window = xbmcgui.Window(10000)
+        self.window = Window(10000)
 
     def lock_marker(self):
         """Return a lock marker for this instance and the current time"""
         # Return maximum timestamp for library to prevent stale lock
         # overrides which may lead to inconsistencies
+        from time import time
         timestamp = int(time())
         return BUCKET_LOCKED.format(self.plugin_handle, timestamp)
 
@@ -178,6 +174,7 @@ class Cache(object):
         """Add an item to a cache bucket"""
         # pylint: disable=too-many-arguments
         if not eol:
+            from time import time
             eol = int(time() + (ttl if ttl else self.ttl))
         # self.common.debug('Adding {} to {} (valid until {})',
         #                   identifier, bucket, eol)
@@ -190,6 +187,7 @@ class Cache(object):
     def commit(self):
         """Persist cache contents in window properties"""
         # pylint: disable=global-statement
+        from future.utils import iteritems
         for bucket, contents in iteritems(self.buckets):
             self._persist_bucket(bucket, contents)
             # The self.buckets dict survives across addon invocations if the
@@ -235,18 +233,20 @@ class Cache(object):
         return self.buckets[key]
 
     def _load_bucket(self, bucket):
+        from base64 import b64decode
         wnd_property = None
         # Try 10 times to acquire a lock
         for _ in range(1, 10):
-            wnd_property_data = base64.b64decode(self.window.getProperty(_window_property(bucket)))
+            wnd_property_data = b64decode(self.window.getProperty(_window_property(bucket)))
             if wnd_property_data:
                 try:
                     wnd_property = pickle.loads(wnd_property_data)
                 except Exception:  # pylint: disable=broad-except
                     self.common.debug('No instance of {} found. Creating new instance.', bucket)
             if isinstance(wnd_property, unicode) and wnd_property.startswith('LOCKED'):
+                from xbmc import sleep
                 self.common.debug('Waiting for release of {}', bucket)
-                xbmc.sleep(50)
+                sleep(50)
             else:
                 return self._load_bucket_from_wndprop(bucket, wnd_property)
         self.common.warn('{} is locked. Working with an empty instance...', bucket)
@@ -266,15 +266,17 @@ class Cache(object):
         # because with getProperty cause UnicodeDecodeError due to not decodable characters
         # an Py2/Py3 compatible way is encode pickle data in to base64 string
         # requires additional conversion step work but works
+        from base64 import b64encode
         self.window.setProperty(_window_property(bucket),
-                                base64.b64encode(pickle.dumps(self.lock_marker())).decode('utf-8'))
+                                b64encode(pickle.dumps(self.lock_marker())).decode('utf-8'))
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
+        from xbmcvfs import exists, File
         cache_filename = self._entry_filename(bucket, identifier)
-        if not xbmcvfs.exists(cache_filename):
+        if not exists(cache_filename):
             raise CacheMiss()
-        handle = xbmcvfs.File(cache_filename, 'rb')
+        handle = File(cache_filename, 'rb')
         try:
             if sys.version_info.major == 2:
                 # pickle.loads on py2 wants string
@@ -289,20 +291,21 @@ class Cache(object):
 
     def _add_to_disk(self, bucket, identifier, cache_entry):
         """Write a cache entry to disk"""
-        # pylint: disable=broad-except
+        from xbmcvfs import File
         cache_filename = self._entry_filename(bucket, identifier)
-        handle = xbmcvfs.File(cache_filename, 'wb')
+        handle = File(cache_filename, 'wb')
         try:
             # return pickle.dump(cache_entry, handle)
             handle.write(bytearray(pickle.dumps(cache_entry)))
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             self.common.error('Failed to write cache entry to {}: {}', cache_filename, exc)
         finally:
             handle.close()
 
     def _entry_filename(self, bucket, identifier):
+        from xbmc import translatePath
         file_loc = [self.cache_path, bucket, '{}.cache'.format(identifier)]
-        return xbmc.translatePath(os.path.join(*file_loc))
+        return translatePath(os.path.join(*file_loc))
 
     def _persist_bucket(self, bucket, contents):
         # pylint: disable=broad-except
@@ -312,13 +315,14 @@ class Cache(object):
                 .format(bucket))
             return
 
+        from base64 import b64encode
         try:
             # Note pickle.dumps produces byte not str cannot be passed as is in setProperty (with py3)
             # because with getProperty cause UnicodeDecodeError due to not decodable characters
             # an Py2/Py3 compatible way is encode pickle data in to base64 string
             # requires additional conversion step work but works
             self.window.setProperty(_window_property(bucket),
-                                    base64.b64encode(pickle.dumps(contents)).decode('utf-8'))
+                                    b64encode(pickle.dumps(contents)).decode('utf-8'))
         except Exception as exc:
             self.common.error('Failed to persist {} to wnd properties: {}', bucket, exc)
             self.window.clearProperty(_window_property(bucket))
@@ -328,7 +332,9 @@ class Cache(object):
     def is_safe_to_persist(self, bucket):
         # Only persist if we acquired the original lock or if the lock is older
         # than 15 seconds (override stale locks)
-        lock_data = base64.b64decode(self.window.getProperty(_window_property(bucket)))
+        from base64 import b64decode
+        from time import time
+        lock_data = b64decode(self.window.getProperty(_window_property(bucket)))
         lock = ''
         if lock_data:
             lock = pickle.loads(lock_data)
@@ -344,6 +350,7 @@ class Cache(object):
     def verify_ttl(self, bucket, identifier, cache_entry):
         """Verify if cache_entry has reached its EOL.
         Remove from in-memory and disk cache if so and raise CacheMiss"""
+        from time import time
         if cache_entry['eol'] < int(time()):
             self.common.debug('Cache entry {} in {} has expired => cache miss',
                               identifier, bucket)

@@ -2,7 +2,6 @@
 """Functions for Kodi library NFO creation"""
 from __future__ import absolute_import, division, unicode_literals
 
-import xml.etree.ElementTree as ET
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -141,6 +140,7 @@ def create_movie_nfo(movie):
 
 def _add_episode_thumb(root, episode):
     if episode.get('thumbs'):
+        import xml.etree.ElementTree as ET
         for thumb in episode['thumbs']:
             url = thumb['url']
             thumbnail = ET.SubElement(root, 'thumb')
@@ -149,6 +149,7 @@ def _add_episode_thumb(root, episode):
 
 def _add_poster(root, data):
     if data.get('boxart'):
+        import xml.etree.ElementTree as ET
         for boxart in data['boxart']:
             url = boxart['url']
             poster = ET.SubElement(root, 'thumb', {'aspect': 'poster'})
@@ -157,6 +158,7 @@ def _add_poster(root, data):
 
 def _add_fanart(root, data):
     if data.get('storyart'):
+        import xml.etree.ElementTree as ET
         for storyart in data['storyart']:
             url = storyart['url']
             fanart = ET.SubElement(root, 'fanart')
@@ -165,6 +167,7 @@ def _add_fanart(root, data):
 
 
 def _build_root_node(root_name, tags):
+    import xml.etree.ElementTree as ET
     root = ET.Element(root_name)
     for (k, v) in list(tags.items()):
         if v:

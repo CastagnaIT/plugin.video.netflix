@@ -2,8 +2,6 @@
 """Generic persistent on disk storage"""
 from __future__ import absolute_import, division, unicode_literals
 
-import json
-
 from .logging import debug, warn
 from .fileops import save_file, load_file
 
@@ -58,7 +56,8 @@ class PersistentStorage(object):
         """
         Write current contents to disk
         """
-        save_file(self.backing_file, json.dumps(self._contents))
+        from json import dumps
+        save_file(self.backing_file, dumps(self._contents))
         debug('Committed changes to backing file')
 
     def clear(self):
@@ -69,12 +68,12 @@ class PersistentStorage(object):
         self.commit()
 
     def _load_from_disk(self):
-        # pylint: disable=broad-except
+        from json import loads
         debug('Trying to load contents from disk')
         try:
-            self._contents = json.loads(load_file(self.backing_file))
+            self._contents = loads(load_file(self.backing_file))
             debug('Loaded contents from backing file: {}'
                   .format(self._contents))
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             warn('Backing file does not exist or is not readable')
         self._dirty = False

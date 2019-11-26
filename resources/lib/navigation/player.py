@@ -2,10 +2,6 @@
 """Handle playback requests"""
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-import xbmcplugin
-import xbmcgui
-
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -52,20 +48,23 @@ def play(videoid):
     if not pin_result:
         if pin_result is not None:
             ui.show_notification(common.get_local_string(30106), time=10000)
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        from xbmcplugin import endOfDirectory
+        endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item)
 
     # Workaround for resuming strm files from library
+    from xbmc import getInfoLabel
     resume_position = infos.get('resume', {}).get('position') \
-        if xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') \
+        if getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') \
         and g.ADDON.getSettingBool('ResumeManager_enabled') else None
     if resume_position:
         index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
         if index_selected == -1:
-            xbmcplugin.setResolvedUrl(
+            from xbmcplugin import setResolvedUrl
+            setResolvedUrl(
                 handle=g.PLUGIN_HANDLE,
                 succeeded=False,
                 listitem=list_item)
@@ -81,7 +80,8 @@ def play(videoid):
         'timeline_markers': get_timeline_markers(metadata[0]),
         'upnext_info': get_upnext_info(videoid, (infos, art), metadata),
         'resume_position': resume_position})
-    xbmcplugin.setResolvedUrl(
+    from xbmcplugin import setResolvedUrl
+    setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
         succeeded=True,
         listitem=list_item)
@@ -90,11 +90,12 @@ def play(videoid):
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set
     for playback of the given video_id"""
+    from xbmcgui import ListItem
     service_url = SERVICE_URL_FORMAT.format(
         port=g.LOCAL_DB.get_value('msl_service_port', 8000))
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
-    list_item = xbmcgui.ListItem(path=service_url + manifest_path,
-                                 offscreen=True)
+    list_item = ListItem(path=service_url + manifest_path,
+                         offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/dash+xml')
 
@@ -144,21 +145,23 @@ def get_upnext_info(videoid, current_episode, metadata):
         common.debug('There is no next episode, not setting up Up Next')
         return {}
 
+    from xbmcgui import ListItem
     common.debug('Next episode is {}', next_episode_id)
-    next_episode = infolabels.add_info_for_playback(next_episode_id,
-                                                    xbmcgui.ListItem())
+    next_episode = infolabels.add_info_for_playback(next_episode_id, ListItem())
     next_info = {
         'current_episode': upnext_info(videoid, *current_episode),
         'next_episode': upnext_info(next_episode_id, *next_episode)
     }
 
-    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') and
+    from xbmc import getInfoLabel
+    if (getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') and
             library.is_in_library(next_episode_id)):
         filepath = g.SHARED_DB.get_episode_filepath(
             next_episode_id.tvshowid,
             next_episode_id.seasonid,
             next_episode_id.episodeid)
-        next_info['play_info'] = {'play_path': g.py2_decode(xbmc.translatePath(filepath))}
+        from xbmc import translatePath
+        next_info['play_info'] = {'play_path': g.py2_decode(translatePath(filepath))}
     else:
         next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id,
                                                                 mode=g.MODE_PLAY)}

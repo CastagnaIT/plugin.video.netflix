@@ -2,14 +2,11 @@
 """Persistent cookie management"""
 from __future__ import absolute_import, division, unicode_literals
 
-from time import time
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-import xbmc
-import xbmcvfs
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -25,13 +22,13 @@ class CookiesExpiredError(Exception):
 
 def save(account_hash, cookie_jar):
     """Save a cookie jar to file and in-memory storage"""
-    # pylint: disable=broad-except
+    from xbmcvfs import File
     g.COOKIES[account_hash] = cookie_jar
-    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
+    cookie_file = File(cookie_filename(account_hash), 'wb')
     try:
         # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         common.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
         cookie_file.close()
@@ -39,24 +36,26 @@ def save(account_hash, cookie_jar):
 
 def delete(account_hash):
     """Delete cookies for an account from in-memory storage and the disk"""
-    # pylint: disable=broad-except
+    from xbmcvfs import delete as vfsdelete
     if g.COOKIES.get(account_hash):
         del g.COOKIES[account_hash]
     try:
-        xbmcvfs.delete(cookie_filename(account_hash))
-    except Exception as exc:
+        vfsdelete(cookie_filename(account_hash))
+    except Exception as exc:  # pylint: disable=broad-except
         common.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
+    from xbmc import translatePath
+    from xbmcvfs import exists, File
     filename = cookie_filename(account_hash)
     common.debug('Loading cookies from {}', filename)
-    if not xbmcvfs.exists(xbmc.translatePath(filename)):
+    if not exists(translatePath(filename)):
         common.debug('Cookies file does not exist')
         raise MissingCookiesError()
     try:
-        cookie_file = xbmcvfs.File(filename, 'rb')
+        cookie_file = File(filename, 'rb')
         if g.PY_IS_VER2:
             # pickle.loads on py2 wants string
             cookie_jar = pickle.loads(cookie_file.read())
@@ -75,6 +74,7 @@ def load(account_hash):
     except KeyError:
         pass
 
+    from time import time
     debug_output = 'Loaded cookies:\n'
     for cookie in cookie_jar:
         remaining_ttl = ((cookie.expires or 0) - time() / 60) if cookie.expires else None
@@ -88,6 +88,7 @@ def load(account_hash):
 
 def expired(cookie_jar):
     """Check if one of the cookies in the jar is already expired"""
+    from time import time
     earliest_expiration = 99999999999999999999
     for cookie in cookie_jar:
         if cookie.expires is not None:
@@ -97,4 +98,5 @@ def expired(cookie_jar):
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""
-    return xbmc.translatePath('{}_{}'.format(g.COOKIE_PATH, account_hash))
+    from xbmc import translatePath
+    return translatePath('{}_{}'.format(g.COOKIE_PATH, account_hash))

@@ -2,7 +2,6 @@
 """Parsing of Netflix Website"""
 from __future__ import absolute_import, division, unicode_literals
 
-import json
 from re import compile as recompile, DOTALL, sub
 from collections import OrderedDict
 
@@ -249,6 +248,7 @@ def generate_esn(user_data):
 @common.time_execution(immediate=True)
 def extract_json(content, name):
     """Extract json from netflix content page"""
+    from json import loads
     common.debug('Extracting {} JSON', name)
     json_str = None
     try:
@@ -259,7 +259,7 @@ def extract_json(content, name):
         json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
         json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
         json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
-        return json.loads(json_str)
+        return loads(json_str)
     except Exception:
         if json_str:
             common.error('JSON string trying to load: {}', json_str)

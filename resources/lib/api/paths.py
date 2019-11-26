@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Path info to query the Shakti pathEvaluator"""
 from __future__ import absolute_import, division, unicode_literals
-from future.utils import iteritems
 
 import resources.lib.common as common
 
@@ -112,6 +111,7 @@ def iterate_references(source):
     reaches the first empty reference, which signals the end of the reference
     list.
     Items with a key that do not represent an integer are ignored."""
+    from future.utils import iteritems
     for index, ref in sorted({int(k): v
                               for k, v in iteritems(source)
                               if common.is_numeric(k)}.items()):
@@ -125,6 +125,7 @@ def iterate_references(source):
 
 
 def count_references(source):
+    from future.utils import iteritems
     counter = 0
     for index, ref in sorted({int(k): v  # pylint: disable=unused-variable
                               for k, v in iteritems(source)

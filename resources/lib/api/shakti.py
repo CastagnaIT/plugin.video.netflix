@@ -2,7 +2,6 @@
 """Access to Netflix's Shakti API"""
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
-from future.utils import iteritems
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -283,6 +282,7 @@ def custom_video_list_basicinfo(context_name, switch_profiles=False):
 @cache.cache_output(g, cache.CACHE_COMMON, fixed_identifier='my_list_items', ttl=600)
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
+    from future.utils import iteritems
     common.debug('Try to perform a request to get the id list of the videos in my list')
     try:
         items = []
@@ -306,6 +306,7 @@ def mylist_items():
 # active profile in a single call to try limit execution in faster way.
 def mylist_items_switch_profiles():
     """Return a list of all the items currently contained in my list"""
+    from future.utils import iteritems
     common.debug('Perform a request to get the id list'
                  'of the videos in my list with profiles switching')
     try:

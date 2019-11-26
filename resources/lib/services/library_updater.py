@@ -2,17 +2,15 @@
 """Automatic updates of items exported to the Kodi library"""
 from __future__ import absolute_import, division, unicode_literals
 
-from datetime import datetime, timedelta
-
 import AddonSignals
-import xbmc
+from xbmc import Monitor
 
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.library as kodi_library
 
 
-class LibraryUpdateService(xbmc.Monitor):
+class LibraryUpdateService(Monitor):
     """
     Checks if a library update is scheduled and triggers it
     """
@@ -31,7 +29,7 @@ class LibraryUpdateService(xbmc.Monitor):
         self.next_schedule = _compute_next_schedule()
 
         # Update library variables
-        xbmc.Monitor.__init__(self)
+        Monitor.__init__(self)
         self.scan_in_progress = False
         self.scan_awaiting = False
         AddonSignals.registerSlot(
@@ -42,12 +40,13 @@ class LibraryUpdateService(xbmc.Monitor):
         """Check if update is due and trigger it"""
         if not self.enabled:
             return
+        from datetime import datetime
         if (self.next_schedule is not None
                 and self.is_idle()
                 and self.next_schedule <= datetime.now()):
+            from xbmc import executebuiltin
             common.debug('Triggering auto update library')
-            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/service_auto_upd_run_now/)'
-                                .format(g.ADDON_ID))
+            executebuiltin('XBMC.RunPlugin(plugin://{}/library/service_auto_upd_run_now/)'.format(g.ADDON_ID))
             g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
 
@@ -58,8 +57,9 @@ class LibraryUpdateService(xbmc.Monitor):
         if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
             return True
 
-        lastidle = xbmc.getGlobalIdleTime()
-        if xbmc.Player().isPlaying():
+        from xbmc import getGlobalIdleTime, Player
+        lastidle = getGlobalIdleTime()
+        if Player().isPlaying():
             self.startidle = lastidle
         if lastidle < self.startidle:
             self.startidle = 0
@@ -71,8 +71,9 @@ class LibraryUpdateService(xbmc.Monitor):
         As settings changed, we will compute next schedule again
         to ensure it's still correct
         """
+        from xbmc import sleep
         # Wait for slow system (like Raspberry Pi) to write the settings
-        xbmc.sleep(500)
+        sleep(500)
         # Check if the status is changed
         self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 1
         # Then compute the next schedule
@@ -101,11 +102,9 @@ class LibraryUpdateService(xbmc.Monitor):
         # If a scan is already in progress, the scan is delayed until onScanFinished event
         common.debug('Library update requested for library updater service')
         if not self.scan_in_progress:
+            from xbmc import makeLegalFilename, translatePath
             self.scan_awaiting = False
-            common.scan_library(
-                xbmc.makeLegalFilename(
-                    xbmc.translatePath(
-                        kodi_library.library_path())))
+            common.scan_library(makeLegalFilename(translatePath(kodi_library.library_path())))
         else:
             self.scan_awaiting = True
 
@@ -120,6 +119,7 @@ def _compute_next_schedule():
                              'has been set as the main update manager')
                 return None
 
+        from datetime import datetime, timedelta
         time = g.ADDON.getSetting('lib_auto_upd_start') or '00:00'
         last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
                                          datetime.utcfromtimestamp(0))

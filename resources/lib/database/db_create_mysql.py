@@ -2,16 +2,15 @@
 """Functions to create new databases"""
 from __future__ import absolute_import, division, unicode_literals
 
-import mysql.connector
-
 import resources.lib.common as common
 
 
 def create_database(config):
     """Create a new database"""
+    from mysql.connector import connect
     db_name = config.pop('database', None)
     common.debug('The MySQL database {} does not exist, creating a new one', db_name)
-    conn = mysql.connector.connect(**config)
+    conn = connect(**config)
     cur = conn.cursor()
 
     schema = ('CREATE DATABASE netflix_addon '

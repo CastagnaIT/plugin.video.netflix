@@ -2,10 +2,6 @@
 """Helper functions for Kodi operations"""
 from __future__ import absolute_import, division, unicode_literals
 
-import json
-
-import xbmc
-
 from resources.lib.globals import g
 
 from .logging import debug
@@ -38,13 +34,15 @@ def json_rpc(method, params=None):
     :type params: dict
     :returns: dict -- Method call result
     """
+    from json import dumps, loads
+    from xbmc import executeJSONRPC
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
-    request = json.dumps(request_data)
+    request = dumps(request_data)
     debug('Executing JSON-RPC: {}'.format(request))
-    raw_response = xbmc.executeJSONRPC(request)
+    raw_response = executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
-    response = json.loads(raw_response)
+    response = loads(raw_response)
     if 'error' in response:
         raise IOError('JSONRPC-Error {}: {}'
                       .format(response['error']['code'],
@@ -90,11 +88,13 @@ def scan_library(path=""):
 
 def refresh_container():
     """Refresh the current container"""
-    xbmc.executebuiltin('Container.Refresh')
+    from xbmc import executebuiltin
+    executebuiltin('Container.Refresh')
 
 
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
+    import xbmc
     src = xbmc if string_id < 30000 else g.ADDON
     return src.getLocalizedString(string_id)
 
@@ -111,32 +111,36 @@ def run_plugin(path, block=False):
     """Run a Kodi plugin specified by path. If block is True (default=False),
     the execution of code will block until the called plugin has finished
     running."""
-    xbmc.executebuiltin(run_plugin_action(path, block))
+    from xbmc import executebuiltin
+    executebuiltin(run_plugin_action(path, block))
 
 
 def schedule_builtin(time, command, name='NetflixTask'):
     """Set an alarm to run builtin command after time has passed"""
-    xbmc.executebuiltin('AlarmClock({},{},{},silent)'
-                        .format(name, command, time))
+    from xbmc import executebuiltin
+    executebuiltin('AlarmClock({},{},{},silent)'.format(name, command, time))
 
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin(g.py2_encode('PlayMedia({})'.format(media)))
+    from xbmc import executebuiltin
+    executebuiltin(g.py2_encode('PlayMedia({})'.format(media)))
 
 
 def stop_playback():
     """Stop the running playback"""
-    xbmc.executebuiltin('PlayerControl(Stop)')
+    from xbmc import executebuiltin
+    executebuiltin('PlayerControl(Stop)')
 
 
 def get_kodi_audio_language():
     """
     Return the audio language from Kodi settings
     """
+    from xbmc import convertLanguage, getLanguage, ISO_639_1
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(g.py2_encode(audio_language['value']), xbmc.ISO_639_1)
-    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    audio_language = convertLanguage(g.py2_encode(audio_language['value']), ISO_639_1)
+    audio_language = audio_language if audio_language else getLanguage(ISO_639_1, False)
     return audio_language if audio_language else 'en'
 
 
@@ -147,10 +151,9 @@ def get_kodi_subtitle_language():
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    subtitle_language = xbmc.convertLanguage(g.py2_encode(subtitle_language['value']),
-                                             xbmc.ISO_639_1)
-    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1,
-                                                                                     False)
+    from xbmc import convertLanguage, getLanguage, ISO_639_1
+    subtitle_language = convertLanguage(g.py2_encode(subtitle_language['value']), ISO_639_1)
+    subtitle_language = subtitle_language if subtitle_language else getLanguage(ISO_639_1, False)
     subtitle_language = subtitle_language if subtitle_language else 'en'
     return subtitle_language
 
@@ -204,7 +207,8 @@ def is_internet_connected():
     Check internet status
     :return: True if connected
     """
-    if not xbmc.getCondVisibility('System.InternetState'):
+    from xbmc import getCondVisibility
+    if not getCondVisibility('System.InternetState'):
         # Double check when Kodi say that it is not connected
         # i'm not sure the InfoLabel will work properly when Kodi was started a few seconds ago
         # using getInfoLabel instead of getCondVisibility often return delayed results..

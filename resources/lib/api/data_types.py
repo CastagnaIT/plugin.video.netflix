@@ -3,7 +3,6 @@
 # pylint: disable=too-few-public-methods
 from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict
-from future.utils import iteritems, itervalues
 
 import resources.lib.common as common
 
@@ -39,6 +38,8 @@ class LoLoMo(object):
         if context is a list."""
         # 'context' may contain a list of multiple contexts or a single
         # 'context' can be passed as a string, convert to simplify code
+        from future.utils import iteritems
+
         if not isinstance(context, list):
             context = [context]
 
@@ -76,7 +77,6 @@ class VideoList:
             # self.title = self['displayName']   Not more used
             self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
             if self.videos:
-                # self.artitem = next(itervalues(self.videos))
                 self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
@@ -113,7 +113,6 @@ class VideoListSorted:
                 if context_id else path_response[context_name][req_sort_order_type]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
-                # self.artitem = next(itervalues(self.videos))
                 self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
@@ -144,7 +143,6 @@ class SearchVideoList:
             self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
             self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
             self.videoids = _get_videoids(self.videos)
-            # self.artitem = next(itervalues(self.videos), None)
             self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
 
@@ -164,7 +162,6 @@ class CustomVideoList:
         self.data = path_response
         self.videos = self.data.get('videos')
         self.videoids = _get_videoids(self.videos)
-        # self.artitem = next(itervalues(self.videos))
         self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
 
@@ -225,6 +222,7 @@ def _get_title(video):
 
 def _get_titles(videos):
     """Return a list of videos' titles"""
+    from future.utils import itervalues
     return [_get_title(video)
             for video in itervalues(videos)
             if _get_title(video)]
@@ -232,6 +230,7 @@ def _get_titles(videos):
 
 def _get_videoids(videos):
     """Return a list of VideoId s for the videos"""
+    from future.utils import itervalues
     return [common.VideoId.from_videolist_item(video)
             for video in itervalues(videos)]
 

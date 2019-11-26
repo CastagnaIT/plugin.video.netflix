@@ -2,8 +2,6 @@
 """Functions to create new databases"""
 from __future__ import absolute_import, division, unicode_literals
 
-import sqlite3 as sql
-
 import resources.lib.common as common
 import resources.lib.database.db_utils as db_utils
 
@@ -18,7 +16,8 @@ def create_database(db_file_path, db_filename):
 
 def _create_local_database(db_file_path):
     """Create a new local database"""
-    conn = sql.connect(db_file_path)
+    from sqlite3 import connect
+    conn = connect(db_file_path)
     cur = conn.cursor()
 
     table = str('CREATE TABLE app_config ('
@@ -64,7 +63,8 @@ def _create_local_database(db_file_path):
 
 def _create_shared_database(db_file_path):
     """Create a new shared database"""
-    conn = sql.connect(db_file_path)
+    from sqlite3 import connect
+    conn = connect(db_file_path)
     cur = conn.cursor()
 
     table = str('CREATE TABLE profiles ('

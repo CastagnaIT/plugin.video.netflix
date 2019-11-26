@@ -2,15 +2,11 @@
 """Kodi library integration"""
 from __future__ import absolute_import, division, unicode_literals
 
-import os
-import random
+import os.path
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from functools import wraps
-
-import xbmc
-import xbmcvfs
 
 import resources.lib.api.shakti as api
 import resources.lib.common as common
@@ -84,10 +80,11 @@ def _get_library_entry(videoid):
 def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
-    fname = xbmc.makeLegalFilename(filename)
+    from xbmc import makeLegalFilename, translatePath
+    fname = makeLegalFilename(filename)
     untranslated_path = os.path.dirname(fname).decode("utf-8")
-    translated_path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
-    shortname = os.path.basename(xbmc.translatePath(fname).decode("utf-8"))
+    translated_path = os.path.dirname(translatePath(fname).decode("utf-8"))
+    shortname = os.path.basename(translatePath(fname).decode("utf-8"))
     # We get the data from Kodi library using filters.
     # This is much faster than loading all episodes in memory
 
@@ -205,6 +202,7 @@ def _remove_from_kodi_library(videoid):
 @common.time_execution(immediate=False)
 def purge():
     """Purge all items exported to Kodi library and delete internal library database"""
+    from xbmc import makeLegalFilename, translatePath
     common.info('Purging internal database and kodi library')
     for videoid_value in g.SHARED_DB.get_movies_id_list():
         videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
@@ -221,8 +219,8 @@ def purge():
     # make sure that everything is removed
     g.SHARED_DB.purge_library()
     for folder_name in [FOLDER_MOVIES, FOLDER_TV]:
-        section_dir = xbmc.translatePath(
-            xbmc.makeLegalFilename('/'.join([library_path(), folder_name])))
+        section_dir = translatePath(
+            makeLegalFilename('/'.join([library_path(), folder_name])))
         common.delete_folder_contents(section_dir, delete_subfolders=True)
 
 
@@ -436,17 +434,18 @@ def export_new_item(item_task, library_home):
 @common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
+    from xbmc import makeLegalFilename
     # Paths must be legal to ensure NFS compatibility
-    destination_folder = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+    destination_folder = g.py2_decode(makeLegalFilename('/'.join(
         [library_home, item_task['section'], item_task['destination']])))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
-        export_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        export_filename = g.py2_decode(makeLegalFilename('/'.join(
             [destination_folder, item_task['filename'] + '.strm'])))
         add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
-        nfo_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        nfo_filename = g.py2_decode(makeLegalFilename('/'.join(
             [destination_folder, item_task['filename'] + '.nfo'])))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}', item_task['title'])
@@ -454,14 +453,18 @@ def export_item(item_task, library_home):
 
 def _create_destination_folder(destination_folder):
     """Create destination folder, ignore error if it already exists"""
-    destination_folder = xbmc.translatePath(destination_folder)
-    if not xbmcvfs.exists(destination_folder):
-        xbmcvfs.mkdirs(destination_folder)
+    from xbmc import translatePath
+    from xbmcvfs import exists, mkdirs
+    destination_folder = translatePath(destination_folder)
+    if not exists(destination_folder):
+        mkdirs(destination_folder)
 
 
 def _write_strm_file(item_task, export_filename):
     """Write the playable URL to a strm file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(export_filename), 'wb')
+    from xbmc import translatePath
+    from xbmcvfs import File
+    filehandle = File(translatePath(export_filename), 'wb')
     try:
         filehandle.write(bytearray(common.build_url(videoid=item_task['videoid'],
                                                     mode=g.MODE_PLAY).encode('utf-8')))
@@ -471,7 +474,9 @@ def _write_strm_file(item_task, export_filename):
 
 def _write_nfo_file(nfo_data, nfo_filename):
     """Write the NFO file"""
-    filehandle = xbmcvfs.File(xbmc.translatePath(nfo_filename), 'wb')
+    from xbmc import translatePath
+    from xbmcvfs import File
+    filehandle = File(translatePath(nfo_filename), 'wb')
     try:
         filehandle.write(bytearray('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8')))
         filehandle.write(bytearray(ET.tostring(nfo_data, encoding='utf-8', method='xml')))
@@ -491,42 +496,44 @@ def add_to_library(videoid, export_filename, nfo_export, exclude_update=False):
 
 
 @common.time_execution(immediate=False)
-def remove_item(item_task, library_home=None):
+def remove_item(item_task):
     """Remove an item from the library and delete if from disk"""
-    # pylint: disable=unused-argument, broad-except
+    from xbmc import makeLegalFilename, translatePath
+    from xbmcvfs import delete, exists, listdir, rmdir
+    # pylint: disable=unused-argument
 
     common.info('Removing {} from library', item_task['title'])
 
-    exported_filename = xbmc.translatePath(item_task['filepath'])
+    exported_filename = translatePath(item_task['filepath'])
     videoid = item_task['videoid']
     common.debug('VideoId: {}', videoid)
     try:
-        parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
-        if xbmcvfs.exists(exported_filename):
-            xbmcvfs.delete(exported_filename)
+        parent_folder = translatePath(os.path.dirname(exported_filename))
+        if exists(exported_filename):
+            delete(exported_filename)
         else:
             common.warn('Cannot delete {}, file does not exist', g.py2_decode(exported_filename))
         # Remove the NFO files if exists
         nfo_file = os.path.splitext(g.py2_decode(exported_filename))[0] + '.nfo'
-        if xbmcvfs.exists(nfo_file):
-            xbmcvfs.delete(nfo_file)
-        dirs, files = xbmcvfs.listdir(parent_folder)
-        tvshow_nfo_file = xbmc.makeLegalFilename(
+        if exists(nfo_file):
+            delete(nfo_file)
+        dirs, files = listdir(parent_folder)
+        tvshow_nfo_file = makeLegalFilename(
             '/'.join([g.py2_decode(parent_folder), 'tvshow.nfo']))
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
-        if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
-            xbmcvfs.delete(tvshow_nfo_file)
+        if exists(tvshow_nfo_file) and not dirs and len(files) == 1:
+            delete(tvshow_nfo_file)
             # Delete parent folder
-            xbmcvfs.rmdir(parent_folder)
+            rmdir(parent_folder)
         # Delete parent folder when empty
         if not dirs and not files:
-            xbmcvfs.rmdir(parent_folder)
+            rmdir(parent_folder)
 
         _remove_videoid_from_db(videoid)
     except ItemNotFound:
         common.warn('The video with id {} not exists in the database', videoid)
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         import traceback
         common.error(traceback.format_exc())
         ui.show_addon_error_info(exc)
@@ -646,6 +653,8 @@ def auto_update_library(sync_with_mylist, silent):
 
 
 def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent):
+    from xbmc import sleep
+    from random import randint
     execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
     # Get the list of the Tv Shows exported to exclude from updates
     excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
@@ -668,7 +677,7 @@ def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent
                                      sync_mylist=False,
                                      nfo_settings=nfo_settings)
         # Add some randomness between operations to limit servers load and ban risks
-        xbmc.sleep(random.randint(1000, 5001))
+        sleep(randint(1000, 5001))
 
 
 def _get_mylist_videoids():
@@ -743,11 +752,13 @@ def _sync_mylist(videoid, task_handler, enabled):
 def get_previously_exported_items():
     """Return a list of movie or tvshow VideoIds for items that were exported in
     the old storage format"""
+    from xbmc import makeLegalFilename
+    from xbmcvfs import listdir
     result = []
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
-        for filename in xbmcvfs.listdir(folder)[1]:
-            filepath = xbmc.makeLegalFilename('/'.join([folder, filename])).decode('utf-8')
+        for filename in listdir(folder)[1]:
+            filepath = makeLegalFilename('/'.join([folder, filename])).decode('utf-8')
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}', filepath)
                 try:
@@ -763,16 +774,17 @@ def get_previously_exported_items():
 
 
 def _lib_folders(section):
-    section_dir = xbmc.translatePath(
-        xbmc.makeLegalFilename('/'.join([library_path(), section])))
-    return [xbmc.makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')]))
+    from xbmc import makeLegalFilename, translatePath
+    from xbmcvfs import listdir
+    section_dir = translatePath(makeLegalFilename('/'.join([library_path(), section])))
+    return [makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')]))
             for folder
-            in xbmcvfs.listdir(section_dir)[0]]
+            in listdir(section_dir)[0]]
 
 
 def _get_root_videoid(filename, pattern):
-    match = re.search(pattern,
-                      xbmcvfs.File(filename, 'r').read().decode('utf-8').split('\n')[-1])
+    from xbmcvfs import File
+    match = re.search(pattern, File(filename, 'r').read().decode('utf-8').split('\n')[-1])
     metadata = api.metadata(
         common.VideoId(videoid=match.groups()[0]))[0]
     if metadata['type'] == 'show':

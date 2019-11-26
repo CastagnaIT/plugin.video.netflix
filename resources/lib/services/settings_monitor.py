@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, unicode_literals
 import sys
 from future.utils import iteritems
 
-import xbmc
+from xbmc import Monitor
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -17,9 +17,9 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 
-class SettingsMonitor(xbmc.Monitor):
+class SettingsMonitor(Monitor):
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        Monitor.__init__(self)
 
     def onSettingsChanged(self):
         status = g.settings_monitor_suspend_status()
@@ -106,7 +106,8 @@ class SettingsMonitor(xbmc.Monitor):
                               '?on_disk=True&no_notification=True')
 
         if reboot_addon:
+            from xbmc import executebuiltin
             common.debug('SettingsMonitor: addon will be rebooted')
             url = 'plugin://plugin.video.netflix/directory/root'
-            xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-            xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+            executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
+            executebuiltin('Container.Update({})'.format(url))  # Open root page
