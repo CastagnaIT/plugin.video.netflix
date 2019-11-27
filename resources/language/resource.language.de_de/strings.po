@@ -34,7 +34,7 @@ msgstr "Vorschläge"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Geben Sie Ihre PIN ein um beschränkten Inhalt anzusehen"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,19 +50,19 @@ msgstr "E-Mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "PIN ungültig. Bitte versuchen Sie es nochmal."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "Kindersicherungs-PIN (4-stellig)"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Anmeldung nicht erfolgreich"
+msgstr "Anmeldung fehlgeschlagen"
 
 msgctxt "#30009"
 msgid "Please Check your credentials"
-msgstr "Bitte die Anmeldedaten überprüfen"
+msgstr "Bitte überprüfen Sie Ihre Anmeldedaten"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
@@ -206,7 +206,7 @@ msgstr "Ansicht für Profile"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Daumen-Bewertung entfernt|Sie haben mit einem Daumen hoch bewertet|Sie haben mit einem Daumen runter bewertet"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -274,7 +274,7 @@ msgstr "In Bibliothek aktualisieren"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Kindersicherung"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -346,7 +346,7 @@ msgstr "Automatisch überspringen"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Beim Weiterspringen pausieren"
+msgstr "Beim Überspringen pausieren"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
@@ -454,11 +454,11 @@ msgstr "Falscher PIN"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "PIN-Schutz ist aus."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Sämtliche Inhalte werden durch eine PIN geschützt."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -954,4 +954,12 @@ msgstr "Möchten Sie jetzt auf Aktualisierungen prüfen?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Einschränkung nach Alterseinstufung"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Um den Inhalt für {} abzuspielen ist die Eingabe Ihrer PIN erforderlich."
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Gesehen-Status für jedes Profil separat markieren (diese Einstellung wird in zukünftigen Versionen entfernt)"
