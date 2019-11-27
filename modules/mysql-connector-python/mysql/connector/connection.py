@@ -1,4 +1,4 @@
-# Copyright (c) 2009, 2018, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2009, 2019, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2.0, as
@@ -51,7 +51,7 @@ from .cursor import (
     MySQLCursorBufferedNamedTuple)
 from .network import MySQLUnixSocket, MySQLTCPSocket
 from .protocol import MySQLProtocol
-from .utils import int4store
+from .utils import int4store, linux_distribution
 from .abstracts import MySQLConnectionAbstract
 
 
@@ -123,7 +123,7 @@ class MySQLConnection(MySQLConnectionAbstract):
             if platform.system() == "Darwin":
                 os_ver = "{}-{}".format("macOS", platform.mac_ver()[0])
             else:
-                os_ver = "-".join(platform.linux_distribution()[0:2]) # pylint: disable=W1505
+                os_ver = "-".join(linux_distribution()[0:2])
 
         license_chunks = version.LICENSE.split(" ")
         if license_chunks[0] == "GPLv2":

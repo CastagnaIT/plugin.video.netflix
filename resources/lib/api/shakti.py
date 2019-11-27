@@ -51,7 +51,7 @@ def login(ask_credentials=True):
     except MissingCredentialsError:
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
-        raise MissingCredentialsError
+        raise
 
 
 def update_profiles_data():

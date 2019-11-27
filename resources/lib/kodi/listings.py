@@ -251,7 +251,8 @@ def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
 @common.time_execution(immediate=False)
 def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
     """Build a video listing"""
-    directory_items = [_create_video_item(videoid_value, video, video_list, menu_data)
+    params = get_param_watched_status_by_profile()
+    directory_items = [_create_video_item(videoid_value, video, video_list, menu_data, params)
                        for videoid_value, video
                        in list(video_list.videos.items())]
     # If genre_id exists add possibility to browse lolomos subgenres
@@ -290,7 +291,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
 
 
 @common.time_execution(immediate=False)
-def _create_video_item(videoid_value, video, video_list, menu_data):
+def _create_video_item(videoid_value, video, video_list, menu_data, params):
     """Create a tuple that can be added to a Kodi directory that represents
     a video as listed in a videolist"""
     is_movie = video['summary']['type'] == 'movie'
@@ -305,7 +306,8 @@ def _create_video_item(videoid_value, video, video_list, menu_data):
     url = common.build_url(videoid=videoid,
                            mode=(g.MODE_PLAY
                                  if is_movie
-                                 else g.MODE_DIRECTORY))
+                                 else g.MODE_DIRECTORY),
+                           params=params)
     list_item.addContextMenuItems(generate_context_menu_items(videoid))
     return (url, list_item, not is_movie)
 
@@ -341,8 +343,9 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list):
 @common.time_execution(immediate=False)
 def build_episode_listing(seasonid, episode_list, pathitems=None):
     """Build a season listing"""
+    params = get_param_watched_status_by_profile()
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode,
-                                            episode_list)
+                                            episode_list, params)
                        for episodeid_value, episode
                        in list(episode_list.episodes.items())]
     add_items_previous_next_page(directory_items, pathitems, episode_list.perpetual_range_selector)
@@ -353,7 +356,7 @@ def build_episode_listing(seasonid, episode_list, pathitems=None):
 
 
 @common.time_execution(immediate=False)
-def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
+def _create_episode_item(seasonid, episodeid_value, episode, episode_list, params):
     """Create a tuple that can be added to a Kodi directory that represents
     an episode as listed in an episode listing"""
     episodeid = seasonid.derive_episode(episodeid_value)
@@ -361,7 +364,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
     add_info(episodeid, list_item, episode, episode_list.data, True)
     add_art(episodeid, list_item, episode)
     list_item.addContextMenuItems(generate_context_menu_items(episodeid))
-    url = common.build_url(videoid=episodeid, mode=g.MODE_PLAY)
+    url = common.build_url(videoid=episodeid, mode=g.MODE_PLAY, params=params)
     return (url, list_item, False)
 
 
@@ -369,7 +372,8 @@ def _create_episode_item(seasonid, episodeid_value, episode, episode_list):
 @common.time_execution(immediate=False)
 def build_supplemental_listing(video_list, pathitems=None):  # pylint: disable=unused-argument
     """Build a supplemental listing (eg. trailers)"""
-    directory_items = [_create_supplemental_item(videoid_value, video, video_list)
+    params = get_param_watched_status_by_profile()
+    directory_items = [_create_supplemental_item(videoid_value, video, video_list, params)
                        for videoid_value, video
                        in list(video_list.videos.items())]
     finalize_directory(directory_items, g.CONTENT_SHOW, 'sort_label',
@@ -377,7 +381,7 @@ def build_supplemental_listing(video_list, pathitems=None):  # pylint: disable=u
 
 
 @common.time_execution(immediate=False)
-def _create_supplemental_item(videoid_value, video, video_list):
+def _create_supplemental_item(videoid_value, video, video_list, params):
     """Create a tuple that can be added to a Kodi directory that represents
     a video as listed in a videolist"""
     videoid = common.VideoId(
@@ -386,7 +390,8 @@ def _create_supplemental_item(videoid_value, video, video_list):
     add_info(videoid, list_item, video, video_list.data, True)
     add_art(videoid, list_item, video)
     url = common.build_url(videoid=videoid,
-                           mode=g.MODE_PLAY)
+                           mode=g.MODE_PLAY,
+                           params=params)
     # replaceItems still look broken because it does not remove the default ctx menu
     # i hope in the future Kodi fix this
     list_item.addContextMenuItems(generate_context_menu_items(videoid), replaceItems=True)
@@ -463,3 +468,17 @@ def add_sort_methods(sort_type):
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_VIDEO_TITLE)
+
+
+# This method is a temporary option transition for the current users to avoid causing frustration
+# because when enabled causes the loss of all watched status already assigned to the videos,
+# in future versions will have to be eliminated, keeping params.
+def get_param_watched_status_by_profile():
+    """
+    When enabled, the value to be used as parameter in the ListItem (of videos) will be created,
+    in order to differentiate the watched status by profiles
+    :return: when enabled return a dictionary to be add to 'build_url' params
+    """
+    if g.ADDON.getSettingBool('watched_status_by_profile'):
+        return {'profile_guid': g.LOCAL_DB.get_active_profile_guid()}
+    return None

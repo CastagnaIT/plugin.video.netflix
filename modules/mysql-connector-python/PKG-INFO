@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: mysql-connector-python
-Version: 8.0.17
+Version: 8.0.18
 Summary: MySQL driver written in Python
 Home-page: http://dev.mysql.com/doc/connector-python/en/index.html
 Author: Oracle and/or its affiliates
@@ -27,6 +27,7 @@ Classifier: Programming Language :: Python :: 3.4
 Classifier: Programming Language :: Python :: 3.5
 Classifier: Programming Language :: Python :: 3.6
 Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
 Classifier: Topic :: Database
 Classifier: Topic :: Software Development
 Classifier: Topic :: Software Development :: Libraries :: Application Frameworks

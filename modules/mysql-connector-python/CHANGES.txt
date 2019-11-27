@@ -8,6 +8,15 @@ Copyright (c) 2009, 2019, Oracle and/or its affiliates. All rights reserved.
 Full release notes:
  http://dev.mysql.com/doc/relnotes/connector-python/en/
 
+v8.0.18
+=======
+
+- WL#13330: Single C/Python (Win) MSI installer
+- WL#13335: Connectors should handle expired password sandbox without SET operations
+- WL#13194: Add support for Python 3.8
+- BUG#29909157: Table scans of floats causes memory leak with the C extension
+- BUG#25349794: Add read_default_file alias for option_files in connect()
+
 v8.0.17
 =======
 

@@ -1,30 +1,105 @@
+v0.15.9 (2019-11-16)
+-Removed limit to perform auto-update and auto-sync with my list only with main profile
+-Added possibility to choose the profile to perform auto-sync with my list
+-Auto-sync with my list now sync also the movies
+-Auto-update now can be performed in manual and scheduled mode
+-Purge library now ensures complete cleaning of the database and files
+-Added possibility to disable sort order of my list from addon settings
+-Updated user agents
+-Modified debug logging in order to save cpu load
+-Fixed pagination of episodes
+-Fixed unhandled error of membership user account status
+-When set to one profile the Kodi library is no longer modified by other profiles
+-A lot of fixes/improvements to compatibility between py2 and py3
+-Updated it, pl, pt_BR, hr_HR translations
+-Minor fixes
+
+v0.15.8 (2019-10-31)
+-Fixed addon open issue caused to a broken cookies
+-Updated de translations
+-Fixed an issue that cause UpNext sometimes to fail
+-Minor fixes
+
+v0.15.7 (2019-10-26)
+-Do not start auto-sync if disabled
+-Updated polish translation
+
+v0.15.6 (2019-10-24)
+-Added customizable color to titles already contained in mylist
+-Added menu to mylist menu to force update of the list
+-Added trailers video length
+-Added supplemental info to tvshow/movie plot (shown in green)
+-Added add/remove to my-list also in childrens profiles
+-Added owner/kids account profile infos to profiles menu items
+-Added notification when library auto-sync is completed (customizable)
+-Library auto-sync now take in account of changes made to mylist from other apps
+-Library auto-sync now can export automatically NFOs
+-Increased default cache ttl from 10m to 120m
+-Improved speed of add/remove operations to mylist
+-More intuitive settings menus
+-Updated addon screenshots
+-Fixed generate ESN on android
+-Fixed "Perform full sync" setting now work without close settings window
+-Fixed HTTPError 401 on add/remove to mylist
+-Fixed cache on sorted lists
+-Fixed library full sync when mylist have huge list
+-Fixed wrong cache identifier
+-Fixed videoid error when play a trailer
+-Fixed purge cache that didn't delete the files
+-Fixed mixed language of plot/titles when more profiles have different languages
+-Other fixes
+
+v0.15.5 (2019-10-12)
+-Speedup loading lists due to the new login validity check
+-Cookies expires are now used to check a valid login
+-Fixed an issue introduced with previous version causing login error
+-Fixed double handshake request on first run
+
+v0.15.4 (2019-10-11)
+-Added InputStream Helper settings in settings menu
+-Fixed add/remove to mylist on huge lists
+-Fixed expired mastertoken key issue
+-Fixed skipping sections due to netflix changes
+-Manifests now are requested only once
+-Updated pt-br, de, es translations
+-Minor improvements
+
+v0.15.3 (2019-09-19)
+-Initial conversion to python 3
+-Initial integration tests
+-Implemented device uuid to avoid always asking credentials
+-Fixed a problem when library source is special:// or a direct path
+-Fixed run library update on slow system like RPI
+-Updated dutch language
+-Minor fixes
+
 v0.15.2 (2019-08-30)
-- Fixed key handshake at addon first run
-- Fixed library update service at first run
-- Local database now dynamically created by code
-- Profile data is not deleted if an problem occurred
-- Minor fixes
+-Fixed key handshake at addon first run
+-Fixed library update service at first run
+-Local database now dynamically created by code
+-Profile data is not deleted if an problem occurred
+-Minor fixes
 
 v0.15.1 (2019-08-25)
-- Fixed wrong path to linux systems
+-Fixed wrong path to linux systems
 
 v0.15.0 (2019-08-20)
-- Implemented data management through database
-- Implemented automatic export of new episodes
-- Implemented a version upgrade system
-- Implemented management of login errors
-- Added a new context menu "Export new episodes" for a single tv show
-- Added ability to exclude (and re-include) a tv show from library auto update
-- Added possibility to share the same library with multiple devices (MySQL server is required)
-- No more concurrency and data loss problems of previous "persistent storage"
-- Fixed continuous "new access" email notification from netflix
-- Fixed locale id error
-- Fixed automatic library updates
-- Fixed logout now the profiles are no longer accessible and you can enter your credentials
-- Fixed exporting tvshow.nfo for a single episode
-- Fixed UpNext watched status from Kodi library
-- Fixed issue with library items that containing % in the path
-- Other minor improvements and fixes
+-Implemented data management through database
+-Implemented automatic export of new episodes
+-Implemented a version upgrade system
+-Implemented management of login errors
+-Added a new context menu "Export new episodes" for a single tv show
+-Added ability to exclude (and re-include) a tv show from library auto update
+-Added possibility to share the same library with multiple devices (MySQL server is required)
+-No more concurrency and data loss problems of previous "persistent storage"
+-Fixed continuous "new access" email notification from netflix
+-Fixed locale id error
+-Fixed automatic library updates
+-Fixed logout now the profiles are no longer accessible and you can enter your credentials
+-Fixed exporting tvshow.nfo for a single episode
+-Fixed UpNext watched status from Kodi library
+-Fixed issue with library items that containing % in the path
+-Other minor improvements and fixes
 
 v0.14.6 (2019-06-29)
 - Improved Library Management that include:

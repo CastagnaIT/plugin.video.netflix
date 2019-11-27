@@ -26,12 +26,11 @@ class AddonActionExecutor(object):
     def save_autologin(self, pathitems):
         """Save autologin data"""
         try:
-            g.settings_monitor_suspended(True)
-            g.ADDON.setSetting('autologin_user',
-                               self.params['autologin_user'])
+            g.settings_monitor_suspend(True)
+            g.ADDON.setSetting('autologin_user', self.params['autologin_user'])
             g.ADDON.setSetting('autologin_id', pathitems[1])
             g.ADDON.setSetting('autologin_enable', 'true')
-            g.settings_monitor_suspended(False)
+            g.settings_monitor_suspend(False)
         except (KeyError, IndexError):
             common.error('Cannot save autologin - invalid params')
         g.CACHE.invalidate()
@@ -47,8 +46,7 @@ class AddonActionExecutor(object):
             ui.show_modal_dialog(ui.xmldialogs.ParentalControl,
                                  'plugin-video-netflix-ParentalControl.xml',
                                  g.ADDON.getAddonInfo('path'),
-                                 pin=parental_control_data['pin'],
-                                 maturity_level=parental_control_data['maturity_level'])
+                                 **parental_control_data)
         except MissingCredentialsError:
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
         except WebsiteParsingError as exc:
@@ -135,14 +133,13 @@ class AddonActionExecutor(object):
         if not ui.ask_for_confirmation(common.get_local_string(30217),
                                        common.get_local_string(30218)):
             return
-        g.settings_monitor_suspended(True)
         # Reset the ESN obtained from website/generated
         g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
         # Reset the custom ESN (manual ESN from settings)
+        g.settings_monitor_suspend(at_first_change=True)
         g.ADDON.setSetting('esn', '')
         # Reset the custom ESN (backup of manual ESN from settings, used in settings_monitor.py)
         g.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
-        g.settings_monitor_suspended(False)
         # Perform a new login to get/generate a new ESN
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen

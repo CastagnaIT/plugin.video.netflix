@@ -954,24 +954,4 @@ msgstr "Czy chcesz teraz sprawdzić aktualizację?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr "Ogranicz według poziomu dojrzałości"
-
-msgctxt "#30233"
-msgid "Little Kids [T]"
-msgstr "Małe dzieci [T]"
-
-msgctxt "#30234"
-msgid "Older Kids"
-msgstr "Starsze dzieci"
-
-msgctxt "#30235"
-msgid "Teens [VM14]"
-msgstr "Nastolatki [VM14]"
-
-msgctxt "#30236"
-msgid "Adults [VM18]"
-msgstr "Dorośli [VM18]"
-
-msgctxt "#30237"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Zawartość {} będzie wymagać kodu PIN, aby rozpocząć odtwarzanie."
+msgstr ""

@@ -106,6 +106,10 @@ def show_ok_dialog(title, message):
     return xbmcgui.Dialog().ok(title, message)
 
 
+def show_yesno_dialog(title, message, yeslabel=None, nolabel=None):
+    return xbmcgui.Dialog().yesno(title, message, yeslabel=yeslabel, nolabel=nolabel)
+
+
 def show_error_info(title, message, unknown_error=False, netflix_error=False):
     """Show a dialog that displays the error message"""
     prefix = (30104, 30102, 30101)[unknown_error + netflix_error]

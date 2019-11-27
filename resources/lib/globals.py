@@ -247,7 +247,7 @@ class GlobalVariables(object):
                 shared_db_class = db_shared.get_shareddb_class(force_sqlite=True)
                 self.SHARED_DB = shared_db_class()
 
-        self.settings_monitor_suspended(False)  # Reset the value in case of addon crash
+        self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
         try:
             os.mkdir(self.DATA_PATH)
@@ -281,7 +281,7 @@ class GlobalVariables(object):
         if run_initial_config:
             from resources.lib.common import (debug, get_system_platform, get_local_string)
             from resources.lib.kodi.ui import (ask_for_confirmation, show_ok_dialog)
-            self.settings_monitor_suspended(True)
+            self.settings_monitor_suspend(True, False)
 
             system = get_system_platform()
             debug('Running initial addon configuration dialogs on system: {}', system)
@@ -325,24 +325,34 @@ class GlobalVariables(object):
                 self.ADDON.setSettingBool('enable_vp9_profiles', False)
                 self.ADDON.setSettingBool('enable_hevc_profiles', False)
             self.ADDON.setSettingBool('run_init_configuration', False)
-            self.settings_monitor_suspended(False)
+            self.settings_monitor_suspend(False)
 
-    def settings_monitor_suspended(self, suspend):
+    def settings_monitor_suspend(self, is_suspended=True, at_first_change=False):
         """
-        Suspends for the necessary time the settings monitor
-        that otherwise cause the reinitialization of global settings
-        and possible consequent actions to settings changes or unnecessary checks
+        Suspends for the necessary time the settings monitor of the service
+        that otherwise cause the reinitialization of global settings and possible consequent actions
+        to settings changes or unnecessary checks when a setting will be changed.
+        :param is_suspended: True/False - allows or denies the execution of the settings monitor
+        :param at_first_change:
+         True - monitor setting is automatically reactivated after the FIRST change to the settings
+         False - monitor setting MUST BE REACTIVATED MANUALLY
+        :return: None
         """
-        is_suspended = g.LOCAL_DB.get_value('suspend_settings_monitor', False)
-        if (is_suspended and suspend) or (not is_suspended and not suspend):
+        if is_suspended and at_first_change:
+            new_value = 'First'
+        else:
+            new_value = str(is_suspended)
+        # Accepted values in string: First, True, False
+        current_value = g.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
+        if new_value == current_value:
             return
-        g.LOCAL_DB.set_value('suspend_settings_monitor', suspend)
+        g.LOCAL_DB.set_value('suspend_settings_monitor', new_value)
 
-    def settings_monitor_is_suspended(self):
+    def settings_monitor_suspend_status(self):
         """
-        Returns True when the setting monitor must be suspended
+        Returns the suspend status of settings monitor
         """
-        return g.LOCAL_DB.get_value('suspend_settings_monitor', False)
+        return g.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
 
     def get_esn(self):
         """Get the generated esn or if set get the custom esn"""
@@ -363,9 +373,8 @@ class GlobalVariables(object):
         for _ in range(0, 30):
             esn.append(random.choice(possible))
         edge_esn = ''.join(esn)
-        self.settings_monitor_suspended(True)
+        self.settings_monitor_suspend(True)
         self.ADDON.setSetting('edge_esn', edge_esn)
-        self.settings_monitor_suspended(False)
         return edge_esn
 
     def is_known_menu_context(self, context):
