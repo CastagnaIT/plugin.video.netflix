@@ -650,7 +650,7 @@ msgstr "Van Netflix prémium hozzáférésed?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Támogatja-e az eszközöd a 4K-szabványt?\rAz eszköznek:\r\nKell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
+msgstr "Támogatja-e az eszközöd a 4K-szabványt?\r\nAz eszköznek:\r\nKell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
@@ -956,22 +956,10 @@ msgctxt "#30232"
 msgid "Restrict by Maturity Level"
 msgstr "Kor szeint korlátozva"
 
-msgctxt "#30233"
-msgid "Little Kids [T]"
-msgstr "Kisgyerekek [T]"
-
-msgctxt "#30234"
-msgid "Older Kids"
-msgstr "Nagyobb gyerekek"
-
-msgctxt "#30235"
-msgid "Teens [VM14]"
-msgstr "Tizenévesek [VM14]"
-
-msgctxt "#30236"
-msgid "Adults [VM18]"
-msgstr "Felnőttek [VM18]"
-
 msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Tartalom {} meg kell adni a PIN-t a lejátszáshoz."
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Nézett státusz minden profilhoz (ez az opció visszavonásra kerül a jövőben)"
