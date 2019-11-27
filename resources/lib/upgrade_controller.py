@@ -41,7 +41,7 @@ def _perform_addon_changes(previous_ver, current_ver):
         msg = ('This update resets the settings to auto-update library.\r\n'
                'Therefore only in case you are using auto-update must be reconfigured.')
         ui.show_ok_dialog('Netflix upgrade', msg)
-    if previous_ver and is_less_version(previous_ver, '0.15.12'):
+    if previous_ver and is_less_version(previous_ver, '0.16.0'):
         import resources.lib.kodi.ui as ui
         msg = (
             'Has been introduced watched status marks for the videos separate for each profile:\r\n'
