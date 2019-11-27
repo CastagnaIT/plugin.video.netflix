@@ -206,7 +206,7 @@ msgstr "Widok profili"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Usunięto ocenę | Oceniłeś kciuk w dół | Oceniłeś kciuk w górę"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -430,7 +430,7 @@ msgstr "Wyniki dla \"{}\""
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr "Netflix zwrócił nieznanu błąd"
+msgstr "Netflix zwrócił nieznany błąd"
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
@@ -457,8 +457,8 @@ msgid "PIN protection is off."
 msgstr "Zabezpieczenie PIN jest wyłączone."
 
 msgctxt "#30108"
-msgid "Enabled PIN verfication"
-msgstr "Włączona kontrola PIN"
+msgid "All content is protected by PIN."
+msgstr "Cała zawartość jest chroniona przez PIN"
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -954,4 +954,12 @@ msgstr "Czy chcesz teraz sprawdzić aktualizację?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Ogranicz według poziomu dojrzałości"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Zawartość dla {} będzie wymagała kodu PIN do odtworzenia"
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Zachowaj status oglądania osobno dla każdego profilu (ta opcja zostanie usunięta w przyszłych wersjach)"
