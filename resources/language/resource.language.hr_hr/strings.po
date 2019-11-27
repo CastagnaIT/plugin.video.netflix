@@ -979,6 +979,7 @@ msgstr "Želite li provjeriti ažuriranje sada?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
+<<<<<<< HEAD
 msgstr "Ograniči prema razini zrelosti"
 
 msgctxt "#30233"
@@ -1008,3 +1009,6 @@ msgstr ""
 msgctxt "#30239"  # This is a temporary transition option
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
 msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u budućim verzijama)"
+=======
+msgstr ""
+>>>>>>> master

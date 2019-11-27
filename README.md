@@ -77,7 +77,7 @@ In the addon settings go to Expert page open InputStream Adaptive settings and t
 
 ### My android device supports 4K but does not playback
 First, make sure that:
-- In the website settings streaming quality is set to High
+- In the website settings streaming quality is set to Auto or High
 - If possible, that Kodi display resolution is set to 4K
 - The device support Widevine security level L1 (use an app like: DRM Info)
 - The device is connected to a display with HDCP 2.2 or higher

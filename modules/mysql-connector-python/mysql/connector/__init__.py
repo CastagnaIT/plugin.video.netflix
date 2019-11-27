@@ -1,4 +1,4 @@
-# Copyright (c) 2009, 2018, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2009, 2019, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2.0, as
@@ -143,6 +143,10 @@ def connect(*args, **kwargs):
     Returns MySQLConnection or PooledMySQLConnection.
     """
     # Option files
+    if 'read_default_file' in kwargs:
+        kwargs['option_files'] = kwargs['read_default_file']
+        kwargs.pop('read_default_file')
+
     if 'option_files' in kwargs:
         new_config = read_option_files(**kwargs)
         return connect(**new_config)

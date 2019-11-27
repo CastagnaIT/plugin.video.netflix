@@ -281,6 +281,7 @@ class MySQLConnectionAbstract(object):
             ('username', 'user'),
             ('passwd', 'password'),
             ('connect_timeout', 'connection_timeout'),
+            ('read_default_file', 'option_files'),
         ]
         for compat, translate in compat_map:
             try:
@@ -778,7 +779,10 @@ class MySQLConnectionAbstract(object):
 
         self.disconnect()
         self._open_connection()
-        self._post_connection()
+        # Server does not allow to run any other statement different from ALTER 
+        # when user's password has been expired.
+        if not self._client_flags & ClientFlag.CAN_HANDLE_EXPIRED_PASSWORDS:
+            self._post_connection()
 
     def reconnect(self, attempts=1, delay=0):
         """Attempt to reconnect to the MySQL server

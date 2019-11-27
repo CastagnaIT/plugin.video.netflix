@@ -21,6 +21,13 @@ class Control:
         ''' A stub constructor for the xbmcgui Control class '''
 
 
+class ControlLabel:
+    ''' A reimplementation of the xbmcgui ControlLabel class '''
+
+    def __init__(self, x=0, y=0, width=0, height=0, label='', font=None, textColor=None, disabledColor=None, alignment=None, hasPath=False, angle=None):
+        ''' A stub constructor for the xbmcgui ControlLabel class '''
+
+
 class ControlGeneric(Control):
     ''' A reimplementation of the xbmcgui Control methods of all control classes '''
 

@@ -957,29 +957,9 @@ msgid "Restrict by Maturity Level"
 msgstr ""
 
 msgctxt "#30233"
-msgid "Little Kids [T]"
-msgstr ""
-
-msgctxt "#30234"
-msgid "Older Kids"
-msgstr ""
-
-msgctxt "#30235"
-msgid "Teens [VM14]"
-msgstr ""
-
-msgctxt "#30236"
-msgid "Adults [VM18]"
-msgstr ""
-
-msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
 msgstr ""
 
-msgctxt "#30238"
-msgid ""
-msgstr ""
-
-msgctxt "#30239"  # This is a temporary transition option
+msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
 msgstr ""

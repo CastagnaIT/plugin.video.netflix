@@ -1,4 +1,4 @@
-# Copyright (c) 2009, 2018, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2009, 2019, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2.0, as
@@ -29,13 +29,16 @@
 """Utilities
 """
 
-from __future__ import print_function
+import os
+import subprocess
+import struct
+import sys
+
+from .catch23 import struct_unpack, PY2
+
 
 __MYSQL_DEBUG__ = False
 
-import struct
-
-from .catch23 import struct_unpack
 
 def intread(buf):
     """Unpacks the given buffer to an integer"""
@@ -330,6 +333,7 @@ def _digest_buffer(buf):
         return ''.join(["\\x%02x" % c for c in buf])
     return ''.join(["\\x%02x" % ord(c) for c in buf])
 
+
 def print_buffer(abuffer, prefix=None, limit=30):
     """Debug function printing output of _digest_buffer()"""
     if prefix:
@@ -340,3 +344,100 @@ def print_buffer(abuffer, prefix=None, limit=30):
         print(prefix + ': ' + digest)
     else:
         print(_digest_buffer(abuffer))
+
+
+def _parse_os_release():
+    """Parse the contents of /etc/os-release file.
+
+    Returns:
+        A dictionary containing release information.
+    """
+    distro = {}
+    os_release_file = os.path.join("/etc", "os-release")
+    if not os.path.exists(os_release_file):
+        return distro
+    with open(os_release_file) as file_obj:
+        for line in file_obj:
+            key_value = line.split("=")
+            if len(key_value) != 2:
+                continue
+            key = key_value[0].lower()
+            value = key_value[1].rstrip("\n").strip('"')
+            distro[key] = value
+    return distro
+
+
+def _parse_lsb_release():
+    """Parse the contents of /etc/lsb-release file.
+
+    Returns:
+        A dictionary containing release information.
+    """
+    distro = {}
+    lsb_release_file = os.path.join("/etc", "lsb-release")
+    if os.path.exists(lsb_release_file):
+        with open(lsb_release_file) as file_obj:
+            for line in file_obj:
+                key_value = line.split("=")
+                if len(key_value) != 2:
+                    continue
+                key = key_value[0].lower()
+                value = key_value[1].rstrip("\n").strip('"')
+                distro[key] = value
+    return distro
+
+
+def _parse_lsb_release_command():
+    """Parse the output of the lsb_release command.
+
+    Returns:
+        A dictionary containing release information.
+    """
+    distro = {}
+    with open(os.devnull, "w") as devnull:
+        try:
+            stdout = subprocess.check_output(
+                ("lsb_release", "-a"), stderr=devnull)
+        except OSError:
+            return None
+        lines = stdout.decode(sys.getfilesystemencoding()).splitlines()
+        for line in lines:
+            key_value = line.split(":")
+            if len(key_value) != 2:
+                continue
+            key = key_value[0].replace(" ", "_").lower()
+            value = key_value[1].strip("\t")
+            distro[key] = value.encode("utf-8") if PY2 else value
+    return distro
+
+
+def linux_distribution():
+    """Tries to determine the name of the Linux OS distribution name.
+
+    First tries to get information from ``/etc/os-release`` file.
+    If fails, tries to get the information of ``/etc/lsb-release`` file.
+    And finally the information of ``lsb-release`` command.
+
+    Returns:
+        A tuple with (`name`, `version`, `codename`)
+    """
+    distro = _parse_lsb_release()
+    if distro:
+        return (distro.get("distrib_id", ""),
+                distro.get("distrib_release", ""),
+                distro.get("distrib_codename", ""))
+
+    if not PY2:
+        distro = _parse_lsb_release_command()
+        if distro:
+            return (distro.get("distributor_id", ""),
+                    distro.get("release", ""),
+                    distro.get("codename", ""))
+
+    distro = _parse_os_release()
+    if distro:
+        return (distro.get("name", ""),
+                distro.get("version_id", ""),
+                distro.get("version_codename", ""))
+
+    return ("", "", "")
