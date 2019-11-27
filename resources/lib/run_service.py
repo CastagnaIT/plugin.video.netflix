@@ -3,24 +3,16 @@
 # Module: service
 # Created on: 13.01.2017
 # License: MIT https://goo.gl/5bMj3H
-# pylint: disable=wrong-import-position
 """Kodi plugin for Netflix (https://netflix.com)"""
 from __future__ import absolute_import, division, unicode_literals
 
-import sys
 import threading
-
-# Import and initialize globals right away to avoid stale values from the last
-# addon invocation. Otherwise Kodi's reuseLanguageInvoker option will cause
-# some really quirky behavior!
-from resources.lib.globals import g
-g.init_globals(sys.argv)
 
 # Global cache must not be used within these modules, because stale values may
 # be used and cause inconsistencies!
-import resources.lib.services as services
-from resources.lib.upgrade_controller import check_service_upgrade
+from resources.lib.globals import g
 from resources.lib.common import (info, error, select_port, get_local_string)
+from resources.lib.upgrade_controller import check_service_upgrade
 
 
 try:  # Python 2
@@ -33,15 +25,17 @@ class NetflixService(object):
     """
     Netflix addon service
     """
+    from resources.lib.services.msl.http_server import MSLTCPServer
+    from resources.lib.services.nfsession.http_server import NetflixTCPServer
     SERVERS = [
         {
             'name': 'MSL',
-            'class': services.MSLTCPServer,
+            'class': MSLTCPServer,
             'instance': None,
             'thread': None},
         {
             'name': 'NS',
-            'class': services.NetflixTCPServer,
+            'class': NetflixTCPServer,
             'instance': None,
             'thread': None},
     ]
@@ -64,14 +58,17 @@ class NetflixService(object):
         """
         Start the background services
         """
+        from resources.lib.services.playback.controller import PlaybackController
+        from resources.lib.services.library_updater import LibraryUpdateService
+        from resources.lib.services.settings_monitor import SettingsMonitor
         for server in self.SERVERS:
             server['instance'].server_activate()
             server['instance'].timeout = 1
             server['thread'].start()
             info('[{}] Thread started'.format(server['name']))
-        self.controller = services.PlaybackController()
-        self.library_updater = services.LibraryUpdateService()
-        self.settings_monitor = services.SettingsMonitor()
+        self.controller = PlaybackController()
+        self.library_updater = LibraryUpdateService()
+        self.settings_monitor = SettingsMonitor()
         # Mark the service as active
         from xbmcgui import Window
         window_cls = Window(10000)
@@ -121,6 +118,10 @@ class NetflixService(object):
         return self.controller.waitForAbort(1)
 
 
-def run():
+def run(argv):
+    # Initialize globals right away to avoid stale values from the last addon invocation.
+    # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
+    # PR: https://github.com/xbmc/xbmc/pull/13814
+    g.init_globals(argv)
     check_service_upgrade()
     NetflixService().run()

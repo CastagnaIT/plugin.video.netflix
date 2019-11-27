@@ -80,7 +80,7 @@ class NetflixSession(object):
     session = None
     """The requests.session object to handle communication to Netflix"""
 
-    verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
+    verify_ssl = True
     """Use SSL verification when performing requests"""
 
     def __init__(self):
@@ -100,6 +100,7 @@ class NetflixSession(object):
             common.register_slot(slot)
         common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
                              source_id='upnextprovider')
+        self.verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
         self._init_session()
         self.is_prefetch_login = False
         self._prefetch_login()

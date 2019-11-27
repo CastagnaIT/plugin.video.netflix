@@ -3,21 +3,14 @@
 # Module: default
 # Created on: 13.01.2017
 # License: MIT https://goo.gl/5bMj3H
-# pylint: disable=wrong-import-position
 """Kodi plugin for Netflix (https://netflix.com)"""
 from __future__ import absolute_import, division, unicode_literals
 
-import sys
 from functools import wraps
+
 from xbmcgui import Window
 
-# Import and initialize globals right away to avoid stale values from the last
-# addon invocation. Otherwise Kodi's reuseLanguageInvoker will cause some
-# really quirky behavior!
-# PR: https://github.com/xbmc/xbmc/pull/13814
 from resources.lib.globals import g
-g.init_globals(sys.argv)
-
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var)
 from resources.lib.upgrade_controller import check_addon_upgrade
@@ -108,10 +101,13 @@ def _handle_endofdirectory(succeeded=False):
     endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=succeeded)
 
 
-def run():
+def run(argv):
     # pylint: disable=broad-except,ungrouped-imports
-    # Initialize variables in common module scope
-    # (necessary when reusing language invoker)
+    # Initialize globals right away to avoid stale values from the last addon invocation.
+    # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
+    # PR: https://github.com/xbmc/xbmc/pull/13814
+    g.init_globals(argv)
+
     reset_log_level_global_var()
     info('Started (Version {})'.format(g.VERSION))
     info('URL is {}'.format(g.URL))
