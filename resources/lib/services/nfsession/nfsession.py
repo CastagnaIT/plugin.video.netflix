@@ -184,7 +184,7 @@ class NetflixSession(object):
         if not self.session.cookies:
             return False
         for cookie_name in LOGIN_COOKIES:
-            if cookie_name not in self.session.cookies.keys():
+            if cookie_name not in list(self.session.cookies.keys()):
                 common.error(
                     'The cookie "{}" do not exist. It is not possible to check expiration. '
                     'Fallback to old validate method.',

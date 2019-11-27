@@ -140,9 +140,9 @@ def _get_macos_uuid():
     except Exception as exc:
         debug('Failed to fetch OSX/IOS system profile {}'.format(exc))
     if sp_dict_values:
-        if 'UUID' in sp_dict_values.keys():
+        if 'UUID' in list(sp_dict_values.keys()):
             return sp_dict_values['UUID']
-        if 'serialnumber' in sp_dict_values.keys():
+        if 'serialnumber' in list(sp_dict_values.keys()):
             return sp_dict_values['serialnumber']
     return None
 
@@ -159,12 +159,12 @@ def _parse_osx_xml_plist_data(data):
 
     items_dict = xml_data[0]['_items'][0]
     r = re.compile(r'.*UUID.*')  # Find to example "platform_UUID" key
-    uuid_keys = list(filter(r.match, items_dict.keys()))
+    uuid_keys = list(filter(r.match, list(items_dict.keys())))
     if uuid_keys:
         dict_values['UUID'] = items_dict[uuid_keys[0]]
     if not uuid_keys:
         r = re.compile(r'.*serial.*number.*')  # Find to example "serial_number" key
-        serialnumber_keys = list(filter(r.match, items_dict.keys()))
+        serialnumber_keys = list(filter(r.match, list(items_dict.keys())))
         if serialnumber_keys:
             dict_values['serialnumber'] = items_dict[serialnumber_keys[0]]
     return dict_values

@@ -24,12 +24,12 @@ uri = 'plugin://plugin.video.netflix/{path}'.format(path=path)
 sys.argv = [uri, '0', '']
 
 
-import addon  # pylint: disable=wrong-import-position
-addon.g.init_globals(sys.argv)
-addon.info('Started (Version {})'.format(addon.g.VERSION))
-addon.info('URL is {}'.format(addon.g.URL))
-if addon._check_valid_credentials():  # pylint: disable=protected-access
-    addon.check_addon_upgrade()
-    addon.g.initial_addon_configuration()
-    addon.route(path.split('/'))
-addon.g.CACHE.commit()
+from resources.lib import run_addon  # pylint: disable=wrong-import-position
+run_addon.g.init_globals(sys.argv)
+run_addon.info('Started (Version {})'.format(run_addon.g.VERSION))
+run_addon.info('URL is {}'.format(run_addon.g.URL))
+if run_addon._check_valid_credentials():  # pylint: disable=protected-access
+    run_addon.check_addon_upgrade()
+    run_addon.g.initial_addon_configuration()
+    run_addon.route(path.split('/'))
+run_addon.g.CACHE.commit()
