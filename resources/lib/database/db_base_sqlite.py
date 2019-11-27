@@ -123,7 +123,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
 
     def get_cursor_for_dict_results(self):
         conn_cursor = self.conn.cursor()
-        conn_cursor.row_factory = lambda c, r: dict(zip([col[0] for col in c.description], r))
+        conn_cursor.row_factory = lambda c, r: dict(list(zip([col[0] for col in c.description], r)))
         return conn_cursor
 
     def get_cursor_for_list_results(self):
