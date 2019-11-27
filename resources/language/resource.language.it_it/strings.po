@@ -957,21 +957,5 @@ msgid "Restrict by Maturity Level"
 msgstr "Limitazione in base alla fascia d'età"
 
 msgctxt "#30233"
-msgid "Little Kids [T]"
-msgstr "Bambini piccoli [T]"
-
-msgctxt "#30234"
-msgid "Older Kids"
-msgstr "Ragazzi"
-
-msgctxt "#30235"
-msgid "Teens [VM14]"
-msgstr "Adolescenti [VM14]"
-
-msgctxt "#30236"
-msgid "Adults [VM18]"
-msgstr "Adulti [VM18]"
-
-msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
