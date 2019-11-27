@@ -963,5 +963,4 @@ msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u
-budućim verzijama)"
+msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u budućim verzijama)"
