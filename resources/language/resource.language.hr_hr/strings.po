@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-25 12:49+0100\n"
+"PO-Revision-Date: 2019-11-27 10:54+0100\n"
 "Last-Translator: arvvoid <>\n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -927,7 +927,7 @@ msgstr ""
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr "Onemogući obavijest o sinkronizaciji je dovršena"
+msgstr "Onemogući obavijest o sinkronizacija je dovršena"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -979,36 +979,13 @@ msgstr "Želite li provjeriti ažuriranje sada?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-<<<<<<< HEAD
 msgstr "Ograniči prema razini zrelosti"
 
 msgctxt "#30233"
-msgid "Little Kids [T]"
-msgstr "Mala djeca [T]"
-
-msgctxt "#30234"
-msgid "Older Kids"
-msgstr "Starija djeca"
-
-msgctxt "#30235"
-msgid "Teens [VM14]"
-msgstr "Tinejdžeri [VM14]"
-
-msgctxt "#30236"
-msgid "Adults [VM18]"
-msgstr "Odrasli [VM18]"
-
-msgctxt "#30237"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
 
-msgctxt "#30238"
-msgid ""
-msgstr ""
-
-msgctxt "#30239"  # This is a temporary transition option
+msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u budućim verzijama)"
-=======
-msgstr ""
->>>>>>> master
+msgstr "Oznake statusa gledanja držite odvojeno za svaki profil (ova će opcija biti uklonjena u
+budućim verzijama)"
