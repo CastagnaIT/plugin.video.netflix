@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>10002</defaultcontrol>
 	<controls>
 		<control type="group">
 			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
 			<top>250</top>
-			<centerleft>50%</centerleft>
+			<left>200</left>
 			<width>1520</width>
 			<!-- Screen background -->
 			<control type="image">
@@ -81,16 +81,16 @@
 			</control>
 
 			<!-- Controls -->
-			<control type="group" id="80">
+			<control type="group" id="10080">
 				<left>0</left>
 				<top>0</top>
 				<width>1200</width>
 				<height>500</height>
 				<defaultcontrol>2</defaultcontrol>
 				<visible>true</visible>
-				<onright>90</onright>
+				<onright>10090</onright>
 
-				<control type="label" id="1">
+				<control type="label" id="10001">
 					<description>PIN description</description>
 					<posy>135</posy>
 					<posx>65</posx>
@@ -105,7 +105,7 @@
 					<wrapmultiline>false</wrapmultiline>
 				</control>
 
-				<control type="edit" id="2">
+				<control type="edit" id="10002">
 					<description>4 PIN digits</description>
 					<left>45</left>
 					<top>180</top>
@@ -122,11 +122,11 @@
 					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
 					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
-					<onup>90</onup>
-					<ondown>4</ondown>
+					<onup>10090</onup>
+					<ondown>10004</ondown>
 				</control>
 
-				<control type="label" id="3">
+				<control type="label" id="10003">
 					<description>Maturity Level description</description>
 					<posy>296</posy>
 					<posx>65</posx>
@@ -140,7 +140,7 @@
 					<font>font14</font>
 					<wrapmultiline>false</wrapmultiline>
 				</control>
-				<control type="slider" id="4">
+				<control type="slider" id="10004">
 					<description>Maturity Level</description>
 					<left>75</left>
 					<top>360</top>
@@ -151,75 +151,15 @@
 					<textureslidernib>buttons/slider-nib.png</textureslidernib>
 					<textureslidernibfocus colordiffuse="red">buttons/slider-nib.png</textureslidernibfocus>
 					<orientation>horizontal</orientation>
-					<onup>2</onup>
-					<ondown>90</ondown>
+					<onup>10002</onup>
+					<ondown>10090</ondown>
 				</control>
 
-				<control type="label" id="201">
-					<description>ML Little Kids</description>
-					<posy>418</posy>
-					<posx>75</posx>
-					<top>418</top>
-					<left>75</left>
-					<width>262</width>
-					<visible>true</visible>
-					<scroll>true</scroll>
-					<label>$ADDON[plugin.video.netflix 30233]</label>
-					<haspath>false</haspath>
-					<font>font12</font>
-					<wrapmultiline>true</wrapmultiline>
-					<align>center</align>
-				</control>
-				<control type="label" id="202">
-					<description>ML Older Kids</description>
-					<posy>418</posy>
-					<posx>337</posx>
-					<top>418</top>
-					<left>337</left>
-					<width>262</width>
-					<visible>true</visible>
-					<scroll>true</scroll>
-					<label>$ADDON[plugin.video.netflix 30234]</label>
-					<haspath>false</haspath>
-					<font>font12</font>
-					<wrapmultiline>true</wrapmultiline>
-					<align>center</align>
-				</control>
-				<control type="label" id="203">
-					<description>ML Teens</description>
-					<posy>418</posy>
-					<posx>600</posx>
-					<top>418</top>
-					<left>600</left>
-					<width>262</width>
-					<visible>true</visible>
-					<scroll>true</scroll>
-					<label>$ADDON[plugin.video.netflix 30235]</label>
-					<haspath>false</haspath>
-					<font>font12</font>
-					<wrapmultiline>true</wrapmultiline>
-					<align>center</align>
-				</control>
-				<control type="label" id="204">
-					<description>ML Adults</description>
-					<posy>418</posy>
-					<posx>863</posx>
-					<top>418</top>
-					<left>863</left>
-					<width>262</width>
-					<visible>true</visible>
-					<scroll>true</scroll>
-					<label>$ADDON[plugin.video.netflix 30236]</label>
-					<haspath>false</haspath>
-					<font>font12</font>
-					<wrapmultiline>true</wrapmultiline>
-					<align>center</align>
-				</control>
-				<control type="label" id="9">
+				<control type="label" id="10009">
 					<description>ML Current status</description>
-					<posy>480</posy>
+					<posy>500</posy>
 					<posx>75</posx>
-					<top>480</top>
+					<top>500</top>
 					<left>75</left>
 					<width>1050</width>
 					<visible>true</visible>
@@ -232,16 +172,16 @@
 				</control>
 			</control>
 			<!-- Window default side buttons -->
-			<control type="grouplist" id="90">
+			<control type="grouplist" id="10090">
 				<left>1210</left>
 				<top>92</top>
 				<orientation>vertical</orientation>
 				<width>300</width>
 				<height>250</height>
 				<itemgap>-10</itemgap>
-				<onleft>80</onleft>
+				<onleft>10080</onleft>
 
-				<control type="button" id="28">
+				<control type="button" id="10028">
 					<description>OK button</description>
 					<width>300</width>
 					<height>100</height>
@@ -256,7 +196,7 @@
 					<aligny>center</aligny>
 					<pulseonselect>no</pulseonselect>
 				</control>
-				<control type="button" id="29">
+				<control type="button" id="10029">
 					<description>Cancel button</description>
 					<width>300</width>
 					<height>100</height>

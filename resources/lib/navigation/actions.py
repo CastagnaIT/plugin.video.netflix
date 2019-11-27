@@ -46,8 +46,7 @@ class AddonActionExecutor(object):
             ui.show_modal_dialog(ui.xmldialogs.ParentalControl,
                                  'plugin-video-netflix-ParentalControl.xml',
                                  g.ADDON.getAddonInfo('path'),
-                                 pin=parental_control_data['pin'],
-                                 maturity_level=parental_control_data['maturity_level'])
+                                 **parental_control_data)
         except MissingCredentialsError:
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
         except WebsiteParsingError as exc:
