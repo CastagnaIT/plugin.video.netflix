@@ -178,6 +178,11 @@ class GlobalVariables(object):
 
     def __init__(self):
         """Do nothing on constructing the object"""
+        # Define here any variables necessary for the correct loading of the modules
+        self.ADDON = None
+        self.ADDON_DATA_PATH = None
+        self.DATA_PATH = None
+        self.CACHE_METADATA_TTL = None
 
     def init_globals(self, argv, skip_database_initialize=False):
         """Initialized globally used module variables.
@@ -421,7 +426,7 @@ class GlobalVariables(object):
 # pylint: disable=invalid-name
 # This will have no effect most of the time, as it doesn't seem to be executed
 # on subsequent addon invocations when reuseLanguageInvoker is being used.
-# We initialize an empty instance so the instance is importable from addon.py
-# and service.py, where g.init_globals(sys.argv) MUST be called before doing
+# We initialize an empty instance so the instance is importable from run_addon.py
+# and run_service.py, where g.init_globals(sys.argv) MUST be called before doing
 # anything else (even BEFORE OTHER IMPORTS from this addon)
 g = GlobalVariables()

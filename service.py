@@ -6,6 +6,8 @@
 """Kodi plugin for Netflix (https://netflix.com)"""
 from __future__ import absolute_import, division, unicode_literals
 
+import sys
+
 from resources.lib.run_service import run
 
-run()
+run(sys.argv)
