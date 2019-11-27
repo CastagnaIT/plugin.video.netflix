@@ -1,0 +1,965 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
+"POT-Creation-Date: 2017-07-24 16:15+0000\n"
+"PO-Revision-Date: 2019-11-24 10:40+0000\n"
+"Last-Translator: frodo19"
+"Language-Team: Hungarian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix video kiegészítő"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Előfordulhat, hogy a kiegészítő néhány része nem törvényes az Ön országában - telepítés előtt tájékozódjon a helyi törvényekről"
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Ajánlások"
+
+msgctxt "#30002"
+msgid "Adult Pin"
+msgstr "Felnőtt kód"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Kifejezés keresés"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Jelszó"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-mail"
+
+msgctxt "#30006"
+msgid "Adult verification failed"
+msgstr "A felnőtt ellenőrzése sikertelen"
+
+msgctxt "#30007"
+msgid "Please Check your adult pin"
+msgstr "Felnőtt kód ellenőrzése"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Bejelentkezés sikertelen"
+
+msgctxt "#30009"
+msgid "Please Check your credentials"
+msgstr "Kérjük, ellenőrizze hitelesítő adatait"
+
+msgctxt "#30010"
+msgid "Lists of all kinds"
+msgstr "Vegyes lista"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Keresés"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Nincs elérhető sorozat"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Nincs találat"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Fiók"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Opciók"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Exportálás a médiatárba"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Értékelés a Netflixen"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Törlés a saját listámból"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Hozzáadás a saját listámhoz"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "0 és 10 között"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Haladó"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL ellenőrzés"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Könyvtár"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Saját könyvtár mappa engedélyezése"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Saját könyvtár elérése"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Lejátszási hiba"
+
+msgctxt "#30029"
+msgid "Missing InputStream addon"
+msgstr "Hiányzó InputStream kiegészítő"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Törlés a médiatárból"
+
+msgctxt "#30031"
+msgid "General"
+msgstr "Általános"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Követés"
+
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Dolby Digital Plus (DDPlus HQ és Atmos Prémium) engedélyezése"
+
+msgctxt "#30034"
+msgid "Manual ESN"
+msgstr "Kézi  ESN"
+
+msgctxt "#30035"
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive beállítások..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Eredeti cím használat az exportálásnál"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Nézetek"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Saját nézetek engedélyezése"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Mappanézet"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Filmnézet"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Sorozatnézet"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Évadnézet"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Epizódnézet"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Profilnézet"
+
+msgctxt "#30045"
+msgid "[COLOR cyan][B]-- NEXT PAGE --[/B][/COLOR]"
+msgstr "[COLOR cyan][B]-- KÖVETKEZŐ OLDAL --[/B][/COLOR]"
+
+msgctxt "#30046"
+msgid "InputStream addon is not enabled"
+msgstr "InputStream kiegészítő nem engedélyezett"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Végleg törlöd?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Exportált"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "Adatbázis frissítés"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Frissítés kész"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "Kérelem hiba"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "Jelenleg nem sikerült teljesíteni a kérést"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Automatikus bejelentkezés"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Automatikus bejelentkezés engedélyezése"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "Azonosító"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Profil választás a listából -> környezeti menü"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Automatikus bejelentkezés engedélyezve!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Fiók váltása"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "HEVC profil engedélyezése (4k Android/HDR/DolbyVision)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Belső médiatár frissítése"
+
+msgctxt "#30062"
+msgid "Enable/disable adult pin. Active:"
+msgstr "Engedélyezés/tiltás felnőtt kód Aktív: "
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "új részek hozzáadása a médiatárhoz"
+
+msgctxt "#30064"
+msgid "Perform auto-update"
+msgstr "Automatikus frissítés teljesítése"
+
+msgctxt "#30065"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr "Automatikus frissítés a sorozat évadokhoz és epizódokhoz"
+
+msgctxt "#30066"
+msgid "Debug logging level"
+msgstr "Hiba napló szint"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "napi"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "másnaponta"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "5 naponta"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "heti"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Adott időpontban"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Indítás ha 5 percig készenlétben van"
+
+msgctxt "#30073"
+msgid "Check every X minutes if update scheduled"
+msgstr "Frissítési időköz ellőrzése minden x percben"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Nézet az exportálthoz"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Intró átugrásának kérése"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Intró átugrása"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Átugrás"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Lejátszás"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Automatikus átugrás"
+
+msgctxt "#30080"
+msgid "Pause when skipping"
+msgstr "Pillanat állj átugrásnál"
+
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "HDCP 2.2 (engedélyeztt 4K tartalom) kényszerítése"
+
+msgctxt "#30082"
+msgid "Remember audio / subtitle preferences"
+msgstr "Hang/felirat beállítások megjegyzése"
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr "Könyvjelzők mentése / nézettként megjelölés"
+
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Gyorsítótár-elem megőrzése (perc)"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Gyorsítótár-elem metaadatok megőrzése (nap)"
+
+msgctxt "#30086"
+msgid "Invalidate entire cache on modification of My List"
+msgstr "Érvénytelenítse a teljes gyorsítótárat a Saját lista módosításakor"
+
+msgctxt "#30087"
+msgid "Contains {} and more..."
+msgstr "Tartalom {} és több..."
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr "Kapcsolódó tartalom böngészése"
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr "Műfaj típusok böngészése"
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr "Böngéssz a kapcsolódó video listákon és fedezz fel további tartalmat"
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr "Böngéssz és rendezd a tartalmat ami a Kodi médiatárba exportálásra került"
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr "Egyszerű, tartalom szerinti keresés"
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr "Böngészés műfaj szerint, és kapcsolódó tartalom szerint"
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr "Böngészés ajánlás szerint, találj valami kedvedre valót"
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr "Minden sorozat"
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr "Minden film"
+
+msgctxt "#30097"
+msgid "Main Menu"
+msgstr "Főmenü"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "HDR profil engedélyezése"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "DolbyVision profil engedélyezése"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "Találat \"{}\""
+
+msgctxt "#30101"
+msgid "Netflix returned an unknown error."
+msgstr "A Netflix leállt ismeretlen hiba miatt."
+
+msgctxt "#30102"
+msgid "Netflix returned the following error:"
+msgstr "A Netflix leállt a következő hiba miatt:"
+
+msgctxt "#30103"
+msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
+
+msgctxt "#30104"
+msgid "The addon encountered to following error:"
+msgstr "A kiegészítő leállt a következő hibával:"
+
+msgctxt "#30105"
+msgid "Netflix Addon Error"
+msgstr "Netflix kiegészítő hiba"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Hibás pin"
+
+msgctxt "#30107"
+msgid "Disabled PIN verfication"
+msgstr "Pin azonosítás tiltva"
+
+msgctxt "#30108"
+msgid "Enabled PIN verfication"
+msgstr "Pin azonosítás engedélyezve"
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Bejelentkezés sikeres"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Háttér folyamat elindult"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Nincs tartalom ehhez"
+
+msgctxt "#30112"
+msgid "You need to be logged in to use Netflix"
+msgstr "Be kell jelentkezned a Netflix használatához"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Bejelentkezés sikeres"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "A saját listám és a Kodi médiatár szinkronban tartása"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "Tartalom profilok"
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr "Haladó beállítások"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Tár"
+
+msgctxt "#30118"
+msgid "API operation failed: {}"
+msgstr "API művelet sikertelen: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Saját lista művelet sikeres"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Kodi médiatárból nem törölhető automatikusan a szezon, töröld kézzel."
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Teljes szinkronizálás indítása most"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Saját lista szinkronizálása a Kodi médiatárral"
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr "Tényleg folytatni akarja?\nEzzel törli az összes korábban exportált elemet, és exportálja az összes elemet a Saját listából az aktív profilhoz.\nEz a művelet eltarthat egy ideig ..."
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr "Valóban törlöd ezt az elemet?"
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Könyvtár tisztítása"
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr "Valóban tisztítani szertnéd a könyvtárat?\nAz összes exportált elem törlődik."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Értékelés {}"
+
+msgctxt "#30128"
+msgid "No contained titles yet..."
+msgstr "Még nem tartalmaz címeket..."
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "UP Next kiegészítő használata"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Értesítés megjelenítése a hiba párbeszédpanel helyett"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "A hibanaplót nézd meg, a részletes infóért"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "Memória gyorsítótár törlése"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "Lemez gyorsítótár törlése"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "A végrehajtás ütemezésének engedélyezése"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Gyorsítótár törölve"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "1080p feloldás engedélyezése (nem ajánlott az Androidon)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)"
+
+msgctxt "#30138"
+msgid "The requested action timed out. The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "Akció időtúllépés. Lehet, hogy a háttérszolgáltatások még nem érhetők el, vagy éppen elindította a Kodi / a kiegészítőt. Ebben az esetben próbálkozzon újra egy később"
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgstr "IPC engedélyezése HTTP-n keresztül (az AddonSignals időtúllépéseinek használata esetén)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "A médiatár áttelepítése új formátumba"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Indítási értesítés letiltása"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Saját"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "Saját nézet"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "WebVTT felirat támogatás tiltása"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Utoljára hozzáadva"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Fedezze fel a frissen hozzáadott tartalmat."
+
+msgctxt "#30147"
+msgid "Next page >>"
+msgstr "Következő oldal >>"
+
+msgctxt "#30148"
+msgid "<< Previous page"
+msgstr "<< Előző oldal"
+
+msgctxt "#30149"
+msgid "Sort results by"
+msgstr "Tartalom rendezése : "
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "Betűrendben (A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "Betűrendben (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Javaslatok neked"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Bemutató éve"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Netflix kiegészítő beállítása"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Van Netflix prémium hozzáférésed?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Támogatja-e az eszközöd a 4K-szabványt?\r\nAz eszköznek:\r\nKell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
+
+msgctxt "#30157"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "Most megnyílik az InputStream Adaptive beállítások panele, tehát ezt a \"HDCP állapot felülbírálása\" beállítást ON-ra kell állítani"
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "A konfigurációs képernyő megjelenítése az addon indításakor"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Főmenü nézet"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Keresés menü nézet"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Exportált nézet"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Utoljára használt"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Hang narrátor"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Böngészés hang narrátor alaplán "
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Saját lista nézet"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Főmenü elemek"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Saját lista"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Folyamatban levő"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Legjobb válogatások"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Új megjelenések"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Trendi most"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Népszerű a Netflixen"
+
+msgctxt "#30173"
+msgid "Netflix Originals"
+msgstr "Eredeti Netflix gyártás"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Sorozat műfajok"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Film műfajok"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Engedélyezze az STRM folytatódó munkafolyamatot (csak a könyvtárban)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Kérdés hogy folytassa-e a videót"
+
+msgctxt "#30178"
+msgid "Open UpNext Addon settings"
+msgstr "UpNext kiegészítő beállítások megnyitása"
+
+msgctxt "#30179"
+msgid "Show trailers & more"
+msgstr "Bemutatók és egyebek mutatása"
+
+msgctxt "#30180"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Probléma merült fel a bejelentkezés során, lehetséges, hogy fiókját nem erősítették meg vagy nem újították meg"
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi \"Csak kényszerített\" feliratra van állítva)"
+
+msgctxt "#30182"
+msgid "Export NFO files"
+msgstr "NFO fájlok exportálása"
+
+msgctxt "#30183"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "Szertnéd az NFO fájlokat exportálni {}?"
+
+msgctxt "#30184"
+msgid "NFO Files"
+msgstr "NFO fájlok"
+
+msgctxt "#30185"
+msgid "Enable NFO files export"
+msgstr "NFO fájlok exportálásának engedélyezése"
+
+msgctxt "#30186"
+msgid "For Movies"
+msgstr "Filmekhez"
+
+msgctxt "#30187"
+msgid "For TV Show"
+msgstr "Sorozatokhoz"
+
+msgctxt "#30188"
+msgid "Ask"
+msgstr "Kérdez"
+
+msgctxt "#30189"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#30190"
+msgid "TV show"
+msgstr "sorozat"
+
+msgctxt "#30191"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "NFO fájlok exportálása a saját listámhoz?"
+
+msgctxt "#30192"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nEzeket a fájlokat a szolgáltatói információs scrapperek használják a filmek és a sorozatok információinak integrálására, hasznosak a bónusz epizódok vagy a rendezői vágások során."
+
+msgctxt "#30193"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Az összes információ NFO fájlokból (csak a 'Helyi információ' scrapperel együtt használható)"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Videostream felbontási limit"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Új sorozatok exportálása"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Kivétel az auto frissítésből"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Belefoglalva az auto frissítésbe"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Új epizódok exportálása"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Megosztott könyvtár (Kodi MySQL server kell hozzá)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "MySQL server használata a média adatbázishoz"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Felhasználónév"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "MySQL adatbázis kapcsolat sikeres"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Port"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Adatbázis csatlakozási teszt"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "HIBA: A MySQL adatbázis nem érhető el - a helyi adatbázist fogjuk használni"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Eszköz beállítása automatikus frissítéskezelőként"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Megnézi hogy ez az eszköz, automatikus frissítéskezelő-e"
+
+msgctxt "#30209"
+msgid "This device now handles the auto-updates of shared-library"
+msgstr "Eszköz most automatikus frissítéskezelőként beállítva"
+
+msgctxt "#30210"
+msgid "This device handles the auto-updates of shared-library"
+msgstr "Eszköz beállítása automatikus frissítéskezelőként"
+
+msgctxt "#30211"
+msgid "Another device handles the auto-updates of shared-library"
+msgstr "Másik eszköz beállítása automatikus frissítéskezelőként"
+
+msgctxt "#30212"
+msgid "There is no device that handles the auto-updates of shared-library"
+msgstr "Nincs eszköz beállítva automatikus frissítéskezelőként"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper beállítások..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Saját listám kényszerített frissítése"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Színkiemelés a saját listám elemein"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "ESN használat mutatása"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "ESN reset"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Biztosan vissza akarja állítani az ESN-t?\r\nHa megerősíti, várjon, amíg megkapja a bejelentkezési üzenetet."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "A Szinkronizálás kész, infó elrejtése"
+
+msgctxt "#30220"
+msgid "The Kodi library has been updated"
+msgstr "Kodi médiatár frissítve"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Felhasználói fiók "
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Gyermek fiók"
+
+msgctxt "#30223"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "A szinkronizáció most a  \"Saját listámat\" használja a profilhoz {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Automata frissítési mód"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Kézi"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Ütemezett"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Kodi médiatár szinronizálása a saját listámmal"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Használd a \"Saját listámat\" a jelenlegi profilhoz"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Kiválasztott profilnév mutatása"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Frissítés keresése most"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Akarsz most keresni frissítést?"
+
+msgctxt "#30232"
+msgid "Restrict by Maturity Level"
+msgstr "Kor szeint korlátozva"
+
+msgctxt "#30237"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Tartalom {} meg kell adni a PIN-t a lejátszáshoz."
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Nézett státusz minden profilhoz (ez az opció visszavonásra kerül a jövőben)"
