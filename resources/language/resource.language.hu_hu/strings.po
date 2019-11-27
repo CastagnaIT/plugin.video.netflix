@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
@@ -46,7 +46,7 @@ msgstr "Jelszó"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Adult verification failed"
@@ -122,7 +122,7 @@ msgstr "Haladó"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr ""
+msgstr "SSL ellenőrzés"
 
 msgctxt "#30025"
 msgid "Library"
@@ -426,11 +426,11 @@ msgstr "DolbyVision profil engedélyezése"
 
 msgctxt "#30100"
 msgid "Results for \"{}\""
-msgstr "Találat \"{}\"
+msgstr "Találat \"{}\""
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr "A Netflix leállt ismeretlen hiba miatt"
+msgstr "A Netflix leállt ismeretlen hiba miatt."
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
@@ -438,7 +438,7 @@ msgstr "A Netflix leállt a következő hiba miatt:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \ "Hibakeresés \" lehetőséget a Kodi beállításokban)"
+msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
 
 msgctxt "#30104"
 msgid "The addon encountered to following error:"
@@ -518,7 +518,7 @@ msgstr "Saját lista szinkronizálása a Kodi médiatárral"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Tényleg folytatni akarja? \ Ezzel törli az összes korábban exportált elemet, és exportálja az összes elemet a Saját listából az aktív profilhoz. \ Ez a művelet eltarthat egy ideig ..."
+msgstr "Tényleg folytatni akarja?\nEzzel törli az összes korábban exportált elemet, és exportálja az összes elemet a Saját listából az aktív profilhoz.\nEz a művelet eltarthat egy ideig ..."
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
@@ -530,15 +530,15 @@ msgstr "Könyvtár tisztítása"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Valóban tisztítani szertnéd a könyvtárat? \ Az összes exportált elem törlődik."
+msgstr "Valóban tisztítani szertnéd a könyvtárat?\nAz összes exportált elem törlődik."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
-msgstr "Értékelés: {}"
+msgstr "Értékelés {}"
 
 msgctxt "#30128"
 msgid "No contained titles yet..."
-msgstr "Még nem tartalmaz címeket ..."
+msgstr "Még nem tartalmaz címeket..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -650,11 +650,11 @@ msgstr "Van Netflix prémium hozzáférésed?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Támogatja-e az eszközöd a 4K-szabványt? \ Az eszköznek: \ kell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
+msgstr "Támogatja-e az eszközöd a 4K-szabványt?\rAz eszköznek:\r\nKell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Most megnyílik az InputStream Adaptive beállítások panele, tehát ezt a \ "HDCP állapot felülbírálása \" beállítást ON-ra kell állítani."
+msgstr "Most megnyílik az InputStream Adaptive beállítások panele, tehát ezt a \"HDCP állapot felülbírálása\" beállítást ON-ra kell állítani"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -750,7 +750,7 @@ msgstr "Probléma merült fel a bejelentkezés során, lehetséges, hogy fiókj�
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik, ha a Kodi  "Csak kényszerített" feliratra van állítva)"
+msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi \"Csak kényszerített\" feliratra van állítva)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -794,7 +794,7 @@ msgstr "NFO fájlok exportálása a saját listámhoz?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "Ezeket a fájlokat a szolgáltatói információs scrapperek használják a filmek és a sorozatok információinak integrálására, hasznosak a bónusz epizódok vagy a rendezői vágások során."
+msgstr "\r\nEzeket a fájlokat a szolgáltatói információs scrapperek használják a filmek és a sorozatok információinak integrálására, hasznosak a bónusz epizódok vagy a rendezői vágások során."
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -898,7 +898,7 @@ msgstr "ESN reset"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Biztosan vissza akarja állítani az ESN-t? \ Ha megerősíti, várjon, amíg megkapja a bejelentkezési üzenetet."
+msgstr "Biztosan vissza akarja állítani az ESN-t?\r\nHa megerősíti, várjon, amíg megkapja a bejelentkezési üzenetet."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
