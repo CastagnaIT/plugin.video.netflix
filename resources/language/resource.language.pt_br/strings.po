@@ -955,3 +955,11 @@ msgstr "Deseja verificar por atualizações agora?"
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
 msgstr "Restringir por Nível de Maturidade"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Conteúdo para {} irá requerer o PIN para iniciar a reprodução."
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Mantenha as marcações de estatus assistidos separadas para cada perfil (esta opção será removida em versões futuras)"
