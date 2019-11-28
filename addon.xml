@@ -55,8 +55,9 @@ v0.16.0 (2019-11-29)
 -Fixed an issue that breaks the service when there is no internet connection
 -Fixed an issue in some specific cases request at startup credentials even if already saved
 -Fixed an issue did not show any error to the user when the loading of profiles fails
--New Hungarian translation
--Updated it, languages
+-Fixed an issue that did not allow the display of the skip button in the Kodi library
+-New Hungarian language
+-Updated de, hr, it, pl translations
 -Other minor improvements/fixes
 
 v0.15.11 (2019-11-20)
