@@ -76,7 +76,10 @@ class PlaybackController(xbmc.Monitor):
                                  player_state)
 
     def _on_playback_started(self, data):
-        self.active_player_id = max(data['player']['playerid'], 1)
+        # When UpNext addon play a video while we are inside Netflix addon and
+        # not externally like Kodi library, the playerid become -1 this id does not exist
+        player_id = data['player']['playerid'] if data['player']['playerid'] > -1 else 1
+        self.active_player_id = player_id
         self._notify_all(PlaybackActionManager.on_playback_started,
                          self._get_player_state())
 
