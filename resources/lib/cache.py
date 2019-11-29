@@ -308,7 +308,7 @@ class Cache(object):
                 .format(bucket))
             return
         try:
-            if self.PY_IS_VER2 == 2:
+            if self.PY_IS_VER2:
                 self.window.setProperty(_window_property(bucket), pickle.dumps(contents))
             else:
                 # Note: On python 3 pickle.dumps produces byte not str cannot be passed as is in
