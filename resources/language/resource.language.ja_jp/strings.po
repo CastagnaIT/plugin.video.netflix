@@ -34,11 +34,11 @@ msgstr "オススメ"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "制限コンテンツを見るのにはPINを入力してください。"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr ""
+msgstr "キーワード"
 
 msgctxt "#30004"
 msgid "Password"
@@ -54,7 +54,7 @@ msgstr "PIN誤り、確認してください"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "視聴制限PIN(4桁)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -74,11 +74,11 @@ msgstr "検索"
 
 msgctxt "#30012"
 msgid "No seasons available"
-msgstr ""
+msgstr "見れるシーズンがありません。"
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr ""
+msgstr "一致する項目はありませんでした。"
 
 msgctxt "#30014"
 msgid "Account"
@@ -98,7 +98,7 @@ msgstr "ログアウト"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr ""
+msgstr "ライブラリに追加"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
@@ -114,7 +114,7 @@ msgstr "マイリストに追加"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
-msgstr "(0-10のあいだ)"
+msgstr "(0-10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -122,23 +122,23 @@ msgstr "エキスパート"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr ""
+msgstr "SSL認証"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr ""
+msgstr "ライブラリ"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr ""
+msgstr "カスタムライブラリフォルダを使用"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr ""
+msgstr "カスタムライブラリパース"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr ""
+msgstr "再生エラー"
 
 msgctxt "#30029"
 msgid "Missing InputStream addon"
@@ -146,7 +146,7 @@ msgstr "インプットストリームがありませんね"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr ""
+msgstr "ライブラリから削除"
 
 msgctxt "#30031"
 msgid "General"
@@ -266,7 +266,7 @@ msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr ""
+msgstr "HEVCプロフィール使用(アンドロイドなどの4k)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -282,11 +282,11 @@ msgstr ""
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "更新タイミング"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "新しいシーズンとエピソードの更新方法"
 
 msgctxt "#30066"
 msgid "Debug logging level"
@@ -310,15 +310,15 @@ msgstr "毎週"
 
 msgctxt "#30071"
 msgid "Time of Day"
-msgstr ""
+msgstr "実行時刻"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr ""
+msgstr "5分以上何もしなかったら"
 
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
-msgstr ""
+msgstr "何分毎に更新を確認しましょうか。"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -326,7 +326,7 @@ msgstr ""
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr ""
+msgstr "スキップを確認"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -374,11 +374,11 @@ msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr ""
+msgstr "{}に関連する項目"
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr ""
+msgstr "こちらもオススメ"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
@@ -418,11 +418,11 @@ msgstr ""
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr ""
+msgstr "HDRプロフィールを使用"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr ""
+msgstr "DolbyVision使用"
 
 msgctxt "#30100"
 msgid "Results for \"{}\""
@@ -446,19 +446,19 @@ msgstr ""
 
 msgctxt "#30105"
 msgid "Netflix Addon Error"
-msgstr ""
+msgstr "Netflixアドオンエラー"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
-msgstr ""
+msgstr "PIN誤り"
 
 msgctxt "#30107"
-msgid "Disabled PIN verfication"
-msgstr ""
+msgid "PIN protection is off."
+msgstr "PINによる制限をしない。"
 
 msgctxt "#30108"
-msgid "Enabled PIN verfication"
-msgstr ""
+msgid "All content is protected by PIN."
+msgstr "PINによるコンテンツ制限"
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -466,11 +466,11 @@ msgstr "ログイン成功"
 
 msgctxt "#30110"
 msgid "Background services started"
-msgstr ""
+msgstr "バッググラウンドサービスをはじめました。"
 
 msgctxt "#30111"
 msgid "There is no contents"
-msgstr ""
+msgstr "コンテンツなし！"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
@@ -486,7 +486,7 @@ msgstr ""
 
 msgctxt "#30115"
 msgid "Content Profiles"
-msgstr ""
+msgstr "コンテンツプロフィール"
 
 msgctxt "#30116"
 msgid "Advanced Addon Configuration"
@@ -602,7 +602,7 @@ msgstr ""
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr ""
+msgstr "WebVTT字幕を使わない"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -642,7 +642,7 @@ msgstr "公開年"
 
 msgctxt "#30154"
 msgid "Netflix addon configuration"
-msgstr ""
+msgstr "Netflixアドオン設定"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
@@ -922,15 +922,15 @@ msgstr ""
 
 msgctxt "#30224"
 msgid "Auto update mode"
-msgstr ""
+msgstr "自動更新"
 
 msgctxt "#30225"
 msgid "Manual"
-msgstr ""
+msgstr "マニュアル"
 
 msgctxt "#30226"
 msgid "Scheduled"
-msgstr ""
+msgstr "自動"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
@@ -942,7 +942,7 @@ msgstr ""
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
-msgstr ""
+msgstr "プロフィール名を表示"
 
 msgctxt "#30230"
 msgid "Check for updates now"

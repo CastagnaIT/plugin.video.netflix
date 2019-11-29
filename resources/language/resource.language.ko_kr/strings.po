@@ -34,7 +34,7 @@ msgstr "추천"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "제한된 콘텐츠를 보려면 PIN을 입력해야 합니다."
 
 msgctxt "#30003"
 msgid "Search term"
@@ -254,7 +254,7 @@ msgstr "아이디"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로파일 리스테에서 하나를 고르세요."
+msgstr "컨텍스트 메뉴의 프로파일 리스트에서 하나를 고르세요."
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
@@ -282,7 +282,7 @@ msgstr "새 에피소드가 라이브러리에 추가되었습니다."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "새로 고칩니다."
+msgstr "언제?"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -374,11 +374,11 @@ msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr ""
+msgstr "{}을(를) 포함한 것들..."
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr ""
+msgstr "비슷한 콘텐츠"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
@@ -418,11 +418,11 @@ msgstr ""
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr ""
+msgstr "HDR"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr ""
+msgstr "돌비비전"
 
 msgctxt "#30100"
 msgid "Results for \"{}\""
@@ -446,31 +446,31 @@ msgstr ""
 
 msgctxt "#30105"
 msgid "Netflix Addon Error"
-msgstr ""
+msgstr "Netflix애드온 오류"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
-msgstr ""
+msgstr "PIN이 틀렸습니다."
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "PIN보호 사용안함"
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "모든 콘텐츠에 PIN을 사용합니다."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr ""
+msgstr "로그인 성공"
 
 msgctxt "#30110"
 msgid "Background services started"
-msgstr ""
+msgstr "백그라운드 서비스를 시작했습니다."
 
 msgctxt "#30111"
 msgid "There is no contents"
-msgstr ""
+msgstr "없습니다."
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
@@ -486,7 +486,7 @@ msgstr ""
 
 msgctxt "#30115"
 msgid "Content Profiles"
-msgstr ""
+msgstr "콘텐츠 프로화일"
 
 msgctxt "#30116"
 msgid "Advanced Addon Configuration"
@@ -602,7 +602,7 @@ msgstr ""
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr ""
+msgstr "WebVTT 자막 지원 안함"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -642,7 +642,7 @@ msgstr "출시일순"
 
 msgctxt "#30154"
 msgid "Netflix addon configuration"
-msgstr ""
+msgstr "Netflix애드온 설정"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
@@ -922,15 +922,15 @@ msgstr ""
 
 msgctxt "#30224"
 msgid "Auto update mode"
-msgstr ""
+msgstr "자동으로 고치기"
 
 msgctxt "#30225"
 msgid "Manual"
-msgstr ""
+msgstr "수동"
 
 msgctxt "#30226"
 msgid "Scheduled"
-msgstr ""
+msgstr "자동"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
@@ -942,7 +942,7 @@ msgstr ""
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
-msgstr ""
+msgstr "프로파일 이름을 보여줍니다."
 
 msgctxt "#30230"
 msgid "Check for updates now"
