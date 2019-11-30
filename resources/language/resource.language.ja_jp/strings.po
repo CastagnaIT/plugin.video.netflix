@@ -86,7 +86,7 @@ msgstr "アカウント"
 
 msgctxt "#30015"
 msgid "Other options"
-msgstr ""
+msgstr "その他"
 
 msgctxt "#30016"
 msgid "ESN"
@@ -150,7 +150,7 @@ msgstr "ライブラリから削除"
 
 msgctxt "#30031"
 msgid "General"
-msgstr ""
+msgstr "一般設定"
 
 msgctxt "#30032"
 msgid "Tracking"
@@ -158,11 +158,11 @@ msgstr ""
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr ""
+msgstr "ドルビーサラウンドを使う"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "ESN入力"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -170,39 +170,39 @@ msgstr "インプットストリームアドオン設定"
 
 msgctxt "#30036"
 msgid "Always use the original title on export"
-msgstr ""
+msgstr "エキスポートの際、オリジナルタイトルを使用"
 
 msgctxt "#30037"
 msgid "Views"
-msgstr ""
+msgstr "ホーム設定"
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr ""
+msgstr "カスタムビュー"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr ""
+msgstr "フォルダ"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr ""
+msgstr "映画"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr ""
+msgstr "TV番組・ドラマ"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr ""
+msgstr "シーズン"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr ""
+msgstr "エピソード"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr ""
+msgstr "プロフィール"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -210,11 +210,11 @@ msgstr "親指評価なし|サムズアップ|サムズダウン"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
-msgstr ""
+msgstr "InputStream addonが使用できないです。"
 
 msgctxt "#30047"
 msgid "Finally remove?"
-msgstr ""
+msgstr "本当に削除しますか。"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -222,27 +222,27 @@ msgstr ""
 
 msgctxt "#30049"
 msgid "Update DB"
-msgstr ""
+msgstr "DB更新"
 
 msgctxt "#30050"
 msgid "Update successful"
-msgstr ""
+msgstr "更新しました。"
 
 msgctxt "#30051"
 msgid "Request Error"
-msgstr ""
+msgstr "リグエストエラー"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr ""
+msgstr "失敗しました。"
 
 msgctxt "#30053"
 msgid "Auto Login"
-msgstr ""
+msgstr "自動ログイン"
 
 msgctxt "#30054"
 msgid "Enable Auto Login"
-msgstr ""
+msgstr "自動ログイン機能使用"
 
 msgctxt "#30055"
 msgid "Profile"
@@ -250,19 +250,19 @@ msgstr "プロフィール"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr ""
+msgstr "ＩＤ"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr ""
+msgstr "コンテキストメニューからプロフィールを選んでください。"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr ""
+msgstr "自動ログインを使用可能しました。"
 
 msgctxt "#30059"
 msgid "Switch accounts"
-msgstr ""
+msgstr "別のアカウントへ"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -270,7 +270,7 @@ msgstr "HEVCプロフィール使用(アンドロイドなどの4k)"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr ""
+msgstr "ライブラリ更新"
 
 msgctxt "#30062"
 msgid "Parental controls"
@@ -278,7 +278,7 @@ msgstr ""
 
 msgctxt "#30063"
 msgid "new episodes added to library"
-msgstr ""
+msgstr "新エピソードをライブラリに追加しました。"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -350,11 +350,11 @@ msgstr "スキップする際に停止"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr ""
+msgstr "HDCP2.2強制支援(4Kコンテンツ)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr ""
+msgstr "音声・字幕設定を保存"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -362,11 +362,11 @@ msgstr ""
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
-msgstr ""
+msgstr "キャッシュ保存時間(分)"
 
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
-msgstr ""
+msgstr "メタデータのキャッシュ保存期間(日)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
@@ -414,7 +414,7 @@ msgstr "全ての映画"
 
 msgctxt "#30097"
 msgid "Main Menu"
-msgstr ""
+msgstr "メインメニュー"
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
@@ -430,11 +430,11 @@ msgstr "\"{}\"の検索結果"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr ""
+msgstr "Netflixからのアンノーンエラー"
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
-msgstr ""
+msgstr "Netflixからのエラーメッセージ:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
@@ -514,7 +514,7 @@ msgstr ""
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr ""
+msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
@@ -526,7 +526,7 @@ msgstr ""
 
 msgctxt "#30125"
 msgid "Purge library"
-msgstr ""
+msgstr "ライブラリ削除"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -554,11 +554,11 @@ msgstr ""
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr ""
+msgstr "メモリキャッシュを削除"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
-msgstr ""
+msgstr "メモリとディスクキャッシュを削除"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -570,11 +570,11 @@ msgstr "キャッシュを削除しました。"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr ""
+msgstr "1080pアンロック(アンドロイドは無理かも)"
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr ""
+msgstr "VP9プロフィール使用(問題があったらオフにしてください)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -590,7 +590,7 @@ msgstr ""
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr ""
+msgstr "起動知らせをオフ"
 
 msgctxt "#30142"
 msgid "Custom"
@@ -646,7 +646,7 @@ msgstr "Netflixアドオン設定"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
-msgstr ""
+msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
@@ -662,11 +662,11 @@ msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr ""
+msgstr "メインメニュー"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr ""
+msgstr "検索"
 
 msgctxt "#30161"
 msgid "View for exported"
@@ -674,7 +674,7 @@ msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
-msgstr ""
+msgstr "最近使った設定"
 
 msgctxt "#30163"
 msgid "Audio description"
@@ -682,11 +682,11 @@ msgstr "副音声・音声ガイド付き"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr ""
+msgstr "副音声・音声ガイド付き"
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr ""
+msgstr "マイリスト"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -734,7 +734,7 @@ msgstr ""
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr ""
+msgstr "見たところから見る"
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
@@ -746,7 +746,7 @@ msgstr "予告編など"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
-msgstr ""
+msgstr "ログイン失敗、アカウント確認がまだ取れてないか更新出来なかった可能性があります。"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -762,7 +762,7 @@ msgstr ""
 
 msgctxt "#30184"
 msgid "NFO Files"
-msgstr ""
+msgstr "NFOファイル"
 
 msgctxt "#30185"
 msgid "Enable NFO files export"
@@ -770,23 +770,23 @@ msgstr ""
 
 msgctxt "#30186"
 msgid "For Movies"
-msgstr ""
+msgstr "映画"
 
 msgctxt "#30187"
 msgid "For TV Show"
-msgstr ""
+msgstr "TV番組・ドラマ"
 
 msgctxt "#30188"
 msgid "Ask"
-msgstr ""
+msgstr "聞く"
 
 msgctxt "#30189"
 msgid "movie"
-msgstr ""
+msgstr "映画"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr ""
+msgstr "TV番組・ドラマ"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
@@ -802,7 +802,7 @@ msgstr ""
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr ""
+msgstr "解像度を制限"
 
 msgctxt "#30195"
 msgid "Export new episodes"
@@ -810,11 +810,11 @@ msgstr ""
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
-msgstr ""
+msgstr "自動更新を除く"
 
 msgctxt "#30197"
 msgid "Include in auto update"
-msgstr ""
+msgstr "自動更新を含む"
 
 msgctxt "#30198"
 msgid "Exporting new episodes"
@@ -830,7 +830,7 @@ msgstr ""
 
 msgctxt "#30201"
 msgid "Username"
-msgstr ""
+msgstr "ユーザー名"
 
 msgctxt "#30202"
 msgid "Connection to the MySQL database was successful"
@@ -838,15 +838,15 @@ msgstr ""
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr ""
+msgstr "ホストIP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr ""
+msgstr "ポート"
 
 msgctxt "#30205"
 msgid "Test database connection"
-msgstr ""
+msgstr "データベース接続テスト"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - the local database will be used"
@@ -890,11 +890,11 @@ msgstr ""
 
 msgctxt "#30216"
 msgid "Show ESN in use"
-msgstr ""
+msgstr "ESNを確認"
 
 msgctxt "#30217"
 msgid "Reset ESN"
-msgstr ""
+msgstr "ESN再設定"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
@@ -906,7 +906,7 @@ msgstr ""
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr ""
+msgstr "Kodiライブラリを更新しました。"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -914,7 +914,7 @@ msgstr ""
 
 msgctxt "#30222"
 msgid "Kid account"
-msgstr ""
+msgstr "お子様アカウント"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"

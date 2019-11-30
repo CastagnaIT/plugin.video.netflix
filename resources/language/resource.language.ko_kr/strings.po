@@ -86,7 +86,7 @@ msgstr "계정"
 
 msgctxt "#30015"
 msgid "Other options"
-msgstr "옵션"
+msgstr "기타"
 
 msgctxt "#30016"
 msgid "ESN"
@@ -162,7 +162,7 @@ msgstr "돌비사운드 사용"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr ""
+msgstr "ESN입력"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
@@ -174,7 +174,7 @@ msgstr "내보낼 때 항상 원래 제목 사용하기"
 
 msgctxt "#30037"
 msgid "Views"
-msgstr ""
+msgstr "홈"
 
 msgctxt "#30038"
 msgid "Enable custom views"
@@ -182,27 +182,27 @@ msgstr "사용자 설정"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr ""
+msgstr "폴더"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr ""
+msgstr "영화"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr ""
+msgstr "TV프로그램"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr ""
+msgstr "시즌"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr ""
+msgstr "에피소드"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr ""
+msgstr "프로화일"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -246,7 +246,7 @@ msgstr "자동로그인 켬"
 
 msgctxt "#30055"
 msgid "Profile"
-msgstr "프로파일"
+msgstr "프로화일"
 
 msgctxt "#30056"
 msgid "ID"
@@ -254,7 +254,7 @@ msgstr "아이디"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로파일 리스트에서 하나를 고르세요."
+msgstr "컨텍스트 메뉴의 프로화일 리스트에서 하나를 고르세요."
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
@@ -266,7 +266,7 @@ msgstr "다른 계정으로"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
+msgstr "HEVC프로화일 활성화(안드로이드의 4k 등)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "새로 고칠 때 몇분 마다 확인할까요?"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "내보낸 것들 보기"
+msgstr "내보낸 것들"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
@@ -350,7 +350,7 @@ msgstr "건너뛸 때 멈추기"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr ""
+msgstr "HDCP 2.2 강제사용(4K콘텐츠용)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -418,11 +418,11 @@ msgstr ""
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr "HDR"
+msgstr "HDR프로화일 사용"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr "돌비비전"
+msgstr "돌비비전사용"
 
 msgctxt "#30100"
 msgid "Results for \"{}\""
@@ -430,11 +430,11 @@ msgstr "\"{}\"의 검색 결과"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr ""
+msgstr "Netflix로부터 알수 없는 오류."
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
-msgstr ""
+msgstr "Netflix로부터의 오류내용:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
@@ -474,11 +474,11 @@ msgstr "없습니다."
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr ""
+msgstr "Netflix를 보려면 먼저 로그인 하십시오."
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr ""
+msgstr "로그인 하였습니다."
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
@@ -574,7 +574,7 @@ msgstr ""
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr ""
+msgstr "VP9사용(문제가 있으면 사용하지 마십시오.)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
@@ -662,19 +662,19 @@ msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr ""
+msgstr "홈"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr ""
+msgstr "검색"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr ""
+msgstr "내 보낸 것들"
 
 msgctxt "#30162"
 msgid "Last used"
-msgstr ""
+msgstr "마지막으로 사용한 설정"
 
 msgctxt "#30163"
 msgid "Audio description"
@@ -682,11 +682,11 @@ msgstr "음성지원"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr ""
+msgstr "음성지원"
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr ""
+msgstr "내가 찜한 콘텐츠"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -734,7 +734,7 @@ msgstr ""
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr ""
+msgstr "보던 곳부터 볼까요?"
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
@@ -778,15 +778,15 @@ msgstr ""
 
 msgctxt "#30188"
 msgid "Ask"
-msgstr ""
+msgstr "물어봄"
 
 msgctxt "#30189"
 msgid "movie"
-msgstr ""
+msgstr "영화"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr ""
+msgstr "TV프로그램"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
@@ -838,15 +838,15 @@ msgstr ""
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr ""
+msgstr "IP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr ""
+msgstr "포트"
 
 msgctxt "#30205"
 msgid "Test database connection"
-msgstr ""
+msgstr "데이타베이스 시험접속"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - the local database will be used"
@@ -890,11 +890,11 @@ msgstr ""
 
 msgctxt "#30216"
 msgid "Show ESN in use"
-msgstr ""
+msgstr "사용 중인 ENS확인"
 
 msgctxt "#30217"
 msgid "Reset ESN"
-msgstr ""
+msgstr "ESN 재설정"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
@@ -914,7 +914,7 @@ msgstr ""
 
 msgctxt "#30222"
 msgid "Kid account"
-msgstr ""
+msgstr "어린이용"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
@@ -942,7 +942,7 @@ msgstr ""
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
-msgstr "프로파일 이름을 보여줍니다."
+msgstr "프로화일 이름을 보여줍니다."
 
 msgctxt "#30230"
 msgid "Check for updates now"
