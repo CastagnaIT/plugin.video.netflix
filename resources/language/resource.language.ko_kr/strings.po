@@ -30,7 +30,7 @@ msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있�
 
 msgctxt "#30001"
 msgid "Recommendations"
-msgstr "추천"
+msgstr "추천콘텐츠"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
@@ -202,7 +202,7 @@ msgstr "에피소드"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "프로화일"
+msgstr "프로파일"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -210,7 +210,7 @@ msgstr "엄지평점 없음|별로에요|좋아요"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
-msgstr "InputStream addon을 설치 혹은 켜십시오."
+msgstr "InputStream 애드온을 설치 혹은 켜십시오."
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -246,7 +246,7 @@ msgstr "자동로그인 켬"
 
 msgctxt "#30055"
 msgid "Profile"
-msgstr "프로화일"
+msgstr "프로파일"
 
 msgctxt "#30056"
 msgid "ID"
@@ -254,7 +254,7 @@ msgstr "아이디"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로화일 리스트에서 하나를 고르세요."
+msgstr "컨텍스트 메뉴의 프로파일 리스트에서 하나를 고르세요."
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
@@ -266,7 +266,7 @@ msgstr "다른 계정으로"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVC프로화일 활성화(안드로이드의 4k 등)"
+msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -290,7 +290,7 @@ msgstr "새로운 시즌과 에피소드를 새로 고치는 방법"
 
 msgctxt "#30066"
 msgid "Debug logging level"
-msgstr ""
+msgstr "디버그로그 레벨"
 
 msgctxt "#30067"
 msgid "daily"
@@ -362,15 +362,15 @@ msgstr ""
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
-msgstr ""
+msgstr "캐쉬보존시간(분단위)"
 
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
-msgstr ""
+msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
-msgstr ""
+msgstr "찜한 것들을 변경하면 캐쉬를 무효화합니다."
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -414,11 +414,11 @@ msgstr "영화 전체"
 
 msgctxt "#30097"
 msgid "Main Menu"
-msgstr ""
+msgstr "홈"
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr "HDR프로화일 사용"
+msgstr "HDR프로파일 사용"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
@@ -438,11 +438,11 @@ msgstr "Netflix로부터의 오류내용:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr ""
+msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오."
 
 msgctxt "#30104"
 msgid "The addon encountered to following error:"
-msgstr ""
+msgstr "오류가 생겼습니다:"
 
 msgctxt "#30105"
 msgid "Netflix Addon Error"
@@ -482,23 +482,23 @@ msgstr "로그인 하였습니다."
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr ""
+msgstr "내가 찜한 것들과 Kodi 라이브러리를 동기화 유지"
 
 msgctxt "#30115"
 msgid "Content Profiles"
-msgstr "콘텐츠 프로화일"
+msgstr "콘텐츠 프로파일"
 
 msgctxt "#30116"
 msgid "Advanced Addon Configuration"
-msgstr ""
+msgstr "고급설정"
 
 msgctxt "#30117"
 msgid "Cache"
-msgstr ""
+msgstr "캐쉬"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
-msgstr ""
+msgstr "API실행 실패: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
@@ -506,7 +506,7 @@ msgstr ""
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr ""
+msgstr "Kodi라이브러리에서 시진을 지우지 못 했습니다. 수동으로 삭제해 주십시오."
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -514,7 +514,7 @@ msgstr ""
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr ""
+msgstr "찜한 것들과 Kodi 라이브러리를 동기화"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
@@ -526,7 +526,7 @@ msgstr ""
 
 msgctxt "#30125"
 msgid "Purge library"
-msgstr ""
+msgstr "라이브러리를 지웁니다."
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -554,11 +554,11 @@ msgstr ""
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr ""
+msgstr "메모리캐쉬 삭제"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
-msgstr ""
+msgstr "메모리/디스크 캐쉬 삭제"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -566,7 +566,7 @@ msgstr ""
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr ""
+msgstr "캐쉬를 지웠습니다."
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
@@ -590,7 +590,7 @@ msgstr ""
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr ""
+msgstr "기동알림을 사용하지 않습니다."
 
 msgctxt "#30142"
 msgid "Custom"
@@ -654,11 +654,11 @@ msgstr ""
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr ""
+msgstr "InputStream 설정화면이 열리면 \"Override HDCP status\"를 ON으로 바꾸십시오."
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
-msgstr ""
+msgstr "애드온 시작할 때 설정화면을 보여줍니다."
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -730,11 +730,11 @@ msgstr "영화"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr ""
+msgstr "보던 곳 부터 보기기능 사용(라이브러리만)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "보던 곳부터 볼까요?"
+msgstr "보던 곳부터 볼 것인지 물어 봅니다."
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
@@ -750,31 +750,31 @@ msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr ""
+msgstr "Forced 자막이 없으면 자막을 표시하지 않습니다(Kodi플레이어가 \"Forced 자막\"으로 설정된 경우"
 
 msgctxt "#30182"
 msgid "Export NFO files"
-msgstr ""
+msgstr "NFO파일 내보내기"
 
 msgctxt "#30183"
 msgid "Do you want to export NFO files for the {}?"
-msgstr ""
+msgstr "{}의 NFO파일을 내보낼까요?"
 
 msgctxt "#30184"
 msgid "NFO Files"
-msgstr ""
+msgstr "NFO파일"
 
 msgctxt "#30185"
 msgid "Enable NFO files export"
-msgstr ""
+msgstr "NFO파일을 내보냅니다"
 
 msgctxt "#30186"
 msgid "For Movies"
-msgstr ""
+msgstr "영화"
 
 msgctxt "#30187"
 msgid "For TV Show"
-msgstr ""
+msgstr "TV프로그램"
 
 msgctxt "#30188"
 msgid "Ask"
@@ -790,7 +790,7 @@ msgstr "TV프로그램"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr ""
+msgstr "'찜한 것들'에 추가된 {}의 NFO파일을 내보낼까요?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -798,7 +798,7 @@ msgstr ""
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr ""
+msgstr "NFO의 모든 정보를 포함"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -806,7 +806,7 @@ msgstr "해상도 제한"
 
 msgctxt "#30195"
 msgid "Export new episodes"
-msgstr ""
+msgstr "새로운 에피소드를 내보냅니다."
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
@@ -818,7 +818,7 @@ msgstr ""
 
 msgctxt "#30198"
 msgid "Exporting new episodes"
-msgstr ""
+msgstr "새로운 에피소드를 내보내는 중"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
@@ -830,11 +830,11 @@ msgstr ""
 
 msgctxt "#30201"
 msgid "Username"
-msgstr ""
+msgstr "사용자이름"
 
 msgctxt "#30202"
 msgid "Connection to the MySQL database was successful"
-msgstr ""
+msgstr "MySQL과 접속하였습니다."
 
 msgctxt "#30203"
 msgid "Host IP"
@@ -850,31 +850,31 @@ msgstr "데이타베이스 시험접속"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - the local database will be used"
-msgstr ""
+msgstr "ERROR: MySQL 데이터베이스와 연결되지 않아, 로컬 데이타베이스를 사용합니다."
 
 msgctxt "#30207"
 msgid "Set this device as main auto-updates manager"
-msgstr ""
+msgstr "이 장치를 자동 업데이트 매니저로 사용합니다."
 
 msgctxt "#30208"
 msgid "Check if this device is the main auto-update manager"
-msgstr ""
+msgstr "이 장치가 주 매니저인지 확인합니다."
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
-msgstr ""
+msgstr "이 장치가 공유라이브러리의 자동 업데이트를 지금 합니다."
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of shared-library"
-msgstr ""
+msgstr "이 장치가 공유라이브러리의 자동 업데이트를 합니다."
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of shared-library"
-msgstr ""
+msgstr "다른 장치가 공유라이브러리의 자동 업데이트를 합니다."
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
-msgstr ""
+msgstr "공유라이브러리를 자동업데이트할 장치가 없습니다."
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
@@ -886,7 +886,7 @@ msgstr ""
 
 msgctxt "#30215"
 msgid "Highlight titles included in my list with a color"
-msgstr ""
+msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -906,7 +906,7 @@ msgstr ""
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr ""
+msgstr "Kodi라이브러리를 새로 고쳤습니다."
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -934,15 +934,15 @@ msgstr "자동"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr ""
+msgstr "Kodi라이브러리와 내가 찜한 것들을 동기화"
 
 msgctxt "#30228"
 msgid "Use \"My list\" of the current profile"
-msgstr ""
+msgstr "사용 중인 프로파일로부터 \"찜한 것들\"을 가져옵니다."
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
-msgstr "프로화일 이름을 보여줍니다."
+msgstr "프로파일 이름을 보여줍니다."
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -954,11 +954,11 @@ msgstr ""
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "연령제한"
 
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
-msgstr ""
+msgstr "{}을(를) 보려면 PIN을 입력하십시오."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
