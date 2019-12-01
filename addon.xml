@@ -24,6 +24,12 @@
     <summary lang="nl_NL">Netflix</summary>
     <description lang="nl_NL">Bekijk Netflix films en tvprogramma's in Kodi.</description>
     <disclaimer lang="nl_NL">Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren.</disclaimer>
+    <summary lang="ja_JP">Netflix</summary>
+    <description lang="ja_JP">Netflix VOD サービスアドオン</description>
+    <disclaimer lang="ja_JP">一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください</disclaimer>
+    <summary lang="ko_KR">Netflix</summary>
+    <description lang="ko_KR">Netflix VOD 서비스애드온</description>
+    <disclaimer lang="ko_KR">일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다.</disclaimer>
     <description lang="it_IT">Netflix Addon servizi VOD</description>
     <disclaimer lang="it_IT">Alcune parti di questo addon potrebbero non essere legali nel proprio paese di residenza - si prega di verificare le leggi locali prima dell'installazione.</disclaimer>
     <summary lang="hu_HU">Netflix</summary>
@@ -38,7 +44,7 @@
       <screenshot>resources/media/screenshot-04.jpg</screenshot>
       <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
-    <language>en de es he hr hu it nl pl pt sk sv</language>
+    <language>en de es he hr hu it ja ko nl pl pt sk sv</language>
     <platform>all</platform>
     <license>MIT</license>
     <website>https://www.netflix.com</website>
