@@ -962,4 +962,4 @@ msgstr "{}을(를) 보려면 PIN을 입력하십시오."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "    "
+msgstr "프로파일마다 이미 본 것들을 따로 저장합니다(이기능은 나중에 없어집니다)"

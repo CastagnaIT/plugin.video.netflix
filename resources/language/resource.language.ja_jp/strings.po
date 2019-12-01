@@ -654,7 +654,7 @@ msgstr "このデバイスは4K標準を従っていますか。\r\nこのデバ
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "インプットストリーム設定画面が開いたら、\"Override HDCP statu\"を ONにしてください"
+msgstr "インプットストリーム設定画面が開いたら、\"Override HDCP status\"を ONにしてください"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -750,7 +750,7 @@ msgstr "ログイン失敗、アカウント確認がまだ取れてないか更
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "強制字幕のない場合、字幕を表示しない(Kodiプレイヤーが\"強制字幕のみ\"の場合"
+msgstr "強制字幕のない場合、字幕を表示しない(Kodiプレイヤーが\"強制字幕のみ\"の場合)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
