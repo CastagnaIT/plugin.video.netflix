@@ -562,7 +562,7 @@ msgstr "메모리/디스크 캐쉬 삭제"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
-msgstr ""
+msgstr "실행시간"
 
 msgctxt "#30135"
 msgid "Cache cleared"
