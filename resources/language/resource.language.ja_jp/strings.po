@@ -266,7 +266,7 @@ msgstr "別のアカウントへ"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVCプロフィール使用(アンドロイドなどの4k)"
+msgstr "HEVCプロフィール使用(アンドロイド/HDR/ドルビービジョンなどの4k)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -274,7 +274,7 @@ msgstr "ライブラリ更新"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "ペアレンタルコントロール"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -358,7 +358,7 @@ msgstr "音声・字幕設定を保存"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr ""
+msgstr "ライブラリ項目と見た項目のブックマークを保存"
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
@@ -386,23 +386,23 @@ msgstr "ジャンル"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr ""
+msgstr "関連メディアリストを検索し、他のコンテンツを見つかる。"
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr ""
+msgstr "Kodiライブラリにエクスポートされた項目を管理する。"
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
-msgstr ""
+msgstr "コンテンツを検索し、見たいものを見つかる。"
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr ""
+msgstr "ジャンル毎にコンテンツをみて、より簡単にオススメを見つかる。"
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr ""
+msgstr "オススメを検索し、もしもの作品を選んでみる。"
 
 msgctxt "#30095"
 msgid "All TV Shows"
@@ -438,7 +438,7 @@ msgstr "Netflixからのエラーメッセージ:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr ""
+msgstr "エラーの詳細はログファイルに書いてあります。"
 
 msgctxt "#30104"
 msgid "The addon encountered to following error:"
@@ -502,7 +502,7 @@ msgstr "API実行失敗:{}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr ""
+msgstr "マイリスト処理完了"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -510,7 +510,7 @@ msgstr "Kodiライブラリからシーズンを削除しませんでしたの�
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr ""
+msgstr "これから全ての同期化を実行します。"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
@@ -518,11 +518,11 @@ msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr ""
+msgstr "進みますか。\n既にエクスポートされた項目を削除し、現在のプロフィールからマイリストをエクスポートします。\n時間は掛かりますが。。。"
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
-msgstr ""
+msgstr "この項目を削除しますか。"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -530,27 +530,27 @@ msgstr "ライブラリ削除"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr ""
+msgstr "ライブラリを削除しますか。\nエクスポートをされた項目を全て削除します。"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
-msgstr ""
+msgstr "{}の評価により授与しました。"
 
 msgctxt "#30128"
 msgid "No contained titles yet..."
-msgstr ""
+msgstr "そんなタイトルはまだ。。。"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr ""
+msgstr "Up Next 機能を使う"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
-msgstr ""
+msgstr "エラーをウィンドウの代わり通知を使って表示"
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
-msgstr ""
+msgstr "詳細はログファイルを確認してください。"
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
@@ -578,27 +578,27 @@ msgstr "VP9プロフィール使用(問題があったらオフにしてくだ�
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
-msgstr ""
+msgstr "Kodiやアドオンを起動したばかりの場合、バックグラウンドサービスの準備が出来てない可能性があります。しばらく経ってからもう一度。"
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr ""
+msgstr "HTTP経由IPCを使う(アドオンタイムアウトが発生したら試してください)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
-msgstr ""
+msgstr "ライブラリを新フォーマットに移行"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "起動知らせをオフ"
+msgstr "起動通知をオフ"
 
 msgctxt "#30142"
 msgid "Custom"
-msgstr ""
+msgstr "カスタム"
 
 msgctxt "#30143"
 msgid "Custom view ID"
-msgstr ""
+msgstr "カスタムビューID"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
@@ -610,7 +610,7 @@ msgstr "新着"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr ""
+msgstr "最近追加された新作を探す。"
 
 msgctxt "#30147"
 msgid "Next page >>"
@@ -650,7 +650,7 @@ msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr ""
+msgstr "このデバイスは4K標準を従っていますか。\r\nこのデバイスは必ず:\r\nNetflixの認証を受け、WidevineセキュリティレベルL1対応や4KディスプレHDCP2.2が必要です。"
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
@@ -738,7 +738,7 @@ msgstr "見る度に聞く"
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
-msgstr ""
+msgstr "UpNext アドオン設定画面"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
@@ -794,7 +794,7 @@ msgstr "マイリストに追加された{}のNFOファイルをエクスポー�
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr ""
+msgstr "\r\nこのファイルは、映画やTV番組の情報、ボーナスエピソードや監督版などの情報を収集する情報提供者により使われます。"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -822,11 +822,11 @@ msgstr "新エピソードをエクスポート中"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr ""
+msgstr "共有ライブラリ(Kodi MySQLサーバーが必要)"
 
 msgctxt "#30200"
 msgid "Use MySQL shared library database"
-msgstr ""
+msgstr "MySQL共有ライブラリデータベースを使う。"
 
 msgctxt "#30201"
 msgid "Username"
@@ -882,7 +882,7 @@ msgstr "インプットストリームヘルパーアドオン設定"
 
 msgctxt "#30214"
 msgid "Force the update of my list"
-msgstr ""
+msgstr "マイリストを強制更新"
 
 msgctxt "#30215"
 msgid "Highlight titles included in my list with a color"
@@ -898,11 +898,11 @@ msgstr "ESN再設定"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr ""
+msgstr "ESNを再設定しますか。\r\nすると、ログインメッセージをお待ち下さい。"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr ""
+msgstr "同期化完了の通知を使わない。"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -910,7 +910,7 @@ msgstr "Kodiライブラリを更新しました。"
 
 msgctxt "#30221"
 msgid "Owner account"
-msgstr ""
+msgstr "オーナーアカウント"
 
 msgctxt "#30222"
 msgid "Kid account"
@@ -918,7 +918,7 @@ msgstr "お子様アカウント"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr ""
+msgstr "プロフィールの{}のマイリストを同期化に使う。"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -962,4 +962,4 @@ msgstr "{}を見るのにはPINを入力してください"
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr ""
+msgstr "プロフィール毎に見た項目の一覧を保存します(この機能は将来に無くなります)"

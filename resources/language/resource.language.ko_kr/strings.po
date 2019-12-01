@@ -266,7 +266,7 @@ msgstr "다른 계정으로"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVC프로파일 활성화(안드로이드의 4k 등)"
+msgstr "HEVC프로파일 활성화(안드로이드/HDR/돌비비전 등의 4k)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -274,7 +274,7 @@ msgstr "라이브러리 새로 고침"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "부모의 통제"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -358,7 +358,7 @@ msgstr "음성/자막 설정 기억하기"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr ""
+msgstr "라이브러리와 본 것들의 북마크를 저장합니다."
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
@@ -386,23 +386,23 @@ msgstr "쟝르"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr ""
+msgstr "비슷한 비디오리스트를 검색하여 더 많은 컨텐츠를 찾습니다."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr ""
+msgstr "Kodi라이브러리로 내보낸 컨텐츠를 관리합니다."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
-msgstr ""
+msgstr "컨텐츠를 검색하여 보고 싶은 것을 쉽게 찾습니다."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr ""
+msgstr "콘텐츠를 검색하여 비슷한 것을 찾습니다."
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr ""
+msgstr "추천목록을 검색하여 혹시 좋아할 지도 모를 컨텐츠를 골라봅니다."
 
 msgctxt "#30095"
 msgid "All TV Shows"
@@ -502,7 +502,7 @@ msgstr "API실행 실패: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr ""
+msgstr "찜한 것들을 가져왔습니다."
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -510,7 +510,7 @@ msgstr "Kodi라이브러리에서 시진을 지우지 못 했습니다. 수동�
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr ""
+msgstr "전체 동기를 시작합니다."
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
@@ -518,11 +518,11 @@ msgstr "찜한 것들과 Kodi 라이브러리를 동기화"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr ""
+msgstr "진행하시렵니까?\n이미 내보낸 것들을 모두 삭제하고, 현재 사용중일 프로파일로부터 찜한것들을 모두 내보냅니다.\n시간이 조금 걸립니다."
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
-msgstr ""
+msgstr "정말로 지우시렵니까?"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -530,27 +530,27 @@ msgstr "라이브러리를 지웁니다."
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr ""
+msgstr "라이브러리를 삭제하시렵니까?\n내보낸 것들을 모두 지웁니다."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
-msgstr ""
+msgstr "{}의 평가로 상을 받았습니다."
 
 msgctxt "#30128"
 msgid "No contained titles yet..."
-msgstr ""
+msgstr "그런 타이틀은 아직..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr ""
+msgstr "Up Next 기능 사용"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
-msgstr ""
+msgstr "오류를 창 대신 '알림'으로 보여줍니다."
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
-msgstr ""
+msgstr "자세한 내용은 로그파일을 확인하십시오."
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
@@ -570,7 +570,7 @@ msgstr "캐쉬를 지웠습니다."
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr ""
+msgstr "1080p언록 사용(안드로이드에는 바람직하지 않습니다)"
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -578,15 +578,15 @@ msgstr "VP9사용(문제가 있으면 사용하지 마십시오.)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
-msgstr ""
+msgstr "이제 막 Kodi 혹은 애드온을 실행했으면, 백그라운드 서비스가 준비 되지 않았을 수 있으니 잠시후 다시 해 보십시오."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr ""
+msgstr "HTTP경유의 IPC사용(애드온 타임아웃이 생기는 경우 사용해 보십시오)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
-msgstr ""
+msgstr "라이브러리를 새로운 형식으로..."
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -594,11 +594,11 @@ msgstr "기동알림을 사용하지 않습니다."
 
 msgctxt "#30142"
 msgid "Custom"
-msgstr ""
+msgstr "사용자 지정"
 
 msgctxt "#30143"
 msgid "Custom view ID"
-msgstr ""
+msgstr "사용자 지정 View ID"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
@@ -610,7 +610,7 @@ msgstr "최신등록콘텐츠"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr ""
+msgstr "추가된 새로운 컨텐츠를 찾아봅니다."
 
 msgctxt "#30147"
 msgid "Next page >>"
@@ -646,11 +646,11 @@ msgstr "Netflix애드온 설정"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
-msgstr ""
+msgstr "Netflix프리미엄계정을 가지고 있나요?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr ""
+msgstr "이 장치가 4K표준을 따르고 있나요?\r\n이 장치는 반드시:\r\nNetflix로부터 인증을 받고, Widevine 보안등급 L1을 지원하며 4K 디스플레이 HDCP2.2가 필요합니다."
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
@@ -738,7 +738,7 @@ msgstr "보던 곳부터 볼 것인지 물어 봅니다."
 
 msgctxt "#30178"
 msgid "Open UpNext Addon settings"
-msgstr ""
+msgstr "UpNext애드온 설정화면"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
@@ -746,7 +746,7 @@ msgstr "예고편 및 다른 영상"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
-msgstr ""
+msgstr "로그인에 문제가 있습니다. 계정이 아직 처리 중이거나 계약연장을 하지 않았을 수 있습니다."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
@@ -794,7 +794,7 @@ msgstr "'찜한 것들'에 추가된 {}의 NFO파일을 내보낼까요?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr ""
+msgstr "\r\n영화나 TV프로그램의 정보, 보너스 에피소드 또는 감독판등의 정보를 수집하는 정보제공자가 이 파일을 사용합니다."
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -810,11 +810,11 @@ msgstr "새로운 에피소드를 내보냅니다."
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
-msgstr ""
+msgstr "자동 업데이트는 제외"
 
 msgctxt "#30197"
 msgid "Include in auto update"
-msgstr ""
+msgstr "자동 업데이트 포함"
 
 msgctxt "#30198"
 msgid "Exporting new episodes"
@@ -822,11 +822,11 @@ msgstr "새로운 에피소드를 내보내는 중"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr ""
+msgstr "공유라이브러리(Kodi MySQL서버가 필요합니다)"
 
 msgctxt "#30200"
 msgid "Use MySQL shared library database"
-msgstr ""
+msgstr "MySQL 공유라이브러리 데이타베이스를 사용합니다."
 
 msgctxt "#30201"
 msgid "Username"
@@ -882,7 +882,7 @@ msgstr "InputStream Helper 애드온 설정"
 
 msgctxt "#30214"
 msgid "Force the update of my list"
-msgstr ""
+msgstr "찜한 것들을 강제 업데이트"
 
 msgctxt "#30215"
 msgid "Highlight titles included in my list with a color"
@@ -898,11 +898,11 @@ msgstr "ESN 재설정"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr ""
+msgstr "ESN재설정하시렵니까?\r\n확인후, 로그인화면이 나타날 때까지 기다리십시오."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr ""
+msgstr "동기화완료 알림을 사용하지 않습니다."
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -910,15 +910,15 @@ msgstr "Kodi라이브러리를 새로 고쳤습니다."
 
 msgctxt "#30221"
 msgid "Owner account"
-msgstr ""
+msgstr "주인장"
 
 msgctxt "#30222"
 msgid "Kid account"
-msgstr "어린이용"
+msgstr "키즈"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr ""
+msgstr "프로파일 {}의 \"찜한 것들\"을 동기화에 사용합니다."
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -946,11 +946,11 @@ msgstr "프로파일 이름을 보여줍니다."
 
 msgctxt "#30230"
 msgid "Check for updates now"
-msgstr ""
+msgstr "업데이트를 지금 확인합니다"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
-msgstr ""
+msgstr "업데이트를 확인하시렵니까?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
@@ -962,4 +962,4 @@ msgstr "{}을(를) 보려면 PIN을 입력하십시오."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr ""
+msgstr "    "
