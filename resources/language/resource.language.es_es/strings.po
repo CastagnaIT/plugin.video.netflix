@@ -34,7 +34,7 @@ msgstr "Recomendaciones"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Introduce el PIN para ver el contenido restringido"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Pin incorrecto. Inténtalo de nuevo"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "PIN Control Parental (4 dígitos)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -194,7 +194,7 @@ msgstr "Vista para los perfiles"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Puntuación eliminada|Has puntuado negativamente|Has puntuado positivamente"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -214,7 +214,7 @@ msgstr "Actualizar base de datos"
 
 msgctxt "#30050"
 msgid "Update successful"
-msgstr "Actualización exitoso"
+msgstr "Actualización exitosa"
 
 msgctxt "#30051"
 msgid "Request Error"
@@ -270,11 +270,11 @@ msgstr "nuevos episodios añadidos a la biblioteca"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr ""
+msgstr "Realizar una actualización"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr ""
+msgstr "Autoactualizar temporadas y episodios de shows televisivos"
 
 msgctxt "#30066"
 msgid "Debug logging level"
