@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
-"""General caching facilities. Caches are segmented into buckets.
-Within each bucket, identifiers for cache entries must be unique.
-
-Must not be used within these modules, because stale values may
-be used and cause inconsistencies:
-resources.lib.self.common
-resources.lib.services
-resources.lib.kodi.ui
-resources.lib.services.nfsession
 """
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    General caching facilities. Caches are segmented into buckets.
+    Within each bucket, identifiers for cache entries must be unique.
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
+# Must not be used within these modules, because stale values may
+# be used and cause inconsistencies:
+# resources.lib.self.common
+# resources.lib.services
+# resources.lib.kodi.ui
+# resources.lib.services.nfsession
 from __future__ import absolute_import, division, unicode_literals
 import os
 import sys

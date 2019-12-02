@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Check if the addon has been updated and make necessary changes"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2019 Stefano Gottardo - @CastagnaIT (original implementation module)
+    Check if the addon has been updated and make necessary changes
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 # import resources.lib.upgrade_actions as upgrade_actions

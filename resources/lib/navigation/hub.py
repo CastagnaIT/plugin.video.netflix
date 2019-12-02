@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Navigation for hub mode - needs skin support!"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Navigation for hub mode
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 import resources.lib.api.shakti as api
 
 
+# Needs skin support!
 class HubBrowser(object):
     """Fills window properties for browsing the Netflix style Hub"""
     # pylint: disable=no-self-use

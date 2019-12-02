@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Miscellanneous utility functions
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 # pylint: disable=unused-import
-"""Miscellanneous utility functions"""
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from time import clock

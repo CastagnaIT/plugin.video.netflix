@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-# Author: asciidisco
-# Module: default
-# Created on: 13.01.2017
-# License: MIT https://goo.gl/5bMj3H
-"""Kodi plugin for Netflix (https://netflix.com)"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Default module - Kodi plugin for Netflix
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 import sys

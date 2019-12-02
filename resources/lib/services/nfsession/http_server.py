@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""HTTP Endpoint for Netflix session management"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    HTTP Endpoint for Netflix session management
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 import json
 try:  # Python 3

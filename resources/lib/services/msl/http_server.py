@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-# Author: trummerjo
-# Module: MSLHttpRequestHandler
-# Created on: 26.01.2017
-# License: MIT https://goo.gl/5bMj3H
-"""Handles & translates requests from Inputstream to Netflix"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Trummerjo (original implementation module)
+    Handles & translates requests from Inputstream to Netflix
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 import base64
 

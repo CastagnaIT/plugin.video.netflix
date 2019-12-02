@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Helper functions to build plugin listings for Kodi"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Helper functions to build plugin listings for Kodi
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 import os

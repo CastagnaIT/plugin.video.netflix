@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-#
-# plugin.video.netflix documentation build configuration file, created by
-# sphinx-quickstart on Wed Apr 26 16:27:25 2017.
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2017 sphinx-quickstart (original implementation module)
+    Documentation build configuration file
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 
