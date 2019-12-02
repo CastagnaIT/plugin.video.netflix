@@ -32,9 +32,9 @@ def ask_credentials():
     """
     Show some dialogs and ask the user for account credentials
     """
-    email = xbmcgui.Dialog().input(
+    email = g.py2_decode(xbmcgui.Dialog().input(
         heading=common.get_local_string(30005),
-        type=xbmcgui.INPUT_ALPHANUM) or None
+        type=xbmcgui.INPUT_ALPHANUM)) or None
     common.verify_credentials(email)
     password = ask_for_password()
     common.verify_credentials(password)
@@ -47,10 +47,10 @@ def ask_credentials():
 
 def ask_for_password():
     """Ask the user for the password"""
-    return xbmcgui.Dialog().input(
+    return g.py2_decode(xbmcgui.Dialog().input(
         heading=common.get_local_string(30004),
         type=xbmcgui.INPUT_ALPHANUM,
-        option=xbmcgui.ALPHANUM_HIDE_INPUT) or None
+        option=xbmcgui.ALPHANUM_HIDE_INPUT)) or None
 
 
 def ask_for_rating():
