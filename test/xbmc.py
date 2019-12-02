@@ -44,70 +44,70 @@ PO = import_language(language=GLOBAL_SETTINGS.get('locale.language'))
 
 
 class Keyboard:
-    ''' A stub implementation of the xbmc Keyboard class '''
+    """A stub implementation of the xbmc Keyboard class"""
 
     def __init__(self, line='', heading=''):
-        ''' A stub constructor for the xbmc Keyboard class '''
+        """A stub constructor for the xbmc Keyboard class"""
 
     def doModal(self, autoclose=0):
-        ''' A stub implementation for the xbmc Keyboard class doModal() method '''
+        """A stub implementation for the xbmc Keyboard class doModal() method"""
 
     def isConfirmed(self):
-        ''' A stub implementation for the xbmc Keyboard class isConfirmed() method '''
+        """A stub implementation for the xbmc Keyboard class isConfirmed() method"""
         return True
 
     def getText(self):
-        ''' A stub implementation for the xbmc Keyboard class getText() method '''
+        """A stub implementation for the xbmc Keyboard class getText() method"""
         return 'unittest'
 
 
 class Monitor:
-    ''' A stub implementation of the xbmc Monitor class '''
+    """A stub implementation of the xbmc Monitor class"""
     def __init__(self, line='', heading=''):
-        ''' A stub constructor for the xbmc Monitor class '''
+        """A stub constructor for the xbmc Monitor class"""
 
     def abortRequested(self):
-        ''' A stub implementation for the xbmc Keyboard class abortRequested() method '''
+        """A stub implementation for the xbmc Keyboard class abortRequested() method"""
         return False
 
     def waitForAbort(self, timeout=0):
-        ''' A stub implementation for the xbmc Keyboard class waitForAbort() method '''
+        """A stub implementation for the xbmc Keyboard class waitForAbort() method"""
         return
 
 
 class Player:
-    ''' A stub implementation of the xbmc Player class '''
+    """A stub implementation of the xbmc Player class"""
     def __init__(self):
         self._count = 0
 
     def pause(self):
-        ''' A stub implementation for the xbmc Player class pause() method '''
+        """A stub implementation for the xbmc Player class pause() method"""
 
     def play(self, item='', listitem=None, windowed=False, startpos=-1):
-        ''' A stub implementation for the xbmc Player class play() method '''
+        """A stub implementation for the xbmc Player class play() method"""
 
     def isPlaying(self):
-        ''' A stub implementation for the xbmc Player class isPlaying() method '''
+        """A stub implementation for the xbmc Player class isPlaying() method"""
         # Return True four times out of five
         self._count += 1
         return bool(self._count % 5 != 0)
 
     def seekTime(self, seekTime):
-        ''' A stub implementation for the xbmc Player class seekTime() method '''
+        """A stub implementation for the xbmc Player class seekTime() method"""
 
     def showSubtitles(self, bVisible):
-        ''' A stub implementation for the xbmc Player class showSubtitles() method '''
+        """A stub implementation for the xbmc Player class showSubtitles() method"""
         return
 
     def setAudioStream(self):
-        ''' A stub implementation for the xbmc Player class setAudioStream() method '''
+        """A stub implementation for the xbmc Player class setAudioStream() method"""
 
     def setSubtitleStream(self):
-        ''' A stub implementation for the xbmc Player class setSubtitleStream() method '''
+        """A stub implementation for the xbmc Player class setSubtitleStream() method"""
 
 
 def convertLanguage(language, format):  # pylint: disable=redefined-builtin
-    ''' A reimplementation of the xbmc convertLanguage() function '''
+    """A reimplementation of the xbmc convertLanguage() function"""
     if format == ISO_639_1:
         return 'en'
     if format == ISO_639_2:
@@ -116,12 +116,12 @@ def convertLanguage(language, format):  # pylint: disable=redefined-builtin
 
 
 def executebuiltin(string, wait=False):
-    ''' A stub implementation of the xbmc executebuiltin() function '''
+    """A stub implementation of the xbmc executebuiltin() function"""
     return
 
 
 def executeJSONRPC(jsonrpccommand):
-    ''' A reimplementation of the xbmc executeJSONRPC() function '''
+    """A reimplementation of the xbmc executeJSONRPC() function"""
     command = json.loads(jsonrpccommand)
     if command.get('method') == 'Settings.GetSettingValue':
         key = command.get('params').get('setting')
@@ -131,24 +131,24 @@ def executeJSONRPC(jsonrpccommand):
 
 
 def getCondVisibility(string):
-    ''' A reimplementation of the xbmc getCondVisibility() function '''
+    """A reimplementation of the xbmc getCondVisibility() function"""
     if string == 'system.platform.android':
         return False
     return True
 
 
 def getGlobalIdleTime():
-    ''' A reimplementation of the xbmc getGlobalIdleTime() function '''
+    """A reimplementation of the xbmc getGlobalIdleTime() function"""
     return 0
 
 
 def getInfoLabel(key):
-    ''' A reimplementation of the xbmc getInfoLabel() function '''
+    """A reimplementation of the xbmc getInfoLabel() function"""
     return INFO_LABELS.get(key)
 
 
 def getLanguage(format=None, region=None):  # pylint: disable=redefined-builtin
-    ''' A reimplementation of the xbmc getLanguage() function '''
+    """A reimplementation of the xbmc getLanguage() function"""
     if format == ISO_639_1:
         return 'en'
     if format == ISO_639_2:
@@ -157,7 +157,7 @@ def getLanguage(format=None, region=None):  # pylint: disable=redefined-builtin
 
 
 def getLocalizedString(msgctxt):
-    ''' A reimplementation of the xbmc getLocalizedString() function '''
+    """A reimplementation of the xbmc getLocalizedString() function"""
     for entry in PO:
         if entry.msgctxt == '#%s' % msgctxt:
             return entry.msgstr or entry.msgid
@@ -165,34 +165,34 @@ def getLocalizedString(msgctxt):
 
 
 def getRegion(key):
-    ''' A reimplementation of the xbmc getRegion() function '''
+    """A reimplementation of the xbmc getRegion() function"""
     return REGIONS.get(key)
 
 
 def log(msg, level):
-    ''' A reimplementation of the xbmc log() function '''
+    """A reimplementation of the xbmc log() function"""
     print('[32;1m%s: [32;0m%s[0m' % (level, msg))
 
 
 def makeLegalFilename(filename, fatX=None):
-    ''' A reimplementation of the xbmc makeLegalFilename() function '''
+    """A reimplementation of the xbmc makeLegalFilename() function"""
     if fatX:
         return filename
     return os.path.basename(filename)
 
 
 def setContent(self, content):
-    ''' A stub implementation of the xbmc setContent() function '''
+    """A stub implementation of the xbmc setContent() function"""
     return
 
 
 def sleep(seconds):
-    ''' A reimplementation of the xbmc sleep() function '''
+    """A reimplementation of the xbmc sleep() function"""
     time.sleep(seconds)
 
 
 def translatePath(path):
-    ''' A stub implementation of the xbmc translatePath() function '''
+    """A stub implementation of the xbmc translatePath() function"""
     if path.startswith('special://home'):
         return path.replace('special://home', os.path.join(os.getcwd(), 'test'))
     if path.startswith('special://profile'):

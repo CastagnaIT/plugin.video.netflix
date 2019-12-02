@@ -10,10 +10,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 class Helper:
-    ''' A stub implementation of the inputstreamhelper Helper class '''
+    """A stub implementation of the inputstreamhelper Helper class"""
 
     def __init__(self, protocol, drm=None):  # pylint: disable=unused-argument
-        ''' A stub constructor for the inputstreamhelper Helper class '''
+        """A stub constructor for the inputstreamhelper Helper class"""
         if protocol in ('mpd', 'ism', 'hls'):
             self.inputstream_addon = 'inputstream.adaptive'
         elif protocol == 'rtmp':
@@ -22,4 +22,4 @@ class Helper:
             raise Exception('UnsupportedProtocol')
 
     def check_inputstream(self):
-        ''' A stub implementation of the inputstreamhelper Helper check_inputstream classmethod '''
+        """A stub implementation of the inputstreamhelper Helper check_inputstream classmethod"""

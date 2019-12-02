@@ -41,7 +41,7 @@ SORT_METHOD_DATE_TAKEN = 44
 
 
 def addDirectoryItems(handle, listing, length=None):
-    ''' A reimplementation of the xbmcplugin addDirectoryItems() function '''
+    """A reimplementation of the xbmcplugin addDirectoryItems() function"""
     for item in listing:
         label = kodi_to_ansi(item[1].label)
         path = uri_to_path(item[0]) if item[0] else ''
@@ -52,30 +52,30 @@ def addDirectoryItems(handle, listing, length=None):
 
 
 def addSortMethod(handle, sortMethod):
-    ''' A stub implementation of the xbmcplugin addSortMethod() function '''
+    """A stub implementation of the xbmcplugin addSortMethod() function"""
     return
 
 
 def endOfDirectory(handle, succeeded=True, updateListing=True, cacheToDisc=True):
-    ''' A stub implementation of the xbmcplugin endOfDirectory() function '''
+    """A stub implementation of the xbmcplugin endOfDirectory() function"""
     return
 
 
 def setContent(handle, content):
-    ''' A stub implementation of the xbmcplugin setContent() function '''
+    """A stub implementation of the xbmcplugin setContent() function"""
     return
 
 
 def setPluginFanart(handle, image, color1=None, color2=None, color3=None):
-    ''' A stub implementation of the xbmcplugin setPluginFanart() function '''
+    """A stub implementation of the xbmcplugin setPluginFanart() function"""
     return
 
 
 def setPluginCategory(handle, category):
-    ''' A reimplementation of the xbmcplugin setPluginCategory() function '''
+    """A reimplementation of the xbmcplugin setPluginCategory() function"""
     print(kodi_to_ansi('[B]-=( [COLOR cyan]%s[/COLOR] )=-[/B]' % category))
 
 
 def setResolvedUrl(handle, succeeded, listitem):
-    ''' A stub implementation of the xbmcplugin setResolvedUrl() function '''
+    """A stub implementation of the xbmcplugin setResolvedUrl() function"""
     return

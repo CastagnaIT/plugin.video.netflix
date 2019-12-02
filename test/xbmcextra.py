@@ -15,7 +15,7 @@ import polib
 
 
 def kodi_to_ansi(string):
-    ''' Convert Kodi format tags to ANSI codes '''
+    """Convert Kodi format tags to ANSI codes"""
     if string is None:
         return None
     string = string.replace('[B]', '\033[1m')
@@ -35,14 +35,14 @@ def kodi_to_ansi(string):
 
 
 def uri_to_path(uri):
-    ''' Shorten a plugin URI to just the path '''
+    """Shorten a plugin URI to just the path"""
     if uri is None:
         return None
     return ' \033[33m→ \033[34m%s\033[39;0m' % uri.replace('plugin://plugin.video.vrt.nu', '')
 
 
 def read_addon_xml(path):
-    ''' Parse the addon.xml and return an info dictionary '''
+    """Parse the addon.xml and return an info dictionary"""
     info = dict(
         path='./',  # '/storage/.kodi/addons/plugin.video.vrt.nu',
         profile='special://userdata',  # 'special://profile/addon_data/plugin.video.vrt.nu/',
@@ -74,7 +74,7 @@ def read_addon_xml(path):
 
 
 def global_settings():
-    ''' Use the global_settings file '''
+    """Use the global_settings file"""
     try:
         with open('test/userdata/global_settings.json') as f:
             settings = json.load(f)
@@ -103,7 +103,7 @@ def global_settings():
 
 
 def addon_settings():
-    ''' Use the addon_settings file '''
+    """Use the addon_settings file"""
     try:
         with open('test/userdata/addon_settings.json') as f:
             settings = json.load(f)
@@ -128,5 +128,5 @@ def addon_settings():
 
 
 def import_language(language):
-    ''' Process the language.po file '''
+    """Process the language.po file"""
     return polib.pofile('resources/language/{language}/strings.po'.format(language=language))

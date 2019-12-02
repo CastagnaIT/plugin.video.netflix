@@ -12,7 +12,7 @@ import shutil
 
 
 def File(path, flags='r'):
-    ''' A reimplementation of the xbmcvfs File() function '''
+    """A reimplementation of the xbmcvfs File() function"""
     try:
         return open(path, flags)
     except IOError:
@@ -24,29 +24,29 @@ def File(path, flags='r'):
 
 
 def Stat(path):
-    ''' A reimplementation of the xbmcvfs Stat() function '''
+    """A reimplementation of the xbmcvfs Stat() function"""
 
     class stat:  # pylint: disable=too-few-public-methods
-        ''' A reimplementation of the xbmcvfs stat class '''
+        """A reimplementation of the xbmcvfs stat class"""
 
         def __init__(self, path):
-            ''' The constructor xbmcvfs stat class '''
+            """The constructor xbmcvfs stat class"""
             self._stat = os.stat(path)
 
         def st_mtime(self):
-            ''' The xbmcvfs stat class st_mtime method '''
+            """The xbmcvfs stat class st_mtime method"""
             return self._stat.st_mtime
 
     return stat(path)
 
 
 def copy(source, destination):
-    ''' A reimplementation of the xbmcvfs copy() function '''
+    """A reimplementation of the xbmcvfs copy() function"""
     return shutil.copyfile(source, destination)
 
 
 def delete(path):
-    ''' A reimplementation of the xbmcvfs delete() function '''
+    """A reimplementation of the xbmcvfs delete() function"""
 
     try:
         os.remove(path)
@@ -55,12 +55,12 @@ def delete(path):
 
 
 def exists(path):
-    ''' A reimplementation of the xbmcvfs exists() function '''
+    """A reimplementation of the xbmcvfs exists() function"""
     return os.path.exists(path)
 
 
 def listdir(path):
-    ''' A reimplementation of the xbmcvfs listdir() function '''
+    """A reimplementation of the xbmcvfs listdir() function"""
     files = []
     dirs = []
     for f in os.listdir(path):
@@ -72,20 +72,20 @@ def listdir(path):
 
 
 def mkdir(path):
-    ''' A reimplementation of the xbmcvfs mkdir() function '''
+    """A reimplementation of the xbmcvfs mkdir() function"""
     return os.mkdir(path)
 
 
 def mkdirs(path):
-    ''' A reimplementation of the xbmcvfs mkdirs() function '''
+    """A reimplementation of the xbmcvfs mkdirs() function"""
     return os.makedirs(path)
 
 
 def rename(file, newFileName):  # pylint: disable=redefined-builtin
-    ''' A reimplementation of the xbmcvfs rename() function '''
+    """A reimplementation of the xbmcvfs rename() function"""
     return os.rename(file, newFileName)
 
 
 def rmdir(path):
-    ''' A reimplementation of the xbmcvfs rmdir() function '''
+    """A reimplementation of the xbmcvfs rmdir() function"""
     return os.rmdir(path)
