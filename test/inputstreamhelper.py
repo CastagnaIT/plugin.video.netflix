@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright: (c) 2019, Dag Wieers (@dagwieers) <dag@wieers.com>
-# GNU General Public License v3.0 (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-''' This file implements the inputstreamhelper module, either using stubs or alternative functionality '''
+"""
+    Copyright (C) 2019 Dag Wieers (@dagwieers) <dag@wieers.com>
+    This file implements the inputstreamhelper module, either using stubs or alternative functionality
 
+    SPDX-License-Identifier: GPL-3.0-only
+    See LICENSES/GPL-3.0-only.md for more information.
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 

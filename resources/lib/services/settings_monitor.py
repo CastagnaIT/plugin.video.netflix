@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Checks when settings are changed"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2019 Stefano Gottardo (original implementation module)
+    Checks when settings are changed
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 import sys
 from future.utils import iteritems

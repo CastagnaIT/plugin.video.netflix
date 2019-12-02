@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Helper functions for logging"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Helper functions for logging
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from future.utils import iteritems

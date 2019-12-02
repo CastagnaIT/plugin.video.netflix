@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Global addon constants.
-Everything that is to be globally accessible must be defined in this module
-and initialized in GlobalVariables.init_globals.
-When reusing Kodi languageInvokers, only the code in the main module
-(addon.py or service.py) will be run every time the addon is called.
-All other code executed on module level will only be executed once, when
-the module is first imported on the first addon invocation."""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Global addon constants
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
+# Everything that is to be globally accessible must be defined in this module
+# and initialized in GlobalVariables.init_globals.
+# When reusing Kodi languageInvokers, only the code in the main module
+# (addon.py or service.py) will be run every time the addon is called.
+# All other code executed on module level will only be executed once, when
+# the module is first imported on the first addon invocation.
 from __future__ import absolute_import, division, unicode_literals
 
 import collections

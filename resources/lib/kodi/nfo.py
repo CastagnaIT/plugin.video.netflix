@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Functions for Kodi library NFO creation"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2019 Smeulf (original implementation module)
+    Functions for Kodi library NFO creation
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 import xml.etree.ElementTree as ET

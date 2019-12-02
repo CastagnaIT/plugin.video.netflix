@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Path info to query the Shakti pathEvaluator"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    Path info to query the Shakti pathEvaluator
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 from future.utils import iteritems
 

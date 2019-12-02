@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-# Author: trummerjo
-# Module: MSLHttpRequestHandler
-# Created on: 26.01.2017
-# License: MIT https://goo.gl/5bMj3H
-"""Proxy service to convert manifest and provide license data"""
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2017 Trummerjo (original implementation module)
+    Proxy service to convert manifest and provide license data
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 from __future__ import absolute_import, division, unicode_literals
 
 import re

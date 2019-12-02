@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
+    Copyright (C) 2018 Caphm (original implementation module)
+    XML based dialogs
+
+    SPDX-License-Identifier: MIT
+    See LICENSES/MIT.md for more information.
+"""
 # pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init
-"""XML based dialogs"""
 from __future__ import absolute_import, division, unicode_literals
 
 import time
