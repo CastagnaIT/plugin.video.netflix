@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-24 10:40+0000\n"
+"PO-Revision-Date: 2019-12-03 14:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Ajánlások"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Kód megadás a felnőtt tartalomhoz"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Hibás kód. Próbáld újra."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "Szülői kontroll kód (4 számjegy)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -90,7 +90,7 @@ msgstr "Opciók"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr ""
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -206,7 +206,7 @@ msgstr "Profilnézet"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Értékelés visszavonva|Saját értékelés le|Saját értékelés fel"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -230,7 +230,7 @@ msgstr "Frissítés kész"
 
 msgctxt "#30051"
 msgid "Request Error"
-msgstr "Kérelem hiba"
+msgstr "Lekérdezési hiba"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
@@ -274,7 +274,7 @@ msgstr "Belső médiatár frissítése"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Szülői felügyelet"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -450,15 +450,15 @@ msgstr "Netflix kiegészítő hiba"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
-msgstr "Hibás pin"
+msgstr "Hibás pinkód"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "Pinkód védelem kikapcsolva."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Minden tartalom pinkóddal védett."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -578,7 +578,7 @@ msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
-msgstr "Lehet, hogy a háttérszolgáltatások még nem érhetők el, vagy éppen elindította a Kodi / a kiegészítőt. Ebben az esetben próbálkozzon újra egy később"
+msgstr "Lehet, hogy a háttérszolgáltatások még nem érhetők el, vagy éppen elindította a Kodi/a kiegészítőt. Ebben az esetben próbálkozzon újra egy később"
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
@@ -622,7 +622,7 @@ msgstr "<< Előző oldal"
 
 msgctxt "#30149"
 msgid "Sort results by"
-msgstr "Tartalom rendezése : "
+msgstr "Tartalom rendezése"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
@@ -758,7 +758,7 @@ msgstr "NFO fájlok exportálása"
 
 msgctxt "#30183"
 msgid "Do you want to export NFO files for the {}?"
-msgstr "Szertnéd az NFO fájlokat exportálni {}?"
+msgstr "Szeretnéd az NFO fájlokat exportálni {}?"
 
 msgctxt "#30184"
 msgid "NFO Files"
@@ -790,7 +790,7 @@ msgstr "sorozat"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "NFO fájlok exportálása a saját listámhoz?"
+msgstr "NFO fájlok exportálása és {} hozzáadása a Saját listámhoz?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -822,11 +822,11 @@ msgstr "Új epizódok exportálása"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "Megosztott könyvtár (Kodi MySQL server kell hozzá)"
+msgstr "Megosztott könyvtár (Kodi MySQL szerver kell hozzá)"
 
 msgctxt "#30200"
 msgid "Use MySQL shared library database"
-msgstr "MySQL server használata a média adatbázishoz"
+msgstr "MySQL szerver használata a média adatbázishoz"
 
 msgctxt "#30201"
 msgid "Username"
@@ -838,11 +838,11 @@ msgstr "MySQL adatbázis kapcsolat sikeres"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr ""
+msgstr "Host IP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30205"
 msgid "Test database connection"
@@ -934,7 +934,7 @@ msgstr "Ütemezett"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr "Kodi médiatár szinronizálása a saját listámmal"
+msgstr "Kodi médiatár szinronizálása a Saját listámmal"
 
 msgctxt "#30228"
 msgid "Use \"My list\" of the current profile"
@@ -954,11 +954,11 @@ msgstr "Akarsz most keresni frissítést?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr "Kor szeint korlátozva"
+msgstr "Életkor szerint korlátozva"
 
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
-msgstr "Tartalom {} meg kell adni a PIN-t a lejátszáshoz."
+msgstr "Tartalom {} meg kell adni a pinkódot a lejátszáshoz."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
