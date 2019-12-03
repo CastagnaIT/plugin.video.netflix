@@ -1,4 +1,3 @@
-ENVS := flake8,py27,py36
 export PYTHONPATH := .:$(CURDIR)/modules/mysql-connector-python:$(CURDIR)/resources/lib:$(CURDIR)/test
 addon_xml := addon.xml
 
@@ -34,7 +33,7 @@ sanity: tox pylint language
 
 tox:
 	@echo -e "$(white)=$(blue) Starting sanity tox test$(reset)"
-	tox -q -e $(ENVS)
+	tox -q -e
 
 pylint:
 	@echo -e "$(white)=$(blue) Starting sanity pylint test$(reset)"
