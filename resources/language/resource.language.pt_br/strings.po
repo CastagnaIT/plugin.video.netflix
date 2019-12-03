@@ -22,7 +22,7 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Addon"
-msgstr "Addon do Netflix, um serviço de Video On Demand"
+msgstr "Addon da Netflix, um serviço de Video Sob Demanda"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
@@ -34,11 +34,11 @@ msgstr "Recomendações"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "Digite o PIN para assistir a conteúdo restrito"
+msgstr "Digite o PIN para assistir ao conteúdo restrito"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr "Termo de pesquisa"
+msgstr "Termo de busca"
 
 msgctxt "#30004"
 msgid "Password"
@@ -50,7 +50,7 @@ msgstr "Email"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr "PIN incorreto. Tentar novamente."
+msgstr "PIN incorreto. Tente novamente."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -70,7 +70,7 @@ msgstr "Listar todos os tipos"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr "Procurar"
+msgstr "Buscar"
 
 msgctxt "#30012"
 msgid "No seasons available"
@@ -102,7 +102,7 @@ msgstr "Exportar para a coleção"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "Avaliar no Netflix"
+msgstr "Avaliar na Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
@@ -174,39 +174,39 @@ msgstr "Utilizar sempre o título original para exportar"
 
 msgctxt "#30037"
 msgid "Views"
-msgstr "Modos de Vistas"
+msgstr "Modos de Visualizações"
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr "Ativar vistas personalizadas"
+msgstr "Ativar visualizações personalizadas"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "Vista para as pastas"
+msgstr "Visualização para as pastas"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "Vista para os filmes"
+msgstr "Visualização para os filmes"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vista para as séries"
+msgstr "Visualização para as séries"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "Vista para as temporadas"
+msgstr "Visualização para as temporadas"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "Vista para os episódios"
+msgstr "Visualização para os episódios"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "Vista para os perfis"
+msgstr "Visualização para os perfis"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr "Avaliaçao de thumb removida|Você avaliou com polegar para baixo|Você avaliou com polegar para cima"
+msgstr "Avaliaçao removida|Você avaliou negativamente|Você avaliou positivamente"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -214,7 +214,7 @@ msgstr "O addon InputStream não está ativo"
 
 msgctxt "#30047"
 msgid "Finally remove?"
-msgstr "Deseja eliminar?"
+msgstr "Deseja remover?"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -234,15 +234,15 @@ msgstr "Erro no pedido"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr "De momento, não foi possível concluír o pedido"
+msgstr "Não foi possível concluir a solicitação no momento"
 
 msgctxt "#30053"
 msgid "Auto Login"
-msgstr "Inicio de sessão automático"
+msgstr "Inicio de sessão automática"
 
 msgctxt "#30054"
 msgid "Enable Auto Login"
-msgstr "Ativar o início de sessão automático"
+msgstr "Ativar o início de sessão automática"
 
 msgctxt "#30055"
 msgid "Profile"
@@ -258,7 +258,7 @@ msgstr "Selecionar perfil na lista de perfis -> menu de contexto"
 
 msgctxt "#30058"
 msgid "Auto Login enabled!"
-msgstr "Início de sessão automático ativado!"
+msgstr "Início de sessão automática ativado!"
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -274,7 +274,7 @@ msgstr "Atualizar dentro da coleção"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr "Controles Parental"
+msgstr "Controles Parentais"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -282,7 +282,7 @@ msgstr "novos episódios adicionados à coleção"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "Realizar atualização automático"
+msgstr "Realizar atualização automática"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -322,11 +322,11 @@ msgstr "Verificar a cada X minutos se uma atualização está programada"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "Vista para exportados"
+msgstr "Visualização para exportados"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Perguntar por escapar da intro e recap"
+msgstr "Perguntar para pular a intro e recapitulação"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -334,7 +334,7 @@ msgstr "Pular intro"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Pular recap"
+msgstr "Pular recapitulação"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -350,11 +350,11 @@ msgstr "Pausar quando pular"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "Forçar suporte para HDCP 2.2 (habilita conteúdo 4K)"
+msgstr "Forçar suporte ao HDCP 2.2 (habilita conteúdo 4K)"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr "Lembrar preferências para áudio / legendas"
+msgstr "Lembrar preferências de áudio / legendas"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
@@ -362,11 +362,11 @@ msgstr "Salvar marcadores para itens na coleção / marcar como assistido"
 
 msgctxt "#30084"
 msgid "Cache item time-to-live (minutes)"
-msgstr "Cache de item time-to-live (minutos)"
+msgstr "Tempo de vida útil do item de cache (minutos)"
 
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
-msgstr "Tempo de vida dos metadados para itens em cache (dias)"
+msgstr "Tempo de vida útil do item de cache para metadados (dias)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
@@ -374,15 +374,15 @@ msgstr "Invalidar o cache inteiro na modificação da Minha Lista"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr "Contém {} e muito mais..."
+msgstr "Contém {} e mais..."
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr "Navegar em conteúdos relacionados"
+msgstr "Procurar conteúdos relacionados"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
-msgstr "Navegar em subgêneros"
+msgstr "Procurar subgêneros"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
@@ -394,7 +394,7 @@ msgstr "Navegue e gerencie os conteúdos que foram exportados para a biblioteca 
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
-msgstr "Pesquise conteúdo e encontre facilmente o que você deseja assistir."
+msgstr "Pesquise e encontre facilmente o que você deseja assistir."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
@@ -402,7 +402,7 @@ msgstr "Navegue por conteúdo por gênero e descubra facilmente conteúdo relaci
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr "Navegue em recomendações e escolha algo novo que possas gostar."
+msgstr "Navegue em recomendações e escolha algo novo que você possa gostar."
 
 msgctxt "#30095"
 msgid "All TV Shows"
@@ -482,7 +482,7 @@ msgstr "Deslogado com sucesso"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Mantenha minha lista e coleção no Kodi em sincronia"
+msgstr "Mantenha Minha Lista e coleção do Kodi em sincronia"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -498,19 +498,19 @@ msgstr "Cache"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
-msgstr "API operação falhou: {}"
+msgstr "Operação da API falhou: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr "Minha lista operou com sucesso"
+msgstr "Operação da Minha lista bem-sucedida"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Não posso remover uma temporada automaticamente da coleção do Kodi, proceda com isto manualmente"
+msgstr "Não é possível remover automaticamente uma temporada da coleção do Kodi, faça-o manualmente"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr "Performar sincronização total agora"
+msgstr "Executar sincronização completa agora"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
@@ -518,7 +518,7 @@ msgstr "Sincronizar Minha Lista para a coleção do Kodi"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Você realmente deseja prosseguir?\nIsso excluirá todos os itens exportados anteriormente e exportará todos os itens da Minha Lista para o perfil ativo no momento.\nEsta operação pode levar algum tempo..."
+msgstr "Deseja mesmo prosseguir?\nIsso excluirá todos os itens exportados anteriormente e exportará todos os itens da Minha Lista para o perfil ativo no momento.\nEsta operação pode demorar algum tempo..."
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
@@ -542,7 +542,7 @@ msgstr "Sem títulos disponíveis ainda..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr "Ativar notificação a seguir"
+msgstr "Ativar integração Up Next"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
@@ -554,11 +554,11 @@ msgstr "Verifique o arquivo de log para informações detalhadas"
 
 msgctxt "#30132"
 msgid "Purge in-memory cache"
-msgstr "Expurgar cache na memória"
+msgstr "Limpar cache na memória"
 
 msgctxt "#30133"
 msgid "Purge in-memory and on-disk cache"
-msgstr "Expurgar cache na memória e no disco"
+msgstr "Limpar a memória e o cache do disco"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -594,15 +594,15 @@ msgstr "Desativar notificação de inicialização"
 
 msgctxt "#30142"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 msgctxt "#30143"
 msgid "Custom view ID"
-msgstr "Visualizar Custom ID"
+msgstr "ID da visualização personalizada"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "Desabilitar suporte legendas WebVTT"
+msgstr "Desativar o suporte a legendas WebVTT"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -626,7 +626,7 @@ msgstr "Ordenar resultados por"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
-msgstr "Ordem alfabética A-Z)"
+msgstr "Ordem alfabética (A-Z)"
 
 msgctxt "#30151"
 msgid "Alphabetical order (Z-A)"
@@ -646,15 +646,15 @@ msgstr "Configuração do add-on do Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
-msgstr "Tens uma conta Netflix Premium?"
+msgstr "Você tem uma conta Netflix Premium?"
 
 msgctxt "#30156"
 msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Tens um dispositivo com suporte para o padrão 4K?\r\nO dispositivo deve ter:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k como HDCP 2.2"
+msgstr "O seu dispositivo suporta o padrão 4K?\r\nO dispositivo deve:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k HDCP 2.2"
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O painel de ajustes do Inputstream Adaptive será agora aberto, podes então alterar a opção \"Sobreponha estatus HDCP\" para Ligado"
+msgstr "O painel de configurações do InputStream Adaptive agora será aberto, portanto, você deve alterar esta opção \"Override HDCP status \" para ATIVO"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
@@ -670,15 +670,15 @@ msgstr "Visualização para procura"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr "Visualização para exportar"
+msgstr "Visualização para exportado"
 
 msgctxt "#30162"
 msgid "Last used"
-msgstr "Último usado"
+msgstr "Usado por último"
 
 msgctxt "#30163"
 msgid "Audio description"
-msgstr "Audio descrição"
+msgstr "Descrição de áudio"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
@@ -714,11 +714,11 @@ msgstr "Tendências"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
-msgstr "Popular no Netflix"
+msgstr "Popular na Netflix"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
-msgstr "Produções Originais"
+msgstr "Originais da Netflix"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
@@ -730,7 +730,7 @@ msgstr "Gêneros de filmes"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr "Ativar solução alternativa de retomada do STRM (somente coleção)"
+msgstr "Ativar solução alternativa para retomada o STRM (somente coleção)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
@@ -766,7 +766,7 @@ msgstr "Arquivos NFO"
 
 msgctxt "#30185"
 msgid "Enable NFO files export"
-msgstr "Ativar exportar arquivos NFO"
+msgstr "Ativar exportação de arquivos NFO"
 
 msgctxt "#30186"
 msgid "For Movies"
@@ -794,11 +794,11 @@ msgstr "Deseja exportar arquivos NFO para o {} adicionado em 'Minha Lista'?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nEsses arquivos são usados ​​pelos raspadores de informações para integrar informações sobre filmes e programas de TV, úteis para episódios de bônus ou para cortes do diretor"
+msgstr "\r\nEsses arquivos são usados pelos buscadores de informações do provedor para integrar informações de filmes e programas de TV, úteis com episódios de bônus ou cortes do diretor."
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o raspador 'Local Information Only')"
+msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o buscador de 'Informações Locais')"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -810,7 +810,7 @@ msgstr "Exportar novos episódios"
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
-msgstr "Excluir da auto atualização"
+msgstr "Excluir da atualização automática"
 
 msgctxt "#30197"
 msgid "Include in auto update"
@@ -822,11 +822,11 @@ msgstr "Exportando novos episódios"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "Compartilhar coleção (Kodi MySQL é requerido)"
+msgstr "Biblioteca compartilhada (é necessário o servidor Kodi MySQL)"
 
 msgctxt "#30200"
 msgid "Use MySQL shared library database"
-msgstr "Usar banco de dados da coleção compartilhada MYSQL"
+msgstr "Usar banco de dados de biblioteca compartilhada MySQL"
 
 msgctxt "#30201"
 msgid "Username"
@@ -834,7 +834,7 @@ msgstr "Usuário"
 
 msgctxt "#30202"
 msgid "Connection to the MySQL database was successful"
-msgstr "Conexão para o banco de dados do MySQL efetuado com sucesso"
+msgstr "A conexão com o banco de dados MySQL foi bem-sucedida"
 
 msgctxt "#30203"
 msgid "Host IP"
@@ -962,4 +962,4 @@ msgstr "Conteúdo para {} irá requerer o PIN para iniciar a reprodução."
 
 msgctxt "#30234"
 msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Mantenha as marcações de estatus assistidos separadas para cada perfil (esta opção será removida em versões futuras)"
+msgstr "Mantenha as marcas de status assistidas separadas para cada perfil (essa opção será removida em versões futuras)"
