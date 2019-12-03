@@ -654,7 +654,7 @@ msgstr "O seu dispositivo suporta o padrão 4K?\r\nO dispositivo deve:\r\nSer ce
 
 msgctxt "#30157"
 msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O painel de configurações do InputStream Adaptive agora será aberto, portanto, você deve alterar esta opção \ "Override HDCP status \" para ATIVO"
+msgstr "O painel de configurações do InputStream Adaptive agora será aberto, portanto, você deve alterar esta opção \"Override HDCP status \" para ATIVO"
 
 msgctxt "#30158"
 msgid "Show configuration screen at addon startup"
