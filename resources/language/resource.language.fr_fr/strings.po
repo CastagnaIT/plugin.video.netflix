@@ -34,7 +34,7 @@ msgstr "Recommandations"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Saisir le code PIN pour accéder à certaines catégories d'âge"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr "Adresse mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Code PIN erroné. Recommencez."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "Code PIN contrôle parental (4 chiffres)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -74,7 +74,7 @@ msgstr "Recherche"
 
 msgctxt "#30012"
 msgid "No seasons available"
-msgstr "Pas de saison disponible"
+msgstr "Aucune saison disponible"
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -90,7 +90,7 @@ msgstr "Options supplémentaires"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr "ESN"
+msgstr "code ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -206,7 +206,7 @@ msgstr "Voir les profils"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Évaluation supprimée|Évaluation négative|Évaluation positive"
 
 msgctxt "#30046"
 msgid "InputStream addon is not enabled"
@@ -234,7 +234,7 @@ msgstr "La requête a échoué"
 
 msgctxt "#30052"
 msgid "Unable to complete the request at this time"
-msgstr "Impossible de finir la requête"
+msgstr "Impossible de terminer la requête"
 
 msgctxt "#30053"
 msgid "Auto Login"
@@ -250,7 +250,7 @@ msgstr "Profil"
 
 msgctxt "#30056"
 msgid "ID"
-msgstr "ID"
+msgstr "Identifiant"
 
 msgctxt "#30057"
 msgid "Select profile in profile listing -> context menu"
@@ -274,7 +274,7 @@ msgstr "Mettre à jour la médiathèque"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Contrôle parental"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -318,7 +318,7 @@ msgstr "Démarrer uniquement après 5 minutes d'inactivité"
 
 msgctxt "#30073"
 msgid "Check every X minutes if update scheduled"
-msgstr "Vérifier toutes les X minutes si mise à jour programmée"
+msgstr "Vérifier toutes les X minutes si une mise à jour est programmée"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -454,11 +454,11 @@ msgstr "Code PIN invalide"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "Protection par code PIN désactivée."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Tout le contenu est protégé par code PIN."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -954,4 +954,12 @@ msgstr "Voulez-vous vérifier les mises à jour maintenant?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Accès restreint à une certaine catégorie d'âge"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Le contenu pour {} nécessite le code PIN pour être visionné."
+
+msgctxt "#30234"
+msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
+msgstr "Garder le statut vu séparé pour chaque profil (cette option sera supprimée dans les prochaines versions)"
