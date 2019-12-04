@@ -129,7 +129,7 @@ def _get_android_uuid():
                 values += value_splitted[1]
     except Exception:
         pass
-    return values
+    return values.encode('utf-8')
 
 
 def _get_macos_uuid():

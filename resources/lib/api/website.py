@@ -221,18 +221,22 @@ def generate_esn(user_data):
     import subprocess
     try:
         manufacturer = subprocess.check_output(
-            ['/system/bin/getprop', 'ro.product.manufacturer']).strip(' \t\n\r')
+            ['/system/bin/getprop',
+             'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
         if manufacturer:
             model = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.product.model']).strip(' \t\n\r')
+                ['/system/bin/getprop',
+                 'ro.product.model']).decode('utf-8').strip(' \t\n\r')
             product_characteristics = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.build.characteristics']).strip(' \t\n\r')
+                ['/system/bin/getprop',
+                 'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
             # Property ro.build.characteristics may also contain more then one value
             has_product_characteristics_tv = any(
                 value.strip(' ') == 'tv' for value in product_characteristics.split(','))
             # Netflix Ready Device Platform (NRDP)
             nrdp_modelgroup = subprocess.check_output(
-                ['/system/bin/getprop', 'ro.nrdp.modelgroup']).strip(' \t\n\r')
+                ['/system/bin/getprop',
+                 'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
 
             esn = ('NFANDROID2-PRV-' if has_product_characteristics_tv else 'NFANDROID1-PRV-')
             if has_product_characteristics_tv:
