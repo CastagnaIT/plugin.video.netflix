@@ -5,7 +5,7 @@
 			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
 			<!-- Warning using low id numbers cause problems with moving focus an onClick events -->
 			<top>250</top>
-			<centerleft>50%</centerleft>
+			<left>505</left>
 			<width>910</width>
 			<!-- Screen background -->
 			<control type="image">
@@ -95,7 +95,9 @@
 					<left>65</left>
 					<width>500</width>
 					<scroll>true</scroll>
+					<aligny>top</aligny>
 					<label>--</label>
+					<textcolor>FFFFFFFF</textcolor>
 					<haspath>false</haspath>
 					<font>font12</font>
 					<wrapmultiline>false</wrapmultiline>
@@ -143,7 +145,7 @@
 					<onleft>10010</onleft>
 					<onright>10040</onright>
 				</control>
-				
+
 				<control type="button" id="10022">
 					<top>190</top>
 					<left>380</left>
@@ -158,7 +160,7 @@
 					<onleft>10010</onleft>
 					<onright>10040</onright>
 				</control>
-				
+
 				<control type="button" id="10040">
 					<top>90</top>
 					<left>600</left>

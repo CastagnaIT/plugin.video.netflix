@@ -100,6 +100,8 @@
 					<visible>true</visible>
 					<scroll>false</scroll>
 					<label>$ADDON[plugin.video.netflix 30007]</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<aligny>top</aligny>
 					<haspath>false</haspath>
 					<font>font14</font>
 					<wrapmultiline>false</wrapmultiline>
@@ -136,6 +138,8 @@
 					<visible>true</visible>
 					<scroll>true</scroll>
 					<label>$ADDON[plugin.video.netflix 30232]</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<aligny>top</aligny>
 					<haspath>false</haspath>
 					<font>font14</font>
 					<wrapmultiline>false</wrapmultiline>
@@ -165,9 +169,11 @@
 					<visible>true</visible>
 					<scroll>true</scroll>
 					<label>--</label>
+					<textcolor>FFFFFFFF</textcolor>
 					<haspath>false</haspath>
 					<font>font12</font>
 					<wrapmultiline>false</wrapmultiline>
+					<aligny>top</aligny>
 					<align>center</align>
 				</control>
 			</control>
