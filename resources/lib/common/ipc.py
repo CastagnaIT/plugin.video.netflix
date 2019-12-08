@@ -86,7 +86,7 @@ def make_http_call(callname, data):
     install_opener(build_opener(ProxyHandler({})))
     try:
         result = json.loads(
-            urlopen(url=url, data=json.dumps(data).encode('utf-8')).read(),
+            urlopen(url=url, data=json.dumps(data).encode('utf-8'), timeout=16).read(),
             object_pairs_hook=OrderedDict)
     except URLError:
         raise BackendNotReady
