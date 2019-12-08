@@ -127,6 +127,8 @@ def run(argv):
                 check_addon_upgrade()
                 g.initial_addon_configuration()
                 route([part for part in g.PATH.split('/') if part])
+            else:
+                success = False
         except BackendNotReady:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()

@@ -39,8 +39,7 @@ def catch_api_errors(func):
 
 def logout():
     """Logout of the current account"""
-    url = common.build_url(['root'], mode=g.MODE_DIRECTORY)
-    common.make_call('logout', url)
+    common.make_call('logout', g.BASE_URL)
     g.CACHE.invalidate()
 
 

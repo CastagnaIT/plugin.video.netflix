@@ -150,9 +150,9 @@ class AddonActionExecutor(object):
         # Perform a new login to get/generate a new ESN
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen
-        url = 'plugin://plugin.video.netflix/directory/root'
-        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-        xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+        url = 'plugin://plugin.video.netflix'
+        # Open root page
+        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
 
 
 def _sync_library(videoid, operation):

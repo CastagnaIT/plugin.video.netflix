@@ -400,8 +400,9 @@ class NetflixSession(object):
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
-        xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-        xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+        xbmc.executebuiltin('Container.Update(path,replace)')  # Go to a fake page to clear screen
+        # Open root page
+        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
 
     @common.addonsignals_return_call
     @needs_login

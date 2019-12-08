@@ -115,5 +115,5 @@ class SettingsMonitor(xbmc.Monitor):
         if reboot_addon:
             common.debug('SettingsMonitor: addon will be rebooted')
             url = 'plugin://plugin.video.netflix/directory/root'
-            xbmc.executebuiltin('XBMC.Container.Update(path,replace)')  # Clean path history
-            xbmc.executebuiltin('Container.Update({})'.format(url))  # Open root page
+            # Open root page
+            xbmc.executebuiltin('Container.Update({})'.format(url))  # replace=reset history

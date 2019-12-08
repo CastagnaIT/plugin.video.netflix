@@ -204,7 +204,11 @@ def _ask_search_term_and_redirect():
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
         xbmc.executebuiltin('Container.Update({})'.format(url))
     else:
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        url = common.build_url(pathitems=['home'],
+                               params={'profile_id': g.LOCAL_DB.get_active_profile_guid()},
+                               mode=g.MODE_DIRECTORY)
+        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
+        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
 
 
 @common.time_execution(immediate=False)
