@@ -1,15 +1,9 @@
----
-engines:
+version: "2"
+plugins:
   pep8:
     enabled: true
-    checks:
-      E402:
-        # Disable module order check because we need to work around this
-        enabled: false
   radon:
     enabled: true
-    config:
-      python_version: 2
   markdownlint:
     enabled: true
 ratings:
@@ -17,23 +11,18 @@ ratings:
     - "**.py"
     - "**.md"
 exclude_paths:
-  - "docs"
-  - "resources/test/"
+  - "docs/"
+  - "LICENSES/"
+  - "modules/"
   - "resources/language/"
   - "resources/media/"
   - "resources/skins/"
-  - "resources/fanart.jpg"
-  - "resources/icon.png"
-  - "resources/screenshot-01.jpg"
-  - "resources/screenshot-02.jpg"
-  - "resources/screenshot-03.jpg"
   - "resources/settings.xml"
-  - "resources/__init__.py"
-  - "resources/lib/__init__.py"
-  - "__init__.py"
+  - "test/"
   - "addon.xml"
-  - "LICENSE.txt"
-  - "makefile"
+  - "Contributing.md"
+  - "Code_of_Conduct.md"
+  - "LICENSE.md"
   - "requirements.txt"
-  - "ISSUE_TEMPLATE.md"
-  - "PULL_REQUEST_TEMPLATE.md"
+  - "Makefile"
+  - "tox.ini"
