@@ -343,42 +343,10 @@ class NetflixSession(object):
         # Warning - parental control levels vary by country or region, no fixed values can be used
         # I have not found how to get it through the API, so parse web page to get all info
         # Note: The language of descriptions change in base of the language of selected profile
-        pin_response = self._get('pin', data={'password': password})
-        from re import findall
-        html_ml_points = findall(r'<div class="maturity-input-item\s.*?<\/div>',
-                                 pin_response.decode('utf-8'))
-        maturity_levels = []
-        maturity_names = []
-        current_level = -1
-        for ml_point in html_ml_points:
-            is_included = bool(findall(r'class="maturity-input-item[^"<>]*?included', ml_point))
-            value = findall(r'value="(\d+)"', ml_point)
-            name = findall(r'<span class="maturity-name">([^"]+?)<\/span>', ml_point)
-            rating = findall(r'<li[^<>]+class="pin-rating-item">([^"]+?)<\/li>', ml_point)
-            if not value:
-                raise WebsiteParsingError('Unable to find maturity level value: {}'.format(ml_point))
-            if name:
-                maturity_names.append({
-                    'name': name[0],
-                    'rating': '[CR][' + rating[0] + ']' if rating else ''
-                })
-            maturity_levels.append({
-                'level': len(maturity_levels),
-                'value': value[0],
-                'is_included': is_included
-            })
-            if is_included:
-                current_level += 1
-        if not html_ml_points:
-            raise WebsiteParsingError('Unable to find html maturity level points')
-        if not maturity_levels:
-            raise WebsiteParsingError('Unable to find maturity levels')
-        if not maturity_names:
-            raise WebsiteParsingError('Unable to find maturity names')
-        common.debug('Parsed maturity levels: {}', maturity_levels)
-        common.debug('Parsed maturity names: {}', maturity_names)
-        return {'pin': pin, 'maturity_levels': maturity_levels, 'maturity_names': maturity_names,
-                'current_level': current_level}
+        response_content = self._get('pin', data={'password': password})
+        extracted_content = website.extract_parental_control_data(response_content)
+        extracted_content['pin'] = pin
+        return extracted_content
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)
