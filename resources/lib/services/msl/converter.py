@@ -107,6 +107,8 @@ def _limit_video_resolution(video_tracks, drm_streams):
             res_limit = 1080
         elif max_resolution == 'UHD 4K':
             res_limit = 4096
+        else:
+            return None
         # At least an equal or lower resolution must exist otherwise disable the imposed limit
         for downloadable in video_tracks:
             if downloadable['isDrm'] != drm_streams:
@@ -238,7 +240,8 @@ def _convert_text_track(text_track, period, default):
             adaptation_set,  # Parent
             'Representation',  # Tag
             nflxProfile=content_profile)
-        _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[0])
+        _add_base_url(representation,
+                      list(downloadable[content_profile]['downloadUrls'].values())[0])
 
 
 def _add_base_url(representation, base_url):
@@ -254,31 +257,36 @@ def _add_segment_base(representation, init_length):
 
 
 def _get_default_audio_language(manifest):
-    channelList = {'1.0': '1', '2.0': '2'}
-    channelListDolby = {'5.1': '6', '7.1': '8'}
+    channel_list = {'1.0': '1', '2.0': '2'}
+    channel_list_dolby = {'5.1': '6', '7.1': '8'}
 
     audio_language = common.get_kodi_audio_language()
-
+    index = 0
     # Try to find the preferred language with the right channels
     if g.ADDON.getSettingBool('enable_dolby_sound'):
-        for index, audio_track in enumerate(manifest['audio_tracks']):
-            if audio_track['language'] == audio_language and audio_track['channels'] in channelListDolby:
-                return index
+        index = _find_audio_track_index(manifest, 'language', audio_language, channel_list_dolby)
+
     # If dolby audio track not exists check other channels list
-    for index, audio_track in enumerate(manifest['audio_tracks']):
-        if audio_track['language'] == audio_language and audio_track['channels'] in channelList:
-            return index
-    # If there is no matches to preferred language, try to sets the original language track as default
+    if index is None:
+        index = _find_audio_track_index(manifest, 'language', audio_language, channel_list)
+
+    # If there is no matches to preferred language,
+    # try to sets the original language track as default
     # Check if the dolby audio track in selected language exists
-    if g.ADDON.getSettingBool('enable_dolby_sound'):
-        for index, audio_track in enumerate(manifest['audio_tracks']):
-            if audio_track['isNative'] and audio_track['channels'] in channelListDolby:
-                return index
+    if index is None and g.ADDON.getSettingBool('enable_dolby_sound'):
+        index = _find_audio_track_index(manifest, 'isNative', True, channel_list_dolby)
+
     # If dolby audio track not exists check other channels list
+    if index is None:
+        index = _find_audio_track_index(manifest, 'isNative', True, channel_list)
+    return index
+
+
+def _find_audio_track_index(manifest, property_name, property_value, channel_list):
     for index, audio_track in enumerate(manifest['audio_tracks']):
-        if audio_track['isNative'] and audio_track['channels'] in channelList:
+        if audio_track[property_name] == property_value and audio_track['channels'] in channel_list:
             return index
-    return 0
+    return None
 
 
 def _get_default_subtitle_language(manifest):
@@ -298,10 +306,12 @@ def _get_default_subtitle_language(manifest):
         # When we set "forced only" subtitles in Kodi Player, Kodi use this behavior:
         # 1) try to select forced subtitle that matches audio language
         # 2) when missing, try to select the first "regular" subtitle that matches audio language
-        # This Kodi behavior is totally non sense. If forced is selected you must not view the regular subtitles
+        # This Kodi behavior is totally non sense.
+        # If forced is selected you must not view the regular subtitles
         # There is no other solution than to disable the subtitles manually.
         audio_language = common.get_kodi_audio_language()
-        if not any(text_track.get('isForcedNarrative', False) is True and text_track['language'] == audio_language
+        if not any(text_track.get('isForcedNarrative', False) is True and
+                   text_track['language'] == audio_language
                    for text_track in manifest['timedtexttracks']):
             xbmc.Player().showSubtitles(False)
 

@@ -237,32 +237,35 @@ def purge():
 def compile_tasks(videoid, task_handler, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
     common.debug('Compiling library tasks for {}', videoid)
+    task = None
 
     if task_handler == export_item:
         metadata = api.metadata(videoid)
         if videoid.mediatype == common.VideoId.MOVIE:
-            return _create_export_movie_task(videoid, metadata[0], nfo_settings)
-        if videoid.mediatype in common.VideoId.TV_TYPES:
-            return _create_export_tv_tasks(videoid, metadata, nfo_settings)
-        raise ValueError('Cannot handle {}'.format(videoid))
+            task = _create_export_movie_task(videoid, metadata[0], nfo_settings)
+        elif videoid.mediatype in common.VideoId.TV_TYPES:
+            task = _create_export_tv_tasks(videoid, metadata, nfo_settings)
+        else:
+            raise ValueError('Cannot handle {}'.format(videoid))
 
     if task_handler == export_new_item:
         metadata = api.metadata(videoid, True)
-        return _create_new_episodes_tasks(videoid, metadata, nfo_settings)
+        task = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
     if task_handler == remove_item:
         if videoid.mediatype == common.VideoId.MOVIE:
-            return _create_remove_movie_task(videoid)
+            task = _create_remove_movie_task(videoid)
         if videoid.mediatype == common.VideoId.SHOW:
-            return _compile_remove_tvshow_tasks(videoid)
+            task = _compile_remove_tvshow_tasks(videoid)
         if videoid.mediatype == common.VideoId.SEASON:
-            return _compile_remove_season_tasks(videoid)
+            task = _compile_remove_season_tasks(videoid)
         if videoid.mediatype == common.VideoId.EPISODE:
-            return _create_remove_episode_task(videoid)
+            task = _create_remove_episode_task(videoid)
 
-    common.debug('compile_tasks: task_handler {} did not match any task for {}',
-                 task_handler, videoid)
-    return None
+    if task is None:
+        common.debug('compile_tasks: task_handler {} did not match any task for {}',
+                     task_handler, videoid)
+    return task
 
 
 def _create_export_movie_task(videoid, movie, nfo_settings):
