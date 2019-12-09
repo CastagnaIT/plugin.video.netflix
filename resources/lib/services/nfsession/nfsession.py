@@ -10,87 +10,23 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import time
-from functools import wraps
 import json
 import requests
 
-import xbmc
-
-from resources.lib.database.db_utils import (TABLE_SESSION)
-from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.common.cookies as cookies
-import resources.lib.api.website as website
 import resources.lib.api.paths as apipaths
-import resources.lib.kodi.ui as ui
-
-from resources.lib.api.exceptions import (NotLoggedInError, LoginFailedError, LoginValidateError,
-                                          APIError, MissingCredentialsError, WebsiteParsingError,
-                                          InvalidMembershipStatusError, NotConnected)
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
-BASE_URL = 'https://www.netflix.com'
-"""str: Secure Netflix url"""
-
-URLS = {
-    'login': {'endpoint': '/login', 'is_api_call': False},
-    'logout': {'endpoint': '/SignOut', 'is_api_call': False},
-    'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
-    'browse': {'endpoint': '/browse', 'is_api_call': False},
-    'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
-    'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
-    'pin': {'endpoint': '/pin', 'is_api_call': False},
-    'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
-    'pin_service': {'endpoint': '/pin/service', 'is_api_call': True},
-    'metadata': {'endpoint': '/metadata', 'is_api_call': True},
-    'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},  # Old rating system
-    'set_thumb_rating': {'endpoint': '/setThumbRating', 'is_api_call': True},
-    'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
-    # Don't know what these could be used for. Keeping for reference
-    # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
-    # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
-}
-# List of all static endpoints for HTML/JSON POST/GET requests
-# How many entries of a list will be fetched with one path request
-
-LOGIN_COOKIES = ['nfvdid', 'SecureNetflixId', 'NetflixId']
+import resources.lib.api.website as website
+from resources.lib.globals import g
+from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
+from resources.lib.services.nfsession.nfsession_base import needs_login
+from resources.lib.api.exceptions import MissingCredentialsError
 
 
-def needs_login(func):
-    """
-    Decorator to ensure that a valid login is present when calling a method
-    """
-    # pylint: disable=protected-access, missing-docstring
-    @wraps(func)
-    def ensure_login(*args, **kwargs):
-        session = args[0]
-        # I make sure that the connection is present..
-        if not common.is_internet_connected():
-            raise NotConnected('Internet connection not available')
-        # ..this check verifies only if locally there are the data to correctly perform the login
-        if not session._is_logged_in():
-            raise NotLoggedInError
-        return func(*args, **kwargs)
-    return ensure_login
-
-
-class NetflixSession(object):
+class NetflixSession(NFSessionAccess):
     """Stateful netflix session management"""
 
-    slots = None
-    """Slots to be registered with AddonSignals. Is set in _register_slots"""
-
-    session = None
-    """The requests.session object to handle communication to Netflix"""
-
-    verify_ssl = True
-    """Use SSL verification when performing requests"""
-
     def __init__(self):
+        super(NetflixSession, self).__init__()
         self.slots = [
             self.login,
             self.logout,
@@ -107,220 +43,7 @@ class NetflixSession(object):
             common.register_slot(slot)
         common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
                              source_id='upnextprovider')
-        self.verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
-        self._init_session()
-        self.is_prefetch_login = False
         self._prefetch_login()
-
-    @property
-    def account_hash(self):
-        """The unique hash of the current account"""
-        from base64 import urlsafe_b64encode
-        return urlsafe_b64encode(
-            common.get_credentials().get('email', 'NoMail').encode('utf-8')).decode('utf-8')
-
-    def update_session_data(self, old_esn=None):
-        old_esn = old_esn or g.get_esn()
-        self.set_session_header_data()
-        cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(old_esn)
-
-    def set_session_header_data(self):
-        self.session.headers.update(
-            {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
-
-    @property
-    def auth_url(self):
-        """Return authentication url"""
-        return g.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
-
-    @auth_url.setter
-    def auth_url(self, value):
-        g.LOCAL_DB.set_value('auth_url', value, TABLE_SESSION)
-
-    @common.time_execution(immediate=True)
-    def _init_session(self):
-        """Initialize the session to use for all future connections"""
-        try:
-            self.session.close()
-            common.info('Session closed')
-        except AttributeError:
-            pass
-        self.session = requests.session()
-        self.session.headers.update({
-            'User-Agent': common.get_user_agent(),
-            'Accept-Encoding': 'gzip'
-        })
-        common.info('Initialized new session')
-
-    @common.time_execution(immediate=True)
-    def _prefetch_login(self):
-        """Check if we have stored credentials.
-        If so, do the login before the user requests it"""
-        try:
-            common.get_credentials()
-            if not self._is_logged_in():
-                self._login()
-            self.is_prefetch_login = True
-        except requests.exceptions.RequestException as exc:
-            # It was not possible to connect to the web service, no connection, network problem, etc
-            import traceback
-            common.error('Login prefetch: request exception {}', exc)
-            common.debug(traceback.format_exc())
-        except MissingCredentialsError:
-            common.info('Login prefetch: No stored credentials are available')
-        except (LoginFailedError, LoginValidateError):
-            ui.show_notification(common.get_local_string(30009))
-        except InvalidMembershipStatusError:
-            ui.show_notification(common.get_local_string(30180), time=10000)
-
-    @common.time_execution(immediate=True)
-    def _is_logged_in(self):
-        """Check if the user is logged in and if so refresh session data"""
-        valid_login = self._load_cookies() and \
-            self._verify_session_cookies() and \
-            self._verify_esn_existence()
-        if valid_login and not self.is_prefetch_login:
-            self.set_session_header_data()
-        return valid_login
-
-    @common.time_execution(immediate=True)
-    def _verify_session_cookies(self):
-        """Verify that the session cookies have not expired"""
-        # pylint: disable=broad-except
-        fallback_to_validate = False
-        if not self.session.cookies:
-            return False
-        for cookie_name in LOGIN_COOKIES:
-            if cookie_name not in list(self.session.cookies.keys()):
-                common.error(
-                    'The cookie "{}" do not exist. It is not possible to check expiration. '
-                    'Fallback to old validate method.',
-                    cookie_name)
-                fallback_to_validate = True
-                break
-            for cookie in list(self.session.cookies):
-                if cookie.name != cookie_name:
-                    continue
-                if cookie.expires <= int(time.time()):
-                    common.info('Login is expired')
-                    return False
-        if fallback_to_validate:
-            # Old method, makes a request at every time an user change page on Kodi
-            # and try to re-extract all, working but slows down navigation.
-            # If we can get session data, cookies are still valid
-            try:
-                website.validate_session_data(self._get('profiles'))
-                self.update_session_data()
-            except Exception:
-                import traceback
-                common.warn('Failed to validate session data, login is expired')
-                common.debug(traceback.format_exc())
-                self.session.cookies.clear()
-                return False
-        return True
-
-    def _verify_esn_existence(self):
-        # if for any reason esn is no longer exist get one
-        if not g.get_esn():
-            return self._refresh_session_data()
-        return True
-
-    @common.time_execution(immediate=True)
-    def _refresh_session_data(self, raise_exception=False):
-        """Refresh session_data from the Netflix website"""
-        # pylint: disable=broad-except
-        try:
-            website.extract_session_data(self._get('profiles'))
-            self.update_session_data()
-        except InvalidMembershipStatusError:
-            raise
-        except WebsiteParsingError:
-            # it is possible that cookies may not work anymore,
-            # it should be due to updates in the website,
-            # this can happen when opening the addon while executing update_profiles_data
-            import traceback
-            common.warn('Failed to refresh session data, login expired (WebsiteParsingError)')
-            common.debug(traceback.format_exc())
-            self.session.cookies.clear()
-            return self._login()
-        except requests.exceptions.RequestException:
-            import traceback
-            common.warn('Failed to refresh session data, request error (RequestException)')
-            common.warn(traceback.format_exc())
-            if raise_exception:
-                raise
-            return False
-        except Exception:
-            import traceback
-            common.warn('Failed to refresh session data, login expired (Exception)')
-            common.debug(traceback.format_exc())
-            self.session.cookies.clear()
-            if raise_exception:
-                raise
-            return False
-        common.debug('Successfully refreshed session data')
-        return True
-
-    @common.time_execution(immediate=True)
-    def _load_cookies(self):
-        """Load stored cookies from disk"""
-        # pylint: disable=broad-except
-        if not self.session.cookies:
-            try:
-                self.session.cookies = cookies.load(self.account_hash)
-            except cookies.MissingCookiesError:
-                return False
-            except Exception as exc:
-                import traceback
-                common.error('Failed to load stored cookies: {}', type(exc).__name__)
-                common.error(traceback.format_exc())
-                return False
-            common.info('Successfully loaded stored cookies')
-        return True
-
-    @common.addonsignals_return_call
-    def login(self):
-        """AddonSignals interface for login function"""
-        return self._login(modal_error_message=True)
-
-    @common.time_execution(immediate=True)
-    def _login(self, modal_error_message=False):
-        """Perform account login"""
-        # If exists get the current esn value before extract a new session data
-        current_esn = g.get_esn()
-        try:
-            # First we get the authentication url without logging in, required for login API call
-            react_context = website.extract_json(self._get('profiles'), 'reactContext')
-            auth_url = website.extract_api_data(react_context)['auth_url']
-            common.debug('Logging in...')
-            login_response = self._post(
-                'login',
-                data=_login_payload(common.get_credentials(), auth_url))
-            try:
-                website.validate_login(login_response)
-            except LoginValidateError as exc:
-                self.session.cookies.clear()
-                common.purge_credentials()
-                if modal_error_message:
-                    ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
-                    return False
-                raise
-            website.extract_session_data(login_response)
-        except InvalidMembershipStatusError:
-            ui.show_error_info(common.get_local_string(30008),
-                               common.get_local_string(30180),
-                               False, True)
-            return False
-        except Exception:  # pylint: disable=broad-except
-            import traceback
-            common.error(traceback.format_exc())
-            self.session.cookies.clear()
-            raise
-        common.info('Login successful')
-        ui.show_notification(common.get_local_string(30109))
-        self.update_session_data(current_esn)
-        return True
 
     @common.addonsignals_return_call
     @needs_login
@@ -349,34 +72,10 @@ class NetflixSession(object):
         return extracted_content
 
     @common.addonsignals_return_call
-    @common.time_execution(immediate=True)
-    def logout(self, url):
-        """Logout of the current account and reset the session"""
-        common.debug('Logging out of current account')
-
-        # Disable and reset auto-update / auto-sync features
-        g.settings_monitor_suspend(True)
-        g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
-        g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.settings_monitor_suspend(False)
-        g.SHARED_DB.delete_key('sync_mylist_profile_guid')
-
-        cookies.delete(self.account_hash)
-        self._get('logout')
-        common.purge_credentials()
-
-        common.info('Logout successful')
-        ui.show_notification(common.get_local_string(30113))
-        self._init_session()
-        xbmc.executebuiltin('Container.Update(path,replace)')  # Go to a fake page to clear screen
-        # Open root page
-        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
-
-    @common.addonsignals_return_call
     @needs_login
     @common.time_execution(immediate=True)
     def update_profiles_data(self):
-        return self._refresh_session_data(raise_exception=True)
+        return self.try_refresh_session_data(raise_exception=True)
 
     @common.addonsignals_return_call
     @needs_login
@@ -402,20 +101,6 @@ class NetflixSession(object):
 
     @common.addonsignals_return_call
     @needs_login
-    def path_request(self, paths):
-        """Perform a path request against the Shakti API"""
-        return self._path_request(paths)
-
-    @common.addonsignals_return_call
-    @needs_login
-    @common.time_execution(immediate=True)
-    def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
-                               no_limit_req=False):
-        return self._perpetual_path_request(paths, length_params, perpetual_range_start,
-                                            no_limit_req)
-
-    @common.addonsignals_return_call
-    @needs_login
     @common.time_execution(immediate=True)
     def perpetual_path_request_switch_profiles(self, paths, length_params,
                                                perpetual_range_start=None, no_limit_req=False):
@@ -437,6 +122,20 @@ class NetflixSession(object):
             # Reactive again the previous profile
             self.activate_profile(current_profile_guid)
         return path_response
+
+    @common.addonsignals_return_call
+    @needs_login
+    def path_request(self, paths):
+        """Perform a path request against the Shakti API"""
+        return self._path_request(paths)
+
+    @common.addonsignals_return_call
+    @needs_login
+    @common.time_execution(immediate=True)
+    def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
+                               no_limit_req=False):
+        return self._perpetual_path_request(paths, length_params, perpetual_range_start,
+                                            no_limit_req)
 
     def _perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                 no_limit_req=False):
@@ -525,78 +224,7 @@ class NetflixSession(object):
             headers=headers,
             data=data)['value']
 
-    @common.addonsignals_return_call
-    @needs_login
-    def get(self, component, **kwargs):
-        """Execute a GET request to the designated component's URL."""
-        return self._get(component, **kwargs)
 
-    @common.addonsignals_return_call
-    @needs_login
-    def post(self, component, **kwargs):
-        """Execute a POST request to the designated component's URL."""
-        return self._post(component, **kwargs)
-
-    def _get(self, component, **kwargs):
-        return self._request_call(
-            method=self.session.get,
-            component=component,
-            **kwargs)
-
-    def _post(self, component, **kwargs):
-        return self._request_call(
-            method=self.session.post,
-            component=component,
-            **kwargs)
-
-    @common.time_execution(immediate=True)
-    def _request_call(self, method, component, **kwargs):
-        return self._request(method, component, None, **kwargs)
-
-    def _request(self, method, component, session_refreshed, **kwargs):
-        url = (_api_url(component)
-               if URLS[component]['is_api_call']
-               else _document_url(component))
-        common.debug('Executing {verb} request to {url}',
-                     verb='GET' if method == self.session.get else 'POST', url=url)
-        data, headers, params = self._prepare_request_properties(component,
-                                                                 kwargs)
-        start = time.clock()
-        response = method(
-            url=url,
-            verify=self.verify_ssl,
-            headers=headers,
-            params=params,
-            data=data)
-        common.debug('Request took {}s', time.clock() - start)
-        common.debug('Request returned statuscode {}', response.status_code)
-        if response.status_code == 404 and not session_refreshed:
-            # It may happen that netflix updates the build_identifier version
-            # when you are watching a video or browsing the menu,
-            # this causes the api address to change, and return 'url not found' error
-            # So let's try updating the session data (just once)
-            common.warn('Try refresh session data to update build_identifier version')
-            if self._refresh_session_data():
-                return self._request(method, component, True, **kwargs)
-        response.raise_for_status()
-        return (_raise_api_error(response.json() if response.content else {})
-                if URLS[component]['is_api_call']
-                else response.content)
-
-    def _prepare_request_properties(self, component, kwargs):
-        data = kwargs.get('data', {})
-        headers = kwargs.get('headers', {})
-        params = kwargs.get('params', {})
-        if component in ['set_video_rating', 'set_thumb_rating', 'update_my_list', 'pin_service']:
-            headers.update({
-                'Content-Type': 'application/json',
-                'Accept': 'application/json, text/javascript, */*'})
-            data['authURL'] = self.auth_url
-            data = json.dumps(data)
-        return data, headers, params
-
-
-@common.time_execution(immediate=True)
 def _set_range_selector(paths, range_start, range_end):
     """Replace the RANGE_SELECTOR placeholder with an actual dict:
     {'from': range_start, 'to': range_end}"""
@@ -611,45 +239,6 @@ def _set_range_selector(paths, range_start, range_end):
         except ValueError:
             pass
     return ranged_paths
-
-
-def _login_payload(credentials, auth_url):
-    return {
-        'userLoginId': credentials.get('email'),
-        'email': credentials.get('email'),
-        'password': credentials.get('password'),
-        'rememberMe': 'true',
-        'flow': 'websiteSignUp',
-        'mode': 'login',
-        'action': 'loginAction',
-        'withFields': 'rememberMe,nextPage,userLoginId,password,email',
-        'authURL': auth_url,
-        'nextPage': '',
-        'showPassword': ''
-    }
-
-
-def _document_url(component):
-    return BASE_URL + URLS[component]['endpoint']
-
-
-def _api_url(component):
-    return '{baseurl}{componenturl}'.format(
-        baseurl=g.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        componenturl=URLS[component]['endpoint'])
-
-
-def _update_esn(old_esn):
-    """Perform key handshake if the esn has changed on Session initialization"""
-    current_esn = g.get_esn()
-    if old_esn != current_esn:
-        common.send_signal(signal=common.Signals.ESN_CHANGED, data=current_esn)
-
-
-def _raise_api_error(decoded_response):
-    if decoded_response.get('status', 'success') == 'error':
-        raise APIError(decoded_response.get('message'))
-    return decoded_response
 
 
 def play_callback(data):
