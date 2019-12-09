@@ -6,6 +6,10 @@ plugins:
     enabled: true
   markdownlint:
     enabled: true
+checks:
+  method-complexity:
+    config:
+      threshold: 10
 ratings:
   paths:
     - "**.py"
