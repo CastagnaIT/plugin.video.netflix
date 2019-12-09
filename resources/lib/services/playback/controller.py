@@ -119,6 +119,12 @@ class PlaybackController(xbmc.Monitor):
         except IOError:
             return {}
 
+        # Sometime may happen that when you stop playback, a player status without data is read,
+        # so all dict values are returned with a default empty value,
+        # then return an empty status instead of fake data
+        if not player_state['audiostreams']:
+            return {}
+
         # convert time dict to elapsed seconds
         player_state['elapsed_seconds'] = (
             player_state['time']['hours'] * 3600 +

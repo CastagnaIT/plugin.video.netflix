@@ -236,6 +236,15 @@ def merge_dicts(dict_to_merge, merged_dict):
     return merged_dict
 
 
+def compare_dicts(dict_a, dict_b, excluded_keys=None):
+    """
+    Compare two dict with same keys, with optional keys to exclude from compare
+    """
+    if excluded_keys is None:
+        excluded_keys = []
+    return all(dict_a[k] == dict_b[k] for k in dict_a if k not in excluded_keys)
+
+
 def any_value_except(mapping, excluded_keys):
     """Return a random value from a dict that is not associated with
     excluded_key. Raises StopIteration if there are no other keys than
