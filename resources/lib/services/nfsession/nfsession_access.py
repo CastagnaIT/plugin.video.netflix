@@ -34,7 +34,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
     """Handle the authentication access"""
 
     @common.time_execution(immediate=True)
-    def _prefetch_login(self):
+    def prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
         try:

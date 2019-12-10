@@ -43,7 +43,7 @@ class NetflixSession(NFSessionAccess):
             common.register_slot(slot)
         common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
                              source_id='upnextprovider')
-        self._prefetch_login()
+        self.prefetch_login()
 
     @common.addonsignals_return_call
     @needs_login
