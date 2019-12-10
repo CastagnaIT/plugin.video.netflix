@@ -23,7 +23,7 @@ except NameError:  # Python 3
 class NFOSettings(object):
     def __init__(self, enforce=None):
         """
-        :param force: Used for export new episode, to force the nfo export status
+        :param enforce: Used for export new episode, to force the nfo export status
         """
         if enforce is None:
             self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
