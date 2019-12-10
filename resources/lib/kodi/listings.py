@@ -171,7 +171,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
             sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
             sub_menu_data['lolomo_known'] = False
             sub_menu_data['lolomo_contexts'] = None
-            sub_menu_data['content_type'] = g.CONTENT_SHOW
+            sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
             sub_menu_data['force_videolistbyid'] = force_videolistbyid
             sub_menu_data['main_menu'] = menu_data['main_menu']\
                 if menu_data.get('main_menu') else menu_data.copy()
@@ -182,7 +182,7 @@ def build_lolomo_listing(lolomo, menu_data, force_videolistbyid=False, exclude_l
                                                           sub_menu_data))
     parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
                                             table=TABLE_MENU_DATA, data_type=dict)
-    finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
+    finalize_directory(directory_items, g.CONTENT_FOLDER,
                        title=parent_menu_data['title'],
                        sort_type='sort_label')
     return menu_data.get('view')
@@ -228,7 +228,7 @@ def build_subgenre_listing(subgenre_list, menu_data):
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
-        sub_menu_data['content_type'] = g.CONTENT_SHOW
+        sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
         sub_menu_data['main_menu'] = menu_data['main_menu']\
             if menu_data.get('main_menu') else menu_data.copy()
         sub_menu_data.update({'title': subgenre_data['name']})
@@ -238,7 +238,7 @@ def build_subgenre_listing(subgenre_list, menu_data):
                                                      sub_menu_data))
     parent_menu_data = g.LOCAL_DB.get_value(menu_data['path'][1],
                                             table=TABLE_MENU_DATA, data_type=dict)
-    finalize_directory(directory_items, menu_data.get('content_type', g.CONTENT_SHOW),
+    finalize_directory(directory_items, g.CONTENT_FOLDER,
                        title=parent_menu_data['title'],
                        sort_type='sort_label')
     return menu_data.get('view')
@@ -269,7 +269,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, genre_id]
         sub_menu_data['lolomo_known'] = False
         sub_menu_data['lolomo_contexts'] = None
-        sub_menu_data['content_type'] = g.CONTENT_SHOW
+        sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
         sub_menu_data['main_menu'] = menu_data['main_menu']\
             if menu_data.get('main_menu') else menu_data.copy()
         sub_menu_data.update({'title': common.get_local_string(30089)})
