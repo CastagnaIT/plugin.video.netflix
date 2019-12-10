@@ -46,6 +46,7 @@ class StreamContinuityManager(PlaybackActionManager):
         super(StreamContinuityManager, self).__init__()
         self.current_videoid = None
         self.current_streams = {}
+        self.sc_settings = {}
         self.player = xbmc.Player()
         self.player_state = {}
         self.did_restore = False
@@ -53,36 +54,26 @@ class StreamContinuityManager(PlaybackActionManager):
         self.legacy_kodi_version = bool('18.' in common.GetKodiVersion().version)
         self.kodi_only_forced_subtitles = None
 
-    @property
-    def sc_settings(self):
-        """Read stored stream settings for the current videoid"""
-        return g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
-                                                 self.current_videoid.value, {})
-
-    @sc_settings.setter
-    def sc_settings(self, value):
-        """Save stream settings for the current videoid"""
-        g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
-                                          self.current_videoid.value,
-                                          value)
-
     def _initialize(self, data):
+        self.did_restore = False
         videoid = common.VideoId.from_dict(data['videoid'])
-        if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
-            self.did_restore = False
-            self.current_videoid = videoid \
-                if videoid.mediatype == common.VideoId.MOVIE \
-                else videoid.derive_parent(0)
-        else:
+        if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
+            return
+        self.current_videoid = videoid \
+            if videoid.mediatype == common.VideoId.MOVIE \
+            else videoid.derive_parent(0)
+        self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+                                                             self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
     def _on_playback_started(self, player_state):
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
-        if self.legacy_kodi_version and g.ADDON.getSettingBool('forced_subtitle_workaround') and \
-           self.kodi_only_forced_subtitles:
-            # --- VARIABLE ONLY FOR KODI VERSION 18 ---
+        if self.kodi_only_forced_subtitles and g.ADDON.getSettingBool('forced_subtitle_workaround')\
+           and self.sc_settings.get('subtitleenabled') is None:
+            # Use the forced subtitle workaround if enabled
+            # and if user did not change the subtitle setting
             self._show_only_forced_subtitle()
         for stype in sorted(STREAMS):
             # Save current stream info from the player to local dict
@@ -113,12 +104,15 @@ class StreamContinuityManager(PlaybackActionManager):
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
         is_sub_stream_equal = self._is_stream_value_equal(current_stream, player_stream)
+
         current_sub_enabled = self.current_streams['subtitleenabled']
         player_sub_enabled = player_state.get(STREAMS['subtitleenabled']['current'])
         is_sub_enabled_equal = self._is_stream_value_equal(current_sub_enabled, player_sub_enabled)
+
         if not is_sub_stream_equal or not is_sub_enabled_equal:
             self._set_current_stream('subtitle', player_state)
             self._save_changed_stream('subtitle', player_stream)
+
             self._set_current_stream('subtitleenabled', player_state)
             self._save_changed_stream('subtitleenabled', player_sub_enabled)
             if not is_sub_stream_equal:
@@ -171,9 +165,10 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def _save_changed_stream(self, stype, stream):
         common.debug('Save changed stream {} for {}', stream, stype)
-        new_sc_settings = self.sc_settings.copy()
-        new_sc_settings[stype] = stream
-        self.sc_settings = new_sc_settings
+        self.sc_settings[stype] = stream
+        g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+                                          self.current_videoid.value,
+                                          self.sc_settings)
 
     def _find_stream_index(self, streams, stored_stream):
         """
@@ -237,7 +232,6 @@ class StreamContinuityManager(PlaybackActionManager):
         return streams[0]['index'] if streams else None
 
     def _show_only_forced_subtitle(self):
-        # --- ONLY FOR KODI VERSION 18 ---
         # Forced stream not found, then fix Kodi bug if user chose to apply the workaround
         # Kodi bug???:
         # If the kodi player is set with "forced only" subtitle setting, Kodi use this behavior:
@@ -248,15 +242,23 @@ class StreamContinuityManager(PlaybackActionManager):
         # So can cause a wrong subtitle language or in a permanent display of subtitles!
         # This does not reflect the setting chosen in the Kodi player and is very annoying!
         # There is no other solution than to disable the subtitles manually.
-        # NOTE: With Kodi 18 it is not possible to read the properties of the streams so the only
-        # possible way is to read the data from the manifest file
-        manifest_data = json.loads(common.load_file('manifest.json'))
-        common.fix_locale_languages(manifest_data['timedtexttracks'])
         audio_language = common.get_kodi_audio_language()
-        if not any(text_track.get('isForcedNarrative', False) is True and
-                   text_track['language'] == audio_language
-                   for text_track in manifest_data['timedtexttracks']):
-            self.sc_settings.update({'subtitleenabled': False})
+        if self.legacy_kodi_version:
+            # --- ONLY FOR KODI VERSION 18 ---
+            # NOTE: With Kodi 18 it is not possible to read the properties of the streams
+            # so the only possible way is to read the data from the manifest file
+            manifest_data = json.loads(common.load_file('manifest.json'))
+            common.fix_locale_languages(manifest_data['timedtexttracks'])
+            if not any(text_track.get('isForcedNarrative', False) is True and
+                       text_track['language'] == audio_language
+                       for text_track in manifest_data['timedtexttracks']):
+                self.sc_settings.update({'subtitleenabled': False})
+        else:
+            # --- ONLY FOR KODI VERSION 19 ---
+            # Check the current stream
+            player_stream = self.player_state.get(STREAMS['subtitle']['current'])
+            if not player_stream['isforced'] or player_stream['language'] != audio_language:
+                self.sc_settings.update({'subtitleenabled': False})
 
     def _is_stream_value_equal(self, stream_a, stream_b):
         if self.legacy_kodi_version:
