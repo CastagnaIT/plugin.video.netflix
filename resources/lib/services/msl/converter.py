@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 import uuid
 import xml.etree.ElementTree as ET
-import xbmc
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -18,6 +17,8 @@ import resources.lib.common as common
 
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEGDASH manifest"""
+    from xbmcaddon import Addon
+    isa_version = Addon('inputstream.adaptive').getAddonInfo('version')
     seconds = manifest['duration'] / 1000
     init_length = seconds / 2 * 12 + 20 * 1000
     duration = "PT" + str(seconds) + ".00S"
@@ -43,8 +44,8 @@ def convert_to_dash(manifest):
     for index, text_track in enumerate(manifest['timedtexttracks']):
         if text_track['isNoneTrack']:
             continue
-        _convert_text_track(text_track, period,
-                            default=(index == default_subtitle_language_index))
+        _convert_text_track(text_track, period, (index == default_subtitle_language_index),
+                            isa_version)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
     common.save_file('manifest.mpd', xml)
@@ -210,7 +211,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
     _add_segment_base(representation, init_length)
 
 
-def _convert_text_track(text_track, period, default):
+def _convert_text_track(text_track, period, default, isa_version):
     if text_track.get('ttDownloadables'):
         # Only one subtitle representation per adaptationset
         downloadable = text_track['ttDownloadables']
@@ -218,6 +219,9 @@ def _convert_text_track(text_track, period, default):
 
         content_profile = list(downloadable)[0]
         is_ios8 = content_profile == 'webvtt-lssdh-ios8'
+        impaired = 'true' if text_track['trackType'] == 'ASSISTIVE' else 'false'
+        forced = 'true' if text_track['isForcedNarrative'] else 'false'
+        default = 'true' if default else 'false'
 
         adaptation_set = ET.SubElement(
             period,  # Parent
@@ -230,11 +234,20 @@ def _convert_text_track(text_track, period, default):
             adaptation_set,  # Parent
             'Role',  # Tag
             schemeIdUri='urn:mpeg:dash:role:2011')
-        if text_track.get('isForcedNarrative'):
-            role.set("value", "forced")
+        # In the future version of InputStream Adaptive, you can set the stream parameters
+        # in the same way as the video stream
+        if common.is_less_version(isa_version, '2.4.3'):
+            # To be removed when the new version is released
+            if forced == 'true':
+                role.set('value', 'forced')
+            else:
+                if default == 'true':
+                    role.set('value', 'main')
         else:
-            if default:
-                role.set("value", "main")
+            adaptation_set.set('impaired', impaired)
+            adaptation_set.set('forced', forced)
+            adaptation_set.set('default', default)
+            role.set('value', 'subtitle')
 
         representation = ET.SubElement(
             adaptation_set,  # Parent
@@ -291,29 +304,16 @@ def _find_audio_track_index(manifest, property_name, property_value, channel_lis
 
 def _get_default_subtitle_language(manifest):
     subtitle_language = common.get_kodi_subtitle_language()
-    if subtitle_language != 'forced_only':
-        for index, text_track in enumerate(manifest['timedtexttracks']):
-            if text_track['isNoneTrack']:
-                continue
-            if text_track.get('isForcedNarrative'):
-                continue
-            if text_track['language'] != subtitle_language:
-                continue
-            return index
-        return -1
-
-    if g.ADDON.getSettingBool('forced_subtitle_workaround'):
-        # When we set "forced only" subtitles in Kodi Player, Kodi use this behavior:
-        # 1) try to select forced subtitle that matches audio language
-        # 2) when missing, try to select the first "regular" subtitle that matches audio language
-        # This Kodi behavior is totally non sense.
-        # If forced is selected you must not view the regular subtitles
-        # There is no other solution than to disable the subtitles manually.
-        audio_language = common.get_kodi_audio_language()
-        if not any(text_track.get('isForcedNarrative', False) is True and
-                   text_track['language'] == audio_language
-                   for text_track in manifest['timedtexttracks']):
-            xbmc.Player().showSubtitles(False)
-
+    is_forced = subtitle_language == 'forced_only'
+    if is_forced:
+        subtitle_language = common.get_kodi_audio_language()
+    for index, text_track in enumerate(manifest['timedtexttracks']):
+        if text_track['isNoneTrack']:
+            continue
+        if text_track.get('isForcedNarrative', False) != is_forced:
+            continue
+        if text_track['language'] != subtitle_language:
+            continue
+        return index
     # Leave the selection of forced subtitles to Kodi
     return -1
