@@ -402,29 +402,29 @@ def update_my_list(videoid, operation):
 @common.time_execution(immediate=False)
 def metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
-
     # Invalidate cache if we need to refresh the all metadata
     if refresh:
         g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid, True)
-
+    metadata_data = {}, None
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
-        return _metadata(videoid), None
-    if videoid.mediatype == common.VideoId.SEASON:
-        return _metadata(videoid.derive_parent(None)), None
-    try:
-        return _episode_metadata(videoid)
-    except KeyError as exc:
-        # Episode metadata may not exist if its a new episode and cached
-        # data is outdated. In this case, invalidate the cache entry and
-        # try again safely (if it doesn't exist this time, there is no
-        # metadata for the episode, so we assign an empty dict).
-        common.debug('{}, refreshing cache', exc)
-        g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
+        metadata_data = _metadata(videoid), None
+    elif videoid.mediatype == common.VideoId.SEASON:
+        metadata_data = _metadata(videoid.derive_parent(None)), None
+    else:
         try:
-            return _episode_metadata(videoid)
+            metadata_data = _episode_metadata(videoid)
         except KeyError as exc:
-            common.error(exc)
-            return {}, None
+            # Episode metadata may not exist if its a new episode and cached
+            # data is outdated. In this case, invalidate the cache entry and
+            # try again safely (if it doesn't exist this time, there is no
+            # metadata for the episode, so we assign an empty dict).
+            common.debug('{}, refreshing cache', exc)
+            g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
+            try:
+                metadata_data = _episode_metadata(videoid)
+            except KeyError as exc:
+                common.error(exc)
+    return metadata_data
 
 
 @common.time_execution(immediate=False)

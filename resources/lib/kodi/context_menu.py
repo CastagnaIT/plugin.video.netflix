@@ -9,10 +9,11 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
-import resources.lib.kodi.library as library
+from resources.lib.globals import g
+from resources.lib.kodi.library_autoupdate import show_excluded_from_auto_update
+from resources.lib.kodi.library import is_in_library
 
 
 def ctx_item_url(paths, mode=g.MODE_ACTION):
@@ -115,20 +116,20 @@ def _generate_library_ctx_items(videoid):
         allow_lib_operations = sync_mylist_profile_guid == g.LOCAL_DB.get_active_profile_guid()
 
     if allow_lib_operations:
-        is_in_library = library.is_in_library(videoid)
+        _is_in_library = is_in_library(videoid)
         if lib_is_sync_with_mylist:
-            if is_in_library:
+            if _is_in_library:
                 library_actions = ['update']
         else:
-            library_actions = ['remove', 'update'] if is_in_library else ['export']
+            library_actions = ['remove', 'update'] if _is_in_library else ['export']
             # If auto-update mode is Manual and mediatype is season/episode do not allow operations
             if g.ADDON.getSettingInt('lib_auto_upd_mode') == 0 and \
                     videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
                 library_actions = []
 
-        if videoid.mediatype == common.VideoId.SHOW and is_in_library:
+        if videoid.mediatype == common.VideoId.SHOW and _is_in_library:
             library_actions.append('export_new_episodes')
-            if library.show_excluded_from_auto_update(videoid):
+            if show_excluded_from_auto_update(videoid):
                 library_actions.append('include_in_auto_update')
             else:
                 library_actions.append('exclude_from_auto_update')

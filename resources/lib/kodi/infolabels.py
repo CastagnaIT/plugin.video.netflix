@@ -188,28 +188,28 @@ def parse_art(videoid, item, raw_data):  # pylint: disable=unused-argument
     fanart = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[4] + [0, 'url'], item)
     return assign_art(videoid,
-                      boxarts[paths.ART_SIZE_FHD],
-                      boxarts[paths.ART_SIZE_SD],
-                      boxarts[paths.ART_SIZE_POSTER],
-                      interesting_moment,
-                      clearlogo,
-                      fanart)
+                      boxart_large=boxarts[paths.ART_SIZE_FHD],
+                      boxart_small=boxarts[paths.ART_SIZE_SD],
+                      poster=boxarts[paths.ART_SIZE_POSTER],
+                      interesting_moment=interesting_moment,
+                      clearlogo=clearlogo,
+                      fanart=fanart)
 
 
-def assign_art(videoid, boxart_large, boxart_small, poster, interesting_moment,
-               clearlogo, fanart):
+def assign_art(videoid, **kwargs):
     """Assign the art available from Netflix to appropriate Kodi art"""
-    # pylint: disable=too-many-arguments
-    art = {'poster': _best_art([poster]),
-           'fanart': _best_art([fanart, interesting_moment, boxart_large,
-                                boxart_small]),
-           'thumb': ((interesting_moment
+    art = {'poster': _best_art([kwargs['poster']]),
+           'fanart': _best_art([kwargs['fanart'],
+                                kwargs['interesting_moment'],
+                                kwargs['boxart_large'],
+                                kwargs['boxart_small']]),
+           'thumb': ((kwargs['interesting_moment']
                       if videoid.mediatype == common.VideoId.EPISODE or
                       videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
-                     or boxart_large or boxart_small)}
+                     or kwargs['boxart_large'] or kwargs['boxart_small'])}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:
-        art['clearlogo'] = _best_art([clearlogo])
+        art['clearlogo'] = _best_art([kwargs['clearlogo']])
     return art
 
 

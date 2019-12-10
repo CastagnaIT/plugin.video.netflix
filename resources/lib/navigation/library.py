@@ -11,6 +11,8 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 import resources.lib.kodi.library as library
+import resources.lib.kodi.library_autoupdate as library_au
+import resources.lib.kodi.library_items as library_items
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
@@ -102,7 +104,7 @@ class LibraryActionExecutor(object):
         if not ui.ask_for_confirmation(common.get_local_string(30065),
                                        common.get_local_string(30231)):
             return
-        library.auto_update_library(False, False)
+        library_au.auto_update_library(False, False)
 
     def service_auto_upd_run_now(self, pathitems):  # pylint: disable=unused-argument
         """
@@ -110,7 +112,7 @@ class LibraryActionExecutor(object):
         and if set also synchronize the Netflix "My List" with the Kodi library
         """
         # Executed by the service in the library_updater module
-        library.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'), True)
+        library_au.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'), True)
 
     def _get_mylist_profile_guid(self):
         return g.SHARED_DB.get_value('sync_mylist_profile_guid',
@@ -142,7 +144,7 @@ class LibraryActionExecutor(object):
 
     def migrate(self, pathitems):  # pylint: disable=unused-argument
         """Migrate exported items from old library format to the new format"""
-        for videoid in library.get_previously_exported_items():
+        for videoid in library_items.get_previously_exported_items():
             library.execute_library_tasks(videoid, [library.export_item],
                                           common.get_local_string(30018),
                                           sync_mylist=False)
@@ -153,12 +155,12 @@ class LibraryActionExecutor(object):
 
     @common.inject_video_id(path_offset=1)
     def exclude_from_auto_update(self, videoid):
-        library.exclude_show_from_auto_update(videoid, True)
+        library_au.exclude_show_from_auto_update(videoid, True)
         common.refresh_container()
 
     @common.inject_video_id(path_offset=1)
     def include_in_auto_update(self, videoid):
-        library.exclude_show_from_auto_update(videoid, False)
+        library_au.exclude_show_from_auto_update(videoid, False)
         common.refresh_container()
 
     def mysql_test(self, pathitems):

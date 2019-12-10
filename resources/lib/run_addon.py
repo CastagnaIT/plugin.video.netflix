@@ -66,19 +66,20 @@ def route(pathitems):
 
 
 def _get_nav_handler(root_handler):
+    nav_handler = None
     if root_handler == g.MODE_DIRECTORY:
         from resources.lib.navigation.directory import DirectoryBuilder
-        return DirectoryBuilder
+        nav_handler = DirectoryBuilder
     if root_handler == g.MODE_ACTION:
         from resources.lib.navigation.actions import AddonActionExecutor
-        return AddonActionExecutor
+        nav_handler = AddonActionExecutor
     if root_handler == g.MODE_LIBRARY:
         from resources.lib.navigation.library import LibraryActionExecutor
-        return LibraryActionExecutor
+        nav_handler = LibraryActionExecutor
     if root_handler == g.MODE_HUB:
         from resources.lib.navigation.hub import HubBrowser
-        return HubBrowser
-    return None
+        nav_handler = HubBrowser
+    return nav_handler
 
 
 def _check_valid_credentials():
