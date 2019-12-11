@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
+from xbmc import getCondVisibility, Monitor
 from xbmcgui import Window
 
 from resources.lib.globals import g
@@ -65,6 +66,34 @@ def route(pathitems):
     execute(_get_nav_handler(root_handler), pathitems[1:], g.REQUEST_PARAMS)
 
 
+def _skin_widget_call(window_cls):
+    """
+    Workaround to intercept calls made by the Skin Widgets currently in use.
+    Currently, the Skin widgets associated with add-ons are executed at Kodi startup immediately
+    without respecting any services needed by the add-ons. This is causing different
+    kinds of problems like widgets not loaded, add-on warning message, etc...
+    this loop freeze the add-on instance until the service is ready.
+    """
+    # Note to "Window.IsMedia":
+    # All widgets will be either on Home or in a Custom Window, so "Window.IsMedia" will be false
+    # When the user is browsing the plugin, Window.IsMedia will be true because video add-ons open
+    # in MyVideoNav.xml (which is a Media window)
+    # This is not a safe solution, because DEPENDS ON WHICH WINDOW IS OPEN,
+    # for example it can fail if you open add-on video browser while widget is still loading.
+    # Needed a proper solution by script.skinshortcuts / script.skin.helper.service, and forks
+    limit_sec = 10
+    if not getCondVisibility("Window.IsMedia"):
+        monitor = Monitor()
+        sec_elapsed = 0
+        while not window_cls.getProperty('nf_service_status') == 'running':
+            if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
+                break
+            sec_elapsed += 0.5
+        debug('Skin widget workaround enabled - time elapsed: {}', sec_elapsed)
+        return True
+    return False
+
+
 def _get_nav_handler(root_handler):
     nav_handler = None
     if root_handler == g.MODE_DIRECTORY:
@@ -117,9 +146,12 @@ def run(argv):
     success = True
 
     window_cls = Window(10000)
-    if not bool(window_cls.getProperty('is_service_running')):
-        from resources.lib.kodi.ui import show_backend_not_ready
-        show_backend_not_ready()
+    is_widget_skin_call = _skin_widget_call(window_cls)
+
+    if window_cls.getProperty('nf_service_status') != 'running':
+        if not is_widget_skin_call:
+            from resources.lib.kodi.ui import show_backend_not_ready
+            show_backend_not_ready()
         success = False
 
     if success:
