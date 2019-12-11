@@ -74,7 +74,7 @@ class NetflixService(object):
         # Mark the service as active
         from xbmcgui import Window
         window_cls = Window(10000)
-        window_cls.setProperty('is_service_running', 'true')
+        window_cls.setProperty('nf_service_status', 'running')
         if not g.ADDON.getSettingBool('disable_startup_notification'):
             from resources.lib.kodi.ui import show_notification
             show_notification(get_local_string(30110))
@@ -83,6 +83,9 @@ class NetflixService(object):
         """
         Stop the background services
         """
+        from xbmcgui import Window
+        window_cls = Window(10000)
+        window_cls.setProperty('nf_service_status', 'stopped')
         for server in self.SERVERS:
             server['instance'].server_close()
             server['instance'].shutdown()
@@ -97,6 +100,9 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:
+            from xbmcgui import Window
+            window_cls = Window(10000)
+            window_cls.setProperty('nf_service_status', 'stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
             error(traceback.format_exc())
