@@ -102,11 +102,14 @@ def generate_context_menu_items(videoid):
 
 def _generate_library_ctx_items(videoid):
     library_actions = []
-    if videoid.mediatype == common.VideoId.SUPPLEMENTAL:
+    # Do not allow operations for supplemental (trailers etc) and single episodes
+    if videoid.mediatype in [common.VideoId.SUPPLEMENTAL, common.VideoId.EPISODE]:
         return library_actions
 
     allow_lib_operations = True
-    lib_is_sync_with_mylist = g.ADDON.getSettingBool('lib_sync_mylist')
+    lib_is_sync_with_mylist = g.ADDON.getSettingBool('lib_sync_mylist') and \
+        g.ADDON.getSettingInt('lib_auto_upd_mode') != 0
+
     if lib_is_sync_with_mylist:
         # If the synchronization of Netflix "My List" with the Kodi library is enabled
         # only in the chosen profile allow to do operations in the Kodi library otherwise
@@ -122,10 +125,6 @@ def _generate_library_ctx_items(videoid):
                 library_actions = ['update']
         else:
             library_actions = ['remove', 'update'] if _is_in_library else ['export']
-            # If auto-update mode is Manual and mediatype is season/episode do not allow operations
-            if g.ADDON.getSettingInt('lib_auto_upd_mode') == 0 and \
-                    videoid.mediatype in [common.VideoId.SEASON, common.VideoId.EPISODE]:
-                library_actions = []
 
         if videoid.mediatype == common.VideoId.SHOW and _is_in_library:
             library_actions.append('export_new_episodes')
