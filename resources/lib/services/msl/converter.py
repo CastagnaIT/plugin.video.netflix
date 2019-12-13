@@ -181,6 +181,10 @@ def _convert_audio_track(audio_track, period, init_length, default, drm_streams)
         impaired=impaired,
         original=original,
         default=default)
+    if audio_track['profile'].startswith('ddplus-atmos'):
+        # Append 'ATMOS' description to the dolby atmos streams,
+        # allows users to distinguish the atmos tracks in the audio stream dialog
+        adaptation_set.set('name', 'ATMOS')
     for downloadable in audio_track['streams']:
         # Some audio stream has no drm
         # if downloadable['isDrm'] != drm_streams:
