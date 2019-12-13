@@ -208,7 +208,9 @@ class MSLHandler(object):
                 'drmVersion': 25,
                 'usePsshBox': True,
                 'isBranching': False,
-                'useHttpsStreams': False,
+                'isNonMember': False,
+                'isUIAutoPlay': False,
+                'useHttpsStreams': True,
                 'imageSubtitleHeight': 1080,
                 'uiVersion': 'shakti-v93016808',
                 'uiPlatform': 'SHAKTI',
@@ -229,8 +231,7 @@ class MSLHandler(object):
                     'supportedHdcpVersions': hdcp_version,
                     'isHdcpEngaged': hdcp
                 }],
-                'preferAssistiveAudio': False,
-                'isNonMember': False
+                'preferAssistiveAudio': False
             },
             'echo': ''
         }
