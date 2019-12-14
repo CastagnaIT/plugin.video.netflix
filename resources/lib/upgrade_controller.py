@@ -17,7 +17,7 @@ from resources.lib.database.db_update import run_local_db_updates, run_shared_db
 def check_addon_upgrade():
     """Check addon upgrade and perform necessary update operations"""
     # Upgrades that require user interaction or to be performed outside of the service
-    addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None)
+    addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None).split('~',1)[0]
     addon_current_ver = g.VERSION
     if addon_current_ver != addon_previous_ver:
         _perform_addon_changes(addon_previous_ver, addon_current_ver)
@@ -32,7 +32,7 @@ def check_service_upgrade():
     _perform_local_db_changes(local_db_version)
     _perform_shared_db_changes(shared_db_version)
     # Perform service changes
-    service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
+    service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None).split('~',1)[0]
     service_current_ver = g.VERSION
     if service_current_ver != service_previous_ver:
         _perform_service_changes(service_previous_ver, service_current_ver)

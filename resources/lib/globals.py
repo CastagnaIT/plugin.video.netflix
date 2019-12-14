@@ -197,7 +197,7 @@ class GlobalVariables(object):
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.ADDON.getAddonInfo('id')
         self.PLUGIN = self.ADDON.getAddonInfo('name')
-        self.VERSION = self.ADDON.getAddonInfo('version')
+        self.VERSION = self.ADDON.getAddonInfo('version').split('~',1)[0]
         self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
         self.ICON = self.ADDON.getAddonInfo('icon')
         self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
