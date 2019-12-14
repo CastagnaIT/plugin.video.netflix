@@ -1,3 +1,14 @@
+v0.15.11 (2019-11-20)
+-Fixed a critical error on auto-update
+-Fixed some error on py3
+-Fix to handle dolby vision on Kodi 19
+-Updated fr_fr, nl_nl translations
+-Minor fixes
+
+v0.15.10 (2019-11-17)
+-Fixed error in exporting to Kodi library due to wrong settings name
+-Updated de_de, pt_br translations
+
 v0.15.9 (2019-11-16)
 -Removed limit to perform auto-update and auto-sync with my list only with main profile
 -Added possibility to choose the profile to perform auto-sync with my list

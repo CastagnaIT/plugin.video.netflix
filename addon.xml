@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.16.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.16.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -52,6 +52,24 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.16.1 (2019-12-14)
+-Allowed to export individual seasons to the library (manual mode)
+-Dolby atmos audio streams are now specified (Kodi 19)
+-Added workaround to fix skin widgets
+-Handled subtitle properties for next version of InputStream Adaptive
+-Introduced accurate handling of subtitles (Kodi 19)
+-Improved handling of subtitles (Kodi 18)
+-Improved return to main page from search dialog
+-Improved cancel login dialog after the logout
+-Improved timeout on IPC over HTTP
+-Fixed an issue that showed the wrong label while browsing movies 
+-Fixed ParentalControl/Rating GUI on custom skins 
+-Fixed an issue that cause unicodedecode error on some android devices
+-Fixed an issue that can cause unicodedecode error in user/password
+-Added japanese language
+-Updated kr, hu, pt_br, fr
+-Many improvements to the code
+
 v0.16.0 (2019-11-29)
 -Added new parental control settings
 -Added new thumb rating to movies/tv shows
@@ -65,17 +83,6 @@ v0.16.0 (2019-11-29)
 -New Hungarian language
 -Updated de, hr, it, pl, pt_br translations
 -Other minor improvements/fixes
-
-v0.15.11 (2019-11-20)
--Fixed a critical error on auto-update
--Fixed some error on py3
--Fix to handle dolby vision on Kodi 19
--Updated fr_fr, nl_nl translations
--Minor fixes
-
-v0.15.10 (2019-11-17)
--Fixed error in exporting to Kodi library due to wrong settings name
--Updated de_de, pt_br translations
     </news>
   </extension>
 </addon>
