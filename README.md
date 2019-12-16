@@ -48,19 +48,19 @@ Install add-on manually - updates should always be installed manually:
 ### Reference table of high resolutions
 This table explains compatibility of high resolutions between devices and operating systems. This may change over time based on updates made by netflix.
 
-| System                 | 1080P  | 4K     | Video Decoding |
-| ---------------------- | ------ | ------ | -------------- |
-| Windows                | ✔     | ✖\*1  | Software       |
-| Linux (Android) \*4    | ✔❕\*5 | ✔❕\*2 | Hardware \*5   |
-| Linux (OSMC-LibreELEC) | ✔❕\*3 | ✖\*1  | Software       |
-| Linux (Distros)        | ✔❕\*3 | ✖\*1  | Software       |
-| MacOS/IOS              | ✔     | ✖\*1  | Software       |
+| System                 | 1080P    | 4K    | Video Decoding             |
+| ---------------------- | -------- | ----- | -------------------------- |
+| Windows                | ✔\*1     | ✖\*2  | Software                   |
+| Linux (Android) \*5    | ✔\*1, \*3| ✔\*4  | Software \\ Hardware \*4   |
+| Linux (OSMC-LibreELEC) | ✔\*1     | ✖\*2  | Software                   |
+| Linux (Distros)        | ✔\*1     | ✖\*2  | Software                   |
+| MacOS/IOS              | ✔\*1     | ✖\*2  | Software                   |
 
-\*1 Currently not available due to widevine limitations.<br/>
-\*2 4k is supported only to devices with netflix certification and HDCP2.2 hardware.<br/>
-\*3 Due to Netflix licensing restrictions not all videos are available at 1080P.<br/>
-\*4 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.<br/>
-\*5 To get 1080P resolution and hardware video decoding is needed a Widevine security level L1 capable device.
+\*1 With Software decoding not all videos could be at 1080P.<br/>
+\*2 Currently not available due to widevine limitations.<br/>
+\*3 To to have a chance to have all the videos at 1080P you must meet \*4 requirements.<br/>
+\*4 Hardware decoding and 4k are supported only to devices with Netflix certification, Widevine Security Level L1 and HDCP 2.2 hardware.<br/>
+\*5 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.
 
 [Click here to view the list of known and tested android devices for 1080P and 4K playback](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
@@ -76,17 +76,17 @@ In the addon settings go to Expert page and change `Limit video stream resolutio
 - Limit InputStream Adaptive max bandwidth<br/>
 In the addon settings go to Expert page open InputStream Adaptive settings and try to set Max Bandwidth between 2.500.000 and 4.000.000
 
-### My android device supports 4K but does not playback
-First, make sure that:
-- In the website settings streaming quality is set to Auto or High
-- If possible, that Kodi display resolution is set to 4K
-- The device support Widevine security level L1 (use an app like: DRM Info)
-- The device is connected to a display with HDCP 2.2 or higher
-- In the addon settings use these settings, go to Expert page and set:
+### My android device supports 4K but does not playback at 4K
+Before asking for help, please perform the following checks:
+- Verify that your device support Widevine Security Level L1 (use an app like: DRM Info)
+- Verify that your device is connected to a display and/or amplifier with HDCP 2.2 or higher
+- Verify that in the Netflix website the streaming quality settings is set to Auto or High
+- If possible change Kodi display resolution to 4K. If it is not possible, open InputStream Adaptive settings and set `Ignore Display Resolution` to ON
+- Verify that in the addon settings these settings (in the Expert page) are set correctly:
 `Enable VP9 profiles` to OFF
 `Enable HEVC profiles` to ON
 `Force support to HDCP 2.2` to ON
-- Open InputStream Adaptive settings and set:
+- Verify that in the InputStream Adaptive add-on these settings are set correctly:
 `Override HDCP status` to ON
 `Stream selection` to Auto
 
@@ -121,7 +121,7 @@ In Kodi Settings -> Player -> Language
 set: `Preferred subtitle language` to `Forced only`
 
 #### In TV Shows subtitles don't always keep the language of your choice
-Currently the Kodi framework does not allow to correct this problem. There is no short-term solution.<br/>
+The Kodi 18.x framework does not allow to fix this problem. So there is no solution.<br/>
 If you prefer you can disable `Remember audio / subtitle preferences` in the addon Playback settings, so in each video you will manually enable the subtitles.
 
 ### My watched status is not being updated on website or apps
