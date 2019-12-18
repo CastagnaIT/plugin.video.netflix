@@ -959,7 +959,3 @@ msgstr "成人向け"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "{}を見るのにはPINを入力してください"
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "プロフィール毎に見た項目の一覧を保存します(この機能は将来に無くなります)"

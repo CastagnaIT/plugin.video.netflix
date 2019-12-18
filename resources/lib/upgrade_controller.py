@@ -48,17 +48,6 @@ def _perform_addon_changes(previous_ver, current_ver):
         msg = ('This update resets the settings to auto-update library.\r\n'
                'Therefore only in case you are using auto-update must be reconfigured.')
         ui.show_ok_dialog('Netflix upgrade', msg)
-    if previous_ver and is_less_version(previous_ver, '0.16.0'):
-        import resources.lib.kodi.ui as ui
-        msg = (
-            'Has been introduced watched status marks for the videos separate for each profile:\r\n'
-            '[Use new feature] watched status will be separate by profile, [B]existing watched status will be lost.[/B]\r\n'
-            '[Leave unchanged] existing watched status will be kept, [B]but in future versions will be lost.[/B]\r\n'
-            'This option can be temporarily changed in expert settings')
-        choice = ui.show_yesno_dialog('Netflix upgrade - watched status marks', msg,
-                                      'Use new feature', 'Leave unchanged')
-        g.settings_monitor_suspend(at_first_change=True)
-        g.ADDON.setSettingBool('watched_status_by_profile', choice)
     # Clear cache (prevents problems when netflix change data structures)
     g.CACHE.invalidate(True)
     # Always leave this to last - After the operations set current version

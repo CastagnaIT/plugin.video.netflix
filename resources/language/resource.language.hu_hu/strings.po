@@ -959,7 +959,3 @@ msgstr "Életkor szerint korlátozva"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Tartalom {} meg kell adni a pinkódot a lejátszáshoz."
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Nézett státusz minden profilhoz (ez az opció visszavonásra kerül a jövőben)"
