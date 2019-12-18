@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Échec de connexion"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Vérifiez vos identifiants"
 
 msgctxt "#30010"
@@ -441,7 +441,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message d'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le via GitHub. Veuillez fournir un journal de débogage complet avec votre rapport d'erreur (activez \"Journalisation du débogage\" dans les paramètres Kodi)."
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr "L'extension a rencontré l'erreur suivante : "
 
 msgctxt "#30105"
@@ -581,8 +581,8 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr "Les services d'arrière-plan peuvent ne pas être encore disponible si vous venez de démarrer Kodi ou l'extension. Dans ce cas, réessayez dans un instant."
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr "Activer IPC sur HTTP (à activer en cas erreurs 'AddonSignals timeouts')"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "Activer IPC sur HTTP (à activer en cas erreurs 'Addon Signals timeouts')"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"

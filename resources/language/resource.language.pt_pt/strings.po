@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Erro ao inicar sessão"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Por favor, verifique as suas credenciais de acesso"
 
 msgctxt "#30010"
