@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr ""
 
 msgctxt "#30010"
@@ -441,7 +441,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr ""
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr ""
 
 msgctxt "#30105"
@@ -581,7 +581,7 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr ""
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
 msgstr ""
 
 msgctxt "#30140"

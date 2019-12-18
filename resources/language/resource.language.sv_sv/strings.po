@@ -60,7 +60,7 @@ msgid "Login failed"
 msgstr "Inloggningen misslyckades"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Kontrollera dina inloggninguppgifter"
 
 msgctxt "#30010"

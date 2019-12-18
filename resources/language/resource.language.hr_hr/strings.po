@@ -62,7 +62,7 @@ msgid "Login failed"
 msgstr "Prijava nije uspjela"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Provjerite Vaše vjerodajnice"
 
 msgctxt "#30010"
@@ -442,7 +442,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Pojedinosti o pogrešci zapisane su u Kodi logfile. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \"Debug Logging\" u Kodi postavkama)."
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr "Addon je naišao na sljedeću pogrešku:"
 
 msgctxt "#30105"
@@ -582,8 +582,8 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr "Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr "Omogući IPC preko HTTP-a (koristi se kad iskusite vremenska ograničenja AddonSignals)"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "Omogući IPC preko HTTP-a (koristi se kad iskusite vremenska ograničenja Addon Signals)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"

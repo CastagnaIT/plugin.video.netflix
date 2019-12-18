@@ -62,7 +62,7 @@ msgid "Login failed"
 msgstr "הכניסה נכשלה"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "אנא בדוק את הגדרות ההרשאה (שם משתמש וסיסמה)"
 
 msgctxt "#30010"

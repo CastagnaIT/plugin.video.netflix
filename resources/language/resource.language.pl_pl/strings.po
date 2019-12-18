@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Nieudane logowanie"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Sprawdź dane logowania"
 
 msgctxt "#30010"
@@ -441,7 +441,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub. Podaj pełny dziennik debugowania wraz z raportem o błędzie (włącz \"Dziennikowanie debugowania\" w ustawieniach Kodi)"
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr "Dodatek napotkał następujący błąd:"
 
 msgctxt "#30105"
@@ -581,8 +581,8 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr "Usługi w tle mogą nie być jeszcze dostępne, jeśli właśnie uruchomiłeś Kodi/dodatek. W takim przypadku spróbuj ponownie za chwilę."
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr "Włącz IPC przez HTTP (użyj, gdy występują przekroczenia czasu AddonSignals)"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "Włącz IPC przez HTTP (użyj, gdy występują przekroczenia czasu Addon Signals)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"

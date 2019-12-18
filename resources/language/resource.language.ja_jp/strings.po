@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "ログイン失敗"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "ログインＩＤや暗証番号を確認してください"
 
 msgctxt "#30010"
@@ -441,7 +441,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "エラーの詳細はログファイルに書いてあります。"
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr "エラーが発生しました:"
 
 msgctxt "#30105"
@@ -581,7 +581,7 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr "Kodiやアドオンを起動したばかりの場合、バックグラウンドサービスの準備が出来てない可能性があります。しばらく経ってからもう一度。"
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
 msgstr "HTTP経由IPCを使う(アドオンタイムアウトが発生したら試してください)"
 
 msgctxt "#30140"
