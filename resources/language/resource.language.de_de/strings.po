@@ -62,7 +62,7 @@ msgstr "Anmeldung fehlgeschlagen"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Bitte überprüfen Sie Ihre Anmeldedaten"
+msgstr "Bitte überprüfen Sie Ihre E-Mail und Ihr Passwort"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"

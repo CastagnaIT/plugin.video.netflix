@@ -62,7 +62,7 @@ msgstr "Accesso non riuscito"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Verifica le tue credenziali"
+msgstr "Controlla la tua e-mail e password"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
