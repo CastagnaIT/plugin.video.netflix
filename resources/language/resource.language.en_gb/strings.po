@@ -959,7 +959,3 @@ msgstr ""
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr ""
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr ""

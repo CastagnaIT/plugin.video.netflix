@@ -477,15 +477,10 @@ def add_sort_methods(sort_type):
         xbmcplugin.addSortMethod(g.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_VIDEO_TITLE)
 
 
-# This method is a temporary option transition for the current users to avoid causing frustration
-# because when enabled causes the loss of all watched status already assigned to the videos,
-# in future versions will have to be eliminated, keeping params.
 def get_param_watched_status_by_profile():
     """
-    When enabled, the value to be used as parameter in the ListItem (of videos) will be created,
-    in order to differentiate the watched status by profiles
-    :return: when enabled return a dictionary to be add to 'build_url' params
+    Get a value used as parameter in the ListItem (of videos),
+    in order to differentiate the watched status and other Kodi data by profiles
+    :return: a dictionary to be add to 'build_url' params
     """
-    if g.ADDON.getSettingBool('watched_status_by_profile'):
-        return {'profile_guid': g.LOCAL_DB.get_active_profile_guid()}
-    return None
+    return {'profile_guid': g.LOCAL_DB.get_active_profile_guid()}

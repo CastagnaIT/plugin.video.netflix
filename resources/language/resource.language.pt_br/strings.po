@@ -959,7 +959,3 @@ msgstr "Restringir por Nível de Maturidade"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Conteúdo para {} irá requerer o PIN para iniciar a reprodução."
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Mantenha as marcas de status assistidas separadas para cada perfil (essa opção será removida em versões futuras)"

@@ -959,7 +959,3 @@ msgstr "Limitazione in base alla fascia d'età"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Mantieni la spunta guardato separata per ogni profilo (nelle future versioni questa opzione sarà rimossa)"

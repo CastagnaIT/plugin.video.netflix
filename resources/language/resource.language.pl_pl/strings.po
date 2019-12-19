@@ -959,7 +959,3 @@ msgstr "Ogranicz według poziomu dojrzałości"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Zawartość dla {} będzie wymagała kodu PIN do odtworzenia"
-
-msgctxt "#30234"
-msgid "Keep watched status marks separate for each profile (this option will be removed in future versions)"
-msgstr "Zachowaj status oglądania osobno dla każdego profilu (ta opcja zostanie usunięta w przyszłych wersjach)"
