@@ -67,6 +67,10 @@ class PlaybackController(xbmc.Monitor):
                 # Because when UpNext addon play a video while we are inside Netflix addon and
                 # not externally like Kodi library, the playerid become -1 this id does not exist
                 self._on_playback_started()
+            elif method == 'Player.OnSeek':
+                self._on_playback_seek()
+            elif method == 'Player.OnPause':
+                self._on_playback_pause()
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:
@@ -87,6 +91,20 @@ class PlaybackController(xbmc.Monitor):
         self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state())
         if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
+
+    def _on_playback_seek(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_seek,
+                                 player_state)
+
+    def _on_playback_pause(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_pause,
+                                 player_state)
 
     def _on_playback_stopped(self):
         self.tracking = False
