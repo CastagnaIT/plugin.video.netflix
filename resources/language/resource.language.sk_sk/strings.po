@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Prihlásenie sa nepodarilo"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Prosím skontrolujte prihlasovacie údaje"
 
 msgctxt "#30010"

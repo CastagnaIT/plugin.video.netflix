@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Kirjautuminen epäonnistui"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Tarkista käyttäjätietosi"
 
 msgctxt "#30010"

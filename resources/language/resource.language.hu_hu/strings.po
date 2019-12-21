@@ -61,7 +61,7 @@ msgid "Login failed"
 msgstr "Bejelentkezés sikertelen"
 
 msgctxt "#30009"
-msgid "Please Check your credentials"
+msgid "Please check your e-mail and password"
 msgstr "Kérjük, ellenőrizze hitelesítő adatait"
 
 msgctxt "#30010"
@@ -441,7 +441,7 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
 
 msgctxt "#30104"
-msgid "The addon encountered to following error:"
+msgid "The addon encountered the following error:"
 msgstr "A kiegészítő leállt a következő hibával:"
 
 msgctxt "#30105"
@@ -581,8 +581,8 @@ msgid "The background services may not yet be available if you just started Kodi
 msgstr "Lehet, hogy a háttérszolgáltatások még nem érhetők el, vagy éppen elindította a Kodi/a kiegészítőt. Ebben az esetben próbálkozzon újra egy később"
 
 msgctxt "#30139"
-msgid "Enable IPC over HTTP (use when experiencing AddonSignals timeouts)"
-msgstr "IPC engedélyezése HTTP-n keresztül (az AddonSignals időtúllépéseinek használata esetén)"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "IPC engedélyezése HTTP-n keresztül (az Addon Signals időtúllépéseinek használata esetén)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
