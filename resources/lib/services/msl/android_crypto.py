@@ -59,7 +59,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
         key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
-            bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
+            bytearray([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
 
         if not key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
@@ -75,11 +75,12 @@ class AndroidMSLCrypto(MSLBaseCrypto):
     def _provide_key_response(self, data):
         if not data:
             raise MSLError('Missing key response data')
-        self.keyset_id = self.crypto_session.ProvideKeyResponse(data)  # pylint: disable=assignment-from-none
+        self.keyset_id = self.crypto_session.ProvideKeyResponse(bytearray(data))  # pylint: disable=assignment-from-none
         if not self.keyset_id:
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
         common.debug('Widevine CryptoSession provideKeyResponse successful')
         common.debug('keySetId: {}', self.keyset_id)
+        self.keyset_id = self.keyset_id.encode('utf-8')
 
     def encrypt(self, plaintext, esn):  # pylint: disable=unused-argument
         """
@@ -88,12 +89,12 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         :return: Serialized JSON String of the encryption Envelope
         """
         from os import urandom
-        init_vector = urandom(16)
-        plaintext = plaintext.encode('utf-8')
+        init_vector = bytearray(urandom(16))
         # Add PKCS5Padding
         pad = 16 - len(plaintext) % 16
-        padded_data = plaintext + str('').join([chr(pad)] * pad)
-        encrypted_data = self.crypto_session.Encrypt(self.key_id, padded_data,
+        padded_data = plaintext + ''.join([chr(pad)] * pad)
+        encrypted_data = self.crypto_session.Encrypt(bytearray(self.key_id),
+                                                     bytearray(padded_data.encode('utf-8')),
                                                      init_vector)
 
         if not encrypted_data:
@@ -110,8 +111,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def decrypt(self, init_vector, ciphertext):
         """Decrypt a ciphertext"""
-        decrypted_data = self.crypto_session.Decrypt(self.key_id, ciphertext,
-                                                     init_vector)
+        decrypted_data = self.crypto_session.Decrypt(bytearray(self.key_id), bytearray(ciphertext),
+                                                     bytearray(init_vector))
         if not decrypted_data:
             raise MSLError('Widevine CryptoSession decrypt failed!')
 
@@ -121,7 +122,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def sign(self, message):
         """Sign a message"""
-        signature = self.crypto_session.Sign(self.hmac_key_id, message.encode('utf-8'))
+        signature = self.crypto_session.Sign(bytearray(self.hmac_key_id),
+                                             bytearray(message.encode('utf-8')))
         if not signature:
             raise MSLError('Widevine CryptoSession sign failed!')
         return base64.standard_b64encode(signature).decode('utf-8')
