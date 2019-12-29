@@ -71,11 +71,20 @@ EPISODES_PARTIAL_PATHS = [
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
 
+TRAILER_PARTIAL_PATHS = [
+    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
+] + ART_PARTIAL_PATHS
+
+VIDEO_LIST_RATING_THUMB_PATHS = [
+    [['summary', 'title', 'userRating', 'trackIds']]
+]
+
 INFO_MAPPINGS = {
     'title': 'title',
     'year': 'releaseYear',
     'plot': 'synopsis',
     'season': ['summary', 'season'],
+    'season_shortname': ['summary', 'shortName'],  # Add info to item listings._create_season_item
     'episode': ['summary', 'episode'],
     'rating': ['userRating', 'matchScore'],
     'userrating': ['userRating', 'userRating'],
@@ -85,15 +94,8 @@ INFO_MAPPINGS = {
     # 'playcount': 'watched'
 }
 
-TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
-] + ART_PARTIAL_PATHS
-
-VIDEO_LIST_RATING_THUMB_PATHS = [
-    [['summary', 'title', 'userRating', 'trackIds']]
-]
-
 INFO_TRANSFORMATIONS = {
+    'season_shortname': lambda sn: ''.join([n for n in sn if n.isdigit()]),
     'rating': lambda r: r / 10,
     'playcount': lambda w: int(w)  # pylint: disable=unnecessary-lambda
 }
