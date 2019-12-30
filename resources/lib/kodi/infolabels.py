@@ -123,10 +123,14 @@ def parse_info(videoid, item, raw_data):
 
 
 def parse_atomic_infos(item):
-    """Parse those infos into infolabels that are directly accesible from
-    the item dict"""
-    return {target: _get_and_transform(source, target, item)
-            for target, source in iteritems(paths.INFO_MAPPINGS)}
+    """Parse those infos into infolabels that are directly accessible from the item dict"""
+    infos = {target: _get_and_transform(source, target, item)
+             for target, source in iteritems(paths.INFO_MAPPINGS)}
+    # When you browse the seasons list, season numbering is provided from a different property
+    season_shortname = infos.pop('season_shortname')
+    if season_shortname:
+        infos.update({'season': season_shortname})
+    return infos
 
 
 def _get_and_transform(source, target, item):
