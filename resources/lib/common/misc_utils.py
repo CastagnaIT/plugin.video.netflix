@@ -196,6 +196,8 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
 #        xbmc.sleep(25)
         if progress.iscanceled():
             break
+        if not task:
+            continue
         try:
             task_handler(task, **kwargs)
         except Exception as exc:

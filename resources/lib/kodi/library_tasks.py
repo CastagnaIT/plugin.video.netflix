@@ -16,6 +16,7 @@ import re
 import resources.lib.api.shakti as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
+from resources.lib.api.exceptions import MetadataNotAvailable
 from resources.lib.database.db_utils import (VidLibProp)
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item,
@@ -27,33 +28,36 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
     common.debug('Compiling library tasks for {}', videoid)
     task = None
+    try:
+        if task_handler == export_item:
+            metadata = api.metadata(videoid)
+            if videoid.mediatype == common.VideoId.MOVIE:
+                task = _create_export_movie_task(videoid, metadata[0], nfo_settings)
+            elif videoid.mediatype in common.VideoId.TV_TYPES:
+                task = _create_export_tv_tasks(videoid, metadata, nfo_settings)
+            else:
+                raise ValueError('Cannot handle {}'.format(videoid))
 
-    if task_handler == export_item:
-        metadata = api.metadata(videoid)
-        if videoid.mediatype == common.VideoId.MOVIE:
-            task = _create_export_movie_task(videoid, metadata[0], nfo_settings)
-        elif videoid.mediatype in common.VideoId.TV_TYPES:
-            task = _create_export_tv_tasks(videoid, metadata, nfo_settings)
-        else:
-            raise ValueError('Cannot handle {}'.format(videoid))
+        if task_handler == export_new_item:
+            metadata = api.metadata(videoid, True)
+            task = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
-    if task_handler == export_new_item:
-        metadata = api.metadata(videoid, True)
-        task = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
-
-    if task_handler == remove_item:
-        if videoid.mediatype == common.VideoId.MOVIE:
-            task = _create_remove_movie_task(videoid)
-        if videoid.mediatype == common.VideoId.SHOW:
-            task = _compile_remove_tvshow_tasks(videoid)
-        if videoid.mediatype == common.VideoId.SEASON:
-            task = _compile_remove_season_tasks(videoid)
-        if videoid.mediatype == common.VideoId.EPISODE:
-            task = _create_remove_episode_task(videoid)
-
+        if task_handler == remove_item:
+            if videoid.mediatype == common.VideoId.MOVIE:
+                task = _create_remove_movie_task(videoid)
+            if videoid.mediatype == common.VideoId.SHOW:
+                task = _compile_remove_tvshow_tasks(videoid)
+            if videoid.mediatype == common.VideoId.SEASON:
+                task = _compile_remove_season_tasks(videoid)
+            if videoid.mediatype == common.VideoId.EPISODE:
+                task = _create_remove_episode_task(videoid)
+    except MetadataNotAvailable:
+        common.warn('compile_tasks: task_handler {} unavailable metadata for {} task skipped',
+                    task_handler, videoid)
+        return [{}]
     if task is None:
-        common.debug('compile_tasks: task_handler {} did not match any task for {}',
-                     task_handler, videoid)
+        common.warn('compile_tasks: task_handler {} did not match any task for {}',
+                    task_handler, videoid)
     return task
 
 
