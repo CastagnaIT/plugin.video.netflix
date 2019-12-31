@@ -62,7 +62,7 @@ msgstr "Nieudane logowanie"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Sprawdź dane logowania"
+msgstr "Sprawdź swój e-mail i hasło"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
