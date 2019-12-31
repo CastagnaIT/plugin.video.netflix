@@ -34,7 +34,7 @@ msgstr "Aanbevelingen"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr ""
+msgstr "Voer uw PIN in"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -42,7 +42,7 @@ msgstr "Zoekterm"
 
 msgctxt "#30004"
 msgid "Password"
-msgstr "Paswoord"
+msgstr "Wachtwoord"
 
 msgctxt "#30005"
 msgid "E-mail"
@@ -50,11 +50,11 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Incorrect PIN. Try again."
-msgstr ""
+msgstr "Onjuiste PIN"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr ""
+msgstr "Ouderlijktoezicht PIN"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -274,7 +274,7 @@ msgstr "Updaten in de bibliotheek"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr ""
+msgstr "Ouderlijktoezicht"
 
 msgctxt "#30063"
 msgid "new episodes added to library"
@@ -454,11 +454,11 @@ msgstr "Foutieve PIN"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr ""
+msgstr "PIN beveiliging uit."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr ""
+msgstr "Alle content is beveiligd met de PIN"
 
 msgctxt "#30109"
 msgid "Login successful"
