@@ -22,7 +22,8 @@ from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
                     TRAILER_PARTIAL_PATHS)
-from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError)
+from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
+                         MetadataNotAvailable)
 
 
 def catch_api_errors(func):
@@ -444,13 +445,20 @@ def _metadata(video_id):
     to a show by Netflix."""
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
-    return common.make_call(
+    metadata_data = common.make_call(
         'get',
         {
             'component': 'metadata',
             'req_type': 'api',
             'params': {'movieid': video_id.value}
-        })['video']
+        })
+    if not metadata_data:
+        # This return empty
+        # - if the metadata is no longer available
+        # - if it has been exported a tv show/movie from a specific language profile that is not
+        #   available using profiles with other languages
+        raise MetadataNotAvailable
+    return metadata_data['video']
 
 
 @common.time_execution(immediate=False)

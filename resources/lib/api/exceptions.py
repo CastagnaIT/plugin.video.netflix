@@ -58,3 +58,7 @@ class APIError(Exception):
 
 class NotConnected(Exception):
     """Internet status not connected"""
+
+
+class MetadataNotAvailable(Exception):
+    """Metadata not found"""

@@ -13,6 +13,7 @@ import xbmc
 import xbmcplugin
 import xbmcgui
 
+from resources.lib.api.exceptions import MetadataNotAvailable
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -51,8 +52,12 @@ class InputstreamError(Exception):
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.info('Playing {}', videoid)
-    metadata = api.metadata(videoid)
-    common.debug('Metadata is {}', metadata)
+    metadata = [{}, {}]
+    try:
+        metadata = api.metadata(videoid)
+        common.debug('Metadata is {}', metadata)
+    except MetadataNotAvailable:
+        common.warn('Metadata not available for {}', videoid)
 
     # Parental control PIN
     pin_result = _verify_pin(metadata[0].get('requiresPin', False))
