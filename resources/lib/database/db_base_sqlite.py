@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import sqlite3 as sql
 from functools import wraps
+from threading import Lock
 
 try:  # Python 2
     from itertools import izip as zip  # pylint: disable=redefined-builtin
@@ -44,12 +45,10 @@ def handle_connection(func):
             return func(*args, **kwargs)
         conn = None
         try:
-            if not args[0].is_connected:
-                args[0].conn = sql.connect(args[0].db_file_path,
-                                           isolation_level=CONN_ISOLATION_LEVEL,
-                                           check_same_thread=False)
-                args[0].is_connected = True
-                conn = args[0].conn
+            args[0].mutex.acquire()
+            args[0].conn = sql.connect(args[0].db_file_path,
+                                       isolation_level=CONN_ISOLATION_LEVEL)
+            conn = args[0].conn
             return func(*args, **kwargs)
         except sql.Error as exc:
             common.error('SQLite error {}:', exc.args[0])
@@ -57,12 +56,13 @@ def handle_connection(func):
         finally:
             if conn:
                 conn.close()
-                args[0].is_connected = False
+            args[0].mutex.release()
     return wrapper
 
 
 class SQLiteDatabase(db_base.BaseDatabase):
     def __init__(self, db_filename):  # pylint: disable=super-on-old-class
+        self.mutex = Lock()
         self.is_mysql_database = False
         self.db_filename = db_filename
         self.db_file_path = db_utils.get_local_db_path(db_filename)
@@ -70,7 +70,6 @@ class SQLiteDatabase(db_base.BaseDatabase):
 
     def _initialize_connection(self):
         try:
-
             common.debug('Trying connection to the database {}', self.db_filename)
             self.conn = sql.connect(self.db_file_path, check_same_thread=False)
             cur = self.conn.cursor()
