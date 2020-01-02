@@ -1,3 +1,6 @@
+# Netflix Plugin for Kodi (plugin.video.netflix)
+
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-18-blue)](https://kodi.tv/)
 [![GitHub release](https://img.shields.io/github/release/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/releases)
 [![Build Status](https://travis-ci.org/castagnait/plugin.video.netflix.svg?branch=master)](https://travis-ci.org/castagnait/plugin.video.netflix)
 [![Code Climate - Maintainability](https://api.codeclimate.com/v1/badges/9fbe3ac732f86c05ff00/maintainability)](https://codeclimate.com/github/CastagnaIT/plugin.video.netflix/maintainability)
@@ -5,15 +8,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributors](https://img.shields.io/github/contributors/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/graphs/contributors)
 
-# Netflix Plugin for Kodi 18 (plugin.video.netflix)
-This source code comes from the [caphm repository](https://github.com/caphm/plugin.video.netflix) given the discontinuity of his work, i'm trying to keep the project alive, help from skilled people are welcome.
-The initial project is on the [repository of asciidisco](https://github.com/asciidisco/plugin.video.netflix) no longer maintained but used as a reference.
-
 ## Disclaimer
+
 This plugin is not officially commisioned/supported by Netflix.
 The trademark "Netflix" is registered by "Netflix, Inc."
 
 ## Features
+
 - Access to multiple profiles
 - Search Netflix (incl. suggestions)
 - Netflix categories, recommendations, "my list" & continue watching
@@ -31,8 +32,8 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Support integration with Up Next add-on (proposes to play the next episode automatically)
 
 ## Installation & Updates
-You can use this addon on any device and any type of operating system capable of running Kodi.<br/>
-**[Click here to open the Wiki page with installation instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-install-the-addon)**
+
+**[How to install with automatic updates](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-install-the-addon)**
 
 #### Quick download links
 
@@ -46,6 +47,7 @@ Install add-on manually - updates should always be installed manually:
 ## FAQ
 
 ### Reference table of high resolutions
+
 This table explains compatibility of high resolutions between devices and operating systems. This may change over time based on updates made by netflix.
 
 | System                 | 1080P    | 4K    | Video Decoding             |
@@ -65,6 +67,7 @@ This table explains compatibility of high resolutions between devices and operat
 [Click here to view the list of known and tested android devices for 1080P and 4K playback](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
 ### Video playback problems like frame drops, slowdown, stuttering
+
 Usually happens to those devices where hardware video decoding is not available (due to Netflix licensing restrictions) and the CPU fails to process the video stream properly due to the high load.
 All devices with software video decoding are affected by this problem (see *Reference table of high resolutions*) like personal computers, raspberry, android boxes (with Widevine sec. lev. L3), etc..
 
@@ -77,6 +80,7 @@ In the addon settings go to Expert page and change `Limit video stream resolutio
 In the addon settings go to Expert page open InputStream Adaptive settings and try to set Max Bandwidth between 2.500.000 and 4.000.000
 
 ### My android device supports 4K but does not playback at 4K
+
 Before asking for help, please perform the following checks:
 - Verify that your device support Widevine Security Level L1 (use an app like: DRM Info)
 - Verify that your device is connected to a display and/or amplifier with HDCP 2.2 or higher
@@ -97,6 +101,7 @@ If again you don't get 4k resolution, open InputStream Adaptive settings and try
 `Min Bandwidth` to 18.000.000
 
 ### How to enable HDR and Dolby Vision
+
 If 4K prerequisites are met, you must enabled HDR and/or DolbyVision profiles in addon settings.
 
 - In the addon settings go to Expert page and set:
@@ -107,27 +112,33 @@ Depending on your setup, there may be some tinkering required to get HDR to work
 if you are using an AV-Receiver, which device Kodi is running on, etc. Please make sure to search the issues and available forum threads for a solution before opening an issue!
 
 ### How to enable Dolby Atmos
+
 It's enabled by default, when option `Enable Dolby Digital Plus` is enabled.
 But only some films/tvshows have Atmos streams, they can be distinguished from the skin media-flag "Dolby-HD".
 A premium netflix account is required.
 
 ### Common problems with subtitles
+
 #### Problem with asian subtitles like Hebrew, Arabic, Thai, etc..
 Some asian language are working, you can try an easy solution, so set the Arial font in the Kodi Skin and in the Kodi subtitles settings. There are also other solutions that provide for example the replacement of fonts in the Kodi skins, the best thing is to get information through the forum of Kodi.
 
 #### I always see subtitles in every video
+
 Just change how Kodi handles subtitles by choosing *forced only*.
 In Kodi Settings -> Player -> Language
 set: `Preferred subtitle language` to `Forced only`
 
 #### In TV Shows subtitles don't always keep the language of your choice
+
 The Kodi 18.x framework does not allow to fix this problem. So there is no solution.<br/>
 If you prefer you can disable `Remember audio / subtitle preferences` in the addon Playback settings, so in each video you will manually enable the subtitles.
 
 ### My watched status is not being updated on website or apps
+
 The addon does not report watched status back to Netflix (yet).
 
 ### How to export to Kodi library
+
 The export of TV shows and movies in Kodi library allows you to take advantage of Kodi powerful browser, with the features offered by the information providers like TMDB TV show screaper.
 
 To enhance this experience, Netflix add-on offers two export automation features:<br/>
@@ -137,22 +148,25 @@ To enhance this experience, Netflix add-on offers two export automation features
 [Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-to-export-and-sync-tv-shows-and-movies-in-Kodi-library)
 
 ### How to share the exported content in the library with multiple devices
+
 Is possible to share the same Kodi/Netflix library with multiple devices where each device has its own Kodi installation.
 In order to work it is necessary use Kodi with a MySQL server.
 
 [Click here to open the Wiki page with the instructions](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Library-settings)
 
 ### Notice for the use of auto-update and auto-sync with Netflix "My List" feature
+
 AN INTENSIVE USE OF THIS FEATURES due to many exported tv shows MAY CAUSE A TEMPORARY BAN OF THE ACCOUNT that varies starting from 24/48 hours. Use at your own risk.
 
 If it happens often, there is the possibility to exclude the auto update from the tv shows, by open context menu on a tv show and selecting `Exclude from auto update`.
 
 ## Something doesn't work
+
 If something doesn't work for you, please:
-1. Open add-on settings, go to in Expert page and change "Debug logging level" to "Verbose"
+1. Open add-on settings, go to in Expert page and change `Debug logging level` to `Verbose`
 2. Enable the Debug log in your Kodi settings
 3. Perform the actions that cause the error, so they are written in the log
-4. Open a new github issue (Problem report) by following the instructions in the report
+4. Open a new github issue (of type *Problem report*) by following the instructions in the report
 
 We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
 Please also use a service like pastebin or better [Kodi paste](http://paste.kodi.tv) to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
@@ -160,8 +174,10 @@ Please also use a service like pastebin or better [Kodi paste](http://paste.kodi
 When the problem will be solved, remember to disable the debug logging, to avoid unnecessary slowing down in your device.
 
 ## Code of Conduct
+
 [Contributor Code of Conduct](Code_of_Conduct.md)
 By participating in this project you agree to abide by its terms.
 
 ## License
+
 Licensed under The MIT License.
