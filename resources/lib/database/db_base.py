@@ -16,7 +16,6 @@ class BaseDatabase(object):
     """
     def __init__(self):
         self.conn = None
-        self.is_connected = False
         self._initialize_connection()
 
     def _initialize_connection(self):
