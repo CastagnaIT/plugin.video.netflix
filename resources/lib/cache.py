@@ -153,14 +153,16 @@ class Cache(object):
     def __init__(self, common, cache_path, ttl, metadata_ttl, plugin_handle):
         # pylint: disable=too-many-arguments
         # We have the self.common module injected as a dependency to work
-        # around circular dependencies with gloabl variable initialization
+        # around circular dependencies with global variable initialization
         self.common = common
         self.plugin_handle = plugin_handle
         self.cache_path = cache_path
         self.ttl = ttl
         self.metadata_ttl = metadata_ttl
         self.buckets = {}
-        self.window = xbmcgui.Window(10000)
+        self.window = xbmcgui.Window(10000)  # Kodi home window
+        # If you use multiple Kodi profiles you need to distinguish the cache of the current profile
+        self.properties_prefix = common.get_current_kodi_profile_name()
         self.PY_IS_VER2 = sys.version_info.major == 2
 
     def lock_marker(self):
@@ -212,7 +214,7 @@ class Cache(object):
         if not bucket_names:
             bucket_names = BUCKET_NAMES
         for bucket in bucket_names:
-            self.window.clearProperty(_window_property(bucket))
+            self.window.clearProperty(self._window_property(bucket))
             if bucket in self.buckets:
                 del self.buckets[bucket]
 
@@ -245,7 +247,7 @@ class Cache(object):
     def _load_bucket(self, bucket):
         # Try 10 times to acquire a lock
         for _ in range(1, 10):
-            wnd_property_data = self.window.getProperty(_window_property(bucket))
+            wnd_property_data = self.window.getProperty(self._window_property(bucket))
             if wnd_property_data.startswith(str('LOCKED_BY_')):
                 self.common.debug('Waiting for release of {}', bucket)
                 xbmc.sleep(50)
@@ -270,7 +272,7 @@ class Cache(object):
         return bucket_instance
 
     def _lock(self, bucket):
-        self.window.setProperty(_window_property(bucket), self.lock_marker())
+        self.window.setProperty(self._window_property(bucket), self.lock_marker())
 
     def _get_from_disk(self, bucket, identifier):
         """Load a cache entry from disk and add it to the in memory bucket"""
@@ -314,25 +316,25 @@ class Cache(object):
             return
         try:
             if self.PY_IS_VER2:
-                self.window.setProperty(_window_property(bucket), pickle.dumps(contents))
+                self.window.setProperty(self._window_property(bucket), pickle.dumps(contents))
             else:
                 # Note: On python 3 pickle.dumps produces byte not str cannot be passed as is in
                 # setProperty because cannot receive arbitrary byte sequences if they contain
                 # null bytes \x00, the stored value will be truncated by this null byte (Kodi bug).
                 # To store pickled data in Python 3, you should use protocol 0 explicitly and decode
                 # the resulted value with latin-1 encoding to str and then pass it to setPropety.
-                self.window.setProperty(_window_property(bucket),
+                self.window.setProperty(self._window_property(bucket),
                                         pickle.dumps(contents, protocol=0).decode('latin-1'))
         except Exception as exc:  # pylint: disable=broad-except
             self.common.error('Failed to persist {} to wnd properties: {}', bucket, exc)
-            self.window.clearProperty(_window_property(bucket))
+            self.window.clearProperty(self._window_property(bucket))
         finally:
             self.common.debug('Released lock on {}', bucket)
 
     def is_safe_to_persist(self, bucket):
         # Only persist if we acquired the original lock or if the lock is older
         # than 15 seconds (override stale locks)
-        lock_data = self.window.getProperty(_window_property(bucket))
+        lock_data = self.window.getProperty(self._window_property(bucket))
         if lock_data.startswith(str('LOCKED_BY_')):
             # Eg. LOCKED_BY_0001_AT_1574951301
             # Check if is same add-on invocation: 'LOCKED_BY_0001'
@@ -372,6 +374,5 @@ class Cache(object):
         if cache_exixts:
             os.remove(cache_filename)
 
-
-def _window_property(bucket):
-    return 'nfmemcache_{}'.format(bucket)
+    def _window_property(self, bucket):
+        return 'nfmemcache_{}_{}'.format(self.properties_prefix, bucket)

@@ -10,12 +10,14 @@ from __future__ import absolute_import, division, unicode_literals
 
 import threading
 
+from xbmcgui import Window
+
 # Global cache must not be used within these modules, because stale values may
 # be used and cause inconsistencies!
+from resources.lib.common import (info, error, select_port, get_local_string,
+                                  get_current_kodi_profile_name)
 from resources.lib.globals import g
-from resources.lib.common import (info, error, select_port, get_local_string)
 from resources.lib.upgrade_controller import check_service_upgrade
-
 
 try:  # Python 2
     unicode
@@ -43,6 +45,9 @@ class NetflixService(object):
     ]
 
     def __init__(self):
+        self.window_cls = Window(10000)  # Kodi home window
+        # If you use multiple Kodi profiles you need to distinguish the property of current profile
+        self.prop_nf_service_status = 'nf_service_status_' + get_current_kodi_profile_name()
         for server in self.SERVERS:
             self.init_server(server)
         self.controller = None
@@ -72,9 +77,7 @@ class NetflixService(object):
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
         # Mark the service as active
-        from xbmcgui import Window
-        window_cls = Window(10000)
-        window_cls.setProperty('nf_service_status', 'running')
+        self.window_cls.setProperty(self.prop_nf_service_status, 'running')
         if not g.ADDON.getSettingBool('disable_startup_notification'):
             from resources.lib.kodi.ui import show_notification
             show_notification(get_local_string(30110))
@@ -83,9 +86,7 @@ class NetflixService(object):
         """
         Stop the background services
         """
-        from xbmcgui import Window
-        window_cls = Window(10000)
-        window_cls.setProperty('nf_service_status', 'stopped')
+        self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
         for server in self.SERVERS:
             server['instance'].server_close()
             server['instance'].shutdown()
@@ -100,9 +101,7 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:
-            from xbmcgui import Window
-            window_cls = Window(10000)
-            window_cls.setProperty('nf_service_status', 'stopped')
+            self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
             error(traceback.format_exc())

@@ -137,6 +137,13 @@ def stop_playback():
     xbmc.executebuiltin('PlayerControl(Stop)')
 
 
+def get_current_kodi_profile_name(no_spaces=True):
+    """Gets the name of the Kodi profile currently used"""
+    name = json_rpc('Profiles.GetCurrentProfile',
+                    {'properties': ['thumbnail', 'lockmode']}).get('label', 'unknown')
+    return name.replace(' ', '_') if no_spaces else name
+
+
 def get_kodi_audio_language():
     """
     Return the audio language from Kodi settings
