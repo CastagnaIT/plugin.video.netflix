@@ -56,7 +56,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
 
     @common.time_execution(immediate=True)
     def is_logged_in(self):
-        """Check if the user is logged in and if so refresh session data"""
+        """Check if there are valid login data"""
         valid_login = self._load_cookies() and \
             self._verify_session_cookies() and \
             self._verify_esn_existence()
