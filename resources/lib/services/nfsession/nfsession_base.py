@@ -33,7 +33,7 @@ def needs_login(func):
         if not common.is_internet_connected():
             raise NotConnected('Internet connection not available')
         # ..this check verifies only if locally there are the data to correctly perform the login
-        if not session._is_logged_in():
+        if not session.is_logged_in():
             raise NotLoggedInError
         return func(*args, **kwargs)
     return ensure_login

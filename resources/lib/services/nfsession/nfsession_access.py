@@ -39,7 +39,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         If so, do the login before the user requests it"""
         try:
             common.get_credentials()
-            if not self._is_logged_in():
+            if not self.is_logged_in():
                 self._login()
             self.is_prefetch_login = True
         except requests.exceptions.RequestException as exc:
@@ -55,7 +55,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             ui.show_notification(common.get_local_string(30180), time=10000)
 
     @common.time_execution(immediate=True)
-    def _is_logged_in(self):
+    def is_logged_in(self):
         """Check if the user is logged in and if so refresh session data"""
         valid_login = self._load_cookies() and \
             self._verify_session_cookies() and \
