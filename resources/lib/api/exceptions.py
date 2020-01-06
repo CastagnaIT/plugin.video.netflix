@@ -31,8 +31,8 @@ class InvalidAuthURLError(WebsiteParsingError):
     """The authURL is invalid"""
 
 
-class InvalidProfilesError(WebsiteParsingError):
-    """Cannot extract profiles from Netflix webpage"""
+class InvalidProfilesError(Exception):
+    """Cannot get profiles data from Netflix"""
 
 
 class InvalidMembershipStatusError(WebsiteParsingError):

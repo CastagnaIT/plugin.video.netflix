@@ -59,9 +59,7 @@ class DirectoryBuilder(object):
         """Show profiles listing"""
         # pylint: disable=unused-argument
         common.debug('Showing profiles listing')
-        if not api.update_profiles_data():
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
-            return
+        api.update_profiles_data()
         listings.build_profiles_listing()
         _handle_endofdirectory(False, False)
 

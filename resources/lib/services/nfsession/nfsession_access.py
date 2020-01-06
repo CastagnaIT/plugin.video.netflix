@@ -89,8 +89,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
             try:
-                website.validate_login(login_response)
-                website.extract_session_data(login_response)
+                website.extract_session_data(login_response, validate=True)
                 common.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
                 self.update_session_data(current_esn)
