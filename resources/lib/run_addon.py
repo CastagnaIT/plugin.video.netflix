@@ -15,7 +15,8 @@ from xbmcgui import Window
 
 from resources.lib.globals import g
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
-                                  log_time_trace, reset_log_level_global_var)
+                                  log_time_trace, reset_log_level_global_var,
+                                  get_current_kodi_profile_name)
 from resources.lib.upgrade_controller import check_addon_upgrade
 
 
@@ -66,7 +67,7 @@ def route(pathitems):
     execute(_get_nav_handler(root_handler), pathitems[1:], g.REQUEST_PARAMS)
 
 
-def _skin_widget_call(window_cls):
+def _skin_widget_call(window_cls, prop_nf_service_status):
     """
     Workaround to intercept calls made by the Skin Widgets currently in use.
     Currently, the Skin widgets associated with add-ons are executed at Kodi startup immediately
@@ -85,7 +86,7 @@ def _skin_widget_call(window_cls):
     if not getCondVisibility("Window.IsMedia"):
         monitor = Monitor()
         sec_elapsed = 0
-        while not window_cls.getProperty('nf_service_status') == 'running':
+        while not window_cls.getProperty(prop_nf_service_status) == 'running':
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5
@@ -145,10 +146,12 @@ def run(argv):
     info('URL is {}'.format(g.URL))
     success = True
 
-    window_cls = Window(10000)
-    is_widget_skin_call = _skin_widget_call(window_cls)
+    window_cls = Window(10000)  # Kodi home window
+    # If you use multiple Kodi profiles you need to distinguish the property of current profile
+    prop_nf_service_status = 'nf_service_status_' + get_current_kodi_profile_name()
+    is_widget_skin_call = _skin_widget_call(window_cls, prop_nf_service_status)
 
-    if window_cls.getProperty('nf_service_status') != 'running':
+    if window_cls.getProperty(prop_nf_service_status) != 'running':
         if not is_widget_skin_call:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()
