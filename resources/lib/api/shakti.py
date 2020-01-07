@@ -24,6 +24,7 @@ from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     TRAILER_PARTIAL_PATHS)
 from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
                          MetadataNotAvailable)
+from .website import parse_profiles
 
 
 def catch_api_errors(func):
@@ -62,8 +63,14 @@ def login(ask_credentials=True):
 
 
 def update_profiles_data():
-    """Fetch profiles data from website"""
-    return common.make_call('update_profiles_data')
+    """Update the profiles list data to the database"""
+    profiles_data = common.make_call(
+        'path_request',
+        [['profilesList', 'summary'], ['profilesList', 'current', 'summary'],
+         ['profilesList', {'to': 5}, 'summary'], ['profilesList', {'to': 5},
+                                                  'avatar', 'images', 'byWidth', 320],
+         ['lolomo']])
+    parse_profiles(profiles_data)
 
 
 def activate_profile(profile_id):

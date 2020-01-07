@@ -30,7 +30,6 @@ class NetflixSession(NFSessionAccess):
         self.slots = [
             self.login,
             self.logout,
-            self.update_profiles_data,
             self.activate_profile,
             self.parental_control_data,
             self.path_request,
@@ -38,6 +37,7 @@ class NetflixSession(NFSessionAccess):
             self.perpetual_path_request_switch_profiles,
             self.get,
             self.post,
+            self.startup_requests_module
         ]
         for slot in self.slots:
             common.register_slot(slot)
@@ -70,12 +70,6 @@ class NetflixSession(NFSessionAccess):
         extracted_content = website.extract_parental_control_data(response_content)
         extracted_content['pin'] = pin
         return extracted_content
-
-    @common.addonsignals_return_call
-    @needs_login
-    @common.time_execution(immediate=True)
-    def update_profiles_data(self):
-        return self.try_refresh_session_data(raise_exception=True)
 
     @common.addonsignals_return_call
     @needs_login

@@ -19,7 +19,7 @@ import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
+from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests, BASE_URL
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
                                           MissingCredentialsError, InvalidMembershipStatusError)
@@ -39,8 +39,11 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         If so, do the login before the user requests it"""
         try:
             common.get_credentials()
-            if not self._is_logged_in():
+            if not self.is_logged_in():
                 self._login()
+            else:
+                # A hack way to full load requests module without blocking the service startup
+                common.send_signal(signal='startup_requests_module')
             self.is_prefetch_login = True
         except requests.exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
@@ -55,8 +58,8 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             ui.show_notification(common.get_local_string(30180), time=10000)
 
     @common.time_execution(immediate=True)
-    def _is_logged_in(self):
-        """Check if the user is logged in and if so refresh session data"""
+    def is_logged_in(self):
+        """Check if there are valid login data"""
         valid_login = self._load_cookies() and \
             self._verify_session_cookies() and \
             self._verify_esn_existence()
@@ -69,6 +72,13 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         if not g.get_esn():
             return self.try_refresh_session_data()
         return True
+
+    def startup_requests_module(self, data=None):  # pylint: disable=unused-argument
+        """A hack way to full load requests module without blocking the service"""
+        # The first call made with 'requests' module, takes more than one second longer then usual
+        # to elaborate, i think it is better to do it when the service is started
+        # to camouflage this delay and make the add-on frontend faster
+        self.session.head(url=BASE_URL)
 
     @common.addonsignals_return_call
     def login(self):
@@ -89,8 +99,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
             try:
-                website.validate_login(login_response)
-                website.extract_session_data(login_response)
+                website.extract_session_data(login_response, validate=True)
                 common.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
                 self.update_session_data(current_esn)

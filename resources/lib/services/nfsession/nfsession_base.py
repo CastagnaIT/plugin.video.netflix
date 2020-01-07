@@ -15,6 +15,7 @@ import requests
 
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
+from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.globals import g
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.api.exceptions import (NotLoggedInError, NotConnected)
@@ -32,7 +33,7 @@ def needs_login(func):
         if not common.is_internet_connected():
             raise NotConnected('Internet connection not available')
         # ..this check verifies only if locally there are the data to correctly perform the login
-        if not session._is_logged_in():
+        if not session.is_logged_in():
             raise NotLoggedInError
         return func(*args, **kwargs)
     return ensure_login
@@ -77,8 +78,12 @@ class NFSessionBase(object):
         _update_esn(old_esn)
 
     def set_session_header_data(self):
-        self.session.headers.update(
-            {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
+        try:
+            # When the addon is installed from scratch there is no profiles in the database
+            self.session.headers.update(
+                {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
+        except ProfilesMissing:
+            pass
 
     @property
     def account_hash(self):

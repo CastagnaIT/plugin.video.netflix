@@ -53,17 +53,20 @@ PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
 PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 
 JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
-AVATAR_SUBPATH = ['images', 'byWidth', '320', 'value']
+AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
 
 @common.time_execution(immediate=True)
-def extract_session_data(content):
+def extract_session_data(content, validate=False):
     """
     Call all the parsers we need to extract all
     the session relevant data from the HTML page
     """
     common.debug('Extracting session data...')
     react_context = extract_json(content, 'reactContext')
+    if validate:
+        validate_login(react_context)
+
     user_data = extract_userdata(react_context)
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         # When NEVER_MEMBER it is possible that the account has not been confirmed or renewed
@@ -73,8 +76,8 @@ def extract_session_data(content):
 
     api_data = extract_api_data(react_context)
     # Note: falcor cache does not exist if membershipStatus is not CURRENT_MEMBER
-    falcor_cache = extract_json(content, 'falcorCache')
-    extract_profiles(falcor_cache)
+    # falcor cache is not more used to extract profiles data
+    # falcor_cache = extract_json(content, 'falcorCache')
 
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
@@ -86,33 +89,21 @@ def extract_session_data(content):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
 
 
-def validate_session_data(content):
-    """
-    Try calling the parsers to extract the session data, to verify the login
-    """
-    common.debug('Validating session data...')
-    extract_json(content, 'falcorCache')
-    react_context = extract_json(content, 'reactContext')
-    extract_userdata(react_context, False)
-    extract_api_data(react_context, False)
-
-
 @common.time_execution(immediate=True)
-def extract_profiles(falkor_cache):
-    """Extract profile information from Netflix website"""
+def parse_profiles(profiles_list_data):
+    """Parse profile information from Netflix response"""
     try:
-        profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
+        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'],
+                                                 profiles_list_data))
         if not profiles_list:
-            common.error('The profiles list from falkor cache is empty. '
-                         'The profiles were not parsed nor updated!')
-        else:
-            _delete_non_existing_profiles(profiles_list)
+            raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
+        _delete_non_existing_profiles(profiles_list)
         sort_order = 0
+        debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
         for guid, profile in list(profiles_list.items()):
             common.debug('Parsing profile {}', guid)
-            avatar_url = _get_avatar(falkor_cache, profile)
-            profile = profile['summary']['value']
-            debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
+            avatar_url = _get_avatar(profiles_list_data, profile)
+            profile = profile['summary']
             for k_info in debug_info:
                 common.debug('Profile info {}', {k_info: profile[k_info]})
             is_active = profile.pop('isActive')
@@ -125,8 +116,40 @@ def extract_profiles(falkor_cache):
     except Exception:
         import traceback
         common.error(traceback.format_exc())
-        common.error('Falkor cache: {}', falkor_cache)
+        common.error('Profile list data: {}', profiles_list_data)
         raise InvalidProfilesError
+
+
+# @common.time_execution(immediate=True)
+# def extract_profiles(falkor_cache):
+#    """Extract profile information from Netflix website"""
+#    try:
+#        profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
+#        if not profiles_list:
+#            common.error('The profiles list from falkor cache is empty. '
+#                         'The profiles were not parsed nor updated!')
+#        else:
+#            _delete_non_existing_profiles(profiles_list)
+#        sort_order = 0
+#        for guid, profile in list(profiles_list.items()):
+#            common.debug('Parsing profile {}', guid)
+#            avatar_url = _get_avatar(falkor_cache, profile)
+#            profile = profile['summary']['value']
+#            debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
+#            for k_info in debug_info:
+#                common.debug('Profile info {}', {k_info: profile[k_info]})
+#            is_active = profile.pop('isActive')
+#            g.LOCAL_DB.set_profile(guid, is_active, sort_order)
+#            g.SHARED_DB.set_profile(guid, sort_order)
+#            for key, value in list(profile.items()):
+#                g.LOCAL_DB.set_profile_config(key, value, guid)
+#            g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
+#            sort_order += 1
+#    except Exception:
+#        import traceback
+#        common.error(traceback.format_exc())
+#        common.error('Falkor cache: {}', falkor_cache)
+#        raise
 
 
 def _delete_non_existing_profiles(profiles_list):
@@ -138,10 +161,10 @@ def _delete_non_existing_profiles(profiles_list):
             g.SHARED_DB.delete_profile(guid)
 
 
-def _get_avatar(falkor_cache, profile):
+def _get_avatar(profiles_list_data, profile):
     try:
-        profile['avatar']['value'].extend(AVATAR_SUBPATH)
-        return common.get_path(profile['avatar']['value'], falkor_cache)
+        profile['avatar'].extend(AVATAR_SUBPATH)
+        return common.get_path(profile['avatar'], profiles_list_data)
     except KeyError:
         common.warn('Cannot find avatar for profile {guid}'
                     .format(guid=profile['summary']['value']['guid']))
@@ -188,8 +211,7 @@ def assert_valid_auth_url(user_data):
     return user_data
 
 
-def validate_login(content):
-    react_context = extract_json(content, 'reactContext')
+def validate_login(react_context):
     path_code_list = PAGE_ITEM_ERROR_CODE_LIST.split('\\')
     path_error_code = PAGE_ITEM_ERROR_CODE.split('/')
     if common.check_path_exists(path_error_code, react_context):
