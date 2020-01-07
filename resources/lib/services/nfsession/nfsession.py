@@ -37,6 +37,7 @@ class NetflixSession(NFSessionAccess):
             self.perpetual_path_request_switch_profiles,
             self.get,
             self.post,
+            self.startup_requests_module
         ]
         for slot in self.slots:
             common.register_slot(slot)
