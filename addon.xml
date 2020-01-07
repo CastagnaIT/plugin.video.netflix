@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="0.16.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="0.16.2" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -52,6 +52,18 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
+v0.16.2 (2020-01-07)
+-Improved add-on startup
+-Improved loading of profiles list
+-Added in expert setting a choice to speed up service or addon startup
+-Fixed an issue that causing addon misbehaviour using multiple Kodi profiles
+-Fixed an issue that causing addon breakage with sqlite connections
+-Fixed some python 3 issues on Android
+-Handled cases of metadata not available
+-Permanently removed sharing Kodi videos settings between profiles
+-Updated de, es, it translations
+-Minor improvements
+
 v0.16.1 (2019-12-14)
 -Allowed to export individual seasons to the library (manual mode)
 -Dolby atmos audio streams are now specified (Kodi 19)
@@ -69,20 +81,6 @@ v0.16.1 (2019-12-14)
 -Added japanese language
 -Updated kr, hu, pt_br, fr
 -Many improvements to the code
-
-v0.16.0 (2019-11-29)
--Added new parental control settings
--Added new thumb rating to movies/tv shows
--Started migrating to watched status marks by profile
--Optimized startup code
--Better handled no internet connection
--Fixed an issue that breaks the service when there is no internet connection
--Fixed an issue in some specific cases request at startup credentials even if already saved
--Fixed an issue did not show any error to the user when the loading of profiles fails
--Fixed an issue that did not allow the display of the skip button in the Kodi library
--New Hungarian language
--Updated de, hr, it, pl, pt_br translations
--Other minor improvements/fixes
     </news>
   </extension>
 </addon>
