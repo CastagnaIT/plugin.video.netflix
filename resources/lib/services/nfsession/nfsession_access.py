@@ -74,10 +74,10 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         return True
 
     def startup_requests_module(self, data=None):  # pylint: disable=unused-argument
-        """A hack way to full load requests module without blocking the service"""
-        # The first call made with 'requests' module, takes more than one second longer then usual
-        # to elaborate, i think it is better to do it when the service is started
-        # to camouflage this delay and make the add-on frontend faster
+        """A hack way to full load requests module before making any other calls"""
+        # The first call made with 'requests' module, can takes more than one second longer then
+        # usual to elaborate (depend from device/os/connection), to camouflage this delay
+        # and make the add-on frontend faster this request is made when the service is started
         self.session.head(url=BASE_URL)
 
     @common.addonsignals_return_call
