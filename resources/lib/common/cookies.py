@@ -88,6 +88,7 @@ def load(account_hash):
         debug_output += '{} (expires {} - remaining TTL {})\n'.format(cookie.name,
                                                                       cookie.expires,
                                                                       remaining_ttl)
+    common.debug(debug_output)
     # if expired(cookie_jar):
     #     raise CookiesExpiredError()
     return cookie_jar
