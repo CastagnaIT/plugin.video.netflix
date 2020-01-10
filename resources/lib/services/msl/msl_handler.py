@@ -322,8 +322,13 @@ class MSLHandler(object):
             #     # Check if mastertoken is renewed
             #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
 
-            # header_data = self.request_builder.decrypt_header_data(
-            #     response['header'].get('headerdata'))
+            header_data = self.request_builder.decrypt_header_data(
+                response['header'].get('headerdata'))
+
+            if 'useridtoken' in header_data:
+                # After the first call, it is possible get the 'user id token' that contains the
+                # user identity to use instead of 'User Authentication Data' with user credentials
+                self.request_builder.user_id_token = header_data['useridtoken']
             # if 'keyresponsedata' in header_data:
             #     common.debug('Found key handshake in response data')
             #     # Update current mastertoken

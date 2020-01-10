@@ -34,7 +34,7 @@ class MSLRequestBuilder(object):
     """Provides mechanisms to create MSL requests"""
     def __init__(self, msl_data=None):
         self.current_message_id = None
-        self.tokens = []
+        self.user_id_token = None
         self.rndm = random.SystemRandom()
         self.crypto = MSLCrypto(msl_data)
 
@@ -88,7 +88,7 @@ class MSLRequestBuilder(object):
             header_data['keyrequestdata'] = self.crypto.key_request_data()
         else:
             header_data['sender'] = esn
-            _add_auth_info(header_data, self.tokens)
+            _add_auth_info(header_data, self.user_id_token)
 
         return json.dumps(header_data)
 
@@ -119,10 +119,11 @@ class MSLRequestBuilder(object):
         return header_data
 
 
-def _add_auth_info(header_data, tokens):
-    if 'usertoken' not in tokens:
+def _add_auth_info(header_data, user_id_token):
+    """User authentication identifies the application user associated with a message"""
+    if not user_id_token:
         credentials = common.get_credentials()
-        # Auth via email and password
+        # Authentication with the user credentials
         header_data['userauthdata'] = {
             'scheme': 'EMAIL_PASSWORD',
             'authdata': {
@@ -130,3 +131,6 @@ def _add_auth_info(header_data, tokens):
                 'password': credentials['password']
             }
         }
+    else:
+        # Authentication with user ID token containing the user identity
+        header_data['useridtoken'] = user_id_token
