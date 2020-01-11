@@ -48,7 +48,6 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(base64.standard_b64decode(b64license))
-            self.finish()
         except Exception as exc:
             import traceback
             common.error(traceback.format_exc())

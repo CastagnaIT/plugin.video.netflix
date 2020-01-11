@@ -43,7 +43,6 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
                            else 500)
         self.end_headers()
         self.wfile.write(json.dumps(result).encode('utf-8'))
-        self.finish()
 
     def log_message(self, *args):  # pylint: disable=arguments-differ
         """Disable the BaseHTTPServer Log"""
