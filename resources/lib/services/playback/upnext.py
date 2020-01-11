@@ -33,7 +33,7 @@ class UpNextNotifier(PlaybackActionManager):
     def _on_playback_started(self, player_state):
         # pylint: disable=unused-argument
         common.debug('Sending initialization signal to Up Next')
-        common.send_signal('upnext_data', self.upnext_info)
+        common.send_signal('upnext_data', self.upnext_info, non_blocking=True)
 
     def _on_tick(self, player_state):
         pass

@@ -43,7 +43,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 self._login()
             else:
                 # A hack way to full load requests module without blocking the service startup
-                common.send_signal(signal='startup_requests_module')
+                common.send_signal(signal='startup_requests_module', non_blocking=True)
             self.is_prefetch_login = True
         except requests.exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc

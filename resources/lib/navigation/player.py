@@ -92,7 +92,8 @@ def play(videoid):
         'art': art,
         'timeline_markers': get_timeline_markers(metadata[0]),
         'upnext_info': get_upnext_info(videoid, (infos, art), metadata),
-        'resume_position': resume_position})
+        'resume_position': resume_position},
+                       non_blocking=True)
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
         succeeded=True,
