@@ -49,7 +49,7 @@ def handle_connection(func):
             if not args[0].is_connected:
                 args[0].mutex.acquire()
                 args[0].conn = sql.connect(args[0].db_file_path,
-                                        isolation_level=CONN_ISOLATION_LEVEL)
+                                           isolation_level=CONN_ISOLATION_LEVEL)
                 args[0].is_connected = True
                 conn = args[0].conn
 
