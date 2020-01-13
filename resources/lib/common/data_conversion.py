@@ -8,13 +8,16 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
-import json
+
 import datetime
+import json
 import time
 from ast import literal_eval
+from collections import OrderedDict
 # Workaround for http://bugs.python.org/issue8098 only to py2 caused by _conv_string_to_datetime()
 # Error: ImportError: Failed to import _strptime because the import lockis held by another thread.
 import _strptime  # pylint: disable=unused-import
+
 from .logging import error
 
 try:  # Python 2
@@ -41,7 +44,7 @@ def convert_to_string(value):
     converter = None
     if data_type in (int, float, bool, tuple, datetime.datetime):
         converter = _conv_standard_to_string
-    if data_type in (list, dict):
+    if data_type in (list, dict, OrderedDict):
         converter = _conv_json_to_string
     if not converter:
         error('convert_to_string: Data type {} not mapped'.format(data_type))
