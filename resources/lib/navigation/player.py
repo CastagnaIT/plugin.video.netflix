@@ -85,13 +85,21 @@ def play(videoid):
         if index_selected == 1:
             resume_position = None
 
+    xbmcplugin.setResolvedUrl(
+        handle=g.PLUGIN_HANDLE,
+        succeeded=True,
+        listitem=list_item)
+
+    upnext_info = get_upnext_info(videoid, (infos, art), metadata) \
+        if g.ADDON.getSettingBool('UpNextNotifier_enabled') else None
+
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'infos': infos,
         'art': art,
         'timeline_markers': get_timeline_markers(metadata[0]),
-        'upnext_info': get_upnext_info(videoid, (infos, art), metadata),
+        'upnext_info': upnext_info,
         'resume_position': resume_position}, non_blocking=True)
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
@@ -160,8 +168,8 @@ def get_upnext_info(videoid, current_episode, metadata):
     next_episode = infolabels.add_info_for_playback(next_episode_id,
                                                     xbmcgui.ListItem())
     next_info = {
-        'current_episode': upnext_info(videoid, *current_episode),
-        'next_episode': upnext_info(next_episode_id, *next_episode)
+        'current_episode': _upnext_info(videoid, *current_episode),
+        'next_episode': _upnext_info(next_episode_id, *next_episode)
     }
 
     if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') and
@@ -200,7 +208,7 @@ def _find_next_episode(videoid, metadata):
                               episodeid=episode['id'])
 
 
-def upnext_info(videoid, infos, art):
+def _upnext_info(videoid, infos, art):
     """Create a data dict for upnext signal"""
     # Double check to 'rating' key, sometime can be an empty string, not accepted by UpNext Addon
     rating = infos.get('rating', None)
