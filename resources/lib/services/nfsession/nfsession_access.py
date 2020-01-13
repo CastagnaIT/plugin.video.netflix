@@ -19,7 +19,7 @@ import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests, BASE_URL
+from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
                                           MissingCredentialsError, InvalidMembershipStatusError)
@@ -77,8 +77,9 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         """A hack way to full load requests module before making any other calls"""
         # The first call made with 'requests' module, can takes more than one second longer then
         # usual to elaborate (depend from device/os/connection), to camouflage this delay
-        # and make the add-on frontend faster this request is made when the service is started
-        self.session.head(url=BASE_URL)
+        # and make the add-on frontend faster this request is made when the service is started.
+        # Side note: authURL probably has a expiration time not knowing which one we are obliged to refresh session data
+        self.try_refresh_session_data()
 
     @common.addonsignals_return_call
     def login(self):
