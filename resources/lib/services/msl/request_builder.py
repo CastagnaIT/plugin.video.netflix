@@ -13,7 +13,6 @@ import json
 import base64
 import random
 import subprocess
-import time
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -35,7 +34,7 @@ class MSLRequestBuilder(object):
     """Provides mechanisms to create MSL requests"""
     def __init__(self, msl_data=None):
         self.current_message_id = None
-        self.tokens = []
+        self.user_id_token = None
         self.rndm = random.SystemRandom()
         self.crypto = MSLCrypto(msl_data)
 
@@ -48,74 +47,83 @@ class MSLRequestBuilder(object):
     @common.time_execution(immediate=True)
     def handshake_request(self, esn):
         """Create a key handshake request"""
-        return json.dumps({
+        header = json.dumps({
             'entityauthdata': {
                 'scheme': 'NONE',
                 'authdata': {'identity': esn}},
             'headerdata':
                 base64.standard_b64encode(
-                    self._headerdata(is_key_request=True, is_handshake=True,
-                                     compression=None, esn=esn).encode('utf-8')).decode('utf-8'),
+                    self._headerdata(is_handshake=True).encode('utf-8')).decode('utf-8'),
             'signature': ''
         }, sort_keys=True)
+        payload = json.dumps(self._encrypted_chunk(envelope_payload=False))
+        return header + payload
 
     @common.time_execution(immediate=True)
     def _signed_header(self, esn):
-        encryption_envelope = self.crypto.encrypt(self._headerdata(esn=esn),
-                                                  esn)
+        encryption_envelope = self.crypto.encrypt(self._headerdata(esn=esn), esn)
         return {
-            'headerdata': base64.standard_b64encode(encryption_envelope.encode('utf-8')).decode('utf-8'),
+            'headerdata': base64.standard_b64encode(
+                encryption_envelope.encode('utf-8')).decode('utf-8'),
             'signature': self.crypto.sign(encryption_envelope),
             'mastertoken': self.crypto.mastertoken,
         }
 
-    def _headerdata(self, esn, is_handshake=False, is_key_request=False,
-                    compression='GZIP'):
+    def _headerdata(self, esn=None, compression=None, is_handshake=False):
         """
         Function that generates a MSL header dict
         :return: The base64 encoded JSON String of the header
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
         header_data = {
-            'sender': esn,
-            'handshake': is_handshake,
+            'messageid': self.current_message_id,
+            'renewable': True,
             'capabilities': {
                 'languages': [g.LOCAL_DB.get_value('locale_id')],
-                'compressionalgos': [compression] if compression else []
-            },
-            'recipient': 'Netflix',
-            'renewable': True,
-            'messageid': self.current_message_id,
-            'timestamp': int(time.time())
+                'compressionalgos': [compression] if compression else []  # GZIP, LZW, Empty
+            }
         }
 
-        # If this is a keyrequest act different then other requests
-        if is_key_request:
+        if is_handshake:
             header_data['keyrequestdata'] = self.crypto.key_request_data()
         else:
-            _add_auth_info(header_data, self.tokens)
+            header_data['sender'] = esn
+            _add_auth_info(header_data, self.user_id_token)
 
         return json.dumps(header_data)
 
     @common.time_execution(immediate=True)
-    def _encrypted_chunk(self, data, esn):
-        payload = {
+    def _encrypted_chunk(self, data='', esn=None, envelope_payload=True):
+        if data:
+            data = base64.standard_b64encode(json.dumps(data).encode('utf-8')).decode('utf-8')
+        payload = json.dumps({
             'messageid': self.current_message_id,
-            'data': base64.standard_b64encode(json.dumps(data).encode('utf-8')).decode('utf-8'),
+            'data': data,
             'sequencenumber': 1,
             'endofmsg': True
-        }
-        encryption_envelope = self.crypto.encrypt(json.dumps(payload), esn)
+        })
+        if envelope_payload:
+            payload = self.crypto.encrypt(payload, esn)
         return {
-            'payload': base64.standard_b64encode(encryption_envelope.encode('utf-8')).decode('utf-8'),
-            'signature': self.crypto.sign(encryption_envelope),
+            'payload': base64.standard_b64encode(payload.encode('utf-8')).decode('utf-8'),
+            'signature': self.crypto.sign(payload) if envelope_payload else '',
         }
 
+    def decrypt_header_data(self, data, enveloped=True):
+        """Decrypt a message header"""
+        header_data = json.loads(base64.standard_b64decode(data))
+        if enveloped:
+            init_vector = base64.standard_b64decode(header_data['iv'])
+            cipher_text = base64.standard_b64decode(header_data['ciphertext'])
+            return json.loads(self.crypto.decrypt(init_vector, cipher_text))
+        return header_data
 
-def _add_auth_info(header_data, tokens):
-    if 'usertoken' not in tokens:
+
+def _add_auth_info(header_data, user_id_token):
+    """User authentication identifies the application user associated with a message"""
+    if not user_id_token:
         credentials = common.get_credentials()
-        # Auth via email and password
+        # Authentication with the user credentials
         header_data['userauthdata'] = {
             'scheme': 'EMAIL_PASSWORD',
             'authdata': {
@@ -123,3 +131,6 @@ def _add_auth_info(header_data, tokens):
                 'password': credentials['password']
             }
         }
+    else:
+        # Authentication with user ID token containing the user identity
+        header_data['useridtoken'] = user_id_token

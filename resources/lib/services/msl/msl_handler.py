@@ -121,10 +121,8 @@ class MSLHandler(object):
         response = _process_json_response(
             self._post(ENDPOINTS['manifest'],
                        self.request_builder.handshake_request(esn)))
-        headerdata = json.loads(
-            base64.standard_b64decode(response['headerdata']))
-        self.request_builder.crypto.parse_key_response(
-            headerdata, not common.is_edge_esn(esn))
+        header_data = self.request_builder.decrypt_header_data(response['headerdata'], False)
+        self.request_builder.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
         common.debug('Key handshake successful')
         return True
 
@@ -323,8 +321,19 @@ class MSLHandler(object):
             # if mt_renewable:
             #     # Check if mastertoken is renewed
             #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
-            decrypted_response = _decrypt_chunks(response['payloads'],
-                                                 self.request_builder.crypto)
+
+            header_data = self.request_builder.decrypt_header_data(
+                response['header'].get('headerdata'))
+
+            if 'useridtoken' in header_data:
+                # After the first call, it is possible get the 'user id token' that contains the
+                # user identity to use instead of 'User Authentication Data' with user credentials
+                self.request_builder.user_id_token = header_data['useridtoken']
+            # if 'keyresponsedata' in header_data:
+            #     common.debug('Found key handshake in response data')
+            #     # Update current mastertoken
+            #     self.request_builder.crypto.parse_key_response(header_data, True)
+            decrypted_response = _decrypt_chunks(response['payloads'], self.request_builder.crypto)
             return _raise_if_error(decrypted_response)
 
 
@@ -373,7 +382,7 @@ def _get_error_details(decoded_response):
 
 @common.time_execution(immediate=True)
 def _parse_chunks(message):
-    header = message.split('}}')[0] + '}}'
+    header = json.loads(message.split('}}')[0] + '}}')
     payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}',
                         message.split('}}')[1])
     payloads = [x + '}' for x in payloads][:-1]
