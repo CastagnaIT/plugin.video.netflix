@@ -88,8 +88,8 @@ class NetflixService(object):
         """
         self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
         for server in self.SERVERS:
-            server['instance'].server_close()
             server['instance'].shutdown()
+            server['instance'].server_close()
             server['instance'] = None
             server['thread'].join()
             server['thread'] = None
