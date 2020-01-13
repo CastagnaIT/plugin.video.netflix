@@ -95,12 +95,11 @@ class NFSessionRequests(NFSessionBase):
             data=data)
         common.debug('Request took {}s', time.clock() - start)
         common.debug('Request returned statuscode {}', response.status_code)
-        if response.status_code == 404 and not session_refreshed:
-            # It may happen that netflix updates the build_identifier version
-            # when you are watching a video or browsing the menu,
-            # this causes the api address to change, and return 'url not found' error
-            # So let's try updating the session data (just once)
-            common.warn('Try refresh session data to update build_identifier version')
+        if response.status_code in [404, 401] and not session_refreshed:
+            # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
+            # 401 - It may happen when authURL is not more valid (Unauthorized for url)
+            # So let's try refreshing the session data (just once)
+            common.warn('Try refresh session data due to {} http error', response.status_code)
             if self.try_refresh_session_data():
                 return self._request(method, component, True, **kwargs)
         response.raise_for_status()
