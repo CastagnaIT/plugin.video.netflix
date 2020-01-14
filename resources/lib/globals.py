@@ -270,11 +270,8 @@ class GlobalVariables(object):
     def _init_cache(self):
         if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
-        # This is ugly: Pass the common module into Cache.__init__ to work
-        # around circular import dependencies.
-        import resources.lib.common as common
         from resources.lib.cache import Cache
-        self.CACHE = Cache(common, self.CACHE_PATH, self.CACHE_TTL,
+        self.CACHE = Cache(self.CACHE_PATH, self.CACHE_TTL,
                            self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):

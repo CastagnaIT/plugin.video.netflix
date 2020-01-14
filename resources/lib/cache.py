@@ -10,7 +10,6 @@
 """
 # Must not be used within these modules, because stale values may
 # be used and cause inconsistencies:
-# resources.lib.self.common
 # resources.lib.services
 # resources.lib.kodi.ui
 # resources.lib.services.nfsession
@@ -20,6 +19,8 @@ import sys
 from time import time
 from functools import wraps
 from future.utils import iteritems
+
+from resources.lib import common
 
 try:
     import cPickle as pickle
@@ -105,7 +106,6 @@ def cache_output(g, bucket, fixed_identifier=None,
 def _get_identifier(fixed_identifier, identify_from_kwarg_name,
                     identify_append_from_kwarg_name, identify_fallback_arg_index, args, kwargs):
     """Return the identifier to use with the caching_decorator"""
-    # import resources.lib.common as common
     # common.debug('Get_identifier args: {}', args)
     # common.debug('Get_identifier kwargs: {}', kwargs)
     if fixed_identifier:
@@ -150,11 +150,8 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
 
 
 class Cache(object):
-    def __init__(self, common, cache_path, ttl, metadata_ttl, plugin_handle):
+    def __init__(self, cache_path, ttl, metadata_ttl, plugin_handle):
         # pylint: disable=too-many-arguments
-        # We have the self.common module injected as a dependency to work
-        # around circular dependencies with global variable initialization
-        self.common = common
         self.plugin_handle = plugin_handle
         self.cache_path = cache_path
         self.ttl = ttl
@@ -206,7 +203,7 @@ class Cache(object):
             # same languageInvoker thread is being used so we MUST clear its
             # contents to allow cache consistency between instances
             # del self.buckets[bucket]
-        self.common.debug('Cache commit successful')
+        common.debug('Cache commit successful')
 
     def invalidate(self, on_disk=False, bucket_names=None):
         """Clear all cache buckets"""
@@ -220,20 +217,20 @@ class Cache(object):
 
         if on_disk:
             self._invalidate_on_disk(bucket_names)
-        self.common.info('Cache invalidated')
+        common.info('Cache invalidated')
 
     def _invalidate_on_disk(self, bucket_names):
         for bucket in bucket_names:
-            self.common.delete_folder_contents(
+            common.delete_folder_contents(
                 os.path.join(self.cache_path, bucket))
 
     def invalidate_entry(self, bucket, identifier, on_disk=False):
         """Remove an item from a bucket"""
         try:
             self._purge_entry(bucket, identifier, on_disk)
-            self.common.debug('Invalidated {} in {}', identifier, bucket)
+            common.debug('Invalidated {} in {}', identifier, bucket)
         except KeyError:
-            self.common.debug('Nothing to invalidate, {} was not in {}', identifier, bucket)
+            common.debug('Nothing to invalidate, {} was not in {}', identifier, bucket)
 
     def _get_bucket(self, key):
         """Get a cache bucket.
@@ -249,11 +246,11 @@ class Cache(object):
         for _ in range(1, 10):
             wnd_property_data = self.window.getProperty(self._window_property(bucket))
             if wnd_property_data.startswith(str('LOCKED_BY_')):
-                self.common.debug('Waiting for release of {}', bucket)
+                common.debug('Waiting for release of {}', bucket)
                 xbmc.sleep(50)
             else:
                 return self._load_bucket_from_wndprop(bucket, wnd_property_data)
-        self.common.warn('{} is locked. Working with an empty instance...', bucket)
+        common.warn('{} is locked. Working with an empty instance...', bucket)
         return {}
 
     def _load_bucket_from_wndprop(self, bucket, wnd_property_data):
@@ -265,10 +262,10 @@ class Cache(object):
                 bucket_instance = pickle.loads(wnd_property_data.encode('latin-1'))
         except Exception:  # pylint: disable=broad-except
             # When window.getProperty does not have the property here happen an error
-            self.common.debug('No instance of {} found. Creating new instance.'.format(bucket))
+            common.debug('No instance of {} found. Creating new instance.'.format(bucket))
             bucket_instance = {}
         self._lock(bucket)
-        self.common.debug('Acquired lock on {}', bucket)
+        common.debug('Acquired lock on {}', bucket)
         return bucket_instance
 
     def _lock(self, bucket):
@@ -287,7 +284,7 @@ class Cache(object):
             # py3
             return pickle.loads(handle.readBytes())
         except Exception as exc:
-            self.common.error('Failed get cache from disk {}: {}', cache_filename, exc)
+            common.error('Failed get cache from disk {}: {}', cache_filename, exc)
             raise CacheMiss()
         finally:
             handle.close()
@@ -300,7 +297,7 @@ class Cache(object):
             # return pickle.dump(cache_entry, handle)
             handle.write(bytearray(pickle.dumps(cache_entry)))
         except Exception as exc:  # pylint: disable=broad-except
-            self.common.error('Failed to write cache entry to {}: {}', cache_filename, exc)
+            common.error('Failed to write cache entry to {}: {}', cache_filename, exc)
         finally:
             handle.close()
 
@@ -310,7 +307,7 @@ class Cache(object):
 
     def _persist_bucket(self, bucket, contents):
         if not self.is_safe_to_persist(bucket):
-            self.common.warn(
+            common.warn(
                 '{} is locked by another instance. Discarding changes'
                 .format(bucket))
             return
@@ -326,10 +323,10 @@ class Cache(object):
                 self.window.setProperty(self._window_property(bucket),
                                         pickle.dumps(contents, protocol=0).decode('latin-1'))
         except Exception as exc:  # pylint: disable=broad-except
-            self.common.error('Failed to persist {} to wnd properties: {}', bucket, exc)
+            common.error('Failed to persist {} to wnd properties: {}', bucket, exc)
             self.window.clearProperty(self._window_property(bucket))
         finally:
-            self.common.debug('Released lock on {}', bucket)
+            common.debug('Released lock on {}', bucket)
 
     def is_safe_to_persist(self, bucket):
         # Only persist if we acquired the original lock or if the lock is older
@@ -345,7 +342,7 @@ class Cache(object):
             except ValueError:
                 is_stale_lock = False
             if is_stale_lock:
-                self.common.info('Overriding stale cache lock {} on {}', lock_data, bucket)
+                common.info('Overriding stale cache lock {} on {}', lock_data, bucket)
             return is_own_lock or is_stale_lock
         return True
 
@@ -353,8 +350,7 @@ class Cache(object):
         """Verify if cache_entry has reached its EOL.
         Remove from in-memory and disk cache if so and raise CacheMiss"""
         if cache_entry['eol'] < int(time()):
-            self.common.debug('Cache entry {} in {} has expired => cache miss',
-                              identifier, bucket)
+            common.debug('Cache entry {} in {} has expired => cache miss', identifier, bucket)
             self._purge_entry(bucket, identifier)
             raise CacheMiss()
 
