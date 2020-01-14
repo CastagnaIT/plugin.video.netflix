@@ -65,7 +65,7 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
         list_item.addStreamInfo(stream_type, quality_infos)
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
-        infos_copy['plot'] += ' [COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
+        infos_copy['plot'] += '[CR][COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
     if set_info:
         list_item.setInfo('video', infos_copy)
     return infos_copy
