@@ -177,8 +177,7 @@ def get_upnext_info(videoid, current_episode, metadata):
         #                                                         mode=g.MODE_PLAY)}
         next_info['play_url'] = common.build_url(videoid=next_episode_id, mode=g.MODE_PLAY)
     if 'creditsOffset' in metadata[0]:
-        next_info['notification_time'] = (metadata[0]['runtime'] -
-                                          metadata[0]['creditsOffset'])
+        next_info['notification_offset'] = metadata[0]['creditsOffset']
     return next_info
 
 
