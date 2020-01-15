@@ -182,6 +182,7 @@ class GlobalVariables(object):
     def __init__(self):
         """Do nothing on constructing the object"""
         # Define here any variables necessary for the correct loading of the modules
+        self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
@@ -192,6 +193,8 @@ class GlobalVariables(object):
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
+        # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuselanguageinvoker is not yet used)
+        self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
