@@ -160,7 +160,8 @@ def run(argv):
     if success:
         try:
             if _check_valid_credentials():
-                check_addon_upgrade()
+                if g.IS_ADDON_FIRSTRUN:
+                    check_addon_upgrade()
                 g.initial_addon_configuration()
                 route([part for part in g.PATH.split('/') if part])
             else:
