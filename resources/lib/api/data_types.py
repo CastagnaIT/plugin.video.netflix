@@ -63,6 +63,14 @@ class LoLoMo(object):
                         break
         return iteritems(lists)
 
+    def find_by_context(self, context):
+        """Return the video list of a context"""
+        for list_id, video_list in iteritems(self.lists):
+            if not video_list['context'] == context:
+                continue
+            return list_id, VideoList(self.data, list_id)
+        return None
+
 
 class VideoList:
     """A video list"""
