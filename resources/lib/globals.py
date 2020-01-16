@@ -381,7 +381,7 @@ class GlobalVariables(object):
         for _ in range(0, 30):
             esn.append(random.choice(possible))
         edge_esn = ''.join(esn)
-        self.settings_monitor_suspend(True)
+        self.settings_monitor_suspend(True, True)
         self.ADDON.setSetting('edge_esn', edge_esn)
         return edge_esn
 
