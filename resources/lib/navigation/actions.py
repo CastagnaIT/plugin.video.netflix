@@ -119,8 +119,6 @@ class AddonActionExecutor(object):
         """Clear the cache. If on_disk param is supplied, also clear cached
         items from disk"""
         g.CACHE.invalidate(self.params.get('on_disk', False))
-        if self.params.get('on_disk', False):
-            common.delete_file('resources.lib.services.playback.stream_continuity.ndb')
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 
