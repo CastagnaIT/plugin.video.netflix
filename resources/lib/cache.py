@@ -14,22 +14,24 @@
 # resources.lib.kodi.ui
 # resources.lib.services.nfsession
 from __future__ import absolute_import, division, unicode_literals
+
 import os
-import sys
-from time import time
 from functools import wraps
+from time import time
+
 from future.utils import iteritems
 
+import xbmc
+import xbmcgui
+import xbmcvfs
+
 from resources.lib import common
+from resources.lib.globals import g
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
-
-import xbmc
-import xbmcgui
-import xbmcvfs
 
 try:  # Python 2
     unicode
@@ -72,7 +74,7 @@ class UnknownCacheBucketError(Exception):
 #                               get the value from the func arguments
 # fixed_identifier - note if specified all other params are ignored
 
-def cache_output(g, bucket, fixed_identifier=None,
+def cache_output(bucket, fixed_identifier=None,
                  identify_from_kwarg_name='videoid',
                  identify_append_from_kwarg_name=None,
                  identify_fallback_arg_index=0,
@@ -150,17 +152,13 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
 
 
 class Cache(object):
-    def __init__(self, cache_path, ttl, metadata_ttl, plugin_handle):
-        # pylint: disable=too-many-arguments
+    def __init__(self, cache_path, plugin_handle):
         self.plugin_handle = plugin_handle
         self.cache_path = cache_path
-        self.ttl = ttl
-        self.metadata_ttl = metadata_ttl
         self.buckets = {}
         self.window = xbmcgui.Window(10000)  # Kodi home window
         # If you use multiple Kodi profiles you need to distinguish the cache of the current profile
         self.properties_prefix = common.get_current_kodi_profile_name()
-        self.PY_IS_VER2 = sys.version_info.major == 2
 
     def lock_marker(self):
         """Return a lock marker for this instance and the current time"""
@@ -185,7 +183,7 @@ class Cache(object):
         """Add an item to a cache bucket"""
         # pylint: disable=too-many-arguments
         if not eol:
-            eol = int(time() + (ttl if ttl else self.ttl))
+            eol = int(time() + (ttl if ttl else g.CACHE_TTL))
         # self.common.debug('Adding {} to {} (valid until {})',
         #                   identifier, bucket, eol)
         cache_entry = {'eol': eol, 'content': content}
@@ -196,7 +194,6 @@ class Cache(object):
 
     def commit(self):
         """Persist cache contents in window properties"""
-        # pylint: disable=global-statement
         for bucket, contents in iteritems(self.buckets):
             self._persist_bucket(bucket, contents)
             # The self.buckets dict survives across addon invocations if the
@@ -207,7 +204,6 @@ class Cache(object):
 
     def invalidate(self, on_disk=False, bucket_names=None):
         """Clear all cache buckets"""
-        # pylint: disable=global-statement
         if not bucket_names:
             bucket_names = BUCKET_NAMES
         for bucket in bucket_names:
@@ -255,7 +251,7 @@ class Cache(object):
 
     def _load_bucket_from_wndprop(self, bucket, wnd_property_data):
         try:
-            if self.PY_IS_VER2:
+            if g.PY_IS_VER2:
                 # pickle.loads on py2 wants string
                 bucket_instance = pickle.loads(wnd_property_data)
             else:
@@ -278,7 +274,7 @@ class Cache(object):
             raise CacheMiss()
         handle = xbmcvfs.File(cache_filename, 'rb')
         try:
-            if self.PY_IS_VER2:
+            if g.PY_IS_VER2:
                 # pickle.loads on py2 wants string
                 return pickle.loads(handle.read())
             # py3
@@ -312,7 +308,7 @@ class Cache(object):
                 .format(bucket))
             return
         try:
-            if self.PY_IS_VER2:
+            if g.PY_IS_VER2:
                 self.window.setProperty(self._window_property(bucket), pickle.dumps(contents))
             else:
                 # Note: On python 3 pickle.dumps produces byte not str cannot be passed as is in
@@ -371,6 +367,4 @@ class Cache(object):
             os.remove(cache_filename)
 
     def _window_property(self, bucket):
-        if self.PY_IS_VER2:
-            return ('nfmemcache_{}_{}'.format(self.properties_prefix, bucket)).encode('utf-8')
-        return 'nfmemcache_{}_{}'.format(self.properties_prefix, bucket)
+        return g.py2_encode('nfmemcache_{}_{}'.format(self.properties_prefix, bucket))

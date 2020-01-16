@@ -242,7 +242,8 @@ class GlobalVariables(object):
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        self._init_cache()
+        if self.IS_ADDON_FIRSTRUN:
+            self._init_cache()
 
     def _init_database(self, initialize):
         # Initialize local database
@@ -271,8 +272,7 @@ class GlobalVariables(object):
         if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
         from resources.lib.cache import Cache
-        self.CACHE = Cache(self.CACHE_PATH, self.CACHE_TTL,
-                           self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
+        self.CACHE = Cache(self.CACHE_PATH, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
         from xbmcvfs import mkdirs
