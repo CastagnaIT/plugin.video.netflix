@@ -242,11 +242,6 @@ class GlobalVariables(object):
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        try:
-            os.mkdir(self.DATA_PATH)
-        except OSError:
-            pass
-
         self._init_cache()
 
     def _init_database(self, initialize):
