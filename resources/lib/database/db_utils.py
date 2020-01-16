@@ -14,6 +14,7 @@ import os
 import xbmc
 import xbmcvfs
 
+from resources.lib.common import folder_exists
 from resources.lib.globals import g
 
 
@@ -39,9 +40,9 @@ VidLibProp = {
 def get_local_db_path(db_filename):
     # First ensure database folder exists
     db_folder = xbmc.translatePath(os.path.join(g.DATA_PATH, 'database'))
-    if not xbmcvfs.exists(db_folder):
+    if not folder_exists(db_folder):
         xbmcvfs.mkdirs(db_folder)
-    return xbmc.translatePath(os.path.join(g.DATA_PATH, 'database', db_filename))
+    return os.path.join(db_folder, db_filename)
 
 
 def sql_filtered_update(table, set_columns, where_columns, values):

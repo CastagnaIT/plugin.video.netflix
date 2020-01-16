@@ -171,8 +171,7 @@ def export_item(item_task, library_home):
 
 def _create_destination_folder(destination_folder):
     """Create destination folder, ignore error if it already exists"""
-    destination_folder = xbmc.translatePath(destination_folder)
-    if not xbmcvfs.exists(destination_folder):
+    if not common.folder_exists(destination_folder):
         xbmcvfs.mkdirs(destination_folder)
 
 
