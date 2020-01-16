@@ -371,4 +371,6 @@ class Cache(object):
             os.remove(cache_filename)
 
     def _window_property(self, bucket):
+        if self.PY_IS_VER2:
+            return ('nfmemcache_{}_{}'.format(self.properties_prefix, bucket)).encode('utf-8')
         return 'nfmemcache_{}_{}'.format(self.properties_prefix, bucket)

@@ -47,7 +47,7 @@ class NetflixService(object):
     def __init__(self):
         self.window_cls = Window(10000)  # Kodi home window
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        self.prop_nf_service_status = 'nf_service_status_' + get_current_kodi_profile_name()
+        self.prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
         for server in self.SERVERS:
             self.init_server(server)
         self.controller = None
