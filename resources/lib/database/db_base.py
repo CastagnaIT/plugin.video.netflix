@@ -24,7 +24,7 @@ class BaseDatabase(object):
         """
         raise NotImplementedError
 
-    def _execute_non_query(self, query, params=None, cursor=None):
+    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
         """
         Execute a query without returning a value
         :param query: sql query
