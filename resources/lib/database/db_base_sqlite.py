@@ -105,7 +105,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             if self.conn:
                 self.conn.close()
 
-    def _execute_non_query(self, query, params=None, cursor=None):
+    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
         try:
             if cursor is None:
                 cursor = self.get_cursor()

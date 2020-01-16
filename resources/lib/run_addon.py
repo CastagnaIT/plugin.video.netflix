@@ -148,7 +148,7 @@ def run(argv):
 
     window_cls = Window(10000)  # Kodi home window
     # If you use multiple Kodi profiles you need to distinguish the property of current profile
-    prop_nf_service_status = 'nf_service_status_' + get_current_kodi_profile_name()
+    prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
     is_widget_skin_call = _skin_widget_call(window_cls, prop_nf_service_status)
 
     if window_cls.getProperty(prop_nf_service_status) != 'running':
@@ -160,7 +160,8 @@ def run(argv):
     if success:
         try:
             if _check_valid_credentials():
-                check_addon_upgrade()
+                if g.IS_ADDON_FIRSTRUN:
+                    check_addon_upgrade()
                 g.initial_addon_configuration()
                 route([part for part in g.PATH.split('/') if part])
             else:

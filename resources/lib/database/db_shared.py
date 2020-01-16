@@ -15,12 +15,10 @@ import resources.lib.common as common
 import resources.lib.database.db_base_mysql as db_base_mysql
 import resources.lib.database.db_base_sqlite as db_base_sqlite
 import resources.lib.database.db_utils as db_utils
-from resources.lib.globals import g
 
 
-def get_shareddb_class(force_sqlite=False):
+def get_shareddb_class(use_mysql=False):
     # Dynamically sets the inherit class
-    use_mysql = g.ADDON.getSettingBool('use_mysql') and not force_sqlite
     base_class = db_base_mysql.MySQLDatabase if use_mysql else db_base_sqlite.SQLiteDatabase
 
     class NFSharedDatabase(base_class):

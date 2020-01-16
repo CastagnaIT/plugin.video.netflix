@@ -90,7 +90,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             if self.conn and self.conn.is_connected():
                 self.conn.close()
 
-    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):  # pylint: disable=arguments-differ
+    def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
         try:
             if cursor is None:
                 cursor = self.get_cursor()

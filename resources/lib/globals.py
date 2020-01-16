@@ -182,16 +182,19 @@ class GlobalVariables(object):
     def __init__(self):
         """Do nothing on constructing the object"""
         # Define here any variables necessary for the correct loading of the modules
+        self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
         self.CACHE_METADATA_TTL = None
 
-    def init_globals(self, argv, skip_database_initialize=False):
+    def init_globals(self, argv, reinitialize_database=False):
         """Initialized globally used module variables.
         Needs to be called at start of each plugin instance!
         This is an ugly hack because Kodi doesn't execute statements defined on
         module level if reusing a language invoker."""
+        # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuselanguageinvoker is not yet used)
+        self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
@@ -235,47 +238,41 @@ class GlobalVariables(object):
         self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
-        if not skip_database_initialize:
-            self._init_database()
+        self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        try:
-            os.mkdir(self.DATA_PATH)
-        except OSError:
-            pass
+        if self.IS_ADDON_FIRSTRUN:
+            self._init_cache()
 
-        self._init_cache()
-
-    def _init_database(self):
+    def _init_database(self, initialize):
         # Initialize local database
-        import resources.lib.database.db_local as db_local
-        self.LOCAL_DB = db_local.NFLocalDatabase()
+        if initialize:
+            import resources.lib.database.db_local as db_local
+            self.LOCAL_DB = db_local.NFLocalDatabase()
         # Initialize shared database
-        import resources.lib.database.db_shared as db_shared
-        from resources.lib.database.db_exceptions import MySQLConnectionError
-        try:
-            shared_db_class = db_shared.get_shareddb_class()
-            self.SHARED_DB = shared_db_class()
-        except MySQLConnectionError:
-            # The MySQL database cannot be reached, fallback to local SQLite database
-            # When this code is called from addon, is needed apply the change also in the
-            # service, so disabling it run the SettingsMonitor
-            import resources.lib.kodi.ui as ui
-            self.ADDON.setSettingBool('use_mysql', False)
-            ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
-            shared_db_class = db_shared.get_shareddb_class(force_sqlite=True)
-            self.SHARED_DB = shared_db_class()
+        use_mysql = g.ADDON.getSettingBool('use_mysql')
+        if initialize or use_mysql:
+            import resources.lib.database.db_shared as db_shared
+            from resources.lib.database.db_exceptions import MySQLConnectionError
+            try:
+                shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
+                self.SHARED_DB = shared_db_class()
+            except MySQLConnectionError:
+                # The MySQL database cannot be reached, fallback to local SQLite database
+                # When this code is called from addon, is needed apply the change also in the
+                # service, so disabling it run the SettingsMonitor
+                import resources.lib.kodi.ui as ui
+                self.ADDON.setSettingBool('use_mysql', False)
+                ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
+                shared_db_class = db_shared.get_shareddb_class()
+                self.SHARED_DB = shared_db_class()
 
     def _init_cache(self):
         if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
             self._init_filesystem_cache()
-        # This is ugly: Pass the common module into Cache.__init__ to work
-        # around circular import dependencies.
-        import resources.lib.common as common
         from resources.lib.cache import Cache
-        self.CACHE = Cache(common, self.CACHE_PATH, self.CACHE_TTL,
-                           self.CACHE_METADATA_TTL, self.PLUGIN_HANDLE)
+        self.CACHE = Cache(self.CACHE_PATH, self.PLUGIN_HANDLE)
 
     def _init_filesystem_cache(self):
         from xbmcvfs import mkdirs

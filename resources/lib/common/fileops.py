@@ -19,7 +19,7 @@ from resources.lib.globals import g
 
 def check_folder_path(path):
     """
-    Check if folderpath ends with path delimator
+    Check if folder path ends with path delimiter
     If not correct it (makes sure xbmcvfs.exists is working correct)
     """
     end = ''
@@ -28,6 +28,15 @@ def check_folder_path(path):
     if '\\' in path and not path.endswith('\\'):
         end = '\\'
     return path + end
+
+
+def folder_exists(path):
+    """
+    Checks if a given path exists
+    :param path: The path
+    :return: True if exists
+    """
+    return xbmcvfs.exists(check_folder_path(path))
 
 
 def file_exists(filename, data_path=g.DATA_PATH):

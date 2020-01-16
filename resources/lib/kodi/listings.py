@@ -109,31 +109,28 @@ def build_main_menu_listing(lolomo):
     Builds the video lists (my list, continue watching, etc.) Kodi screen
     """
     directory_items = []
-
     for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
-        show_in_menu = g.ADDON.getSettingBool('_'.join(('show_menu', menu_id)))
-        if show_in_menu:
-            menu_title = 'Missing menu title'
-            if data['lolomo_known']:
-                for list_id, user_list in lolomo.lists_by_context(data['lolomo_contexts'],
-                                                                  break_on_first=True):
-                    videolist_item = _create_videolist_item(list_id, user_list, data,
-                                                            static_lists=True)
-                    videolist_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
-                    directory_items.append(videolist_item)
-                    menu_title = user_list['displayName']
-            else:
-                if data['label_id']:
-                    menu_title = common.get_local_string(data['label_id'])
-                menu_description = common.get_local_string(data['description_id']) \
-                    if data['description_id'] is not None else ''
-                directory_items.append(
-                    (common.build_url(data['path'], mode=g.MODE_DIRECTORY),
-                     list_item_skeleton(menu_title,
-                                        icon=data['icon'],
-                                        description=menu_description),
-                     True))
-            g.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
+        if not g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
+            continue
+        if data['lolomo_known']:
+            context_data = lolomo.find_by_context(data['lolomo_contexts'][0])
+            if not context_data:
+                continue
+            list_id, video_list = context_data
+            menu_title = video_list['displayName']
+            videolist_item = _create_videolist_item(list_id, video_list, data, static_lists=True)
+        else:
+            menu_title = common.get_local_string(data['label_id']) if data.get('label_id') else 'Missing menu title'
+            menu_description = common.get_local_string(data['description_id']) \
+                if data['description_id'] is not None else ''
+            videolist_item = (common.build_url(data['path'], mode=g.MODE_DIRECTORY),
+                              list_item_skeleton(menu_title,
+                                                 icon=data['icon'],
+                                                 description=menu_description),
+                              True)
+        videolist_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+        directory_items.append(videolist_item)
+        g.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
     finalize_directory(directory_items, g.CONTENT_FOLDER, title=common.get_local_string(30097))
 
 

@@ -134,7 +134,8 @@ def _compute_next_schedule():
 
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
         next_run = last_run + timedelta(days=[1, 2, 5, 7][update_frequency])
-        common.info('Next library auto update is scheduled for {}', next_run)
+        if next_run >= datetime.now():
+            common.info('Next library auto update is scheduled for {}', next_run)
         return next_run
     except Exception:  # pylint: disable=broad-except
         # If settings.xml was not created yet, as at first service run
