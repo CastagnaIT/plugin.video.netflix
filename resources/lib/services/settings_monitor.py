@@ -50,7 +50,7 @@ class SettingsMonitor(xbmc.Monitor):
         use_mysql_turned_on = use_mysql and not use_mysql_old
 
         common.debug('SettingsMonitor: Reinitialization of global settings')
-        g.init_globals(sys.argv, reboot_addon)
+        g.init_globals(sys.argv, use_mysql != use_mysql_old)
 
         # Check the MySQL connection status after reinitialization of global settings
         use_mysql_after = g.ADDON.getSettingBool('use_mysql')
