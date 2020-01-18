@@ -1,3 +1,21 @@
+v0.16.1 (2019-12-14)
+-Allowed to export individual seasons to the library (manual mode)
+-Dolby atmos audio streams are now specified (Kodi 19)
+-Added workaround to fix skin widgets
+-Handled subtitle properties for next version of InputStream Adaptive
+-Introduced accurate handling of subtitles (Kodi 19)
+-Improved handling of subtitles (Kodi 18)
+-Improved return to main page from search dialog
+-Improved cancel login dialog after the logout
+-Improved timeout on IPC over HTTP
+-Fixed an issue that showed the wrong label while browsing movies 
+-Fixed ParentalControl/Rating GUI on custom skins 
+-Fixed an issue that cause unicodedecode error on some android devices
+-Fixed an issue that can cause unicodedecode error in user/password
+-Added japanese language
+-Updated kr, hu, pt_br, fr
+-Many improvements to the code
+
 v0.16.0 (2019-11-29)
 -Added new parental control settings
 -Added new thumb rating to movies/tv shows
