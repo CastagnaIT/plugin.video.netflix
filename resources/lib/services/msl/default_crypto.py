@@ -51,6 +51,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             self.rsa_key = RSA.generate(2048)
             self.encryption_key = None
             self.sign_key = None
+        self.drm_info = {}
 
     def key_request_data(self):
         """Return a key request dict"""

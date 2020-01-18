@@ -46,10 +46,21 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             self.key_id = None
             self.hmac_key_id = None
 
-        common.debug('Widevine CryptoSession systemId: {}',
-                     self.crypto_session.GetPropertyString('systemId'))
-        common.debug('Widevine CryptoSession algorithms: {}',
-                     self.crypto_session.GetPropertyString('algorithms'))
+        self.drm_info = {
+            'version': self.crypto_session.GetPropertyString('version'),
+            'system_id': self.crypto_session.GetPropertyString('systemId'),
+            'device_unique_id': '',  # self.crypto_session.getPropertyByteArray('deviceUniqueId')
+            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),
+            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),
+            'security_level': self.crypto_session.GetPropertyString('securityLevel')
+        }
+        common.debug('Widevine version: {}', self.drm_info['version'])
+        common.debug('Widevine CryptoSession system id: {}', self.drm_info['system_id'])
+        common.debug('Widevine CryptoSession security level: {}', self.drm_info['security_level'])
+        common.debug('Widevine CryptoSession hdcp level from {} to {}',
+                     self.drm_info['hdcp_level'],
+                     self.drm_info['hdcp_level_max'])
+        common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
 
     def __del__(self):
         self.crypto_session = None
