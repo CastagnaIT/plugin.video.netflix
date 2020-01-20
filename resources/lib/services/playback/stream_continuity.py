@@ -10,12 +10,11 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import json
 import xbmc
 
-from resources.lib.globals import g
 import resources.lib.common as common
-
+from resources.lib.cache import CACHE_MANIFESTS
+from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
 
 STREAMS = {
@@ -247,7 +246,8 @@ class StreamContinuityManager(PlaybackActionManager):
             # --- ONLY FOR KODI VERSION 18 ---
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
-            manifest_data = json.loads(common.load_file('manifest.json'))
+            cache_identifier = g.get_esn() + '_' + self.current_videoid.value
+            manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier, False)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
                        text_track['language'] == audio_language
