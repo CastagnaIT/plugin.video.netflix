@@ -41,8 +41,9 @@ class NetflixSession(NFSessionAccess):
         ]
         for slot in self.slots:
             common.register_slot(slot)
-        common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
-                             source_id='upnextprovider')
+        # UpNext Add-on - play call back method
+        # common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
+        #                      source_id='upnextprovider')
         self.prefetch_login()
 
     @common.addonsignals_return_call
@@ -235,8 +236,8 @@ def _set_range_selector(paths, range_start, range_end):
     return ranged_paths
 
 
-def play_callback(data):
-    """Callback function used for upnext integration"""
-    common.info('Received signal from Up Next. Playing next episode...')
-    common.stop_playback()
-    common.play_media(data['play_path'])
+# def play_callback(data):
+#     """Callback function used for upnext integration"""
+#     common.info('Received signal from Up Next. Playing next episode...')
+#     common.stop_playback()
+#     common.play_media(data['play_path'])
