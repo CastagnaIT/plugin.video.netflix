@@ -224,8 +224,10 @@ class GlobalVariables(object):
         self.URL = urlparse(argv[0])
         try:
             self.PLUGIN_HANDLE = int(argv[1])
+            self.IS_SERVICE = False
         except IndexError:
             self.PLUGIN_HANDLE = 0
+            self.IS_SERVICE = True
         self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
                                                      netloc=self.URL[1])
         self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
@@ -242,7 +244,7 @@ class GlobalVariables(object):
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        if self.IS_ADDON_FIRSTRUN:
+        if self.IS_ADDON_FIRSTRUN or self.IS_SERVICE:
             self._init_cache()
 
     def _init_database(self, initialize):

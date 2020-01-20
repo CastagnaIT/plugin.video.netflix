@@ -116,9 +116,10 @@ class AddonActionExecutor(object):
 
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
-        """Clear the cache. If on_disk param is supplied, also clear cached
-        items from disk"""
+        """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
         g.CACHE.invalidate(self.params.get('on_disk', False))
+        common.send_signal(signal=common.Signals.INVALIDATE_SERVICE_CACHE,
+                           data={'on_disk': self.params.get('on_disk', False), 'bucket_names': None})
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 

@@ -8,18 +8,20 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-# Must not be used within these modules, because stale values may
-# be used and cause inconsistencies:
-# resources.lib.services
-# resources.lib.kodi.ui
-# resources.lib.services.nfsession
+# To avoid concurrency between multiple instances of the addon that write on the same Kodi properties (of each bucket),
+# the first time that a bucket is read, will be blocked. When the addon instance ends, the properties
+# (of each blocked bucket) are updated and then released.
+# Then if another addon instance will try to access a blocked bucket, it will get an empty bucket content.
+
+# WARNING to using cache on the SERVICE SIDE:
+# The contents of buckets will be handled temporarily in memory and not read or written in the Kodi properties,
+# this is because sharing with the frontend is not possible and may cause a stale of values or inconsistencies.
+# So take into account that if the cache will be used, it will NOT contain the cache data from the frontend!
 from __future__ import absolute_import, division, unicode_literals
 
 import os
 from functools import wraps
 from time import time
-
-from future.utils import iteritems
 
 import xbmc
 import xbmcgui
@@ -159,6 +161,8 @@ class Cache(object):
         self.window = xbmcgui.Window(10000)  # Kodi home window
         # If you use multiple Kodi profiles you need to distinguish the cache of the current profile
         self.properties_prefix = common.get_current_kodi_profile_name()
+        if g.IS_SERVICE:
+            common.register_slot(self.invalidate_callback, signal=common.Signals.INVALIDATE_SERVICE_CACHE)
 
     def lock_marker(self):
         """Return a lock marker for this instance and the current time"""
@@ -184,8 +188,7 @@ class Cache(object):
         # pylint: disable=too-many-arguments
         if not eol:
             eol = int(time() + (ttl if ttl else g.CACHE_TTL))
-        # self.common.debug('Adding {} to {} (valid until {})',
-        #                   identifier, bucket, eol)
+        # common.debug('Adding {} to {} (valid until {})', identifier, bucket, eol)
         cache_entry = {'eol': eol, 'content': content}
         self._get_bucket(bucket).update(
             {identifier: cache_entry})
@@ -194,16 +197,20 @@ class Cache(object):
 
     def commit(self):
         """Persist cache contents in window properties"""
-        for bucket, contents in iteritems(self.buckets):
-            self._persist_bucket(bucket, contents)
+        for bucket in list(self.buckets.keys()):
+            self._persist_bucket(bucket, self.buckets[bucket])
             # The self.buckets dict survives across addon invocations if the
             # same languageInvoker thread is being used so we MUST clear its
             # contents to allow cache consistency between instances
-            # del self.buckets[bucket]
+            del self.buckets[bucket]
         common.debug('Cache commit successful')
 
+    def invalidate_callback(self, data):
+        """Clear cache buckets - callback for frontend"""
+        self.invalidate(data['on_disk'], data['bucket_names'])
+
     def invalidate(self, on_disk=False, bucket_names=None):
-        """Clear all cache buckets"""
+        """Clear cache buckets"""
         if not bucket_names:
             bucket_names = BUCKET_NAMES
         for bucket in bucket_names:
@@ -238,6 +245,8 @@ class Cache(object):
         return self.buckets[key]
 
     def _load_bucket(self, bucket):
+        if g.IS_SERVICE:
+            return {}
         # Try 10 times to acquire a lock
         for _ in range(1, 10):
             wnd_property_data = self.window.getProperty(self._window_property(bucket))
@@ -303,9 +312,7 @@ class Cache(object):
 
     def _persist_bucket(self, bucket, contents):
         if not self.is_safe_to_persist(bucket):
-            common.warn(
-                '{} is locked by another instance. Discarding changes'
-                .format(bucket))
+            common.warn('{} is locked by another instance. Discarding changes'.format(bucket))
             return
         try:
             if g.PY_IS_VER2:

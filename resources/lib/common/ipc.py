@@ -34,6 +34,7 @@ class Signals(object):  # pylint: disable=no-init
     ESN_CHANGED = 'esn_changed'
     LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
     UPNEXT_ADDON_INIT = 'upnext_data'
+    INVALIDATE_SERVICE_CACHE = 'invalidate_service_cache'
 
 
 def register_slot(callback, signal=None, source_id=None):
