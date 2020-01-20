@@ -19,14 +19,16 @@ def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEGDASH manifest"""
     from xbmcaddon import Addon
     isa_version = Addon('inputstream.adaptive').getAddonInfo('version')
-    seconds = manifest['duration'] / 1000
-    init_length = seconds / 2 * 12 + 20 * 1000
+
+    has_drm_streams = manifest['hasDrmStreams']
+    protection_info = _get_protection_info(manifest) if has_drm_streams else None
+
+    seconds = int(manifest['duration'] / 1000)
+    init_length = int(seconds / 2 * 12 + 20 * 1000)
     duration = "PT" + str(seconds) + ".00S"
 
     root = _mpd_manifest_root(duration)
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
-    protection = _protection_info(manifest) if manifest['hasDrmStreams'] else None
-    drm_streams = manifest['hasDrmStreams']
 
     for video_track in manifest['video_tracks']:
         _convert_video_track(
