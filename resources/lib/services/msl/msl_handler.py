@@ -167,8 +167,9 @@ class MSLHandler(object):
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
             common.debug('Manifest for {} with ESN {} obtained from the cache', viewable_id, esn)
-            # Save the manifest to disk as reference
-            common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
+            if common.is_debug_verbose():
+                # Save the manifest to disk as reference
+                common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
         except cache.CacheMiss:
             pass
@@ -240,8 +241,9 @@ class MSLHandler(object):
                                          manifest_request_data,
                                          esn,
                                          mt_validity)
-        # Save the manifest to disk as reference
-        common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
+        if common.is_debug_verbose():
+            # Save the manifest to disk as reference
+            common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity
         expiration = int(manifest['expiration'] / 1000)
         g.CACHE.add(cache.CACHE_MANIFESTS, cache_identifier, manifest, eol=expiration)

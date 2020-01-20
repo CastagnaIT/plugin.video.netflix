@@ -16,7 +16,7 @@ import resources.lib.common as common
 
 
 def convert_to_dash(manifest):
-    """Convert a Netflix style manifest to MPEGDASH manifest"""
+    """Convert a Netflix style manifest to MPEG-DASH manifest"""
     from xbmcaddon import Addon
     isa_version = Addon('inputstream.adaptive').getAddonInfo('version')
 
@@ -31,26 +31,24 @@ def convert_to_dash(manifest):
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
 
     for video_track in manifest['video_tracks']:
-        _convert_video_track(
-            video_track, period, init_length, protection, drm_streams)
+        _convert_video_track(video_track, period, init_length, protection_info, has_drm_streams)
 
     common.fix_locale_languages(manifest['audio_tracks'])
     common.fix_locale_languages(manifest['timedtexttracks'])
 
     default_audio_language_index = _get_default_audio_language(manifest)
     for index, audio_track in enumerate(manifest['audio_tracks']):
-        _convert_audio_track(audio_track, period, init_length,
-                             (index == default_audio_language_index), drm_streams)
+        _convert_audio_track(audio_track, period, init_length, (index == default_audio_language_index), has_drm_streams)
 
     default_subtitle_language_index = _get_default_subtitle_language(manifest)
     for index, text_track in enumerate(manifest['timedtexttracks']):
         if text_track['isNoneTrack']:
             continue
-        _convert_text_track(text_track, period, (index == default_subtitle_language_index),
-                            isa_version)
+        _convert_text_track(text_track, period, (index == default_subtitle_language_index), isa_version)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
-    common.save_file('manifest.mpd', xml)
+    if common.is_debug_verbose():
+        common.save_file('manifest.mpd', xml)
     return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
 
 
@@ -62,7 +60,19 @@ def _mpd_manifest_root(duration):
     return root
 
 
-def _protection_info(manifest):
+def _add_base_url(representation, base_url):
+    ET.SubElement(representation, 'BaseURL').text = base_url
+
+
+def _add_segment_base(representation, init_length):
+    ET.SubElement(
+        representation,  # Parent
+        'SegmentBase',  # Tag
+        indexRange='0-' + str(init_length),
+        indexRangeExact='true')
+
+
+def _get_protection_info(manifest):
     try:
         pssh = None
         keyid = None
@@ -73,6 +83,26 @@ def _protection_info(manifest):
         pssh = None
         keyid = None
     return {'pssh': pssh, 'keyid': keyid}
+
+
+def _add_protection_info(adaptation_set, pssh, keyid):
+    if keyid:
+        protection = ET.SubElement(
+            adaptation_set,  # Parent
+            'ContentProtection',  # Tag
+            value='cenc',
+            schemeIdUri='urn:mpeg:dash:mp4protection:2011').set(
+                'cenc:default_KID', str(uuid.UUID(bytes=keyid)))
+    protection = ET.SubElement(
+        adaptation_set,  # Parent
+        'ContentProtection',  # Tag
+        schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')
+    ET.SubElement(
+        protection,  # Parent
+        'widevine:license',  # Tag
+        robustness_level='HW_SECURE_CODECS_REQUIRED')
+    if pssh:
+        ET.SubElement(protection, 'cenc:pssh').text = pssh
 
 
 def _convert_video_track(video_track, period, init_length, protection, drm_streams):
@@ -92,8 +122,7 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
         if limit_res:
             if int(downloadable['res_h']) > limit_res:
                 continue
-        _convert_video_downloadable(
-            downloadable, adaptation_set, init_length)
+        _convert_video_downloadable(downloadable, adaptation_set, init_length)
 
 
 def _limit_video_resolution(video_tracks, drm_streams):
@@ -121,28 +150,7 @@ def _limit_video_resolution(video_tracks, drm_streams):
     return None
 
 
-def _add_protection_info(adaptation_set, pssh, keyid):
-    if keyid:
-        protection = ET.SubElement(
-            adaptation_set,  # Parent
-            'ContentProtection',  # Tag
-            value='cenc',
-            schemeIdUri='urn:mpeg:dash:mp4protection:2011').set(
-                'cenc:default_KID', str(uuid.UUID(bytes=keyid)))
-    protection = ET.SubElement(
-        adaptation_set,  # Parent
-        'ContentProtection',  # Tag
-        schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')
-    ET.SubElement(
-        protection,  # Parent
-        'widevine:license',  # Tag
-        robustness_level='HW_SECURE_CODECS_REQUIRED')
-    if pssh:
-        ET.SubElement(protection, 'cenc:pssh').text = pssh
-
-
-def _convert_video_downloadable(downloadable, adaptation_set,
-                                init_length):
+def _convert_video_downloadable(downloadable, adaptation_set, init_length):
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
@@ -191,13 +199,10 @@ def _convert_audio_track(audio_track, period, init_length, default, drm_streams)
         # Some audio stream has no drm
         # if downloadable['isDrm'] != drm_streams:
         #     continue
-        _convert_audio_downloadable(
-            downloadable, adaptation_set, init_length,
-            channels_count[downloadable['channels']])
+        _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count[downloadable['channels']])
 
 
-def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
-                                channels_count):
+def _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count):
     codec_type = 'aac'
     if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
         codec_type = 'ec-3'
@@ -218,61 +223,48 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length,
 
 
 def _convert_text_track(text_track, period, default, isa_version):
-    if text_track.get('ttDownloadables'):
-        # Only one subtitle representation per adaptationset
-        downloadable = text_track['ttDownloadables']
-        # common.save_file('downloadable.log', str(downloadable))
+    # Only one subtitle representation per adaptationset
+    downloadable = text_track.get('ttDownloadables')
+    if not text_track:
+        return
 
-        content_profile = list(downloadable)[0]
-        is_ios8 = content_profile == 'webvtt-lssdh-ios8'
-        impaired = 'true' if text_track['trackType'] == 'ASSISTIVE' else 'false'
-        forced = 'true' if text_track['isForcedNarrative'] else 'false'
-        default = 'true' if default else 'false'
+    content_profile = list(downloadable)[0]
+    is_ios8 = content_profile == 'webvtt-lssdh-ios8'
+    impaired = 'true' if text_track['trackType'] == 'ASSISTIVE' else 'false'
+    forced = 'true' if text_track['isForcedNarrative'] else 'false'
+    default = 'true' if default else 'false'
 
-        adaptation_set = ET.SubElement(
-            period,  # Parent
-            'AdaptationSet',  # Tag
-            lang=text_track.get('language'),
-            codecs=('stpp', 'wvtt')[is_ios8],
-            contentType='text',
-            mimeType=('application/ttml+xml', 'text/vtt')[is_ios8])
-        role = ET.SubElement(
-            adaptation_set,  # Parent
-            'Role',  # Tag
-            schemeIdUri='urn:mpeg:dash:role:2011')
-        # In the future version of InputStream Adaptive, you can set the stream parameters
-        # in the same way as the video stream
-        if common.is_less_version(isa_version, '2.4.3'):
-            # To be removed when the new version is released
-            if forced == 'true':
-                role.set('value', 'forced')
-            else:
-                if default == 'true':
-                    role.set('value', 'main')
+    adaptation_set = ET.SubElement(
+        period,  # Parent
+        'AdaptationSet',  # Tag
+        lang=text_track.get('language'),
+        codecs=('stpp', 'wvtt')[is_ios8],
+        contentType='text',
+        mimeType=('application/ttml+xml', 'text/vtt')[is_ios8])
+    role = ET.SubElement(
+        adaptation_set,  # Parent
+        'Role',  # Tag
+        schemeIdUri='urn:mpeg:dash:role:2011')
+    # In the future version of InputStream Adaptive, you can set the stream parameters
+    # in the same way as the video stream
+    if common.is_less_version(isa_version, '2.4.3'):
+        # To be removed when the new version is released
+        if forced == 'true':
+            role.set('value', 'forced')
         else:
-            adaptation_set.set('impaired', impaired)
-            adaptation_set.set('forced', forced)
-            adaptation_set.set('default', default)
-            role.set('value', 'subtitle')
+            if default == 'true':
+                role.set('value', 'main')
+    else:
+        adaptation_set.set('impaired', impaired)
+        adaptation_set.set('forced', forced)
+        adaptation_set.set('default', default)
+        role.set('value', 'subtitle')
 
-        representation = ET.SubElement(
-            adaptation_set,  # Parent
-            'Representation',  # Tag
-            nflxProfile=content_profile)
-        _add_base_url(representation,
-                      list(downloadable[content_profile]['downloadUrls'].values())[0])
-
-
-def _add_base_url(representation, base_url):
-    ET.SubElement(representation, 'BaseURL').text = base_url
-
-
-def _add_segment_base(representation, init_length):
-    ET.SubElement(
-        representation,  # Parent
-        'SegmentBase',  # Tag
-        indexRange='0-' + str(init_length),
-        indexRangeExact='true')
+    representation = ET.SubElement(
+        adaptation_set,  # Parent
+        'Representation',  # Tag
+        nflxProfile=content_profile)
+    _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[0])
 
 
 def _get_default_audio_language(manifest):
