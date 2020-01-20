@@ -38,6 +38,10 @@ def get_log_level():
     return __LOG_LEVEL__
 
 
+def is_debug_verbose():
+    return get_log_level() == 'Verbose'
+
+
 def reset_log_level_global_var():
     """Reset log level global var, in order to update the value from settings"""
     # pylint: disable=global-statement
