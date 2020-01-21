@@ -13,6 +13,7 @@ import json
 import base64
 import random
 import subprocess
+import time
 
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -121,9 +122,12 @@ class MSLRequestBuilder(object):
 
 def _add_auth_info(header_data, user_id_token):
     """User authentication identifies the application user associated with a message"""
-    if not user_id_token:
-        credentials = common.get_credentials()
+    if user_id_token and _is_useridtoken_valid(user_id_token):
+        # Authentication with user ID token containing the user identity
+        header_data['useridtoken'] = user_id_token
+    else:
         # Authentication with the user credentials
+        credentials = common.get_credentials()
         header_data['userauthdata'] = {
             'scheme': 'EMAIL_PASSWORD',
             'authdata': {
@@ -131,6 +135,9 @@ def _add_auth_info(header_data, user_id_token):
                 'password': credentials['password']
             }
         }
-    else:
-        # Authentication with user ID token containing the user identity
-        header_data['useridtoken'] = user_id_token
+
+
+def _is_useridtoken_valid(user_id_token):
+    """Check if user id token is not expired"""
+    token_data = json.loads(base64.standard_b64decode(user_id_token['tokendata']))
+    return token_data['expiration'] > time.time()
