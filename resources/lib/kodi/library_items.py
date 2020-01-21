@@ -75,8 +75,8 @@ def _get_library_entry(videoid):
 def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
-    fname = xbmc.makeLegalFilename(filename)
-    untranslated_path = os.path.dirname(fname).decode("utf-8")
+    fname = xbmc.makeLegalFilename(filename).decode("utf-8")
+    untranslated_path = os.path.dirname(fname)
     translated_path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
     shortname = os.path.basename(xbmc.translatePath(fname).decode("utf-8"))
     # We get the data from Kodi library using filters.
