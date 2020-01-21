@@ -542,7 +542,7 @@ msgstr "Per adesso non ci sono ancora dei titoli contenuti..."
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr "Abilita integrazione 'Prossimi video'"
+msgstr "Abilita integrazione con Up Next"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
@@ -959,3 +959,7 @@ msgstr "Limitazione in base alla fascia d'età"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Installa Up Next add-on"
