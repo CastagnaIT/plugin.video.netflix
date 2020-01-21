@@ -91,6 +91,7 @@ def _skin_widget_call(window_cls, prop_nf_service_status):
                 break
             sec_elapsed += 0.5
         debug('Skin widget workaround enabled - time elapsed: {}', sec_elapsed)
+        g.IS_SKIN_CALL = True
         return True
     return False
 

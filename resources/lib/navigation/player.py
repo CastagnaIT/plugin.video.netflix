@@ -72,8 +72,7 @@ def play(videoid):
 
     # Workaround for resuming strm files from library
     resume_position = infos.get('resume', {}).get('position') \
-        if xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') \
-        and g.ADDON.getSettingBool('ResumeManager_enabled') else None
+        if g.IS_SKIN_CALL and g.ADDON.getSettingBool('ResumeManager_enabled') else None
     if resume_position:
         index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
         if index_selected == -1:
