@@ -737,7 +737,7 @@ msgid "Ask to resume the video"
 msgstr "Vraag om het afspelen te hervatten"
 
 msgctxt "#30178"
-msgid "Open UpNext Addon settings"
+msgid "Open Up Next add-on settings"
 msgstr "Open de Up Next add-on instellingen"
 
 msgctxt "#30179"

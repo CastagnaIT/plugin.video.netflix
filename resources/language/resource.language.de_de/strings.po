@@ -737,8 +737,8 @@ msgid "Ask to resume the video"
 msgstr "Frage zum Fortsetzen des Videos"
 
 msgctxt "#30178"
-msgid "Open UpNext Addon settings"
-msgstr "UpNext Addon-Einstellungen öffnen"
+msgid "Open Up Next addon settings"
+msgstr "Up Next addon-einstellungen öffnen"
 
 msgctxt "#30179"
 msgid "Show trailers & more"

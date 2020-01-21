@@ -738,8 +738,8 @@ msgid "Ask to resume the video"
 msgstr "Zatražite da nastavite videozapis"
 
 msgctxt "#30178"
-msgid "Open UpNext Addon settings"
-msgstr "Otvorite postavke UpNext dodatka"
+msgid "Open Up Next add-on settings"
+msgstr "Otvorite postavke Up Next dodatka"
 
 msgctxt "#30179"
 msgid "Show trailers & more"

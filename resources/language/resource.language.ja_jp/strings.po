@@ -737,8 +737,8 @@ msgid "Ask to resume the video"
 msgstr "見る度に聞く"
 
 msgctxt "#30178"
-msgid "Open UpNext Addon settings"
-msgstr "UpNext アドオン設定画面"
+msgid "Open Up Next add-on settings"
+msgstr "Up Next アドオン設定画面"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
