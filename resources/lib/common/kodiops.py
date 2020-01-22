@@ -25,7 +25,7 @@ except NameError:  # Python 3
 LIBRARY_PROPS = {
     'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
                 'episode', 'originaltitle', 'showtitle', 'lastplayed', 'file',
-                'resume', 'dateadded', 'art', 'userrating', 'firstaired'],
+                'resume', 'dateadded', 'art', 'userrating', 'firstaired', 'runtime'],
     'movie': ['title', 'genre', 'year', 'director', 'trailer',
               'tagline', 'plot', 'plotoutline', 'originaltitle', 'lastplayed',
               'playcount', 'writer', 'studio', 'mpaa', 'country',

@@ -38,10 +38,8 @@ JSONRPC_MAPPINGS = {
 }
 
 
-def add_info(videoid, list_item, item, raw_data, set_info=False):
-    """Add infolabels to the list_item. The passed in list_item is modified
-    in place and the infolabels are returned."""
-    # pylint: disable=too-many-locals
+def get_info(videoid, item, raw_data):
+    """Get the infolabels data"""
     cache_identifier = unicode(videoid) + '_' + g.LOCAL_DB.get_profile_config('language', '')
     try:
         cache_entry = g.CACHE.get(cache.CACHE_INFOLABELS, cache_identifier)
@@ -52,6 +50,13 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
         g.CACHE.add(cache.CACHE_INFOLABELS, cache_identifier,
                     {'infos': infos, 'quality_infos': quality_infos},
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
+    return infos, quality_infos
+
+
+def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False):
+    """Add infolabels to the list_item. The passed in list_item is modified
+    in place and the infolabels are returned."""
+    infos, quality_infos = get_info(videoid, item, raw_data)
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
     if videoid.mediatype == common.VideoId.EPISODE or \
@@ -66,21 +71,38 @@ def add_info(videoid, list_item, item, raw_data, set_info=False):
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
         infos_copy['plot'] += '[CR][COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
-    if set_info:
-        list_item.setInfo('video', infos_copy)
+    if handle_highlighted_title:
+        add_highlighted_title(list_item, videoid, infos)
+    list_item.setInfo('video', infos_copy)
     return infos_copy
 
 
-def add_art(videoid, list_item, item, raw_data=None):
-    """Add art infolabels to list_item"""
+def get_art(videoid, item, raw_data=None):
+    """Get art infolabels"""
     try:
         art = g.CACHE.get(cache.CACHE_ARTINFO, videoid)
     except cache.CacheMiss:
         art = parse_art(videoid, item, raw_data)
         g.CACHE.add(cache.CACHE_ARTINFO, videoid, art,
                     ttl=g.CACHE_METADATA_TTL, to_disk=True)
+    return art
+
+
+def add_art(videoid, list_item, item, raw_data=None):
+    """Add art infolabels to list_item"""
+    art = get_art(videoid, item, raw_data)
     list_item.setArt(art)
     return art
+
+
+@common.time_execution(immediate=False)
+def get_info_for_playback(videoid):
+    """Get infolabels and art info"""
+    try:
+        return get_info_from_library(videoid)
+    except library.ItemNotFound:
+        common.debug('Can not get infolabels from the library, submit a request to netflix')
+        return get_info_from_netflix(videoid)
 
 
 @common.time_execution(immediate=False)
@@ -170,7 +192,6 @@ def get_quality_infos(item):
                  delivery.get('hasHD')), 2)]
         quality_infos['audio'] = {
             'channels': 2 + 4 * delivery.get('has51Audio', False)}
-
         if g.ADDON.getSettingBool('enable_dolby_sound'):
             if delivery.get('hasDolbyAtmos', False):
                 quality_infos['audio']['codec'] = 'truehd'
@@ -223,39 +244,59 @@ def _best_art(arts):
     return next((art for art in arts if art), '')
 
 
+def get_info_from_netflix(videoid):
+    """Get infolabels with info from Netflix API"""
+    try:
+        infos = get_info(videoid, None, None)[0]
+        art = get_art(videoid, None)
+        common.debug('Got infolabels and art from cache')
+    except (AttributeError, TypeError):
+        common.debug('Infolabels or art were not in cache, retrieving from API')
+        api_data = api.single_info(videoid)
+        infos = get_info(videoid, api_data['videos'][videoid.value], api_data)[0]
+        art = get_art(videoid, api_data['videos'][videoid.value])
+    return infos, art
+
+
 def add_info_from_netflix(videoid, list_item):
     """Apply infolabels with info from Netflix API"""
     try:
-        infos = add_info(videoid, list_item, None, None, True)
+        infos = add_info(videoid, list_item, None, None)
         art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
     except (AttributeError, TypeError):
         common.debug('Infolabels or art were not in cache, retrieving from API')
         api_data = api.single_info(videoid)
-        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data, True)
+        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data)
         art = add_art(videoid, list_item, api_data['videos'][videoid.value])
+    return infos, art
+
+
+def get_info_from_library(videoid):
+    """Get infolabels with info from Kodi library"""
+    details = library.get_item(videoid)
+    common.debug('Got file info from library: {}'.format(details))
+    art = details.pop('art', {})
+    infos = {
+        'DBID': details.pop('{}id'.format(videoid.mediatype)),
+        'mediatype': videoid.mediatype
+    }
+    infos.update(details)
     return infos, art
 
 
 def add_info_from_library(videoid, list_item):
     """Apply infolabels with info from Kodi library"""
-    details = library.get_item(videoid)
-    common.debug('Got file info from library: {}'.format(details))
-    art = details.pop('art', {})
+    infos, art = get_info_from_library(videoid)
     # Resuming for strm files in library is currently broken in all kodi versions
     # keeping this for reference / in hopes this will get fixed
-    resume = details.pop('resume', {})
+    resume = infos.pop('resume', {})
     # if resume:
     #     start_percent = resume['position'] / resume['total'] * 100.0
     #     list_item.setProperty('startPercent', str(start_percent))
-    infos = {
-        'DBID': details.pop('{}id'.format(videoid.mediatype)),
-        'mediatype': videoid.mediatype
-    }
     # WARNING!! Remove unsupported ListItem.setInfo keys from 'details' by using _sanitize_infos
     # reference to Kodi ListItem.cpp
-    _sanitize_infos(details)
-    infos.update(details)
+    _sanitize_infos(infos)
     list_item.setInfo('video', infos)
     list_item.setArt(art)
     # Workaround for resuming strm files from library

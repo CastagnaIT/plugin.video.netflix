@@ -164,8 +164,7 @@ def get_upnext_info(videoid, current_episode, metadata):
         return {}
 
     common.debug('Next episode is {}', next_episode_id)
-    next_episode = infolabels.add_info_for_playback(next_episode_id,
-                                                    xbmcgui.ListItem())
+    next_episode = infolabels.get_info_for_playback(next_episode_id)
     next_info = {
         'current_episode': _upnext_info(videoid, *current_episode),
         'next_episode': _upnext_info(next_episode_id, *next_episode)
