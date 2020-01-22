@@ -96,23 +96,29 @@ def add_art(videoid, list_item, item, raw_data=None):
 
 
 @common.time_execution(immediate=False)
-def get_info_for_playback(videoid):
+def get_info_for_playback(videoid, skip_add_from_library):
     """Get infolabels and art info"""
-    try:
-        return get_info_from_library(videoid)
-    except library.ItemNotFound:
-        common.debug('Can not get infolabels from the library, submit a request to netflix')
-        return get_info_from_netflix(videoid)
+    # By getting the info from the library you can not get the length of video required for Up Next addon
+    # waiting for a suitable solution we avoid this method by using skip_add_from_library
+    if not skip_add_from_library:
+        try:
+            return get_info_from_library(videoid)
+        except library.ItemNotFound:
+            common.debug('Can not get infolabels from the library, submit a request to netflix')
+    return get_info_from_netflix(videoid)
 
 
 @common.time_execution(immediate=False)
-def add_info_for_playback(videoid, list_item):
+def add_info_for_playback(videoid, list_item, skip_add_from_library):
     """Retrieve infolabels and art info and add them to the list_item"""
-    try:
-        return add_info_from_library(videoid, list_item)
-    except library.ItemNotFound:
-        common.debug('Can not get infolabels from the library, submit a request to netflix')
-        return add_info_from_netflix(videoid, list_item)
+    # By getting the info from the library you can not get the length of video required for Up Next addon
+    # waiting for a suitable solution we avoid this method by using skip_add_from_library
+    if not skip_add_from_library:
+        try:
+            return add_info_from_library(videoid, list_item)
+        except library.ItemNotFound:
+            common.debug('Can not get infolabels from the library, submit a request to netflix')
+    return add_info_from_netflix(videoid, list_item)
 
 
 def parse_info(videoid, item, raw_data):
