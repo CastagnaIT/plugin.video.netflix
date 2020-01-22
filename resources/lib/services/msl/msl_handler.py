@@ -123,6 +123,8 @@ class MSLHandler(object):
                        self.request_builder.handshake_request(esn)))
         header_data = self.request_builder.decrypt_header_data(response['headerdata'], False)
         self.request_builder.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
+        # Reset the user id token
+        self.request_builder.user_id_token = None
         common.debug('Key handshake successful')
         return True
 
