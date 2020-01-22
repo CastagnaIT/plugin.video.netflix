@@ -737,8 +737,8 @@ msgid "Ask to resume the video"
 msgstr "Frage zum Fortsetzen des Videos"
 
 msgctxt "#30178"
-msgid "Open Up Next addon settings"
-msgstr "Up Next addon-einstellungen öffnen"
+msgid "Open Up Next add-on settings"
+msgstr "Up Next Addon-Einstellungen öffnen"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
@@ -959,3 +959,7 @@ msgstr "Einschränkung nach Alterseinstufung"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Um den Inhalt für {} abzuspielen ist die Eingabe Ihrer PIN erforderlich."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Up Next Addon installieren"
