@@ -52,6 +52,7 @@ class InputstreamError(Exception):
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     common.info('Playing {}', videoid)
+    is_up_next_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
     metadata = [{}, {}]
     try:
         metadata = api.metadata(videoid)
@@ -68,7 +69,7 @@ def play(videoid):
         return
 
     list_item = get_inputstream_listitem(videoid)
-    infos, art = infolabels.add_info_for_playback(videoid, list_item)
+    infos, art = infolabels.add_info_for_playback(videoid, list_item, is_up_next_enabled)
 
     # Workaround for resuming strm files from library
     resume_position = infos.get('resume', {}).get('position') \
@@ -89,8 +90,7 @@ def play(videoid):
         succeeded=True,
         listitem=list_item)
 
-    upnext_info = get_upnext_info(videoid, (infos, art), metadata) \
-        if g.ADDON.getSettingBool('UpNextNotifier_enabled') else None
+    upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
 
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
@@ -164,7 +164,7 @@ def get_upnext_info(videoid, current_episode, metadata):
         return {}
 
     common.debug('Next episode is {}', next_episode_id)
-    next_episode = infolabels.get_info_for_playback(next_episode_id)
+    next_episode = infolabels.get_info_for_playback(next_episode_id, True)
     next_info = {
         'current_episode': _upnext_info(videoid, *current_episode),
         'next_episode': _upnext_info(next_episode_id, *next_episode)
@@ -208,7 +208,7 @@ def _find_next_episode(videoid, metadata):
 
 def _upnext_info(videoid, infos, art):
     """Create a data dict for upnext signal"""
-    # Double check to 'rating' key, sometime can be an empty string, not accepted by UpNext Addon
+    # Double check to 'rating' key, sometime can be an empty string, not accepted by Up Next add-on
     rating = infos.get('rating', None)
     return {
         'episodeid': videoid.episodeid,
@@ -225,6 +225,7 @@ def _upnext_info(videoid, infos, art):
         'plot': infos['plot'],
         'showtitle': infos['tvshowtitle'],
         'playcount': infos.get('playcount', 0),
+        'runtime': infos['duration'],
         'season': infos['season'],
         'episode': infos['episode'],
         'rating': rating if rating else None,
