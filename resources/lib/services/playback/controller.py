@@ -89,6 +89,8 @@ class PlaybackController(xbmc.Monitor):
         self.active_player_id = player_id
         self._notify_all(PlaybackActionManager.on_playback_started,
                          self._get_player_state())
+        if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
+            common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
 
     def _on_playback_stopped(self):
         self.tracking = False

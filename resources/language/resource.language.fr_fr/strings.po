@@ -317,8 +317,8 @@ msgid "Only start after 5 minutes of idle"
 msgstr "Démarrer uniquement après 5 minutes d'inactivité"
 
 msgctxt "#30073"
-msgid "Check every X minutes if update scheduled"
-msgstr "Vérifier toutes les X minutes si une mise à jour est programmée"
+msgid "Always show codec information during video playback"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"

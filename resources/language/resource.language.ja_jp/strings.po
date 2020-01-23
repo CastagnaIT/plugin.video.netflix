@@ -317,8 +317,8 @@ msgid "Only start after 5 minutes of idle"
 msgstr "5分以上何もしなかったら"
 
 msgctxt "#30073"
-msgid "Check every X minutes if update scheduled"
-msgstr "何分毎に更新を確認しましょうか。"
+msgid "Always show codec information during video playback"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"

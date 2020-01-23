@@ -317,8 +317,8 @@ msgid "Only start after 5 minutes of idle"
 msgstr "Nur nach 5 Minuten vorherigem Leerlauf starten"
 
 msgctxt "#30073"
-msgid "Check every X minutes if update scheduled"
-msgstr "Prüfe alle X Minuten ob Startzeitpunkt erreicht"
+msgid "Always show codec information during video playback"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"

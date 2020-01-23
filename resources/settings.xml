@@ -133,6 +133,7 @@
     <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="enable_timing" type="bool" label="30134" default="false"/>
+    <setting id="show_codec_info" type="bool" label="30073" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
     <setting label="30117" type="lsep"/><!--Cache-->

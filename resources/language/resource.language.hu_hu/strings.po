@@ -317,8 +317,8 @@ msgid "Only start after 5 minutes of idle"
 msgstr "Indítás ha 5 percig készenlétben van"
 
 msgctxt "#30073"
-msgid "Check every X minutes if update scheduled"
-msgstr "Frissítési időköz ellőrzése minden x percben"
+msgid "Always show codec information during video playback"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"
