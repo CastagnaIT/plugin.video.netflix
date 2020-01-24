@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-12-14 19:35+0000\n"
+"PO-Revision-Date: 2020-01-24 01:45+0000\n"
 "Last-Translator: J.M. Pongilioni ('boblo' @ Kodi Forums) <djinn2k2@gmail.com>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "Error al iniciar sesión"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Por favor, comprueba tus credenciales"
+msgstr "Por favor, comprueba tu e-mail y contraseña"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
@@ -158,7 +158,7 @@ msgstr "Seguimiento"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "Habilitar Dolby Digital Plus ((DDPlus HQ y Atmos en Premium)"
+msgstr "Habilitar Dolby Digital Plus (DDPlus HQ y Atmos en Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
@@ -242,7 +242,7 @@ msgstr "Inicio de sesión automático"
 
 msgctxt "#30054"
 msgid "Enable Auto Login"
-msgstr "Habilitar inicio de sesión auto."
+msgstr "Habilitar inicio de sesión automático"
 
 msgctxt "#30055"
 msgid "Profile"
@@ -318,7 +318,7 @@ msgstr "Iniciar sólo después de 5 minutos de inactividad"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Mostrar siempre información del códec durante la reproducción"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -326,15 +326,15 @@ msgstr "Vista para los exportados"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Preguntar si saltar intro y resumen"
+msgstr "Preguntar si omitir intro y resumen"
 
 msgctxt "#30076"
 msgid "Skip intro"
-msgstr "Saltar intro"
+msgstr "Omitir intro"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Saltar resumen"
+msgstr "Omitir resumen"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -342,11 +342,11 @@ msgstr "Reproducción"
 
 msgctxt "#30079"
 msgid "Skip automatically"
-msgstr "Saltar automáticamente"
+msgstr "Omitir automáticamente"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Pausar al saltar"
+msgstr "Pausar al omitir"
 
 msgctxt "#30081"
 msgid "Force support of HDCP 2.2 (enable 4K content)"
@@ -498,7 +498,7 @@ msgstr "Caché"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
-msgstr "Error en la operación API: {}"
+msgstr "Error en la operación de la API: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
@@ -546,7 +546,7 @@ msgstr "Habilitar integración con Up Next"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
-msgstr "Mostrar notificación en lugar de diálogo modal para los errores"
+msgstr "Mostrar notificación en lugar de diálogo modal en los errores"
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -586,7 +586,7 @@ msgstr "Habilitar IPC sobre HTTP (usar al experimentar interrupciones en Addon S
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
-msgstr "Migrar biblioteca al nuevo formato"
+msgstr "Migrar la biblioteca al nuevo formato"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -690,7 +690,7 @@ msgstr "Vista para Mi lista"
 
 msgctxt "#30166"
 msgid "Main menu items"
-msgstr "Elementos del menú principal"
+msgstr "Eltos. del menú principal"
 
 msgctxt "#30167"
 msgid "My list"
@@ -959,3 +959,7 @@ msgstr "Restringir por grado de madurez"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "El contenido para {} requerirá el PIN para iniciar la reproducción."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instalar complemento Up Next"
