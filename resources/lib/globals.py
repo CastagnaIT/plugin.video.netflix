@@ -115,7 +115,7 @@ class GlobalVariables(object):
                             'description_id': 30164,
                             'icon': 'DefaultTVShows.png'}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
-                             'lolomo_contexts': ['similars', 'becauseYouAdded'],
+                             'lolomo_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked'],
                              'lolomo_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
