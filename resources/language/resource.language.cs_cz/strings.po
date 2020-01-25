@@ -318,7 +318,7 @@ msgstr "Začít až po 5 minutách nečinnosti"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Vždy zobrazovat informace o kodeku při přehrávání videa"
 
 msgctxt "#30074"
 msgid "View for exported"
