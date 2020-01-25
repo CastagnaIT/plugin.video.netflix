@@ -318,7 +318,7 @@ msgstr "Nur nach 5 Minuten vorherigem Leerlauf starten"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Immer Codec-Information während Video-Wiedergabe anzeigen"
 
 msgctxt "#30074"
 msgid "View for exported"
