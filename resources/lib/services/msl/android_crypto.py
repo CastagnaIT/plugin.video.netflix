@@ -15,7 +15,8 @@ import json
 import xbmcdrm
 
 import resources.lib.common as common
-
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
 from .base_crypto import MSLBaseCrypto
 from .exceptions import MSLError
 
@@ -26,8 +27,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         # pylint: disable=broad-except
         try:
             self.crypto_session = xbmcdrm.CryptoSession(
-                'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed', 'AES/CBC/NoPadding',
-                'HmacSHA256')
+                'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed', 'AES/CBC/NoPadding', 'HmacSHA256')
             common.debug('Widevine CryptoSession successful constructed')
         except Exception:
             import traceback
@@ -38,18 +38,34 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             super(AndroidMSLCrypto, self).__init__(msl_data)
             self.keyset_id = base64.standard_b64decode(msl_data['key_set_id'])
             self.key_id = base64.standard_b64decode(msl_data['key_id'])
-            self.hmac_key_id = base64.standard_b64decode(
-                msl_data['hmac_key_id'])
+            self.hmac_key_id = base64.standard_b64decode(msl_data['hmac_key_id'])
             self.crypto_session.RestoreKeys(self.keyset_id)
         except Exception:
             self.keyset_id = None
             self.key_id = None
             self.hmac_key_id = None
 
-        common.debug('Widevine CryptoSession systemId: {}',
-                     self.crypto_session.GetPropertyString('systemId'))
-        common.debug('Widevine CryptoSession algorithms: {}',
-                     self.crypto_session.GetPropertyString('algorithms'))
+        drm_info = {
+            'version': self.crypto_session.GetPropertyString('version'),
+            'system_id': self.crypto_session.GetPropertyString('systemId'),
+            #  'device_unique_id': self.crypto_session.GetPropertyByteArray('deviceUniqueId')
+            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),
+            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),
+            'security_level': self.crypto_session.GetPropertyString('securityLevel')
+        }
+
+        g.LOCAL_DB.set_value('drm_system_id', drm_info['system_id'], TABLE_SESSION)
+
+        common.debug('Widevine version: {}', drm_info['version'])
+        if drm_info['system_id']:
+            common.debug('Widevine CryptoSession system id: {}', drm_info['system_id'])
+        else:
+            common.warn('Widevine CryptoSession system id not obtained!')
+        common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
+        common.debug('Widevine CryptoSession hdcp level from {} to {}',
+                     drm_info['hdcp_level'],
+                     drm_info['hdcp_level_max'])
+        common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
 
     def __del__(self):
         self.crypto_session = None
