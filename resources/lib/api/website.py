@@ -271,6 +271,9 @@ def generate_esn(user_data):
             esn += '{:=<5.5}'.format(manufacturer.upper())
             esn += model.replace(' ', '=').upper()
             esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
+            system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+            if system_id:
+                esn += '-' + str(system_id) + '-'
             common.debug('Android generated ESN: {}', esn)
             return esn
     except OSError:
