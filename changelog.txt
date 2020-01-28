@@ -1,3 +1,15 @@
+v0.16.2 (2020-01-07)
+-Improved add-on startup
+-Improved loading of profiles list
+-Added in expert setting a choice to speed up service or addon startup
+-Fixed an issue that causing addon misbehaviour using multiple Kodi profiles
+-Fixed an issue that causing addon breakage with sqlite connections
+-Fixed some python 3 issues on Android
+-Handled cases of metadata not available
+-Permanently removed sharing Kodi videos settings between profiles
+-Updated de, es, it translations
+-Minor improvements
+
 v0.16.1 (2019-12-14)
 -Allowed to export individual seasons to the library (manual mode)
 -Dolby atmos audio streams are now specified (Kodi 19)
