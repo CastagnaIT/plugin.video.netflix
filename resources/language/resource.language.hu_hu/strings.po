@@ -318,7 +318,7 @@ msgstr "Indítás ha 5 percig készenlétben van"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Kodek infó mutatása folyamatosan a videólejátszás közben"
 
 msgctxt "#30074"
 msgid "View for exported"
