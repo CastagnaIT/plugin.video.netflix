@@ -333,6 +333,21 @@ def remove_html_tags(raw_html):
     return text
 
 
+def is_device_4k_capable():
+    """Check if the device is 4k capable"""
+    # Currently only on android is it possible to use 4K
+    if get_system_platform() == 'android':
+        from re import findall
+        from resources.lib.database.db_utils import TABLE_SESSION
+        # Check if the drm has security level L1
+        is_drm_l1_security_level = g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+        # Check if HDCP level is 2.2 or up
+        drm_hdcp_level = findall('\\d+\\.\\d+', g.LOCAL_DB.get_value('drm_hdcp_level', '', table=TABLE_SESSION))
+        hdcp_4k_capable = drm_hdcp_level and float(drm_hdcp_level[0]) >= 2.2
+        return is_drm_l1_security_level and hdcp_4k_capable
+    return False
+
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
