@@ -344,6 +344,13 @@ def remove_html_tags(raw_html):
     return text
 
 
+def censure(value, length=3):
+    """Censor part of the string with asterisks"""
+    if not value:
+        return value
+    return value[:-length] + '*' * length
+
+
 def is_device_4k_capable():
     """Check if the device is 4k capable"""
     # Currently only on android is it possible to use 4K
