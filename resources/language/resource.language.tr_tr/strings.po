@@ -1,0 +1,965 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
+"POT-Creation-Date: 2020-01-20 16:15+0000\n"
+"PO-Revision-Date: 2020-01-31 20:40+0000\n"
+"Last-Translator: Snn1452 <>\n"
+"Language-Team: Turkish (Turkey)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_tr\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Addon"
+msgstr "Netflix VOD Hizmetleri Eklentisi"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Bu eklentinin bazı bölümleri ikamet ettiğiniz ülkede yasal olmayabilir - lütfen yüklemeden önce yerel yasalarınıza bakın."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Önerilenler"
+
+msgctxt "#30002"
+msgid "Enter PIN to watch restricted content"
+msgstr "Kısıtlanmış içeriği izlemek için PIN kodunu girin"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Arama terimi"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Şifre"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "E-posta"
+
+msgctxt "#30006"
+msgid "Incorrect PIN. Try again."
+msgstr "Yanlış PIN. Tekrar deneyin."
+
+msgctxt "#30007"
+msgid "Parental Control PIN (4 digits)"
+msgstr "Ebeveyn Kontrolü PIN kodu (4 basamaklı)"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Giriş başarısız"
+
+msgctxt "#30009"
+msgid "Please check your e-mail and password"
+msgstr "Lütfen e-postanızı ve şifrenizi kontrol edin"
+
+msgctxt "#30010"
+msgid "Lists of all kinds"
+msgstr "Her türlü liste"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Ara"
+
+msgctxt "#30012"
+msgid "No seasons available"
+msgstr "Sezon mevcut değil"
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Hiçbir sonuç bulunamadı"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Hesap"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Diğer seçenekler"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Çıkış yap"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Kitaplığa aktar"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Netflix'te Derecelendir"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "'Listem'den kaldır"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "'Listem'e ekle"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(0 ile 10 arasında)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Uzman"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "SSL doğrulaması"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Kitaplık"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Özel kitaplık klasörünü etkinleştir"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Özel kitaplık yolu"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Oynatma hatası"
+
+msgctxt "#30029"
+msgid "Missing InputStream addon"
+msgstr "InputStream eklentisi eksik"
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Kitaplıktan kaldır"
+
+msgctxt "#30031"
+msgid "General"
+msgstr "Genel"
+
+msgctxt "#30032"
+msgid "Tracking"
+msgstr "Takip et"
+
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Dolby Digital Plus'ı etkinleştir (Premium'da DDPlus HQ ve Atmos)"
+
+msgctxt "#30034"
+msgid "Manual ESN"
+msgstr "Elle ESN gir"
+
+msgctxt "#30035"
+msgid "InputStream Adaptive settings..."
+msgstr "InputStream Adaptive ayarları..."
+
+msgctxt "#30036"
+msgid "Always use the original title on export"
+msgstr "Dışa aktarımda her zaman orijinal başlığı kullan"
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Görünümler"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Özel görünümleri etkinleştir"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Klasörler için görünüm"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Filmler için görünüm"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "TV Programları için görünüm"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Sezonlar için görünüm"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Bölümler için görünüm"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Profiller için görünüm"
+
+msgctxt "#30045"
+msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
+msgstr "Başparmak oyu kaldırıldı|Başparmak aşağı oyu verdiniz|Başparmak yukarı oyu verdiniz"
+
+msgctxt "#30046"
+msgid "InputStream addon is not enabled"
+msgstr "InputStream eklentisi etkin değil"
+
+msgctxt "#30047"
+msgid "Finally remove?"
+msgstr "Sonunda kaldırılsın mı?"
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Dışa aktarılan"
+
+msgctxt "#30049"
+msgid "Update DB"
+msgstr "DB'yi Güncelle"
+
+msgctxt "#30050"
+msgid "Update successful"
+msgstr "Güncelleme tamamlandı"
+
+msgctxt "#30051"
+msgid "Request Error"
+msgstr "İstek Hatası"
+
+msgctxt "#30052"
+msgid "Unable to complete the request at this time"
+msgstr "İstek şu anda tamamlanamıyor"
+
+msgctxt "#30053"
+msgid "Auto Login"
+msgstr "Otomatik Giriş Yap"
+
+msgctxt "#30054"
+msgid "Enable Auto Login"
+msgstr "Otomatik Girişi Etkinleştir"
+
+msgctxt "#30055"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#30056"
+msgid "ID"
+msgstr "Kimlik"
+
+msgctxt "#30057"
+msgid "Select profile in profile listing -> context menu"
+msgstr "Profil listesinden profil seçin -> içerik menüsü"
+
+msgctxt "#30058"
+msgid "Auto Login enabled!"
+msgstr "Otomatik Giriş etkin!"
+
+msgctxt "#30059"
+msgid "Switch accounts"
+msgstr "Hesap değiştir"
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "HEVC profillerini etkinleştir (Android / HDR / DolbyVision için 4k)"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Kitaplık içi güncelleme"
+
+msgctxt "#30062"
+msgid "Parental controls"
+msgstr "Ebeveyn denetimleri"
+
+msgctxt "#30063"
+msgid "new episodes added to library"
+msgstr "kütüphaneye yeni bölümler eklendi"
+
+msgctxt "#30064"
+msgid "Perform auto-update"
+msgstr "Otomatik güncelleme gerçekleştir"
+
+msgctxt "#30065"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr "TV Programlarının sezonlarını ve bölümlerini otomatik güncelleme"
+
+msgctxt "#30066"
+msgid "Debug logging level"
+msgstr "Hata ayıklama günlük kaydı düzeyi"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "günlük"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "iki günde bir"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "5 günde bir"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "haftalık"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Gün İçinde"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Yalnızca 5 dakikalık gecikmeden sonra başlat"
+
+msgctxt "#30073"
+msgid "Always show codec information during video playback"
+msgstr "Video oynatımı sırasında her zaman codec bilgilerini göster"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Dışa aktarılanlar için görünüm"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Tanıtımı ve özeti atlamayı sor"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Tanıtımı atla"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Özeti geç"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Oynatıcı"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Otomatik atla"
+
+msgctxt "#30080"
+msgid "Pause when skipping"
+msgstr "Atlarken duraklat"
+
+msgctxt "#30081"
+msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgstr "HDCP 2.2 desteğini zorla (4K içeriği etkinleştir)"
+
+msgctxt "#30082"
+msgid "Remember audio / subtitle preferences"
+msgstr "Ses / altyazı tercihlerini hatırla"
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr "Kütüphane öğeleri için yer imlerini kaydet / izlendiğinde işaretle"
+
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Önbellek öğesi yaşam-süresi (dakika)"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Metaveri için önbellek öğesi yaşam-süresi (gün)"
+
+msgctxt "#30086"
+msgid "Invalidate entire cache on modification of My List"
+msgstr "Listemde değişiklik yapıldığında önbelleğin tamamını geçersiz kıl"
+
+msgctxt "#30087"
+msgid "Contains {} and more..."
+msgstr "{} ve daha fazlasını içerir..."
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr "İlgili içeriğe göz atın"
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr "Alt türlere göz atın"
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr "İlgili video listelerine göz atın ve daha fazla içerik keşfedin."
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr "Kodi kütüphanesine aktarılan içeriklere göz atın ve bunları yönetin."
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr "İçerik arayın ve izlemek istediklerinizi kolayca bulun."
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr "İçeriğe türe göre göz atın ve ilgili içeriği kolayca keşfedin."
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr "Önerilere göz atın ve hoşunuza gidebilecek yeni bir şey edinin."
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr "Tüm TV Programları"
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr "Tüm Filmler"
+
+msgctxt "#30097"
+msgid "Main Menu"
+msgstr "Ana Menü"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "HDR profillerini ektinleştir"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "DolbyVision profillerini etkinleştir"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "\"{}\" için sonuçlar"
+
+msgctxt "#30101"
+msgid "Netflix returned an unknown error."
+msgstr "Netflix bilinmeyen bir hata döndürdü."
+
+msgctxt "#30102"
+msgid "Netflix returned the following error:"
+msgstr "Netflix aşağıdaki hatayı döndürdü:"
+
+msgctxt "#30103"
+msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen GitHub üzerinden bildirin. Lütfen hata raporunuzla birlikte tam bir hata ayıklama günlüğü sağlayın (Kodi ayarlarında \"Hata Ayıklama Günlüğü\"nü etkinleştirin)."
+
+msgctxt "#30104"
+msgid "The addon encountered the following error:"
+msgstr "Eklenti şu hatayla karşılaştı:"
+
+msgctxt "#30105"
+msgid "Netflix Addon Error"
+msgstr "Netflix Eklenti Hatası"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Geçersiz PIN"
+
+msgctxt "#30107"
+msgid "PIN protection is off."
+msgstr "PIN koruması kapalı."
+
+msgctxt "#30108"
+msgid "All content is protected by PIN."
+msgstr "Tüm içerik PIN ile korunmaktadır."
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Giriş başarılı"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Arka plan hizmetleri başladı"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "İçerik yok"
+
+msgctxt "#30112"
+msgid "You need to be logged in to use Netflix"
+msgstr "Netflix'i kullanmak için giriş yapmalısınız"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Çıkış başarılı"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "Listemi ve Kodi Kitaplığını senkronize halde tut"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "İçerik Profilleri"
+
+msgctxt "#30116"
+msgid "Advanced Addon Configuration"
+msgstr "Gelişmiş Eklenti Yapılandırması"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Önbellek"
+
+msgctxt "#30118"
+msgid "API operation failed: {}"
+msgstr "API işlemi başarısız oldu: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Listem işlemi başarılı"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Bir sezon Kodi kitaplığından otomatik olarak kaldırılamıyor, lütfen manuel olarak yapın"
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Şimdi tam senkronizasyon gerçekleştir"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Listemi Kodi kitaplığı ile senkronize et"
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr "Gerçekten devam etmek istiyor musunuz?\Bu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
+
+msgctxt "#30124"
+msgid "Do you really want to remove this item?"
+msgstr "Bu öğeyi gerçekten kaldırmak istiyor musunuz?"
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Kitaplığı temizle"
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr "Kitaplığınızı gerçekten temizlemek istiyor musunuz?\nTüm dışa aktarılan öğeler silinecek."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Verilen derecelendirme {}"
+
+msgctxt "#30128"
+msgid "No contained titles yet..."
+msgstr "Henüz hiç başlık yok..."
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "Sonraki entegrasyonunu etkinleştir"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Hatalar için kalıcı iletişim kutusu yerine bildirim göster"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "Ayrıntılı bilgi için günlük dosyasına bakın"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "Bellek içindeki önbelleği temizle"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "Bellek içindeki ve disk üzerindeki önbelleği temizle"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "Yürütme zamanlamasını etkinleştir"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Önbellek temizlendi"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "1080p Kilidini Açmayı Etkinleştir (Android için önerilmez)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "VP9 profillerini etkinleştir (yapay nesnelere neden oluyorsa devre dışı bırak)"
+
+msgctxt "#30138"
+msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgstr "Kodi/Eklenti'yi yeni başlattıysanız, arka plan hizmetleri henüz kullanılamayabilir. Bu durumda, biraz sonra tekrar deneyin."
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "HTTP üzerinden IPC'yi etkinleştir (Eklenti Sinyalleri zaman aşımı mesajları görüntülendiğinde kullanın)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Kitaplığı yeni formata geçir"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Başlangıç ​​bildirimini devre dışı bırak"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Özel"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "Özel görünüm kimliği"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "WebVTT altyazı desteğini devre dışı bırak"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Son eklenen"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Son eklenen içeriği keşfedin."
+
+msgctxt "#30147"
+msgid "Next page >>"
+msgstr "Sonraki sayfa >>"
+
+msgctxt "#30148"
+msgid "<< Previous page"
+msgstr "<< Önceki sayfa"
+
+msgctxt "#30149"
+msgid "Sort results by"
+msgstr "Sonuçları sırala"
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "Alfabetik sıralama (A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "Alfabetik sıralama (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Senin için öneriler"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Çıkış yılı"
+
+msgctxt "#30154"
+msgid "Netflix addon configuration"
+msgstr "Netflix eklenti yapılandırması"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Netflix Premium hesabınız var mı?"
+
+msgctxt "#30156"
+msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgstr "Cihazınız 4K standardını destekliyor mu?\r\nCihaz şunları yapmalıdır:\r\nNetflix sertifikalı olmalı, Widevine Güvenlik seviyesi L1 desteği ve 4K ekran HDCP 2.2 olmalıdır"
+
+msgctxt "#30157"
+msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgstr "InputStream Adaptive ayarlarının paneli şimdi açılacak, böylece \"HDCP durumunu geçersiz kıl\" seçeneğini AÇIK olarak değiştirmeniz gerekir"
+
+msgctxt "#30158"
+msgid "Show configuration screen at addon startup"
+msgstr "Eklenti başlangıcında yapılandırma ekranını göster"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Ana menü için görünüm"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Arama için görünüm"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Dışa aktarılan için görünüm"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Son kullanılan"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Sesli betimleme "
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Sesli betimlemeli içeriklere göz atın."
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Listem için görünüm"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Ana menü öğeleri"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Listem"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "İzlemeye devam et"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "En iyi seçimler"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Yeni çıkanlar"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Gündemdekiler"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Netflix'te Popüler"
+
+msgctxt "#30173"
+msgid "Netflix Originals"
+msgstr "Netflix Orijinalleri"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "TV Programı türleri"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Film türleri"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "STRM devam etme çözümünü etkinleştir (yalnızca kitaplık)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Video'ya devam etmeyi iste"
+
+msgctxt "#30178"
+msgid "Open Up Next add-on settings"
+msgstr "Up Next eklenti ayarlarını aç"
+
+msgctxt "#30179"
+msgid "Show trailers & more"
+msgstr "Fragmanlar & daha fazlasını göster"
+
+msgctxt "#30180"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "Giriş ile ilgili bir sorun oluştu, hesabınızın onaylanmamış veya yenilenmemiş olması mümkündür."
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Zorunlu altyazı akışı yoksa altyazıları devre dışı bırak (Sadece Kodi Yürütücü \"Yalnızca zorunlu\" altyazı olarak ayarlanmışsa çalışır)"
+
+msgctxt "#30182"
+msgid "Export NFO files"
+msgstr "NFO dosyalarını dışa aktar"
+
+msgctxt "#30183"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "{} için NFO dosyalarını dışa aktarmak istiyor musunuz?"
+
+msgctxt "#30184"
+msgid "NFO Files"
+msgstr "NFO Dosyaları"
+
+msgctxt "#30185"
+msgid "Enable NFO files export"
+msgstr "NFO dosyalarını dışa aktarmayı etkinleştir"
+
+msgctxt "#30186"
+msgid "For Movies"
+msgstr "Filmler için"
+
+msgctxt "#30187"
+msgid "For TV Show"
+msgstr "TV Programları için"
+
+msgctxt "#30188"
+msgid "Ask"
+msgstr "Sor"
+
+msgctxt "#30189"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#30190"
+msgid "TV show"
+msgstr "TV programı"
+
+msgctxt "#30191"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "'Listem'e eklenen {} için NFO dosyalarını dışa aktarmak istiyor musunuz?"
+
+msgctxt "#30192"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nBu dosyalar, bonus bölümleri veya yönetmenin kesimi gibi yararlı olan, filmler ve tv programları bilgilerini entegre etmek için sağlanan bilgileri bilgi sağlayıcıları tarafından kullanır"
+
+msgctxt "#30193"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Tüm bilgileri NFO dosyalarına dahil et (yalnızca 'Yerel Bilgiler' kazıyıcı ile kullanın)"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Video akışı çözünürlüğünü"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Yeni bölümleri dışa aktar"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Otomatik güncellemeden hariç tut"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Otomatik güncellemeye dahil et"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Yeni bölümleri dışa aktar"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Paylaşılan kitaplık (Kodi MySQL sunucusu gerekli)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "MySQL paylaşılan kitaplık veritabanını kullan"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Kullanıcı Adı"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "MySQL veritabanına bağlantı başarılı"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "Ana Makine IP'si"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Bağlantı Noktası"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Veritabanı bağlantısını test et"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "HATA: MySQL veritabanına erişilemiyor - yerel veritabanı kullanılacak"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Bu cihazı ana otomatik güncelleme yöneticisi olarak ayarla"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Bu cihazın ana otomatik güncelleme yöneticisi olup olmadığını kontrol et"
+
+msgctxt "#30209"
+msgid "This device now handles the auto-updates of shared-library"
+msgstr "Bu cihaz artık paylaşılan kitaplığın otomatik güncellemelerini yönetiyor"
+
+msgctxt "#30210"
+msgid "This device handles the auto-updates of shared-library"
+msgstr "Bu cihaz paylaşılan kitaplığın otomatik güncellemelerini yönetir"
+
+msgctxt "#30211"
+msgid "Another device handles the auto-updates of shared-library"
+msgstr "Başka bir cihaz paylaşılan kitaplığın otomatik güncellemelerini yönetir"
+
+msgctxt "#30212"
+msgid "There is no device that handles the auto-updates of shared-library"
+msgstr "Paylaşılan kitaplığın otomatik güncellemelerini işleyen bir cihaz yok"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "InputStream Helper ayarları..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Listemin güncellenmesini zorla"
+
+msgctxt "#30215"
+msgid "Highlight titles included in my list with a color"
+msgstr "Listeme dahil edilen başlıkları bir renkle vurgula"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Kullanılan ESN'yi göster"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "ESN'yi sıfırla"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "ESN'yi sıfırlamak istediğinizden emin misiniz?\r\nOnaylanırsanız, giriş mesajını alana kadar bekleyin."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Senkronizasyon tamamlandı için bildirimi devre dışı bırak"
+
+msgctxt "#30220"
+msgid "The Kodi library has been updated"
+msgstr "Kodi kitaplığı güncellendi"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Sahip hesabı"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Çocuk hesabı"
+
+msgctxt "#30223"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "Senkronizasyon artık {} profilinin \"Listem\"'ini kullanıyor"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Otomatik güncelleme modu"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Elle"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Tarifeli"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Kodi kitaplığını Listem ile senkronize et"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Geçerli profilin \"Listem\"'ini kullan"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Seçilen profilin adını göster"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Güncellemeleri kontrol et"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Güncellemeyi şimdi kontrol etmek istiyor musunuz?"
+
+msgctxt "#30232"
+msgid "Restrict by Maturity Level"
+msgstr "Olgunluk Seviyesine Göre Kısıtla"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gerektirir."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Up Next Eklentisini Yükle"
