@@ -89,21 +89,30 @@ def get_class_methods(class_item=None):
             if isinstance(y, _type)]
 
 
-def get_user_agent():
+def get_user_agent(enable_android_mediaflag_fix=False):
     """
     Determines the user agent string for the current platform.
-    Needed to retrieve a valid ESN (except for Android, where the ESN can
-    be generated locally)
+    Needed to retrieve a valid ESN (except for Android, where the ESN can be generated locally)
 
     :returns: str -- User agent string
     """
     import platform
+    system = platform.system()
+    if enable_android_mediaflag_fix and get_system_platform() == 'android' and is_device_4k_capable():
+        # The UA affects not only the ESNs in the login, but also the video details,
+        # so the UAs seem refer to exactly to these conditions: https://help.netflix.com/en/node/23742
+        # This workaround is needed because currently we do not login through the netflix native android API,
+        # but redirect everything through the website APIs, and the website APIs do not really support android.
+        # Then on android usually we use the 'arm' UA which refers to chrome os, but this is limited to 1080P, so the
+        # labels on the 4K devices appears wrong (in the Kodi skin the 4K videos have 1080P media flags instead of 4K),
+        # the Windows UA is not limited, so we can use it to get the right video media flags.
+        system = 'Windows'
+
     chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
     base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
-    system = platform.system()
     # Mac OSX
     if system == 'Darwin':
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
