@@ -260,14 +260,17 @@ def generate_esn(user_data):
                 ['/system/bin/getprop',
                  'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
 
-            esn = ('NFANDROID2-PRV-' if has_product_characteristics_tv else 'NFANDROID1-PRV-')
-            if has_product_characteristics_tv:
+            if has_product_characteristics_tv and \
+                    g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                esn = 'NFANDROID2-PRV-'
                 if nrdp_modelgroup:
                     esn += nrdp_modelgroup + '-'
                 else:
                     esn += model.replace(' ', '').upper() + '-'
             else:
+                esn = 'NFANDROID1-PRV-'
                 esn += 'T-L3-'
+
             esn += '{:=<5.5}'.format(manufacturer.upper())
             esn += model.replace(' ', '=').upper()
             esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
