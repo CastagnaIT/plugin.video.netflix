@@ -17,7 +17,7 @@ import xbmcaddon
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
-from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info
+from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info, build_request_data
 
 from .request_builder import MSLRequestBuilder
 from .profiles import enabled_profiles
@@ -124,53 +124,45 @@ class MSLHandler(MSLHandlerBase):
         if g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
             hdcp_version = ['2.2']
 
-        timestamp = int(time.time() * 10000)
-        manifest_request_data = {
-            'version': 2,
-            'url': '/manifest',
-            'id': timestamp,
-            'languages': [g.LOCAL_DB.get_value('locale_id')],
-            'params': {
-                'type': 'standard',
-                'viewableId': [viewable_id],
-                'profiles': profiles,
-                'flavor': 'PRE_FETCH',
-                'drmType': 'widevine',
-                'drmVersion': 25,
-                'usePsshBox': True,
-                'isBranching': False,
-                'isNonMember': False,
-                'isUIAutoPlay': False,
-                'useHttpsStreams': True,
-                'imageSubtitleHeight': 1080,
-                'uiVersion': 'shakti-v93016808',
-                'uiPlatform': 'SHAKTI',
-                'clientVersion': '6.0016.426.011',
-                'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
-                'supportsPreReleasePin': True,
-                'supportsWatermark': True,
-                'supportsUnequalizedDownloadables': True,
-                'showAllSubDubTracks': False,
-                'titleSpecificData': {
-                    viewable_id: {
-                        'unletterboxed': True
-                    }
-                },
-                'videoOutputInfo': [{
-                    'type': 'DigitalVideoOutputDescriptor',
-                    'outputType': 'unknown',
-                    'supportedHdcpVersions': hdcp_version,
-                    'isHdcpEngaged': hdcp
-                }],
-                'preferAssistiveAudio': False
+        params = {
+            'type': 'standard',
+            'viewableId': [viewable_id],
+            'profiles': profiles,
+            'flavor': 'PRE_FETCH',
+            'drmType': 'widevine',
+            'drmVersion': 25,
+            'usePsshBox': True,
+            'isBranching': False,
+            'isNonMember': False,
+            'isUIAutoPlay': False,
+            'useHttpsStreams': True,
+            'imageSubtitleHeight': 1080,
+            'uiVersion': 'shakti-v93016808',
+            'uiPlatform': 'SHAKTI',
+            'clientVersion': '6.0016.426.011',
+            'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
+            'supportsPreReleasePin': True,
+            'supportsWatermark': True,
+            'supportsUnequalizedDownloadables': True,
+            'showAllSubDubTracks': False,
+            'titleSpecificData': {
+                viewable_id: {
+                    'unletterboxed': True
+                }
             },
-            'echo': ''
+            'videoOutputInfo': [{
+                'type': 'DigitalVideoOutputDescriptor',
+                'outputType': 'unknown',
+                'supportedHdcpVersions': hdcp_version,
+                'isHdcpEngaged': hdcp
+            }],
+            'preferAssistiveAudio': False
         }
 
         # Get and check mastertoken validity
         mt_validity = self.check_mastertoken_validity()
         manifest = self._chunked_request(ENDPOINTS['manifest'],
-                                         manifest_request_data,
+                                         build_request_data('/manifest', params),
                                          esn,
                                          mt_validity)
         if common.is_debug_verbose():
@@ -189,27 +181,24 @@ class MSLHandler(MSLHandlerBase):
         """
         Requests and returns a license for the given challenge and sid
         :param challenge: The base64 encoded challenge
-        :param sid: The sid paired to the challengew
-        :return: Base64 representation of the licensekey or False unsuccessfull
+        :param sid: The sid paired to the challenge
+        :return: Base64 representation of the license key or False unsuccessful
         """
         common.debug('Requesting license')
+
         timestamp = int(time.time() * 10000)
+        params = [{
+            'sessionId': sid,
+            'clientTime': int(timestamp / 10000),
+            'challengeBase64': challenge,
+            'xid': str(timestamp + 1610)
+        }]
 
-        license_request_data = {
-            'version': 2,
-            'url': self.last_license_url,
-            'id': timestamp,
-            'languages': [g.LOCAL_DB.get_value('locale_id')],
-            'params': [{
-                'sessionId': sid,
-                'clientTime': int(timestamp / 10000),
-                'challengeBase64': challenge,
-                'xid': str(timestamp + 1610)
-            }],
-            'echo': 'sessionId'
-        }
+        url = self.last_license_url
 
-        response = self._chunked_request(ENDPOINTS['license'], license_request_data, g.get_esn())
+        response = self._chunked_request(ENDPOINTS['license'],
+                                         build_request_data(url, params, 'sessionId'),
+                                         g.get_esn())
         return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)
