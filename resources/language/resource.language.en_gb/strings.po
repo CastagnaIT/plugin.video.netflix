@@ -975,3 +975,8 @@ msgstr ""
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
 msgstr ""
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr ""
+

@@ -104,13 +104,14 @@
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false"/>
-    <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" enable="eq(-1,true)" visible="!System.HasAddon(service.upnext)" subsetting="true" option="close"/>
-    <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" enable="eq(-2,true)" visible="System.HasAddon(service.upnext)" subsetting="true" option="close"/>
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
+    <setting label="30238" type="lsep"/>
+    <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" visible="!System.HasAddon(service.upnext)" option="close"/>
+    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false" enable="System.AddonIsEnabled(service.upnext)"/>
+    <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" visible="System.HasAddon(service.upnext)" option="close"/>
   </category>
   <category label="30023"><!--Expert-->
     <setting id="configuration_wizard" type="action" label="30158" action="RunPlugin(plugin://plugin.video.netflix/action/configuration_wizard/)" option="close"/>
