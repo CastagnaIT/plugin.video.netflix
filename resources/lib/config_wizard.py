@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import inputstreamhelper
+from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
@@ -35,6 +36,9 @@ def run_addon_configuration(show_end_msg=False):
     # This settings for now used only with android devices and it should remain disabled (keep it for test),
     # in the future it may be useful for other platforms or it may be removed
     g.ADDON.setSettingBool('enable_force_hdcp', False)
+
+    # Enable UpNext if it is installed and enabled
+    g.ADDON.setSettingBool('UpNextNotifier_enabled', getCondVisibility('System.AddonIsEnabled(service.upnext)'))
 
     g.settings_monitor_suspend(False)
     if show_end_msg:
