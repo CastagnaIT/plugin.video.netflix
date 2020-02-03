@@ -161,10 +161,10 @@ class MSLHandler(MSLHandlerBase):
 
         # Get and check mastertoken validity
         mt_validity = self.check_mastertoken_validity()
-        manifest = self._chunked_request(ENDPOINTS['manifest'],
-                                         build_request_data('/manifest', params),
-                                         esn,
-                                         mt_validity)
+        manifest = self.chunked_request(ENDPOINTS['manifest'],
+                                        build_request_data('/manifest', params),
+                                        esn,
+                                        mt_validity)
         if common.is_debug_verbose():
             # Save the manifest to disk as reference
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -196,9 +196,9 @@ class MSLHandler(MSLHandlerBase):
 
         url = self.last_license_url
 
-        response = self._chunked_request(ENDPOINTS['license'],
-                                         build_request_data(url, params, 'sessionId'),
-                                         g.get_esn())
+        response = self.chunked_request(ENDPOINTS['license'],
+                                        build_request_data(url, params, 'sessionId'),
+                                        g.get_esn())
         return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)

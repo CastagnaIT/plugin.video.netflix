@@ -109,7 +109,7 @@ class MSLHandlerBase(object):
         return True
 
     @common.time_execution(immediate=True)
-    def _chunked_request(self, endpoint, request_data, esn, mt_validity=None):
+    def chunked_request(self, endpoint, request_data, esn, mt_validity=None):
         """Do a POST request and process the chunked response"""
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
