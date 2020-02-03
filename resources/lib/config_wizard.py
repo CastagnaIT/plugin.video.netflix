@@ -13,7 +13,7 @@ import inputstreamhelper
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
-from resources.lib.common import debug, get_system_platform, is_device_4k_capable, get_local_string
+from resources.lib.common import debug, error, get_system_platform, is_device_4k_capable, get_local_string, json_rpc
 from resources.lib.globals import g
 from resources.lib.kodi.ui import show_ok_dialog
 
@@ -29,6 +29,7 @@ def run_addon_configuration(show_end_msg=False):
     is_4k_capable = is_device_4k_capable()
 
     _set_profiles(system, is_4k_capable)
+    _set_kodi_settings(system)
     _set_isa_addon_settings(is_4k_capable, system == 'android')
 
     # This settings for now used only with android devices and it should remain disabled (keep it for test),
@@ -85,3 +86,14 @@ def _set_profiles(system, is_4k_capable):
 def _ask_dolby_vision():
     # Todo: ask to user if want to enable dolby vision
     pass
+
+
+def _set_kodi_settings(system):
+    """Method for self-configuring Kodi settings"""
+    if system == 'android':
+        # Media Codec hardware acceleration is mandatory, otherwise only the audio stream is played
+        try:
+            json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.usemediacodecsurface', 'value': True})
+            json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.usemediacodec', 'value': True})
+        except IOError as exc:
+            error('Changing Kodi settings caused the following error: {}', exc)
