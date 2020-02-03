@@ -33,7 +33,8 @@ except NameError:  # Python 3
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 ENDPOINTS = {
     'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
-    'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router'
+    'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
+    'events': CHROME_BASE_URL + 'pbo_events/%5E1.0.0/router'
 }
 
 
