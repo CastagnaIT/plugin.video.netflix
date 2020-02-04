@@ -50,6 +50,7 @@ class ProgressManager(PlaybackActionManager):
             # Before start we have to wait a possible values changed by stream_continuity
             if self.tick_elapsed == 2:
                 # Is needed to wait at least 2 seconds
+                player_state['elapsed_seconds'] = 0  # Force set to 0
                 _send_event(EVENT_START, self.event_data, player_state)
                 self.wait_for_first_start_event = False
         else:
