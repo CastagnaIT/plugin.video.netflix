@@ -169,15 +169,14 @@ def _verify_pin(pin_required):
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    api_data = api.single_info(videoid)
+    api_data = api.event_info(videoid)
     if not api_data:
         return {}
-    # Todo: request via api only data needed
     videoid_data = api_data['videos'][videoid.value]
     common.debug('Event data: {}', videoid_data)
 
-    event_data = {'resume_position': videoid_data['bookmarkPosition']
-                  if videoid_data['bookmarkPosition'] > -1 else None,
+    event_data = {'resume_position':
+                  videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
                   'runtime': videoid_data['runtime'],
                   'request_id': videoid_data['requestId'],
                   'watched': videoid_data['watched'],

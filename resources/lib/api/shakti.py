@@ -21,7 +21,7 @@ from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, Episode
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
-                    TRAILER_PARTIAL_PATHS)
+                    TRAILER_PARTIAL_PATHS, EVENT_PATHS)
 from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
                          MetadataNotAvailable)
 from .website import parse_profiles
@@ -266,6 +266,18 @@ def single_info(videoid):
     if videoid.mediatype == common.VideoId.EPISODE:
         paths.extend(build_paths(['videos', videoid.tvshowid],
                                  ART_PARTIAL_PATHS + [['title']]))
+    return common.make_call('path_request', paths)
+
+
+@common.time_execution(immediate=False)
+def event_info(videoid):
+    """Retrieve info for the events"""
+    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE,
+                                 common.VideoId.SUPPLEMENTAL]:
+        raise common.InvalidVideoId('Cannot request event info for {}'
+                                    .format(videoid))
+    common.debug('Requesting event info for {}', videoid)
+    paths = build_paths(['videos', videoid.value], EVENT_PATHS)
     return common.make_call('path_request', paths)
 
 
