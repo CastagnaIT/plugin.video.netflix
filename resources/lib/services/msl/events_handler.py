@@ -32,10 +32,10 @@ try:
 except ImportError:  # Python 3
     import queue
 
-EVENT_START = 'start'      # events/start : Video starts (seem also after a ff/rw)
-EVENT_STOP = 'stop'        # events/stop : Video stops (seem also after a ff/rw)
+EVENT_START = 'start'      # events/start : Video starts
+EVENT_STOP = 'stop'        # events/stop : Video stops
 EVENT_KEEP_ALIVE = 'keepAlive'  # events/keepAlive : Update progress status
-EVENT_ENGAGE = 'engage'    # events/engage : After user interaction (e.g. before send stop)
+EVENT_ENGAGE = 'engage'    # events/engage : After user interaction (before stop, on skip, on pause)
 EVENT_BIND = 'bind'        # events/bind : ?
 
 

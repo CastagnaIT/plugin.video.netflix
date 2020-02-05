@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START
+from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START, EVENT_ENGAGE
 from .action_manager import PlaybackActionManager
 
 
@@ -48,13 +48,22 @@ class ProgressManager(PlaybackActionManager):
         else:
             # Generate events to send to Netflix service every 1 minute
             if (self.tick_elapsed - self.last_tick_count) / 60 >= 1:
-                # Todo: identify a possible fast forward / rewind
                 _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
                 self.last_tick_count = self.tick_elapsed
         self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
+    def on_playback_pause(self, player_state):
+        self.tick_elapsed = 0
+        _send_event(EVENT_ENGAGE, self.event_data, player_state)
+
+    def on_playback_seek(self, player_state):
+        self.tick_elapsed = 0
+        _send_event(EVENT_ENGAGE, self.event_data, player_state)
+
     def _on_playback_stopped(self):
+        self.tick_elapsed = 0
+        _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
         _send_event(EVENT_STOP, self.event_data, self.last_player_state)
 
 
