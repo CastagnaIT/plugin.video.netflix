@@ -9,14 +9,13 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import json
+import time
 
-import xbmc
 import AddonSignals
+import xbmc
 
-from resources.lib.globals import g
 import resources.lib.common as common
-
+from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
 from .resume_manager import ResumeManager
 from .section_skipping import SectionSkipper
@@ -37,8 +36,7 @@ class PlaybackController(xbmc.Monitor):
         self.action_managers = None
 
         AddonSignals.registerSlot(
-            g.ADDON.getAddonInfo('id'), common.Signals.PLAYBACK_INITIATED,
-            self.initialize_playback)
+            g.ADDON.getAddonInfo('id'), common.Signals.PLAYBACK_INITIATED, self.initialize_playback)
 
     def initialize_playback(self, data):
         # pylint: disable=broad-except
@@ -65,7 +63,10 @@ class PlaybackController(xbmc.Monitor):
             return
         try:
             if method == 'Player.OnAVStart':
-                self._on_playback_started(json.loads(data))
+                # WARNING: Do not get playerid from 'data',
+                # Because when UpNext addon play a video while we are inside Netflix addon and
+                # not externally like Kodi library, the playerid become -1 this id does not exist
+                self._on_playback_started()
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:
@@ -79,16 +80,11 @@ class PlaybackController(xbmc.Monitor):
         if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
-                self._notify_all(PlaybackActionManager.on_tick,
-                                 player_state)
+                self._notify_all(PlaybackActionManager.on_tick, player_state)
 
-    def _on_playback_started(self, data):
-        # When UpNext addon play a video while we are inside Netflix addon and
-        # not externally like Kodi library, the playerid become -1 this id does not exist
-        player_id = data['player']['playerid'] if data['player']['playerid'] > -1 else 1
-        self.active_player_id = player_id
-        self._notify_all(PlaybackActionManager.on_playback_started,
-                         self._get_player_state())
+    def _on_playback_started(self):
+        self.active_player_id = _get_player_id()
+        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state())
         if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
 
@@ -100,8 +96,7 @@ class PlaybackController(xbmc.Monitor):
 
     def _notify_all(self, notification, data=None):
         # pylint: disable=broad-except
-        common.debug('Notifying all managers of {} (data={})',
-                     notification.__name__, data)
+        common.debug('Notifying all managers of {} (data={})', notification.__name__, data)
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
@@ -147,3 +142,18 @@ def _notify_managers(manager, notification, data):
         common.error('{} disabled due to exception: {}', manager.name, exc)
         manager.enabled = False
         raise
+
+
+def _get_player_id():
+    try:
+        retry = 10
+        while retry:
+            result = common.json_rpc('Player.GetActivePlayers')
+            if result:
+                return result[0]['playerid']
+            time.sleep(0.1)
+            retry -= 1
+        common.warn('Player ID not obtained, fallback to ID 1')
+    except IOError:
+        common.error('Player ID not obtained, fallback to ID 1')
+    return 1

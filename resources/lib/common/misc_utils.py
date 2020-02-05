@@ -89,21 +89,30 @@ def get_class_methods(class_item=None):
             if isinstance(y, _type)]
 
 
-def get_user_agent():
+def get_user_agent(enable_android_mediaflag_fix=False):
     """
     Determines the user agent string for the current platform.
-    Needed to retrieve a valid ESN (except for Android, where the ESN can
-    be generated locally)
+    Needed to retrieve a valid ESN (except for Android, where the ESN can be generated locally)
 
     :returns: str -- User agent string
     """
     import platform
+    system = platform.system()
+    if enable_android_mediaflag_fix and get_system_platform() == 'android' and is_device_4k_capable():
+        # The UA affects not only the ESNs in the login, but also the video details,
+        # so the UAs seem refer to exactly to these conditions: https://help.netflix.com/en/node/23742
+        # This workaround is needed because currently we do not login through the netflix native android API,
+        # but redirect everything through the website APIs, and the website APIs do not really support android.
+        # Then on android usually we use the 'arm' UA which refers to chrome os, but this is limited to 1080P, so the
+        # labels on the 4K devices appears wrong (in the Kodi skin the 4K videos have 1080P media flags instead of 4K),
+        # the Windows UA is not limited, so we can use it to get the right video media flags.
+        system = 'Windows'
+
     chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
     base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
-    system = platform.system()
     # Mac OSX
     if system == 'Darwin':
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
@@ -331,6 +340,31 @@ def remove_html_tags(raw_html):
     h = re.compile('<.*?>')
     text = re.sub(h, '', raw_html)
     return text
+
+
+def is_device_4k_capable():
+    """Check if the device is 4k capable"""
+    # Currently only on android is it possible to use 4K
+    if get_system_platform() == 'android':
+        from re import findall
+        from resources.lib.database.db_utils import TABLE_SESSION
+        # Check if the drm has security level L1
+        is_drm_l1_security_level = g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+        # Check if HDCP level is 2.2 or up
+        drm_hdcp_level = findall('\\d+\\.\\d+', g.LOCAL_DB.get_value('drm_hdcp_level', '', table=TABLE_SESSION))
+        hdcp_4k_capable = drm_hdcp_level and float(drm_hdcp_level[0]) >= 2.2
+        return is_drm_l1_security_level and hdcp_4k_capable
+    return False
+
+
+def run_threaded(non_blocking, target_func, *args, **kwargs):
+    """Call a function in a thread, when specified"""
+    if not non_blocking:
+        target_func(*args, **kwargs)
+        return
+    from threading import Thread
+    thread = Thread(target=target_func, args=args, kwargs=kwargs)
+    thread.start()
 
 
 def get_system_platform():

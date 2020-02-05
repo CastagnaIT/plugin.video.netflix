@@ -15,7 +15,7 @@ from resources.lib.globals import g
 import resources.lib.api.exceptions as apierrors
 
 from .logging import debug, error
-from .misc_utils import time_execution
+from .misc_utils import time_execution, run_threaded
 
 try:  # Python 2
     unicode
@@ -58,19 +58,14 @@ def unregister_slot(callback, signal=None):
 
 def send_signal(signal, data=None, non_blocking=False):
     """Send a signal via AddonSignals"""
-    if non_blocking:
-        # Using sendSignal of AddonSignals you might think that it is not a blocking call instead is blocking because it
-        # uses executeJSONRPC that is a blocking call, so the invoker will remain blocked until the function called by
-        # executeJSONRPC has completed his operations, even if it does not return any data.
-        # This workaround call sendSignal in a separate thread so immediately releases the invoker.
-        # This is to be considered according to the functions to be called,
-        # because it could keep the caller blocked for a certain amount of time unnecessarily.
-        # To note that several consecutive calls, are made in sequence not at the same time.
-        from threading import Thread
-        thread = Thread(target=_send_signal, args=[signal, data])
-        thread.start()
-    else:
-        _send_signal(signal, data)
+    # Using sendSignal of AddonSignals you might think that it is not a blocking call instead is blocking because it
+    # uses executeJSONRPC that is a blocking call, so the invoker will remain blocked until the function called by
+    # executeJSONRPC has completed his operations, even if it does not return any data.
+    # This workaround call sendSignal in a separate thread so immediately releases the invoker.
+    # This is to be considered according to the functions to be called,
+    # because it could keep the caller blocked for a certain amount of time unnecessarily.
+    # To note that several consecutive calls, are made in sequence not at the same time.
+    run_threaded(non_blocking, _send_signal, signal, data)
 
 
 def _send_signal(signal, data):

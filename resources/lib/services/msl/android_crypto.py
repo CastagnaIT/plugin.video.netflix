@@ -54,7 +54,16 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             'security_level': self.crypto_session.GetPropertyString('securityLevel')
         }
 
+        if not drm_info['version']:
+            # Possible cases where no data is obtained:
+            # I don't know if this is really the cause, but seem that using Kodi debug build with a
+            # InputStream Adaptive release build (yes users do it) cause problems
+            raise MSLError('It was not possible to get the data from Widevine CryptoSession, '
+                           'try to reinstall Kodi with latest version')
+
         g.LOCAL_DB.set_value('drm_system_id', drm_info['system_id'], TABLE_SESSION)
+        g.LOCAL_DB.set_value('drm_security_level', drm_info['security_level'], TABLE_SESSION)
+        g.LOCAL_DB.set_value('drm_hdcp_level', drm_info['hdcp_level'], TABLE_SESSION)
 
         common.debug('Widevine version: {}', drm_info['version'])
         if drm_info['system_id']:
@@ -62,9 +71,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             common.warn('Widevine CryptoSession system id not obtained!')
         common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
-        common.debug('Widevine CryptoSession hdcp level from {} to {}',
-                     drm_info['hdcp_level'],
-                     drm_info['hdcp_level_max'])
+        common.debug('Widevine CryptoSession current hdcp level', drm_info['hdcp_level'])
+        common.debug('Widevine CryptoSession max hdcp level supported', drm_info['hdcp_level_max'])
         common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
 
     def __del__(self):

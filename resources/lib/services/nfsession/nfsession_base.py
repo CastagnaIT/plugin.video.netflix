@@ -66,7 +66,7 @@ class NFSessionBase(object):
             pass
         self.session = requests.session()
         self.session.headers.update({
-            'User-Agent': common.get_user_agent(),
+            'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
             'Accept-Encoding': 'gzip'
         })
         common.info('Initialized new session')
