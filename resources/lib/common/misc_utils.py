@@ -357,6 +357,16 @@ def is_device_4k_capable():
     return False
 
 
+def run_threaded(non_blocking, target_func, *args, **kwargs):
+    """Call a function in a thread, when specified"""
+    if not non_blocking:
+        target_func(*args, **kwargs)
+        return
+    from threading import Thread
+    thread = Thread(target=target_func, args=args, kwargs=kwargs)
+    thread.start()
+
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):

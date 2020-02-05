@@ -50,7 +50,8 @@ class AddonActionExecutor(object):
             return
         try:
             parental_control_data = api.get_parental_control_data(password)
-            ui.show_modal_dialog(ui.xmldialogs.ParentalControl,
+            ui.show_modal_dialog(False,
+                                 ui.xmldialogs.ParentalControl,
                                  'plugin-video-netflix-ParentalControl.xml',
                                  g.ADDON.getAddonInfo('path'),
                                  **parental_control_data)
@@ -73,7 +74,8 @@ class AddonActionExecutor(object):
             is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
             user_rating = video_data.get('userRating', {}).get('userRating') \
                 if is_thumb_rating else None
-            ui.show_modal_dialog(ui.xmldialogs.RatingThumb,
+            ui.show_modal_dialog(False,
+                                 ui.xmldialogs.RatingThumb,
                                  'plugin-video-netflix-RatingThumb.xml',
                                  g.ADDON.getAddonInfo('path'),
                                  videoid=videoid,

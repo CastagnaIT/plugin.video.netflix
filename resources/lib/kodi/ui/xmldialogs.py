@@ -16,6 +16,7 @@ from platform import machine
 import xbmc
 import xbmcgui
 
+from resources.lib.common import run_threaded
 from resources.lib.globals import g
 from resources.lib.kodi.ui.dialogs import (show_ok_dialog, show_error_info)
 
@@ -36,12 +37,21 @@ OS_MACHINE = machine()
 CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{},silent)'
 
 
-def show_modal_dialog(dlg_class, xml, path, **kwargs):
+# @time_execution(immediate=True)
+def show_modal_dialog(non_blocking, dlg_class, xml, path, **kwargs):
     """
     Show a modal Dialog in the UI.
     Pass kwargs minutes and/or seconds to have the dialog automatically
     close after the specified time.
     """
+    # WARNING: doModal when invoked does not release the function immediately!
+    # it seems that doModal waiting for all window operations to be completed before return,
+    # for example the "Skip" dialog takes about 30 seconds to release the function (test on Kodi 19.x)
+    # To be taken into account because it can do very big delays in the execution of the invoking code
+    run_threaded(non_blocking, _show_modal_dialog, dlg_class, xml, path, **kwargs)
+
+
+def _show_modal_dialog(dlg_class, xml, path, **kwargs):
     dlg = dlg_class(xml, path, 'default', '1080i', **kwargs)
     minutes = kwargs.get('minutes', 0)
     seconds = kwargs.get('seconds', 0)
