@@ -81,7 +81,7 @@ class StreamContinuityManager(PlaybackActionManager):
             self._restore_stream(stype)
         # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
         # changed by restore, otherwise when _on_tick is executed it will save twice unnecessarily
-        xbmc.sleep(1500)
+        xbmc.sleep(1000)
         self.did_restore = True
 
     def _on_tick(self, player_state):

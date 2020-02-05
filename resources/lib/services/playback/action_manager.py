@@ -73,7 +73,13 @@ class PlaybackActionManager(object):
 
     def _call_if_enabled(self, target_func, **kwargs):
         if self.enabled:
-            target_func(**kwargs)
+            try:
+                target_func(**kwargs)
+            except Exception as exc:
+                common.error('{} disabled due to exception: {}', self.__class__.__name__, exc)
+                import traceback
+                common.error(traceback.format_exc())
+                self.enabled = False
 
     def _initialize(self, data):
         """
