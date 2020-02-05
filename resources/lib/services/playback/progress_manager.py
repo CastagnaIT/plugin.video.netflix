@@ -19,7 +19,6 @@ class ProgressManager(PlaybackActionManager):
 
     def __init__(self):  # pylint: disable=super-on-old-class
         super(ProgressManager, self).__init__()
-        self.current_videoid = None
         self.event_data = {}
         self.is_event_start_sent = False
         self.last_tick_count = 0
@@ -31,17 +30,12 @@ class ProgressManager(PlaybackActionManager):
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
             return
-        self.current_videoid = videoid \
-            if videoid.mediatype == common.VideoId.MOVIE \
-            else videoid.derive_parent(0)
         self.event_data = data['event_data']
-
-    def _on_playback_started(self, player_state):
-        self.tick_elapsed = 0
-        self.player_elapsed_time = 0
 
     def _on_tick(self, player_state):
         if not self.is_event_start_sent:
+            # We do not use _on_playback_started() to send EVENT_START, because StreamContinuityManager
+            # may cause inconsistencies with the content of player_state data
             player_state['elapsed_seconds'] = 0  # Force set to 0
             _send_event(EVENT_START, self.event_data, player_state)
             self.is_event_start_sent = True
@@ -54,20 +48,30 @@ class ProgressManager(PlaybackActionManager):
         self.tick_elapsed += 1  # One tick almost always represents one second
 
     def on_playback_pause(self, player_state):
+        if not self.is_event_start_sent:
+            return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
 
     def on_playback_seek(self, player_state):
+        if not self.is_event_start_sent:
+            # This might happen when ResumeManager skip is performed
+            return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
 
     def _on_playback_stopped(self):
+        if not self.is_event_start_sent:
+            return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
         _send_event(EVENT_STOP, self.event_data, self.last_player_state)
 
 
 def _send_event(event_type, event_data, player_state):
+    if not player_state:
+        common.warn('ProgressManager: the event [{}] cannot be sent, missing player_state data', event_type)
+        return
     common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
         'event_type': event_type,
         'event_data': event_data,
