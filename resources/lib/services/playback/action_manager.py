@@ -91,14 +91,25 @@ class PlaybackActionManager(object):
         """
         Initialize the manager for a new playback.
         If preconditions are not met, this should raise an exception so the
-        manager will be disabled throught the current playback.
+        manager will be disabled through the current playback.
         """
         raise NotImplementedError
 
     def _on_playback_started(self, player_state):
+        """
+        This method is called when video playback starts
+        NOTE: If possible never use sleep delay inside this method
+              otherwise it delay the execution of subsequent action managers
+        """
         pass
 
     def _on_tick(self, player_state):
+        """
+        This method is called every second from the service,
+        but only after the 'on_playback_started' method will be called.
+        NOTE: If possible never use sleep delay inside this method
+              otherwise it delay the execution of subsequent action managers
+        """
         raise NotImplementedError
 
     def _on_playback_seek(self, player_state):

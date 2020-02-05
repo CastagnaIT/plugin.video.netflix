@@ -50,8 +50,8 @@ class PlaybackController(xbmc.Monitor):
             ResumeManager(),
             SectionSkipper(),
             StreamContinuityManager(),
-            UpNextNotifier(),
-            ProgressManager()
+            ProgressManager(),
+            UpNextNotifier()
         ]
         self._notify_all(PlaybackActionManager.initialize, data)
 
@@ -79,7 +79,7 @@ class PlaybackController(xbmc.Monitor):
             import traceback
             common.error(traceback.format_exc())
 
-    def on_playback_tick(self):
+    def on_service_tick(self):
         """
         Notify action managers of playback tick
         """
@@ -89,10 +89,11 @@ class PlaybackController(xbmc.Monitor):
                 self._notify_all(PlaybackActionManager.on_tick, player_state)
 
     def _on_playback_started(self):
-        self.active_player_id = _get_player_id()
-        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state())
+        player_id = _get_player_id()
+        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state(player_id))
         if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
+        self.active_player_id = player_id
 
     def _on_playback_seek(self):
         if self.tracking and self.active_player_id is not None:
@@ -120,10 +121,10 @@ class PlaybackController(xbmc.Monitor):
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
-    def _get_player_state(self):
+    def _get_player_state(self, player_id=None):
         try:
             player_state = common.json_rpc('Player.GetProperties', {
-                'playerid': self.active_player_id,
+                'playerid': self.active_player_id or player_id,
                 'properties': [
                     'audiostreams',
                     'currentaudiostream',
