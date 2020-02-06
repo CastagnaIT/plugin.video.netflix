@@ -17,6 +17,7 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
+from .progress_manager import ProgressManager
 from .resume_manager import ResumeManager
 from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
@@ -49,7 +50,8 @@ class PlaybackController(xbmc.Monitor):
             ResumeManager(),
             SectionSkipper(),
             StreamContinuityManager(),
-            UpNextNotifier()
+            UpNextNotifier(),
+            ProgressManager()
         ]
         self._notify_all(PlaybackActionManager.initialize, data)
 
