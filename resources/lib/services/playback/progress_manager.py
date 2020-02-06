@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-
+from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START
 from .action_manager import PlaybackActionManager
 
 
@@ -20,6 +20,7 @@ class ProgressManager(PlaybackActionManager):
     def __init__(self):  # pylint: disable=super-on-old-class
         super(ProgressManager, self).__init__()
         self.current_videoid = None
+        self.event_data = {}
         self.wait_for_first_start_event = True
         self.last_tick_count = 0
         self.tick_elapsed = 0
@@ -34,6 +35,7 @@ class ProgressManager(PlaybackActionManager):
         self.current_videoid = videoid \
             if videoid.mediatype == common.VideoId.MOVIE \
             else videoid.derive_parent(0)
+        self.event_data = data['event_data']
 
     def _on_playback_started(self, player_state):
         self.tick_elapsed = 0
@@ -48,12 +50,13 @@ class ProgressManager(PlaybackActionManager):
             # Before start we have to wait a possible values changed by stream_continuity
             if self.tick_elapsed == 2:
                 # Is needed to wait at least 2 seconds
+                _send_event(EVENT_START, self.event_data, player_state)
                 self.wait_for_first_start_event = False
         else:
             # Generate events to send to Netflix service every 1 minute
             if (self.tick_elapsed - self.last_tick_count) / 60 >= 1:
                 # Todo: identify a possible fast forward / rewind
-                #       send event
+                _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
                 self.last_tick_count = self.tick_elapsed
         self.last_player_state = player_state
 
@@ -62,6 +65,12 @@ class ProgressManager(PlaybackActionManager):
         self.tick_elapsed += 1  # One tick is one second
 
     def _on_playback_stopped(self):
-        # Generate events to send to Netflix service
-        # Todo: send event
-        pass
+        _send_event(EVENT_STOP, self.event_data, self.last_player_state)
+
+
+def _send_event(event_type, event_data, player_state):
+    common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
+        'event_type': event_type,
+        'event_data': event_data,
+        'player_state': player_state
+    }, non_blocking=True)

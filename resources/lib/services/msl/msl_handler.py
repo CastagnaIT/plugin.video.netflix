@@ -17,6 +17,7 @@ import xbmcaddon
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
+from .events_handler import EventsHandler
 from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info, build_request_data
 
 from .request_builder import MSLRequestBuilder
@@ -51,6 +52,9 @@ class MSLHandler(MSLHandlerBase):
             # Addon just installed, the service starts but there is no esn
             if g.get_esn():
                 self.check_mastertoken_validity()
+
+            events_handler = EventsHandler(self.chunked_request)
+            events_handler.start()
         except Exception:
             import traceback
             common.error(traceback.format_exc())

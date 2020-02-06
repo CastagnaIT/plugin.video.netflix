@@ -35,6 +35,7 @@ class Signals(object):  # pylint: disable=no-init
     LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
     UPNEXT_ADDON_INIT = 'upnext_data'
     INVALIDATE_SERVICE_CACHE = 'invalidate_service_cache'
+    QUEUE_VIDEO_EVENT = 'queue_video_event'
 
 
 def register_slot(callback, signal=None, source_id=None):
