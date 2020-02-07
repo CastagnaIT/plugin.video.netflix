@@ -204,6 +204,7 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     Locale conversion helper
     Conversion table to prevent Kodi to display
     es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
+    Kodi issue: https://github.com/xbmc/xbmc/issues/15308
     """
     locale_conversion_table = {
         'es-ES': 'es-Spain',
