@@ -24,6 +24,8 @@ class ProgressManager(PlaybackActionManager):
         self.last_tick_count = 0
         self.tick_elapsed = 0
         self.last_player_state = {}
+        self.is_player_in_pause = False
+        self.lock_events = False
 
     def _initialize(self, data):
         videoid = common.VideoId.from_dict(data['videoid'])
@@ -33,17 +35,30 @@ class ProgressManager(PlaybackActionManager):
         self.event_data = data['event_data']
 
     def _on_tick(self, player_state):
-        if not self.is_event_start_sent:
-            # We do not use _on_playback_started() to send EVENT_START, because StreamContinuityManager
-            # may cause inconsistencies with the content of player_state data
-            player_state['elapsed_seconds'] = 0  # Force set to 0
-            _send_event(EVENT_START, self.event_data, player_state)
-            self.is_event_start_sent = True
+        if self.lock_events:
+            return
+        if self.is_player_in_pause and (self.tick_elapsed - self.last_tick_count) >= 1800:
+            # When the player is paused for more than 30 minutes we interrupt the sending of events (1800secs=30m)
+            _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
+            _send_event(EVENT_STOP, self.event_data, self.last_player_state)
+            self.is_event_start_sent = False
+            self.lock_events = True
         else:
-            # Generate events to send to Netflix service every 1 minute
-            if (self.tick_elapsed - self.last_tick_count) / 60 >= 1:
-                _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
-                self.last_tick_count = self.tick_elapsed
+            if not self.is_event_start_sent:
+                # We do not use _on_playback_started() to send EVENT_START, because StreamContinuityManager
+                # and ResumeManager may cause inconsistencies with the content of player_state data
+
+                # When the playback starts for the first time, for correctness should send elapsed_seconds value to 0
+                if self.tick_elapsed < 5 and self.event_data['resume_position'] is None:
+                    player_state['elapsed_seconds'] = 0
+                _send_event(EVENT_START, self.event_data, player_state)
+                self.is_event_start_sent = True
+                self.tick_elapsed = 0
+            else:
+                # Generate events to send to Netflix service every 1 minute (60secs=1m)
+                if (self.tick_elapsed - self.last_tick_count) >= 60:
+                    _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
+                    self.last_tick_count = self.tick_elapsed
         self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
@@ -51,17 +66,22 @@ class ProgressManager(PlaybackActionManager):
         if not self.is_event_start_sent:
             return
         self.tick_elapsed = 0
+        self.is_player_in_pause = True
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
 
+    def on_playback_resume(self, player_state):
+        self.is_player_in_pause = False
+        self.lock_events = False
+
     def on_playback_seek(self, player_state):
-        if not self.is_event_start_sent:
+        if not self.is_event_start_sent or self.lock_events:
             # This might happen when ResumeManager skip is performed
             return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
 
     def _on_playback_stopped(self):
-        if not self.is_event_start_sent:
+        if not self.is_event_start_sent or self.lock_events:
             return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
