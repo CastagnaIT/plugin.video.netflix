@@ -128,6 +128,7 @@ class PlaybackController(xbmc.Monitor):
                 'properties': [
                     'audiostreams',
                     'currentaudiostream',
+                    'currentvideostream',
                     'subtitles',
                     'currentsubtitle',
                     'subtitleenabled',

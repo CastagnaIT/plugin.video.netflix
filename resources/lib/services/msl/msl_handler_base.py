@@ -85,7 +85,6 @@ class MSLHandlerBase(object):
             return self.check_mastertoken_validity()
         return {'renewable': renewable, 'expired': expired}
 
-
     @display_error_info
     @common.time_execution(immediate=True)
     def perform_key_handshake(self, data=None):

@@ -101,7 +101,6 @@ class PlaybackActionManager(object):
         NOTE: If possible never use sleep delay inside this method
               otherwise it delay the execution of subsequent action managers
         """
-        pass
 
     def _on_tick(self, player_state):
         """
