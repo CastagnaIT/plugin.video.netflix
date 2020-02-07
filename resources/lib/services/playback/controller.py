@@ -73,6 +73,8 @@ class PlaybackController(xbmc.Monitor):
                 self._on_playback_seek()
             elif method == 'Player.OnPause':
                 self._on_playback_pause()
+            elif method == 'Player.OnResume':
+                self._on_playback_resume()
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:
@@ -107,6 +109,13 @@ class PlaybackController(xbmc.Monitor):
             player_state = self._get_player_state()
             if player_state:
                 self._notify_all(PlaybackActionManager.on_playback_pause,
+                                 player_state)
+
+    def _on_playback_resume(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_resume,
                                  player_state)
 
     def _on_playback_stopped(self):

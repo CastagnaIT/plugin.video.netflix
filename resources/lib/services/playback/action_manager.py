@@ -76,6 +76,12 @@ class PlaybackActionManager(object):
         """
         self._call_if_enabled(self._on_playback_pause, player_state=player_state)
 
+    def on_playback_resume(self, player_state):
+        """
+        Notify that the playback has been resumed
+        """
+        self._call_if_enabled(self._on_playback_resume, player_state=player_state)
+
     def on_playback_stopped(self):
         """
         Notify that a playback has stopped
@@ -115,6 +121,9 @@ class PlaybackActionManager(object):
         pass
 
     def _on_playback_pause(self, player_state):
+        pass
+
+    def _on_playback_resume(self, player_state):
         pass
 
     def _on_playback_stopped(self):
