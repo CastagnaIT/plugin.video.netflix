@@ -154,9 +154,7 @@ def get_kodi_audio_language():
     Return the audio language from Kodi settings
     """
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(g.py2_encode(audio_language['value']), xbmc.ISO_639_1)
-    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
-    return audio_language if audio_language else 'en'
+    return convert_language_iso(audio_language['value'])
 
 
 def get_kodi_subtitle_language():
@@ -166,12 +164,20 @@ def get_kodi_subtitle_language():
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    subtitle_language = xbmc.convertLanguage(g.py2_encode(subtitle_language['value']),
-                                             xbmc.ISO_639_1)
-    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1,
-                                                                                     False)
-    subtitle_language = subtitle_language if subtitle_language else 'en'
-    return subtitle_language
+    return convert_language_iso(subtitle_language['value'])
+
+
+def convert_language_iso(from_value, use_fallback=True):
+    """
+    Convert language code from an English name or three letter code (ISO 639-2) to two letter code (ISO 639-1)
+
+    :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
+    """
+    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), xbmc.ISO_639_1)
+    if not use_fallback:
+        return converted_lang
+    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    return converted_lang if converted_lang else 'en'
 
 
 def fix_locale_languages(data_list):
