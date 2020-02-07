@@ -65,7 +65,7 @@ class Event(object):
         self.status = self.STATUS_SUCCESS
 
     def is_response_success(self):
-        return self.status == self.STATUS_SUCCESS
+        return self.status == self.STATUS_SUCCESS and self.req_attempt <= 3
 
     def is_attempts_granted(self):
         """Returns True if you can make new request attempts"""
@@ -125,8 +125,8 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
-        if event.event_type == EVENT_START and not event.is_response_success():
-            # If 'start' event was unsuccessful,
+        if not event.is_response_success():
+            # The event request is unsuccessful then there is some problem,
             # no longer make any future requests from this event id
             return False
         return True
