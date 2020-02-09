@@ -31,6 +31,7 @@ URLS = {
     'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
     'browse': {'endpoint': '/browse', 'is_api_call': False},
     'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
+    'switch_profile': {'endpoint': '/SwitchProfile', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
     'pin': {'endpoint': '/pin', 'is_api_call': False},
     'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
