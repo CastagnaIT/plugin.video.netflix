@@ -168,7 +168,7 @@ def build_request_data(url, params=None, echo=''):
         'version': 2,
         'url': url,
         'id': timestamp,
-        'languages': [g.LOCAL_DB.get_value('locale_id')],
+        'languages': [g.LOCAL_DB.get_profile_config('language')],
         'params': params,
         'echo': echo
     }
