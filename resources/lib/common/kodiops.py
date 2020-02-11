@@ -50,7 +50,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    debug('Executing JSON-RPC: {}'.format(request))
+    debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
@@ -59,6 +59,26 @@ def json_rpc(method, params=None):
                       .format(response['error']['code'],
                               response['error']['message']))
     return response['result']
+
+
+def json_rpc_multi(method, list_params=None):
+    """
+    Executes multiple JSON-RPC with the same method in Kodi
+
+    :param method: The JSON-RPC method to call
+    :type method: string
+    :param list_params: Multiple list of parameters of the method call
+    :type list_params: a list of dict
+    :returns: dict -- Method call result
+    """
+    request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1,
+                    'params': params or {}} for params in list_params]
+    request = json.dumps(request_data)
+    debug('Executing JSON-RPC: {}', request)
+    raw_response = xbmc.executeJSONRPC(request)
+    if 'error' in raw_response:
+        raise IOError('JSONRPC-Error {}'.format(raw_response))
+    return json.loads(raw_response)
 
 
 def update_library_item_details(dbtype, dbid, details):
