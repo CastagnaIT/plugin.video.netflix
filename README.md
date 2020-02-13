@@ -10,17 +10,18 @@
 
 ## Disclaimer
 
-This plugin is not officially commisioned/supported by Netflix.
+This plugin is not officially commissioned/supported by Netflix.
 The trademark "Netflix" is registered by "Netflix, Inc."
 
 ## Features
 
 - Access to multiple profiles
 - Search Netflix including suggestions
-- Netflix categories, recommendations, My List & continue watching and more
+- Netflix categories, recommendations, My List, continue watching and more
 - Browse all movies and all TV shows Netflix style includes genres
 - Browse trailers & more of TV shows and movies (by context menu)
-- Rate TV show & movies
+- Can synchronize the watched status with Netflix service - [How works and limitations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-watched-status-with-Netflix)
+- Rate TV shows and movies
 - Add or remove to/from My List
 - Export of TV shows & movies in Kodi local library
 - Keep Netflix My List and Kodi local library in sync
@@ -134,9 +135,10 @@ set: `Preferred subtitle language` to `Forced only`
 The Kodi 18.x framework does not allow to fix this problem. So there is no solution.<br/>
 If you prefer you can disable `Remember audio / subtitle preferences` in the addon Playback settings, so in each video you will manually enable the subtitles.
 
-### My watched status is not being updated on website or apps
+### I have some problem with the synchronisation of watched status
 
-The addon does not report watched status back to Netflix (yet).
+Before asking for help, please read the WiKi may already provide an answer:
+[Synchronisation of watched status with Netflix](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-watched-status-with-Netflix)
 
 ### How to export to Kodi library
 
