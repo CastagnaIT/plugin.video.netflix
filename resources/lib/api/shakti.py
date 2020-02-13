@@ -115,7 +115,7 @@ def list_id_for_type(list_type):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_id')
+@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_id', save_call_data=True)
 def video_list(list_id, perpetual_range_start=None):
     """Retrieve a single video list
     some of this type of request seems to have results fixed at ~40 from netflix
@@ -134,7 +134,7 @@ def video_list(list_id, perpetual_range_start=None):
 
 @common.time_execution(immediate=False)
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='context_id',
-                    identify_append_from_kwarg_name='perpetual_range_start')
+                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
 def video_list_sorted(context_name, context_id=None, perpetual_range_start=None, menu_data=None):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
@@ -218,7 +218,7 @@ def seasons(videoid):
 
 @common.time_execution(immediate=False)
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='videoid_value',
-                    identify_append_from_kwarg_name='perpetual_range_start')
+                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
 def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: disable=unused-argument
     """Retrieve episodes of a season"""
     if videoid.mediatype != common.VideoId.SEASON:
@@ -239,7 +239,7 @@ def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: dis
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_SUPPLEMENTAL)
+@cache.cache_output(cache.CACHE_SUPPLEMENTAL, save_call_data=True)
 def supplemental_video_list(videoid, supplemental_type):
     """Retrieve a supplemental video list"""
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
