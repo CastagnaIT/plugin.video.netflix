@@ -195,6 +195,15 @@ class Cache(object):
         if to_disk:
             self._add_to_disk(bucket, identifier, cache_entry)
 
+    def update(self, bucket, identifier, content, to_disk=False):
+        """Update an item content to a cache bucket"""
+        cache_entry = self._get_bucket(bucket).get(identifier)
+        if cache_entry is None:
+            raise CacheMiss()
+        cache_entry['content'] = content
+        if to_disk:
+            self._add_to_disk(bucket, identifier, cache_entry)
+
     def commit(self):
         """Persist cache contents in window properties"""
         for bucket in list(self.buckets.keys()):
