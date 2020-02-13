@@ -14,6 +14,7 @@ import xbmcplugin
 import xbmcgui
 
 from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -74,17 +75,7 @@ def play(videoid):
     resume_position = {}
     event_data = {}
 
-    if g.ADDON.getSettingBool('ProgressManager_enabled'):
-        event_data = _get_event_data(videoid)
-        event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = g.IS_SKIN_CALL
-        if event_data['resume_position']:
-            # Todo: This is for test purpose,
-            #   set watched and resume data to list items in the get lists methods
-            common.debug('Resume from last saved Netflix position: {}', event_data['resume_position'])
-            list_item.setProperty('ResumeTime', str(event_data['resume_position']))
-            list_item.setProperty('TotalTime', str(event_data['runtime']))
-    elif g.IS_SKIN_CALL:
+    if g.IS_SKIN_CALL:
         # Workaround for resuming strm files from library
         resume_position = infos.get('resume', {}).get('position') \
             if g.ADDON.getSettingBool('ResumeManager_enabled') else None
@@ -98,6 +89,14 @@ def play(videoid):
                 return
             if index_selected == 1:
                 resume_position = None
+    elif g.ADDON.getSettingBool('ProgressManager_enabled') and g.LOCAL_DB.get_profile_config('isAccountOwner', False):
+        # To now we have this limits:
+        # - enabled only if the owner profile is used. Currently due to a unknown problem,
+        #    it is not possible to communicate MSL data to the right selected profile
+        # - enabled only with items played inside the addon then not Kodi library, need impl. JSON-RPC lib update code
+        event_data = _get_event_data(videoid)
+        event_data['videoid'] = videoid.to_dict()
+        event_data['is_played_by_library'] = g.IS_SKIN_CALL
 
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
@@ -105,6 +104,8 @@ def play(videoid):
         listitem=list_item)
 
     upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
+
+    g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
 
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {

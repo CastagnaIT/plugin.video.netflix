@@ -9,7 +9,10 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from xbmcgui import Window
+
 import resources.lib.common as common
+from resources.lib.globals import g
 from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START, EVENT_ENGAGE
 from .action_manager import PlaybackActionManager
 
@@ -26,10 +29,20 @@ class ProgressManager(PlaybackActionManager):
         self.last_player_state = {}
         self.is_player_in_pause = False
         self.lock_events = False
+        self.window_cls = Window(10000)  # Kodi home window
 
     def _initialize(self, data):
+        if not g.LOCAL_DB.get_profile_config('isAccountOwner', False):
+            # Currently due to a unknown problem, it is not possible to communicate MSL data to the right selected
+            # profile other than the owner profile
+            self.enabled = False
+            return
         videoid = common.VideoId.from_dict(data['videoid'])
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+            self.enabled = False
+            return
+        if not data['event_data']:
+            common.warn('ProgressManager: disabled due to no event data')
             self.enabled = False
             return
         self.event_data = data['event_data']
@@ -59,6 +72,9 @@ class ProgressManager(PlaybackActionManager):
                 if (self.tick_elapsed - self.last_tick_count) >= 60:
                     _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
                     self.last_tick_count = self.tick_elapsed
+                # On Kodi we can save every second instead every minute, but only after the first minute
+                if self.last_tick_count:
+                    self._save_resume_time(player_state['elapsed_seconds'])
         self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
@@ -86,6 +102,19 @@ class ProgressManager(PlaybackActionManager):
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
         _send_event(EVENT_STOP, self.event_data, self.last_player_state)
+
+    def _save_resume_time(self, resume_time):
+        """Save resume time in order to modify the frontend cache"""
+        # Why this, the video lists are requests to the web service only once and then will be cached in order to
+        # quickly get the data and speed up a lot the GUI response.
+        # Watched status of a (video) list item is based on resume time, and the resume time is saved in the cache data.
+        # To avoid slowing down the GUI by invalidating the cache to get new data from website service, one solution is
+        # modify the cache data.
+        # Altering here the cache on the fly is not possible because it is currently not shared between service-frontend
+        # therefore we save the value in a Kodi property and we will modify the cache from addon frontend.
+        # The choice to save the value in a Kodi property is to not continuously lock with mutex the database.
+        # The callback _on_playback_stopped can not be used, because the loading of frontend happen before.
+        self.window_cls.setProperty('nf_playback_resume_time', str(resume_time))
 
 
 def _send_event(event_type, event_data, player_state):

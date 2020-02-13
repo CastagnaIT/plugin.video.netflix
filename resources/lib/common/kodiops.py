@@ -71,8 +71,7 @@ def json_rpc_multi(method, list_params=None):
     :type list_params: a list of dict
     :returns: dict -- Method call result
     """
-    request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1,
-                    'params': params or {}} for params in list_params]
+    request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1, 'params': params or {}} for params in list_params]
     request = json.dumps(request_data)
     debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
