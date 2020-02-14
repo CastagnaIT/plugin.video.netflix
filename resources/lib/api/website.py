@@ -87,6 +87,7 @@ def extract_session_data(content, validate=False):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+    return api_data
 
 
 @common.time_execution(immediate=True)
