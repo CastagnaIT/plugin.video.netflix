@@ -96,9 +96,8 @@ def get_user_agent(enable_android_mediaflag_fix=False):
 
     :returns: str -- User agent string
     """
-    import platform
-    system = platform.system()
-    if enable_android_mediaflag_fix and get_system_platform() == 'android' and is_device_4k_capable():
+    system = get_system_platform()
+    if enable_android_mediaflag_fix and system == 'android' and is_device_4k_capable():
         # The UA affects not only the ESNs in the login, but also the video details,
         # so the UAs seem refer to exactly to these conditions: https://help.netflix.com/en/node/23742
         # This workaround is needed because currently we do not login through the netflix native android API,
@@ -106,21 +105,20 @@ def get_user_agent(enable_android_mediaflag_fix=False):
         # Then on android usually we use the 'arm' UA which refers to chrome os, but this is limited to 1080P, so the
         # labels on the 4K devices appears wrong (in the Kodi skin the 4K videos have 1080P media flags instead of 4K),
         # the Windows UA is not limited, so we can use it to get the right video media flags.
-        system = 'Windows'
+        system = 'windows'
 
     chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
     base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
-    # Mac OSX
-    if system == 'Darwin':
+
+    if system in ['osx', 'ios', 'tvos']:
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
-    # Windows
-    if system == 'Windows':
+    if system in ['windows', 'xbox']:
         return base.replace('%PL%', '(Windows NT 10; Win64; x64)')
     # ARM based Linux
-    if platform.machine().startswith('arm'):
+    if get_machine().startswith('arm'):
         # Last number is the platform version of Chrome OS
         return base.replace('%PL%', '(X11; CrOS armv7l 12371.89.0)')
     # x86 Linux
@@ -367,6 +365,18 @@ def run_threaded(non_blocking, target_func, *args, **kwargs):
     thread.start()
 
 
+def get_machine():
+    """Get machine architecture"""
+    from platform import machine
+    try:
+        return machine()
+    except Exception:  # pylint: disable=broad-except
+        # Due to OS restrictions on 'ios' and 'tvos' this generate an exception
+        # See python limits in the wiki development page
+        # Fallback with a generic arm
+        return 'arm'
+
+
 def get_system_platform():
     platform = "unknown"
     if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
@@ -381,6 +391,8 @@ def get_system_platform():
         platform = "osx"
     elif xbmc.getCondVisibility('system.platform.ios'):
         platform = "ios"
+    elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
+        platform = "tvos"
     return platform
 
 
