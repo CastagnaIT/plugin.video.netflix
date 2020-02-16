@@ -20,6 +20,7 @@ except ImportError:  # Python 3
 
 import xbmc
 
+# import resources.lib.api.shakti as api
 import resources.lib.cache as cache
 from resources.lib import common
 from resources.lib.globals import g
@@ -71,6 +72,9 @@ class Event(object):
         """Returns True if you can make new request attempts"""
         self.req_attempt += 1
         return bool(self.req_attempt <= 3)
+
+    def get_video_id(self):
+        return self.request_data['params']['sessionParams']['uiplaycontext']['video_id']
 
     def __str__(self):
         return self.event_type
@@ -125,6 +129,7 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
+            # api.update_lolomo_context('continueWatching', video_id=event.get_video_id())
         if not event.is_response_success():
             # The event request is unsuccessful then there is some problem,
             # no longer make any future requests from this event id

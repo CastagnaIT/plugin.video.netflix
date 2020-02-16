@@ -46,7 +46,8 @@ PAGE_ITEMS_API_URL = {
     'auth_url': 'models/userInfo/data/authURL',
     # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
-    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl'
+    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',
+    'request_id': 'models/serverDefs/data/requestId'
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'

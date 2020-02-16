@@ -261,6 +261,10 @@ def any_value_except(mapping, excluded_keys):
     return next(mapping[key] for key in mapping if key not in excluded_keys)
 
 
+def enclose_quotes(content):
+    return '"' + content + '"'
+
+
 def time_execution(immediate):
     """A decorator that wraps a function call and times its execution"""
     # pylint: disable=missing-docstring

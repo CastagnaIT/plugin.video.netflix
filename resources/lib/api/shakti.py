@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from future.utils import iteritems
 
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -99,6 +100,52 @@ def root_lists():
                      {'from': 0, 'to': 40},
                      {'from': 0, 'to': 0}, 'reference'],
                     ART_PARTIAL_PATHS)))
+
+
+def update_lolomo_context(context_name, video_id=None):
+    """Update the lolomo list by context"""
+    # Should update the context list but it doesn't, what is missing?
+    # The remaining requests made on the website that are missing here are of logging type,
+    # it seems strange that they use log data to finish the operations are almost impossible to reproduce here:
+    # pbo_logblobs /logblob
+    # personalization/cl2
+
+    lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
+    # Note: lolomo root seem differs according to the profile in use
+    lolomo_root = lolomo_data['lolomo'][1]
+    context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
+    context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+
+    path = [['lolomos', lolomo_root, 'refreshListByContext']]
+    params = [common.enclose_quotes(context_id),
+              context_index,
+              common.enclose_quotes(context_name),
+              common.enclose_quotes(g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))]
+    # path_suffixs = [
+    #    [['trackIds', 'context', 'length', 'genreId', 'videoId', 'displayName', 'isTallRow', 'isShowAsARow',
+    #      'impressionToken', 'showAsARow', 'id', 'requestId']],
+    #    [{'from': 0, 'to': 100}, 'reference', 'summary'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'title'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'titleMaturity'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'userRating'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'userRatingRequestId'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'boxarts', '_342x192', 'jpg'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'promoVideo']
+    # ]
+    callargs = {
+        'callpaths': path,
+        'params': params,
+        # 'path_suffixs': path_suffixs
+    }
+    response = common.make_http_call('callpath_request', callargs)
+    common.debug('refreshListByContext response: {}', response)
+
+    callargs = {
+        'callpaths': [['refreshVideoCurrentPositions']],
+        'params': ['[' + video_id + ']', ''],
+    }
+    response = common.make_http_call('callpath_request', callargs)
+    common.debug('refreshVideoCurrentPositions response: {}', response)
 
 
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_type')
