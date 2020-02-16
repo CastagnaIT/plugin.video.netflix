@@ -240,48 +240,48 @@ def validate_login(react_context):
 
 def generate_esn(user_data):
     """Generate an ESN if on android or return the one from user_data"""
-    import subprocess
-    try:
-        manufacturer = subprocess.check_output(
-            ['/system/bin/getprop',
-             'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
-        if manufacturer:
-            model = subprocess.check_output(
+    if common.get_system_platform() == 'android':
+        import subprocess
+        try:
+            manufacturer = subprocess.check_output(
                 ['/system/bin/getprop',
-                 'ro.product.model']).decode('utf-8').strip(' \t\n\r')
-            product_characteristics = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
-            # Property ro.build.characteristics may also contain more then one value
-            has_product_characteristics_tv = any(
-                value.strip(' ') == 'tv' for value in product_characteristics.split(','))
-            # Netflix Ready Device Platform (NRDP)
-            nrdp_modelgroup = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
+                 'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
+            if manufacturer:
+                model = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.product.model']).decode('utf-8').strip(' \t\n\r')
+                product_characteristics = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
+                # Property ro.build.characteristics may also contain more then one value
+                has_product_characteristics_tv = any(
+                    value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+                # Netflix Ready Device Platform (NRDP)
+                nrdp_modelgroup = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
 
-            if has_product_characteristics_tv and \
-                    g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
-                esn = 'NFANDROID2-PRV-'
-                if nrdp_modelgroup:
-                    esn += nrdp_modelgroup + '-'
+                if has_product_characteristics_tv and \
+                        g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                    esn = 'NFANDROID2-PRV-'
+                    if nrdp_modelgroup:
+                        esn += nrdp_modelgroup + '-'
+                    else:
+                        esn += model.replace(' ', '').upper() + '-'
                 else:
-                    esn += model.replace(' ', '').upper() + '-'
-            else:
-                esn = 'NFANDROID1-PRV-'
-                esn += 'T-L3-'
+                    esn = 'NFANDROID1-PRV-'
+                    esn += 'T-L3-'
 
-            esn += '{:=<5.5}'.format(manufacturer.upper())
-            esn += model.replace(' ', '=').upper()
-            esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-            system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
-            if system_id:
-                esn += '-' + str(system_id) + '-'
-            common.debug('Android generated ESN: {}', esn)
-            return esn
-    except OSError:
-        pass
-
+                esn += '{:=<5.5}'.format(manufacturer.upper())
+                esn += model.replace(' ', '=').upper()
+                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
+                system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+                if system_id:
+                    esn += '-' + str(system_id) + '-'
+                common.debug('Android generated ESN: {}', esn)
+                return esn
+        except OSError:
+            pass
     return user_data.get('esn', '')
 
 

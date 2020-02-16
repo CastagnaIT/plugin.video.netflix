@@ -11,12 +11,11 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import time
-from platform import machine
 
 import xbmc
 import xbmcgui
 
-from resources.lib.common import run_threaded
+from resources.lib.common import run_threaded, get_machine
 from resources.lib.globals import g
 from resources.lib.kodi.ui.dialogs import (show_ok_dialog, show_error_info)
 
@@ -31,8 +30,6 @@ XBFONT_CENTER_X = 0x00000002
 XBFONT_CENTER_Y = 0x00000004
 XBFONT_TRUNCATED = 0x00000008
 XBFONT_JUSTIFY = 0x00000010
-
-OS_MACHINE = machine()
 
 CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{},silent)'
 
@@ -79,10 +76,13 @@ class Skip(xbmcgui.WindowXMLDialog):
                                    ACTION_NAV_BACK,
                                    ACTION_NOOP]
 
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self.getControl(6012).setLabel(self.label)
@@ -116,10 +116,13 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self._generate_levels_labels()
@@ -224,10 +227,13 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self.getControl(10000).setLabel(self.title)

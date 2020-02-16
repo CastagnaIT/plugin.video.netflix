@@ -22,7 +22,9 @@ import resources.lib.common as common
 try:
     SDKVERSION = int(subprocess.check_output(
         ['/system/bin/getprop', 'ro.build.version.sdk']))
-except (OSError, subprocess.CalledProcessError):
+except (OSError, subprocess.CalledProcessError, AttributeError):
+    # Due to OS restrictions on 'ios' and 'tvos' this give AttributeError
+    # See python limits in the wiki development page
     SDKVERSION = 0
 
 if SDKVERSION >= 18:
