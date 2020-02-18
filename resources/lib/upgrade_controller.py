@@ -76,7 +76,7 @@ def _perform_local_db_changes(db_version):
 
 def _perform_shared_db_changes(db_version):
     """Perform database actions for a db version change"""
-    db_new_version = '0.1'
+    db_new_version = '0.2'
     if db_version != db_new_version:
         from resources.lib.common import debug
         debug('Initialization of shared database updates from version {} to {})',

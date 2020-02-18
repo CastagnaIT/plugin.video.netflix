@@ -121,5 +121,14 @@ def _create_shared_database(db_file_path):
                 'NfoExport     TEXT    NOT NULL DEFAULT (\'False\'));')
     cur.execute(table)
 
+    table = str('CREATE TABLE watched_status_override ('
+                'ProfileGuid      TEXT    NOT NULL,'
+                'VideoID          INTEGER NOT NULL,'
+                'Value            TEXT,'
+                'PRIMARY KEY (ProfileGuid, VideoID ),'
+                'FOREIGN KEY (ProfileGuid)'
+                'REFERENCES Profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE);')
+    cur.execute(table)
+
     if conn:
         conn.close()
