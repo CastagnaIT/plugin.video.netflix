@@ -110,7 +110,7 @@
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
-    <setting id="ProgressManager_enabled" type="bool" label="30500" default="false"/>
+    <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
   </category>
   <category label="30023"><!--Expert-->
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
