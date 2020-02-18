@@ -154,7 +154,7 @@ class AddonActionExecutor(object):
         # Open root page
         xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
 
-    def change_watched_status(self, pathitems=None):
+    def change_watched_status(self, pathitems=None):  # pylint: disable=unused-argument
         from os import path
         videoid = path.basename(path.normpath(xbmc.getInfoLabel('ListItem.Path')))
         if videoid.isdigit():
