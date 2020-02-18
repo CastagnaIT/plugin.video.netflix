@@ -26,11 +26,18 @@ def check_addon_upgrade():
 def check_service_upgrade():
     """Check service upgrade and perform necessary update operations"""
     # Upgrades to be performed before starting the service
-    # Database upgrade
-    local_db_version = g.LOCAL_DB.get_value('local_db_version', '0.1')
-    shared_db_version = g.LOCAL_DB.get_value('shared_db_version', '0.1')
-    _perform_local_db_changes(local_db_version)
-    _perform_shared_db_changes(shared_db_version)
+    # Upgrade the local database
+    current_local_db_version = g.LOCAL_DB.get_value('local_db_version', None)
+    upgrade_to_local_db_version = '0.1'
+    if current_local_db_version != upgrade_to_local_db_version:
+        _perform_local_db_changes(current_local_db_version, upgrade_to_local_db_version)
+
+    # Upgrade the shared databases
+    current_shared_db_version = g.LOCAL_DB.get_value('shared_db_version', None)
+    upgrade_to_shared_db_version = '0.2'
+    if current_local_db_version != upgrade_to_local_db_version:
+        _perform_shared_db_changes(current_shared_db_version, upgrade_to_shared_db_version)
+
     # Perform service changes
     service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
     service_current_ver = g.VERSION
@@ -63,23 +70,28 @@ def _perform_service_changes(previous_ver, current_ver):
     g.LOCAL_DB.set_value('service_previous_version', current_ver)
 
 
-def _perform_local_db_changes(db_version):
+def _perform_local_db_changes(current_version, upgrade_to_version):
     """Perform database actions for a db version change"""
-    db_new_version = '0.1'
-    if db_version != db_new_version:
+    if current_version is not None:
         from resources.lib.common import debug
-        debug('Initialization of local database updates from version {} to {})',
-              db_version, db_new_version)
-        run_local_db_updates(db_version, db_new_version)
-        g.LOCAL_DB.set_value('local_db_version', db_new_version)
+        debug('Initialization of local database updates from version {} to {})', current_version, upgrade_to_version)
+        run_local_db_updates(current_version, upgrade_to_version)
+    g.LOCAL_DB.set_value('local_db_version', upgrade_to_version)
 
 
-def _perform_shared_db_changes(db_version):
+def _perform_shared_db_changes(current_version, upgrade_to_version):
     """Perform database actions for a db version change"""
-    db_new_version = '0.2'
-    if db_version != db_new_version:
+    # This is a temporary bug fix, to be removed on future addon versions,
+    # this because a previous oversight never saved the current version
+    # Init fix
+    from resources.lib.common import is_minimum_version
+    service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
+    if current_version is None and not is_minimum_version(service_previous_ver, '0.17.0'):
+        current_version = '0.1'
+    # End fix
+
+    if current_version is not None:
         from resources.lib.common import debug
-        debug('Initialization of shared database updates from version {} to {})',
-              db_version, db_new_version)
-        run_shared_db_updates(db_version, db_new_version)
-        g.LOCAL_DB.set_value('shared_db_version', db_new_version)
+        debug('Initialization of shared databases updates from version {} to {})', current_version, upgrade_to_version)
+        run_shared_db_updates(current_version, upgrade_to_version)
+    g.LOCAL_DB.set_value('shared_db_version', upgrade_to_version)

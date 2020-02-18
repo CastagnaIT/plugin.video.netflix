@@ -13,20 +13,20 @@ import resources.lib.common as common
 from resources.lib.globals import g
 
 
-def run_local_db_updates(db_version, db_new_version):  # pylint: disable=unused-argument
+def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
-    if common.is_less_version(db_version, '0.2'):
+    if common.is_less_version(current_version, '0.2'):
         pass
-    if common.is_less_version(db_version, '0.3'):
+    if common.is_less_version(current_version, '0.3'):
         pass
 
 
-def run_shared_db_updates(db_version, db_new_version):  # pylint: disable=unused-argument
+def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
 
-    if common.is_less_version(db_version, '0.2'):
+    if common.is_less_version(current_version, '0.2'):
         # Changes: added table 'watched_status_override'
 
         # SQLite
@@ -70,5 +70,5 @@ def run_shared_db_updates(db_version, db_new_version):  # pylint: disable=unused
             cur.execute(alter_tbl)
             shared_db_conn.conn.close()
 
-    if common.is_less_version(db_version, '0.3'):
+    if common.is_less_version(current_version, '0.3'):
         pass
