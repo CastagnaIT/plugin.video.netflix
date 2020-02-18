@@ -967,3 +967,11 @@ msgstr ""
 msgctxt "#30235"
 msgid "[WIP] Send/Receive progress and watched status of the videos (works only with the main profile)"
 msgstr ""
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr ""

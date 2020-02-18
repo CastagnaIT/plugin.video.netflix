@@ -356,26 +356,32 @@ def _set_progress_status(list_item, video_data, infos):
         # Currently due to a unknown problem, it is not possible to communicate MSL data to the right selected
         # profile other than the owner profile
         return
-    # Todo: implement a way to let user change manually the watched status (values saved on db)
-    #  then check from db if user has manually changed the watched status
 
-    # NOTE shakti 'watched' tag value:
-    # in my tests playing a video (via web browser) until to the end this value is not changed to True
-    # seem not respect really if a video is watched to the end or this tag have other purposes
-    # to now, the only way to know if a video is watched is compare the bookmarkPosition with creditsOffset value
+    video_id = video_data['summary']['id']
+    # Check from db if user has manually changed the watched status
+    profile_guid = g.LOCAL_DB.get_active_profile_guid()
+    override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
 
-    if not video_data.get('creditsOffset'):
-        # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
-        # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
-        watched_threshold = video_data['runtime'] - (video_data['runtime'] / 100 * 90)
+    if override_is_watched is None:
+        # NOTE shakti 'watched' tag value:
+        # in my tests playing a video (via web browser) until to the end this value is not changed to True
+        # seem not respect really if a video is watched to the end or this tag have other purposes
+        # to now, the only way to know if a video is watched is compare the bookmarkPosition with creditsOffset value
+
+        if not video_data.get('creditsOffset'):
+            # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
+            # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
+            watched_threshold = video_data['runtime'] - (video_data['runtime'] / 100 * 90)
+        else:
+            watched_threshold = video_data['creditsOffset']
+
+        # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
+        playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
+        if playcount == '0' and video_data['bookmarkPosition'] > 0:
+            list_item.setProperty('ResumeTime', str(video_data['bookmarkPosition']))
+            list_item.setProperty('TotalTime', str(video_data['runtime']))
     else:
-        watched_threshold = video_data['creditsOffset']
-
-    # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
-    playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
-    if playcount == '0' and video_data['bookmarkPosition'] > 0:
-        list_item.setProperty('ResumeTime', str(video_data['bookmarkPosition']))
-        list_item.setProperty('TotalTime', str(video_data['runtime']))
+        playcount = '1' if override_is_watched else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     infos['PlayCount'] = playcount
