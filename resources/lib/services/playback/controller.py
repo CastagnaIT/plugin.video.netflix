@@ -121,6 +121,8 @@ class PlaybackController(xbmc.Monitor):
     def _on_playback_stopped(self):
         self.tracking = False
         self.active_player_id = None
+        # Immediately send the request to release the license
+        common.send_signal(signal=common.Signals.RELEASE_LICENSE, non_blocking=True)
         self._notify_all(PlaybackActionManager.on_playback_stopped)
         self.action_managers = None
 

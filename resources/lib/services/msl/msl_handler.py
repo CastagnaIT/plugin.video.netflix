@@ -34,7 +34,9 @@ except NameError:  # Python 3
 class MSLHandler(MSLHandlerBase):
     """Handles session management and crypto for license and manifest
     requests"""
+    last_license_session_id = ''
     last_license_url = ''
+    last_license_release_url = ''
     last_drm_context = ''
     last_playback_context = ''
     session = requests.session()
@@ -62,6 +64,9 @@ class MSLHandler(MSLHandlerBase):
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.perform_key_handshake)
+        common.register_slot(
+            signal=common.Signals.RELEASE_LICENSE,
+            callback=self.release_license)
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -207,7 +212,31 @@ class MSLHandler(MSLHandlerBase):
 
         # This xid must be used for any future request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
+        self.last_license_session_id = sid
+        self.last_license_release_url = response[0]['links']['releaseLicense']['href']
         return response[0]['licenseResponseBase64']
+
+    @display_error_info
+    @common.time_execution(immediate=True)
+    def release_license(self, data=None):  # pylint: disable=unused-argument
+        """
+        Release the server license
+        """
+        common.debug('Releasing license')
+
+        params = [{
+            'url': self.last_license_release_url,
+            'params': {
+                'sessionId': self.last_license_session_id,
+                'xid': g.LOCAL_DB.get_value('xid', table=TABLE_SESSION)
+            },
+            'echo': 'sessionId'
+        }]
+
+        response = self.chunked_request(ENDPOINTS['license'],
+                                        build_request_data('/bundle', params),
+                                        g.get_esn())
+        common.debug('License release response: {}', response)
 
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):

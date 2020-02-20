@@ -32,6 +32,7 @@ class Signals(object):  # pylint: disable=no-init
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
     ESN_CHANGED = 'esn_changed'
+    RELEASE_LICENSE = 'release_license'
     LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
     UPNEXT_ADDON_INIT = 'upnext_data'
     INVALIDATE_SERVICE_CACHE = 'invalidate_service_cache'
