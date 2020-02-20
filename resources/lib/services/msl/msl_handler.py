@@ -11,18 +11,19 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import time
+
 import requests
 import xbmcaddon
 
-from resources.lib.globals import g
-import resources.lib.common as common
 import resources.lib.cache as cache
+import resources.lib.common as common
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
+from .converter import convert_to_dash
 from .events_handler import EventsHandler
 from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info, build_request_data
-
-from .request_builder import MSLRequestBuilder
 from .profiles import enabled_profiles
-from .converter import convert_to_dash
+from .request_builder import MSLRequestBuilder
 
 try:  # Python 2
     unicode
@@ -191,18 +192,21 @@ class MSLHandler(MSLHandlerBase):
         common.debug('Requesting license')
 
         timestamp = int(time.time() * 10000)
+        xid = str(timestamp + 1610)
+
         params = [{
             'sessionId': sid,
             'clientTime': int(timestamp / 10000),
             'challengeBase64': challenge,
-            'xid': str(timestamp + 1610)
+            'xid': xid
         }]
 
-        url = self.last_license_url
-
         response = self.chunked_request(ENDPOINTS['license'],
-                                        build_request_data(url, params, 'sessionId'),
+                                        build_request_data(self.last_license_url, params, 'sessionId'),
                                         g.get_esn())
+
+        # This xid must be used for any future request, until playback stops
+        g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
         return response[0]['licenseResponseBase64']
 
     @common.time_execution(immediate=True)

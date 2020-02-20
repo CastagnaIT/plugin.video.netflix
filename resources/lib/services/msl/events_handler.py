@@ -23,6 +23,7 @@ import xbmc
 # import resources.lib.api.shakti as api
 import resources.lib.cache as cache
 from resources.lib import common
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.msl import event_tag_builder
 from resources.lib.services.msl.msl_handler_base import build_request_data, ENDPOINTS
@@ -200,7 +201,7 @@ class EventsHandler(threading.Thread):
 
         params = {
             'event': event_type,
-            'xid': previous_data.get('xid', str(timestamp + 1610)),
+            'xid': g.LOCAL_DB.get_value('xid', table=TABLE_SESSION),
             'position': player_state['elapsed_seconds'] * 1000,  # Video time elapsed
             'clientTime': timestamp,
             'sessionStartTime': previous_data.get('sessionStartTime', timestamp),
