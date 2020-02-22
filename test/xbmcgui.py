@@ -16,6 +16,16 @@ INPUT_TYPE_NUMBER = 1
 ALPHANUM_HIDE_INPUT = 1
 
 
+def getScreenHeight():
+    """A stub implementation of the xbmcgui getScreenHeight() function"""
+    return 1080
+
+
+def getScreenWidth():
+    """A stub implementation of the xbmcgui getScreenWidth() function"""
+    return 1920
+
+
 class Control:
     """A reimplementation of the xbmcgui Control class"""
 
