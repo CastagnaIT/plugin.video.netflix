@@ -47,7 +47,12 @@ PAGE_ITEMS_API_URL = {
     # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
     'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',
-    'request_id': 'models/serverDefs/data/requestId'
+    'request_id': 'models/serverDefs/data/requestId',
+    'asset_core': 'models/playerModel/data/config/core/assets/core',
+    'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
+    'browser_info_version': 'models/browserInfo/data/version',
+    'browser_info_os_name': 'models/browserInfo/data/os/name',
+    'browser_info_os_version': 'models/browserInfo/data/os/version',
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
