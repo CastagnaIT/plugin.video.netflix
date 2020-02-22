@@ -48,13 +48,11 @@ class StreamContinuityManager(PlaybackActionManager):
         self.sc_settings = {}
         self.player = xbmc.Player()
         self.player_state = {}
-        self.did_restore = False
         self.resume = {}
         self.legacy_kodi_version = bool('18.' in common.GetKodiVersion().version)
         self.kodi_only_forced_subtitles = None
 
     def _initialize(self, data):
-        self.did_restore = False
         videoid = common.VideoId.from_dict(data['videoid'])
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
@@ -81,13 +79,9 @@ class StreamContinuityManager(PlaybackActionManager):
             self._restore_stream(stype)
         # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
         # changed by restore, otherwise when _on_tick is executed it will save twice unnecessarily
-        xbmc.sleep(1500)
-        self.did_restore = True
+        xbmc.sleep(1000)
 
     def _on_tick(self, player_state):
-        if not self.did_restore:
-            common.debug('Did not restore streams yet, ignoring tick')
-            return
         self.player_state = player_state
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']

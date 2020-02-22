@@ -17,6 +17,7 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
+from .progress_manager import ProgressManager
 from .resume_manager import ResumeManager
 from .section_skipping import SectionSkipper
 from .stream_continuity import StreamContinuityManager
@@ -49,6 +50,7 @@ class PlaybackController(xbmc.Monitor):
             ResumeManager(),
             SectionSkipper(),
             StreamContinuityManager(),
+            ProgressManager(),
             UpNextNotifier()
         ]
         self._notify_all(PlaybackActionManager.initialize, data)
@@ -67,13 +69,19 @@ class PlaybackController(xbmc.Monitor):
                 # Because when UpNext addon play a video while we are inside Netflix addon and
                 # not externally like Kodi library, the playerid become -1 this id does not exist
                 self._on_playback_started()
+            elif method == 'Player.OnSeek':
+                self._on_playback_seek()
+            elif method == 'Player.OnPause':
+                self._on_playback_pause()
+            elif method == 'Player.OnResume':
+                self._on_playback_resume()
             elif method == 'Player.OnStop':
                 self._on_playback_stopped()
         except Exception:
             import traceback
             common.error(traceback.format_exc())
 
-    def on_playback_tick(self):
+    def on_service_tick(self):
         """
         Notify action managers of playback tick
         """
@@ -83,14 +91,38 @@ class PlaybackController(xbmc.Monitor):
                 self._notify_all(PlaybackActionManager.on_tick, player_state)
 
     def _on_playback_started(self):
-        self.active_player_id = _get_player_id()
-        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state())
+        player_id = _get_player_id()
+        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state(player_id))
         if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
+        self.active_player_id = player_id
+
+    def _on_playback_seek(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_seek,
+                                 player_state)
+
+    def _on_playback_pause(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_pause,
+                                 player_state)
+
+    def _on_playback_resume(self):
+        if self.tracking and self.active_player_id is not None:
+            player_state = self._get_player_state()
+            if player_state:
+                self._notify_all(PlaybackActionManager.on_playback_resume,
+                                 player_state)
 
     def _on_playback_stopped(self):
         self.tracking = False
         self.active_player_id = None
+        # Immediately send the request to release the license
+        common.send_signal(signal=common.Signals.RELEASE_LICENSE, non_blocking=True)
         self._notify_all(PlaybackActionManager.on_playback_stopped)
         self.action_managers = None
 
@@ -100,13 +132,14 @@ class PlaybackController(xbmc.Monitor):
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
-    def _get_player_state(self):
+    def _get_player_state(self, player_id=None):
         try:
             player_state = common.json_rpc('Player.GetProperties', {
-                'playerid': self.active_player_id,
+                'playerid': self.active_player_id or player_id,
                 'properties': [
                     'audiostreams',
                     'currentaudiostream',
+                    'currentvideostream',
                     'subtitles',
                     'currentsubtitle',
                     'subtitleenabled',

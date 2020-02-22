@@ -95,5 +95,17 @@ def create_database(config):
     cur.execute(table)
     cur.execute(alter_tbl)
 
+    table = ('CREATE TABLE netflix_addon.watched_status_override ('
+             'ProfileGuid VARCHAR(50) NOT NULL,'
+             'VideoID INT(11) NOT NULL,'
+             'Value TEXT DEFAULT NULL,'
+             'PRIMARY KEY (ProfileGuid, VideoID))'
+             'ENGINE = INNODB, CHARACTER SET utf8mb4, COLLATE utf8mb4_unicode_ci;')
+    alter_tbl = ('ALTER TABLE netflix_addon.watched_status_override '
+                 'ADD CONSTRAINT FK_watchedstatusoverride_ProfileGuid FOREIGN KEY (ProfileGuid)'
+                 'REFERENCES netflix_addon.profiles(Guid) ON DELETE CASCADE ON UPDATE CASCADE;')
+    cur.execute(table)
+    cur.execute(alter_tbl)
+
     if conn and conn.is_connected():
         conn.close()

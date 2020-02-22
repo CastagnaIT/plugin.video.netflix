@@ -45,7 +45,7 @@ class LibraryUpdateService(xbmc.Monitor):
             g.ADDON.getAddonInfo('id'), common.Signals.LIBRARY_UPDATE_REQUESTED,
             self.update_kodi_library)
 
-    def on_tick(self):
+    def on_service_tick(self):
         """Check if update is due and trigger it"""
         if not self.enabled:
             return

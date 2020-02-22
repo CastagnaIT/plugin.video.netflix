@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from future.utils import iteritems
 
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -21,7 +22,7 @@ from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, Episode
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
-                    TRAILER_PARTIAL_PATHS)
+                    TRAILER_PARTIAL_PATHS, EVENT_PATHS)
 from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
                          MetadataNotAvailable)
 from .website import parse_profiles
@@ -101,6 +102,52 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
+def update_lolomo_context(context_name, video_id=None):
+    """Update the lolomo list by context"""
+    # Should update the context list but it doesn't, what is missing?
+    # The remaining requests made on the website that are missing here are of logging type,
+    # it seems strange that they use log data to finish the operations are almost impossible to reproduce here:
+    # pbo_logblobs /logblob
+    # personalization/cl2
+
+    lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
+    # Note: lolomo root seem differs according to the profile in use
+    lolomo_root = lolomo_data['lolomo'][1]
+    context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
+    context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+
+    path = [['lolomos', lolomo_root, 'refreshListByContext']]
+    params = [common.enclose_quotes(context_id),
+              context_index,
+              common.enclose_quotes(context_name),
+              common.enclose_quotes(g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))]
+    # path_suffixs = [
+    #    [['trackIds', 'context', 'length', 'genreId', 'videoId', 'displayName', 'isTallRow', 'isShowAsARow',
+    #      'impressionToken', 'showAsARow', 'id', 'requestId']],
+    #    [{'from': 0, 'to': 100}, 'reference', 'summary'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'title'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'titleMaturity'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'userRating'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'userRatingRequestId'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'boxarts', '_342x192', 'jpg'],
+    #    [{'from': 0, 'to': 100}, 'reference', 'promoVideo']
+    # ]
+    callargs = {
+        'callpaths': path,
+        'params': params,
+        # 'path_suffixs': path_suffixs
+    }
+    response = common.make_http_call('callpath_request', callargs)
+    common.debug('refreshListByContext response: {}', response)
+
+    callargs = {
+        'callpaths': [['refreshVideoCurrentPositions']],
+        'params': ['[' + video_id + ']', ''],
+    }
+    response = common.make_http_call('callpath_request', callargs)
+    common.debug('refreshVideoCurrentPositions response: {}', response)
+
+
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
@@ -115,7 +162,7 @@ def list_id_for_type(list_type):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_id')
+@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_id', save_call_data=True)
 def video_list(list_id, perpetual_range_start=None):
     """Retrieve a single video list
     some of this type of request seems to have results fixed at ~40 from netflix
@@ -134,7 +181,7 @@ def video_list(list_id, perpetual_range_start=None):
 
 @common.time_execution(immediate=False)
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='context_id',
-                    identify_append_from_kwarg_name='perpetual_range_start')
+                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
 def video_list_sorted(context_name, context_id=None, perpetual_range_start=None, menu_data=None):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
@@ -218,7 +265,7 @@ def seasons(videoid):
 
 @common.time_execution(immediate=False)
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='videoid_value',
-                    identify_append_from_kwarg_name='perpetual_range_start')
+                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
 def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: disable=unused-argument
     """Retrieve episodes of a season"""
     if videoid.mediatype != common.VideoId.SEASON:
@@ -239,7 +286,7 @@ def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: dis
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_SUPPLEMENTAL)
+@cache.cache_output(cache.CACHE_SUPPLEMENTAL, save_call_data=True)
 def supplemental_video_list(videoid, supplemental_type):
     """Retrieve a supplemental video list"""
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
@@ -266,6 +313,18 @@ def single_info(videoid):
     if videoid.mediatype == common.VideoId.EPISODE:
         paths.extend(build_paths(['videos', videoid.tvshowid],
                                  ART_PARTIAL_PATHS + [['title']]))
+    return common.make_call('path_request', paths)
+
+
+@common.time_execution(immediate=False)
+def event_info(videoid):
+    """Retrieve info for the events"""
+    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE,
+                                 common.VideoId.SUPPLEMENTAL]:
+        raise common.InvalidVideoId('Cannot request event info for {}'
+                                    .format(videoid))
+    common.debug('Requesting event info for {}', videoid)
+    paths = build_paths(['videos', videoid.value], EVENT_PATHS)
     return common.make_call('path_request', paths)
 
 

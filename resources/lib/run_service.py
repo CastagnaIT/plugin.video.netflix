@@ -115,8 +115,8 @@ class NetflixService(object):
 
     def _tick_and_wait_for_abort(self):
         try:
-            self.controller.on_playback_tick()
-            self.library_updater.on_tick()
+            self.controller.on_service_tick()
+            self.library_updater.on_service_tick()
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification

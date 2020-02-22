@@ -390,9 +390,7 @@ def _create_supplemental_item(videoid_value, video, video_list, params):
     url = common.build_url(videoid=videoid,
                            mode=g.MODE_PLAY,
                            params=params)
-    # replaceItems still look broken because it does not remove the default ctx menu
-    # i hope in the future Kodi fix this
-    list_item.addContextMenuItems(generate_context_menu_items(videoid), replaceItems=True)
+    list_item.addContextMenuItems(generate_context_menu_items(videoid))
     return (url, list_item, False)
 
 

@@ -28,6 +28,7 @@ import xbmcgui
 import xbmcvfs
 
 from resources.lib import common
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 
 try:
@@ -81,7 +82,8 @@ def cache_output(bucket, fixed_identifier=None,
                  identify_append_from_kwarg_name=None,
                  identify_fallback_arg_index=0,
                  ttl=None,
-                 to_disk=False):
+                 to_disk=False,
+                 save_call_data=False):
     """Decorator that ensures caching the output of a function"""
     # pylint: disable=missing-docstring, invalid-name, too-many-arguments
     def caching_decorator(func):
@@ -94,6 +96,10 @@ def cache_output(bucket, fixed_identifier=None,
                                              identify_fallback_arg_index,
                                              args,
                                              kwargs)
+                if save_call_data and not g.IS_SKIN_CALL:
+                    g.LOCAL_DB.set_value('cache_last_directory_call',
+                                         {'bucket': bucket, 'identifier': identifier, 'to_disk': to_disk},
+                                         table=TABLE_SESSION)
                 if not identifier:
                     # Do not cache if identifier couldn't be determined
                     return func(*args, **kwargs)
@@ -192,6 +198,15 @@ class Cache(object):
         cache_entry = {'eol': eol, 'content': content}
         self._get_bucket(bucket).update(
             {identifier: cache_entry})
+        if to_disk:
+            self._add_to_disk(bucket, identifier, cache_entry)
+
+    def update(self, bucket, identifier, content, to_disk=False):
+        """Update an item content to a cache bucket"""
+        cache_entry = self._get_bucket(bucket).get(identifier)
+        if cache_entry is None:
+            raise CacheMiss()
+        cache_entry['content'] = content
         if to_disk:
             self._add_to_disk(bucket, identifier, cache_entry)
 

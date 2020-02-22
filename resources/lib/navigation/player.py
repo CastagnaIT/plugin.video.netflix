@@ -14,6 +14,7 @@ import xbmcplugin
 import xbmcgui
 
 from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.shakti as api
@@ -71,19 +72,31 @@ def play(videoid):
     list_item = get_inputstream_listitem(videoid)
     infos, art = infolabels.add_info_for_playback(videoid, list_item, is_up_next_enabled)
 
-    # Workaround for resuming strm files from library
-    resume_position = infos.get('resume', {}).get('position') \
-        if g.IS_SKIN_CALL and g.ADDON.getSettingBool('ResumeManager_enabled') else None
-    if resume_position:
-        index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
-        if index_selected == -1:
-            xbmcplugin.setResolvedUrl(
-                handle=g.PLUGIN_HANDLE,
-                succeeded=False,
-                listitem=list_item)
-            return
-        if index_selected == 1:
-            resume_position = None
+    resume_position = {}
+    event_data = {}
+
+    if g.IS_SKIN_CALL:
+        # Workaround for resuming strm files from library
+        resume_position = infos.get('resume', {}).get('position') \
+            if g.ADDON.getSettingBool('ResumeManager_enabled') else None
+        if resume_position:
+            index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
+            if index_selected == -1:
+                xbmcplugin.setResolvedUrl(
+                    handle=g.PLUGIN_HANDLE,
+                    succeeded=False,
+                    listitem=list_item)
+                return
+            if index_selected == 1:
+                resume_position = None
+    elif g.ADDON.getSettingBool('ProgressManager_enabled') and g.LOCAL_DB.get_profile_config('isAccountOwner', False):
+        # To now we have this limits:
+        # - enabled only if the owner profile is used. Currently due to a unknown problem,
+        #    it is not possible to communicate MSL data to the right selected profile
+        # - enabled only with items played inside the addon then not Kodi library, need impl. JSON-RPC lib update code
+        event_data = _get_event_data(videoid)
+        event_data['videoid'] = videoid.to_dict()
+        event_data['is_played_by_library'] = g.IS_SKIN_CALL
 
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
@@ -92,6 +105,8 @@ def play(videoid):
 
     upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
 
+    g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
+
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
@@ -99,7 +114,8 @@ def play(videoid):
         'art': art,
         'timeline_markers': get_timeline_markers(metadata[0]),
         'upnext_info': upnext_info,
-        'resume_position': resume_position}, non_blocking=True)
+        'resume_position': resume_position,
+        'event_data': event_data}, non_blocking=True)
     xbmcplugin.setResolvedUrl(
         handle=g.PLUGIN_HANDLE,
         succeeded=True,
@@ -150,6 +166,27 @@ def _verify_pin(pin_required):
         return True
     pin = ui.ask_for_pin()
     return None if not pin else api.verify_pin(pin)
+
+
+def _get_event_data(videoid):
+    """Get data needed to send event requests to Netflix and for resume from last position"""
+    api_data = api.event_info(videoid)
+    if not api_data:
+        return {}
+    videoid_data = api_data['videos'][videoid.value]
+    common.debug('Event data: {}', videoid_data)
+
+    event_data = {'resume_position':
+                  videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
+                  'runtime': videoid_data['runtime'],
+                  'request_id': videoid_data['requestId'],
+                  'watched': videoid_data['watched'],
+                  'is_in_mylist': videoid_data['queue'].get('inQueue', False)}
+    if videoid.mediatype == common.VideoId.EPISODE:
+        event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
+    else:
+        event_data['track_id'] = videoid_data['trackIds']['trackId_jaw']
+    return event_data
 
 
 @common.time_execution(immediate=False)
