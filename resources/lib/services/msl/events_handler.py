@@ -117,7 +117,7 @@ class EventsHandler(threading.Thread):
                       'reqName': 'events/{}'.format(event)}
             url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
             try:
-                response = self.chunked_request(url, event.request_data, g.get_esn())
+                response = self.chunked_request(url, event.request_data, g.get_esn(), disable_msl_switch=False)
                 event.set_response(response)
                 break
             except Exception as exc:  # pylint: disable=broad-except
@@ -236,5 +236,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = g.get_esn() + '_' + videoid.value
+    cache_identifier = g.LOCAL_DB.get_active_profile_guid() + '_' + g.get_esn() + '_' + videoid.value
     return g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)

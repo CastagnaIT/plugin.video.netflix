@@ -35,6 +35,7 @@ else:
 
 class MSLRequestBuilder(object):
     """Provides mechanisms to create MSL requests"""
+
     def __init__(self):
         self.current_message_id = None
         self.rndm = random.SystemRandom()

@@ -2,7 +2,8 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
-    MSL request building
+    Copyright (C) 2020 Stefano Gottardo
+    MSL requests
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -30,6 +31,7 @@ except ImportError:  # Python 3
 
 
 class MSLRequests(MSLRequestBuilder):
+    """Provides methods to make MSL requests"""
 
     def __init__(self, msl_data=None):
         super(MSLRequests, self).__init__()
@@ -44,6 +46,7 @@ class MSLRequests(MSLRequestBuilder):
 
             # Add-on just installed, the service starts but there is no esn
             if g.get_esn():
+                # This is also done here only try to speed up the loading of manifest
                 self._check_mastertoken_validity()
         except MSLError:
             raise
@@ -62,7 +65,6 @@ class MSLRequests(MSLRequestBuilder):
             return False
 
         common.debug('Performing key handshake. ESN: {}', esn)
-
         response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
         header_data = self.decrypt_header_data(response['headerdata'], False)
         self.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
@@ -158,6 +160,7 @@ class MSLRequests(MSLRequestBuilder):
 
         mt_validity = self._check_mastertoken_validity()
         auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
+        common.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
@@ -165,7 +168,6 @@ class MSLRequests(MSLRequestBuilder):
             save_uid_token_to_owner=auth_data['user_id_token'] is None)
         return chunked_response['result']
 
-    @common.time_execution(immediate=True)
     def _post(self, endpoint, request_data):
         """Execute a post request"""
         common.debug('Executing POST request to {}', endpoint)
@@ -282,5 +284,4 @@ def _decrypt_chunks(chunks, crypto):
             data = base64.standard_b64decode(data).decode('utf-8')
 
         decrypted_payload += data
-
     return json.loads(decrypted_payload)
