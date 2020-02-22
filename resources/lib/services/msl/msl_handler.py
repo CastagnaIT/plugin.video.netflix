@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2017 Trummerjo (original implementation module)
-    Proxy service to convert manifest and provide license data
+    Proxy service to convert manifest, provide license data and handle events
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import time
 
-import requests
 import xbmcaddon
 
 import resources.lib.cache as cache
@@ -21,9 +20,9 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
-from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info, build_request_data
+from .msl_requests import MSLRequests
+from .msl_utils import ENDPOINTS, display_error_info
 from .profiles import enabled_profiles
-from .request_builder import MSLRequestBuilder
 
 try:  # Python 2
     unicode
@@ -31,39 +30,31 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 
-class MSLHandler(MSLHandlerBase):
-    """Handles session management and crypto for license and manifest
-    requests"""
+class MSLHandler(object):
+    """Handles session management and crypto for license, manifest and event requests"""
     last_license_session_id = ''
     last_license_url = ''
     last_license_release_url = ''
     last_drm_context = ''
     last_playback_context = ''
-    session = requests.session()
 
     def __init__(self):
         super(MSLHandler, self).__init__()
-        # pylint: disable=broad-except
         self.request_builder = None
         try:
             msl_data = json.loads(common.load_file('msl_data.json'))
             common.info('Loaded MSL data from disk')
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             msl_data = None
-        try:
-            self.request_builder = MSLRequestBuilder(msl_data)
-            # Addon just installed, the service starts but there is no esn
-            if g.get_esn():
-                self.check_mastertoken_validity()
 
-            events_handler = EventsHandler(self.chunked_request)
-            events_handler.start()
-        except Exception:
-            import traceback
-            common.error(traceback.format_exc())
+        self.request_builder = MSLRequests(msl_data)
+
+        events_handler = EventsHandler(self.request_builder.chunked_request)
+        events_handler.start()
+
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
-            callback=self.perform_key_handshake)
+            callback=self.request_builder.perform_key_handshake)
         common.register_slot(
             signal=common.Signals.RELEASE_LICENSE,
             callback=self.release_license)
@@ -93,13 +84,13 @@ class MSLHandler(MSLHandlerBase):
         common.debug('Loading EDGE manifest')
         esn = g.get_edge_esn()
         common.debug('Switching MSL data to EDGE')
-        self.perform_key_handshake(esn)
+        self.request_builder.perform_key_handshake(esn)
         manifest = self._load_manifest(viewable_id, esn)
         manifest['playbackContextId'] = chrome_manifest['playbackContextId']
         manifest['drmContextId'] = chrome_manifest['drmContextId']
         common.debug('Successfully loaded EDGE manifest')
         common.debug('Resetting MSL data to Chrome')
-        self.perform_key_handshake()
+        self.request_builder.perform_key_handshake()
         return manifest
 
     @common.time_execution(immediate=True)
@@ -169,12 +160,9 @@ class MSLHandler(MSLHandlerBase):
             'preferAssistiveAudio': False
         }
 
-        # Get and check mastertoken validity
-        mt_validity = self.check_mastertoken_validity()
-        manifest = self.chunked_request(ENDPOINTS['manifest'],
-                                        build_request_data('/manifest', params),
-                                        esn,
-                                        mt_validity)
+        manifest = self.request_builder.chunked_request(ENDPOINTS['manifest'],
+                                                        self.request_builder.build_request_data('/manifest', params),
+                                                        esn)
         if common.is_debug_verbose():
             # Save the manifest to disk as reference
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -198,22 +186,22 @@ class MSLHandler(MSLHandlerBase):
 
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
-
         params = [{
             'sessionId': sid,
             'clientTime': int(timestamp / 10000),
             'challengeBase64': challenge,
             'xid': xid
         }]
-
-        response = self.chunked_request(ENDPOINTS['license'],
-                                        build_request_data(self.last_license_url, params, 'sessionId'),
-                                        g.get_esn())
-
+        response = self.request_builder.chunked_request(ENDPOINTS['license'],
+                                                        self.request_builder.build_request_data(self.last_license_url,
+                                                                                                params,
+                                                                                                'sessionId'),
+                                                        g.get_esn())
         # This xid must be used for any future request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
         self.last_license_session_id = sid
         self.last_license_release_url = response[0]['links']['releaseLicense']['href']
+
         return response[0]['licenseResponseBase64']
 
     @display_error_info
@@ -222,7 +210,7 @@ class MSLHandler(MSLHandlerBase):
         """
         Release the server license
         """
-        common.debug('Releasing license')
+        common.debug('Requesting releasing license')
 
         params = [{
             'url': self.last_license_release_url,
@@ -233,9 +221,9 @@ class MSLHandler(MSLHandlerBase):
             'echo': 'sessionId'
         }]
 
-        response = self.chunked_request(ENDPOINTS['license'],
-                                        build_request_data('/bundle', params),
-                                        g.get_esn())
+        response = self.request_builder.chunked_request(ENDPOINTS['license'],
+                                                        self.request_builder.build_request_data('/bundle', params),
+                                                        g.get_esn())
         common.debug('License release response: {}', response)
 
     @common.time_execution(immediate=True)

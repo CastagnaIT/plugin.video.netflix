@@ -10,8 +10,9 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import json
 import base64
+import json
+
 try:  # Python 3
     from Crypto.Random import get_random_bytes
     from Crypto.Hash import HMAC, SHA256
@@ -30,23 +31,29 @@ except ImportError:  # Python 2
 import resources.lib.common as common
 
 from .base_crypto import MSLBaseCrypto
+from .exceptions import MSLError
 
 
 class DefaultMSLCrypto(MSLBaseCrypto):
     """Crypto Handler for non-Android platforms"""
-    def __init__(self, msl_data=None):  # pylint: disable=super-on-old-class
-        # pylint: disable=broad-except
+
+    def __init__(self):
+        super(DefaultMSLCrypto, self).__init__()
+        self.rsa_key = None
+        self.encryption_key = None
+        self.sign_key = None
+
+    def load_crypto_session(self, msl_data=None):
         try:
-            super(DefaultMSLCrypto, self).__init__(msl_data)
             self.encryption_key = base64.standard_b64decode(
                 msl_data['encryption_key'])
             self.sign_key = base64.standard_b64decode(
                 msl_data['sign_key'])
             if not self.encryption_key or not self.sign_key:
-                raise ValueError('Missing encryption_key or sign_key')
+                raise MSLError('Missing encryption_key or sign_key')
             self.rsa_key = RSA.importKey(
                 base64.standard_b64decode(msl_data['rsa_key']))
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             common.debug('Generating new RSA keys')
             self.rsa_key = RSA.generate(2048)
             self.encryption_key = None

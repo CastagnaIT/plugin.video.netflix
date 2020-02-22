@@ -2,16 +2,56 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2019 Stefano Gottardo - @CastagnaIT (original implementation module)
-    Build event tags values
+    Msl utils
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from functools import wraps
+
+import resources.lib.kodi.ui as ui
 from resources.lib import common
+from resources.lib.services.msl.exceptions import MSLError
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
+
+CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
+
+ENDPOINTS = {
+    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
+    'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
+    'events': CHROME_BASE_URL + 'pbo_events/%5E1.0.0/router',
+    'logblobs': CHROME_BASE_URL + 'pbo_logblobs/%5E1.0.0/router'
+}
+
+EVENT_START = 'start'      # events/start : Video starts
+EVENT_STOP = 'stop'        # events/stop : Video stops
+EVENT_KEEP_ALIVE = 'keepAlive'  # events/keepAlive : Update progress status
+EVENT_ENGAGE = 'engage'    # events/engage : After user interaction (before stop, on skip, on pause)
+EVENT_BIND = 'bind'        # events/bind : ?
 
 AUDIO_CHANNELS_CONV = {1: '1.0', 2: '2.0', 6: '5.1', 8: '7.1'}
+
+
+def display_error_info(func):
+    """Decorator that catches errors raise by the decorated function,
+    displays an error info dialog in the UI and re-raises the error"""
+    # pylint: disable=missing-docstring
+    @wraps(func)
+    def error_catching_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as exc:
+            ui.show_error_info(common.get_local_string(30028), unicode(exc),
+                               unknown_error=not(unicode(exc)),
+                               netflix_error=isinstance(exc, MSLError))
+            raise
+    return error_catching_wrapper
 
 
 def is_media_changed(previous_player_state, player_state):

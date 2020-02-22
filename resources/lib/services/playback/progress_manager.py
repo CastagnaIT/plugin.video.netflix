@@ -13,7 +13,7 @@ from xbmcgui import Window
 
 import resources.lib.common as common
 from resources.lib.globals import g
-from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START, EVENT_ENGAGE
+from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
 from .action_manager import PlaybackActionManager
 
 

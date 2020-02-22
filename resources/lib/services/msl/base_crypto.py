@@ -18,18 +18,25 @@ import resources.lib.common as common
 class MSLBaseCrypto(object):
     """Common base class for MSL crypto operations.
     Handles mastertoken and sequence number"""
-    # pylint: disable=too-few-public-methods
-    def __init__(self, msl_data=None):
+
+    def __init__(self):
+        self._msl_data = None
+        self.mastertoken = None
+        self.serial_number = None
+        self.sequence_number = None
+        self.renewal_window = None
+        self.expiration = None
+
+    def load_msl_data(self, msl_data=None):
+        self._msl_data = msl_data if msl_data else {}
         if msl_data:
-            self._set_mastertoken(msl_data['tokens']['mastertoken'])
-        else:
-            self.mastertoken = None
+            self.set_mastertoken(msl_data['tokens']['mastertoken'])
 
     def compare_mastertoken(self, mastertoken):
         """Check if the new mastertoken is different from current due to renew"""
         if not self._mastertoken_is_newer_that(mastertoken):
             common.debug('MSL mastertoken is changed due to renew')
-            self._set_mastertoken(mastertoken)
+            self.set_mastertoken(mastertoken)
             self._save_msl_data()
 
     def _mastertoken_is_newer_that(self, mastertoken):
@@ -48,12 +55,12 @@ class MSLBaseCrypto(object):
 
     def parse_key_response(self, headerdata, save_to_disk):
         """Parse a key response and update crypto keys"""
-        self._set_mastertoken(headerdata['keyresponsedata']['mastertoken'])
+        self.set_mastertoken(headerdata['keyresponsedata']['mastertoken'])
         self._init_keys(headerdata['keyresponsedata'])
         if save_to_disk:
             self._save_msl_data()
 
-    def _set_mastertoken(self, mastertoken):
+    def set_mastertoken(self, mastertoken):
         """Set the mastertoken and check it for validity"""
         tokendata = json.loads(
             base64.standard_b64decode(mastertoken['tokendata'].encode('utf-8')).decode('utf-8'))
@@ -65,9 +72,9 @@ class MSLBaseCrypto(object):
 
     def _save_msl_data(self):
         """Save crypto keys and mastertoken to disk"""
-        msl_data = {'tokens': {'mastertoken': self.mastertoken}}
-        msl_data.update(self._export_keys())
-        common.save_file('msl_data.json', json.dumps(msl_data).encode('utf-8'))
+        self._msl_data['tokens'] = {'mastertoken': self.mastertoken}
+        self._msl_data.update(self._export_keys())
+        common.save_file('msl_data.json', json.dumps(self._msl_data).encode('utf-8'))
         common.debug('Successfully saved MSL data to disk')
 
     def _init_keys(self, key_response_data):

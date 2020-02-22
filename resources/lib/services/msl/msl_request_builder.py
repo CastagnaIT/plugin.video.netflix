@@ -35,11 +35,24 @@ else:
 
 class MSLRequestBuilder(object):
     """Provides mechanisms to create MSL requests"""
-    def __init__(self, msl_data=None):
+    def __init__(self):
         self.current_message_id = None
-        self.user_id_token = None
         self.rndm = random.SystemRandom()
-        self.crypto = MSLCrypto(msl_data)
+        self.crypto = MSLCrypto()
+
+    @staticmethod
+    def build_request_data(url, params=None, echo=''):
+        """Create a standard request data"""
+        timestamp = int(time.time() * 10000)
+        request_data = {
+            'version': 2,
+            'url': url,
+            'id': timestamp,
+            'languages': [g.LOCAL_DB.get_profile_config('language')],
+            'params': params,
+            'echo': echo
+        }
+        return request_data
 
     @common.time_execution(immediate=True)
     def msl_request(self, data, esn):
@@ -91,7 +104,7 @@ class MSLRequestBuilder(object):
             header_data['keyrequestdata'] = self.crypto.key_request_data()
         else:
             header_data['sender'] = esn
-            _add_auth_info(header_data, self.user_id_token)
+            self._add_auth_info(header_data)
 
         return json.dumps(header_data)
 
@@ -121,13 +134,8 @@ class MSLRequestBuilder(object):
             return json.loads(self.crypto.decrypt(init_vector, cipher_text))
         return header_data
 
-
-def _add_auth_info(header_data, user_id_token):
-    """User authentication identifies the application user associated with a message"""
-    if user_id_token and _is_useridtoken_valid(user_id_token):
-        # Authentication with user ID token containing the user identity
-        header_data['useridtoken'] = user_id_token
-    else:
+    def _add_auth_info(self, header_data):
+        """User authentication identifies the application user associated with a message"""
         # Authentication with the user credentials
         credentials = common.get_credentials()
         header_data['userauthdata'] = {
@@ -137,9 +145,3 @@ def _add_auth_info(header_data, user_id_token):
                 'password': credentials['password']
             }
         }
-
-
-def _is_useridtoken_valid(user_id_token):
-    """Check if user id token is not expired"""
-    token_data = json.loads(base64.standard_b64decode(user_id_token['tokendata']))
-    return token_data['expiration'] > time.time()

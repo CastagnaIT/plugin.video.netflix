@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
-    Copyright (C) 2017 Trummerjo (original implementation module)
-    Proxy service to convert manifest and provide license data
+    Copyright (C) 2018 Caphm (original implementation module)
+    MSL request building
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -14,76 +14,36 @@ import json
 import re
 import time
 import zlib
-from functools import wraps
 
 import requests
 
 import resources.lib.common as common
-import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
 from resources.lib.services.msl.exceptions import MSLError
-from resources.lib.services.msl.request_builder import MSLRequestBuilder
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
+from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
+from resources.lib.services.msl.msl_utils import display_error_info, ENDPOINTS
 
 
-CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
-ENDPOINTS = {
-    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
-    'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
-    'events': CHROME_BASE_URL + 'pbo_events/%5E1.0.0/router'
-}
+class MSLRequests(MSLRequestBuilder):
 
+    def __init__(self, msl_data=None):
+        super(MSLRequests, self).__init__()
+        self.session = requests.session()
+        self._load_msl_data(msl_data)
 
-def display_error_info(func):
-    """Decorator that catches errors raise by the decorated function,
-    displays an error info dialog in the UI and reraises the error"""
-    # pylint: disable=missing-docstring
-    @wraps(func)
-    def error_catching_wrapper(*args, **kwargs):
+    def _load_msl_data(self, msl_data):
         try:
-            return func(*args, **kwargs)
-        except Exception as exc:
-            ui.show_error_info(common.get_local_string(30028), unicode(exc),
-                               unknown_error=not(unicode(exc)),
-                               netflix_error=isinstance(exc, MSLError))
+            self.crypto.load_msl_data(msl_data)
+            self.crypto.load_crypto_session(msl_data)
+
+            # Add-on just installed, the service starts but there is no esn
+            if g.get_esn():
+                self._check_mastertoken_validity()
+        except MSLError:
             raise
-    return error_catching_wrapper
-
-
-class MSLHandlerBase(object):
-    """Handles session management and crypto for license, manifest and event requests"""
-    last_license_url = ''
-    last_drm_context = ''
-    last_playback_context = ''
-    session = requests.session()
-
-    def __init__(self):
-        self.request_builder = None
-
-    def check_mastertoken_validity(self):
-        """Return the mastertoken validity and executes a new key handshake when necessary"""
-        if self.request_builder.crypto.mastertoken:
-            time_now = time.time()
-            renewable = self.request_builder.crypto.renewal_window < time_now
-            expired = self.request_builder.crypto.expiration <= time_now
-        else:
-            renewable = False
-            expired = True
-        if expired:
-            if not self.request_builder.crypto.mastertoken:
-                common.debug('Stored MSL data not available, a new key handshake will be performed')
-                self.request_builder = MSLRequestBuilder()
-            else:
-                common.debug('Stored MSL data is expired, a new key handshake will be performed')
-            if self.perform_key_handshake():
-                self.request_builder = MSLRequestBuilder(json.loads(
-                    common.load_file('msl_data.json')))
-            return self.check_mastertoken_validity()
-        return {'renewable': renewable, 'expired': expired}
+        except Exception:  # pylint: disable=broad-except
+            import traceback
+            common.error(traceback.format_exc())
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -97,21 +57,45 @@ class MSLHandlerBase(object):
 
         common.debug('Performing key handshake. ESN: {}', esn)
 
-        response = _process_json_response(
-            self._post(ENDPOINTS['manifest'],
-                       self.request_builder.handshake_request(esn)))
-        header_data = self.request_builder.decrypt_header_data(response['headerdata'], False)
-        self.request_builder.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
-        # Reset the user id token
-        self.request_builder.user_id_token = None
+        response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
+        header_data = self.decrypt_header_data(response['headerdata'], False)
+        self.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
+
+        # Delete all the user id tokens (are correlated to the previous mastertoken)
+        # self.crypto.clear_user_id_tokens()
         common.debug('Key handshake successful')
         return True
 
+    def _check_mastertoken_validity(self):
+        """Return the mastertoken validity and executes a new key handshake when necessary"""
+        if self.crypto.mastertoken:
+            time_now = time.time()
+            renewable = self.crypto.renewal_window < time_now
+            expired = self.crypto.expiration <= time_now
+        else:
+            renewable = False
+            expired = True
+        if expired:
+            if not self.crypto.mastertoken:
+                debug_msg = 'Stored MSL data not available, a new key handshake will be performed'
+            else:
+                debug_msg = 'Stored MSL data is expired, a new key handshake will be performed'
+            common.debug(debug_msg)
+            if self.perform_key_handshake():
+                msl_data = json.loads(common.load_file('msl_data.json'))
+                self.crypto.load_msl_data(msl_data)
+                self.crypto.load_crypto_session(msl_data)
+            return self._check_mastertoken_validity()
+        return {'renewable': renewable, 'expired': expired}
+
     @common.time_execution(immediate=True)
-    def chunked_request(self, endpoint, request_data, esn, mt_validity=None):
+    def chunked_request(self, endpoint, request_data, esn):
         """Do a POST request and process the chunked response"""
+
+        mt_validity = self._check_mastertoken_validity()
+
         chunked_response = self._process_chunked_response(
-            self._post(endpoint, self.request_builder.msl_request(request_data, esn)),
+            self._post(endpoint, self.msl_request(request_data, esn)),
             mt_validity['renewable'] if mt_validity else None)
         return chunked_response['result']
 
@@ -144,35 +128,14 @@ class MSLHandlerBase(object):
             #     # Check if mastertoken is renewed
             #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
 
-            header_data = self.request_builder.decrypt_header_data(
-                response['header'].get('headerdata'))
+            # header_data = self.decrypt_header_data(response['header'].get('headerdata'))
 
-            if 'useridtoken' in header_data:
-                # After the first call, it is possible get the 'user id token' that contains the
-                # user identity to use instead of 'User Authentication Data' with user credentials
-                self.request_builder.user_id_token = header_data['useridtoken']
             # if 'keyresponsedata' in header_data:
             #     common.debug('Found key handshake in response data')
             #     # Update current mastertoken
             #     self.request_builder.crypto.parse_key_response(header_data, True)
-            decrypted_response = _decrypt_chunks(response['payloads'], self.request_builder.crypto)
+            decrypted_response = _decrypt_chunks(response['payloads'], self.crypto)
             return _raise_if_error(decrypted_response)
-
-
-def build_request_data(url, params=None, echo=''):
-    """Create a standard request data"""
-    if not params:
-        raise Exception('Cannot build the message without parameters')
-    timestamp = int(time.time() * 10000)
-    request_data = {
-        'version': 2,
-        'url': url,
-        'id': timestamp,
-        'languages': [g.LOCAL_DB.get_profile_config('language')],
-        'params': params,
-        'echo': echo
-    }
-    return request_data
 
 
 @common.time_execution(immediate=True)
@@ -203,9 +166,7 @@ def _raise_if_error(decoded_response):
 def _get_error_details(decoded_response):
     # Catch a chunk error
     if 'errordata' in decoded_response:
-        return json.loads(
-            base64.standard_b64decode(
-                decoded_response['errordata']))['errormsg']
+        return json.loads(base64.standard_b64decode(decoded_response['errordata']))['errormsg']
     # Catch a manifest error
     if 'error' in decoded_response:
         if decoded_response['error'].get('errorDisplayMessage'):
@@ -221,8 +182,7 @@ def _get_error_details(decoded_response):
 @common.time_execution(immediate=True)
 def _parse_chunks(message):
     header = json.loads(message.split('}}')[0] + '}}')
-    payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}',
-                        message.split('}}')[1])
+    payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}', message.split('}}')[1])
     payloads = [x + '}' for x in payloads][:-1]
     return {'header': header, 'payloads': payloads}
 
