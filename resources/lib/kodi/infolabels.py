@@ -368,7 +368,7 @@ def _set_progress_status(list_item, video_data, infos):
         if not video_data.get('creditsOffset'):
             # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
             # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
-            watched_threshold = video_data['runtime'] - (video_data['runtime'] / 100 * 90)
+            watched_threshold = video_data['runtime'] / 100 * 90
         else:
             watched_threshold = video_data['creditsOffset']
 
