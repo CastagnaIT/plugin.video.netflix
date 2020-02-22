@@ -351,10 +351,7 @@ def _colorize_title(text, color, remove_color=False):
 
 def _set_progress_status(list_item, video_data, infos):
     """Check and set progress status (watched and resume)"""
-    if not g.ADDON.getSettingBool('ProgressManager_enabled') or \
-            not g.LOCAL_DB.get_profile_config('isAccountOwner', False):
-        # Currently due to a unknown problem, it is not possible to communicate MSL data to the right selected
-        # profile other than the owner profile
+    if not g.ADDON.getSettingBool('ProgressManager_enabled'):
         return
 
     video_id = video_data['summary']['id']

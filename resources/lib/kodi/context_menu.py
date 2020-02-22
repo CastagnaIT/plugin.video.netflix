@@ -102,7 +102,7 @@ def generate_context_menu_items(videoid):
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
         # Add menu to allow change manually the watched status when progress manager is enabled
-        if g.ADDON.getSettingBool('ProgressManager_enabled') and g.LOCAL_DB.get_profile_config('isAccountOwner', False):
+        if g.ADDON.getSettingBool('ProgressManager_enabled'):
             items.insert(0, _ctx_item('change_watched_status', videoid))
 
     return items
