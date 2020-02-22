@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import base64
+import time
 
 import resources.lib.common as common
 
@@ -84,3 +85,32 @@ class MSLBaseCrypto(object):
     def _export_keys(self):
         """Export crypto keys to a dict"""
         raise NotImplementedError
+
+    def get_user_id_token(self, profile_guid):
+        """Get a valid the user id token associated to a profile guid"""
+        if 'user_id_tokens' in self._msl_data:
+            user_id_token = self._msl_data['user_id_tokens'].get(profile_guid)
+            if user_id_token and self.is_user_id_token_valid(user_id_token):
+                return user_id_token
+        return None
+
+    def save_user_id_token(self, profile_guid, user_token_id):
+        """Save or update a user id token associated to a profile guid"""
+        if 'user_id_tokens' not in self._msl_data:
+            self._msl_data['user_id_tokens'] = {
+                profile_guid: user_token_id
+            }
+        else:
+            self._msl_data['user_id_tokens'][profile_guid] = user_token_id
+        self._save_msl_data()
+
+    def clear_user_id_tokens(self):
+        """Clear all user id tokens"""
+        self._msl_data.pop('user_id_tokens', None)
+        self._save_msl_data()
+
+    def is_user_id_token_valid(self, user_id_token):
+        """Check if user id token is not expired"""
+        token_data = json.loads(base64.standard_b64decode(user_id_token['tokendata']))
+        # Subtract 5min as a safety measure
+        return (token_data['expiration'] - 300) > time.time()

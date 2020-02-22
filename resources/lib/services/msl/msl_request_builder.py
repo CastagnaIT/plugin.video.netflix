@@ -55,9 +55,9 @@ class MSLRequestBuilder(object):
         return request_data
 
     @common.time_execution(immediate=True)
-    def msl_request(self, data, esn):
+    def msl_request(self, data, esn, auth_data):
         """Create an encrypted MSL request"""
-        return (json.dumps(self._signed_header(esn)) +
+        return (json.dumps(self._signed_header(esn, auth_data)) +
                 json.dumps(self._encrypted_chunk(data, esn)))
 
     @common.time_execution(immediate=True)
@@ -69,15 +69,15 @@ class MSLRequestBuilder(object):
                 'authdata': {'identity': esn}},
             'headerdata':
                 base64.standard_b64encode(
-                    self._headerdata(is_handshake=True).encode('utf-8')).decode('utf-8'),
+                    self._headerdata(auth_data={}, is_handshake=True).encode('utf-8')).decode('utf-8'),
             'signature': ''
         }, sort_keys=True)
         payload = json.dumps(self._encrypted_chunk(envelope_payload=False))
         return header + payload
 
     @common.time_execution(immediate=True)
-    def _signed_header(self, esn):
-        encryption_envelope = self.crypto.encrypt(self._headerdata(esn=esn), esn)
+    def _signed_header(self, esn, auth_data):
+        encryption_envelope = self.crypto.encrypt(self._headerdata(auth_data=auth_data, esn=esn), esn)
         return {
             'headerdata': base64.standard_b64encode(
                 encryption_envelope.encode('utf-8')).decode('utf-8'),
@@ -85,7 +85,7 @@ class MSLRequestBuilder(object):
             'mastertoken': self.crypto.mastertoken,
         }
 
-    def _headerdata(self, esn=None, compression=None, is_handshake=False):
+    def _headerdata(self, auth_data, esn=None, compression=None, is_handshake=False):
         """
         Function that generates a MSL header dict
         :return: The base64 encoded JSON String of the header
@@ -104,7 +104,7 @@ class MSLRequestBuilder(object):
             header_data['keyrequestdata'] = self.crypto.key_request_data()
         else:
             header_data['sender'] = esn
-            self._add_auth_info(header_data)
+            self._add_auth_info(header_data, auth_data)
 
         return json.dumps(header_data)
 
@@ -134,14 +134,33 @@ class MSLRequestBuilder(object):
             return json.loads(self.crypto.decrypt(init_vector, cipher_text))
         return header_data
 
-    def _add_auth_info(self, header_data):
+    def _add_auth_info(self, header_data, auth_data):
         """User authentication identifies the application user associated with a message"""
-        # Authentication with the user credentials
-        credentials = common.get_credentials()
-        header_data['userauthdata'] = {
-            'scheme': 'EMAIL_PASSWORD',
-            'authdata': {
-                'email': credentials['email'],
-                'password': credentials['password']
+        # Warning: the user id token contains also contains the identity of the netflix profile
+        # therefore it is necessary to use the right user id token for the request
+        if auth_data.get('user_id_token'):
+            if auth_data['use_switch_profile']:
+                # The SWITCH_PROFILE is a custom Netflix MSL user authentication scheme
+                # that is needed for switching profile on MSL side
+                # works only combined with user id token and can not be used with all endpoints
+                # after use it you will get user id token of the profile specified in the response
+                header_data['userauthdata'] = {
+                    'scheme': 'SWITCH_PROFILE',
+                    'authdata': {
+                        'useridtoken': auth_data['user_id_token'],
+                        'profileguid': g.LOCAL_DB.get_active_profile_guid()
+                    }
+                }
+            else:
+                # Authentication with user ID token containing the user identity (netflix profile)
+                header_data['useridtoken'] = auth_data['user_id_token']
+        else:
+            # Authentication with the user credentials
+            credentials = common.get_credentials()
+            header_data['userauthdata'] = {
+                'scheme': 'EMAIL_PASSWORD',
+                'authdata': {
+                    'email': credentials['email'],
+                    'password': credentials['password']
+                }
             }
-        }

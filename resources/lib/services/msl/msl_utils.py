@@ -9,10 +9,18 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import json
+import random
+import re
+import time
 from functools import wraps
+
+import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
 from resources.lib.services.msl.exceptions import MSLError
 
 try:  # Python 2
@@ -137,3 +145,65 @@ def _find_video_data(player_state, manifest):
     # Not found?
     raise Exception('build_media_tag: unable to find video data with codec: {}, width: {}, height: {}'
                     .format(codec, width, height))
+
+
+def generate_logblobs_params():
+    """Generate the initial log blog"""
+    # It seems that this log is sent when logging in to a profile the first time
+    # i think it is the easiest to reproduce, the others contain too much data
+    screen_size = str(xbmcgui.getScreenWidth()) + 'x' + str(xbmcgui.getScreenHeight())
+    timestamp_utc = time.time()
+    timestamp = int(timestamp_utc * 1000)
+    client_ver = g.LOCAL_DB.get_value('asset_core', '', table=TABLE_SESSION)
+    app_id = int(time.time()) * 10000 + random.randint(1, 10001)  # Should be used with all log requests
+    if client_ver:
+        result = re.search(r'-([0-9\.]+)\.js$', client_ver)
+        client_ver = result.groups()[0]
+
+    # Here you have to enter only the real data, falsifying the data would cause repercussions in netflix server logs
+    # therefore since it is possible to exclude data, we avoid entering data that we do not have
+    blob = {
+        'browserua': common.get_user_agent().replace(' ', '#'),
+        'browserhref': 'https://www.netflix.com/browse',
+        # 'initstart': 988,
+        # 'initdelay': 268,
+        'screensize': screen_size,  # '1920x1080',
+        'screenavailsize': screen_size,  # '1920x1040',
+        'clientsize': screen_size,  # '1920x944',
+        # 'pt_navigationStart': -1880,
+        # 'pt_fetchStart': -1874,
+        # 'pt_secureConnectionStart': -1880,
+        # 'pt_requestStart': -1853,
+        # 'pt_domLoading': -638,
+        # 'm_asl_start': 990,
+        # 'm_stf_creat': 993,
+        # 'm_idb_open': 993,
+        # 'm_idb_succ': 1021,
+        # 'm_msl_load_no_data': 1059,
+        # 'm_asl_comp': 1256,
+        'type': 'startup',
+        'sev': 'info',
+        'devmod': 'chrome-cadmium',
+        'clver': client_ver,  # e.g. '6.0021.220.051'
+        'osplatform': g.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
+        'osver': g.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
+        'browsername': 'Chrome',
+        'browserver': g.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
+        'appLogSeqNum': 0,
+        'uniqueLogId': common.get_random_uuid(),
+        'appId': app_id,
+        'esn': g.get_esn(),
+        'lver': '',
+        # 'jssid': '15822792997793',  # Same value of appId
+        # 'jsoffms': 1261,
+        'clienttime': timestamp,
+        'client_utc': timestamp_utc,
+        'uiver': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION)
+    }
+
+    blobs_container = {
+        'entries': [blob]
+    }
+    blobs_dump = json.dumps(blobs_container)
+    blobs_dump = blobs_dump.replace('"', '\"').replace(' ', '').replace('#', ' ')
+    return {'logblobs': blobs_dump}

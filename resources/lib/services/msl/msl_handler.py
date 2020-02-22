@@ -162,7 +162,8 @@ class MSLHandler(object):
 
         manifest = self.request_builder.chunked_request(ENDPOINTS['manifest'],
                                                         self.request_builder.build_request_data('/manifest', params),
-                                                        esn)
+                                                        esn,
+                                                        disable_msl_switch=False)
         if common.is_debug_verbose():
             # Save the manifest to disk as reference
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -202,7 +203,24 @@ class MSLHandler(object):
         self.last_license_session_id = sid
         self.last_license_release_url = response[0]['links']['releaseLicense']['href']
 
+        if self.request_builder.msl_switch_requested:
+            self.request_builder.msl_switch_requested = False
+            self.bind_events()
         return response[0]['licenseResponseBase64']
+
+    def bind_events(self):
+        """
+        Bind events
+        """
+        # I don't know the real purpose of its use, it seems to be requested after the license and before starting
+        # playback, and only the first time after a switch,
+        # in the response you can also understand if the msl switch has worked
+        common.debug('Requesting bind events')
+        response = self.request_builder.chunked_request(ENDPOINTS['events'],
+                                                        self.request_builder.build_request_data('/bind', {}),
+                                                        g.get_esn(),
+                                                        disable_msl_switch=False)
+        common.debug('Bind events response: {}', response)
 
     @display_error_info
     @common.time_execution(immediate=True)
