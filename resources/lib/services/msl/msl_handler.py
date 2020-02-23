@@ -114,7 +114,10 @@ class MSLHandler(object):
         if hdcp_4k_capable and hdcp_override:
             hdcp_version = ['2.2']
 
-        common.info('Requesting manifest for {} with ESN {} and HDCP {}', viewable_id, esn, hdcp_version)
+        common.info('Requesting manifest for {} with ESN {} and HDCP {}',
+                    viewable_id,
+                    common.censure(esn) if g.ADDON.getSetting('esn') else esn,
+                    hdcp_version)
 
         profiles = enabled_profiles()
         from pprint import pformat
