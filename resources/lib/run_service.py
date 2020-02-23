@@ -31,6 +31,8 @@ class NetflixService(object):
     """
     from resources.lib.services.msl.http_server import MSLTCPServer
     from resources.lib.services.nfsession.http_server import NetflixTCPServer
+    # Do not change the init order of the servers,
+    # MSLTCPServer must always be initialized first to get the DRM info
     SERVERS = [
         {
             'name': 'MSL',

@@ -113,6 +113,7 @@
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
   </category>
   <category label="30023"><!--Expert-->
+    <setting id="configuration_wizard" type="action" label="30158" action="RunPlugin(plugin://plugin.video.netflix/action/configuration_wizard/)" option="close"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
     <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
     <setting label="30115" type="lsep"/><!--Content Profiles-->
@@ -123,8 +124,8 @@
     <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
+    <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting label="30016" type="lsep"/><!--ESN-->
     <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://plugin.video.netflix/action/view_esn/)"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
@@ -133,7 +134,6 @@
     <setting id="debug_log_level" type="labelenum" label="30066" values="Disabled|Info|Verbose" default="Disabled"/>
     <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,2)" subsetting="true"/>
     <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,2)" subsetting="true"/>
-    <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->

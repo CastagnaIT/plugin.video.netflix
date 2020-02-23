@@ -283,61 +283,6 @@ class GlobalVariables(object):
         for bucket in BUCKET_NAMES:
             mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
-    def initial_addon_configuration(self):
-        """
-        Initial addon configuration,
-        helps users to automatically configure addon parameters for proper viewing of videos
-        """
-        run_initial_config = self.ADDON.getSettingBool('run_init_configuration')
-        if run_initial_config:
-            from resources.lib.common import (debug, get_system_platform, get_local_string)
-            from resources.lib.kodi.ui import (ask_for_confirmation, show_ok_dialog)
-            self.settings_monitor_suspend(True, False)
-
-            system = get_system_platform()
-            debug('Running initial addon configuration dialogs on system: {}', system)
-            if system in ['osx', 'ios', 'xbox']:
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', True)
-            elif system == 'windows':
-                # Currently inputstream does not support hardware video acceleration on windows,
-                # there is no guarantee that we will get 4K without video hardware acceleration,
-                # so no 4K configuration
-                self.ADDON.setSettingBool('enable_vp9_profiles', True)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            elif system == 'android':
-                ultrahd_capable_device = False
-                premium_account = ask_for_confirmation(get_local_string(30154),
-                                                       get_local_string(30155))
-                if premium_account:
-                    ultrahd_capable_device = ask_for_confirmation(get_local_string(30154),
-                                                                  get_local_string(30156))
-                if ultrahd_capable_device:
-                    show_ok_dialog(get_local_string(30154), get_local_string(30157))
-                    ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
-                    if ia_enabled:
-                        xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
-                    else:
-                        show_ok_dialog(get_local_string(30154), get_local_string(30046))
-                    self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                    self.ADDON.setSettingBool('enable_hevc_profiles', True)
-                else:
-                    # VP9 should have better performance since there is no need for 4k
-                    self.ADDON.setSettingBool('enable_vp9_profiles', True)
-                    self.ADDON.setSettingBool('enable_hevc_profiles', False)
-                self.ADDON.setSettingBool('enable_force_hdcp', ultrahd_capable_device)
-            elif system == 'linux':
-                # Too many different linux systems, we can not predict all the behaviors
-                # Some linux distributions have encountered problems with VP9,
-                # OMSC users complain that hevc creates problems
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            else:
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            self.ADDON.setSettingBool('run_init_configuration', False)
-            self.settings_monitor_suspend(False)
-
     def settings_monitor_suspend(self, is_suspended=True, at_first_change=False):
         """
         Suspends for the necessary time the settings monitor of the service

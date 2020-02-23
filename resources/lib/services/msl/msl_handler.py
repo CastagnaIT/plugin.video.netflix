@@ -96,8 +96,8 @@ class MSLHandler(object):
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
-            common.debug('Manifest for {} with ESN {} obtained from the cache', viewable_id, esn)
             if common.is_debug_verbose():
+                common.debug('Manifest for {} with ESN {} obtained from the cache', viewable_id, esn)
                 # Save the manifest to disk as reference
                 common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest

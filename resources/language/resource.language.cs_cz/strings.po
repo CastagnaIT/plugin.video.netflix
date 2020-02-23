@@ -209,7 +209,7 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Odstraněno hodnocení|Hodnocení jako nelíbí|Hodnocení jako líbí"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
+msgid "The InputStream Adaptive add-on has not been correctly installed or has not been enabled, the operation will be cancelled"
 msgstr "Doplněk InputStream není povolen"
 
 msgctxt "#30047"
@@ -349,7 +349,7 @@ msgid "Pause when skipping"
 msgstr "Pauza při přeskočení"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Vynutit podporu HDCP 2.2 (povolit obsah 4K)"
 
 msgctxt "#30082"
@@ -641,7 +641,7 @@ msgid "Year released"
 msgstr "Rok vydání"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Konfigurace doplňku Netflix"
 
 msgctxt "#30155"
@@ -649,16 +649,16 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Máte účet Netflix Premium?"
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Podporuje vaše zařízení standard 4K?\r\nZařízení musí:\r\nZískat certifikát Netflix, s podporou pro úroveň zabezpečení Widevine L1 a mít 4K displej HDCP 2.2"
+msgid "UNUSED"
+msgstr ""
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Nyní se otevře panel nastavení InputStream Adaptive, je nutno změnit tuto možnost \"Přepsat stav HDCP\" na ON"
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Zobrazit konfigurační obrazovku při spuštění doplňku"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
