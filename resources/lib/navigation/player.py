@@ -136,7 +136,7 @@ def get_inputstream_listitem(videoid):
     is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
 
     if not is_helper.check_inputstream():
-        raise InputstreamError('inputstream.adaptive is not available')
+        raise InputstreamError(common.get_local_string(30046))
 
     list_item.setProperty(
         key=is_helper.inputstream_addon + '.stream_headers',

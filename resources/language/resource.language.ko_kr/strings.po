@@ -209,8 +209,8 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "엄지평점 없음|별로에요|좋아요"
 
 msgctxt "#30046"
-msgid "The InputStream Adaptive add-on has not been correctly installed or has not been enabled, the operation will be cancelled"
-msgstr "InputStream 애드온을 설치 혹은 켜십시오."
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
 msgctxt "#30047"
 msgid "Finally remove?"
