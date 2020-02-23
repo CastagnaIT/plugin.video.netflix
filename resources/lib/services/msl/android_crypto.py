@@ -42,8 +42,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             'version': self.crypto_session.GetPropertyString('version'),
             'system_id': self.crypto_session.GetPropertyString('systemId'),
             #  'device_unique_id': self.crypto_session.GetPropertyByteArray('deviceUniqueId')
-            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),
-            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),
+            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),   #WTF perchè non viene fuori??? serve volontario test
+            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),   #WTF perchè non viene fuori??? serve volontario test
             'security_level': self.crypto_session.GetPropertyString('securityLevel')
         }
 
@@ -64,8 +64,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             common.warn('Widevine CryptoSession system id not obtained!')
         common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
-        common.debug('Widevine CryptoSession current hdcp level', drm_info['hdcp_level'])
-        common.debug('Widevine CryptoSession max hdcp level supported', drm_info['hdcp_level_max'])
+        common.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
+        common.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
         common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
 
     def load_crypto_session(self, msl_data=None):
