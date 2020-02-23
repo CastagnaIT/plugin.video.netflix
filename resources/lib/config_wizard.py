@@ -66,7 +66,7 @@ def _set_profiles(system, is_4k_capable):
     enable_hevc_profiles = False
     if system in ['osx', 'ios']:
         enable_hevc_profiles = True
-    elif system in ['windows', 'xbox']:
+    elif system in ['windows', 'uwp']:
         enable_vp9_profiles = True
     elif system == 'android':
         # By default we do not enable VP9 because on some devices do not fully support it

@@ -115,7 +115,7 @@ def get_user_agent(enable_android_mediaflag_fix=False):
 
     if system in ['osx', 'ios', 'tvos']:
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
-    if system in ['windows', 'xbox']:
+    if system in ['windows', 'uwp']:
         return base.replace('%PL%', '(Windows NT 10; Win64; x64)')
     # ARM based Linux
     if get_machine().startswith('arm'):
@@ -394,8 +394,8 @@ def get_system_platform():
         platform = "linux"
     elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
         platform = "android"
-    elif xbmc.getCondVisibility('system.platform.xbox'):
-        platform = "xbox"
+    elif xbmc.getCondVisibility('system.platform.uwp'):
+        platform = "uwp"
     elif xbmc.getCondVisibility('system.platform.windows'):
         platform = "windows"
     elif xbmc.getCondVisibility('system.platform.osx'):
