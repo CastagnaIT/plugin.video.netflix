@@ -176,6 +176,11 @@ Please also use a service like pastebin or better [Kodi paste](http://paste.kodi
 
 When the problem will be solved, remember to disable the debug logging, to avoid unnecessary slowing down in your device.
 
+**Why my Issue is labeled with ![Ignored rules](https://img.shields.io/badge/-Ignored%20rules-red) ?**
+
+This happens when the guidelines for compiling the Issue post have not been followed. Therefore if the information will not be filled and or changed in the right way, the Issue post will be closed in the next days.
+
+
 ## Code of Conduct
 
 [Contributor Code of Conduct](Code_of_Conduct.md)
