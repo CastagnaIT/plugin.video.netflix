@@ -16,6 +16,7 @@ import requests
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
 from resources.lib.services.nfsession.nfsession_base import needs_login
@@ -212,7 +213,12 @@ class NetflixSession(NFSessionAccess):
             'drmSystem': 'widevine',
             # 'falcor_server': '0.1.0',
             'withSize': 'false',
-            'materialize': 'false'
+            'materialize': 'false',
+            'routeAPIRequestsThroughFTL': 'false',
+            'isVolatileBillboardsEnabled': 'true',
+            'isWatchlistEnabled': 'false',
+            'original_path': '/shakti/{}/pathEvaluator'.format(
+                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
         }
         data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
         data += '&authURL=' + self.auth_url
@@ -251,7 +257,9 @@ class NetflixSession(NFSessionAccess):
             'materialize': 'true',
             'routeAPIRequestsThroughFTL': 'false',
             'isVolatileBillboardsEnabled': 'true',
-            'isWatchlistEnabled': 'false'
+            'isWatchlistEnabled': 'false',
+            'original_path': '/shakti/{}/pathEvaluator'.format(
+                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
         }
         data = 'callPath=' + '&callPath='.join(json.dumps(callpath) for callpath in callpaths)
         if params:
