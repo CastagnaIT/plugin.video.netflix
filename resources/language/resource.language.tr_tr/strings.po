@@ -963,3 +963,15 @@ msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gere
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Up Next Eklentisini Yükle"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Videoların izlenme durumunu Netflix ile senkronize edin"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "İzlenme durumunu değiştir (yerel olarak)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "İzlendi olarak işaretlendi | İzlenmedi olarak işaretlendi | Netflix izlenme durumu geri alındı"
