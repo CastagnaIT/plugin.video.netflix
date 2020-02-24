@@ -42,8 +42,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             'version': self.crypto_session.GetPropertyString('version'),
             'system_id': self.crypto_session.GetPropertyString('systemId'),
             #  'device_unique_id': self.crypto_session.GetPropertyByteArray('deviceUniqueId')
-            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),   #WTF perchè non viene fuori??? serve volontario test
-            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),   #WTF perchè non viene fuori??? serve volontario test
+            'hdcp_level': self.crypto_session.GetPropertyString('hdcpLevel'),
+            'hdcp_level_max': self.crypto_session.GetPropertyString('maxHdcpLevel'),
             'security_level': self.crypto_session.GetPropertyString('securityLevel')
         }
 
