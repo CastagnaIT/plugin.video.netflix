@@ -102,13 +102,9 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-def update_lolomo_context(context_name, video_id=None):
+def update_lolomo_context(context_name):
     """Update the lolomo list by context"""
     # Should update the context list but it doesn't, what is missing?
-    # The remaining requests made on the website that are missing here are of logging type,
-    # it seems strange that they use log data to finish the operations are almost impossible to reproduce here:
-    # pbo_logblobs /logblob
-    # personalization/cl2
 
     lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
     # Note: lolomo root seem differs according to the profile in use
@@ -140,12 +136,24 @@ def update_lolomo_context(context_name, video_id=None):
     response = common.make_http_call('callpath_request', callargs)
     common.debug('refreshListByContext response: {}', response)
 
+
+def update_videoid_bookmark(video_id):
+    """Update the videoid bookmark position"""
+    # You can check if this function works through the official android app
+    # by checking if the status bar watched of the video will be updated
     callargs = {
         'callpaths': [['refreshVideoCurrentPositions']],
-        'params': ['[' + video_id + ']', ''],
+        'params': ['[' + video_id + ']', '[]'],
     }
-    response = common.make_http_call('callpath_request', callargs)
-    common.debug('refreshVideoCurrentPositions response: {}', response)
+    try:
+        response = common.make_http_call('callpath_request', callargs)
+        common.debug('refreshVideoCurrentPositions response: {}', response)
+    except Exception:  # pylint: disable=broad-except
+        # I do not know the reason yet, but sometimes continues to return error 401,
+        # making it impossible to update the bookmark position
+        ui.show_notification(title=common.get_local_string(30105),
+                             msg='An error prevented the update the status watched on netflix',
+                             time=10000)
 
 
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_type')

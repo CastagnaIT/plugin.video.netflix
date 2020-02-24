@@ -20,7 +20,7 @@ except ImportError:  # Python 3
 
 import xbmc
 
-# import resources.lib.api.shakti as api
+import resources.lib.api.shakti as api
 import resources.lib.cache as cache
 from resources.lib import common
 from resources.lib.database.db_utils import TABLE_SESSION
@@ -124,7 +124,8 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
-            # api.update_lolomo_context('continueWatching', video_id=event.get_video_id())
+            # api.update_lolomo_context('continueWatching')
+            api.update_videoid_bookmark(event.get_video_id())
         if not event.is_response_success():
             # The event request is unsuccessful then there is some problem,
             # no longer make any future requests from this event id
