@@ -11,7 +11,6 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from future.utils import iteritems
 
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -104,19 +103,24 @@ def root_lists():
 
 def update_lolomo_context(context_name):
     """Update the lolomo list by context"""
-    # Should update the context list but it doesn't, what is missing?
-
-    lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
-    # Note: lolomo root seem differs according to the profile in use
+    lolomo_data = common.make_http_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
+    # Note: every profile has its root lolomo (that are visible in the lhpuuidh-browse profiles cookies)
     lolomo_root = lolomo_data['lolomo'][1]
     context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
     context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
 
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
+    # The fourth parameter is like a request-id, but it doesn't seem to match to
+    # serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
+    # nor to request_id of the video event request
+    # has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed,
+    # and i am no longer able to trace the source.
+    # I noticed also that this request can also be made with the fourth parameter empty,
+    # but it still doesn't update the continueWatching list of lolomo, that is strange because of no error
     params = [common.enclose_quotes(context_id),
               context_index,
               common.enclose_quotes(context_name),
-              common.enclose_quotes(g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))]
+              '']
     # path_suffixs = [
     #    [['trackIds', 'context', 'length', 'genreId', 'videoId', 'displayName', 'isTallRow', 'isShowAsARow',
     #      'impressionToken', 'showAsARow', 'id', 'requestId']],
@@ -133,8 +137,15 @@ def update_lolomo_context(context_name):
         'params': params,
         # 'path_suffixs': path_suffixs
     }
-    response = common.make_http_call('callpath_request', callargs)
-    common.debug('refreshListByContext response: {}', response)
+    try:
+        response = common.make_http_call('callpath_request', callargs)
+        common.debug('refreshListByContext response: {}', response)
+    except Exception:  # pylint: disable=broad-except
+        # I do not know the reason yet, but sometimes continues to return error 401,
+        # making it impossible to update the bookmark position
+        ui.show_notification(title=common.get_local_string(30105),
+                             msg='An error prevented the update the lolomo context on netflix',
+                             time=10000)
 
 
 def update_videoid_bookmark(video_id):
