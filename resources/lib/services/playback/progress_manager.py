@@ -12,8 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 from xbmcgui import Window
 
 import resources.lib.common as common
-from resources.lib.globals import g
-from resources.lib.services.msl.events_handler import EVENT_STOP, EVENT_KEEP_ALIVE, EVENT_START, EVENT_ENGAGE
+from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
 from .action_manager import PlaybackActionManager
 
 
@@ -32,15 +31,6 @@ class ProgressManager(PlaybackActionManager):
         self.window_cls = Window(10000)  # Kodi home window
 
     def _initialize(self, data):
-        if not g.LOCAL_DB.get_profile_config('isAccountOwner', False):
-            # Currently due to a unknown problem, it is not possible to communicate MSL data to the right selected
-            # profile other than the owner profile
-            self.enabled = False
-            return
-        videoid = common.VideoId.from_dict(data['videoid'])
-        if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
-            self.enabled = False
-            return
         if not data['event_data']:
             common.warn('ProgressManager: disabled due to no event data')
             self.enabled = False

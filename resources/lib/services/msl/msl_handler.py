@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2017 Trummerjo (original implementation module)
-    Proxy service to convert manifest and provide license data
+    Proxy service to convert manifest, provide license data and handle events
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import time
 
-import requests
 import xbmcaddon
 
 import resources.lib.cache as cache
@@ -21,9 +20,9 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
-from .msl_handler_base import MSLHandlerBase, ENDPOINTS, display_error_info, build_request_data
+from .msl_requests import MSLRequests
+from .msl_utils import ENDPOINTS, display_error_info
 from .profiles import enabled_profiles
-from .request_builder import MSLRequestBuilder
 
 try:  # Python 2
     unicode
@@ -31,39 +30,30 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 
-class MSLHandler(MSLHandlerBase):
-    """Handles session management and crypto for license and manifest
-    requests"""
+class MSLHandler(object):
+    """Handles session management and crypto for license, manifest and event requests"""
     last_license_session_id = ''
     last_license_url = ''
     last_license_release_url = ''
     last_drm_context = ''
     last_playback_context = ''
-    session = requests.session()
 
     def __init__(self):
         super(MSLHandler, self).__init__()
-        # pylint: disable=broad-except
-        self.request_builder = None
+        self.msl_requests = None
         try:
             msl_data = json.loads(common.load_file('msl_data.json'))
             common.info('Loaded MSL data from disk')
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             msl_data = None
-        try:
-            self.request_builder = MSLRequestBuilder(msl_data)
-            # Addon just installed, the service starts but there is no esn
-            if g.get_esn():
-                self.check_mastertoken_validity()
 
-            events_handler = EventsHandler(self.chunked_request)
-            events_handler.start()
-        except Exception:
-            import traceback
-            common.error(traceback.format_exc())
+        self.msl_requests = MSLRequests(msl_data)
+
+        EventsHandler(self.msl_requests.chunked_request).start()
+
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
-            callback=self.perform_key_handshake)
+            callback=self.msl_requests.perform_key_handshake)
         common.register_slot(
             signal=common.Signals.RELEASE_LICENSE,
             callback=self.release_license)
@@ -72,8 +62,7 @@ class MSLHandler(MSLHandlerBase):
     @common.time_execution(immediate=True)
     def load_manifest(self, viewable_id):
         """
-        Loads the manifets for the given viewable_id and
-        returns a mpd-XML-Manifest
+        Loads the manifests for the given viewable_id and returns a mpd-XML-Manifest
 
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
@@ -88,23 +77,22 @@ class MSLHandler(MSLHandlerBase):
         return self.__tranform_to_dash(manifest)
 
     def get_edge_manifest(self, viewable_id, chrome_manifest):
-        """Load a manifest with an EDGE ESN and replace playback_context and
-        drm_context"""
+        """Load a manifest with an EDGE ESN and replace playback_context and drm_context"""
         common.debug('Loading EDGE manifest')
         esn = g.get_edge_esn()
         common.debug('Switching MSL data to EDGE')
-        self.perform_key_handshake(esn)
+        self.msl_requests.perform_key_handshake(esn)
         manifest = self._load_manifest(viewable_id, esn)
         manifest['playbackContextId'] = chrome_manifest['playbackContextId']
         manifest['drmContextId'] = chrome_manifest['drmContextId']
         common.debug('Successfully loaded EDGE manifest')
         common.debug('Resetting MSL data to Chrome')
-        self.perform_key_handshake()
+        self.msl_requests.perform_key_handshake()
         return manifest
 
     @common.time_execution(immediate=True)
     def _load_manifest(self, viewable_id, esn):
-        cache_identifier = esn + '_' + unicode(viewable_id)
+        cache_identifier = g.LOCAL_DB.get_active_profile_guid() + '_' + esn + '_' + unicode(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
@@ -169,12 +157,10 @@ class MSLHandler(MSLHandlerBase):
             'preferAssistiveAudio': False
         }
 
-        # Get and check mastertoken validity
-        mt_validity = self.check_mastertoken_validity()
-        manifest = self.chunked_request(ENDPOINTS['manifest'],
-                                        build_request_data('/manifest', params),
-                                        esn,
-                                        mt_validity)
+        manifest = self.msl_requests.chunked_request(ENDPOINTS['manifest'],
+                                                     self.msl_requests.build_request_data('/manifest', params),
+                                                     esn,
+                                                     disable_msl_switch=False)
         if common.is_debug_verbose():
             # Save the manifest to disk as reference
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -190,6 +176,7 @@ class MSLHandler(MSLHandlerBase):
     def get_license(self, challenge, sid):
         """
         Requests and returns a license for the given challenge and sid
+
         :param challenge: The base64 encoded challenge
         :param sid: The sid paired to the challenge
         :return: Base64 representation of the license key or False unsuccessful
@@ -198,31 +185,44 @@ class MSLHandler(MSLHandlerBase):
 
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
-
         params = [{
             'sessionId': sid,
             'clientTime': int(timestamp / 10000),
             'challengeBase64': challenge,
             'xid': xid
         }]
-
-        response = self.chunked_request(ENDPOINTS['license'],
-                                        build_request_data(self.last_license_url, params, 'sessionId'),
-                                        g.get_esn())
-
+        response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+                                                     self.msl_requests.build_request_data(self.last_license_url,
+                                                                                          params,
+                                                                                          'sessionId'),
+                                                     g.get_esn())
         # This xid must be used for any future request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
         self.last_license_session_id = sid
         self.last_license_release_url = response[0]['links']['releaseLicense']['href']
+
+        if self.msl_requests.msl_switch_requested:
+            self.msl_requests.msl_switch_requested = False
+            self.bind_events()
         return response[0]['licenseResponseBase64']
+
+    def bind_events(self):
+        """Bind events"""
+        # I don't know the real purpose of its use, it seems to be requested after the license and before starting
+        # playback, and only the first time after a switch,
+        # in the response you can also understand if the msl switch has worked
+        common.debug('Requesting bind events')
+        response = self.msl_requests.chunked_request(ENDPOINTS['events'],
+                                                     self.msl_requests.build_request_data('/bind', {}),
+                                                     g.get_esn(),
+                                                     disable_msl_switch=False)
+        common.debug('Bind events response: {}', response)
 
     @display_error_info
     @common.time_execution(immediate=True)
     def release_license(self, data=None):  # pylint: disable=unused-argument
-        """
-        Release the server license
-        """
-        common.debug('Releasing license')
+        """Release the server license"""
+        common.debug('Requesting releasing license')
 
         params = [{
             'url': self.last_license_release_url,
@@ -233,9 +233,9 @@ class MSLHandler(MSLHandlerBase):
             'echo': 'sessionId'
         }]
 
-        response = self.chunked_request(ENDPOINTS['license'],
-                                        build_request_data('/bundle', params),
-                                        g.get_esn())
+        response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+                                                     self.msl_requests.build_request_data('/bundle', params),
+                                                     g.get_esn())
         common.debug('License release response: {}', response)
 
     @common.time_execution(immediate=True)
@@ -247,7 +247,6 @@ class MSLHandler(MSLHandlerBase):
 
 
 def has_1080p(manifest):
-    """Return True if any of the video tracks in manifest have a 1080p profile
-    available, else False"""
+    """Return True if any of the video tracks in manifest have a 1080p profile available, else False"""
     return any(video['width'] >= 1920
                for video in manifest['videoTracks'][0]['downloadables'])

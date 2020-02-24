@@ -86,7 +86,9 @@ def _perform_shared_db_changes(current_version, upgrade_to_version):
     # Init fix
     from resources.lib.common import is_minimum_version
     service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
-    if current_version is None and not is_minimum_version(service_previous_ver, '0.17.0'):
+    if service_previous_ver is not None and\
+            current_version is None and\
+            not is_minimum_version(service_previous_ver, '0.17.0'):
         current_version = '0.1'
     # End fix
 

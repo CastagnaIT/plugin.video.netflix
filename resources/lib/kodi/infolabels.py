@@ -351,10 +351,7 @@ def _colorize_title(text, color, remove_color=False):
 
 def _set_progress_status(list_item, video_data, infos):
     """Check and set progress status (watched and resume)"""
-    if not g.ADDON.getSettingBool('ProgressManager_enabled') or \
-            not g.LOCAL_DB.get_profile_config('isAccountOwner', False):
-        # Currently due to a unknown problem, it is not possible to communicate MSL data to the right selected
-        # profile other than the owner profile
+    if not g.ADDON.getSettingBool('ProgressManager_enabled'):
         return
 
     video_id = video_data['summary']['id']
@@ -368,11 +365,10 @@ def _set_progress_status(list_item, video_data, infos):
         # seem not respect really if a video is watched to the end or this tag have other purposes
         # to now, the only way to know if a video is watched is compare the bookmarkPosition with creditsOffset value
 
-        if not video_data.get('creditsOffset'):
-            # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
-            # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
-            watched_threshold = video_data['runtime'] - (video_data['runtime'] / 100 * 90)
-        else:
+        # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
+        # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
+        watched_threshold = video_data['runtime'] / 100 * 90
+        if video_data.get('creditsOffset') and video_data['creditsOffset'] < watched_threshold:
             watched_threshold = video_data['creditsOffset']
 
         # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value

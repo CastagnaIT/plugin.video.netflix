@@ -89,10 +89,9 @@ def play(videoid):
                 return
             if index_selected == 1:
                 resume_position = None
-    elif g.ADDON.getSettingBool('ProgressManager_enabled') and g.LOCAL_DB.get_profile_config('isAccountOwner', False):
+    elif (g.ADDON.getSettingBool('ProgressManager_enabled') and
+          videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]):
         # To now we have this limits:
-        # - enabled only if the owner profile is used. Currently due to a unknown problem,
-        #    it is not possible to communicate MSL data to the right selected profile
         # - enabled only with items played inside the addon then not Kodi library, need impl. JSON-RPC lib update code
         event_data = _get_event_data(videoid)
         event_data['videoid'] = videoid.to_dict()

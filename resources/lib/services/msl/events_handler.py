@@ -25,19 +25,13 @@ import resources.lib.cache as cache
 from resources.lib import common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
-from resources.lib.services.msl import event_tag_builder
-from resources.lib.services.msl.msl_handler_base import build_request_data, ENDPOINTS
+from resources.lib.services.msl import msl_utils
+from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
 
 try:
     import Queue as queue
 except ImportError:  # Python 3
     import queue
-
-EVENT_START = 'start'      # events/start : Video starts
-EVENT_STOP = 'stop'        # events/stop : Video stops
-EVENT_KEEP_ALIVE = 'keepAlive'  # events/keepAlive : Update progress status
-EVENT_ENGAGE = 'engage'    # events/engage : After user interaction (before stop, on skip, on pause)
-EVENT_BIND = 'bind'        # events/bind : ?
 
 
 class Event(object):
@@ -123,7 +117,7 @@ class EventsHandler(threading.Thread):
                       'reqName': 'events/{}'.format(event)}
             url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
             try:
-                response = self.chunked_request(url, event.request_data, g.get_esn())
+                response = self.chunked_request(url, event.request_data, g.get_esn(), disable_msl_switch=False)
                 event.set_response(response)
                 break
             except Exception as exc:  # pylint: disable=broad-except
@@ -160,7 +154,12 @@ class EventsHandler(threading.Thread):
                         event_type, previous_data.get('xid'))
             return
 
-        event_data = build_request_data(url, self._build_event_params(event_type, event_data, player_state, manifest))
+        from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
+        event_data = MSLRequestBuilder.build_request_data(url,
+                                                          self._build_event_params(event_type,
+                                                                                   event_data,
+                                                                                   player_state,
+                                                                                   manifest))
         try:
             self.queue_events.put_nowait(Event(event_data))
         except queue.Full:
@@ -192,11 +191,11 @@ class EventsHandler(threading.Thread):
         # else:
         #     list_id = g.LOCAL_DB.get_value('last_menu_id', 'unknown')
 
-        if event_tag_builder.is_media_changed(previous_player_state, player_state):
-            play_times, media_id = event_tag_builder.build_media_tag(player_state, manifest)
+        if msl_utils.is_media_changed(previous_player_state, player_state):
+            play_times, media_id = msl_utils.build_media_tag(player_state, manifest)
         else:
             play_times = previous_data['playTimes']
-            event_tag_builder.update_play_times_duration(play_times, player_state)
+            msl_utils.update_play_times_duration(play_times, player_state)
             media_id = previous_data['mediaId']
 
         params = {
@@ -237,5 +236,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = g.get_esn() + '_' + videoid.value
+    cache_identifier = g.LOCAL_DB.get_active_profile_guid() + '_' + g.get_esn() + '_' + videoid.value
     return g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
