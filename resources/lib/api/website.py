@@ -252,19 +252,24 @@ def generate_esn(user_data):
                 model = subprocess.check_output(
                     ['/system/bin/getprop',
                      'ro.product.model']).decode('utf-8').strip(' \t\n\r')
-                product_characteristics = subprocess.check_output(
-                    ['/system/bin/getprop',
-                     'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
+
+                # This product_characteristics check seem no longer used, some L1 devices not have the 'tv' value
+                # like Xiaomi Mi Box 3 or SM-T590 devices and is cause of wrong esn generation
+                # product_characteristics = subprocess.check_output(
+                #     ['/system/bin/getprop',
+                #      'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
                 # Property ro.build.characteristics may also contain more then one value
-                has_product_characteristics_tv = any(
-                    value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+                # has_product_characteristics_tv = any(
+                #     value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+
                 # Netflix Ready Device Platform (NRDP)
                 nrdp_modelgroup = subprocess.check_output(
                     ['/system/bin/getprop',
                      'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
 
-                if has_product_characteristics_tv and \
-                        g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                # if has_product_characteristics_tv and \
+                #         g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                if g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
                     esn = 'NFANDROID2-PRV-'
                     if nrdp_modelgroup:
                         esn += nrdp_modelgroup + '-'
