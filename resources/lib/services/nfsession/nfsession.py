@@ -9,7 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import time
 import json
 import requests
 
@@ -79,25 +78,21 @@ class NetflixSession(NFSessionAccess):
     @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
-        common.info('Activating profile {}', guid)
-        if guid == g.LOCAL_DB.get_active_profile_guid():
-            common.debug('Profile {} is already active', guid)
-            return False
-        # When switch profile is performed the authURL change
+        common.debug('Switching to profile {}', guid)
         response = self._get('switch_profile', params={'tkn': guid})
         react_context = website.extract_json(response, 'reactContext')
         self.auth_url = website.extract_api_data(react_context)['auth_url']
 
-        self._get(component='activate_profile',
-                  req_type='api',
-                  params={'switchProfileGuid': guid,
-                          '_': int(time.time()),
-                          'authURL': self.auth_url})
+        # if guid != g.LOCAL_DB.get_active_profile_guid():
+        #     common.info('Activating profile {}', guid)
+        #     self._get(component='activate_profile',
+        #               req_type='api',
+        #               params={'switchProfileGuid': guid,
+        #                       '_': int(time.time()),
+        #                       'authURL': self.auth_url})
 
         g.LOCAL_DB.switch_active_profile(guid)
         self.update_session_data()
-        common.debug('Successfully activated profile {}', guid)
-        return True
 
     @common.addonsignals_return_call
     @needs_login
@@ -114,11 +109,11 @@ class NetflixSession(NFSessionAccess):
         # Current profile active
         current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
-        is_profile_switched = self.activate_profile(mylist_profile_guid)
+        self.activate_profile(mylist_profile_guid)
         # Get the My List data
         path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                                      no_limit_req)
-        if is_profile_switched:
+        if mylist_profile_guid != current_profile_guid:
             # Reactive again the previous profile
             self.activate_profile(current_profile_guid)
         return path_response

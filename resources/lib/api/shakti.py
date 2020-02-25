@@ -75,8 +75,8 @@ def update_profiles_data():
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    if common.make_call('activate_profile', profile_id):
-        g.CACHE.invalidate()
+    common.make_call('activate_profile', profile_id)
+    g.CACHE.invalidate()
 
 
 @common.time_execution(immediate=False)
