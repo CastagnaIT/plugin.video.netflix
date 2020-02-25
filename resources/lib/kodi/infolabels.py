@@ -358,6 +358,7 @@ def _set_progress_status(list_item, video_data, infos):
     # Check from db if user has manually changed the watched status
     profile_guid = g.LOCAL_DB.get_active_profile_guid()
     override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
+    resume_time = 0
 
     if override_is_watched is None:
         # NOTE shakti 'watched' tag value:
@@ -374,10 +375,11 @@ def _set_progress_status(list_item, video_data, infos):
         # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
         playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
         if playcount == '0' and video_data['bookmarkPosition'] > 0:
-            list_item.setProperty('ResumeTime', str(video_data['bookmarkPosition']))
-            list_item.setProperty('TotalTime', str(video_data['runtime']))
+            resume_time = video_data['bookmarkPosition']
     else:
         playcount = '1' if override_is_watched else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     infos['PlayCount'] = playcount
+    list_item.setProperty('TotalTime', str(video_data['runtime']))
+    list_item.setProperty('ResumeTime', str(resume_time))
