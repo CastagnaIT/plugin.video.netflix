@@ -82,10 +82,7 @@ def play(videoid):
         if resume_position:
             index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
             if index_selected == -1:
-                xbmcplugin.setResolvedUrl(
-                    handle=g.PLUGIN_HANDLE,
-                    succeeded=False,
-                    listitem=list_item)
+                xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
                 return
             if index_selected == 1:
                 resume_position = None
@@ -97,10 +94,7 @@ def play(videoid):
         event_data['videoid'] = videoid.to_dict()
         event_data['is_played_by_library'] = g.IS_SKIN_CALL
 
-    xbmcplugin.setResolvedUrl(
-        handle=g.PLUGIN_HANDLE,
-        succeeded=True,
-        listitem=list_item)
+    xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
     upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
 
@@ -115,10 +109,6 @@ def play(videoid):
         'upnext_info': upnext_info,
         'resume_position': resume_position,
         'event_data': event_data}, non_blocking=True)
-    xbmcplugin.setResolvedUrl(
-        handle=g.PLUGIN_HANDLE,
-        succeeded=True,
-        listitem=list_item)
 
 
 def get_inputstream_listitem(videoid):
