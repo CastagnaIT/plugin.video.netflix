@@ -126,10 +126,11 @@ class EventsHandler(threading.Thread):
             self.clear_queue()
             # api.update_lolomo_context('continueWatching')
             api.update_videoid_bookmark(event.get_video_id())
-        if not event.is_response_success():
+        # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
+        # if not event.is_response_success():
             # The event request is unsuccessful then there is some problem,
             # no longer make any future requests from this event id
-            return False
+        #     return False
         return True
 
     def callback_event_video_queue(self, data=None):
