@@ -305,7 +305,7 @@ def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: dis
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_SUPPLEMENTAL, save_call_data=True)
+@cache.cache_output(cache.CACHE_SUPPLEMENTAL)
 def supplemental_video_list(videoid, supplemental_type):
     """Retrieve a supplemental video list"""
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
