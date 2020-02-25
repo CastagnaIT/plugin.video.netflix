@@ -115,7 +115,7 @@ def get_user_agent(enable_android_mediaflag_fix=False):
 
     if system in ['osx', 'ios', 'tvos']:
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
-    if system in ['windows', 'xbox']:
+    if system in ['windows', 'uwp']:
         return base.replace('%PL%', '(Windows NT 10; Win64; x64)')
     # ARM based Linux
     if get_machine().startswith('arm'):
@@ -344,6 +344,13 @@ def remove_html_tags(raw_html):
     return text
 
 
+def censure(value, length=3):
+    """Censor part of the string with asterisks"""
+    if not value:
+        return value
+    return value[:-length] + '*' * length
+
+
 def is_device_4k_capable():
     """Check if the device is 4k capable"""
     # Currently only on android is it possible to use 4K
@@ -382,22 +389,27 @@ def get_machine():
 
 
 def get_system_platform():
-    platform = "unknown"
-    if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
-        platform = "linux"
-    elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
-        platform = "android"
-    elif xbmc.getCondVisibility('system.platform.xbox'):
-        platform = "xbox"
-    elif xbmc.getCondVisibility('system.platform.windows'):
-        platform = "windows"
-    elif xbmc.getCondVisibility('system.platform.osx'):
-        platform = "osx"
-    elif xbmc.getCondVisibility('system.platform.ios'):
-        platform = "ios"
-    elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
-        platform = "tvos"
-    return platform
+    if not hasattr(get_system_platform, 'cached'):
+        platform = "unknown"
+        if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
+            if xbmc.getCondVisibility('system.platform.linux.raspberrypi'):
+                platform = "linux raspberrypi"
+            else:
+                platform = "linux"
+        elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
+            platform = "android"
+        elif xbmc.getCondVisibility('system.platform.uwp'):
+            platform = "uwp"
+        elif xbmc.getCondVisibility('system.platform.windows'):
+            platform = "windows"
+        elif xbmc.getCondVisibility('system.platform.osx'):
+            platform = "osx"
+        elif xbmc.getCondVisibility('system.platform.ios'):
+            platform = "ios"
+        elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
+            platform = "tvos"
+        get_system_platform.cached = platform
+    return get_system_platform.cached
 
 
 class GetKodiVersion(object):

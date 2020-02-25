@@ -209,8 +209,8 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Évaluation supprimée|Évaluation négative|Évaluation positive"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "L'extension InputStream n'est pas activée"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -349,7 +349,7 @@ msgid "Pause when skipping"
 msgstr "Mettre en pause après avoir passé"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Forcer l'utilisation du HDCP 2.2 (permet l'accès au contenu 4K)"
 
 msgctxt "#30082"
@@ -641,7 +641,7 @@ msgid "Year released"
 msgstr "Année de sortie"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Configuration de l'extension Netflix"
 
 msgctxt "#30155"
@@ -649,16 +649,16 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Avez-vous un compte Netflix Premium ?"
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Votre appareil prend-il en charge la norme 4K ?\r\nL'appareil doit :\r\nÊtre certifié Netflix, prendre en charge le niveau de sécurité Widevine L1 et disposer d’un écran 4K HDCP 2.2."
+msgid "UNUSED"
+msgstr ""
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Le panneau de configuration de InputStream Adaptive va maintenant s'ouvrir. Vous devez activer l'option \"Override HDCP status\"."
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Afficher l'écran de configuration au démarrage de l'extension"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"

@@ -209,8 +209,8 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Valutazione rimossa|Hai valutato con un non mi piace|Hai valutato con un mi piace"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "L'addon InputStream Adaptive non è abilitato"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -349,7 +349,7 @@ msgid "Pause when skipping"
 msgstr "Dopo il salto metti in pausa"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Forza il supporto per HDCP 2.2 (abilita contenuti 4K)"
 
 msgctxt "#30082"
@@ -641,7 +641,7 @@ msgid "Year released"
 msgstr "Anno di uscita"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Configurazione Netflix addon"
 
 msgctxt "#30155"
@@ -649,16 +649,16 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Hai un account Netflix Premium?"
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Il dispositivo supporta lo standard 4K?\r\nIl dispositivo deve:\r\nEssere certificato Netflix, supportare Widevine Security level L1 ed avere un display 4K HDCP 2.2"
+msgid "UNUSED"
+msgstr ""
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Sarà ora aperto il pannello di InputStream Adaptive, dove è necessario ABILITARE l'opzione \"Override HDCP status\""
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Mostra schermata per la configurazione all'avvio dell'addon"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"

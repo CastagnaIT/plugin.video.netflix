@@ -48,7 +48,7 @@ def _get_system_uuid():
     import uuid
     uuid_value = None
     system = get_system_platform()
-    if system in ['windows', 'xbox']:
+    if system in ['windows', 'uwp']:
         uuid_value = _get_windows_uuid()
     elif system == 'android':
         uuid_value = _get_android_uuid()

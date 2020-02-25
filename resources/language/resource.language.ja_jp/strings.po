@@ -209,8 +209,8 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "親指評価なし|サムズアップ|サムズダウン"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "インプットストリームアドオンが使用できないです。"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -349,7 +349,7 @@ msgid "Pause when skipping"
 msgstr "スキップする際に停止"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "HDCP2.2強制支援(4Kコンテンツ)"
 
 msgctxt "#30082"
@@ -641,7 +641,7 @@ msgid "Year released"
 msgstr "公開年"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Netflixアドオン設定"
 
 msgctxt "#30155"
@@ -649,16 +649,16 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "このデバイスは4K標準を従っていますか。\r\nこのデバイスは必ず:\r\nNetflixの認証を受け、WidevineセキュリティレベルL1対応や4KディスプレHDCP2.2が必要です。"
+msgid "UNUSED"
+msgstr ""
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "インプットストリーム設定画面が開いたら、\"Override HDCP status\"を ONにしてください"
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "アドオン起動する際に設定画面を見せる。"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"

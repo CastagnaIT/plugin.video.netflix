@@ -176,6 +176,11 @@ class AddonActionExecutor(object):
         else:
             common.error('No video id found in the current path: {}', path)
 
+    def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
+        """Run the add-on configuration wizard"""
+        from resources.lib.config_wizard import run_addon_configuration
+        run_addon_configuration(show_end_msg=True)
+
 
 def _sync_library(videoid, operation):
     operation = {

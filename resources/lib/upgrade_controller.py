@@ -15,12 +15,17 @@ from resources.lib.database.db_update import run_local_db_updates, run_shared_db
 
 
 def check_addon_upgrade():
-    """Check addon upgrade and perform necessary update operations"""
+    """
+    Check addon upgrade and perform necessary update operations
+
+    :return True if this is the first run of the add-on after an installation from scratch
+    """
     # Upgrades that require user interaction or to be performed outside of the service
     addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None)
     addon_current_ver = g.VERSION
     if addon_current_ver != addon_previous_ver:
         _perform_addon_changes(addon_previous_ver, addon_current_ver)
+    return addon_previous_ver is None
 
 
 def check_service_upgrade():

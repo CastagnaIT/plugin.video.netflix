@@ -96,31 +96,32 @@ class MSLHandler(object):
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
-            common.debug('Manifest for {} with ESN {} obtained from the cache', viewable_id, esn)
             if common.is_debug_verbose():
+                common.debug('Manifest for {} obtained from the cache', viewable_id)
                 # Save the manifest to disk as reference
                 common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
         except cache.CacheMiss:
             pass
-        common.debug('Requesting manifest for {} with ESN {}', viewable_id, esn)
-        profiles = enabled_profiles()
-        import pprint
-        common.info('Requested profiles:\n{}', pprint.pformat(profiles, indent=2))
 
-        ia_addon = xbmcaddon.Addon('inputstream.adaptive')
-        hdcp = ia_addon is not None and ia_addon.getSetting('HDCPOVERRIDE') == 'true'
-
-        # TODO: Future implementation when available,
-        #       request the HDCP version from Kodi through a function
-        #       in CryptoSession currently not implemented
-        #       so there will be no more need to use the HDCPOVERRIDE = true
+        isa_addon = xbmcaddon.Addon('inputstream.adaptive')
+        hdcp_override = isa_addon is not None and isa_addon.getSettingBool('HDCPOVERRIDE')
+        hdcp_4k_capable = common.is_device_4k_capable() or g.ADDON.getSettingBool('enable_force_hdcp')
 
         hdcp_version = []
-        if not g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
+        if not hdcp_4k_capable and hdcp_override:
             hdcp_version = ['1.4']
-        if g.ADDON.getSettingBool('enable_force_hdcp') and hdcp:
+        if hdcp_4k_capable and hdcp_override:
             hdcp_version = ['2.2']
+
+        common.info('Requesting manifest for {} with ESN {} and HDCP {}',
+                    viewable_id,
+                    common.censure(esn) if g.ADDON.getSetting('esn') else esn,
+                    hdcp_version)
+
+        profiles = enabled_profiles()
+        from pprint import pformat
+        common.info('Requested profiles:\n{}', pformat(profiles, indent=2))
 
         params = {
             'type': 'standard',
@@ -152,7 +153,7 @@ class MSLHandler(object):
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
                 'supportedHdcpVersions': hdcp_version,
-                'isHdcpEngaged': hdcp
+                'isHdcpEngaged': hdcp_override
             }],
             'preferAssistiveAudio': False
         }
