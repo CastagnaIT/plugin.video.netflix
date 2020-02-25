@@ -94,6 +94,12 @@ def play(videoid):
         event_data['videoid'] = videoid.to_dict()
         event_data['is_played_by_library'] = g.IS_SKIN_CALL
 
+    if 'raspberrypi' in common.get_system_platform():
+        # OMX Player is not compatible with netflix video streams
+        value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})
+        if value.get('value'):
+            common.json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.useomxplayer', 'value': False})
+
     xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
     upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
