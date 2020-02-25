@@ -202,7 +202,7 @@ class EventsHandler(threading.Thread):
 
         params = {
             'event': event_type,
-            'xid': g.LOCAL_DB.get_value('xid', table=TABLE_SESSION),
+            'xid': previous_data.get('xid', g.LOCAL_DB.get_value('xid', table=TABLE_SESSION)),
             'position': player_state['elapsed_seconds'] * 1000,  # Video time elapsed
             'clientTime': timestamp,
             'sessionStartTime': previous_data.get('sessionStartTime', timestamp),
