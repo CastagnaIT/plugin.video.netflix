@@ -964,3 +964,21 @@ msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Instaliraj Up Next dodatak"
+
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sinkroniziraj status gledanja videozapisa s Netflixom"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Promjeni status gledanja (lokalno)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Označeno kao gledano|Označeno kao nepogledano|Vraćen Netflixov status gledanja"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next obavijesti (pogledajte sljedeći video)"
+
