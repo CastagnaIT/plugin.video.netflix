@@ -963,4 +963,4 @@ msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr "Instaliraj Up Next add-on"
+msgstr "Instaliraj Up Next dodatak"
