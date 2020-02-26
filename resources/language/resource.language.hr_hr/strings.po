@@ -319,7 +319,7 @@ msgstr "Počnite tek nakon 5 minuta mirovanja"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Uvijek prikaži informacije o kodeku tijekom reprodukcije videozapisa"
 
 msgctxt "#30074"
 msgid "View for exported"
