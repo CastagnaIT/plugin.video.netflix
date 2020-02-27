@@ -654,7 +654,7 @@ msgstr ""
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr "Der Vorgang wurde abgeschlossen"
+msgstr "Die Einrichtung wurde abgeschlossen"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
