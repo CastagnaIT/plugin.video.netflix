@@ -70,7 +70,7 @@ def play(videoid):
         return
 
     list_item = get_inputstream_listitem(videoid)
-    infos, art = infolabels.add_info_for_playback(videoid, list_item, is_up_next_enabled)
+    infos, art = infolabels.add_info_for_playback(videoid, list_item, is_up_next_enabled, skip_set_progress_status=True)
 
     resume_position = {}
     event_data = {}
