@@ -61,7 +61,10 @@ CONTEXT_MENU_ACTIONS = {
         'url': ctx_item_url(['trailer'])},
     'force_update_mylist': {
         'label': common.get_local_string(30214),
-        'url': ctx_item_url(['force_update_mylist'])}
+        'url': ctx_item_url(['force_update_mylist'])},
+    'change_watched_status': {
+        'label': common.get_local_string(30236),
+        'url': ctx_item_url(['change_watched_status'])}
 }
 
 
@@ -96,6 +99,11 @@ def generate_context_menu_items(videoid):
                        if videoid in api.mylist_items()
                        else 'add_to_list')
         items.insert(0, _ctx_item(list_action, videoid))
+
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+        # Add menu to allow change manually the watched status when progress manager is enabled
+        if g.ADDON.getSettingBool('ProgressManager_enabled'):
+            items.insert(0, _ctx_item('change_watched_status', videoid))
 
     return items
 

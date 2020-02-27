@@ -50,7 +50,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    debug('Executing JSON-RPC: {}'.format(request))
+    debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
@@ -59,6 +59,25 @@ def json_rpc(method, params=None):
                       .format(response['error']['code'],
                               response['error']['message']))
     return response['result']
+
+
+def json_rpc_multi(method, list_params=None):
+    """
+    Executes multiple JSON-RPC with the same method in Kodi
+
+    :param method: The JSON-RPC method to call
+    :type method: string
+    :param list_params: Multiple list of parameters of the method call
+    :type list_params: a list of dict
+    :returns: dict -- Method call result
+    """
+    request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1, 'params': params or {}} for params in list_params]
+    request = json.dumps(request_data)
+    debug('Executing JSON-RPC: {}', request)
+    raw_response = xbmc.executeJSONRPC(request)
+    if 'error' in raw_response:
+        raise IOError('JSONRPC-Error {}'.format(raw_response))
+    return json.loads(raw_response)
 
 
 def update_library_item_details(dbtype, dbid, details):
@@ -154,9 +173,7 @@ def get_kodi_audio_language():
     Return the audio language from Kodi settings
     """
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(g.py2_encode(audio_language['value']), xbmc.ISO_639_1)
-    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
-    return audio_language if audio_language else 'en'
+    return convert_language_iso(audio_language['value'])
 
 
 def get_kodi_subtitle_language():
@@ -166,12 +183,20 @@ def get_kodi_subtitle_language():
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    subtitle_language = xbmc.convertLanguage(g.py2_encode(subtitle_language['value']),
-                                             xbmc.ISO_639_1)
-    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1,
-                                                                                     False)
-    subtitle_language = subtitle_language if subtitle_language else 'en'
-    return subtitle_language
+    return convert_language_iso(subtitle_language['value'])
+
+
+def convert_language_iso(from_value, use_fallback=True):
+    """
+    Convert language code from an English name or three letter code (ISO 639-2) to two letter code (ISO 639-1)
+
+    :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
+    """
+    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), xbmc.ISO_639_1)
+    if not use_fallback:
+        return converted_lang
+    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    return converted_lang if converted_lang else 'en'
 
 
 def fix_locale_languages(data_list):
@@ -198,6 +223,7 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     Locale conversion helper
     Conversion table to prevent Kodi to display
     es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
+    Kodi issue: https://github.com/xbmc/xbmc/issues/15308
     """
     locale_conversion_table = {
         'es-ES': 'es-Spain',

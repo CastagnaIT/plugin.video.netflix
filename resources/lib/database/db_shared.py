@@ -365,6 +365,50 @@ def get_shareddb_class(use_mysql=False):
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
+        def get_watched_status(self, profile_guid, videoid, default_value=None, data_type=None):
+            """Get override watched status value of a given id stored to current profile"""
+            query = 'SELECT Value FROM watched_status_override WHERE ProfileGuid = ? AND VideoID = ?'
+            cur = self._execute_query(query, (profile_guid, videoid))
+            result = cur.fetchone()
+            if default_value is not None:
+                data_type = type(default_value)
+            elif data_type is None:
+                data_type = str
+            return common.convert_from_string(result[0], data_type) \
+                if result is not None else default_value
+
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
+        def set_watched_status(self, profile_guid, videoid, value):
+            """Update or insert the watched status override value to current profile"""
+            # Update or insert approach, if there is no updated row then insert new one
+            value = common.convert_to_string(value)
+            if self.is_mysql_database:
+                query = db_utils.mysql_insert_or_update('watched_status_override',
+                                                        ['ProfileGuid', 'VideoID'],
+                                                        ['Value'])
+                self._execute_non_query(query, (profile_guid, videoid, value),
+                                        multi=True)
+            else:
+                update_query = ('UPDATE watched_status_override '
+                                'SET Value = ? '
+                                'WHERE ProfileGuid = ? AND VideoID = ?')
+                cur = self._execute_query(update_query, (value, profile_guid, videoid))
+                if cur.rowcount == 0:
+                    insert_query = ('INSERT INTO watched_status_override '
+                                    '(ProfileGuid, VideoID, Value) '
+                                    'VALUES (?, ?, ?)')
+                    self._execute_non_query(insert_query, (profile_guid, videoid, value))
+
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
+        def delete_watched_status(self, profile_guid, videoid):
+            """Delete a watched status override from database"""
+            query = 'DELETE FROM watched_status_override WHERE ProfileGuid = ? AND VideoID = ?'
+            self._execute_query(query, (profile_guid, videoid))
+
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
         def get_stream_continuity(self, profile_guid, videoid, default_value=None, data_type=None):
             """Get stream continuity value of a given id stored to current profile"""
             query = 'SELECT Value FROM stream_continuity WHERE ProfileGuid = ? AND VideoID = ?'

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-01-31 20:40+0000\n"
+"PO-Revision-Date: 2020-02-25 01:50+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -209,8 +209,8 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Başparmak oyu kaldırıldı|Başparmak aşağı oyu verdiniz|Başparmak yukarı oyu verdiniz"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "InputStream eklentisi etkin değil"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "InputStream Adaptive eklentisi veya Widevine kitaplığı ile ilgili bir sorun var. Eksik veya etkinleştirilmemiş olabilir, işlem iptal edilecektir."
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -318,7 +318,7 @@ msgstr "Yalnızca 5 dakikalık gecikmeden sonra başlat"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "Video oynatımı sırasında her zaman codec bilgilerini göster"
+msgstr "Video oynatımı sırasında codec bilgilerini her zaman göster"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,8 +349,8 @@ msgid "Pause when skipping"
 msgstr "Atlarken duraklat"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "HDCP 2.2 desteğini zorla (4K içeriği etkinleştir)"
+msgid "Force HDCP 2.2 video streams"
+msgstr "HDCP 2.2 video akışlarını zorla"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -446,7 +446,7 @@ msgstr "Eklenti şu hatayla karşılaştı:"
 
 msgctxt "#30105"
 msgid "Netflix Addon Error"
-msgstr "Netflix Eklenti Hatası"
+msgstr "Netflix Eklentisi Hatası"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
@@ -518,7 +518,7 @@ msgstr "Listemi Kodi kitaplığı ile senkronize et"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Gerçekten devam etmek istiyor musunuz?\Bu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
+msgstr "Gerçekten devam etmek istiyor musunuz?\nBu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
 
 msgctxt "#30124"
 msgid "Do you really want to remove this item?"
@@ -641,24 +641,24 @@ msgid "Year released"
 msgstr "Çıkış yılı"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
-msgstr "Netflix eklenti yapılandırması"
+msgid "Netflix configuration wizard"
+msgstr "Netflix yapılandırma sihirbazı"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Netflix Premium hesabınız var mı?"
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Cihazınız 4K standardını destekliyor mu?\r\nCihaz şunları yapmalıdır:\r\nNetflix sertifikalı olmalı, Widevine Güvenlik seviyesi L1 desteği ve 4K ekran HDCP 2.2 olmalıdır"
+msgid "UNUSED"
+msgstr "KULLANILMAYAN"
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "InputStream Adaptive ayarlarının paneli şimdi açılacak, böylece \"HDCP durumunu geçersiz kıl\" seçeneğini AÇIK olarak değiştirmeniz gerekir"
+msgid "The configuration has been completed"
+msgstr "Yapılandırma tamamlandı"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Eklenti başlangıcında yapılandırma ekranını göster"
+msgid "Run add-on configuration wizard"
+msgstr "Eklenti yapılandırma sihirbazını çalıştır"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -794,7 +794,7 @@ msgstr "'Listem'e eklenen {} için NFO dosyalarını dışa aktarmak istiyor mus
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nBu dosyalar, bonus bölümleri veya yönetmenin kesimi gibi yararlı olan, filmler ve tv programları bilgilerini entegre etmek için sağlanan bilgileri bilgi sağlayıcıları tarafından kullanır"
+msgstr "\r\nBu dosyalar, bonus bölümleri veya yönetmenin kesimi gibi yararlı olan, filmler ve tv programları bilgilerini entegre etmek için scraper bilgi sağlayıcıları tarafından kullanır"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -963,3 +963,19 @@ msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gere
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Up Next Eklentisini Yükle"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Videoların izlenme durumunu Netflix ile senkronize et"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "İzlenme durumunu değiştir (yerel olarak)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "İzlendi olarak işaretlendi|İzlenmedi olarak işaretlendi|Netflix izlenme durumu geri alındı"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next bildirimleri (sonraki videoyu izle)"

@@ -64,6 +64,8 @@ def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False)
        videoid.mediatype == common.VideoId.SUPPLEMENTAL:
         list_item.setProperty('isFolder', 'false')
         list_item.setProperty('IsPlayable', 'true')
+        # Set the resume and watched status to the list item
+        _set_progress_status(list_item, item, infos_copy)
     else:
         list_item.setProperty('isFolder', 'true')
     for stream_type, quality_infos in iteritems(quality_infos):
@@ -345,3 +347,37 @@ def _colorize_title(text, color, remove_color=False):
         if not matches:
             return '[COLOR {}]{}[/COLOR]'.format(color, text)
     return text
+
+
+def _set_progress_status(list_item, video_data, infos):
+    """Check and set progress status (watched and resume)"""
+    if not g.ADDON.getSettingBool('ProgressManager_enabled'):
+        return
+
+    video_id = video_data['summary']['id']
+    # Check from db if user has manually changed the watched status
+    profile_guid = g.LOCAL_DB.get_active_profile_guid()
+    override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
+
+    if override_is_watched is None:
+        # NOTE shakti 'watched' tag value:
+        # in my tests playing a video (via web browser) until to the end this value is not changed to True
+        # seem not respect really if a video is watched to the end or this tag have other purposes
+        # to now, the only way to know if a video is watched is compare the bookmarkPosition with creditsOffset value
+
+        # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
+        # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
+        watched_threshold = video_data['runtime'] / 100 * 90
+        if video_data.get('creditsOffset') and video_data['creditsOffset'] < watched_threshold:
+            watched_threshold = video_data['creditsOffset']
+
+        # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
+        playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
+        if playcount == '0' and video_data['bookmarkPosition'] > 0:
+            list_item.setProperty('ResumeTime', str(video_data['bookmarkPosition']))
+            list_item.setProperty('TotalTime', str(video_data['runtime']))
+    else:
+        playcount = '1' if override_is_watched else '0'
+    # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
+    # when a item is already watched and you force to set again watched, the override do not work
+    infos['PlayCount'] = playcount

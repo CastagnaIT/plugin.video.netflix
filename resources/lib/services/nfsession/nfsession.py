@@ -35,6 +35,7 @@ class NetflixSession(NFSessionAccess):
             self.path_request,
             self.perpetual_path_request,
             self.perpetual_path_request_switch_profiles,
+            self.callpath_request,
             self.get,
             self.post,
             self.startup_requests_module
@@ -221,6 +222,54 @@ class NetflixSession(NFSessionAccess):
             params=params,
             headers=headers,
             data=data)['value']
+
+    @common.addonsignals_return_call
+    @needs_login
+    def callpath_request(self, callpaths, params=None, path_suffixs=None):
+        """Perform a callPath request against the Shakti API"""
+        return self._callpath_request(callpaths, params, path_suffixs)
+
+    @common.time_execution(immediate=True)
+    def _callpath_request(self, callpaths, params=None, path_suffixs=None):
+        """Execute a callPath request with static paths"""
+        # Warning: The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
+        #          if the request have wrong data give error 401
+        #          if the parameters are not formatted correctly will give error 401
+        common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
+                     json.dumps(callpaths),
+                     params,
+                     json.dumps(path_suffixs))
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json, text/javascript, */*'}
+
+        req_params = {
+            'drmSystem': 'widevine',
+            'falcor_server': '0.1.0',
+            'method': 'call',
+            'withSize': 'true',
+            'materialize': 'true',
+            'routeAPIRequestsThroughFTL': 'false',
+            'isVolatileBillboardsEnabled': 'true',
+            'isWatchlistEnabled': 'false'
+        }
+        data = 'callPath=' + '&callPath='.join(json.dumps(callpath) for callpath in callpaths)
+        if params:
+            data += '&param=' + '&param='.join(params)
+        if path_suffixs:
+            data += '&pathSuffix=' + '&pathSuffix='.join(json.dumps(path_suffix) for path_suffix in path_suffixs)
+        data += '&authURL=' + self.auth_url
+        data = data.replace(' ', '')
+        # common.debug('callPath request data: {}', data)
+        response_data = self._post(
+            component='shakti',
+            req_type='api',
+            params=req_params,
+            headers=headers,
+            data=data)
+        if 'falcor_server' in req_params:
+            return response_data['jsonGraph']
+        return response_data['value']
 
 
 def _set_range_selector(paths, range_start, range_end):

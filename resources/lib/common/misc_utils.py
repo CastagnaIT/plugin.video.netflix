@@ -96,9 +96,8 @@ def get_user_agent(enable_android_mediaflag_fix=False):
 
     :returns: str -- User agent string
     """
-    import platform
-    system = platform.system()
-    if enable_android_mediaflag_fix and get_system_platform() == 'android' and is_device_4k_capable():
+    system = get_system_platform()
+    if enable_android_mediaflag_fix and system == 'android' and is_device_4k_capable():
         # The UA affects not only the ESNs in the login, but also the video details,
         # so the UAs seem refer to exactly to these conditions: https://help.netflix.com/en/node/23742
         # This workaround is needed because currently we do not login through the netflix native android API,
@@ -106,21 +105,20 @@ def get_user_agent(enable_android_mediaflag_fix=False):
         # Then on android usually we use the 'arm' UA which refers to chrome os, but this is limited to 1080P, so the
         # labels on the 4K devices appears wrong (in the Kodi skin the 4K videos have 1080P media flags instead of 4K),
         # the Windows UA is not limited, so we can use it to get the right video media flags.
-        system = 'Windows'
+        system = 'windows'
 
     chrome_version = 'Chrome/78.0.3904.92'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
     base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
-    # Mac OSX
-    if system == 'Darwin':
+
+    if system in ['osx', 'ios', 'tvos']:
         return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
-    # Windows
-    if system == 'Windows':
+    if system in ['windows', 'uwp']:
         return base.replace('%PL%', '(Windows NT 10; Win64; x64)')
     # ARM based Linux
-    if platform.machine().startswith('arm'):
+    if get_machine().startswith('arm'):
         # Last number is the platform version of Chrome OS
         return base.replace('%PL%', '(X11; CrOS armv7l 12371.89.0)')
     # x86 Linux
@@ -263,6 +261,10 @@ def any_value_except(mapping, excluded_keys):
     return next(mapping[key] for key in mapping if key not in excluded_keys)
 
 
+def enclose_quotes(content):
+    return '"' + content + '"'
+
+
 def time_execution(immediate):
     """A decorator that wraps a function call and times its execution"""
     # pylint: disable=missing-docstring
@@ -342,6 +344,13 @@ def remove_html_tags(raw_html):
     return text
 
 
+def censure(value, length=3):
+    """Censor part of the string with asterisks"""
+    if not value:
+        return value
+    return value[:-length] + '*' * length
+
+
 def is_device_4k_capable():
     """Check if the device is 4k capable"""
     # Currently only on android is it possible to use 4K
@@ -367,21 +376,40 @@ def run_threaded(non_blocking, target_func, *args, **kwargs):
     thread.start()
 
 
+def get_machine():
+    """Get machine architecture"""
+    from platform import machine
+    try:
+        return machine()
+    except Exception:  # pylint: disable=broad-except
+        # Due to OS restrictions on 'ios' and 'tvos' this generate an exception
+        # See python limits in the wiki development page
+        # Fallback with a generic arm
+        return 'arm'
+
+
 def get_system_platform():
-    platform = "unknown"
-    if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
-        platform = "linux"
-    elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
-        platform = "android"
-    elif xbmc.getCondVisibility('system.platform.xbox'):
-        platform = "xbox"
-    elif xbmc.getCondVisibility('system.platform.windows'):
-        platform = "windows"
-    elif xbmc.getCondVisibility('system.platform.osx'):
-        platform = "osx"
-    elif xbmc.getCondVisibility('system.platform.ios'):
-        platform = "ios"
-    return platform
+    if not hasattr(get_system_platform, 'cached'):
+        platform = "unknown"
+        if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
+            if xbmc.getCondVisibility('system.platform.linux.raspberrypi'):
+                platform = "linux raspberrypi"
+            else:
+                platform = "linux"
+        elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
+            platform = "android"
+        elif xbmc.getCondVisibility('system.platform.uwp'):
+            platform = "uwp"
+        elif xbmc.getCondVisibility('system.platform.windows'):
+            platform = "windows"
+        elif xbmc.getCondVisibility('system.platform.osx'):
+            platform = "osx"
+        elif xbmc.getCondVisibility('system.platform.ios'):
+            platform = "ios"
+        elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
+            platform = "tvos"
+        get_system_platform.cached = platform
+    return get_system_platform.cached
 
 
 class GetKodiVersion(object):
@@ -409,3 +437,34 @@ class GetKodiVersion(object):
             self.stage = re_stage.group(1) if re_stage else ''
         else:
             self.stage = re_stage.group(2) if re_stage else ''
+
+
+def update_cache_videoid_runtime(window_cls):
+    """Try to update the bookmarkPosition value in cache data in order to get a updated watched status/resume time"""
+    # Other details in:
+    # progress_manager.py method: _save_resume_time()
+    # infolabels.py method: _set_progress_status()
+    runtime = window_cls.getProperty('nf_playback_resume_time')
+    if runtime and runtime.isdigit():
+        from resources.lib.api.data_types import VideoList, VideoListSorted, EpisodeList, SearchVideoList
+        from resources.lib.cache import CacheMiss
+        from resources.lib.database.db_utils import TABLE_SESSION
+        from resources.lib.common import VideoId
+        cache_last_dir_call = g.LOCAL_DB.get_value('cache_last_directory_call', {}, table=TABLE_SESSION)
+        if not cache_last_dir_call:
+            return
+        videoid = VideoId.from_dict(g.LOCAL_DB.get_value('last_videoid_played', {}, table=TABLE_SESSION))
+        try:
+            data_object = g.CACHE.get(cache_last_dir_call['bucket'], cache_last_dir_call['identifier'])
+            if isinstance(data_object, (VideoList, VideoListSorted, SearchVideoList)):
+                data_object.videos[str(videoid.value)]['bookmarkPosition'] = int(runtime)
+            elif isinstance(data_object, EpisodeList):
+                data_object.episodes[str(videoid.value)]['bookmarkPosition'] = int(runtime)
+            else:
+                error('update_cache_videoid_runtime: cache object not mapped, bookmarkPosition not updated')
+            g.CACHE.update(cache_last_dir_call['bucket'], cache_last_dir_call['identifier'], data_object,
+                           cache_last_dir_call['to_disk'])
+        except CacheMiss:
+            # No more valid cache, manual update not needed
+            pass
+        window_cls.setProperty('nf_playback_resume_time', '')

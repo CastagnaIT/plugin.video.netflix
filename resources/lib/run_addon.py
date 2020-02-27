@@ -16,7 +16,7 @@ from xbmcgui import Window
 from resources.lib.globals import g
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
-                                  get_current_kodi_profile_name)
+                                  get_current_kodi_profile_name, update_cache_videoid_runtime)
 from resources.lib.upgrade_controller import check_addon_upgrade
 
 
@@ -148,6 +148,7 @@ def run(argv):
     success = True
 
     window_cls = Window(10000)  # Kodi home window
+
     # If you use multiple Kodi profiles you need to distinguish the property of current profile
     prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
     is_widget_skin_call = _skin_widget_call(window_cls, prop_nf_service_status)
@@ -162,8 +163,11 @@ def run(argv):
         try:
             if _check_valid_credentials():
                 if g.IS_ADDON_FIRSTRUN:
-                    check_addon_upgrade()
-                g.initial_addon_configuration()
+                    if check_addon_upgrade():
+                        from resources.lib.config_wizard import run_addon_configuration
+                        run_addon_configuration()
+                if not is_widget_skin_call:
+                    update_cache_videoid_runtime(window_cls)
                 route([part for part in g.PATH.split('/') if part])
             else:
                 success = False

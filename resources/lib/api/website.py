@@ -46,7 +46,13 @@ PAGE_ITEMS_API_URL = {
     'auth_url': 'models/userInfo/data/authURL',
     # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
-    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl'
+    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',
+    'request_id': 'models/serverDefs/data/requestId',
+    'asset_core': 'models/playerModel/data/config/core/assets/core',
+    'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
+    'browser_info_version': 'models/browserInfo/data/version',
+    'browser_info_os_name': 'models/browserInfo/data/os/name',
+    'browser_info_os_version': 'models/browserInfo/data/os/version',
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
@@ -87,6 +93,7 @@ def extract_session_data(content, validate=False):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+    return api_data
 
 
 @common.time_execution(immediate=True)
@@ -240,48 +247,53 @@ def validate_login(react_context):
 
 def generate_esn(user_data):
     """Generate an ESN if on android or return the one from user_data"""
-    import subprocess
-    try:
-        manufacturer = subprocess.check_output(
-            ['/system/bin/getprop',
-             'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
-        if manufacturer:
-            model = subprocess.check_output(
+    if common.get_system_platform() == 'android':
+        import subprocess
+        try:
+            manufacturer = subprocess.check_output(
                 ['/system/bin/getprop',
-                 'ro.product.model']).decode('utf-8').strip(' \t\n\r')
-            product_characteristics = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
-            # Property ro.build.characteristics may also contain more then one value
-            has_product_characteristics_tv = any(
-                value.strip(' ') == 'tv' for value in product_characteristics.split(','))
-            # Netflix Ready Device Platform (NRDP)
-            nrdp_modelgroup = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
+                 'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
+            if manufacturer:
+                model = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.product.model']).decode('utf-8').strip(' \t\n\r')
 
-            if has_product_characteristics_tv and \
-                    g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
-                esn = 'NFANDROID2-PRV-'
-                if nrdp_modelgroup:
-                    esn += nrdp_modelgroup + '-'
+                # This product_characteristics check seem no longer used, some L1 devices not have the 'tv' value
+                # like Xiaomi Mi Box 3 or SM-T590 devices and is cause of wrong esn generation
+                # product_characteristics = subprocess.check_output(
+                #     ['/system/bin/getprop',
+                #      'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
+                # Property ro.build.characteristics may also contain more then one value
+                # has_product_characteristics_tv = any(
+                #     value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+
+                # Netflix Ready Device Platform (NRDP)
+                nrdp_modelgroup = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
+
+                # if has_product_characteristics_tv and \
+                #         g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                if g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                    esn = 'NFANDROID2-PRV-'
+                    if nrdp_modelgroup:
+                        esn += nrdp_modelgroup + '-'
+                    else:
+                        esn += model.replace(' ', '').upper() + '-'
                 else:
-                    esn += model.replace(' ', '').upper() + '-'
-            else:
-                esn = 'NFANDROID1-PRV-'
-                esn += 'T-L3-'
+                    esn = 'NFANDROID1-PRV-'
+                    esn += 'T-L3-'
 
-            esn += '{:=<5.5}'.format(manufacturer.upper())
-            esn += model.replace(' ', '=').upper()
-            esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-            system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
-            if system_id:
-                esn += '-' + str(system_id) + '-'
-            common.debug('Android generated ESN: {}', esn)
-            return esn
-    except OSError:
-        pass
-
+                esn += '{:=<5.5}'.format(manufacturer.upper())
+                esn += model.replace(' ', '=').upper()
+                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
+                system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+                if system_id:
+                    esn += '-' + str(system_id) + '-'
+                common.debug('Android generated ESN: {}', esn)
+                return esn
+        except OSError:
+            pass
     return user_data.get('esn', '')
 
 

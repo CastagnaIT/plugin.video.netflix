@@ -11,12 +11,11 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 
-from resources.lib.globals import g
-import resources.lib.common as common
 import resources.lib.api.shakti as api
+import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-
-from resources.lib.api.exceptions import (MissingCredentialsError, WebsiteParsingError)
+from resources.lib.api.exceptions import MissingCredentialsError, WebsiteParsingError
+from resources.lib.globals import g
 
 
 class AddonActionExecutor(object):
@@ -154,6 +153,33 @@ class AddonActionExecutor(object):
         url = 'plugin://plugin.video.netflix'
         # Open root page
         xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
+
+    def change_watched_status(self, pathitems=None):  # pylint: disable=unused-argument
+        from os import path
+        videoid = path.basename(path.normpath(xbmc.getInfoLabel('ListItem.Path')))
+        if videoid.isdigit():
+            # Todo: how get resumetime/playcount of selected item for calculate current watched status?
+
+            profile_guid = g.LOCAL_DB.get_active_profile_guid()
+            current_value = g.SHARED_DB.get_watched_status(profile_guid, videoid, None, bool)
+            if current_value:
+                txt_index = 1
+                g.SHARED_DB.set_watched_status(profile_guid, videoid, False)
+            elif current_value is not None and not current_value:
+                txt_index = 2
+                g.SHARED_DB.delete_watched_status(profile_guid, videoid)
+            else:
+                txt_index = 0
+                g.SHARED_DB.set_watched_status(profile_guid, videoid, True)
+            ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
+            common.refresh_container()
+        else:
+            common.error('No video id found in the current path: {}', path)
+
+    def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
+        """Run the add-on configuration wizard"""
+        from resources.lib.config_wizard import run_addon_configuration
+        run_addon_configuration(show_end_msg=True)
 
 
 def _sync_library(videoid, operation):

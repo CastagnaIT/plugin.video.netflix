@@ -39,9 +39,9 @@ ART_PARTIAL_PATHS = [
 ]
 
 VIDEO_LIST_PARTIAL_PATHS = [
-    [['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
+    [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
       'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
-      'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition',
+      'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset'
       'dpSupplementalMessage', 'watched', 'delivery']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
@@ -64,16 +64,21 @@ SEASONS_PARTIAL_PATHS = [
 ] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
-    [['summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
+    [['requestId', 'summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
       'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
-      'watched', 'delivery']],
+      'watched', 'delivery', 'trackIds']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
+    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime',
+      'bookmarkPosition', 'creditsOffset']]
 ] + ART_PARTIAL_PATHS
+
+EVENT_PATHS = [
+    [['requestId', 'title', 'runtime', 'queue', 'bookmarkPosition', 'watched', 'trackIds']]
+]
 
 VIDEO_LIST_RATING_THUMB_PATHS = [
     [['summary', 'title', 'userRating', 'trackIds']]

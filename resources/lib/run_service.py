@@ -31,6 +31,8 @@ class NetflixService(object):
     """
     from resources.lib.services.msl.http_server import MSLTCPServer
     from resources.lib.services.nfsession.http_server import NetflixTCPServer
+    # Do not change the init order of the servers,
+    # MSLTCPServer must always be initialized first to get the DRM info
     SERVERS = [
         {
             'name': 'MSL',
@@ -115,8 +117,8 @@ class NetflixService(object):
 
     def _tick_and_wait_for_abort(self):
         try:
-            self.controller.on_playback_tick()
-            self.library_updater.on_tick()
+            self.controller.on_service_tick()
+            self.library_updater.on_service_tick()
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification

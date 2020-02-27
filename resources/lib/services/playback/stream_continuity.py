@@ -48,13 +48,11 @@ class StreamContinuityManager(PlaybackActionManager):
         self.sc_settings = {}
         self.player = xbmc.Player()
         self.player_state = {}
-        self.did_restore = False
         self.resume = {}
         self.legacy_kodi_version = bool('18.' in common.GetKodiVersion().version)
         self.kodi_only_forced_subtitles = None
 
     def _initialize(self, data):
-        self.did_restore = False
         videoid = common.VideoId.from_dict(data['videoid'])
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
@@ -81,13 +79,9 @@ class StreamContinuityManager(PlaybackActionManager):
             self._restore_stream(stype)
         # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
         # changed by restore, otherwise when _on_tick is executed it will save twice unnecessarily
-        xbmc.sleep(1500)
-        self.did_restore = True
+        xbmc.sleep(1000)
 
     def _on_tick(self, player_state):
-        if not self.did_restore:
-            common.debug('Did not restore streams yet, ignoring tick')
-            return
         self.player_state = player_state
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']
@@ -246,7 +240,8 @@ class StreamContinuityManager(PlaybackActionManager):
             # --- ONLY FOR KODI VERSION 18 ---
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
-            cache_identifier = g.get_esn() + '_' + self.current_videoid.value
+            cache_identifier = (g.LOCAL_DB.get_active_profile_guid() + '_' +
+                                g.get_esn() + '_' + self.current_videoid.value)
             manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier, False)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and

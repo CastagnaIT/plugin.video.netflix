@@ -209,7 +209,7 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr ""
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
 msgstr ""
 
 msgctxt "#30047"
@@ -349,7 +349,7 @@ msgid "Pause when skipping"
 msgstr ""
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr ""
 
 msgctxt "#30082"
@@ -641,7 +641,7 @@ msgid "Year released"
 msgstr ""
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr ""
 
 msgctxt "#30155"
@@ -649,15 +649,15 @@ msgid "Do you have a Netflix Premium account?"
 msgstr ""
 
 msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
+msgid "UNUSED"
 msgstr ""
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
+msgid "The configuration has been completed"
 msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
+msgid "Run add-on configuration wizard"
 msgstr ""
 
 msgctxt "#30159"
@@ -963,3 +963,20 @@ msgstr ""
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr ""
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr ""
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr ""
+

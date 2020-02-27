@@ -32,7 +32,8 @@ run_addon.g.init_globals(sys.argv)
 run_addon.info('Started (Version {})'.format(run_addon.g.VERSION))
 run_addon.info('URL is {}'.format(run_addon.g.URL))
 if run_addon._check_valid_credentials():  # pylint: disable=protected-access
-    run_addon.check_addon_upgrade()
-    run_addon.g.initial_addon_configuration()
+    if run_addon.check_addon_upgrade():
+        from resources.lib.config_wizard import run_addon_configuration  # pylint: disable=wrong-import-position
+        run_addon_configuration()
     run_addon.route(path.split('/'))
 run_addon.g.CACHE.commit()

@@ -108,6 +108,11 @@ class SettingsMonitor(xbmc.Monitor):
             g.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
             clean_cache = True
 
+        # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
+        if (clean_cache or reboot_addon) and not common.check_credentials():
+            clean_cache = False
+            reboot_addon = False
+
         if clean_cache:
             common.run_plugin('plugin://plugin.video.netflix/action/purge_cache/'
                               '?on_disk=True&no_notification=True')
