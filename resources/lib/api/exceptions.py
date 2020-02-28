@@ -39,6 +39,10 @@ class InvalidMembershipStatusError(WebsiteParsingError):
     """The user logging in does not have a valid subscription"""
 
 
+class InvalidMembershipStatusAnonymous(WebsiteParsingError):
+    """The user logging failed because of Membership Status Anonymous"""
+
+
 class LoginFailedError(Exception):
     """The login attempt has failed"""
 

@@ -20,7 +20,7 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
-                                          InvalidMembershipStatusError)
+                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -118,12 +118,12 @@ class NFSessionRequests(NFSessionBase):
             return True
         except InvalidMembershipStatusError:
             raise
-        except WebsiteParsingError:
-            # it is possible that cookies may not work anymore,
-            # it should be due to updates in the website,
-            # this can happen when opening the addon while executing update_profiles_data
+        except (WebsiteParsingError, InvalidMembershipStatusAnonymous) as exc:
+            # Possible known causes:
+            # -Cookies may not work anymore most likely due to updates in the website
+            # -Expired cookie profiles? might cause InvalidMembershipStatusAnonymous (i am not really sure)
             import traceback
-            common.warn('Failed to refresh session data, login expired (WebsiteParsingError)')
+            common.warn('Failed to refresh session data, login can be expired ({})', type(exc).__name__)
             common.debug(traceback.format_exc())
             self.session.cookies.clear()
             return self._login()

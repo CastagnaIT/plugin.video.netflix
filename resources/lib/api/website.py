@@ -19,7 +19,7 @@ from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
-                         WebsiteParsingError, LoginValidateError)
+                         WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous)
 
 try:  # Python 2
     unicode
@@ -74,6 +74,10 @@ def extract_session_data(content, validate=False):
         validate_login(react_context)
 
     user_data = extract_userdata(react_context)
+    if user_data.get('membershipStatus') == 'ANONYMOUS':
+        # I don't know the real cause of this situation, maybe it is because of the expired cookies in the profiles,
+        # but it is mandatory to login again
+        raise InvalidMembershipStatusAnonymous
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         # When NEVER_MEMBER it is possible that the account has not been confirmed or renewed
         common.error('Can not login, the Membership status is {}',
