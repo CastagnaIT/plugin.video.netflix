@@ -126,6 +126,9 @@ class NFSessionRequests(NFSessionBase):
             common.warn('Failed to refresh session data, login can be expired ({})', type(exc).__name__)
             common.debug(traceback.format_exc())
             self.session.cookies.clear()
+            if isinstance(exc, InvalidMembershipStatusAnonymous):
+                # This prevent the MSL error: No entity association record found for the user
+                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             return self._login()
         except requests.exceptions.RequestException:
             import traceback

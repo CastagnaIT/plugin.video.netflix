@@ -57,6 +57,9 @@ class MSLHandler(object):
         common.register_slot(
             signal=common.Signals.RELEASE_LICENSE,
             callback=self.release_license)
+        common.register_slot(
+            signal=common.Signals.CLEAR_USER_ID_TOKENS,
+            callback=self.clear_user_id_tokens)
 
     @display_error_info
     @common.time_execution(immediate=True)
@@ -238,6 +241,10 @@ class MSLHandler(object):
                                                      self.msl_requests.build_request_data('/bundle', params),
                                                      g.get_esn())
         common.debug('License release response: {}', response)
+
+    def clear_user_id_tokens(self, data=None):  # pylint: disable=unused-argument
+        """Clear all user id tokens"""
+        self.msl_requests.crypto.clear_user_id_tokens()
 
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
