@@ -93,6 +93,14 @@ def play(videoid):
         event_data = _get_event_data(videoid)
         event_data['videoid'] = videoid.to_dict()
         event_data['is_played_by_library'] = g.IS_SKIN_CALL
+        # Todo: UpNext addon is incompatible with netflix watched status sync feature
+        #  Problems:
+        #  - Need to modify the cache (to update the watched status) on every played item
+        #  - Modifying the cache after the stop, is wrong due to below problems
+        #  - The new fast play, 'play_url' method, cause problems with the Player callbacks, after press play next is missing the Stop event in the controller!
+        #  - To verify possibility problems of data mixing of controller._get_player_state()
+        #  - The call of next video from UpNext is recognized as Skin call, because it's an external addon call, so it causes several operating problems
+        is_up_next_enabled = False
 
     if 'raspberrypi' in common.get_system_platform():
         # OMX Player is not compatible with netflix video streams
