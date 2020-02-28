@@ -53,7 +53,7 @@ def get_info(videoid, item, raw_data):
     return infos, quality_infos
 
 
-def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False):
+def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False, skip_set_progress_status=False):
     """Add infolabels to the list_item. The passed in list_item is modified
     in place and the infolabels are returned."""
     infos, quality_infos = get_info(videoid, item, raw_data)
@@ -65,7 +65,8 @@ def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False)
         list_item.setProperty('isFolder', 'false')
         list_item.setProperty('IsPlayable', 'true')
         # Set the resume and watched status to the list item
-        _set_progress_status(list_item, item, infos_copy)
+        if not skip_set_progress_status:
+            _set_progress_status(list_item, item, infos_copy)
     else:
         list_item.setProperty('isFolder', 'true')
     for stream_type, quality_infos in iteritems(quality_infos):
@@ -111,7 +112,7 @@ def get_info_for_playback(videoid, skip_add_from_library):
 
 
 @common.time_execution(immediate=False)
-def add_info_for_playback(videoid, list_item, skip_add_from_library):
+def add_info_for_playback(videoid, list_item, skip_add_from_library, skip_set_progress_status=False):
     """Retrieve infolabels and art info and add them to the list_item"""
     # By getting the info from the library you can not get the length of video required for Up Next addon
     # waiting for a suitable solution we avoid this method by using skip_add_from_library
@@ -120,7 +121,7 @@ def add_info_for_playback(videoid, list_item, skip_add_from_library):
             return add_info_from_library(videoid, list_item)
         except library.ItemNotFound:
             common.debug('Can not get infolabels from the library, submit a request to netflix')
-    return add_info_from_netflix(videoid, list_item)
+    return add_info_from_netflix(videoid, list_item, skip_set_progress_status)
 
 
 def parse_info(videoid, item, raw_data):
@@ -266,16 +267,17 @@ def get_info_from_netflix(videoid):
     return infos, art
 
 
-def add_info_from_netflix(videoid, list_item):
+def add_info_from_netflix(videoid, list_item, skip_set_progress_status):
     """Apply infolabels with info from Netflix API"""
     try:
-        infos = add_info(videoid, list_item, None, None)
+        infos = add_info(videoid, list_item, None, None, skip_set_progress_status=skip_set_progress_status)
         art = add_art(videoid, list_item, None)
         common.debug('Got infolabels and art from cache')
     except (AttributeError, TypeError):
         common.debug('Infolabels or art were not in cache, retrieving from API')
         api_data = api.single_info(videoid)
-        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data)
+        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data,
+                         skip_set_progress_status=skip_set_progress_status)
         art = add_art(videoid, list_item, api_data['videos'][videoid.value])
     return infos, art
 
@@ -358,6 +360,7 @@ def _set_progress_status(list_item, video_data, infos):
     # Check from db if user has manually changed the watched status
     profile_guid = g.LOCAL_DB.get_active_profile_guid()
     override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
+    resume_time = 0
 
     if override_is_watched is None:
         # NOTE shakti 'watched' tag value:
@@ -374,10 +377,11 @@ def _set_progress_status(list_item, video_data, infos):
         # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
         playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
         if playcount == '0' and video_data['bookmarkPosition'] > 0:
-            list_item.setProperty('ResumeTime', str(video_data['bookmarkPosition']))
-            list_item.setProperty('TotalTime', str(video_data['runtime']))
+            resume_time = video_data['bookmarkPosition']
     else:
         playcount = '1' if override_is_watched else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     infos['PlayCount'] = playcount
+    list_item.setProperty('TotalTime', str(video_data['runtime']))
+    list_item.setProperty('ResumeTime', str(resume_time))

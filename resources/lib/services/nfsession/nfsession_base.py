@@ -80,8 +80,10 @@ class NFSessionBase(object):
     def set_session_header_data(self):
         try:
             # When the addon is installed from scratch there is no profiles in the database
-            self.session.headers.update(
-                {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
+            self.session.headers.update({
+                'x-netflix.nq.stack': 'prod',
+                'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()
+            })
         except ProfilesMissing:
             pass
 

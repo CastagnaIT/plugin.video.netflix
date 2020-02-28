@@ -154,27 +154,24 @@ class AddonActionExecutor(object):
         # Open root page
         xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
 
-    def change_watched_status(self, pathitems=None):  # pylint: disable=unused-argument
-        from os import path
-        videoid = path.basename(path.normpath(xbmc.getInfoLabel('ListItem.Path')))
-        if videoid.isdigit():
-            # Todo: how get resumetime/playcount of selected item for calculate current watched status?
+    @common.inject_video_id(path_offset=1)
+    def change_watched_status(self, videoid):
+        """Change the watched status locally"""
+        # Todo: how get resumetime/playcount of selected item for calculate current watched status?
 
-            profile_guid = g.LOCAL_DB.get_active_profile_guid()
-            current_value = g.SHARED_DB.get_watched_status(profile_guid, videoid, None, bool)
-            if current_value:
-                txt_index = 1
-                g.SHARED_DB.set_watched_status(profile_guid, videoid, False)
-            elif current_value is not None and not current_value:
-                txt_index = 2
-                g.SHARED_DB.delete_watched_status(profile_guid, videoid)
-            else:
-                txt_index = 0
-                g.SHARED_DB.set_watched_status(profile_guid, videoid, True)
-            ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
-            common.refresh_container()
+        profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        current_value = g.SHARED_DB.get_watched_status(profile_guid, videoid.value, None, bool)
+        if current_value:
+            txt_index = 1
+            g.SHARED_DB.set_watched_status(profile_guid, videoid.value, False)
+        elif current_value is not None and not current_value:
+            txt_index = 2
+            g.SHARED_DB.delete_watched_status(profile_guid, videoid.value)
         else:
-            common.error('No video id found in the current path: {}', path)
+            txt_index = 0
+            g.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
+        ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
+        common.refresh_container()
 
     def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
         """Run the add-on configuration wizard"""

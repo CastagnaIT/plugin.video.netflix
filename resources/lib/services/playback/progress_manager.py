@@ -85,6 +85,7 @@ class ProgressManager(PlaybackActionManager):
             return
         self.tick_elapsed = 0
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
+        self._save_resume_time(player_state['elapsed_seconds'])
 
     def _on_playback_stopped(self):
         if not self.is_event_start_sent or self.lock_events:

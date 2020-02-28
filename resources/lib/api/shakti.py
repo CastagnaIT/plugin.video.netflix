@@ -76,8 +76,10 @@ def update_profiles_data():
 
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
-    if common.make_call('activate_profile', profile_id):
-        g.CACHE.invalidate()
+    common.make_call('activate_profile', profile_id)
+    if g.ADDON.getSettingBool('ProgressManager_enabled'):
+        save_current_lolomo_data('continueWatching')
+    g.CACHE.invalidate()
 
 
 @common.time_execution(immediate=False)
@@ -102,25 +104,36 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-def update_lolomo_context(context_name, video_id=None):
-    """Update the lolomo list by context"""
-    # Should update the context list but it doesn't, what is missing?
-    # The remaining requests made on the website that are missing here are of logging type,
-    # it seems strange that they use log data to finish the operations are almost impossible to reproduce here:
-    # pbo_logblobs /logblob
-    # personalization/cl2
-
+def save_current_lolomo_data(context_name):
+    """Save the current lolomo data of the current selected profile"""
+    # Note: every profile has its root lolomo (that are also visible in the lhpuuidh-browse profiles cookies)
     lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
-    # Note: lolomo root seem differs according to the profile in use
     lolomo_root = lolomo_data['lolomo'][1]
     context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
     context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+    g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+    g.LOCAL_DB.set_value('lolomo_continue_watching_index', context_index, TABLE_SESSION)
+    g.LOCAL_DB.set_value('lolomo_continue_watching_id', context_id, TABLE_SESSION)
+
+
+def update_lolomo_context(context_name):
+    """Update the lolomo list by context"""
+    lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
+    context_index = g.LOCAL_DB.get_value('lolomo_continue_watching_index', '', TABLE_SESSION)
+    context_id = g.LOCAL_DB.get_value('lolomo_continue_watching_id', '', TABLE_SESSION)
 
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
+    # The fourth parameter is like a request-id, but it doesn't seem to match to
+    # serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
+    # nor to request_id of the video event request
+    # has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed,
+    # and i am no longer able to trace the source.
+    # I noticed also that this request can also be made with the fourth parameter empty,
+    # but it still doesn't update the continueWatching list of lolomo, that is strange because of no error
     params = [common.enclose_quotes(context_id),
               context_index,
               common.enclose_quotes(context_name),
-              common.enclose_quotes(g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))]
+              '']
     # path_suffixs = [
     #    [['trackIds', 'context', 'length', 'genreId', 'videoId', 'displayName', 'isTallRow', 'isShowAsARow',
     #      'impressionToken', 'showAsARow', 'id', 'requestId']],
@@ -137,15 +150,34 @@ def update_lolomo_context(context_name, video_id=None):
         'params': params,
         # 'path_suffixs': path_suffixs
     }
-    response = common.make_http_call('callpath_request', callargs)
-    common.debug('refreshListByContext response: {}', response)
+    try:
+        response = common.make_http_call('callpath_request', callargs)
+        common.debug('refreshListByContext response: {}', response)
+    except Exception:  # pylint: disable=broad-except
+        # I do not know the reason yet, but sometimes continues to return error 401,
+        # making it impossible to update the bookmark position
+        ui.show_notification(title=common.get_local_string(30105),
+                             msg='An error prevented the update the lolomo context on netflix',
+                             time=10000)
 
+
+def update_videoid_bookmark(video_id):
+    """Update the videoid bookmark position"""
+    # You can check if this function works through the official android app
+    # by checking if the status bar watched of the video will be updated
     callargs = {
         'callpaths': [['refreshVideoCurrentPositions']],
-        'params': ['[' + video_id + ']', ''],
+        'params': ['[' + video_id + ']', '[]'],
     }
-    response = common.make_http_call('callpath_request', callargs)
-    common.debug('refreshVideoCurrentPositions response: {}', response)
+    try:
+        response = common.make_http_call('callpath_request', callargs)
+        common.debug('refreshVideoCurrentPositions response: {}', response)
+    except Exception:  # pylint: disable=broad-except
+        # I do not know the reason yet, but sometimes continues to return error 401,
+        # making it impossible to update the bookmark position
+        ui.show_notification(title=common.get_local_string(30105),
+                             msg='An error prevented the update the status watched on netflix',
+                             time=10000)
 
 
 @cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_type')
@@ -286,7 +318,7 @@ def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: dis
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_SUPPLEMENTAL, save_call_data=True)
+@cache.cache_output(cache.CACHE_SUPPLEMENTAL)
 def supplemental_video_list(videoid, supplemental_type):
     """Retrieve a supplemental video list"""
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
