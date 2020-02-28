@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from future.utils import iteritems
 
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.cache as cache
@@ -76,6 +77,8 @@ def update_profiles_data():
 def activate_profile(profile_id):
     """Activate the profile with the given ID"""
     common.make_call('activate_profile', profile_id)
+    if g.ADDON.getSettingBool('ProgressManager_enabled'):
+        save_current_lolomo_data('continueWatching')
     g.CACHE.invalidate()
 
 
@@ -101,13 +104,23 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-def update_lolomo_context(context_name):
-    """Update the lolomo list by context"""
-    lolomo_data = common.make_http_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
-    # Note: every profile has its root lolomo (that are visible in the lhpuuidh-browse profiles cookies)
+def save_current_lolomo_data(context_name):
+    """Save the current lolomo data of the current selected profile"""
+    # Note: every profile has its root lolomo (that are also visible in the lhpuuidh-browse profiles cookies)
+    lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
     lolomo_root = lolomo_data['lolomo'][1]
     context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
     context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+    g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+    g.LOCAL_DB.set_value('lolomo_continue_watching_index', context_index, TABLE_SESSION)
+    g.LOCAL_DB.set_value('lolomo_continue_watching_id', context_id, TABLE_SESSION)
+
+
+def update_lolomo_context(context_name):
+    """Update the lolomo list by context"""
+    lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
+    context_index = g.LOCAL_DB.get_value('lolomo_continue_watching_index', '', TABLE_SESSION)
+    context_id = g.LOCAL_DB.get_value('lolomo_continue_watching_id', '', TABLE_SESSION)
 
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
     # The fourth parameter is like a request-id, but it doesn't seem to match to

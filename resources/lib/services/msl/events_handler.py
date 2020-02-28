@@ -124,7 +124,7 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
-            # api.update_lolomo_context('continueWatching')
+            api.update_lolomo_context('continueWatching')
             api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
@@ -184,8 +184,8 @@ class EventsHandler(threading.Thread):
 
         # Context location values can be easily viewed from tag data-ui-tracking-context
         # of a preview box in website html
-        play_ctx_location = 'WATCHNOW'  # We currently leave a fixed value, we leave support for future changes
-        # play_ctx_location = 'MyListAsGallery' if event_data['is_in_mylist'] else 'browseTitles'
+        # play_ctx_location = 'WATCHNOW'
+        play_ctx_location = 'MyListAsGallery' if event_data['is_in_mylist'] else 'browseTitles'
 
         # To now it is not mandatory, we leave support for future changes
         # if event_data['is_played_by_library']:
@@ -218,7 +218,8 @@ class EventsHandler(threading.Thread):
                 'preferUnletterboxed': True,  # Should be set equal to the manifest request
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
-                    # 'lolomo_id': g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION),  # not mandatory
+                    # Add 'lolomo_id' seems to prevent failure of the 'refreshListByContext' request
+                    'lolomo_id': g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION),  # not mandatory
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
                     'request_id': event_data['request_id'],
