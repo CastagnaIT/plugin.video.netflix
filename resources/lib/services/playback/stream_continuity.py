@@ -96,6 +96,12 @@ class StreamContinuityManager(PlaybackActionManager):
         #       otherwise Kodi reacts strangely if only one value of these is restored
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
+        if player_stream is None:
+            # I don't know the cause:
+            # Very rarely can happen that Kodi starts the playback with the subtitles enabled,
+            # but after some seconds subtitles become disabled, and 'currentsubtitle' of player_state data become 'None'
+            # Then _is_stream_value_equal() throw error. We do not handle it as a setting change from the user.
+            return
         is_sub_stream_equal = self._is_stream_value_equal(current_stream, player_stream)
 
         current_sub_enabled = self.current_streams['subtitleenabled']
