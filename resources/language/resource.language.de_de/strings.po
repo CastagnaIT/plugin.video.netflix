@@ -963,3 +963,19 @@ msgstr "Um den Inhalt für {} abzuspielen ist die Eingabe Ihrer PIN erforderlich
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Up Next Addon installieren"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] 'Gesehen'-Status der Videos mit Netflix synchronisieren"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "'Gesehen'-Status ändern (lokal)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Als gesehen markiert|Als nicht gesehen markiert|'Gesehen'-Status von Netflix wiederhergestellt"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next Benachrichtigungen (nächstes Video ansehen)"
