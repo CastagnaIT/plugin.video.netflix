@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-27 10:54+0100\n"
+"PO-Revision-Date: 2020-02-27 00:05+0100\n"
 "Last-Translator: arvvoid <>\n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -211,7 +211,7 @@ msgstr "Ocjena je uklonjena|Ocijenili ste s palac dolje|Ocijenili ste s palac pr
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Postoji problem s dodatkom InputStream Adaptive ili bibliotekom Widevine. Možda nedostaje ili nije omogućena, operacija će se otkazati."
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -319,7 +319,7 @@ msgstr "Počnite tek nakon 5 minuta mirovanja"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Uvijek prikaži informacije o kodeku tijekom reprodukcije videozapisa"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -351,7 +351,7 @@ msgstr "Pauzirajte prilikom preskakanja"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
-msgstr "Prisilna podrška HDCP 2.2 (omogući 4K sadržaj)"
+msgstr "Prisilno koristi HDCP 2.2 video zapise"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -643,7 +643,7 @@ msgstr "Godina izdavanja"
 
 msgctxt "#30154"
 msgid "Netflix configuration wizard"
-msgstr "Konfiguracija dodatka Netflix"
+msgstr "Netflix konfiguracijski čarobnjak"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
@@ -651,15 +651,15 @@ msgstr "Imate li Netflix Premium račun?"
 
 msgctxt "#30156"
 msgid "UNUSED"
-msgstr ""
+msgstr "NEKORIŠTENO"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "Konfiguracija je završena"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Pokrenite čarobnjaka za konfiguraciju"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -960,3 +960,24 @@ msgstr "Ograniči prema razini zrelosti"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instaliraj Up Next dodatak"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sinkroniziraj status gledanja videozapisa s Netflixom"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Promjeni status gledanja (lokalno)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Označeno kao gledano|Označeno kao nepogledano|Vraćen Netflixov status gledanja"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next obavijesti (pogledajte sljedeći video)"
+
