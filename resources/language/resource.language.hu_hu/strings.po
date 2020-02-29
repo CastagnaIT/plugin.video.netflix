@@ -650,7 +650,7 @@ msgstr "Van Netflix prémium hozzáférésed?"
 
 msgctxt "#30156"
 msgid "UNUSED"
-msgstr "Nem használt"
+msgstr ""
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
