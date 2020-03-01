@@ -414,29 +414,33 @@ def get_system_platform():
 
 class GetKodiVersion(object):
     """Get the kodi version, git date, stage name"""
+    # Examples of some types of supported strings:
+    # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
+    # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
 
     def __init__(self):
-        # Examples of some types of supported strings:
-        # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
-        # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
+        self._build_version = xbmc.getInfoLabel('System.BuildVersion')
+
+    @property
+    def version(self):
         import re
-        build_version_str = xbmc.getInfoLabel('System.BuildVersion')
-        re_kodi_version = re.search('\\d+\\.\\d+?(?=(\\s|-))', build_version_str)
-        if re_kodi_version:
-            self.version = re_kodi_version.group(0)
-        else:
-            self.version = 'Unknown'
-        re_git_date = re.search('(Git:)(\\d+?(?=(-|$)))', build_version_str)
-        if re_git_date and len(re_git_date.groups()) >= 2:
-            self.date = int(re_git_date.group(2))
-        else:
-            self.date = 0
-        re_stage = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', build_version_str)
-        if not re_stage:
-            re_stage = re.search('^(.+)(-\\d+\\.\\d+)', build_version_str)
-            self.stage = re_stage.group(1) if re_stage else ''
-        else:
-            self.stage = re_stage.group(2) if re_stage else ''
+        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self._build_version)
+        return result.group(0) if result else 'Unknown'
+
+    @property
+    def date(self):
+        import re
+        result = re.search('(Git:)(\\d+?(?=(-|$)))', self._build_version)
+        return int(result.group(2)) if result and len(result.groups()) >= 2 else None
+
+    @property
+    def stage(self):
+        import re
+        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self._build_version)
+        if not result:
+            result = re.search('^(.+)(-\\d+\\.\\d+)', self._build_version)
+            return result.group(1) if result else ''
+        return result.group(2) if result else ''
 
 
 def update_cache_videoid_runtime(window_cls):
