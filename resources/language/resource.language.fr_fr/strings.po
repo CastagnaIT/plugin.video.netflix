@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
-"PO-Revision-Date: 2019-08-17 02:45+0000\n"
+"PO-Revision-Date: 2020-02-29 17:45+0000\n"
 "Last-Translator: locutus32\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
@@ -210,7 +210,7 @@ msgstr "Évaluation supprimée|Évaluation négative|Évaluation positive"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Il y a un problème avec l'addon InputStrean Adaptive ou avec la librairie Widevine. L'addon ou la librairie sont manquants ou désactivés, l'opération va être annulée."
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -318,7 +318,7 @@ msgstr "Démarrer uniquement après 5 minutes d'inactivité"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Toujours afficher les informations concernant les codec durant la lecture"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -350,7 +350,7 @@ msgstr "Mettre en pause après avoir passé"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
-msgstr "Forcer l'utilisation du HDCP 2.2 (permet l'accès au contenu 4K)"
+msgstr "Forcer l'utilisation du HDCP 2.2"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -654,11 +654,11 @@ msgstr ""
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "Configuration terminée"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Utiliser l'assistant de configuration de l'addon"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -959,3 +959,23 @@ msgstr "Accès restreint à une certaine catégorie d'âge"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Le contenu pour {} nécessite le code PIN pour être visionné."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Installer l'addon Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Synchroniser le status \"vu\" des vidéos avec Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Changer le status (localement)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Marqué comme vu|Marquer comme non-vu|Restaurer le status de Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notifications Up Next (regarder la vidéo suivante)"
