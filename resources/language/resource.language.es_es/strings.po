@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-01-24 01:45+0000\n"
-"Last-Translator: J.M. Pongilioni ('boblo' @ Kodi Forums) <djinn2k2@gmail.com>\n"
+"PO-Revision-Date: 2020-02-01 20:55+0001\n"
+"Last-Translator: J.M. Pongilioni ('boblo1') <djinn2k2@gmail.com>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -210,7 +210,7 @@ msgstr "Valoración eliminada|Valoraste con un pulgar abajo|Valoraste con un pul
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Hay un problema con el complemento InputStream Adaptive o la biblioteca Widevine. Quizás faltan o no están habilitadas, la operación se cancelará."
 
 msgctxt "#30047"
 msgid "Finally remove?"
@@ -350,7 +350,7 @@ msgstr "Pausar al omitir"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
-msgstr "Forzar soporte de HDCP 2.2 (habilita contenido 4K)"
+msgstr "Forzar transmisiones de vídeo HDCP 2.2"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -370,7 +370,7 @@ msgstr "Duración de los elementos en caché para los metadatos (días)"
 
 msgctxt "#30086"
 msgid "Invalidate entire cache on modification of My List"
-msgstr "Invalidar toda la caché al modificar Mi lista"
+msgstr "Anular toda la caché al modificar Mi lista"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -458,7 +458,7 @@ msgstr "La protección con PIN está desactivada."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr "Todo el contenido está protegido por un PIN."
+msgstr "Todo el contenido está protegido por PIN."
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -582,7 +582,7 @@ msgstr "Los servicios en segundo plano puede que no estén todavía disponibles 
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "Habilitar IPC sobre HTTP (usar al experimentar interrupciones en Addon Signals)"
+msgstr "Habilitar IPC sobre HTTP (usar cuando aparezcan mensajes de interrupciones en Addon Signals)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
@@ -642,7 +642,7 @@ msgstr "Año de lanzamiento"
 
 msgctxt "#30154"
 msgid "Netflix configuration wizard"
-msgstr "Configuración del complemento de Netflix"
+msgstr "Asistente de configuración de Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
@@ -654,11 +654,11 @@ msgstr ""
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "La configuración se ha completado"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Ejecutar asistente de configuración del complemento"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -750,7 +750,7 @@ msgstr "Ha ocurrido un problema con el inicio de sesión, es posible que tu cuen
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Deshabilitar subtítulos si no hay subtítulos forzados (sólo funciona si el reproductor de Kodi está establecido a subtítulos \"Sólo forzados\""
+msgstr "Deshabilitar subtítulos si no hay subtítulos forzados (sólo funciona si el reproductor de Kodi está establecido a subtítulos \"Sólo forzados\")"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -963,3 +963,19 @@ msgstr "El contenido para {} requerirá el PIN para iniciar la reproducción."
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Instalar complemento Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[En desarrollo] Sincronizar el estado de 'visto' de los vídeos con Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Cambiar el estado de 'visto' (localmente)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Marcado como visto|Marcado como no visto|Estado de 'visto' de Netflix restaurado"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notificaciones de Up Next (ver vídeo siguiente)"
