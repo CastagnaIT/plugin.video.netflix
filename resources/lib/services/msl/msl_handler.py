@@ -32,11 +32,10 @@ except NameError:  # Python 3
 
 class MSLHandler(object):
     """Handles session management and crypto for license, manifest and event requests"""
-    last_license_session_id = ''
     last_license_url = ''
-    last_license_release_url = ''
-    last_drm_context = ''
-    last_playback_context = ''
+    licenses_session_id = []
+    licenses_xid = []
+    licenses_release_url = []
 
     def __init__(self):
         super(MSLHandler, self).__init__()
@@ -200,10 +199,12 @@ class MSLHandler(object):
                                                                                           params,
                                                                                           'sessionId'),
                                                      g.get_esn())
-        # This xid must be used for any future request, until playback stops
+        # This xid must be used also for each future Event request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
-        self.last_license_session_id = sid
-        self.last_license_release_url = response[0]['links']['releaseLicense']['href']
+
+        self.licenses_xid.insert(0, xid)
+        self.licenses_session_id.insert(0, sid)
+        self.licenses_release_url.insert(0, response[0]['links']['releaseLicense']['href'])
 
         if self.msl_requests.msl_switch_requested:
             self.msl_requests.msl_switch_requested = False
@@ -226,21 +227,30 @@ class MSLHandler(object):
     @common.time_execution(immediate=True)
     def release_license(self, data=None):  # pylint: disable=unused-argument
         """Release the server license"""
-        common.debug('Requesting releasing license')
+        try:
+            # When UpNext is used a new video is loaded while another one is running and not yet released,
+            # so you need to take the right data of first added license
+            url = self.licenses_release_url.pop()
+            sid = self.licenses_session_id.pop()
+            xid = self.licenses_xid.pop()
 
-        params = [{
-            'url': self.last_license_release_url,
-            'params': {
-                'sessionId': self.last_license_session_id,
-                'xid': g.LOCAL_DB.get_value('xid', table=TABLE_SESSION)
-            },
-            'echo': 'sessionId'
-        }]
+            common.debug('Requesting releasing license')
+            params = [{
+                'url': url,
+                'params': {
+                    'sessionId': sid,
+                    'xid': xid
+                },
+                'echo': 'sessionId'
+            }]
 
-        response = self.msl_requests.chunked_request(ENDPOINTS['license'],
-                                                     self.msl_requests.build_request_data('/bundle', params),
-                                                     g.get_esn())
-        common.debug('License release response: {}', response)
+            response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+                                                         self.msl_requests.build_request_data('/bundle', params),
+                                                         g.get_esn())
+            common.debug('License release response: {}', response)
+        except IndexError:
+            # Example the supplemental media type have no license
+            common.debug('No license to release')
 
     def clear_user_id_tokens(self, data=None):  # pylint: disable=unused-argument
         """Clear all user id tokens"""
@@ -249,8 +259,6 @@ class MSLHandler(object):
     @common.time_execution(immediate=True)
     def __tranform_to_dash(self, manifest):
         self.last_license_url = manifest['links']['license']['href']
-        self.last_playback_context = manifest['playbackContextId']
-        self.last_drm_context = manifest['drmContextId']
         return convert_to_dash(manifest)
 
 
