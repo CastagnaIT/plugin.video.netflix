@@ -156,6 +156,8 @@ def update_lolomo_context(context_name):
     except Exception:  # pylint: disable=broad-except
         # I do not know the reason yet, but sometimes continues to return error 401,
         # making it impossible to update the bookmark position
+        if not common.is_debug_verbose():
+            return
         ui.show_notification(title=common.get_local_string(30105),
                              msg='An error prevented the update the lolomo context on netflix',
                              time=10000)
