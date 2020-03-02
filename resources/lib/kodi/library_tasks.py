@@ -13,6 +13,8 @@ from __future__ import absolute_import, division, unicode_literals
 import os
 import re
 
+import xbmcgui
+
 import resources.lib.api.shakti as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
@@ -21,6 +23,38 @@ from resources.lib.database.db_utils import (VidLibProp)
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item,
                                               FOLDER_MOVIES, FOLDER_TV, ILLEGAL_CHARACTERS)
+from resources.lib.kodi.ui import show_library_task_errors
+
+
+def execute_tasks(title, tasks, task_handler, **kwargs):
+    """
+    Run all tasks through task_handler and display a progress dialog in the GUI. Additional kwargs will be
+    passed into task_handler on each invocation.
+    Returns a list of errors that occured during execution of tasks.
+    """
+    errors = []
+    notify_errors = kwargs.pop('notify_errors', False)
+    progress = xbmcgui.DialogProgress()
+    progress.create(title)
+    for task_num, task in enumerate(tasks):
+        task_title = task.get('title', 'Unknown Task')
+        progress.update(percent=int(task_num * 100 / len(tasks)),
+                        line1=task_title)
+#        xbmc.sleep(25)
+        if progress.iscanceled():
+            break
+        if not task:
+            continue
+        try:
+            task_handler(task, **kwargs)
+        except Exception as exc:  # pylint: disable=broad-except
+            import traceback
+            common.error(traceback.format_exc())
+            errors.append({
+                'task_title': task_title,
+                'error': '{}: {}'.format(type(exc).__name__, exc)})
+    show_library_task_errors(notify_errors, errors)
+    return errors
 
 
 @common.time_execution(immediate=False)

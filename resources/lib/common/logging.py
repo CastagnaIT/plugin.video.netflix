@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
+from time import clock
+
 from future.utils import iteritems
 
 import xbmc
@@ -88,8 +90,7 @@ def error(msg, *args, **kwargs):
 
 def logdetails(func):
     """
-    Log decarator that is used to annotate methods & output everything to
-    the Kodi debug log
+    Log decarator that is used to annotate methods & output everything to the Kodi debug log
 
     :param delay: retry delay in sec
     :type delay: int
@@ -120,3 +121,44 @@ def logdetails(func):
 
     wrapped.__doc__ = func.__doc__
     return wrapped
+
+
+def time_execution(immediate):
+    """A decorator that wraps a function call and times its execution"""
+    # pylint: disable=missing-docstring
+    def time_execution_decorator(func):
+        @wraps(func)
+        def timing_wrapper(*args, **kwargs):
+            if not g.TIME_TRACE_ENABLED and not is_debug_verbose():
+                return func(*args, **kwargs)
+
+            g.add_time_trace_level()
+            start = clock()
+            try:
+                return func(*args, **kwargs)
+            finally:
+                execution_time = int((clock() - start) * 1000)
+                if immediate:
+                    debug('Call to {} took {}ms'
+                          .format(func.__name__, execution_time))
+                else:
+                    g.TIME_TRACE.append([func.__name__, execution_time,
+                                         g.time_trace_level])
+                g.remove_time_trace_level()
+        return timing_wrapper
+    return time_execution_decorator
+
+
+def log_time_trace():
+    """Write the time tracing info to the debug log"""
+    if not is_debug_verbose() and not g.TIME_TRACE_ENABLED:
+        return
+
+    time_trace = ['Execution time info for this run:\n']
+    g.TIME_TRACE.reverse()
+    for trace in g.TIME_TRACE:
+        time_trace.append(' ' * trace[2])
+        time_trace.append(format(trace[0], '<30'))
+        time_trace.append('{:>5} ms\n'.format(trace[1]))
+    debug(''.join(time_trace))
+    g.reset_time_trace()

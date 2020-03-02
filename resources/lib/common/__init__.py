@@ -18,6 +18,7 @@ from .storage import *
 from .fileops import *
 from .kodiops import *  # pylint: disable=redefined-builtin
 from .pathops import *
+from .device_utils import *  # pylint: disable=redefined-builtin
 from .misc_utils import *  # pylint: disable=redefined-builtin
 from .data_conversion import *  # pylint: disable=redefined-builtin
 from .uuid_device import *  # pylint: disable=redefined-builtin

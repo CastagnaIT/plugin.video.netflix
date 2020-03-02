@@ -14,8 +14,8 @@ import AddonSignals
 from resources.lib.globals import g
 import resources.lib.api.exceptions as apierrors
 
-from .logging import debug, error
-from .misc_utils import time_execution, run_threaded
+from .logging import debug, error, time_execution
+from .misc_utils import run_threaded
 
 try:  # Python 2
     unicode

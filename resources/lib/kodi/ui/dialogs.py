@@ -135,3 +135,10 @@ def show_addon_error_info(exc):
         show_error_info(title=common.get_local_string(30105),
                         message=': '.join((exc.__class__.__name__, unicode(exc))),
                         netflix_error=False)
+
+
+def show_library_task_errors(notify_errors, errors):
+    if notify_errors and errors:
+        xbmcgui.Dialog().ok(common.get_local_string(0),
+                            '\n'.join(['{} ({})'.format(err['task_title'], err['error'])
+                                       for err in errors]))

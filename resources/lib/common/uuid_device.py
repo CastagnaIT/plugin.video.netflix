@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from .logging import debug
-from .misc_utils import get_system_platform
+from .device_utils import get_system_platform
 
 try:  # Python 2
     unicode

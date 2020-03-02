@@ -14,13 +14,8 @@ import json
 import xbmc
 
 from resources.lib.globals import g
-
 from .logging import debug
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 LIBRARY_PROPS = {
     'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
@@ -81,9 +76,7 @@ def json_rpc_multi(method, list_params=None):
 
 
 def update_library_item_details(dbtype, dbid, details):
-    """
-    Update properties of an item in the Kodi library
-    """
+    """Update properties of an item in the Kodi library"""
     method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
     params = {'{}id'.format(dbtype): dbid}
     params.update(details)
@@ -91,8 +84,7 @@ def update_library_item_details(dbtype, dbid, details):
 
 
 def get_library_items(dbtype, video_filter=None):
-    """Return a list of all items in the Kodi library that are of type
-    dbtype (either movie or episode)"""
+    """Return a list of all items in the Kodi library that are of type dbtype (either movie or episode)"""
     method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
     params = {'properties': ['file']}
     if video_filter:
@@ -128,17 +120,14 @@ def get_local_string(string_id):
 
 
 def run_plugin_action(path, block=False):
-    """Create an action that can be run with xbmc.executebuiltin in order
-    to run a Kodi plugin specified by path. If block is True (default=False),
-    the execution of code will block until the called plugin has finished
-    running."""
+    """Create an action that can be run with xbmc.executebuiltin in order to run a Kodi plugin specified by path.
+    If block is True (default=False), the execution of code will block until the called plugin has finished running."""
     return 'XBMC.RunPlugin({}, {})'.format(path, block)
 
 
 def run_plugin(path, block=False):
     """Run a Kodi plugin specified by path. If block is True (default=False),
-    the execution of code will block until the called plugin has finished
-    running."""
+    the execution of code will block until the called plugin has finished running."""
     xbmc.executebuiltin(run_plugin_action(path, block))
 
 
@@ -169,17 +158,13 @@ def get_current_kodi_profile_name(no_spaces=True):
 
 
 def get_kodi_audio_language():
-    """
-    Return the audio language from Kodi settings
-    """
+    """Return the audio language from Kodi settings"""
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
     return convert_language_iso(audio_language['value'])
 
 
 def get_kodi_subtitle_language():
-    """
-    Return the subtitle language from Kodi settings
-    """
+    """Return the subtitle language from Kodi settings"""
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
@@ -244,33 +229,32 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     return locale_code
 
 
-def is_internet_connected():
-    """
-    Check internet status
-    :return: True if connected
-    """
-    if not xbmc.getCondVisibility('System.InternetState'):
-        # Double check when Kodi say that it is not connected
-        # i'm not sure the InfoLabel will work properly when Kodi was started a few seconds ago
-        # using getInfoLabel instead of getCondVisibility often return delayed results..
-        return _check_internet()
-    return True
+class GetKodiVersion(object):
+    """Get the kodi version, git date, stage name"""
+    # Examples of some types of supported strings:
+    # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
+    # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
 
+    def __init__(self):
+        self._build_version = xbmc.getInfoLabel('System.BuildVersion')
 
-def _check_internet():
-    """
-    Checks via socket if the internet works (in about 0,7sec with no timeout error)
-    :return: True if connected
-    """
-    import socket
-    for timeout in [1, 1]:
-        try:
-            socket.setdefaulttimeout(timeout)
-            host = socket.gethostbyname("www.google.com")
-            s = socket.create_connection((host, 80), timeout)
-            s.close()
-            return True
-        except Exception:  # pylint: disable=broad-except
-            # Error when is not reachable
-            pass
-    return False
+    @property
+    def version(self):
+        import re
+        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self._build_version)
+        return result.group(0) if result else 'Unknown'
+
+    @property
+    def date(self):
+        import re
+        result = re.search('(Git:)(\\d+?(?=(-|$)))', self._build_version)
+        return int(result.group(2)) if result and len(result.groups()) >= 2 else None
+
+    @property
+    def stage(self):
+        import re
+        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self._build_version)
+        if not result:
+            result = re.search('^(.+)(-\\d+\\.\\d+)', self._build_version)
+            return result.group(1) if result else ''
+        return result.group(2) if result else ''

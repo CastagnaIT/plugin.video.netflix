@@ -21,7 +21,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item, get_item,
                                               ItemNotFound, FOLDER_MOVIES, FOLDER_TV, library_path)
-from resources.lib.kodi.library_tasks import compile_tasks
+from resources.lib.kodi.library_tasks import compile_tasks, execute_tasks
 
 
 def update_kodi_library(library_operation):
@@ -91,11 +91,11 @@ def export_new_episodes(videoid, silent=False, nfo_settings=None):
 def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_settings=None):
     """Execute library tasks for videoid and show errors in foreground"""
     for task_handler in task_handlers:
-        common.execute_tasks(title=title,
-                             tasks=compile_tasks(videoid, task_handler, nfo_settings),
-                             task_handler=task_handler,
-                             notify_errors=True,
-                             library_home=library_path())
+        execute_tasks(title=title,
+                      tasks=compile_tasks(videoid, task_handler, nfo_settings),
+                      task_handler=task_handler,
+                      notify_errors=True,
+                      library_home=library_path())
 
         # Exclude update operations
         if task_handlers != [remove_item, export_item]:
