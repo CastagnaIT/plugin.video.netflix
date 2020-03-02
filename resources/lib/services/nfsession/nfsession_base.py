@@ -72,10 +72,9 @@ class NFSessionBase(object):
         common.info('Initialized new session')
 
     def update_session_data(self, old_esn=None):
-        old_esn = old_esn or g.get_esn()
         self.set_session_header_data()
         cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(old_esn)
+        _update_esn(g.get_esn() if old_esn is None else old_esn)
 
     def set_session_header_data(self):
         try:

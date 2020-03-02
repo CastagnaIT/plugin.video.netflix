@@ -314,7 +314,7 @@ class GlobalVariables(object):
         """Get the generated esn or if set get the custom esn"""
         from resources.lib.database.db_utils import TABLE_SESSION
         custom_esn = g.ADDON.getSetting('esn')
-        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
+        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate
