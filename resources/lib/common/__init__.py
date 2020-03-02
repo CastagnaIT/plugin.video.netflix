@@ -14,7 +14,6 @@ from .logging import *
 from .ipc import *  # pylint: disable=redefined-builtin
 from .videoid import *  # pylint: disable=redefined-builtin
 from .credentials import *
-from .storage import *
 from .fileops import *
 from .kodiops import *  # pylint: disable=redefined-builtin
 from .pathops import *
