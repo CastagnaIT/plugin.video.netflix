@@ -75,7 +75,7 @@ def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False,
         # Short information about future release of tv show season or other
         infos_copy['plot'] += '[CR][COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
     if handle_highlighted_title:
-        add_highlighted_title(list_item, videoid, infos)
+        add_highlighted_title(list_item, videoid, infos_copy)
     list_item.setInfo('video', infos_copy)
     return infos_copy
 
