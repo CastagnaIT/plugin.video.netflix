@@ -246,13 +246,28 @@ def video_list_sorted(context_name, context_id=None, perpetual_range_start=None,
 
 @common.time_execution(immediate=False)
 def custom_video_list(video_ids, custom_paths=None):
-    """Retrieve a video list which contains the videos specified by
-    video_ids"""
+    """Retrieve a video list which contains the videos specified by video_ids"""
     common.debug('Requesting custom video list with {} videos', len(video_ids))
     return CustomVideoList(common.make_call(
         'path_request',
         build_paths(['videos', video_ids],
                     custom_paths if custom_paths else VIDEO_LIST_PARTIAL_PATHS)))
+
+
+@common.time_execution(immediate=False)
+def chunked_custom_video_list(chunked_video_list):
+    """Retrieve a video list which contains the videos specified by video_ids"""
+    chunked_video_ids = chunked_video_list['video_ids']
+    common.debug('Requesting custom video list with {} chunked video list', len(chunked_video_ids))
+    merged_response = {}
+    for video_ids in chunked_video_ids:
+        path_response = common.make_call('path_request', build_paths(['videos', video_ids], VIDEO_LIST_PARTIAL_PATHS))
+        common.merge_dicts(path_response, merged_response)
+
+    perpetual_range_selector = chunked_video_list['perpetual_range_selector']
+    if perpetual_range_selector:
+        merged_response.update(perpetual_range_selector)
+    return CustomVideoList(merged_response)
 
 
 @common.time_execution(immediate=False)
