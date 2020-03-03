@@ -176,13 +176,14 @@ class DirectoryBuilder(object):
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
         """List all items that are exported to the Kodi library"""
-        # pylint: disable=unused-argument
-        library_contents = library.list_contents()
-        if library_contents:
-            listings.build_video_listing(api.custom_video_list(library_contents), g.MAIN_MENU_ITEMS['exported'])
+        library_contents = library.list_contents(self.perpetual_range_start)
+        if library_contents['video_ids']:
+            listings.build_video_listing(api.chunked_custom_video_list(library_contents),
+                                         g.MAIN_MENU_ITEMS['exported'],
+                                         pathitems)
             _handle_endofdirectory(self.dir_update_listing)
         else:
-            ui.show_notification(common.get_local_string(30013))
+            ui.show_notification(common.get_local_string(30111))
             xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
     @common.time_execution(immediate=False)

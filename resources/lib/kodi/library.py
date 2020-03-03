@@ -18,6 +18,7 @@ import resources.lib.api.shakti as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
+from resources.lib.api.paths import MAX_PATH_REQUEST_SIZE
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item, get_item,
                                               ItemNotFound, FOLDER_MOVIES, FOLDER_TV, library_path)
@@ -44,10 +45,33 @@ def update_kodi_library(library_operation):
     return kodi_library_update_wrapper
 
 
-def list_contents():
-    """Return a list of all video IDs (movies, shows)
-    contained in the library"""
-    return g.SHARED_DB.get_all_video_id_list()
+def list_contents(perpetual_range_start):
+    """Return a chunked list of all video IDs (movies, shows) contained in the library"""
+    perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
+    number_of_requests = 2
+    video_id_list = g.SHARED_DB.get_all_video_id_list()
+    count = 0
+    results = []
+    perpetual_range_selector = {}
+
+    for index, chunk in enumerate(common.chunked_list(video_id_list, MAX_PATH_REQUEST_SIZE)):
+        if index >= perpetual_range_start:
+            if number_of_requests == 0:
+                if len(video_id_list) > count:
+                    # Exists others elements
+                    perpetual_range_selector['_perpetual_range_selector'] = {'next_start': perpetual_range_start + 1}
+                break
+            results.append(chunk)
+            number_of_requests -= 1
+        count += len(chunk)
+
+    if perpetual_range_start > 0:
+        previous_start = perpetual_range_start - 1
+        if '_perpetual_range_selector' in perpetual_range_selector:
+            perpetual_range_selector['_perpetual_range_selector']['previous_start'] = previous_start
+        else:
+            perpetual_range_selector['_perpetual_range_selector'] = {'previous_start': previous_start}
+    return {'video_ids': results, 'perpetual_range_selector': perpetual_range_selector}
 
 
 def is_in_library(videoid):
