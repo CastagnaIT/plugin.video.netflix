@@ -145,6 +145,11 @@ def compare_dicts(dict_a, dict_b, excluded_keys=None):
     return all(dict_a[k] == dict_b[k] for k in dict_a if k not in excluded_keys)
 
 
+def chunked_list(seq, chunk_len):
+    for start in range(0, len(seq), chunk_len):
+        yield seq[start:start+chunk_len]
+
+
 def any_value_except(mapping, excluded_keys):
     """Return a random value from a dict that is not associated with excluded_key.
     Raises StopIteration if there are no other keys than excluded_key"""
