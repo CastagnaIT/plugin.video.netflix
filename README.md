@@ -30,7 +30,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Possibility of playback at 1080P and 4K (see high resolutions table)
 - Support of hi-res audio Dolby Digital Plus and Dolby Digital Atmos (requires a premium account)
 - Support of HDR / HDR10 only on capable android devices (requires a premium account)
-- Support of Dolby Vision only on Kodi 19.x and capable android devices (requires a premium account)
+- Support of Dolby Vision only on capable android devices (requires a premium account)
 - Support integration with Up Next add-on (proposes to play the next episode automatically)
 
 ## Installation & Updates
