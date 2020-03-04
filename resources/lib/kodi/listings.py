@@ -92,7 +92,6 @@ def _create_profile_item(profile_guid, is_active, html_parser):
         description.append(common.get_local_string(30221))
     if is_kids:
         description.append(common.get_local_string(30222))
-    enc_profile_name = profile_name.encode('utf-8')
     list_item = list_item_skeleton(
         label=unescaped_profile_name,
         icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid),
@@ -100,7 +99,7 @@ def _create_profile_item(profile_guid, is_active, html_parser):
     list_item.select(is_active)
     autologin_url = common.build_url(
         pathitems=['save_autologin', profile_guid],
-        params={'autologin_user': enc_profile_name},
+        params={'autologin_user': unescaped_profile_name.encode('utf-8')},
         mode=g.MODE_ACTION)
     list_item.addContextMenuItems(
         [(common.get_local_string(30053),
