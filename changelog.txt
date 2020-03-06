@@ -1,3 +1,28 @@
+v0.16.4 (2020-01-28)
+-Up Next is now supported only from version 1.1.0 and up
+-Added czech language
+-Added "because you liked" to recommendations menu
+-Added Up Next install option
+-Implemented Up Next feature, end time information
+-Implemented Up Next feature, fast start next video
+-Fixed the error "Request failed validation during key exchange"
+-Fixed an issue that causing opening Up Next notification in wrong position
+-Fixed html tags in profiles names
+-Fixed STRM files resume workaround
+-Fixed retrieving infolabels from library on python 3
+-Managed user id token key expiration
+-Manifest is saved to hdd with enabled verbose debugging only
+-Updated de, es, hu, it translations
+-Some minor changes, fixes
+
+v0.16.3 (2020-01-18)
+-Fixed an issue that causing addon freeze on export/update to library
+-Fixed an regression issue that causing http error 401
+-Fixed an issue that causing unicodedecode error at startup
+-Fixed an issue that in some cases prevented the export of a tv show season
+-Generally optimized addon speed
+-Many improvements to the code
+
 v0.16.2 (2020-01-07)
 -Improved add-on startup
 -Improved loading of profiles list
