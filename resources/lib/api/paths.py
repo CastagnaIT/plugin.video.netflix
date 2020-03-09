@@ -42,7 +42,7 @@ VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
       'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'dpSupplementalMessage', 'watched', 'delivery']],
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS

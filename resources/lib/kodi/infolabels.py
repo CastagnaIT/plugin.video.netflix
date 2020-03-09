@@ -73,7 +73,17 @@ def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False,
         list_item.addStreamInfo(stream_type, quality_infos)
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
-        infos_copy['plot'] += '[CR][COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
+        if infos_copy['plot']:
+            infos_copy['plot'] += '[CR][CR]'
+        infos_copy['plot'] += '[COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
+    # The 'sequiturEvidence' dict can be of type 'hook' or 'watched'
+    if (item.get('sequiturEvidence') and
+            item['sequiturEvidence'].get('type') == 'hook' and
+            item['sequiturEvidence'].get('value')):
+        # Short information about the actors career/awards and similarities/connections with others films or tv shows
+        if infos_copy['plot']:
+            infos_copy['plot'] += '[CR][CR]'
+        infos_copy['plot'] += '[COLOR green]{}[/COLOR]'.format(item['sequiturEvidence']['value']['text'])
     if handle_highlighted_title:
         add_highlighted_title(list_item, videoid, infos_copy)
     list_item.setInfo('video', infos_copy)
