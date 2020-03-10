@@ -11,6 +11,7 @@
     <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
     <setting label="30015" type="lsep"/><!--Other options-->
     <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
+    <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
     <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
   </category>
   <category label="30025"><!--Library-->

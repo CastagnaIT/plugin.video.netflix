@@ -72,23 +72,30 @@ def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False,
         list_item.setProperty('isFolder', 'true')
     for stream_type, quality_infos in iteritems(quality_infos):
         list_item.addStreamInfo(stream_type, quality_infos)
+    _add_supplemental_plot_info(item, infos_copy)
+    if handle_highlighted_title:
+        add_highlighted_title(list_item, videoid, infos_copy)
+    list_item.setInfo('video', infos_copy)
+    return infos_copy
+
+
+def _add_supplemental_plot_info(item, infos_copy):
+    """Add supplemental info to plot description"""
+    color_index = g.ADDON.getSettingInt('supplemental_info_color')
+    suppl_info = []
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
-        if infos_copy['plot']:
-            infos_copy['plot'] += '[CR][CR]'
-        infos_copy['plot'] += '[COLOR green]{}[/COLOR]'.format(item['dpSupplementalMessage'])
+        suppl_info.append(item['dpSupplementalMessage'])
     # The 'sequiturEvidence' dict can be of type 'hook' or 'watched'
     if (item.get('sequiturEvidence') and
             item['sequiturEvidence'].get('type') == 'hook' and
             item['sequiturEvidence'].get('value')):
         # Short information about the actors career/awards and similarities/connections with others films or tv shows
-        if infos_copy['plot']:
-            infos_copy['plot'] += '[CR][CR]'
-        infos_copy['plot'] += '[COLOR green]{}[/COLOR]'.format(item['sequiturEvidence']['value']['text'])
-    if handle_highlighted_title:
-        add_highlighted_title(list_item, videoid, infos_copy)
-    list_item.setInfo('video', infos_copy)
-    return infos_copy
+        suppl_info.append(item['sequiturEvidence']['value']['text'])
+    suppl_text = '[CR][CR]'.join(suppl_info)
+    if suppl_text and infos_copy['plot']:
+        infos_copy['plot'] += '[CR][CR]'
+    infos_copy['plot'] += _colorize_text(True, color_index, suppl_text)
 
 
 def get_art(videoid, item, raw_data=None):

@@ -980,3 +980,6 @@ msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr ""
 
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr ""
