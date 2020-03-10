@@ -36,6 +36,11 @@ class MSLRequests(MSLRequestBuilder):
     def __init__(self, msl_data=None):
         super(MSLRequests, self).__init__()
         self.session = requests.session()
+        self.session.headers.update({
+            'User-Agent': common.get_user_agent(),
+            'Content-Type': 'text/plain',
+            'Accept': '*/*'
+        })
         self._load_msl_data(msl_data)
         self.msl_switch_requested = False
 
