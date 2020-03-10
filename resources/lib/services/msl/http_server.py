@@ -41,6 +41,11 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         """Loads the licence for the requested resource"""
         try:
+            url_parse = urlparse(self.path)
+            common.debug('Handling HTTP POST IPC call to {}', url_parse.path)
+            if '/license' not in url_parse:
+                self.send_response(404)
+                return
             length = int(self.headers.get('content-length', 0))
             data = self.rfile.read(length).decode('utf-8').split('!')
             b64license = self.server.msl_handler.get_license(
@@ -56,7 +61,12 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         """Loads the XML manifest for the requested resource"""
         try:
-            params = parse_qs(urlparse(self.path).query)
+            url_parse = urlparse(self.path)
+            common.debug('Handling HTTP GET IPC call to {}', url_parse.path)
+            if '/manifest' not in url_parse:
+                self.send_response(404)
+                return
+            params = parse_qs(url_parse.query)
             data = self.server.msl_handler.load_manifest(int(params['id'][0]))
             self.send_response(200)
             self.send_header('Content-type', 'application/xml')
