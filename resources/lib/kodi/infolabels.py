@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import copy
-import re
 
 from future.utils import iteritems, itervalues
 
@@ -36,6 +35,8 @@ JSONRPC_MAPPINGS = {
     'showtitle': 'tvshowtitle',
     'userrating': 'rating'
 }
+
+COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
 
 
 def get_info(videoid, item, raw_data):
@@ -334,30 +335,26 @@ def _sanitize_infos(details):
 
 def add_highlighted_title(list_item, videoid, infos):
     """Highlight menu item title when the videoid is contained in my-list"""
-    highlight_index = g.ADDON.getSettingInt('highlight_mylist_titles')
-    if not highlight_index:
+    color_index = g.ADDON.getSettingInt('highlight_mylist_titles')
+    if not color_index:
         return
-    highlight_color = ['black', 'blue', 'red', 'green', 'white', 'yellow'][highlight_index]
-    remove_color = videoid not in api.mylist_items()
+    apply_color = videoid in api.mylist_items()
     if list_item.getProperty('isFolder') == 'true':
-        updated_title = _colorize_title(g.py2_decode(list_item.getVideoInfoTag().getTitle()),
-                                        highlight_color,
-                                        remove_color)
+        updated_title = _colorize_text(apply_color,
+                                       color_index,
+                                       g.py2_decode(list_item.getVideoInfoTag().getTitle()))
         list_item.setLabel(updated_title)
         infos['title'] = updated_title
     else:
         # When menu item is not a folder 'label' is replaced by 'title' property of infoLabel
-        infos['title'] = _colorize_title(infos['title'], highlight_color, remove_color)
+        infos['title'] = _colorize_text(apply_color,
+                                        color_index,
+                                        infos['title'])
 
 
-def _colorize_title(text, color, remove_color=False):
-    matches = re.match(r'(\[COLOR\s.+\])(.*)(\[/COLOR\])', text)
-    if remove_color:
-        if matches:
-            return matches.groups()[1]
-    else:
-        if not matches:
-            return '[COLOR {}]{}[/COLOR]'.format(color, text)
+def _colorize_text(apply_color, color_index, text):
+    if apply_color and COLORS[color_index]:
+        return '[COLOR {}]{}[/COLOR]'.format(COLORS[color_index], text)
     return text
 
 
