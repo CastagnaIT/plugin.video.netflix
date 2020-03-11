@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Onjuiste PIN"
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Zoeken"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Geen seizoenen beschikbaar"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Afspeelfout"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream niet gevonden"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Algemeen"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Tracking"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive instellingen…"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Gebruik altijd de originele titel bij het exporteren"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -242,9 +232,7 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Verwissel van account"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -258,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Ouderlijktoezicht"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "niewe afleveringen werden toegevoegd in de bibliotheek"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -350,9 +336,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Cache time-to-live voor metadata (dagen)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Verwijder volledige cache bij wijzigingen van Mijn Lijst"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -518,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Toegekende beoordeling van {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Nog geen titles..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

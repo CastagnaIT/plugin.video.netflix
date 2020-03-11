@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Il PIN è errato. Riprova."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Ricerca"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Nessuna stagione disponibile"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Errore di riproduzione"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Addon InputStream mancante"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Generale"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr ""
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Configurazione InputStream Adaptive..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Utilizza sempre il titolo originale"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -242,6 +232,8 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
+# Unused 30059
+
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
 msgstr "Abilita HEVC (4k per Android/HDR/DolbyVision)"
@@ -254,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Filtro famiglia"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "nuovi episodi aggiunti alla libreria"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -346,9 +336,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Mantieni metadati in Cache per (giorni)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Invalida l'intera cache quando 'La mia lista' viene modificata"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -514,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Punteggio assegnato di {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Per adesso non ci sono ancora dei titoli contenuti..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "メールアドレス"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN誤り、確認してください"
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "検索"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "見れるシーズンがありません。"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "再生エラー"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "インプットストリームがありませんね"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "一般設定"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "トラッキング"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "インプットストリームアドオン設定"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "エクスポートの際、オリジナルタイトルを使用"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -242,9 +232,7 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "別のアカウントへ"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -258,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "ペアレンタルコントロール"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "新エピソードをライブラリに追加しました。"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -350,9 +336,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "メタデータのキャッシュ保存期間(日)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "マイリストが変更されたキャッシュを無効にする。"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -518,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "{}の評価により授与しました。"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "そんなタイトルはまだ。。。"
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

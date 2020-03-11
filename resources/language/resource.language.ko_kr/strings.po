@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN이 틀렸으니, 다시 해보십시오."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "검색"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "볼 수 있는 시즌이 없습니다."
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "재생 오류"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream 애드온이 없군요."
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "일반설정"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "추적"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream 애드온 설정"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "내보낼 때 항상 원래 제목 사용하기"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -242,9 +232,7 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "다른 계정으로"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -258,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "부모의 통제"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "새 에피소드가 라이브러리에 추가되었습니다."
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -350,9 +336,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "찜한 것들을 변경하면 캐쉬를 무효화합니다."
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -518,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "{}의 평가로 상을 받았습니다."
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "그런 타이틀은 아직..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

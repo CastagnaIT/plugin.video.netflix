@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-Mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN ungültig. Bitte versuchen Sie es nochmal."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Suche"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Keine Staffeln verfügbar"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Fehler beim Abspielen"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream-Addon nicht gefunden"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Allgemein"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Nachverfolgung"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive Einstellungen..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Immer den Originaltitel beim Export nutzen"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -242,9 +232,7 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Accounts wechseln"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -258,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Kindersicherung"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "neue Folgen zur Bibliothek hinzugefügt"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -350,9 +336,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Time-to-live für Metadaten Cache-Einträge (Tage)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Gesamten Cache bei Änderungen an Meine Liste invalidieren"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -518,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Mit {} bewertet"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "(Noch) keine enthaltenen Titel..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

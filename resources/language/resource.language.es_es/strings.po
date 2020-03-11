@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN incorrecto. Inténtalo de nuevo."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Buscar"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "No hay temporadas disponibles"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Error al reproducir"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Falta el complemento InputStream"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr ""
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Seguimiento"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Ajustes de InputStream Adaptive..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Usar siempre el título original al exportar"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -243,9 +233,7 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Cambiar de cuenta"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -259,9 +247,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Controles parentales"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "nuevos espisodios añadidos a la biblioteca"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -351,9 +337,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Duración de los elementos en caché para los metadatos (días)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Anular toda la caché al modificar Mi lista"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -519,9 +503,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Valoración premiada de {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Todavía no contiene títulos..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

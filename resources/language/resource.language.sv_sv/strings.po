@@ -47,9 +47,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-post"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr ""
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -71,9 +69,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Sök"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Inga säsonger tillgängliga"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -139,9 +135,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Uppspelningsfel"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Saknar tillägget InputStream"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -151,9 +145,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr ""
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Spårning"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
