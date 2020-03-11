@@ -74,9 +74,9 @@ def update_profiles_data():
     parse_profiles(profiles_data)
 
 
-def activate_profile(profile_id):
-    """Activate the profile with the given ID"""
-    common.make_call('activate_profile', profile_id)
+def activate_profile(profile_guid):
+    """Activate the profile with the given GUID"""
+    common.make_call('activate_profile', profile_guid)
     if g.ADDON.getSettingBool('ProgressManager_enabled'):
         save_current_lolomo_data('continueWatching')
     g.CACHE.invalidate()

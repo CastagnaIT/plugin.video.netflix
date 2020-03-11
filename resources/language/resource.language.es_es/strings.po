@@ -220,45 +220,28 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "Exportado"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Actualizar BD"
 
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Actualización completada"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Error en la solicitud"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "No se puede completar la solicitud en este momento"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Inicio de sesión automático"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Habilitar inicio de sesión automático"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Perfil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
+msgid "Set for auto-selection"
 msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Seleccionar perfil en la lista de perfiles -> menú contextual"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "¡Inicio de sesión automático habilitado!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -648,9 +631,7 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "¿Tienes una cuenta Premium de Netflix?"
 
-msgctxt "#30156"
-msgid "UNUSED"
-msgstr ""
+# Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"

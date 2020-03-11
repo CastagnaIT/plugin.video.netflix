@@ -97,15 +97,15 @@ def _create_profile_item(profile_guid, is_active, html_parser):
         icon=g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid),
         description=', '.join(description))
     list_item.select(is_active)
-    autologin_url = common.build_url(
-        pathitems=['save_autologin', profile_guid],
-        params={'autologin_user': unescaped_profile_name.encode('utf-8')},
+    autoselect_profile_url = common.build_url(
+        pathitems=['autoselect_profile_set'],
+        params={'profile_name': unescaped_profile_name.encode('utf-8'),
+                'profile_guid': profile_guid},
         mode=g.MODE_ACTION)
-    list_item.addContextMenuItems(
-        [(common.get_local_string(30053),
-          'RunPlugin({})'.format(autologin_url))])
+    list_item.addContextMenuItems([(common.get_local_string(30056),
+                                    'RunPlugin({})'.format(autoselect_profile_url))])
     url = common.build_url(pathitems=['home'],
-                           params={'profile_id': profile_guid},
+                           params={'profile_guid': profile_guid},
                            mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 
