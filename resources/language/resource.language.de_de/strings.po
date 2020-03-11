@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Details zum Fehler wurden in die Kodi Logdatei geschrieben. Falls die Fehlermeldung keine Rückschlüsse auf die Ursache und mögliche Lösung des Fehlers zulässt oder der Fehler dauerhaft auftritt, melde den Fehler bitte über GitHub. Bitte liefere ein vollständiges Debug-Log mit deinem Fehler-Report (Option \"Debug Logging\" in den Kodi-Einstellungen aktivieren)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Bei der Ausführung des Addons trat folgender Fehler auf:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix Addon Fehler"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Inhaltsprofile"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Erweiterte Addon-Konfiguration"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Aktiviere VP9-Profile (deaktivieren wenn es Artefakte verursacht)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Falls du Kodi oder das Addon gerade erst gestartet hast, kann es sein, dass die Hintergrundservices noch nicht verfügbar sind. Versuche es in diesem Fall in einem kurzen Moment einfach nochmal."
 
 msgctxt "#30139"

@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Wtyczka dla usług VOD serwisu Netflix"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Niektóre części tego dodatku mogą być nielegalne w Twoim kraju - sprawdź przed instalacją zgodność z lokalnym prawem."
 
 msgctxt "#30001"
@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub. Podaj pełny dziennik debugowania wraz z raportem o błędzie (włącz \"Dziennikowanie debugowania\" w ustawieniach Kodi)"
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Dodatek napotkał następujący błąd:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Błąd dodatku Netflix"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Profile zawartości"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Zaawansowana konfiguracja dodatku"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Włącz profile VP9 (wyłącz jeśli powoduje artefakty)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Usługi w tle mogą nie być jeszcze dostępne, jeśli właśnie uruchomiłeś Kodi/dodatek. W takim przypadku spróbuj ponownie za chwilę."
 
 msgctxt "#30139"

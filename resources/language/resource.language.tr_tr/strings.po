@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Netflix VOD Hizmetleri Eklentisi"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Bu eklentinin bazı bölümleri ikamet ettiğiniz ülkede yasal olmayabilir - lütfen yüklemeden önce yerel yasalarınıza bakın."
 
 msgctxt "#30001"
@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen GitHub üzerinden bildirin. Lütfen hata raporunuzla birlikte tam bir hata ayıklama günlüğü sağlayın (Kodi ayarlarında \"Hata Ayıklama Günlüğü\"nü etkinleştirin)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Eklenti şu hatayla karşılaştı:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix Eklentisi Hatası"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "İçerik Profilleri"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Gelişmiş Eklenti Yapılandırması"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9 profillerini etkinleştir (yapay nesnelere neden oluyorsa devre dışı bırak)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Kodi/Eklenti'yi yeni başlattıysanız, arka plan hizmetleri henüz kullanılamayabilir. Bu durumda, biraz sonra tekrar deneyin."
 
 msgctxt "#30139"

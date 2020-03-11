@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Bekijk Netflix films en tvprogramma's in Kodi."
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren."
 
 msgctxt "#30001"
@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Een gedetaileerde foutmelding werd weggeschreven in het Kodi logboek. Als de foutmelding niet helpt bij het oplossen van het probleem, of the probleem blijft zich voordoen, gelieve deze fout te melden op GitHub. Voeg de volledige debug log toe aan je probleemrapport (schakel \"Debug logboek\" in in de Kodi instellingen)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Deze add-on ondervond de volgende fout:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix add-on fout"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Inhoudsprofielen"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Geavanceerde add-on configuratie"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9 profielen inschakelen (schakel dit uit bij schermartifacten)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "De achtergronddiensten zijn mogelijk nog niet beschikbaar als je net Kodi of de add-on hebt gestart. In dat geval, probeer zo meteen opnieuw."
 
 msgctxt "#30139"

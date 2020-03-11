@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr ""
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Extension Netflix SVoD"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Certaines parties de cette extension peuvent ne pas être légales dans votre pays de résidence - renseignez-vous avant de l'installer"
 
 msgctxt "#30001"
@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message d'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le via GitHub. Veuillez fournir un journal de débogage complet avec votre rapport d'erreur (activez \"Journalisation du débogage\" dans les paramètres Kodi)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "L'extension a rencontré l'erreur suivante : "
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Erreur de l'extension Netflix"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Profils de contenu"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Configuration avancée de l'extension"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Activer les profils VP9 (à désactiver en cas d'artefacts)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Les services d'arrière-plan peuvent ne pas être encore disponible si vous venez de démarrer Kodi ou l'extension. Dans ce cas, réessayez dans un instant."
 
 msgctxt "#30139"

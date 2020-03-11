@@ -407,11 +407,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Do protokolu Kodi byly zapsány podrobnosti o chybě. Pokud chybová zpráva neposkytuje návod, jak problém vyřešit, nebo tuto chybu nadále dostáváte, nahlaste ji prostřednictvím GitHubu. S chybovým hlášením zadejte úplný protokol ladění. (povolte \"Protokolování ladění\" v nastavení Kodi)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Doplňek zaznamenal následující chybu:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Chyba doplňku Netflix"
 
 msgctxt "#30106"
@@ -455,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Obsah profilů"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Pokročilá konfigurace doplňku"
 
 msgctxt "#30117"
@@ -541,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Povolit profily VP9 (vypnout, pokud způsobuje artefakty)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Pokud jste spustili Kodi a hned doplněk, nemusí být služby na pozadí ještě k dispozici. V tomto případě to zkuste za chvíli znovu."
 
 msgctxt "#30139"

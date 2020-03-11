@@ -22,11 +22,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Dodatak za Netflix VOD usluge"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Neki dijelovi ovog dodatka možda nisu legalni u vašoj zemlji prebivališta - prije instalacije provjerite lokalne zakone."
 
 msgctxt "#30001"
@@ -408,11 +408,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Pojedinosti o pogrešci zapisane su u Kodi logfile. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \"Debug Logging\" u Kodi postavkama)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Addon je naišao na sljedeću pogrešku:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Pogreška Netflix Addon-a"
 
 msgctxt "#30106"
@@ -456,7 +456,7 @@ msgid "Content Profiles"
 msgstr "Sadržajni profili"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Napredna konfiguracija Addon-a"
 
 msgctxt "#30117"
@@ -542,7 +542,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
 
 msgctxt "#30139"
