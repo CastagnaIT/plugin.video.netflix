@@ -221,45 +221,27 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "Izvezeno"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Ažurirajte DB"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Uspješno ažurirano"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Pogreška u zahtijevu"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Trenutačno nije moguće ispuniti zahtjev"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Automatska prijava"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Omogući automatsku prijavu"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "ID"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Odaberite profil na popisu profila -> kontekstni izbornik"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Omogućeno je automatsko prijavljivanje!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -649,9 +631,7 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Imate li Netflix Premium račun?"
 
-msgctxt "#30156"
-msgid "UNUSED"
-msgstr "NEKORIŠTENO"
+# Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"

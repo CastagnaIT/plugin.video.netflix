@@ -220,49 +220,27 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "Esportati"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Aggiorna DB"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Aggiornamento avvenuto con successo"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Richiesta fallita"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Non è stato possibile completare la richiesta"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Login Automatico"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Abilita l'accesso automatico"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profilo"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
+msgid "Set for auto-selection"
 msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Seleziona il profilo dalla lista profili -> menu contestuale"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Accesso automatico abilitato!"
-
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Cambia account"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -648,9 +626,7 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Hai un account Netflix Premium?"
 
-msgctxt "#30156"
-msgid "UNUSED"
-msgstr ""
+# Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"

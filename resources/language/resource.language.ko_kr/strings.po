@@ -220,45 +220,27 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "내보낸 것들"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "DB 새로고침"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "새로고침 성공"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "요청오류"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "실패했습니다."
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "자동로그인"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "자동로그인 켬"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "프로파일"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "아이디"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로파일 리스트에서 하나를 고르세요."
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "자동 로그인이 켜졌습니다!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
 msgctxt "#30059"
 msgid "Switch accounts"
@@ -648,9 +630,7 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Netflix프리미엄계정을 가지고 있나요?"
 
-msgctxt "#30156"
-msgid "UNUSED"
-msgstr ""
+# Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"

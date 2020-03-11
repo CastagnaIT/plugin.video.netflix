@@ -29,18 +29,22 @@ class AddonActionExecutor(object):
         """Perform account logout"""
         api.logout()
 
-    def save_autologin(self, pathitems):
-        """Save autologin data"""
-        try:
-            g.settings_monitor_suspend(True)
-            g.ADDON.setSetting('autologin_user', self.params['autologin_user'])
-            g.ADDON.setSetting('autologin_id', pathitems[1])
-            g.ADDON.setSetting('autologin_enable', 'true')
-            g.settings_monitor_suspend(False)
-        except (KeyError, IndexError):
-            common.error('Cannot save autologin - invalid params')
-        g.CACHE.invalidate()
-        common.refresh_container()
+    def autoselect_profile_set(self, pathitems):  # pylint: disable=unused-argument
+        """Save the GUID for profile auto-selection"""
+        g.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
+        g.settings_monitor_suspend(True)
+        g.ADDON.setSetting('autoselect_profile_name', self.params['profile_name'])
+        g.ADDON.setSettingBool('autoselect_profile_enabled', True)
+        g.settings_monitor_suspend(False)
+        ui.show_notification(common.get_local_string(30058).format(self.params['profile_name']))
+
+    def autoselect_profile_remove(self, pathitems):  # pylint: disable=unused-argument
+        """Remove the auto-selection set"""
+        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        g.settings_monitor_suspend(True)
+        g.ADDON.setSetting('autoselect_profile_name', '')
+        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+        g.settings_monitor_suspend(False)
 
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""

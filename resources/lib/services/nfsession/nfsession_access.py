@@ -128,13 +128,21 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
 
-        # Disable and reset auto-update / auto-sync features
         g.settings_monitor_suspend(True)
+
+        # Disable and reset auto-update / auto-sync features
         g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
         g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.settings_monitor_suspend(False)
         g.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
+        # Disable and reset the auto-select profile
+        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        g.ADDON.setSetting('autoselect_profile_name', '')
+        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+
+        g.settings_monitor_suspend(False)
+
+        # Delete cookie and credentials
         cookies.delete(self.account_hash)
         self._get('logout')
         common.purge_credentials()

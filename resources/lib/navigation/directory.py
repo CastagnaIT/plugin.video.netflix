@@ -39,21 +39,37 @@ class DirectoryBuilder(object):
         if self.perpetual_range_start == '0':
             # For cache identifier purpose
             self.perpetual_range_start = None
-        profile_id = params.get('profile_id')
-        if profile_id:
-            api.activate_profile(profile_id)
+        if 'profile_guid' in params:
+            api.activate_profile(params['profile_guid'])
 
     def root(self, pathitems=None):
-        """Show profiles or home listing is autologin es enabled"""
+        """Show profiles or home listing when profile auto-selection is enabled"""
         # pylint: disable=unused-argument
-        autologin = g.ADDON.getSettingBool('autologin_enable')
-        profile_id = g.ADDON.getSetting('autologin_id')
-        if autologin and profile_id:
-            common.info('Performing auto-login for selected profile {}', profile_id)
-            api.activate_profile(profile_id)
-            self.home(None, False)
-        else:
+        if not self._home_autoselect_profile():
             self.profiles()
+
+    def _home_autoselect_profile(self):
+        """
+        Show home listing if profile auto-selection is enabled
+        :return: True when the auto-selection is done correctly
+        """
+        autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
+        if autoselect_profile_guid:
+            # Check if the GUID still exists in the profile list
+            if autoselect_profile_guid not in g.LOCAL_DB.get_guid_profiles():
+                common.warn('Auto-selection of profile not performed, the GUID {} not exist',
+                            autoselect_profile_guid)
+                g.LOCAL_DB.set_value('autoselect_profile_guid', '')
+                g.settings_monitor_suspend(True)
+                g.ADDON.setSetting('autoselect_profile_name', '')
+                g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+                g.settings_monitor_suspend(False)
+            else:
+                common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
+                api.activate_profile(autoselect_profile_guid)
+                self.home(None, False)
+                return True
+        return False
 
     def profiles(self, pathitems=None):
         """Show profiles listing"""
