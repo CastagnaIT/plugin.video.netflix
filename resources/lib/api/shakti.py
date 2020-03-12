@@ -78,7 +78,7 @@ def activate_profile(profile_guid):
     """Activate the profile with the given GUID"""
     common.make_call('activate_profile', profile_guid)
     if g.ADDON.getSettingBool('ProgressManager_enabled'):
-        save_current_lolomo_data('continueWatching')
+        save_current_lolomo_data()
     g.CACHE.invalidate()
 
 
@@ -104,24 +104,36 @@ def root_lists():
                     ART_PARTIAL_PATHS)))
 
 
-def save_current_lolomo_data(context_name):
+def save_current_lolomo_data():
     """Save the current lolomo data of the current selected profile"""
     # Note: every profile has its root lolomo (that are also visible in the lhpuuidh-browse profiles cookies)
-    lolomo_data = common.make_call('path_request', [["lolomo", [context_name], ['context', 'id', 'index']]])
+    context_names = ['continueWatching']
+    lolomo_data = common.make_call('path_request',
+                                   [['lolomo', context_names, ['context', 'id', 'index']]])
     lolomo_root = lolomo_data['lolomo'][1]
-    context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
-    context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
     g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
-    g.LOCAL_DB.set_value('lolomo_continue_watching_index', context_index, TABLE_SESSION)
-    g.LOCAL_DB.set_value('lolomo_continue_watching_id', context_id, TABLE_SESSION)
+    # Todo: In the new profiles, there is no 'continueWatching' list and no list is returned
+    #  How get the lolomo of continueWatching?
+    for context_name in context_names:
+        if context_name in lolomo_data['lolomos'][lolomo_root]:
+            context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
+            context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+        else:
+            context_index = ''
+            context_id = ''
+        g.LOCAL_DB.set_value('lolomo_{}_index'.format(context_name.lower()), context_index, TABLE_SESSION)
+        g.LOCAL_DB.set_value('lolomo_{}_id'.format(context_name.lower()), context_id, TABLE_SESSION)
 
 
 def update_lolomo_context(context_name):
     """Update the lolomo list by context"""
     lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
-    context_index = g.LOCAL_DB.get_value('lolomo_continue_watching_index', '', TABLE_SESSION)
-    context_id = g.LOCAL_DB.get_value('lolomo_continue_watching_id', '', TABLE_SESSION)
 
+    context_index = g.LOCAL_DB.get_value('lolomo_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
+    context_id = g.LOCAL_DB.get_value('lolomo_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
+
+    if not context_index:
+        return
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
     # The fourth parameter is like a request-id, but it doesn't seem to match to
     # serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))

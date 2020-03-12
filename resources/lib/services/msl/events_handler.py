@@ -42,10 +42,11 @@ class Event(object):
     STATUS_ERROR = 'ERROR'
     STATUS_SUCCESS = 'SUCCESS'
 
-    def __init__(self, event_data):
-        self.event_type = event_data['params']['event']
+    def __init__(self, request_data, event_data):
+        self.event_type = request_data['params']['event']
         self.status = self.STATUS_INQUEUE
-        self.request_data = event_data
+        self.event_data = event_data
+        self.request_data = request_data
         self.response_data = None
         self.req_attempt = 0
         common.debug('EVENT [{}] - Added to queue', self.event_type)
@@ -124,7 +125,14 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
-            api.update_lolomo_context('continueWatching')
+            if event.event_data['is_in_mylist']:
+                # If video is in my list, invalidate the continueWatching list (update lolomo context data)
+                api.update_lolomo_context('continueWatching')
+            else:
+                # Else invalidate the 'queue' list (update lolomo context data)
+                # Todo: get 'queue' lolomo id/index
+                # api.update_lolomo_context('queue')
+                pass
             api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
@@ -157,13 +165,13 @@ class EventsHandler(threading.Thread):
             return
 
         from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-        event_data = MSLRequestBuilder.build_request_data(url,
-                                                          self._build_event_params(event_type,
-                                                                                   event_data,
-                                                                                   player_state,
-                                                                                   manifest))
+        request_data = MSLRequestBuilder.build_request_data(url,
+                                                            self._build_event_params(event_type,
+                                                                                     event_data,
+                                                                                     player_state,
+                                                                                     manifest))
         try:
-            self.queue_events.put_nowait(Event(event_data))
+            self.queue_events.put_nowait(Event(request_data, event_data))
         except queue.Full:
             common.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
 
