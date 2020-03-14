@@ -82,7 +82,7 @@ def is_device_4k_capable():
         # Check if HDCP level is 2.2 or up
         hdcp_level = get_hdcp_level()
         hdcp_4k_capable = hdcp_level and hdcp_level >= 2.2
-        return is_drm_l1_security_level and hdcp_4k_capable
+        return bool(is_drm_l1_security_level and hdcp_4k_capable)
     return False
 
 
