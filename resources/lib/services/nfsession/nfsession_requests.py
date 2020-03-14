@@ -121,9 +121,11 @@ class NFSessionRequests(NFSessionBase):
         except (WebsiteParsingError, InvalidMembershipStatusAnonymous) as exc:
             # Possible known causes:
             # -Cookies may not work anymore most likely due to updates in the website
+            # -Login password has been changed
             # -Expired cookie profiles? might cause InvalidMembershipStatusAnonymous (i am not really sure)
             import traceback
-            common.warn('Failed to refresh session data, login can be expired ({})', type(exc).__name__)
+            common.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
+                        type(exc).__name__)
             common.debug(traceback.format_exc())
             self.session.cookies.clear()
             if isinstance(exc, InvalidMembershipStatusAnonymous):
