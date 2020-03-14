@@ -309,12 +309,13 @@ def extract_json(content, name):
     try:
         json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
         json_str = json_array[0]
-        json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
-        json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
-        json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
-        json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
-        json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
-        return json.loads(json_str)
+        json_str_replace = json_str.replace('\\"', '\\\\"')  # Escape double-quotes
+        json_str_replace = json_str_replace.replace('\\s', '\\\\s')  # Escape \s
+        json_str_replace = json_str_replace.replace('\\n', '\\\\n')  # Escape line feed
+        json_str_replace = json_str_replace.replace('\\t', '\\\\t')  # Escape tab
+        json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
+        json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
+        return json.loads(json_str_replace)
     except Exception:
         if json_str:
             common.error('JSON string trying to load: {}', json_str)
