@@ -27,10 +27,11 @@ def lazy_login(func):
     # pylint: missing-docstring
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
-        from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError)
+        from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError,
+                                                  LoginValidateErrorIncorrectPassword)
         try:
             return func(*args, **kwargs)
-        except NotLoggedInError:
+        except (NotLoggedInError, LoginValidateErrorIncorrectPassword):
             debug('Tried to perform an action without being logged in')
             try:
                 from resources.lib.api.shakti import login

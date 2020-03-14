@@ -51,6 +51,10 @@ class LoginValidateError(Exception):
     """The login validate has generated an error"""
 
 
+class LoginValidateErrorIncorrectPassword(Exception):
+    """The login validate has generated incorrect password error"""
+
+
 class NotLoggedInError(Exception):
     """The requested operation requires a valid and active login, which
     is not present"""

@@ -20,7 +20,8 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
-                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous)
+                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
+                                          LoginValidateErrorIncorrectPassword)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -118,7 +119,7 @@ class NFSessionRequests(NFSessionBase):
             return True
         except InvalidMembershipStatusError:
             raise
-        except (WebsiteParsingError, InvalidMembershipStatusAnonymous) as exc:
+        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
             # Possible known causes:
             # -Cookies may not work anymore most likely due to updates in the website
             # -Login password has been changed
@@ -128,7 +129,7 @@ class NFSessionRequests(NFSessionBase):
                         type(exc).__name__)
             common.debug(traceback.format_exc())
             self.session.cookies.clear()
-            if isinstance(exc, InvalidMembershipStatusAnonymous):
+            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             return self._login()

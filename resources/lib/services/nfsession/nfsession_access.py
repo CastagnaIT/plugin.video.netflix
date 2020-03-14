@@ -22,7 +22,8 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
-                                          MissingCredentialsError, InvalidMembershipStatusError)
+                                          MissingCredentialsError, InvalidMembershipStatusError,
+                                          LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -105,7 +106,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 ui.show_notification(common.get_local_string(30109))
                 self.update_session_data(current_esn)
                 return True
-            except LoginValidateError as exc:
+            except (LoginValidateError, LoginValidateErrorIncorrectPassword) as exc:
                 self.session.cookies.clear()
                 common.purge_credentials()
                 if not modal_error_message:

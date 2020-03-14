@@ -19,7 +19,8 @@ from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
-                         WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous)
+                         WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
+                         LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -240,6 +241,8 @@ def validate_login(react_context):
                 error_description = error_code_list['email_' + error_code]
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
+            if 'incorrect_password' in error_code:
+                raise LoginValidateErrorIncorrectPassword(common.remove_html_tags(error_description))
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
