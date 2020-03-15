@@ -110,6 +110,7 @@ def strp(value, form):
     try:
         return datetime.strptime(value, form)
     except TypeError:
+        # Python bug https://bugs.python.org/issue27400
         try:
             from time import strptime
             return datetime(*(strptime(value, form)[0:6]))
