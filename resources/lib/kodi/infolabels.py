@@ -130,16 +130,23 @@ def get_info_for_playback(videoid, skip_add_from_library):
 
 
 @common.time_execution(immediate=False)
-def add_info_for_playback(videoid, list_item, skip_add_from_library, skip_set_progress_status=False):
+def add_info_for_playback(videoid, list_item, skip_set_progress_status=False):
     """Retrieve infolabels and art info and add them to the list_item"""
     # By getting the info from the library you can not get the length of video required for Up Next addon
-    # waiting for a suitable solution we avoid this method by using skip_add_from_library
-    if not skip_add_from_library:
-        try:
-            return add_info_from_library(videoid, list_item)
-        except library.ItemNotFound:
-            common.debug('Can not get infolabels from the library, submit a request to netflix')
+    # try:
+    #     return add_info_from_library(videoid, list_item)
+    # except library.ItemNotFound:
+    #     common.debug('Can not get infolabels from the library, submit a request to netflix')
     return add_info_from_netflix(videoid, list_item, skip_set_progress_status)
+
+
+def get_resume_info_from_library(videoid):
+    """Retrieve the resume value from the Kodi library"""
+    try:
+        return get_info_from_library(videoid)[0].get('resume', {})
+    except library.ItemNotFound:
+        common.warn('Can not get resume value from the library')
+    return {}
 
 
 def parse_info(videoid, item, raw_data):

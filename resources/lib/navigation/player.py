@@ -70,17 +70,18 @@ def play(videoid):
         return
 
     list_item = get_inputstream_listitem(videoid)
-    infos, art = infolabels.add_info_for_playback(videoid, list_item, is_up_next_enabled, skip_set_progress_status=True)
+    infos, art = infolabels.add_info_for_playback(videoid, list_item, skip_set_progress_status=True)
 
-    resume_position = {}
+    resume_position = None
     event_data = {}
 
     if g.IS_ADDON_EXTERNAL_CALL:
         # Workaround for resuming strm files from library
-        resume_position = infos.get('resume', {}).get('position') \
-            if g.ADDON.getSettingBool('ResumeManager_enabled') else None
+        resume_position = (infolabels.get_resume_info_from_library(videoid).get('position')
+                           if g.ADDON.getSettingBool('ResumeManager_enabled') else None)
         if resume_position:
-            index_selected = ui.ask_for_resume(resume_position) if g.ADDON.getSettingBool('ResumeManager_dialog') else None
+            index_selected = (ui.ask_for_resume(resume_position)
+                              if g.ADDON.getSettingBool('ResumeManager_dialog') else None)
             if index_selected == -1:
                 xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
                 return
