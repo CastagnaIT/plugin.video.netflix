@@ -75,7 +75,7 @@ def play(videoid):
     resume_position = {}
     event_data = {}
 
-    if g.IS_SKIN_CALL:
+    if g.IS_ADDON_EXTERNAL_CALL:
         # Workaround for resuming strm files from library
         resume_position = infos.get('resume', {}).get('position') \
             if g.ADDON.getSettingBool('ResumeManager_enabled') else None
@@ -92,7 +92,7 @@ def play(videoid):
         # - enabled only with items played inside the addon then not Kodi library, need impl. JSON-RPC lib update code
         event_data = _get_event_data(videoid)
         event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = g.IS_SKIN_CALL
+        event_data['is_played_by_library'] = g.IS_ADDON_EXTERNAL_CALL
         # Todo: UpNext addon is incompatible with netflix watched status sync feature
         #  Problems:
         #  - Need to modify the cache (to update the watched status) on every played item

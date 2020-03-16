@@ -196,7 +196,7 @@ class GlobalVariables(object):
         module level if reusing a language invoker."""
         # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuselanguageinvoker is not yet used)
         self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
-        self.IS_SKIN_CALL = False
+        self.IS_ADDON_EXTERNAL_CALL = False
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
