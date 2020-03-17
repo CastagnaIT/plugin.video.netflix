@@ -96,7 +96,7 @@ def cache_output(bucket, fixed_identifier=None,
                                              identify_fallback_arg_index,
                                              args,
                                              kwargs)
-                if save_call_data and not g.IS_SKIN_CALL:
+                if save_call_data and not g.IS_ADDON_EXTERNAL_CALL:
                     g.LOCAL_DB.set_value('cache_last_directory_call',
                                          {'bucket': bucket, 'identifier': identifier, 'to_disk': to_disk},
                                          table=TABLE_SESSION)

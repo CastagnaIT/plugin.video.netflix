@@ -42,7 +42,7 @@ class LibraryActionExecutor(object):
             library.execute_library_tasks(videoid,
                                           [library.remove_item],
                                           common.get_local_string(30030))
-            common.refresh_container()
+            common.refresh_container(use_delay=True)
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):

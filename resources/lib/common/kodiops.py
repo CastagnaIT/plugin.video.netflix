@@ -108,8 +108,14 @@ def scan_library(path=""):
     return json_rpc(method, params)
 
 
-def refresh_container():
+def refresh_container(use_delay=False):
     """Refresh the current container"""
+    if use_delay:
+        # When operations are performed in the Kodi library before call this method
+        # can be necessary to apply a delay before run the refresh, otherwise the page does not refresh correctly
+        # seems to be caused by a race condition with the Kodi library update (but i am not really sure)
+        from time import sleep
+        sleep(1)
     xbmc.executebuiltin('Container.Refresh')
 
 
