@@ -204,7 +204,7 @@ msgstr "Ein Problem mit Addon InputStream Adaptive oder der Widevine-Bibliothek 
 
 msgctxt "#30047"
 msgid "Do you want to remove it permanently?"
-msgstr "Endgültig entfernen?"
+msgstr "Wollen Sie es entgültig entfernen?"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -214,23 +214,23 @@ msgstr "Exportiert"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Automatische Auswahl des Profils"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Automatische Auswahl des Profils entfernen"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Automatisch auswählen"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Um Profil einzustellen, in der Liste der Profile das Kontextmenü öffnen"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Das Profil {} wird nun automatisch ausgewählt"
 
 # Unused 30059
 
@@ -941,3 +941,7 @@ msgstr "Als gesehen markiert|Als nicht gesehen markiert|'Gesehen'-Status von Net
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next Benachrichtigungen (nächstes Video ansehen)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Farbe der zusätzlichen Handlungsinformation"
