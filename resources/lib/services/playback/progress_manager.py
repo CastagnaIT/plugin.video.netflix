@@ -71,7 +71,7 @@ class ProgressManager(PlaybackActionManager):
     def on_playback_pause(self, player_state):
         if not self.is_event_start_sent:
             return
-        self.tick_elapsed = 0
+        self._reset_tick_count()
         self.is_player_in_pause = True
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
 
@@ -83,14 +83,14 @@ class ProgressManager(PlaybackActionManager):
         if not self.is_event_start_sent or self.lock_events:
             # This might happen when ResumeManager skip is performed
             return
-        self.tick_elapsed = 0
+        self._reset_tick_count()
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._save_resume_time(player_state['elapsed_seconds'])
 
     def _on_playback_stopped(self):
         if not self.is_event_start_sent or self.lock_events:
             return
-        self.tick_elapsed = 0
+        self._reset_tick_count()
         _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
         _send_event(EVENT_STOP, self.event_data, self.last_player_state)
 
@@ -106,6 +106,10 @@ class ProgressManager(PlaybackActionManager):
         # The choice to save the value in a Kodi property is to not continuously lock with mutex the database.
         # The callback _on_playback_stopped can not be used, because the loading of frontend happen before.
         self.window_cls.setProperty('nf_playback_resume_time', str(resume_time))
+
+    def _reset_tick_count(self):
+        self.tick_elapsed = 0
+        self.last_tick_count = 0
 
 
 def _send_event(event_type, event_data, player_state):
