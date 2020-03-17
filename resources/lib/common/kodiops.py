@@ -128,7 +128,7 @@ def get_local_string(string_id):
 def run_plugin_action(path, block=False):
     """Create an action that can be run with xbmc.executebuiltin in order to run a Kodi plugin specified by path.
     If block is True (default=False), the execution of code will block until the called plugin has finished running."""
-    return 'XBMC.RunPlugin({}, {})'.format(path, block)
+    return 'RunPlugin({}, {})'.format(path, block)
 
 
 def run_plugin(path, block=False):
