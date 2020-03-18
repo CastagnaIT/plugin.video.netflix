@@ -39,17 +39,7 @@ class MSLHandler(object):
 
     def __init__(self):
         super(MSLHandler, self).__init__()
-        self.msl_requests = None
-        try:
-            msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
-            common.info('Loaded MSL data from disk')
-        except Exception:  # pylint: disable=broad-except
-            msl_data = None
-
-        self.msl_requests = MSLRequests(msl_data)
-
-        EventsHandler(self.msl_requests.chunked_request).start()
-
+        self._init_msl_handler()
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
             callback=self.msl_requests.perform_key_handshake)
@@ -59,6 +49,30 @@ class MSLHandler(object):
         common.register_slot(
             signal=common.Signals.CLEAR_USER_ID_TOKENS,
             callback=self.clear_user_id_tokens)
+        common.register_slot(
+            signal=common.Signals.REINITIALIZE_MSL_HANDLER,
+            callback=self.reinitialize_msl_handler)
+
+    def _init_msl_handler(self):
+        self.msl_requests = None
+        try:
+            msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
+            common.info('Loaded MSL data from disk')
+        except Exception:  # pylint: disable=broad-except
+            msl_data = None
+
+        self.msl_requests = MSLRequests(msl_data)
+        EventsHandler(self.msl_requests.chunked_request).start()
+
+    def reinitialize_msl_handler(self, data=None):  # pylint: disable=unused-argument
+        """
+        Reinitialize the MSL handler
+        :param data: set True for delete the msl file data, and then reset all
+        """
+        common.debug('Reinitializing MSL handler')
+        if data is True:
+            common.delete_file(MSL_DATA_FILENAME)
+        self._init_msl_handler()
 
     @display_error_info
     @common.time_execution(immediate=True)

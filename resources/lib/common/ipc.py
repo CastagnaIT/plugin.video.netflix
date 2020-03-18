@@ -38,6 +38,7 @@ class Signals(object):  # pylint: disable=no-init
     INVALIDATE_SERVICE_CACHE = 'invalidate_service_cache'
     QUEUE_VIDEO_EVENT = 'queue_video_event'
     CLEAR_USER_ID_TOKENS = 'clean_user_id_tokens'
+    REINITIALIZE_MSL_HANDLER = 'reinitialize_msl_handler'
 
 
 def register_slot(callback, signal=None, source_id=None):

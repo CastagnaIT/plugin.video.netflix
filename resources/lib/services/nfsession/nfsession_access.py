@@ -18,6 +18,7 @@ import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
 import resources.lib.kodi.ui as ui
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
@@ -144,9 +145,16 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         g.settings_monitor_suspend(False)
 
         # Delete cookie and credentials
-        cookies.delete(self.account_hash)
         self._get('logout')
+        self.session.cookies.clear()
+        cookies.delete(self.account_hash)
         common.purge_credentials()
+
+        # Reset the ESN obtained from website/generated
+        g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
+
+        # Reinitialize the MSL handler (delete msl data file, then reset everything)
+        common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
 
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
