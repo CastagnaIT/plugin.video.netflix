@@ -130,6 +130,9 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
 
+        # Perform the website logout
+        self._get('logout')
+
         g.settings_monitor_suspend(True)
 
         # Disable and reset auto-update / auto-sync features
@@ -145,7 +148,6 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         g.settings_monitor_suspend(False)
 
         # Delete cookie and credentials
-        self._get('logout')
         self.session.cookies.clear()
         cookies.delete(self.account_hash)
         common.purge_credentials()
