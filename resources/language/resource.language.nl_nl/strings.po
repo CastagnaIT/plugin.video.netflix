@@ -196,11 +196,11 @@ msgstr "View voor profielen"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Beoordeling verwijderen|Je raadt niet meer aan|Je raadt aan"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Er is een probleem met het afspelen van DRM. De InputStream Adaptive add-on is mogelijk niet geactiveerd, of de Widevine CDM library ontbreekt. Het afspelen wordt afgebroken."
 
 msgctxt "#30047"
 msgid "Do you want to remove it permanently?"
@@ -214,23 +214,23 @@ msgstr "Geëxporteerd"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Profiel automatisch kiezen"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Automatisch kiezen van profiel desactiveren"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Stel in voor automatische kiezen"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Om je automatisch profiel te kiezen, open het context menu in de lijst van profielen"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Het profiel {} is gekozen als automatisch profiel"
 
 # Unused 30059
 
@@ -286,7 +286,7 @@ msgstr "Begin pas na 5 minuten inactiviteit"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Toon altijd de codec informatie bij het afspelen van video's"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -616,11 +616,11 @@ msgstr "Heb je een Netflix Premium account?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "De configuratie is vervolledigd"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Start de add-on configuratie wizard"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -916,4 +916,32 @@ msgstr "Wil je nu controleren voor een update?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Beperk op Maturiteit Level"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Video's for {} vereisen een PIN code om af te spelen."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Installeer de Up Next add-on"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Synchroniseer de 'bekeken' status van video's met Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Verander de 'bekeken' status (lokaal)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Markeer als bekeken|Markeer als onbekeken|Herstel Netflix bekeken status"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next meldingen (bekijk volgende video)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Kleur van bijkomende plot informatie"
