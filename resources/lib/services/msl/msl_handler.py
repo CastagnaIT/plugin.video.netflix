@@ -21,7 +21,7 @@ from resources.lib.globals import g
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
 from .msl_requests import MSLRequests
-from .msl_utils import ENDPOINTS, display_error_info
+from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles
 
 try:  # Python 2
@@ -41,7 +41,7 @@ class MSLHandler(object):
         super(MSLHandler, self).__init__()
         self.msl_requests = None
         try:
-            msl_data = json.loads(common.load_file('msl_data.json'))
+            msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
             common.info('Loaded MSL data from disk')
         except Exception:  # pylint: disable=broad-except
             msl_data = None

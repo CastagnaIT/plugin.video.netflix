@@ -37,6 +37,8 @@ ENDPOINTS = {
     'logblobs': CHROME_BASE_URL + 'pbo_logblobs/%5E1.0.0/router'
 }
 
+MSL_DATA_FILENAME = 'msl_data.json'
+
 EVENT_START = 'start'      # events/start : Video starts
 EVENT_STOP = 'stop'        # events/stop : Video stops
 EVENT_KEEP_ALIVE = 'keepAlive'  # events/keepAlive : Update progress status

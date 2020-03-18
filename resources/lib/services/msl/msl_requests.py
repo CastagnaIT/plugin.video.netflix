@@ -22,7 +22,8 @@ import resources.lib.common as common
 from resources.lib.globals import g
 from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-from resources.lib.services.msl.msl_utils import display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS
+from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
+                                                  MSL_DATA_FILENAME)
 
 try:  # Python 2
     from urllib import urlencode
@@ -114,7 +115,7 @@ class MSLRequests(MSLRequestBuilder):
                 debug_msg = 'Stored MSL data is expired, a new key handshake will be performed'
             common.debug(debug_msg)
             if self.perform_key_handshake():
-                msl_data = json.loads(common.load_file('msl_data.json'))
+                msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
                 self.crypto.load_msl_data(msl_data)
                 self.crypto.load_crypto_session(msl_data)
             return self._check_mastertoken_validity()

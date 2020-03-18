@@ -14,6 +14,7 @@ import base64
 import time
 
 import resources.lib.common as common
+from resources.lib.services.msl.msl_utils import MSL_DATA_FILENAME
 
 
 class MSLBaseCrypto(object):
@@ -75,7 +76,7 @@ class MSLBaseCrypto(object):
         """Save crypto keys and mastertoken to disk"""
         self._msl_data['tokens'] = {'mastertoken': self.mastertoken}
         self._msl_data.update(self._export_keys())
-        common.save_file('msl_data.json', json.dumps(self._msl_data).encode('utf-8'))
+        common.save_file(MSL_DATA_FILENAME, json.dumps(self._msl_data).encode('utf-8'))
         common.debug('Successfully saved MSL data to disk')
 
     def _init_keys(self, key_response_data):
