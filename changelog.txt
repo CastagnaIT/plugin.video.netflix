@@ -1,3 +1,28 @@
+v1.0.0 (2020-03-06)
+-Added watched status sync with Netflix services WIP (details on github wiki)
+-Reworked add-on/kodi auto-configuration based on device and system characteristics
+-Reworked MSL service
+-Added support to MSL switch profile, this fixes very old issues:
+  -Requests are now performed with the right msl profile
+  -No more missing audio languages on non-owner profiles
+  -No more missing subtitle languages on non-owner profiles
+  -No more video not available error when main profile has age limits and other profile are set as adults
+  -You can update watched status on all profiles
+-Added workaround to fix 4k media flag with android device 4k capable
+-Added turkish language
+-Changes on nfsession profile switch in order to get the profiles cookies
+-Improved ESN generation on android devices
+-Automatically turn off omx player on raspberry (not compatible)
+-Fixed the error when opening the Export menu caused by too many exported items
+-Fixed an issue that causing delayed start of services features after start playback
+-Fixed issues with ios/tvos restrictions (but due to missing widevine library for now are not supported)
+-Fixed service databases upgrade
+-Fixed an issue that caused wrong behaviour with Reset ESN
+-Fixed an issue that caused wrong behaviour with highlighted titles
+-Fixed a rare issue that caused "stream continuity" to stop working
+-Updated jp, kr, it, pl, hu, hr, de, fr, es translations
+-A lot of other code changes
+
 v0.16.4 (2020-01-28)
 -Up Next is now supported only from version 1.1.0 and up
 -Added czech language

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.0.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.1.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -61,30 +61,22 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.0.0 (2020-03-06)
--Added watched status sync with Netflix services WIP (details on github wiki)
--Reworked add-on/kodi auto-configuration based on device and system characteristics
--Reworked MSL service
--Added support to MSL switch profile, this fixes very old issues:
-  -Requests are now performed with the right msl profile
-  -No more missing audio languages on non-owner profiles
-  -No more missing subtitle languages on non-owner profiles
-  -No more video not available error when main profile has age limits and other profile are set as adults
-  -You can update watched status on all profiles
--Added workaround to fix 4k media flag with android device 4k capable
--Added turkish language
--Changes on nfsession profile switch in order to get the profiles cookies
--Improved ESN generation on android devices
--Automatically turn off omx player on raspberry (not compatible)
--Fixed the error when opening the Export menu caused by too many exported items
--Fixed an issue that causing delayed start of services features after start playback
--Fixed issues with ios/tvos restrictions (but due to missing widevine library for now are not supported)
--Fixed service databases upgrade
--Fixed an issue that caused wrong behaviour with Reset ESN
--Fixed an issue that caused wrong behaviour with highlighted titles
--Fixed a rare issue that caused "stream continuity" to stop working
--Updated jp, kr, it, pl, hu, hr, de, fr, es translations
--A lot of other code changes
+v1.1.0 (2020-03-20)
+-Added more supplemental info to plot info
+-Added customizable color to suppl. plot info
+-Added Greek language
+-Added more results to recommendations menu
+-Improved auto-login feature (now called "profile auto-selection")
+-Improved password request in particular circumstances
+-Improvements to recognize external calls to add-on
+-Fixed msl issues with login with different account after a logout
+-Fixed an issue in the strm resume workaround
+-Fixed an issue caused broken configuration wizard on L1 android devices
+-Fixed an issue which prevented the loading of profile list with a backslash on the names
+-Fixed an issue which prevented the loading of suppl. info to plot info
+-Fixed an issue caused interruption of sending video status progress after video pause or seek
+-Updated it, de, nl translations
+-Other minor fixes
     </news>
   </extension>
 </addon>
