@@ -36,7 +36,7 @@ class AddonActionExecutor(object):
         g.ADDON.setSetting('autoselect_profile_name', self.params['profile_name'])
         g.ADDON.setSettingBool('autoselect_profile_enabled', True)
         g.settings_monitor_suspend(False)
-        ui.show_notification(common.get_local_string(30058).format(self.params['profile_name']))
+        ui.show_notification(common.get_local_string(30058).format(g.py2_decode(self.params['profile_name'])))
 
     def autoselect_profile_remove(self, pathitems):  # pylint: disable=unused-argument
         """Remove the auto-selection set"""
