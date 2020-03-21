@@ -59,7 +59,7 @@ class NetflixService(object):
     def init_server(self, server):
         server['class'].allow_reuse_address = True
         server['instance'] = server['class'](
-            ('127.0.0.1', select_port(server['name'])))
+            ('localhost', select_port(server['name'])))
         server['thread'] = threading.Thread(
             target=server['instance'].serve_forever)
 
