@@ -20,7 +20,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 - Netflix categories, recommendations, My List, continue watching and more
 - Browse all movies and all TV shows Netflix style includes genres
 - Browse trailers & more of TV shows and movies (by context menu)
-- Can synchronize the watched status with Netflix service - [How works and limitations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-watched-status-with-Netflix)
+- Can synchronize the watched status with Netflix service - [How works and limitations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
 - Rate TV shows and movies
 - Add or remove to/from My List
 - Export of TV shows & movies in Kodi local library
@@ -138,7 +138,7 @@ If you prefer you can disable `Remember audio / subtitle preferences` in the add
 ### I have some problem with the synchronisation of watched status
 
 Before asking for help, please read the WiKi may already provide an answer:
-[Synchronisation of watched status with Netflix](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-watched-status-with-Netflix)
+[Synchronisation of watched status with Netflix](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
 
 ### How to export to Kodi library
 
