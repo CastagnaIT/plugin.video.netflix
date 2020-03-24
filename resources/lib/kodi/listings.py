@@ -105,7 +105,7 @@ def _create_profile_item(profile_guid, is_active, html_parser):
     list_item.addContextMenuItems([(common.get_local_string(30056),
                                     'RunPlugin({})'.format(autoselect_profile_url))])
     url = common.build_url(pathitems=['home'],
-                           params={'profile_guid': profile_guid},
+                           params={'switch_profile_guid': profile_guid},
                            mode=g.MODE_DIRECTORY)
     return (url, list_item, True)
 

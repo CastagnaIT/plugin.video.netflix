@@ -39,8 +39,8 @@ class DirectoryBuilder(object):
         if self.perpetual_range_start == '0':
             # For cache identifier purpose
             self.perpetual_range_start = None
-        if 'profile_guid' in params:
-            api.activate_profile(params['profile_guid'])
+        if 'switch_profile_guid' in params:
+            api.activate_profile(params['switch_profile_guid'])
 
     def root(self, pathitems=None):
         """Show profiles or home listing when profile auto-selection is enabled"""
