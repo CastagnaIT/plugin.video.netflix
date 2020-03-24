@@ -1,3 +1,20 @@
+v1.1.0 (2020-03-20)
+-Added more supplemental info to plot info
+-Added customizable color to suppl. plot info
+-Added Greek language
+-Added more results to recommendations menu
+-Improved auto-login feature (now called "profile auto-selection")
+-Improved password request in particular circumstances
+-Improvements to recognize external calls to add-on
+-Fixed msl issues with login with different account after a logout
+-Fixed an issue in the strm resume workaround
+-Fixed an issue caused broken configuration wizard on L1 android devices
+-Fixed an issue which prevented the loading of profile list with a backslash on the names
+-Fixed an issue which prevented the loading of suppl. info to plot info
+-Fixed an issue caused interruption of sending video status progress after video pause or seek
+-Updated it, de, nl translations
+-Other minor fixes
+
 v1.0.0 (2020-03-06)
 -Added watched status sync with Netflix services WIP (details on github wiki)
 -Reworked add-on/kodi auto-configuration based on device and system characteristics
