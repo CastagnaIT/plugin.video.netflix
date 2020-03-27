@@ -123,15 +123,15 @@ kodi-addon-checker-report.log
 kodi-addon-checker.log
 
 # Credentials
-test/userdata/*.ndb
-test/userdata/COOKIE_*=
-test/userdata/_*=
-test/userdata/addon_settings.json
-test/userdata/credentials.json
-test/userdata/msl_data.json
-test/userdata/cache/
-test/userdata/database/
-test/userdata/imagecache/
-test/userdata/metadata/
-test/userdata/movies/
-test/userdata/shows/
+tests/userdata/*.ndb
+tests/userdata/COOKIE_*=
+tests/userdata/_*=
+tests/userdata/addon_settings.json
+tests/userdata/credentials.json
+tests/userdata/msl_data.json
+tests/userdata/cache/
+tests/userdata/database/
+tests/userdata/imagecache/
+tests/userdata/metadata/
+tests/userdata/movies/
+tests/userdata/shows/

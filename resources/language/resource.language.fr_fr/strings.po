@@ -896,7 +896,7 @@ msgstr "Programmé"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr "Synchronisation de la médiathèque Kodi avec "Ma Liste""
+msgstr "Synchronisation de la médiathèque Kodi avec \"Ma Liste\""
 
 msgctxt "#30228"
 msgid "Use \"My list\" of the current profile"
