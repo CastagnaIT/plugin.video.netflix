@@ -40,7 +40,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 #### Quick download links
 
 Install add-on via repository - provide automatic installation of updates:
-* [CastagnaIT Repository - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.0.zip)
+* [CastagnaIT Repository for KODI 18.x LEIA - repository.castagnait-1.0.1.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.1.zip)
 
 Install add-on manually - updates should always be installed manually:
 * [Add-on download links to current and previous releases](https://github.com/CastagnaIT/plugin.video.netflix/releases)
