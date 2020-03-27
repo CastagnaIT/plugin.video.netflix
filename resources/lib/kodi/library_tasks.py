@@ -38,8 +38,7 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
     progress.create(title)
     for task_num, task in enumerate(tasks):
         task_title = task.get('title', 'Unknown Task')
-        progress.update(percent=int(task_num * 100 / len(tasks)),
-                        line1=task_title)
+        progress.update(int(task_num * 100 / len(tasks)), task_title)
 #        xbmc.sleep(25)
         if progress.iscanceled():
             break
