@@ -1,7 +1,11 @@
 name: CI
 on:
-- pull_request
-- push
+  pull_request:
+    branch:
+    - master
+  push:
+    branch:
+    - master
 jobs:
   tests:
     name: Add-on testing
