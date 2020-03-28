@@ -1,0 +1,35 @@
+name: CI
+on:
+- pull_request
+- push
+jobs:
+  tests:
+    name: Add-on testing
+    runs-on: ubuntu-latest
+    env:
+      PYTHONIOENCODING: utf-8
+      PYTHONPATH: ${{ github.workspace }}/resources/lib:${{ github.workspace }}/tests
+    strategy:
+      fail-fast: false
+      matrix:
+        # FIXME: E1101: Module 'time' has no 'clock' member on Python 3.8
+        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [2.7, 3.5, 3.6, 3.7]
+    steps:
+    - name: Check out ${{ github.sha }} from repository ${{ github.repository }}
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get install gettext
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tox
+      run: python -m tox -q -e flake8,py
+    - name: Run pylint
+      run: python -m pylint resources/lib/ tests/
+    - name: Compare translations
+      run: make check-translations
