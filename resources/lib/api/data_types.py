@@ -177,7 +177,7 @@ class CustomVideoList:
     def __init__(self, path_response):
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
-        self.videos = self.data.get('videos', {})
+        self.videos = OrderedDict(self.data.get('videos', {}))
         self.videoids = _get_videoids(self.videos)
         # self.artitem = next(itervalues(self.videos))
         self.artitem = list(self.videos.values())[0] if self.videos else None
@@ -224,6 +224,13 @@ class SubgenreList:
             genre_id = next(iter(path_response.get('genres', {})))
             self.subgenre_data = path_response['genres'].get(genre_id, {}).get('subgenres')
             self.lists = list(path_response['genres'].get(genre_id, {}).get('subgenres').items())
+
+
+def merge_data_type(data, data_to_merge):
+    for video_id, video in iteritems(data_to_merge.videos):
+        data.videos[video_id] = video
+    data.videoids.extend(data_to_merge.videoids)
+    data.contained_titles.extend(data_to_merge.contained_titles)
 
 
 def _check_sentinel(value):

@@ -103,7 +103,7 @@ class AddonActionExecutor(object):
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]
-        api.update_my_list(videoid, operation)
+        api.update_my_list(videoid, operation, self.params)
         _sync_library(videoid, operation)
         common.refresh_container()
 

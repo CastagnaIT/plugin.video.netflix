@@ -19,7 +19,7 @@ from resources.lib.common import cache_utils
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, EpisodeList,
-                         SearchVideoList, CustomVideoList, SubgenreList)
+                         SearchVideoList, CustomVideoList, SubgenreList, merge_data_type)
 from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
                          MetadataNotAvailable, CacheMiss)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
@@ -496,34 +496,52 @@ def rate_thumb(videoid, rating, track_id_jaw):
 
 @catch_api_errors
 @common.time_execution(immediate=False)
-def update_my_list(videoid, operation):
+def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""
     common.debug('My List: {} {}', operation, videoid)
-    # We want the tvshowid for seasons and episodes (such videoids may be
-    # passed by the mylist/library auto-sync feature)
-    videoid_value = (videoid.movieid
-                     if videoid.mediatype == common.VideoId.MOVIE
-                     else videoid.tvshowid)
     common.make_call(
         'post',
         {'component': 'update_my_list',
          'data': {
              'operation': operation,
-             'videoId': int(videoid_value)}})
+             'videoId': videoid.value}})
     ui.show_notification(common.get_local_string(30119))
-    try:
-        # This is necessary to have the my-list menu updated when you open it
-        if operation == 'remove':
-            # Delete item manually to speedup operations on page load
-            cached_video_list_sorted = g.CACHE.get(cache_utils.CACHE_COMMON, 'mylist')
-            del cached_video_list_sorted.videos[videoid.value]
-        else:
-            # Force reload items on page load
-            g.CACHE.delete(cache_utils.CACHE_COMMON, 'mylist')
-    except CacheMiss:
-        pass
-    # Invalidate my_list_items to allow reload updated my_list_items results when page refresh
-    g.CACHE.delete(cache_utils.CACHE_COMMON, 'my_list_items')
+    _update_mylist_cache(videoid, operation, params)
+
+
+def _update_mylist_cache(videoid, operation, params):
+    """Update the my list cache to speeding up page load"""
+    # Avoids making a new request to the server to request the entire list updated
+    perpetual_range_start = params.get('perpetual_range_start')
+    mylist_identifier = 'mylist'
+    if perpetual_range_start and perpetual_range_start != 'None':
+        mylist_identifier += '_' + perpetual_range_start
+    if operation == 'remove':
+        try:
+            video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_COMMON, mylist_identifier)
+            del video_list_sorted_data.videos[videoid.value]
+            g.CACHE.add(cache_utils.CACHE_COMMON, mylist_identifier, video_list_sorted_data)
+        except CacheMiss:
+            pass
+        try:
+            my_list_videoids = g.CACHE.get(cache_utils.CACHE_COMMON, 'my_list_items')
+            my_list_videoids.remove(videoid)
+            g.CACHE.add(cache_utils.CACHE_COMMON, 'my_list_items', my_list_videoids)
+        except CacheMiss:
+            pass
+    else:
+        try:
+            video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_COMMON, mylist_identifier)
+            merge_data_type(video_list_sorted_data, custom_video_list([videoid.value]))
+            g.CACHE.add(cache_utils.CACHE_COMMON, mylist_identifier, video_list_sorted_data)
+        except CacheMiss:
+            pass
+        try:
+            my_list_videoids = g.CACHE.get(cache_utils.CACHE_COMMON, 'my_list_items')
+            my_list_videoids.append(videoid)
+            g.CACHE.add(cache_utils.CACHE_COMMON, 'my_list_items', my_list_videoids, ttl=600)
+        except CacheMiss:
+            pass
 
 
 @common.time_execution(immediate=False)
@@ -531,7 +549,7 @@ def metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
     # Delete the cache if we need to refresh the all metadata
     if refresh:
-        g.CACHE.delete(cache_utils.CACHE_METADATA, videoid)
+        g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.value)
     metadata_data = {}, None
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
         metadata_data = _metadata(videoid), None

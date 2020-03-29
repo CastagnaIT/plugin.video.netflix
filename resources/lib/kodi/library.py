@@ -105,14 +105,13 @@ def export_new_episodes(videoid, silent=False, nfo_settings=None):
         common.debug('Exporting new episodes for {}', videoid)
         method(videoid, [export_new_item],
                title=common.get_local_string(30198),
-               sync_mylist=False,
                nfo_settings=nfo_settings)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported', videoid)
 
 
 @update_kodi_library
-def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_settings=None):
+def execute_library_tasks(videoid, task_handlers, title, nfo_settings=None):
     """Execute library tasks for videoid and show errors in foreground"""
     for task_handler in task_handlers:
         execute_tasks(title=title,
@@ -121,14 +120,9 @@ def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_s
                       notify_errors=True,
                       library_home=library_path())
 
-        # Exclude update operations
-        if task_handlers != [remove_item, export_item]:
-            _sync_mylist(videoid, task_handler, sync_mylist)
-
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, title=None,
-                                   sync_mylist=False, nfo_settings=None):
+def execute_library_tasks_silently(videoid, task_handlers, title=None, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=unused-argument
     for task_handler in task_handlers:
@@ -139,18 +133,6 @@ def execute_library_tasks_silently(videoid, task_handlers, title=None,
                 import traceback
                 common.error(traceback.format_exc())
                 common.error('{} of {} failed', task_handler.__name__, task['title'])
-        if sync_mylist and (task_handlers != [remove_item, export_item]):
-            _sync_mylist(videoid, task_handler, sync_mylist)
-
-
-def _sync_mylist(videoid, task_handler, enabled):
-    """Add or remove exported items to My List, if enabled in settings"""
-    operation = {
-        'export_item': 'add',
-        'remove_item': 'remove'}.get(task_handler.__name__)
-    if enabled and operation and g.ADDON.getSettingBool('lib_sync_mylist'):
-        common.info('Syncing my list due to change of Kodi library')
-        api.update_my_list(videoid, operation)
 
 
 def sync_mylist_to_library():
@@ -165,7 +147,6 @@ def sync_mylist_to_library():
     for videoid in api.mylist_items_switch_profiles():
         execute_library_tasks(videoid, [export_item],
                               common.get_local_string(30018),
-                              sync_mylist=False,
                               nfo_settings=nfo_settings)
 
 
@@ -176,13 +157,11 @@ def purge():
     for videoid_value in g.SHARED_DB.get_movies_id_list():
         videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
         execute_library_tasks(videoid, [remove_item],
-                              common.get_local_string(30030),
-                              sync_mylist=False)
+                              common.get_local_string(30030))
     for videoid_value in g.SHARED_DB.get_tvshows_id_list():
         videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
         execute_library_tasks(videoid, [remove_item],
-                              common.get_local_string(30030),
-                              sync_mylist=False)
+                              common.get_local_string(30030))
     # If for some reason such as improper use of the add-on, unexpected error or other
     # has caused inconsistencies with the contents of the database or stored files,
     # make sure that everything is removed

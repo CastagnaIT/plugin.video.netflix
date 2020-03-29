@@ -17,11 +17,10 @@ from resources.lib.kodi.library import is_in_library
 
 
 def ctx_item_url(paths, mode=g.MODE_ACTION):
-    """Return a function that builds an URL from a videoid
-    for the predefined path"""
-    def ctx_url_builder(videoid):
+    """Return a function that builds an URL from a videoid for the predefined path"""
+    def ctx_url_builder(videoid, params):
         """Build a context menu item URL"""
-        return common.build_url(paths, videoid, mode=mode)
+        return common.build_url(paths, videoid, params, mode=mode)
     return ctx_url_builder
 
 
@@ -78,7 +77,7 @@ def generate_context_menu_mainmenu(menu_id):
     return items
 
 
-def generate_context_menu_items(videoid):
+def generate_context_menu_items(videoid, perpetual_range_start=None):
     """Generate context menu items for a listitem"""
     items = _generate_library_ctx_items(videoid)
 
@@ -98,7 +97,7 @@ def generate_context_menu_items(videoid):
         list_action = ('remove_from_list'
                        if videoid in api.mylist_items()
                        else 'add_to_list')
-        items.insert(0, _ctx_item(list_action, videoid))
+        items.insert(0, _ctx_item(list_action, videoid, {'perpetual_range_start': perpetual_range_start}))
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
         # Add menu to allow change manually the watched status when progress manager is enabled
@@ -144,8 +143,8 @@ def _generate_library_ctx_items(videoid):
     return [_ctx_item(action, videoid) for action in library_actions]
 
 
-def _ctx_item(template, videoid):
+def _ctx_item(template, videoid, params=None):
     """Create a context menu item based on the given template and videoid"""
     return (CONTEXT_MENU_ACTIONS[template]['label'],
             common.run_plugin_action(
-                CONTEXT_MENU_ACTIONS[template]['url'](videoid)))
+                CONTEXT_MENU_ACTIONS[template]['url'](videoid, params)))

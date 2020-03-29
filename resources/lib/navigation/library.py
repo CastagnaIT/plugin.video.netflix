@@ -66,7 +66,6 @@ class LibraryActionExecutor(object):
         nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
         library.execute_library_tasks_silently(
             videoid, [library.export_item],
-            sync_mylist=self.params.get('sync_mylist', False),
             nfo_settings=nfo_settings)
 
     @common.inject_video_id(path_offset=1)
@@ -75,8 +74,7 @@ class LibraryActionExecutor(object):
         (without GUI feedback). This will ignore the setting for syncing my
         list and Kodi library and do no sync, if not explicitly asked to."""
         library.execute_library_tasks_silently(
-            videoid, [library.remove_item],
-            sync_mylist=self.params.get('sync_mylist', False))
+            videoid, [library.remove_item])
 
     # Not used for now
     # @common.inject_video_id(path_offset=1)
@@ -85,8 +83,7 @@ class LibraryActionExecutor(object):
     #    (without GUI feedback). This will ignore the setting for syncing my
     #    list and Kodi library and do no sync, if not explicitly asked to."""
     #    library.execute_library_tasks_silently(
-    #        videoid, [library.remove_item, library.export_item],
-    #        sync_mylist=self.params.get('sync_mylist', False))
+    #        videoid, [library.remove_item, library.export_item])
 
     def sync_mylist(self, pathitems):  # pylint: disable=unused-argument
         """
@@ -146,8 +143,7 @@ class LibraryActionExecutor(object):
         """Migrate exported items from old library format to the new format"""
         for videoid in library_items.get_previously_exported_items():
             library.execute_library_tasks(videoid, [library.export_item],
-                                          common.get_local_string(30018),
-                                          sync_mylist=False)
+                                          common.get_local_string(30018))
 
     @common.inject_video_id(path_offset=1)
     def export_new_episodes(self, videoid):

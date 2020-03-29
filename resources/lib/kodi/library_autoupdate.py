@@ -76,7 +76,7 @@ def auto_update_library(sync_with_mylist, silent):
                     continue
                 # The tv show no more exist in My List so remove it from library
                 videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
-                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+                execute_lib_tasks_method(videoid, [remove_item])
 
             # Check if movies have been removed from the My List
             for videoid_value in exported_movies_videoids_values:
@@ -84,7 +84,7 @@ def auto_update_library(sync_with_mylist, silent):
                     continue
                 # The movie no more exist in My List so remove it from library
                 videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
-                execute_lib_tasks_method(videoid, [remove_item], sync_mylist=False)
+                execute_lib_tasks_method(videoid, [remove_item])
 
             # Add missing tv shows / movies of My List to library
             for videoid in mylist_videoids:
@@ -150,8 +150,6 @@ def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent
         if videoid.mediatype == common.VideoId.SHOW:
             export_new_episodes(videoid, silent, nfo_settings)
         if videoid.mediatype == common.VideoId.MOVIE:
-            execute_lib_tasks_method(videoid, [export_item],
-                                     sync_mylist=False,
-                                     nfo_settings=nfo_settings)
+            execute_lib_tasks_method(videoid, [export_item], nfo_settings=nfo_settings)
         # Add some randomness between operations to limit servers load and ban risks
         xbmc.sleep(random.randint(1000, 5001))

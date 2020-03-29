@@ -249,10 +249,10 @@ def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
 
 @custom_viewmode(g.VIEW_SHOW)
 @common.time_execution(immediate=False)
-def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
+def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None, perpetual_range_start=None):
     """Build a video listing"""
     params = get_param_watched_status_by_profile()
-    directory_items = [_create_video_item(videoid_value, video, video_list, menu_data, params)
+    directory_items = [_create_video_item(videoid_value, video, video_list, menu_data, params, perpetual_range_start)
                        for videoid_value, video
                        in list(video_list.videos.items())]
     # If genre_id exists add possibility to browse lolomos subgenres
@@ -291,7 +291,7 @@ def build_video_listing(video_list, menu_data, pathitems=None, genre_id=None):
 
 
 @common.time_execution(immediate=False)
-def _create_video_item(videoid_value, video, video_list, menu_data, params):
+def _create_video_item(videoid_value, video, video_list, menu_data, params, perpetual_range_start):
     """Create a tuple that can be added to a Kodi directory that represents
     a video as listed in a videolist"""
     is_movie = video['summary']['type'] == 'movie'
@@ -305,7 +305,7 @@ def _create_video_item(videoid_value, video, video_list, menu_data, params):
                                  if is_movie
                                  else g.MODE_DIRECTORY),
                            params=params)
-    list_item.addContextMenuItems(generate_context_menu_items(videoid))
+    list_item.addContextMenuItems(generate_context_menu_items(videoid, perpetual_range_start))
     return (url, list_item, not is_movie)
 
 
