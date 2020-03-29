@@ -8,6 +8,11 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+# Note: This module is used to dynamically generate return exceptions for IPC Http (see _raise_for_error in ipc.py)
+
+
+class InvalidPathError(Exception):
+    """The requested path is invalid and could not be routed"""
 
 
 class MissingCredentialsError(Exception):
@@ -70,3 +75,11 @@ class NotConnected(Exception):
 
 class MetadataNotAvailable(Exception):
     """Metadata not found"""
+
+
+class CacheMiss(Exception):
+    """The Requested item is not in the cache"""
+
+
+class UnknownCacheBucketError(Exception):
+    """The requested cache bucket does not exist"""

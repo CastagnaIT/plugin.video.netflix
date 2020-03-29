@@ -36,4 +36,3 @@ if run_addon._check_valid_credentials():  # pylint: disable=protected-access
         from resources.lib.config_wizard import run_addon_configuration  # pylint: disable=wrong-import-position
         run_addon_configuration()
     run_addon.route(path.split('/'))
-run_addon.g.CACHE.commit()

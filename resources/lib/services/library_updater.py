@@ -50,8 +50,8 @@ class LibraryUpdateService(xbmc.Monitor):
         if not self.enabled:
             return
         if (self.next_schedule is not None
-                and self.is_idle()
-                and self.next_schedule <= datetime.now()):
+                and self.next_schedule <= datetime.now()
+                and self.is_idle()):
             common.debug('Triggering auto update library')
             xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/service_auto_upd_run_now/)'
                                 .format(g.ADDON_ID))

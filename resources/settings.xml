@@ -139,8 +139,8 @@
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
     <setting label="30117" type="lsep"/><!--Cache-->
-    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="120"/>
-    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
+    <setting id="cache_ttl" type="slider" option="int" range="5,5,2880" label="30084" default="180"/>
+    <setting id="cache_metadata_ttl" type="slider" option="int" range="1,1,60" label="30085" default="30"/>
     <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
     <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/?on_disk=True)"/>
   </category>

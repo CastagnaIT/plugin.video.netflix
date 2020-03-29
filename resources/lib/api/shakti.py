@@ -8,23 +8,24 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 from functools import wraps
+
 from future.utils import iteritems
 
+import resources.lib.common as common
+import resources.lib.kodi.ui as ui
+from resources.lib.common import cache_utils
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
-import resources.lib.common as common
-import resources.lib.cache as cache
-import resources.lib.kodi.ui as ui
-
 from .data_types import (LoLoMo, VideoList, VideoListSorted, SeasonList, EpisodeList,
                          SearchVideoList, CustomVideoList, SubgenreList)
+from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
+                         MetadataNotAvailable, CacheMiss)
 from .paths import (VIDEO_LIST_PARTIAL_PATHS, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                     GENRE_PARTIAL_PATHS, RANGE_SELECTOR, MAX_PATH_REQUEST_SIZE,
                     TRAILER_PARTIAL_PATHS, EVENT_PATHS)
-from .exceptions import (InvalidVideoListTypeError, APIError, MissingCredentialsError,
-                         MetadataNotAvailable)
 from .website import parse_profiles
 
 
@@ -43,12 +44,11 @@ def catch_api_errors(func):
 def logout():
     """Logout of the current account"""
     common.make_call('logout', g.BASE_URL)
-    g.CACHE.invalidate()
+    g.CACHE.clear()
 
 
 def login(ask_credentials=True):
     """Perform a login"""
-    g.CACHE.invalidate()
     try:
         if ask_credentials:
             ui.ask_credentials()
@@ -79,11 +79,10 @@ def activate_profile(profile_guid):
     common.make_call('activate_profile', profile_guid)
     if g.ADDON.getSettingBool('ProgressManager_enabled'):
         save_current_lolomo_data()
-    g.CACHE.invalidate()
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='root_lists')
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='root_lists')
 def root_lists():
     """Retrieve initial video lists to display on homepage"""
     common.debug('Requesting root lists from API')
@@ -194,7 +193,7 @@ def update_videoid_bookmark(video_id):
                              time=10000)
 
 
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_type')
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='list_type')
 def list_id_for_type(list_type):
     """Return the dynamic video list ID for a video list of known type"""
     try:
@@ -208,7 +207,7 @@ def list_id_for_type(list_type):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='list_id', save_call_data=True)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='list_id')
 def video_list(list_id, perpetual_range_start=None):
     """Retrieve a single video list
     some of this type of request seems to have results fixed at ~40 from netflix
@@ -226,8 +225,8 @@ def video_list(list_id, perpetual_range_start=None):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='context_id',
-                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='context_id',
+                          identify_append_from_kwarg_name='perpetual_range_start')
 def video_list_sorted(context_name, context_id=None, perpetual_range_start=None, menu_data=None):
     """Retrieve a single video list sorted
     this type of request allows to obtain more than ~40 results
@@ -283,7 +282,7 @@ def chunked_custom_video_list(chunked_video_list):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_GENRES, identify_from_kwarg_name='genre_id')
+@cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id')
 def genre(genre_id):
     """Retrieve LoLoMos for the given genre"""
     common.debug('Requesting LoLoMos for genre {}', genre_id)
@@ -309,7 +308,7 @@ def subgenre(genre_id):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON)
 def seasons(videoid):
     """Retrieve seasons of a TV show"""
     if videoid.mediatype != common.VideoId.SHOW:
@@ -325,8 +324,8 @@ def seasons(videoid):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON, identify_from_kwarg_name='videoid_value',
-                    identify_append_from_kwarg_name='perpetual_range_start', save_call_data=True)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='videoid_value',
+                          identify_append_from_kwarg_name='perpetual_range_start')
 def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: disable=unused-argument
     """Retrieve episodes of a season"""
     if videoid.mediatype != common.VideoId.SEASON:
@@ -347,7 +346,7 @@ def episodes(videoid, videoid_value, perpetual_range_start=None):  # pylint: dis
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_SUPPLEMENTAL)
+@cache_utils.cache_output(cache_utils.CACHE_SUPPLEMENTAL)
 def supplemental_video_list(videoid, supplemental_type):
     """Retrieve a supplemental video list"""
     if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
@@ -362,7 +361,7 @@ def supplemental_video_list(videoid, supplemental_type):
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_COMMON)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON)
 def single_info(videoid):
     """Retrieve info for a single episode"""
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE,
@@ -414,7 +413,7 @@ def custom_video_list_basicinfo(context_name, switch_profiles=False):
 # We can not have the changes in real-time, if my-list is modified using other apps,
 # every 10 minutes will be updated with the new data
 # Never disable the cache to this function, it would cause plentiful requests to the service!
-@cache.cache_output(cache.CACHE_COMMON, fixed_identifier='my_list_items', ttl=600)
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='my_list_items', ttl=600)
 def mylist_items():
     """Return a list of all the items currently contained in my list"""
     common.debug('Try to perform a request to get the id list of the videos in my list')
@@ -516,23 +515,23 @@ def update_my_list(videoid, operation):
         # This is necessary to have the my-list menu updated when you open it
         if operation == 'remove':
             # Delete item manually to speedup operations on page load
-            cached_video_list_sorted = g.CACHE.get(cache.CACHE_COMMON, 'mylist')
+            cached_video_list_sorted = g.CACHE.get(cache_utils.CACHE_COMMON, 'mylist')
             del cached_video_list_sorted.videos[videoid.value]
         else:
             # Force reload items on page load
-            g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'mylist')
-    except cache.CacheMiss:
+            g.CACHE.delete(cache_utils.CACHE_COMMON, 'mylist')
+    except CacheMiss:
         pass
     # Invalidate my_list_items to allow reload updated my_list_items results when page refresh
-    g.CACHE.invalidate_entry(cache.CACHE_COMMON, 'my_list_items')
+    g.CACHE.delete(cache_utils.CACHE_COMMON, 'my_list_items')
 
 
 @common.time_execution(immediate=False)
 def metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
-    # Invalidate cache if we need to refresh the all metadata
+    # Delete the cache if we need to refresh the all metadata
     if refresh:
-        g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid, True)
+        g.CACHE.delete(cache_utils.CACHE_METADATA, videoid)
     metadata_data = {}, None
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
         metadata_data = _metadata(videoid), None
@@ -543,11 +542,11 @@ def metadata(videoid, refresh=False):
             metadata_data = _episode_metadata(videoid)
         except KeyError as exc:
             # Episode metadata may not exist if its a new episode and cached
-            # data is outdated. In this case, invalidate the cache entry and
+            # data is outdated. In this case, delete the cache entry and
             # try again safely (if it doesn't exist this time, there is no
             # metadata for the episode, so we assign an empty dict).
             common.debug('{}, refreshing cache', exc)
-            g.CACHE.invalidate_entry(cache.CACHE_METADATA, videoid.tvshowid)
+            g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.tvshowid)
             try:
                 metadata_data = _episode_metadata(videoid)
             except KeyError as exc:
@@ -558,14 +557,12 @@ def metadata(videoid, refresh=False):
 @common.time_execution(immediate=False)
 def _episode_metadata(videoid):
     show_metadata = _metadata(videoid)
-    episode_metadata, season_metadata = common.find_episode_metadata(
-        videoid, show_metadata)
+    episode_metadata, season_metadata = common.find_episode_metadata(videoid, show_metadata)
     return episode_metadata, season_metadata, show_metadata
 
 
 @common.time_execution(immediate=False)
-@cache.cache_output(cache.CACHE_METADATA, identify_from_kwarg_name='video_id',
-                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
+@cache_utils.cache_output(cache_utils.CACHE_METADATA, identify_from_kwarg_name='video_id')
 def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added

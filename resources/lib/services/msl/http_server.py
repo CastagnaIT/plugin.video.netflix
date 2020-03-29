@@ -45,6 +45,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             common.debug('Handling HTTP POST IPC call to {}', url_parse.path)
             if '/license' not in url_parse:
                 self.send_response(404)
+                self.end_headers()
                 return
             length = int(self.headers.get('content-length', 0))
             data = self.rfile.read(length).decode('utf-8').split('!')
@@ -57,6 +58,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             import traceback
             common.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
+            self.end_headers()
 
     def do_GET(self):
         """Loads the XML manifest for the requested resource"""
@@ -65,6 +67,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             common.debug('Handling HTTP GET IPC call to {}', url_parse.path)
             if '/manifest' not in url_parse:
                 self.send_response(404)
+                self.end_headers()
                 return
             params = parse_qs(url_parse.query)
             data = self.server.msl_handler.load_manifest(int(params['id'][0]))
@@ -76,6 +79,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             import traceback
             common.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
+            self.end_headers()
 
     def log_message(self, *args):  # pylint: disable=arguments-differ
         """Disable the BaseHTTPServer Log"""

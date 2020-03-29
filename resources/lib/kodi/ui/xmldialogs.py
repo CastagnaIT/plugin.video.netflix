@@ -153,8 +153,8 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
                                 False, True)
             # I make sure that the metadata are removed,
             # otherwise you get inconsistencies with the request of the pin
-            from resources.lib.cache import CACHE_METADATA
-            g.CACHE.invalidate(True, [CACHE_METADATA])
+            from resources.lib.common.cache_utils import CACHE_METADATA
+            g.CACHE.clear([CACHE_METADATA])
             self.close()
         if controlID in [10029, 100]:  # Close dialog
             self.close()

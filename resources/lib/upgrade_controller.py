@@ -61,7 +61,7 @@ def _perform_addon_changes(previous_ver, current_ver):
                'Therefore only in case you are using auto-update must be reconfigured.')
         ui.show_ok_dialog('Netflix upgrade', msg)
     # Clear cache (prevents problems when netflix change data structures)
-    g.CACHE.invalidate(True)
+    g.CACHE.clear()
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
 
@@ -71,6 +71,8 @@ def _perform_service_changes(previous_ver, current_ver):
     from resources.lib.common import debug
     debug('Initialize service upgrade operations, from version {} to {})',
           previous_ver, current_ver)
+    from resources.lib.upgrade_actions import delete_cache_folder
+    delete_cache_folder()
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('service_previous_version', current_ver)
 

@@ -12,6 +12,8 @@ from __future__ import absolute_import, division, unicode_literals
 from xbmcgui import Window
 
 import resources.lib.common as common
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS
+from resources.lib.globals import g
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
 from .action_manager import PlaybackActionManager
 
@@ -22,6 +24,7 @@ class ProgressManager(PlaybackActionManager):
     def __init__(self):  # pylint: disable=super-on-old-class
         super(ProgressManager, self).__init__()
         self.event_data = {}
+        self.videoid = None
         self.is_event_start_sent = False
         self.last_tick_count = 0
         self.tick_elapsed = 0
@@ -36,6 +39,7 @@ class ProgressManager(PlaybackActionManager):
             self.enabled = False
             return
         self.event_data = data['event_data']
+        self.videoid = common.VideoId.from_dict(data['videoid'])
 
     def _on_tick(self, player_state):
         if self.lock_events:
@@ -61,10 +65,8 @@ class ProgressManager(PlaybackActionManager):
                 # Generate events to send to Netflix service every 1 minute (60secs=1m)
                 if (self.tick_elapsed - self.last_tick_count) >= 60:
                     _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
-                    self.last_tick_count = self.tick_elapsed
-                # On Kodi we can save every second instead every minute, but only after the first minute
-                if self.last_tick_count:
                     self._save_resume_time(player_state['elapsed_seconds'])
+                    self.last_tick_count = self.tick_elapsed
         self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
@@ -74,6 +76,7 @@ class ProgressManager(PlaybackActionManager):
         self._reset_tick_count()
         self.is_player_in_pause = True
         _send_event(EVENT_ENGAGE, self.event_data, player_state)
+        self._save_resume_time(player_state['elapsed_seconds'])
 
     def on_playback_resume(self, player_state):
         self.is_player_in_pause = False
@@ -95,17 +98,14 @@ class ProgressManager(PlaybackActionManager):
         _send_event(EVENT_STOP, self.event_data, self.last_player_state)
 
     def _save_resume_time(self, resume_time):
-        """Save resume time in order to modify the frontend cache"""
+        """Save resume time value in order to update the infolabel cache"""
         # Why this, the video lists are requests to the web service only once and then will be cached in order to
         # quickly get the data and speed up a lot the GUI response.
         # Watched status of a (video) list item is based on resume time, and the resume time is saved in the cache data.
         # To avoid slowing down the GUI by invalidating the cache to get new data from website service, one solution is
-        # modify the cache data.
-        # Altering here the cache on the fly is not possible because it is currently not shared between service-frontend
-        # therefore we save the value in a Kodi property and we will modify the cache from addon frontend.
-        # The choice to save the value in a Kodi property is to not continuously lock with mutex the database.
+        # save the values in memory and override the bookmark value of the infolabel.
         # The callback _on_playback_stopped can not be used, because the loading of frontend happen before.
-        self.window_cls.setProperty('nf_playback_resume_time', str(resume_time))
+        g.CACHE.add(CACHE_BOOKMARKS, self.videoid.value, resume_time)
 
     def _reset_tick_count(self):
         self.tick_elapsed = 0

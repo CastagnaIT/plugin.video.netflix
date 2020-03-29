@@ -35,7 +35,6 @@ class Signals(object):  # pylint: disable=no-init
     RELEASE_LICENSE = 'release_license'
     LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
     UPNEXT_ADDON_INIT = 'upnext_data'
-    INVALIDATE_SERVICE_CACHE = 'invalidate_service_cache'
     QUEUE_VIDEO_EVENT = 'queue_video_event'
     CLEAR_USER_ID_TOKENS = 'clean_user_id_tokens'
     REINITIALIZE_MSL_HANDLER = 'reinitialize_msl_handler'
@@ -88,8 +87,7 @@ def make_call(callname, data=None):
 
 def make_http_call(callname, data):
     """Make an IPC call via HTTP and wait for it to return.
-    The contents of data will be expanded to kwargs and passed into the target
-    function."""
+    The contents of data will be expanded to kwargs and passed into the target function."""
     from collections import OrderedDict
     try:  # Python 3
         from urllib.request import build_opener, install_opener, ProxyHandler, URLError, urlopen
@@ -97,17 +95,40 @@ def make_http_call(callname, data):
         from urllib2 import build_opener, install_opener, ProxyHandler, URLError, urlopen
     import json
     debug('Handling HTTP IPC call to {}'.format(callname))
-    # don't use proxy for localhost
-    url = 'http://127.0.0.1:{}/{}'.format(
-        g.LOCAL_DB.get_value('ns_service_port', 8001), callname)
-    install_opener(build_opener(ProxyHandler({})))
+    # Note: Using 'localhost' here slowdown the call, not sure if it is an urllib issue
+    url = 'http://127.0.0.1:{}/{}'.format(g.LOCAL_DB.get_value('ns_service_port', 8001), callname)
+    install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
         result = json.loads(
             urlopen(url=url, data=json.dumps(data).encode('utf-8'), timeout=16).read(),
             object_pairs_hook=OrderedDict)
-    except URLError:
-        raise BackendNotReady
+    except URLError as exc:
+        raise BackendNotReady('The service has returned: {}'.format(exc.reason))
     _raise_for_error(callname, result)
+    return result
+
+
+def make_http_call_cache(callname, params, data):
+    """Make an IPC call via HTTP and wait for it to return.
+    The contents of data will be expanded to kwargs and passed into the target function."""
+    try:  # Python 3
+        from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
+    except ImportError:  # Python 2
+        from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
+    import json
+    # debug('Handling HTTP IPC call to {}'.format(callname))
+    # Note: Using 'localhost' here slowdown the call, not sure if it is an urllib issue
+    url = 'http://127.0.0.1:{}/{}'.format(g.LOCAL_DB.get_value('cache_service_port', 8002), callname)
+    install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
+    r = Request(url=url, data=data, headers={'Params': json.dumps(params)})
+    try:
+        result = urlopen(r, timeout=16).read()
+    except HTTPError as exc:
+        if not exc.reason == 'CacheMiss':
+            error('IPC call {} returned error {}'.format(callname, exc.reason))
+        raise apierrors.__dict__[exc.reason]()
+    except URLError as exc:
+        raise BackendNotReady('The service has returned: {}'.format(exc.reason))
     return result
 
 
@@ -129,9 +150,9 @@ def make_addonsignals_call(callname, data):
 
 def _raise_for_error(callname, result):
     if isinstance(result, dict) and 'error' in result:
-        error('IPC call {callname} returned {error}: {message}'
-              .format(callname=callname, **result))
         try:
+            if not result['error'] == 'CacheMiss':
+                error('IPC call {callname} returned {error}: {message}'.format(callname=callname, **result))
             raise apierrors.__dict__[result['error']](result['message'])
         except KeyError:
             raise Exception(result['error'])
@@ -144,10 +165,9 @@ def addonsignals_return_call(func):
     def make_return_call(instance, data):
         """Makes func return callable through AddonSignals and
         handles catching, conversion and forwarding of exceptions"""
-        # pylint: disable=broad-except
         try:
             result = call(instance, func, data)
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
             error(traceback.format_exc())

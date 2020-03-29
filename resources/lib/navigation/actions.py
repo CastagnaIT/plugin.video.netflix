@@ -122,17 +122,15 @@ class AddonActionExecutor(object):
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
-        g.CACHE.invalidate(self.params.get('on_disk', False))
-        common.send_signal(signal=common.Signals.INVALIDATE_SERVICE_CACHE,
-                           data={'on_disk': self.params.get('on_disk', False), 'bucket_names': None})
+        g.CACHE.clear(clear_database=self.params.get('on_disk', False))
         if not self.params.get('no_notification', False):
             ui.show_notification(common.get_local_string(30135))
 
     def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        from resources.lib.cache import CACHE_COMMON
-        g.CACHE.invalidate_entry(CACHE_COMMON, 'mylist')
-        g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+        from resources.lib.common.cache_utils import CACHE_COMMON
+        g.CACHE.delete(CACHE_COMMON, 'mylist')
+        g.CACHE.delete(CACHE_COMMON, 'my_list_items')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""

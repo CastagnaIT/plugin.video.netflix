@@ -16,7 +16,7 @@ from xbmcgui import Window
 from resources.lib.globals import g
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
-                                  get_current_kodi_profile_name, update_cache_videoid_runtime)
+                                  get_current_kodi_profile_name)
 from resources.lib.upgrade_controller import check_addon_upgrade
 
 
@@ -62,10 +62,20 @@ def route(pathitems):
         return
     nav_handler = _get_nav_handler(root_handler)
     if not nav_handler:
-        from resources.lib.navigation import InvalidPathError
+        from resources.lib.api.exceptions import InvalidPathError
         raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
-    from resources.lib.navigation import execute
-    execute(_get_nav_handler(root_handler), pathitems[1:], g.REQUEST_PARAMS)
+    _execute(nav_handler, pathitems[1:], g.REQUEST_PARAMS)
+
+
+def _execute(executor_type, pathitems, params):
+    """Execute an action as specified by the path"""
+    try:
+        executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
+    except AttributeError:
+        from resources.lib.api.exceptions import InvalidPathError
+        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
+    debug('Invoking action executor {}', executor.__name__)
+    executor(pathitems=pathitems)
 
 
 def _check_addon_external_call(window_cls, prop_nf_service_status):
@@ -177,8 +187,6 @@ def run(argv):
                     if check_addon_upgrade():
                         from resources.lib.config_wizard import run_addon_configuration
                         run_addon_configuration()
-                if not is_external_call:
-                    update_cache_videoid_runtime(window_cls)
                 route([part for part in g.PATH.split('/') if part])
             else:
                 success = False
@@ -195,6 +203,4 @@ def run(argv):
 
     if not success:
         _handle_endofdirectory()
-
-    g.CACHE.commit()
     log_time_trace()

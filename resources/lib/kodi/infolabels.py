@@ -15,9 +15,10 @@ from future.utils import iteritems, itervalues
 
 import resources.lib.api.paths as paths
 import resources.lib.api.shakti as api
-import resources.lib.cache as cache
 import resources.lib.common as common
 import resources.lib.kodi.library as library
+from resources.lib.api.exceptions import CacheMiss
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
 from resources.lib.globals import g
 
 try:  # Python 2
@@ -41,16 +42,15 @@ COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
 
 def get_info(videoid, item, raw_data):
     """Get the infolabels data"""
-    cache_identifier = unicode(videoid) + '_' + g.LOCAL_DB.get_profile_config('language', '')
+    cache_identifier = videoid.value + '_' + g.LOCAL_DB.get_profile_config('language', '')
     try:
-        cache_entry = g.CACHE.get(cache.CACHE_INFOLABELS, cache_identifier)
+        cache_entry = g.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
-    except cache.CacheMiss:
+    except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        g.CACHE.add(cache.CACHE_INFOLABELS, cache_identifier,
-                    {'infos': infos, 'quality_infos': quality_infos},
-                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
+        g.CACHE.add(CACHE_INFOLABELS, cache_identifier,
+                    {'infos': infos, 'quality_infos': quality_infos})
     return infos, quality_infos
 
 
@@ -100,12 +100,12 @@ def _add_supplemental_plot_info(item, infos_copy):
 
 def get_art(videoid, item, raw_data=None):
     """Get art infolabels"""
+    cache_identifier = videoid.value
     try:
-        art = g.CACHE.get(cache.CACHE_ARTINFO, videoid)
-    except cache.CacheMiss:
+        art = g.CACHE.get(CACHE_ARTINFO, cache_identifier)
+    except CacheMiss:
         art = parse_art(videoid, item, raw_data)
-        g.CACHE.add(cache.CACHE_ARTINFO, videoid, art,
-                    ttl=g.CACHE_METADATA_TTL, to_disk=True)
+        g.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
     return art
 
 
@@ -395,10 +395,17 @@ def _set_progress_status(list_item, video_data, infos):
         if video_data.get('creditsOffset') and video_data['creditsOffset'] < watched_threshold:
             watched_threshold = video_data['creditsOffset']
 
-        # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
-        playcount = '1' if video_data['bookmarkPosition'] >= watched_threshold else '0'
-        if playcount == '0' and video_data['bookmarkPosition'] > 0:
-            resume_time = video_data['bookmarkPosition']
+        # To avoid asking to the server again the entire list of titles (after watched a video)
+        # to get the updated value, we override the value with the value saved in memory (see progress_manager.py)
+        try:
+            bookmark_position = g.CACHE.get(CACHE_BOOKMARKS, video_id)
+        except CacheMiss:
+            # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
+            bookmark_position = video_data['bookmarkPosition']
+
+        playcount = '1' if bookmark_position >= watched_threshold else '0'
+        if playcount == '0' and bookmark_position > 0:
+            resume_time = bookmark_position
     else:
         playcount = '1' if override_is_watched else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug

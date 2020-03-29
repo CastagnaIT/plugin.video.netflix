@@ -250,6 +250,8 @@ class VideoId(object):
 
     def __eq__(self, other):
         # pylint: disable=protected-access
+        if not isinstance(other, VideoId):
+            return False
         return self._id_values == other._id_values
 
     def __neq__(self, other):
