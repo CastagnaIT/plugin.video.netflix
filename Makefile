@@ -24,10 +24,6 @@ test: check test-unit test-service test-run
 
 check: check-tox check-pylint check-translations
 
-test: sanity unit
-
-sanity: tox pylint language
-
 check-tox:
 	@echo -e "$(white)=$(blue) Starting sanity tox test$(reset)"
 	$(PYTHON) -m tox -q -e
