@@ -12,8 +12,8 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 from sys import version_info
 
-import xbmc
 from future.utils import iteritems
+import xbmc
 from resources.lib.globals import g
 
 if version_info.major == 3 and version_info.minor >= 3:
