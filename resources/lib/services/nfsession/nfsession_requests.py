@@ -11,7 +11,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from sys import version_info
 
 import requests
 
@@ -27,12 +26,12 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import (NFSessionBase,
                                                              needs_login)
 
-if version_info.major == 3 and version_info.minor >= 3:
+try:
     from time import perf_counter
 
     def clock():
         return perf_counter() * 1.0e-6
-else:
+except ImportError:
     from time import clock
 
 BASE_URL = 'https://www.netflix.com'

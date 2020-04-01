@@ -27,12 +27,12 @@ from resources.lib.services.msl.msl_utils import (ENDPOINTS, EVENT_BIND,
                                                   display_error_info,
                                                   generate_logblobs_params)
 
-if version_info.major == 3 and version_info.minor >= 3:
+try:
     from time import perf_counter, time
 
     def clock():
         return perf_counter() * 1.0e-6
-else:
+except ImportError:
     from time import clock, time
 
 try:  # Python 2
