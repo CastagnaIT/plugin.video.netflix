@@ -13,7 +13,14 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 import re
-import time
+from sys import version_info
+if version_info.major == 3 and version_info.minor >= 3:
+    from time import perf_counter, time
+
+    def clock():
+        return perf_counter() * 1.0e-6
+else:
+    from time import clock, time
 import zlib
 
 import requests
@@ -102,7 +109,7 @@ class MSLRequests(MSLRequestBuilder):
     def _check_mastertoken_validity(self):
         """Return the mastertoken validity and executes a new key handshake when necessary"""
         if self.crypto.mastertoken:
-            time_now = time.time()
+            time_now = time()
             renewable = self.crypto.renewal_window < time_now
             expired = self.crypto.expiration <= time_now
         else:
@@ -177,9 +184,9 @@ class MSLRequests(MSLRequestBuilder):
     def _post(self, endpoint, request_data):
         """Execute a post request"""
         common.debug('Executing POST request to {}', endpoint)
-        start = time.clock()
+        start = clock()
         response = self.session.post(endpoint, request_data)
-        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request took {}s', clock() - start)
         common.debug('Request returned response with status {}', response.status_code)
         response.raise_for_status()
         return response

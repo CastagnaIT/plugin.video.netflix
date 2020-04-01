@@ -9,8 +9,14 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
-from time import clock
+from sys import version_info
+if version_info.major == 3 and version_info.minor >= 3:
+    from time import perf_counter
 
+    def clock():
+        return perf_counter() * 1.0e-6
+else:
+    from time import clock
 from future.utils import iteritems
 
 import xbmc
