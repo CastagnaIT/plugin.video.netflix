@@ -8,8 +8,14 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 from functools import wraps
 from sys import version_info
+
+import xbmc
+from future.utils import iteritems
+from resources.lib.globals import g
+
 if version_info.major == 3 and version_info.minor >= 3:
     from time import perf_counter
 
@@ -17,11 +23,6 @@ if version_info.major == 3 and version_info.minor >= 3:
         return perf_counter() * 1.0e-6
 else:
     from time import clock
-from future.utils import iteritems
-
-import xbmc
-
-from resources.lib.globals import g
 
 __LOG_LEVEL__ = None
 

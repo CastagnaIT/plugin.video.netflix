@@ -13,15 +13,8 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 import re
-from sys import version_info
-if version_info.major == 3 and version_info.minor >= 3:
-    from time import perf_counter, time
-
-    def clock():
-        return perf_counter() * 1.0e-6
-else:
-    from time import clock, time
 import zlib
+from sys import version_info
 
 import requests
 
@@ -29,8 +22,18 @@ import resources.lib.common as common
 from resources.lib.globals import g
 from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
-                                                  MSL_DATA_FILENAME)
+from resources.lib.services.msl.msl_utils import (ENDPOINTS, EVENT_BIND,
+                                                  MSL_DATA_FILENAME,
+                                                  display_error_info,
+                                                  generate_logblobs_params)
+
+if version_info.major == 3 and version_info.minor >= 3:
+    from time import perf_counter, time
+
+    def clock():
+        return perf_counter() * 1.0e-6
+else:
+    from time import clock, time
 
 try:  # Python 2
     from urllib import urlencode

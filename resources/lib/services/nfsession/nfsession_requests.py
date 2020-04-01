@@ -10,7 +10,23 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import json
 from sys import version_info
+
+import requests
+
+import resources.lib.api.website as website
+import resources.lib.common as common
+from resources.lib.api.exceptions import (APIError,
+                                          InvalidMembershipStatusAnonymous,
+                                          InvalidMembershipStatusError,
+                                          LoginValidateErrorIncorrectPassword,
+                                          WebsiteParsingError)
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
+from resources.lib.services.nfsession.nfsession_base import (NFSessionBase,
+                                                             needs_login)
+
 if version_info.major == 3 and version_info.minor >= 3:
     from time import perf_counter
 
@@ -18,17 +34,6 @@ if version_info.major == 3 and version_info.minor >= 3:
         return perf_counter() * 1.0e-6
 else:
     from time import clock
-import json
-import requests
-
-import resources.lib.common as common
-import resources.lib.api.website as website
-from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
-from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
-                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
-                                          LoginValidateErrorIncorrectPassword)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
