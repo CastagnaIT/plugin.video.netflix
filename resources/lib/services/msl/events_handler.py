@@ -15,7 +15,7 @@ import time
 
 import xbmc
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION

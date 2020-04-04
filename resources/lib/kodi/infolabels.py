@@ -14,7 +14,7 @@ import copy
 from future.utils import iteritems, itervalues
 
 import resources.lib.api.paths as paths
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.library as library
 from resources.lib.api.exceptions import CacheMiss
@@ -40,48 +40,34 @@ JSONRPC_MAPPINGS = {
 COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
 
 
-def get_info(videoid, item, raw_data):
+def get_info(videoid, item, raw_data, profile_language_code=''):
     """Get the infolabels data"""
-    cache_identifier = videoid.value + '_' + g.LOCAL_DB.get_profile_config('language', '')
+    cache_identifier = videoid.value + '_' + profile_language_code
     try:
         cache_entry = g.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        g.CACHE.add(CACHE_INFOLABELS, cache_identifier,
-                    {'infos': infos, 'quality_infos': quality_infos})
+        g.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
     return infos, quality_infos
 
 
-def add_info(videoid, list_item, item, raw_data, handle_highlighted_title=False, skip_set_progress_status=False):
-    """Add infolabels to the list_item. The passed in list_item is modified
-    in place and the infolabels are returned."""
+def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_data):
+    """Add infolabels to a dict_item"""
     infos, quality_infos = get_info(videoid, item, raw_data)
+    dict_item['quality_info'] = quality_infos
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
-    if videoid.mediatype == common.VideoId.EPISODE or \
-       videoid.mediatype == common.VideoId.MOVIE or \
-       videoid.mediatype == common.VideoId.SUPPLEMENTAL:
-        list_item.setProperty('isFolder', 'false')
-        list_item.setProperty('IsPlayable', 'true')
-        # Set the resume and watched status to the list item
-        if not skip_set_progress_status:
-            _set_progress_status(list_item, item, infos_copy)
-    else:
-        list_item.setProperty('isFolder', 'true')
-    for stream_type, quality_infos in iteritems(quality_infos):
-        list_item.addStreamInfo(stream_type, quality_infos)
-    _add_supplemental_plot_info(item, infos_copy)
-    if handle_highlighted_title:
-        add_highlighted_title(list_item, videoid, infos_copy)
-    list_item.setInfo('video', infos_copy)
-    return infos_copy
+
+    _add_supplemental_plot_info(infos_copy, item, common_data)
+    if is_in_mylist and common_data.get('mylist_titles_color'):
+        add_title_color(dict_item, infos_copy, common_data)
+    dict_item['info'] = infos_copy
 
 
-def _add_supplemental_plot_info(item, infos_copy):
+def _add_supplemental_plot_info(infos_copy, item, common_data):
     """Add supplemental info to plot description"""
-    color_index = g.ADDON.getSettingInt('supplemental_info_color')
     suppl_info = []
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
@@ -95,24 +81,22 @@ def _add_supplemental_plot_info(item, infos_copy):
     suppl_text = '[CR][CR]'.join(suppl_info)
     if suppl_text and infos_copy['plot']:
         infos_copy['plot'] += '[CR][CR]'
-    infos_copy['plot'] += _colorize_text(True, color_index, suppl_text)
+    infos_copy['plot'] += _colorize_text(common_data['supplemental_info_color'], suppl_text)
 
 
-def get_art(videoid, item, raw_data=None):
+def get_art(videoid, item, profile_language_code=''):
     """Get art infolabels"""
-    cache_identifier = videoid.value
+    return _get_art(videoid, item or {}, profile_language_code)
+
+
+def _get_art(videoid, item, profile_language_code):
+    # If item is None this method raise TypeError
+    cache_identifier = videoid.value + '_' + profile_language_code
     try:
         art = g.CACHE.get(CACHE_ARTINFO, cache_identifier)
     except CacheMiss:
-        art = parse_art(videoid, item, raw_data)
+        art = parse_art(videoid, item)
         g.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
-    return art
-
-
-def add_art(videoid, list_item, item, raw_data=None):
-    """Add art infolabels to list_item"""
-    art = get_art(videoid, item, raw_data)
-    list_item.setArt(art)
     return art
 
 
@@ -127,17 +111,6 @@ def get_info_for_playback(videoid, skip_add_from_library):
         except library.ItemNotFound:
             common.debug('Can not get infolabels from the library, submit a request to netflix')
     return get_info_from_netflix(videoid)
-
-
-@common.time_execution(immediate=False)
-def add_info_for_playback(videoid, list_item, skip_set_progress_status=False):
-    """Retrieve infolabels and art info and add them to the list_item"""
-    # By getting the info from the library you can not get the length of video required for Up Next addon
-    # try:
-    #     return add_info_from_library(videoid, list_item)
-    # except library.ItemNotFound:
-    #     common.debug('Can not get infolabels from the library, submit a request to netflix')
-    return add_info_from_netflix(videoid, list_item, skip_set_progress_status)
 
 
 def get_resume_info_from_library(videoid):
@@ -171,14 +144,14 @@ def parse_info(videoid, item, raw_data):
     if item.get('watched', False):
         infos['playcount'] = 1
 
-    infos.update(parse_atomic_infos(item))
-    infos.update(parse_referenced_infos(item, raw_data))
-    infos.update(parse_tags(item))
+    infos.update(_parse_atomic_infos(item))
+    infos.update(_parse_referenced_infos(item, raw_data))
+    infos.update(_parse_tags(item))
 
     return infos, get_quality_infos(item)
 
 
-def parse_atomic_infos(item):
+def _parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accessible from the item dict"""
     infos = {target: _get_and_transform(source, target, item)
              for target, source in iteritems(paths.INFO_MAPPINGS)}
@@ -190,7 +163,7 @@ def parse_atomic_infos(item):
 
 
 def _get_and_transform(source, target, item):
-    """Get the value for source and transform it if neccessary"""
+    """Get the value for source and transform it if necessary"""
     value = common.get_path_safe(source, item)
     if isinstance(value, dict) or value is None:
         return ''
@@ -199,7 +172,7 @@ def _get_and_transform(source, target, item):
             else value)
 
 
-def parse_referenced_infos(item, raw_data):
+def _parse_referenced_infos(item, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
     return {target: [person['name']
@@ -208,7 +181,7 @@ def parse_referenced_infos(item, raw_data):
             for target, source in iteritems(paths.REFERENCE_MAPPINGS)}
 
 
-def parse_tags(item):
+def _parse_tags(item):
     """Parse the tags"""
     return {'tag': [tagdef['name']
                     for tagdef
@@ -224,8 +197,7 @@ def get_quality_infos(item):
         quality_infos['video'] = QUALITIES[
             min((delivery.get('hasUltraHD', False) << 1 |
                  delivery.get('hasHD')), 2)]
-        quality_infos['audio'] = {
-            'channels': 2 + 4 * delivery.get('has51Audio', False)}
+        quality_infos['audio'] = {'channels': 2 + 4 * delivery.get('has51Audio', False)}
         if g.ADDON.getSettingBool('enable_dolby_sound'):
             if delivery.get('hasDolbyAtmos', False):
                 quality_infos['audio']['codec'] = 'truehd'
@@ -236,26 +208,26 @@ def get_quality_infos(item):
     return quality_infos
 
 
-def parse_art(videoid, item, raw_data):  # pylint: disable=unused-argument
+def parse_art(videoid, item):
     """Parse art info from a path request response to Kodi art infolabels"""
     boxarts = common.get_multiple_paths(
-        paths.ART_PARTIAL_PATHS[0] + ['url'], item)
+        paths.ART_PARTIAL_PATHS[0] + ['url'], item, {})
     interesting_moment = common.get_multiple_paths(
-        paths.ART_PARTIAL_PATHS[1] + ['url'], item, {}).get(paths.ART_SIZE_FHD)
+        paths.ART_PARTIAL_PATHS[1] + ['url'], item, {})
     clearlogo = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[3] + ['url'], item)
     fanart = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[4] + [0, 'url'], item)
-    return assign_art(videoid,
-                      boxart_large=boxarts[paths.ART_SIZE_FHD],
-                      boxart_small=boxarts[paths.ART_SIZE_SD],
-                      poster=boxarts[paths.ART_SIZE_POSTER],
-                      interesting_moment=interesting_moment,
-                      clearlogo=clearlogo,
-                      fanart=fanart)
+    return _assign_art(videoid,
+                       boxart_large=boxarts.get(paths.ART_SIZE_FHD),
+                       boxart_small=boxarts.get(paths.ART_SIZE_SD),
+                       poster=boxarts.get(paths.ART_SIZE_POSTER),
+                       interesting_moment=interesting_moment.get(paths.ART_SIZE_FHD),
+                       clearlogo=clearlogo,
+                       fanart=fanart)
 
 
-def assign_art(videoid, **kwargs):
+def _assign_art(videoid, **kwargs):
     """Assign the art available from Netflix to appropriate Kodi art"""
     art = {'poster': _best_art([kwargs['poster']]),
            'fanart': _best_art([kwargs['fanart'],
@@ -279,31 +251,17 @@ def _best_art(arts):
 
 
 def get_info_from_netflix(videoid):
-    """Get infolabels with info from Netflix API"""
+    """Get infolabels with info from cache (if exist) or Netflix API"""
+    profile_language_code = g.LOCAL_DB.get_profile_config('language', '')
     try:
-        infos = get_info(videoid, None, None)[0]
-        art = get_art(videoid, None)
+        infos = get_info(videoid, None, None, profile_language_code)[0]
+        art = _get_art(videoid, None, profile_language_code)
         common.debug('Got infolabels and art from cache')
     except (AttributeError, TypeError):
         common.debug('Infolabels or art were not in cache, retrieving from API')
-        api_data = api.single_info(videoid)
-        infos = get_info(videoid, api_data['videos'][videoid.value], api_data)[0]
-        art = get_art(videoid, api_data['videos'][videoid.value])
-    return infos, art
-
-
-def add_info_from_netflix(videoid, list_item, skip_set_progress_status):
-    """Apply infolabels with info from Netflix API"""
-    try:
-        infos = add_info(videoid, list_item, None, None, skip_set_progress_status=skip_set_progress_status)
-        art = add_art(videoid, list_item, None)
-        common.debug('Got infolabels and art from cache')
-    except (AttributeError, TypeError):
-        common.debug('Infolabels or art were not in cache, retrieving from API')
-        api_data = api.single_info(videoid)
-        infos = add_info(videoid, list_item, api_data['videos'][videoid.value], api_data,
-                         skip_set_progress_status=skip_set_progress_status)
-        art = add_art(videoid, list_item, api_data['videos'][videoid.value])
+        raw_data = api.get_video_raw_data(videoid)
+        infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
+        art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
     return infos, art
 
 
@@ -320,64 +278,31 @@ def get_info_from_library(videoid):
     return infos, art
 
 
-def add_info_from_library(videoid, list_item):
-    """Apply infolabels with info from Kodi library"""
-    infos, art = get_info_from_library(videoid)
-    # Resuming for strm files in library is currently broken in all kodi versions
-    # keeping this for reference / in hopes this will get fixed
-    resume = infos.pop('resume', {})
-    # if resume:
-    #     start_percent = resume['position'] / resume['total'] * 100.0
-    #     list_item.setProperty('startPercent', str(start_percent))
-    # WARNING!! Remove unsupported ListItem.setInfo keys from 'details' by using _sanitize_infos
-    # reference to Kodi ListItem.cpp
-    _sanitize_infos(infos)
-    list_item.setInfo('video', infos)
-    list_item.setArt(art)
-    # Workaround for resuming strm files from library
-    infos['resume'] = resume
-    return infos, art
+def add_title_color(dict_item, infos_copy, common_data):
+    """Highlight list item title when the videoid is contained in my-list"""
+    updated_title = _colorize_text(common_data['mylist_titles_color'], infos_copy['title'])
+    if dict_item['is_folder']:
+        dict_item['label'] = updated_title
+    # When a xbmcgui.Listitem is not a folder 'label' is replaced by 'title' property of infoLabel
+    infos_copy['title'] = updated_title
 
 
-def _sanitize_infos(details):
-    for source, target in iteritems(JSONRPC_MAPPINGS):
-        if source in details:
-            details[target] = details.pop(source)
-    for prop in ['file', 'label', 'runtime']:
-        details.pop(prop, None)
-
-
-def add_highlighted_title(list_item, videoid, infos):
-    """Highlight menu item title when the videoid is contained in my-list"""
-    color_index = g.ADDON.getSettingInt('highlight_mylist_titles')
-    if not color_index:
-        return
-    apply_color = videoid in api.mylist_items()
-    if list_item.getProperty('isFolder') == 'true':
-        updated_title = _colorize_text(apply_color,
-                                       color_index,
-                                       g.py2_decode(list_item.getVideoInfoTag().getTitle()))
-        list_item.setLabel(updated_title)
-        infos['title'] = updated_title
-    else:
-        # When menu item is not a folder 'label' is replaced by 'title' property of infoLabel
-        infos['title'] = _colorize_text(apply_color,
-                                        color_index,
-                                        infos['title'])
-
-
-def _colorize_text(apply_color, color_index, text):
-    if apply_color and COLORS[color_index]:
-        return '[COLOR {}]{}[/COLOR]'.format(COLORS[color_index], text)
+def _colorize_text(color_name, text):
+    if color_name:
+        return '[COLOR {}]{}[/COLOR]'.format(color_name, text)
     return text
 
 
-def _set_progress_status(list_item, video_data, infos):
+def get_color_name(color_index):
+    return COLORS[color_index]
+
+
+def set_watched_status(dict_item, video_data, common_data):
     """Check and set progress status (watched and resume)"""
-    if not g.ADDON.getSettingBool('ProgressManager_enabled'):
+    if not common_data['set_watched_status'] or dict_item['is_folder']:
         return
 
-    video_id = video_data['summary']['id']
+    video_id = str(video_data['summary']['id'])
     # Check from db if user has manually changed the watched status
     profile_guid = g.LOCAL_DB.get_active_profile_guid()
     override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
@@ -391,9 +316,8 @@ def _set_progress_status(list_item, video_data, infos):
 
         # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
         # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
-        watched_threshold = video_data['runtime'] / 100 * 90
-        if video_data.get('creditsOffset') and video_data['creditsOffset'] < watched_threshold:
-            watched_threshold = video_data['creditsOffset']
+        watched_threshold = min(video_data['runtime'] / 100 * 90,
+                                video_data.get('creditsOffset', video_data['runtime']))
 
         # To avoid asking to the server again the entire list of titles (after watched a video)
         # to get the updated value, we override the value with the value saved in memory (see progress_manager.py)
@@ -410,6 +334,6 @@ def _set_progress_status(list_item, video_data, infos):
         playcount = '1' if override_is_watched else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
-    infos['PlayCount'] = playcount
-    list_item.setProperty('TotalTime', str(video_data['runtime']))
-    list_item.setProperty('ResumeTime', str(resume_time))
+    dict_item['info']['PlayCount'] = playcount
+    dict_item['TotalTime'] = str(video_data['runtime'])
+    dict_item['ResumeTime'] = str(resume_time)

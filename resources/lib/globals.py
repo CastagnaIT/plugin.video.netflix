@@ -190,6 +190,7 @@ class GlobalVariables(object):
         self.CACHE = None
         self.CACHE_MANAGEMENT = None
         self.CACHE_TTL = None
+        self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
 
     def init_globals(self, argv, reinitialize_database=False):
@@ -226,11 +227,13 @@ class GlobalVariables(object):
         try:
             self.PLUGIN_HANDLE = int(argv[1])
             self.IS_SERVICE = False
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
+                                                         netloc=self.URL[1])
         except IndexError:
             self.PLUGIN_HANDLE = 0
             self.IS_SERVICE = True
-        self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
-                                                     netloc=self.URL[1])
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
+                                                         netloc=self.ADDON.getAddonInfo('id'))
         self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
@@ -247,11 +250,12 @@ class GlobalVariables(object):
 
         # Initialize the cache
         self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
+        self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
         self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
-        if self.IS_SERVICE:
-            from resources.lib.services.cache.cache_management import CacheManagement
-            self.CACHE_MANAGEMENT = CacheManagement()
         if self.IS_ADDON_FIRSTRUN:
+            if self.IS_SERVICE:
+                from resources.lib.services.cache.cache_management import CacheManagement
+                self.CACHE_MANAGEMENT = CacheManagement()
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
 

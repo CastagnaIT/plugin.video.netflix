@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 
 
 # Needs skin support!

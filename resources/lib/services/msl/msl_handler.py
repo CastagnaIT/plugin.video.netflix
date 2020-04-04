@@ -15,6 +15,7 @@ import time
 import xbmcaddon
 
 import resources.lib.common as common
+from resources.lib.api.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
@@ -23,7 +24,6 @@ from .events_handler import EventsHandler
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles
-from ...api.exceptions import CacheMiss
 
 try:  # Python 2
     unicode

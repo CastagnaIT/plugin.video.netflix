@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2020 Stefano Gottardo (original implementation module)
-    Common base for cache classes
+    Miscellaneous utility functions for cache
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -33,18 +33,15 @@ CACHE_INFOLABELS = {'name': 'cache_infolabels', 'is_persistent': True, 'default_
 CACHE_ARTINFO = {'name': 'cache_artinfo', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
 CACHE_MANIFESTS = {'name': 'cache_manifests', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_BOOKMARKS = {'name': 'cache_bookmarks', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
-CACHE_MYLIST = {'name': 'cache_bookmarks', 'is_persistent': False, 'default_ttl': 'CACHE_MYLIST_TTL'}
+CACHE_MYLIST = {'name': 'cache_mylist', 'is_persistent': False, 'default_ttl': 'CACHE_MYLIST_TTL'}
+CACHE_SEARCH = {'name': 'cache_search', 'is_persistent': False, 'default_ttl': ''}  # Only customized ttl
 
 # The complete list of buckets (to obtain the list quickly)
-BUCKET_NAMES = ['cache_common', 'cache_genres', 'cache_supplemental', 'cache_metadata',
-                'cache_infolabels', 'cache_artinfo', 'cache_manifests', 'cache_bookmarks']
+BUCKET_NAMES = ['cache_common', 'cache_genres', 'cache_supplemental', 'cache_metadata', 'cache_infolabels',
+                'cache_artinfo', 'cache_manifests', 'cache_bookmarks', 'cache_mylist', 'cache_search']
 
 BUCKETS = [CACHE_COMMON, CACHE_GENRES, CACHE_SUPPLEMENTAL, CACHE_METADATA, CACHE_INFOLABELS,
-           CACHE_ARTINFO, CACHE_MANIFESTS, CACHE_BOOKMARKS]
-
-# For my list we limit the ttl of max 2 hour, otherwise if the list it is modified by other devices
-# will never update until ttl expire or will be used the forced manual update via context menu
-CACHE_MYLIST_TTL_MAX = 7200
+           CACHE_ARTINFO, CACHE_MANIFESTS, CACHE_BOOKMARKS, CACHE_MYLIST, CACHE_SEARCH]
 
 
 # Logic to get the identifier
@@ -69,23 +66,20 @@ def cache_output(bucket, fixed_identifier=None,
     def caching_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            ttl_override = None
+            arg_value, identifier = _get_identifier(fixed_identifier,
+                                                    identify_from_kwarg_name,
+                                                    identify_append_from_kwarg_name,
+                                                    identify_fallback_arg_index,
+                                                    args[1:] if ignore_self_class else args,
+                                                    kwargs)
+            if not identifier:
+                # Do not cache if identifier couldn't be determined
+                return func(*args, **kwargs)
             try:
-                arg_value, identifier = _get_identifier(fixed_identifier,
-                                                        identify_from_kwarg_name,
-                                                        identify_append_from_kwarg_name,
-                                                        identify_fallback_arg_index,
-                                                        args[1:] if ignore_self_class else args,
-                                                        kwargs)
-                if not identifier:
-                    # Do not cache if identifier couldn't be determined
-                    return func(*args, **kwargs)
-                if ttl is None and arg_value == 'mylist':
-                    ttl_override = min(g.CACHE_TTL, CACHE_MYLIST_TTL_MAX)
-                return g.CACHE.get(bucket, identifier)
+                return g.CACHE.get(CACHE_MYLIST if arg_value == 'mylist' else bucket, identifier)
             except CacheMiss:
                 output = func(*args, **kwargs)
-                g.CACHE.add(bucket, identifier, output, ttl=ttl or ttl_override)
+                g.CACHE.add(bucket, identifier, output, ttl=ttl)
                 return output
         return wrapper
     return caching_decorator
@@ -100,12 +94,11 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     if fixed_identifier:
         identifier = fixed_identifier
     else:
-        identifier = kwargs.get(identify_from_kwarg_name)
+        identifier = unicode(kwargs.get(identify_from_kwarg_name) or '')
         if not identifier and args:
-            arg_value = args[identify_fallback_arg_index]
+            arg_value = unicode(args[identify_fallback_arg_index] or '')
             identifier = arg_value
-        if identifier and identify_append_from_kwarg_name and \
-           kwargs.get(identify_append_from_kwarg_name):
+        if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
             identifier += '_' + kwargs.get(identify_append_from_kwarg_name)
     # common.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier

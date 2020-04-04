@@ -336,7 +336,9 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr ""
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."

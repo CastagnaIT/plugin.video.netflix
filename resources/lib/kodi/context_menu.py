@@ -10,65 +10,13 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-import resources.lib.api.shakti as api
 from resources.lib.globals import g
-from resources.lib.kodi.library_autoupdate import show_excluded_from_auto_update
 from resources.lib.kodi.library import is_in_library
-
-
-def ctx_item_url(paths, mode=g.MODE_ACTION):
-    """Return a function that builds an URL from a videoid for the predefined path"""
-    def ctx_url_builder(videoid, params):
-        """Build a context menu item URL"""
-        return common.build_url(paths, videoid, params, mode=mode)
-    return ctx_url_builder
-
-
-CONTEXT_MENU_ACTIONS = {
-    'export': {
-        'label': common.get_local_string(30018),
-        'url': ctx_item_url(['export'], g.MODE_LIBRARY)},
-    'remove': {
-        'label': common.get_local_string(30030),
-        'url': ctx_item_url(['remove'], g.MODE_LIBRARY)},
-    'update': {
-        'label': common.get_local_string(30061),
-        'url': ctx_item_url(['update'], g.MODE_LIBRARY)},
-    'export_new_episodes': {
-        'label': common.get_local_string(30195),
-        'url': ctx_item_url(['export_new_episodes'], g.MODE_LIBRARY)},
-    'exclude_from_auto_update': {
-        'label': common.get_local_string(30196),
-        'url': ctx_item_url(['exclude_from_auto_update'], g.MODE_LIBRARY)},
-    'include_in_auto_update': {
-        'label': common.get_local_string(30197),
-        'url': ctx_item_url(['include_in_auto_update'], g.MODE_LIBRARY)},
-    'rate': {
-        'label': common.get_local_string(30019),
-        'url': ctx_item_url(['rate'])},
-    'rate_thumb': {
-        'label': common.get_local_string(30019),
-        'url': ctx_item_url(['rate_thumb'])},
-    'add_to_list': {
-        'label': common.get_local_string(30021),
-        'url': ctx_item_url(['my_list', 'add'])},
-    'remove_from_list': {
-        'label': common.get_local_string(30020),
-        'url': ctx_item_url(['my_list', 'remove'])},
-    'trailer': {
-        'label': common.get_local_string(30179),
-        'url': ctx_item_url(['trailer'])},
-    'force_update_mylist': {
-        'label': common.get_local_string(30214),
-        'url': ctx_item_url(['force_update_mylist'])},
-    'change_watched_status': {
-        'label': common.get_local_string(30236),
-        'url': ctx_item_url(['change_watched_status'])}
-}
+from resources.lib.kodi.library_autoupdate import show_excluded_from_auto_update
 
 
 def generate_context_menu_mainmenu(menu_id):
-    """Generate context menu items for a listitem"""
+    """Generate context menu items for a listitem of the main menu"""
     items = []
 
     if menu_id == 'myList':
@@ -77,9 +25,13 @@ def generate_context_menu_mainmenu(menu_id):
     return items
 
 
-def generate_context_menu_items(videoid, perpetual_range_start=None):
+def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None):
     """Generate context menu items for a listitem"""
-    items = _generate_library_ctx_items(videoid)
+    items = []
+
+    if videoid.mediatype not in [common.VideoId.SUPPLEMENTAL, common.VideoId.EPISODE]:
+        # Library operations for supplemental (trailers etc) and single episodes are not allowed
+        items = _generate_library_ctx_items(videoid)
 
     # Old rating system
     # if videoid.mediatype != common.VideoId.SEASON and \
@@ -89,14 +41,12 @@ def generate_context_menu_items(videoid, perpetual_range_start=None):
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
         items.insert(0, _ctx_item('rate_thumb', videoid))
 
-    if videoid.mediatype != common.VideoId.SUPPLEMENTAL and \
-            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+    if (videoid.mediatype != common.VideoId.SUPPLEMENTAL and
+            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]):
         items.insert(0, _ctx_item('trailer', videoid))
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
-        list_action = ('remove_from_list'
-                       if videoid in api.mylist_items()
-                       else 'add_to_list')
+        list_action = 'remove_from_list' if is_in_mylist else 'add_to_list'
         items.insert(0, _ctx_item(list_action, videoid, {'perpetual_range_start': perpetual_range_start}))
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
@@ -109,13 +59,9 @@ def generate_context_menu_items(videoid, perpetual_range_start=None):
 
 def _generate_library_ctx_items(videoid):
     library_actions = []
-    # Do not allow operations for supplemental (trailers etc) and single episodes
-    if videoid.mediatype in [common.VideoId.SUPPLEMENTAL, common.VideoId.EPISODE]:
-        return library_actions
-
     allow_lib_operations = True
-    lib_is_sync_with_mylist = g.ADDON.getSettingBool('lib_sync_mylist') and \
-        g.ADDON.getSettingInt('lib_auto_upd_mode') != 0
+    lib_is_sync_with_mylist = (g.ADDON.getSettingBool('lib_sync_mylist') and
+                               g.ADDON.getSettingInt('lib_auto_upd_mode') != 0)
 
     if lib_is_sync_with_mylist:
         # If the synchronization of Netflix "My List" with the Kodi library is enabled
@@ -145,6 +91,8 @@ def _generate_library_ctx_items(videoid):
 
 def _ctx_item(template, videoid, params=None):
     """Create a context menu item based on the given template and videoid"""
+    # Do not move the import to the top of the module header, see context_menu_utils.py
+    from resources.lib.kodi.context_menu_utils import CONTEXT_MENU_ACTIONS
     return (CONTEXT_MENU_ACTIONS[template]['label'],
             common.run_plugin_action(
                 CONTEXT_MENU_ACTIONS[template]['url'](videoid, params)))

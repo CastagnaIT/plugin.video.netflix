@@ -62,6 +62,8 @@ PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
+PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
+
 
 @common.time_execution(immediate=True)
 def extract_session_data(content, validate=False):
@@ -113,17 +115,18 @@ def parse_profiles(profiles_list_data):
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
         _delete_non_existing_profiles(profiles_list)
         sort_order = 0
-        debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
         for guid, profile in list(profiles_list.items()):
             common.debug('Parsing profile {}', guid)
             avatar_url = _get_avatar(profiles_list_data, profile)
             profile = profile['summary']
-            for k_info in debug_info:
-                common.debug('Profile info {}', {k_info: profile[k_info]})
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
             for key, value in list(profile.items()):
+                if key in PROFILE_DEBUG_INFO:
+                    common.debug('Profile info {}', {key: value})
+                if key == 'profileName':  # The profile name is coded as HTML
+                    value = parse_html(value)
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
@@ -365,3 +368,12 @@ def extract_parental_control_data(content):
     common.debug('Parsed maturity names: {}', maturity_names)
     return {'maturity_levels': maturity_levels, 'maturity_names': maturity_names,
             'current_level': current_level}
+
+
+def parse_html(html_value):
+    """Parse HTML entities"""
+    try:  # Python 2
+        from HTMLParser import HTMLParser
+    except ImportError:  # Python 3
+        from html.parser import HTMLParser
+    return HTMLParser().unescape(html_value)

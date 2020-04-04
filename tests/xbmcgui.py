@@ -43,8 +43,9 @@ class ControlLabel:
 class ControlGeneric(Control):
     """A reimplementation of the xbmcgui Control methods of all control classes"""
 
-    def __init__(self):  # pylint: disable=super-init-not-called
+    def __init__(self):  # pylint: disable=useless-super-delegation,super-on-old-class
         """A stub constructor for the xbmcgui Control class"""
+        super(ControlGeneric, self).__init__()
 
     @staticmethod
     def getLabel():
@@ -224,6 +225,10 @@ class ListItem:
     def select(selected):
         """A stub implementation for the xbmcgui ListItem class select() method"""
         return
+
+    @staticmethod
+    def setLabel(label):
+        """A stub implementation for the xbmcgui ListItem class setLabel() method"""
 
     @staticmethod
     def setArt(key):

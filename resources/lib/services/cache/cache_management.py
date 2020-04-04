@@ -51,6 +51,7 @@ class CacheManagement(object):
     """Cache management"""
 
     def __init__(self):
+        self._identifier_prefix = None
         self.mutex = threading.Lock()
         self.local_storage = threading.local()
         self.conn = None
@@ -58,6 +59,24 @@ class CacheManagement(object):
         self.memory_cache = {}
         self._initialize()
         self.next_schedule = _compute_next_schedule()
+
+    @property
+    def identifier_prefix(self):
+        return self._identifier_prefix or self._set_identifier_prefix()
+
+    @identifier_prefix.setter
+    def identifier_prefix(self, val):
+        self._identifier_prefix = val + '_'
+
+    def _set_identifier_prefix(self):
+        # Hundreds of cache accesses are made when loading video lists, then get the active profile guid
+        # for each cache requests slows down the total time it takes to load e.g. the video list,
+        # then we load the value on first access, and update it only at profile switch
+        self._identifier_prefix = g.LOCAL_DB.get_active_profile_guid() + '_'
+        return self._identifier_prefix
+
+    def _add_prefix(self, identifier):
+        return self.identifier_prefix + identifier
 
     @property
     def is_connected(self):
@@ -95,14 +114,15 @@ class CacheManagement(object):
 
     def _get_cache_bucket(self, bucket_name):
         """Get the data contained to a cache bucket"""
-        if bucket_name not in BUCKET_NAMES:
-            raise UnknownCacheBucketError()
         if bucket_name not in self.memory_cache:
+            if bucket_name not in BUCKET_NAMES:  # Verify only at the first time (something is wrong in source code)
+                raise UnknownCacheBucketError()
             self.memory_cache[bucket_name] = {}
         return self.memory_cache[bucket_name]
 
     def get(self, bucket, identifier):
         """Get a item from cache bucket"""
+        identifier = self._add_prefix(identifier)
         try:
             cache_entry = self._get_cache_bucket(bucket['name'])[identifier]
             if cache_entry['expires'] < int(time()):
@@ -141,9 +161,10 @@ class CacheManagement(object):
         :param ttl: override default expiration (in seconds)
         :param expires: override default expiration (in timestamp) if specified override also the 'ttl' value
         """
-        if not ttl:
-            ttl = getattr(g, bucket['default_ttl'])
+        identifier = self._add_prefix(identifier)
         if not expires:
+            if not ttl and bucket['default_ttl']:
+                ttl = getattr(g, bucket['default_ttl'])
             expires = int(time() + ttl)
         cache_entry = {'expires': expires, 'data': data}
         # Save the item data to memory-cache
@@ -166,6 +187,7 @@ class CacheManagement(object):
     def delete(self, bucket, identifier):
         """Delete an item from cache bucket"""
         # Delete the item data from in memory-cache
+        identifier = self._add_prefix(identifier)
         bucket_data = self._get_cache_bucket(bucket['name'])
         if identifier in bucket_data:
             del bucket_data[identifier]
@@ -190,6 +212,7 @@ class CacheManagement(object):
         :param buckets: list of buckets to clear, if not specified clear all the cache
         :param clear_database: if True clear also the database data
         """
+        common.debug('Performing cache clearing')
         if buckets is None:
             # Clear all cache
             self.memory_cache = {}
