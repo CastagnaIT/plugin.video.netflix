@@ -246,11 +246,10 @@ class KodiHelper(object):
 
             # add list item
             list_item = xbmcgui.ListItem(
-                label=unescaped_profile_name,
-                iconImage=profile.get('avatar'))
-            list_item.setProperty(
-                key='fanart_image',
-                value=self.default_fanart)
+                label=unescaped_profile_name)
+            list_item.setArt(
+                {'fanart_image' : self.default_fanart,
+                 'icon' : profile.get('avatar')})
             # add context menu options
             auto_login = (
                 self.get_local_string(30053),
@@ -305,8 +304,10 @@ class KodiHelper(object):
                     label = video_list_ids['user'][video_list_id]['displayName']
                     if category == 'netflixOriginals':
                         label = label.capitalize()
-                    li = xbmcgui.ListItem(label=label, iconImage=self.default_fanart)
-                    li.setProperty('fanart_image', self.default_fanart)
+                    li = xbmcgui.ListItem(label=label)
+                    li.setArt(
+                        {'fanart_image' : self.default_fanart,
+                         'icon' : self.default_fanart})
                     # determine action route
                     action = actions['default']
                     if category in actions.keys():
@@ -332,9 +333,10 @@ class KodiHelper(object):
                 # determine if the item should be selected
                 preselect_items.append((False, True)[type == self.get_main_menu_selection()])
                 li_rec = xbmcgui.ListItem(
-                    label=i18n_ids[type],
-                    iconImage=self.default_fanart)
-                li_rec.setProperty('fanart_image', self.default_fanart)
+                    label=i18n_ids[type])
+                li_rec.setArt(
+                    {'fanart_image' : self.default_fanart,
+                     'icon' : self.default_fanart})
                 url_rec = build_url({'action': action, 'type': type})
                 xbmcplugin.addDirectoryItem(
                     handle=self.plugin_handle,
@@ -347,9 +349,11 @@ class KodiHelper(object):
         if 'search' in actions.keys():
             action = actions[type]
         li_rec = xbmcgui.ListItem(
-            label=self.get_local_string(30011),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            label=self.get_local_string(30011))
+        li_rec.setArt(
+            {'fanart_image' : self.default_fanart,
+             'icon' : self.default_fanart})
+
         url_rec = build_url({'action': action, 'type': 'search'})
         xbmcplugin.addDirectoryItem(
             handle=self.plugin_handle,
@@ -362,9 +366,11 @@ class KodiHelper(object):
         if 'exported' in actions.keys():
             action = actions[type]
         li_rec = xbmcgui.ListItem(
-            label=self.get_local_string(30048),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            label=self.get_local_string(30048))
+        li_rec.setArt(
+            {'fanart_image' : self.default_fanart,
+             'icon' : self.default_fanart})
+
         url_rec = build_url({'action': action, 'type': 'exported'})
         xbmcplugin.addDirectoryItem(
             handle=self.plugin_handle,
@@ -375,9 +381,11 @@ class KodiHelper(object):
         if self.show_update_db == 'true':
             # add updatedb as subfolder
             li_rec = xbmcgui.ListItem(
-                label=self.get_local_string(30049),
-                iconImage=self.default_fanart)
-            li_rec.setProperty('fanart_image', self.default_fanart)
+                label=self.get_local_string(30049))
+            li_rec.setArt(
+                {'fanart_image' : self.default_fanart,
+                 'icon' : self.default_fanart})
+
             url_rec = build_url({'action': 'updatedb'})
             xbmcplugin.addDirectoryItem(
                 handle=self.plugin_handle,
@@ -439,8 +447,7 @@ class KodiHelper(object):
         for video_list_id in video_list:
             video = video_list[video_list_id]
             li = xbmcgui.ListItem(
-                label=video['title'],
-                iconImage=self.default_fanart)
+                label=video['title'])
             # add some art to the item
             li.setArt(self._generate_art_info(entry=video))
             # add list item info
@@ -531,9 +538,10 @@ class KodiHelper(object):
         action = ['remove_from_library', self.get_local_string(30030), 'remove']
 
         li = xbmcgui.ListItem(
-            label=self.get_local_string(30064),
-            iconImage=self.default_fanart)
-        li.setProperty('fanart_image', self.default_fanart)
+            label=self.get_local_string(30064))
+        li.setArt(
+            {'fanart_image' : self.default_fanart,
+             'icon' : self.default_fanart})
         xbmcplugin.addDirectoryItem(
             handle=self.plugin_handle,
             url=build_url({'action': 'export-new-episodes','inbackground': True}),
@@ -543,9 +551,10 @@ class KodiHelper(object):
         for video in listing[0]:
             year = self.library.get_exported_movie_year(title=video)
             li = xbmcgui.ListItem(
-                label=str(video)+' ('+str(year)+')',
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                label=str(video)+' ('+str(year)+')')
+            li.setArt(
+                {'fanart_image' : self.default_fanart,
+                 'icon' : self.default_fanart})
             isFolder = False
             url = build_url({
                 'action': 'removeexported',
@@ -567,9 +576,10 @@ class KodiHelper(object):
 
         for video in listing[2]:
             li = xbmcgui.ListItem(
-                label=str(video),
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                label=str(video))
+            li.setArt(
+                {'fanart_image' : self.default_fanart,
+                 'icon' : self.default_fanart})
             isFolder = False
             year = '0000'
             url = build_url({
@@ -622,9 +632,11 @@ class KodiHelper(object):
         """
         # add search result as subfolder
         li_rec = xbmcgui.ListItem(
-            label='({})'.format(term),
-            iconImage=self.default_fanart)
-        li_rec.setProperty('fanart_image', self.default_fanart)
+            label='({})'.format(term))
+        li_rec.setArt(
+            {'fanart_image' : self.default_fanart,
+             'icon' : self.default_fanart})
+
         url_rec = build_url({'action': 'search_result', 'term': term})
         xbmcplugin.addDirectoryItem(
             handle=self.plugin_handle,
@@ -745,9 +757,11 @@ class KodiHelper(object):
         """
         for video_list_id in video_list_ids:
             li = xbmcgui.ListItem(
-                label=video_list_ids[video_list_id]['displayName'],
-                iconImage=self.default_fanart)
-            li.setProperty('fanart_image', self.default_fanart)
+                label=video_list_ids[video_list_id]['displayName'])
+            li.setArt(
+                {'fanart_image' : self.default_fanart,
+                 'icon' : self.default_fanart})
+
             url = build_url({'action': action, 'video_list_id': video_list_id})
             xbmcplugin.addDirectoryItem(
                 handle=self.plugin_handle,
@@ -1024,7 +1038,8 @@ class KodiHelper(object):
             'thumb': '',
             'fanart': '',
             'poster': '',
-            'clearlogo': ''
+            'clearlogo': '',
+            'icon' : self.default_fanart
         })
         if 'boxarts' in dict(entry).keys() and not isinstance(entry.get('boxarts'), dict):
             big = entry.get('boxarts', '')
