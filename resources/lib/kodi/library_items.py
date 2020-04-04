@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 import xbmc
 import xbmcvfs
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MetadataNotAvailable
@@ -133,7 +133,7 @@ def _lib_folders(section):
 def _get_root_videoid(filename, pattern):
     match = re.search(pattern,
                       xbmcvfs.File(filename, 'r').read().decode('utf-8').split('\n')[-1])
-    metadata = api.metadata(
+    metadata = api.get_metadata(
         common.VideoId(videoid=match.groups()[0]))[0]
     if metadata['type'] == 'show':
         return common.VideoId(tvshowid=metadata['id'])

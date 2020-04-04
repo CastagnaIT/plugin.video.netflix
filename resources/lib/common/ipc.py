@@ -90,9 +90,9 @@ def make_http_call(callname, data):
     The contents of data will be expanded to kwargs and passed into the target function."""
     from collections import OrderedDict
     try:  # Python 3
-        from urllib.request import build_opener, install_opener, ProxyHandler, URLError, urlopen
+        from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     except ImportError:  # Python 2
-        from urllib2 import build_opener, install_opener, ProxyHandler, URLError, urlopen
+        from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     import json
     debug('Handling HTTP IPC call to {}'.format(callname))
     # Note: Using 'localhost' here slowdown the call, not sure if it is an urllib issue
@@ -102,6 +102,8 @@ def make_http_call(callname, data):
         result = json.loads(
             urlopen(url=url, data=json.dumps(data).encode('utf-8'), timeout=16).read(),
             object_pairs_hook=OrderedDict)
+    except HTTPError as exc:
+        result = json.loads(exc.reason)
     except URLError as exc:
         raise BackendNotReady('The service has returned: {}'.format(exc.reason))
     _raise_for_error(callname, result)
@@ -124,9 +126,10 @@ def make_http_call_cache(callname, params, data):
     try:
         result = urlopen(r, timeout=16).read()
     except HTTPError as exc:
-        if not exc.reason == 'CacheMiss':
-            error('IPC call {} returned error {}'.format(callname, exc.reason))
-        raise apierrors.__dict__[exc.reason]()
+        try:
+            raise apierrors.__dict__[exc.reason]()
+        except KeyError:
+            raise Exception('The service has returned: {}'.format(exc.reason))
     except URLError as exc:
         raise BackendNotReady('The service has returned: {}'.format(exc.reason))
     return result
@@ -159,8 +162,7 @@ def _raise_for_error(callname, result):
 
 
 def addonsignals_return_call(func):
-    """Makes func return callable through AddonSignals and
-    handles catching, conversion and forwarding of exceptions"""
+    """Makes func return callable through AddonSignals and handles catching, conversion and forwarding of exceptions"""
     @wraps(func)
     def make_return_call(instance, data):
         """Makes func return callable through AddonSignals and
@@ -180,8 +182,7 @@ def addonsignals_return_call(func):
         # Do not return None or AddonSignals will keep waiting till timeout
         if result is None:
             result = {}
-        AddonSignals.returnCall(
-            signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
+        AddonSignals.returnCall(signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
         return result
     return make_return_call
 

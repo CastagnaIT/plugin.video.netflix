@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 import xbmc
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
@@ -36,7 +36,6 @@ def show_excluded_from_auto_update(videoid):
     return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
-@common.time_execution(immediate=False)
 def exclude_show_from_auto_update(videoid, exclude):
     """Set if a tvshow is excluded from auto-update"""
     g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], exclude)
@@ -64,7 +63,7 @@ def auto_update_library(sync_with_mylist, silent):
         videoids_to_update = []
 
         # Get My List videoids of the chosen profile
-        mylist_videoids = api.mylist_items_switch_profiles() if sync_with_mylist else []
+        mylist_videoids = api.get_mylist_videoids_profile_switch() if sync_with_mylist else []
         # Get the list of the exported items to Kodi library
         exported_tvshows_videoids_values = g.SHARED_DB.get_tvshows_id_list()
         exported_movies_videoids_values = g.SHARED_DB.get_movies_id_list()

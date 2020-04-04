@@ -14,7 +14,7 @@ from functools import wraps
 
 import xbmc
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
@@ -51,7 +51,7 @@ def list_contents(perpetual_range_start):
     number_of_requests = 2
     video_id_list = g.SHARED_DB.get_all_video_id_list()
     count = 0
-    results = []
+    chunked_video_list = []
     perpetual_range_selector = {}
 
     for index, chunk in enumerate(common.chunked_list(video_id_list, MAX_PATH_REQUEST_SIZE)):
@@ -61,7 +61,7 @@ def list_contents(perpetual_range_start):
                     # Exists others elements
                     perpetual_range_selector['_perpetual_range_selector'] = {'next_start': perpetual_range_start + 1}
                 break
-            results.append(chunk)
+            chunked_video_list.append(chunk)
             number_of_requests -= 1
         count += len(chunk)
 
@@ -71,7 +71,7 @@ def list_contents(perpetual_range_start):
             perpetual_range_selector['_perpetual_range_selector']['previous_start'] = previous_start
         else:
             perpetual_range_selector['_perpetual_range_selector'] = {'previous_start': previous_start}
-    return {'video_ids': results, 'perpetual_range_selector': perpetual_range_selector}
+    return chunked_video_list, perpetual_range_selector
 
 
 def is_in_library(videoid):
@@ -144,7 +144,7 @@ def sync_mylist_to_library():
     purge()
     nfo_settings = nfo.NFOSettings()
     nfo_settings.show_export_dialog()
-    for videoid in api.mylist_items_switch_profiles():
+    for videoid in api.get_mylist_videoids_profile_switch():
         execute_library_tasks(videoid, [export_item],
                               common.get_local_string(30018),
                               nfo_settings=nfo_settings)

@@ -34,7 +34,7 @@ def lazy_login(func):
         except (NotLoggedInError, LoginValidateErrorIncorrectPassword):
             debug('Tried to perform an action without being logged in')
             try:
-                from resources.lib.api.shakti import login
+                from resources.lib.api.api_requests import login
                 if not login(ask_credentials=not check_credentials()):
                     _handle_endofdirectory()
                     raise MissingCredentialsError
@@ -141,7 +141,7 @@ def _check_valid_credentials():
     if not check_credentials():
         from resources.lib.api.exceptions import MissingCredentialsError
         try:
-            from resources.lib.api.shakti import login
+            from resources.lib.api.api_requests import login
             if not login():
                 # Wrong login try again
                 return _check_valid_credentials()

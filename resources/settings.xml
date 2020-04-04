@@ -9,7 +9,7 @@
     <setting id="autoselect_profile_enabled" type="bool" label="30052" visible="false" default="false"/><!-- Used only as variable purpose for menu settings -->
     <setting id="autoselect_profile_name" type="action" label="30055" default="" action="RunPlugin(plugin://plugin.video.netflix/action/autoselect_profile_remove/)" option="close" visible="eq(-1,true)"/>
     <setting label="30015" type="lsep"/><!--Other options-->
-    <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
+    <setting id="mylist_titles_color" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
     <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
     <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
   </category>
@@ -140,6 +140,7 @@
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
     <setting label="30117" type="lsep"/><!--Cache-->
     <setting id="cache_ttl" type="slider" option="int" range="5,5,2880" label="30084" default="180"/>
+    <setting id="cache_mylist_ttl" type="slider" option="int" range="10,10,1440" label="30086" default="60"/>
     <setting id="cache_metadata_ttl" type="slider" option="int" range="1,1,60" label="30085" default="30"/>
     <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
     <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/?on_disk=True)"/>

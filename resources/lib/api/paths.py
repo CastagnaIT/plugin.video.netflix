@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
-    Path info to query the Shakti pathEvaluator
+    'Path' data and utility to query the Shakti API
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -84,6 +84,8 @@ VIDEO_LIST_RATING_THUMB_PATHS = [
     [['summary', 'title', 'userRating', 'trackIds']]
 ]
 
+SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
+
 INFO_MAPPINGS = {
     'title': 'title',
     'year': 'releaseYear',
@@ -111,6 +113,12 @@ REFERENCE_MAPPINGS = {
     'writer': 'creators',
     'genre': 'genres'
 }
+
+
+def build_paths(base_path, partial_paths):
+    """Build a list of full paths by concatenating each partial path with the base path"""
+    paths = [base_path + partial_path for partial_path in partial_paths]
+    return paths
 
 
 def resolve_refs(references, targets):

@@ -51,7 +51,7 @@ class VideoId(object):
         self._id_values = _get_unicode_kwargs(kwargs)
         # debug('VideoId validation values: {}'.format(self._id_values))
         self._validate()
-        self._menu_parameters = MenuIdParameters(id_values=self._assigned_id_values()[0])
+        self._menu_parameters = MenuIdParameters(self._assigned_id_values()[0])
 
     def _validate(self):
         validation_mask = 0
@@ -93,8 +93,7 @@ class VideoId(object):
 
     @classmethod
     def from_videolist_item(cls, video):
-        """Create a VideoId from a video item contained in a
-        videolist path response"""
+        """Create a VideoId from a video item contained in a video list path response"""
         mediatype = video['summary']['type']
         video_id = video['summary']['id']
         if mediatype == VideoId.MOVIE:
@@ -317,23 +316,16 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
 
 
 class MenuIdParameters(object):
-    """Distinguishes the information grouped in a id value of a menu
+    """Parse the information grouped in a id value of a menu"""
+    # Example:
+    # 8f0bcda8-a281-4ca3-9f56-f64ee1d76219_68180357X28X1430972X1551542684270
+    # [              request id                   ]X[ type id ]X[ context id ]X[ timestamp ]
 
-    I am not sure that the definitions of the data info are correct, for my intuition i have distinguished them in this way
-    8f0bcda8-a281-4ca3-9f56-f64ee1d76219_68180357X28X1430972X1551542684270
-    [              request id                   ]X[ type id ]X[ context id ]X[ group id ]
-    """
-
-    def __init__(self, **kwargs):
-        _id_values = kwargs.get('id_values')
-
+    def __init__(self, id_values):
         # Check if the idvalues is a menu id value
-        if _id_values and _id_values.count('-') == 4 and _id_values.count('_') == 1 and _id_values.count('X') == 3:
+        if id_values and id_values.count('-') == 4 and id_values.count('_') == 1 and id_values.count('X') == 3:
             self._is_menu_id = True
-            self._request_id = _id_values.split('X')[0]
-            self._type_id = _id_values.split('X')[1]
-            self._context_id = _id_values.split('X')[2]
-            self._group_id = _id_values.split('X')[3]
+            self._splitted_id = id_values.split('X')
         else:
             self._is_menu_id = False
 
@@ -345,7 +337,7 @@ class MenuIdParameters(object):
     @property
     def request_id(self):
         """Return the menu id"""
-        return self._request_id if self._is_menu_id else None
+        return self._splitted_id[0] if self._is_menu_id else None
 
     @property
     def type_id(self):
@@ -357,14 +349,14 @@ class MenuIdParameters(object):
         29 - Generic type of "Other content similar to"
         55 - Original netflix menu
         """
-        return self._type_id if self._is_menu_id else None
+        return self._splitted_id[1] if self._is_menu_id else None
 
     @property
     def context_id(self):
         """Return the menu context id"""
-        return self._context_id if self._is_menu_id else None
+        return self._splitted_id[2] if self._is_menu_id else None
 
     @property
-    def group_id(self):
-        """Return the menu group id"""
-        return self._group_id if self._is_menu_id else None
+    def timestamp(self):
+        """Return the menu timestamp"""
+        return self._splitted_id[3] if self._is_menu_id else None
