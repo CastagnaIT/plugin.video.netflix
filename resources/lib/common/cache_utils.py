@@ -75,11 +75,12 @@ def cache_output(bucket, fixed_identifier=None,
             if not identifier:
                 # Do not cache if identifier couldn't be determined
                 return func(*args, **kwargs)
+            _bucket = CACHE_MYLIST if arg_value == 'mylist' else bucket
             try:
-                return g.CACHE.get(CACHE_MYLIST if arg_value == 'mylist' else bucket, identifier)
+                return g.CACHE.get(_bucket, identifier)
             except CacheMiss:
                 output = func(*args, **kwargs)
-                g.CACHE.add(bucket, identifier, output, ttl=ttl)
+                g.CACHE.add(_bucket, identifier, output, ttl=ttl)
                 return output
         return wrapper
     return caching_decorator
@@ -99,7 +100,7 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
             arg_value = unicode(args[identify_fallback_arg_index] or '')
             identifier = arg_value
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier += '_' + kwargs.get(identify_append_from_kwarg_name)
+            identifier += '_' + unicode(kwargs.get(identify_append_from_kwarg_name))
     # common.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier
 

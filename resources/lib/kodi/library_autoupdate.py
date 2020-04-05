@@ -15,7 +15,6 @@ from datetime import datetime, timedelta
 
 import xbmc
 
-import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
@@ -56,22 +55,23 @@ def auto_update_library(sync_with_mylist, silent):
     execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
     common.info(
         'Starting auto update library - check updates for tv shows (sync with My List is {})',
-        sync_with_mylist)
+        'ENABLED' if sync_with_mylist else 'DISABLED')
     g.SHARED_DB.set_value('library_auto_update_is_running', True)
     g.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
     try:
         videoids_to_update = []
 
-        # Get My List videoids of the chosen profile
-        mylist_videoids = api.get_mylist_videoids_profile_switch() if sync_with_mylist else []
         # Get the list of the exported items to Kodi library
         exported_tvshows_videoids_values = g.SHARED_DB.get_tvshows_id_list()
         exported_movies_videoids_values = g.SHARED_DB.get_movies_id_list()
 
         if sync_with_mylist:
+            # Get My List videoids of the chosen profile
+            mylist_video_id_list, mylist_video_id_list_type = common.make_call('get_mylist_videoids_profile_switch')
+
             # Check if tv shows have been removed from the My List
             for videoid_value in exported_tvshows_videoids_values:
-                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                if unicode(videoid_value) in mylist_video_id_list:
                     continue
                 # The tv show no more exist in My List so remove it from library
                 videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
@@ -79,24 +79,25 @@ def auto_update_library(sync_with_mylist, silent):
 
             # Check if movies have been removed from the My List
             for videoid_value in exported_movies_videoids_values:
-                if any(videoid.value == unicode(videoid_value) for videoid in mylist_videoids):
+                if unicode(videoid_value) in mylist_video_id_list:
                     continue
                 # The movie no more exist in My List so remove it from library
                 videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
                 execute_lib_tasks_method(videoid, [remove_item])
 
             # Add missing tv shows / movies of My List to library
-            for videoid in mylist_videoids:
-                if videoid.value not in exported_tvshows_videoids_values and \
-                   videoid.value not in exported_movies_videoids_values:
-                    videoids_to_update.append(videoid)
+            for index, video_id in enumerate(mylist_video_id_list):
+                if (int(video_id) not in exported_tvshows_videoids_values and
+                        int(video_id) not in exported_movies_videoids_values):
+                    videoids_to_update.append(
+                        common.VideoId(
+                            **{('movieid' if (mylist_video_id_list_type[index] == 'movie') else 'tvshowid'): video_id}))
 
         # Add the exported tv shows to be updated to the list..
-        tvshows_videoids_to_upd = [common.VideoId.from_path([common.VideoId.SHOW,
-                                                             videoid_value]) for
-                                   videoid_value in
-                                   g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
-                                                                   False)]
+        tvshows_videoids_to_upd = [
+            common.VideoId.from_path([common.VideoId.SHOW, videoid_value]) for
+            videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], False)
+        ]
         # ..and avoids any duplication caused by possible unexpected errors
         videoids_to_update.extend(list(set(tvshows_videoids_to_upd) - set(videoids_to_update)))
 
@@ -133,13 +134,12 @@ def _is_auto_update_library_running():
 def _update_library(videoids_to_update, exported_tvshows_videoids_values, silent):
     execute_lib_tasks_method = execute_library_tasks_silently if silent else execute_library_tasks
     # Get the list of the Tv Shows exported to exclude from updates
-    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'],
-                                                               True)
+    excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
     for videoid in videoids_to_update:
         # Check if current videoid is excluded from updates
-        if videoid.value in excluded_videoids_values:
+        if int(videoid.value) in excluded_videoids_values:
             continue
-        if videoid.value in exported_tvshows_videoids_values:
+        if int(videoid.value) in exported_tvshows_videoids_values:
             # It is possible that the user has chosen not to export NFO files for a tv show
             nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
                                                          VidLibProp['nfo_export'], False)

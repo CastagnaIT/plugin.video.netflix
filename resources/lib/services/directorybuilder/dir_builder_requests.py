@@ -192,8 +192,8 @@ class DirectoryRequests(object):
             raise InvalidVideoListTypeError('The chunked_video_list not contains a list of a list of videoids')
         merged_response = {}
         for videoids_list in chunked_video_list:
-            path_response = common.make_call('path_request',
-                                             build_paths(['videos', videoids_list], VIDEO_LIST_PARTIAL_PATHS))
+            path = build_paths(['videos', videoids_list], VIDEO_LIST_PARTIAL_PATHS)
+            path_response = self.netflix_session._path_request(path)
             common.merge_dicts(path_response, merged_response)
 
         if perpetual_range_selector:
@@ -247,9 +247,10 @@ class DirectoryRequests(object):
             path_response = self.netflix_session._perpetual_path_request(**call_args)
         return {} if not path_response else VideoListSorted(path_response, context_name, None, 'az')
 
-    def req_datatype_video_list_byid(self, video_ids, custom_paths=None):
+    def req_datatype_video_list_byid(self, video_ids, custom_partial_paths=None):
         """Retrieve a video list which contains the specified by video ids and return a CustomVideoList object"""
         common.debug('Requesting a video list for {} videos', video_ids)
-        paths = build_paths(['videos', video_ids], custom_paths if custom_paths else VIDEO_LIST_PARTIAL_PATHS)
+        paths = build_paths(['videos', video_ids],
+                            custom_partial_paths if custom_partial_paths else VIDEO_LIST_PARTIAL_PATHS)
         path_response = self.netflix_session._path_request(paths)
         return CustomVideoList(path_response)

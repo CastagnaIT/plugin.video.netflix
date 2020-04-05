@@ -9,8 +9,11 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from future.utils import iteritems
+
 from resources.lib import common
-from resources.lib.common import VideoId
+from resources.lib.api.data_types import merge_data_type
+from resources.lib.common import VideoId, g
 from resources.lib.services.directorybuilder.dir_builder_items import (build_video_listing, build_subgenres_listing,
                                                                        build_season_listing, build_episode_listing,
                                                                        build_lolomo_listing, build_mainmenu_listing,
@@ -35,8 +38,8 @@ class DirectoryBuilder(DirectoryRequests):
             self.get_video_list_search,
             self.get_genres,
             self.get_subgenres,
-            self.get_datatype_video_list_full,
-            self.get_datatype_video_list_byid
+            self.get_mylist_videoids_profile_switch,
+            self.add_videoids_to_video_list_cache
         ]
         for slot in self.slots:
             common.register_slot(slot)
@@ -132,10 +135,18 @@ class DirectoryBuilder(DirectoryRequests):
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
-    def get_datatype_video_list_full(self, context_name, switch_profiles):
-        return self.req_datatype_video_list_full(context_name, switch_profiles)
+    def get_mylist_videoids_profile_switch(self):
+        # Special method used for library sync with my list
+        video_list = self.req_datatype_video_list_full('mylist', True)
+        video_id_list = [video_id for video_id, video in iteritems(video_list.videos)]
+        video_id_list_type = [video['summary']['type'] for video_id, video in iteritems(video_list.videos)]
+        return video_id_list, video_id_list_type
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
-    def get_datatype_video_list_byid(self, video_ids, custom_paths=None):
-        return self.req_datatype_video_list_byid(video_ids, custom_paths)
+    def add_videoids_to_video_list_cache(self, cache_bucket, cache_identifier, video_ids):
+        """Add the specified video ids to a video list datatype in the cache"""
+        # Warning this method raise CacheMiss exception if cache is missing
+        video_list_sorted_data = g.CACHE.get(cache_bucket, cache_identifier)
+        merge_data_type(video_list_sorted_data, self.req_datatype_video_list_byid(video_ids))
+        g.CACHE.add(cache_bucket, cache_identifier, video_list_sorted_data)

@@ -14,6 +14,7 @@ import xbmcplugin
 import xbmcgui
 
 from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.api.paths import EVENT_PATHS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
@@ -174,10 +175,10 @@ def _verify_pin(pin_required):
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    api_data = api.get_video_raw_data_for_events(videoid)
-    if not api_data:
+    raw_data = api.get_video_raw_data(videoid, EVENT_PATHS)
+    if not raw_data:
         return {}
-    videoid_data = api_data['videos'][videoid.value]
+    videoid_data = raw_data['videos'][videoid.value]
     common.debug('Event data: {}', videoid_data)
 
     event_data = {'resume_position':

@@ -14,7 +14,6 @@ from functools import wraps
 
 import xbmc
 
-import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
@@ -144,7 +143,11 @@ def sync_mylist_to_library():
     purge()
     nfo_settings = nfo.NFOSettings()
     nfo_settings.show_export_dialog()
-    for videoid in api.get_mylist_videoids_profile_switch():
+
+    mylist_video_id_list, mylist_video_id_list_type = common.make_call('get_mylist_videoids_profile_switch')
+    for index, video_id in enumerate(mylist_video_id_list):
+        videoid = common.VideoId(
+            **{('movieid' if (mylist_video_id_list_type[index] == 'movie') else 'tvshowid'): video_id})
         execute_library_tasks(videoid, [export_item],
                               common.get_local_string(30018),
                               nfo_settings=nfo_settings)

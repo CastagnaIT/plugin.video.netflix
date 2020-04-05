@@ -11,16 +11,13 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-from future.utils import iteritems
-
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
-from .data_types import merge_data_type
-from .exceptions import InvalidVideoListTypeError, APIError, MissingCredentialsError, MetadataNotAvailable, CacheMiss
-from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, EVENT_PATHS, build_paths
+from .exceptions import APIError, MissingCredentialsError, MetadataNotAvailable, CacheMiss
+from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 
 
 def catch_api_errors(func):
@@ -154,43 +151,17 @@ def update_videoid_bookmark(video_id):
 
 
 @common.time_execution(immediate=False)
-@cache_utils.cache_output(cache_utils.CACHE_COMMON)
-def get_video_raw_data(videoid):
+@cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_append_from_kwarg_name='custom_partial_path')
+def get_video_raw_data(videoid, custom_partial_path=None):
     """Retrieve raw data for a single video id (episode, movie of supplemental)"""
-    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE, common.VideoId.SUPPLEMENTAL]:
-        raise common.InvalidVideoId('Cannot request info for {}'.format(videoid))
-    common.debug('Requesting video info for {}', videoid)
-    paths = build_paths(['videos', videoid.value], EPISODES_PARTIAL_PATHS)
-    if videoid.mediatype == common.VideoId.EPISODE:
-        paths.extend(build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
+    common.debug('Requesting video raw data for {}', videoid)
+    if not custom_partial_path:
+        paths = build_paths(['videos', videoid.value], EPISODES_PARTIAL_PATHS)
+        if videoid.mediatype == common.VideoId.EPISODE:
+            paths.extend(build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
+    else:
+        paths = build_paths(['videos', videoid.value], custom_partial_path)
     return common.make_call('path_request', paths)
-
-
-@common.time_execution(immediate=False)
-def get_video_raw_data_for_events(videoid):
-    """Retrieve raw data for a single video id needed for generate events"""
-    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.MOVIE, common.VideoId.SUPPLEMENTAL]:
-        raise common.InvalidVideoId('Cannot request event info for {}'.format(videoid))
-    common.debug('Requesting event info for {}', videoid)
-    paths = build_paths(['videos', videoid.value], EVENT_PATHS)
-    return common.make_call('path_request', paths)
-
-
-def get_mylist_videoids_profile_switch():
-    """Return a list of all the items currently contained in my list"""
-    common.debug('Requesting videoid list of my list with profiles switching')
-    try:
-        items = []
-        video_list = common.make_call('get_datatype_video_list_full', {'context_name': 'mylist',
-                                                                       'switch_profiles': True})
-        if video_list:
-            # pylint: disable=unused-variable
-            items = [common.VideoId.from_videolist_item(video)
-                     for video_id, video in iteritems(video_list.videos)
-                     if video['queue'].get('inQueue', False)]
-        return items
-    except InvalidVideoListTypeError:
-        return []
 
 
 @catch_api_errors
@@ -269,10 +240,9 @@ def _update_mylist_cache(videoid, operation, params):
             pass
     else:
         try:
-            video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_MYLIST, mylist_identifier)
-            merge_data_type(video_list_sorted_data,
-                            common.make_call('get_datatype_video_list_byid', {'video_ids': [videoid.value]}))
-            g.CACHE.add(cache_utils.CACHE_MYLIST, mylist_identifier, video_list_sorted_data)
+            common.make_call('add_videoids_to_video_list_cache', {'cache_bucket': cache_utils.CACHE_MYLIST,
+                                                                  'cache_identifier': mylist_identifier,
+                                                                  'video_ids': [videoid.value]})
         except CacheMiss:
             pass
         try:

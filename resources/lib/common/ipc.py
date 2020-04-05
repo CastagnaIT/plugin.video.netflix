@@ -80,6 +80,7 @@ def _send_signal(signal, data):
 
 @time_execution(immediate=False)
 def make_call(callname, data=None):
+    # Note: IPC over HTTP handle FULL objects serialization, AddonSignals NOT HANDLE the serialization of objects
     if g.IPC_OVER_HTTP:
         return make_http_call(callname, data)
     return make_addonsignals_call(callname, data)

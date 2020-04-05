@@ -69,15 +69,13 @@ class AddonActionExecutor(object):
     def rate_thumb(self, videoid):
         """Rate an item on Netflix. Ask for a thumb rating"""
         # Get updated user rating info for this videoid
-        video_list = common.make_call('get_datatype_video_list_byid', {'video_ids': [videoid.value],
-                                                                       'custom_paths': VIDEO_LIST_RATING_THUMB_PATHS})
-        if video_list.videos:
-            videoid_value, video_data = list(video_list.videos.items())[0]  # pylint: disable=unused-variable
+        raw_data = api.get_video_raw_data(videoid, VIDEO_LIST_RATING_THUMB_PATHS)
+        if raw_data.get('videos', {}).get(videoid.value):
+            video_data = raw_data['videos'][videoid.value]
             title = video_data.get('title')
             track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
             is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
-            user_rating = video_data.get('userRating', {}).get('userRating') \
-                if is_thumb_rating else None
+            user_rating = video_data.get('userRating', {}).get('userRating') if is_thumb_rating else None
             ui.show_modal_dialog(False,
                                  ui.xmldialogs.RatingThumb,
                                  'plugin-video-netflix-RatingThumb.xml',
@@ -116,13 +114,13 @@ class AddonActionExecutor(object):
         menu_data = {'path': ['is_context_menu_item', 'is_context_menu_item'],  # Menu item do not exists
                      'title': common.get_local_string(30179)}
         video_id_dict = videoid.to_dict()
-        list_data, extra_data = common.make_call('get_supplemental_list',  # pylint: disable=unused-variable
+        list_data, extra_data = common.make_call('get_video_list_supplemental',  # pylint: disable=unused-variable
                                                  {
                                                      'menu_data': menu_data,
                                                      'video_id_dict': video_id_dict,
                                                      'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS
                                                  })
-        if list_data.videos:
+        if list_data:
             url = common.build_url(['supplemental'],
                                    params={'video_id_dict': dumps(video_id_dict),
                                            'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
