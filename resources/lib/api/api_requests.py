@@ -296,7 +296,8 @@ def _metadata(video_id):
     to a show by Netflix."""
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
-    metadata_data = common.make_call(
+    ipc_call = common.make_http_call if g.IS_SERVICE else common.make_call
+    metadata_data = ipc_call(
         'get',
         {
             'component': 'metadata',

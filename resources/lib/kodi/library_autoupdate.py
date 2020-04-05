@@ -67,7 +67,9 @@ def auto_update_library(sync_with_mylist, silent):
 
         if sync_with_mylist:
             # Get My List videoids of the chosen profile
-            mylist_video_id_list, mylist_video_id_list_type = common.make_call('get_mylist_videoids_profile_switch')
+            # Use make_http_call instead make_http because call AddonSignals on same instance makes problems
+            mylist_video_id_list, mylist_video_id_list_type = common.make_http_call(
+                'get_mylist_videoids_profile_switch', None)
 
             # Check if tv shows have been removed from the My List
             for videoid_value in exported_tvshows_videoids_values:

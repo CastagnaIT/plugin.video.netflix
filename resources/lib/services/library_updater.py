@@ -17,6 +17,7 @@ import xbmc
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.library as kodi_library
+from resources.lib.kodi.library_autoupdate import auto_update_library
 
 
 class LibraryUpdateService(xbmc.Monitor):
@@ -53,8 +54,9 @@ class LibraryUpdateService(xbmc.Monitor):
                 and self.next_schedule <= datetime.now()
                 and self.is_idle()):
             common.debug('Triggering auto update library')
-            xbmc.executebuiltin('XBMC.RunPlugin(plugin://{}/library/service_auto_upd_run_now/)'
-                                .format(g.ADDON_ID))
+
+            common.run_threaded(True, auto_update_library, g.ADDON.getSettingBool('lib_sync_mylist'), True)
+
             g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
 
@@ -100,14 +102,14 @@ class LibraryUpdateService(xbmc.Monitor):
         if library == 'video':
             self.scan_in_progress = False
             if self.scan_awaiting:
+                common.debug('Kodi library update requested from library auto-update (from awaiting)')
                 self.update_kodi_library()
 
     def update_kodi_library(self, data=None):  # pylint: disable=unused-argument
-        # Update only the elements in the addon export folder
-        # for faster processing with a large library.
+        # Update only the elements in the addon export folder for faster processing with a large library (on Kodi 18.x)
         # If a scan is already in progress, the scan is delayed until onScanFinished event
-        common.debug('Library update requested for library updater service')
         if not self.scan_in_progress:
+            common.debug('Kodi library update requested from library auto-update')
             self.scan_awaiting = False
             common.scan_library(
                 xbmc.makeLegalFilename(

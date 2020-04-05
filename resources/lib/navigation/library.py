@@ -103,14 +103,6 @@ class LibraryActionExecutor(object):
             return
         library_au.auto_update_library(False, False)
 
-    def service_auto_upd_run_now(self, pathitems):  # pylint: disable=unused-argument
-        """
-        Perform an auto update of Kodi library to add new seasons/episodes of tv shows
-        and if set also synchronize the Netflix "My List" with the Kodi library
-        """
-        # Executed by the service in the library_updater module
-        library_au.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'), True)
-
     def _get_mylist_profile_guid(self):
         return g.SHARED_DB.get_value('sync_mylist_profile_guid',
                                      g.LOCAL_DB.get_guid_owner_profile())
