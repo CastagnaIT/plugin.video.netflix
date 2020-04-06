@@ -110,7 +110,7 @@
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
     <setting label="30238" type="lsep"/>
     <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" visible="!System.HasAddon(service.upnext)" option="close"/>
-    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false" enable="System.AddonIsEnabled(service.upnext)"/>
+    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false" visible="System.HasAddon(service.upnext)"/>
     <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" visible="System.HasAddon(service.upnext)" option="close"/>
   </category>
   <category label="30023"><!--Expert-->
