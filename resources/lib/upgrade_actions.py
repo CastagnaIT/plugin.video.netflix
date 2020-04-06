@@ -20,11 +20,14 @@ from resources.lib.globals import g
 
 def delete_cache_folder():
     # Delete cache folder in the add-on userdata (no more needed with the new cache management)
+    cache_path = os.path.join(g.DATA_PATH, 'cache')
+    if not os.path.exists(g.py2_decode(xbmc.translatePath(cache_path))):
+        return
     debug('Deleting the cache folder from add-on userdata folder')
     try:
-        delete_folder_contents(os.path.join(g.DATA_PATH, 'cache'), True)
+        delete_folder_contents(cache_path, True)
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(g.DATA_PATH, 'cache'))
+        xbmcvfs.rmdir(cache_path)
     except Exception:  # pylint: disable=broad-except
         import traceback
         error(traceback.format_exc())
