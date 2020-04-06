@@ -204,13 +204,13 @@ class GlobalVariables(object):
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
-        self.ADDON_ID = self.ADDON.getAddonInfo('id')
-        self.PLUGIN = self.ADDON.getAddonInfo('name')
-        self.VERSION = self.ADDON.getAddonInfo('version')
-        self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
-        self.ICON = self.ADDON.getAddonInfo('icon')
-        self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
-        self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
+        self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
+        self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
+        self.VERSION = self.py2_decode(self.ADDON.getAddonInfo('version'))
+        self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
+        self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
+        self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Addon folder
+        self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Addon user data folder
 
         # Add absolute paths of embedded py modules to python system directory
         module_paths = [
@@ -219,7 +219,7 @@ class GlobalVariables(object):
         for path in module_paths:
             path = xbmc.translatePath(path)
             if path not in sys.path:
-                sys.path.insert(0, path)
+                sys.path.insert(0, g.py2_decode(path))
 
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
@@ -233,7 +233,7 @@ class GlobalVariables(object):
             self.PLUGIN_HANDLE = 0
             self.IS_SERVICE = True
             self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
-                                                         netloc=self.ADDON.getAddonInfo('id'))
+                                                         netloc=self.ADDON_ID)
         self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
