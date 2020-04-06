@@ -109,8 +109,7 @@ def extract_session_data(content, validate=False):
 def parse_profiles(profiles_list_data):
     """Parse profile information from Netflix response"""
     try:
-        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'],
-                                                 profiles_list_data))
+        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'], profiles_list_data))
         if not profiles_list:
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
         _delete_non_existing_profiles(profiles_list)
@@ -180,12 +179,11 @@ def _delete_non_existing_profiles(profiles_list):
 
 def _get_avatar(profiles_list_data, profile):
     try:
-        profile['avatar'].extend(AVATAR_SUBPATH)
-        return common.get_path(profile['avatar'], profiles_list_data)
-    except KeyError:
-        common.warn('Cannot find avatar for profile {guid}'
-                    .format(guid=profile['summary']['value']['guid']))
-    return ''
+        return common.get_path(profile['avatar'] + AVATAR_SUBPATH, profiles_list_data)
+    except (KeyError, TypeError):
+        common.warn('Cannot find avatar for profile {}', profile['summary']['guid'])
+        common.debug('Profile list data: {}', profiles_list_data)
+        return g.ICON
 
 
 @common.time_execution(immediate=True)
