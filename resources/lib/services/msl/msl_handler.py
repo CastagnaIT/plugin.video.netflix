@@ -14,8 +14,9 @@ import time
 
 import xbmcaddon
 
-import resources.lib.cache as cache
 import resources.lib.common as common
+from resources.lib.api.exceptions import CacheMiss
+from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .converter import convert_to_dash
@@ -108,16 +109,16 @@ class MSLHandler(object):
 
     @common.time_execution(immediate=True)
     def _load_manifest(self, viewable_id, esn):
-        cache_identifier = g.LOCAL_DB.get_active_profile_guid() + '_' + esn + '_' + unicode(viewable_id)
+        cache_identifier = esn + '_' + unicode(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
-            manifest = g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
+            manifest = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             if common.is_debug_verbose():
                 common.debug('Manifest for {} obtained from the cache', viewable_id)
                 # Save the manifest to disk as reference
                 common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
-        except cache.CacheMiss:
+        except CacheMiss:
             pass
 
         isa_addon = xbmcaddon.Addon('inputstream.adaptive')
@@ -183,7 +184,7 @@ class MSLHandler(object):
             common.save_file('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity
         expiration = int(manifest['expiration'] / 1000)
-        g.CACHE.add(cache.CACHE_MANIFESTS, cache_identifier, manifest, eol=expiration)
+        g.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
         if 'result' in manifest:
             return manifest['result']
         return manifest

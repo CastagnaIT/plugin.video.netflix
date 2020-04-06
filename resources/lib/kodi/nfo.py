@@ -70,8 +70,10 @@ class NFOSettings(object):
         """Ask to user when export TvShow NFO"""
         return self._enabled and self._export_tvshow_id == 2
 
-    def show_export_dialog(self, mediatype=None, dialog_message=common.get_local_string(30183)):
+    def show_export_dialog(self, mediatype=None, dialog_message=None):
         """Ask the user if he wants to export NFO for movies and/or tvshows, this override the default settings"""
+        if not dialog_message:
+            dialog_message = common.get_local_string(30183)
         if not self.export_enabled or (not self.movie_prompt_dialog and not self.tvshow_prompt_dialog):
             return
         ask_message_typelist = []

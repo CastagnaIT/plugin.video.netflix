@@ -143,7 +143,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
             # Validate pin length
             if not self._validate_pin(pin):
                 return
-            import resources.lib.api.shakti as api
+            import resources.lib.api.api_requests as api
             data = {'pin': pin,
                     'maturity_level': self.maturity_levels[self.current_level]['value']}
             # Send changes to the service
@@ -153,8 +153,8 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
                                 False, True)
             # I make sure that the metadata are removed,
             # otherwise you get inconsistencies with the request of the pin
-            from resources.lib.cache import CACHE_METADATA
-            g.CACHE.invalidate(True, [CACHE_METADATA])
+            from resources.lib.common.cache_utils import CACHE_METADATA
+            g.CACHE.clear([CACHE_METADATA])
             self.close()
         if controlID in [10029, 100]:  # Close dialog
             self.close()
@@ -261,7 +261,7 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         if controlID in [10010, 10020, 10012, 10022]:  # Rating and close
             rating_map = {10010: 2, 10020: 1, 10012: 0, 10022: 0}
             rating_value = rating_map[controlID]
-            from resources.lib.api.shakti import rate_thumb
+            from resources.lib.api.api_requests import rate_thumb
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
         if controlID in [10040, 100]:  # Close

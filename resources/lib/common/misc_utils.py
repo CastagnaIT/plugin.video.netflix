@@ -27,7 +27,6 @@ except ImportError:  # Python 2
     from urllib2 import quote
 
 from resources.lib.globals import g
-from .logging import error
 
 
 def find(value_to_find, attribute, search_space):
@@ -148,7 +147,7 @@ def compare_dicts(dict_a, dict_b, excluded_keys=None):
 
 def chunked_list(seq, chunk_len):
     for start in range(0, len(seq), chunk_len):
-        yield seq[start:start+chunk_len]
+        yield seq[start:start + chunk_len]
 
 
 def any_value_except(mapping, excluded_keys):
@@ -215,34 +214,3 @@ def run_threaded(non_blocking, target_func, *args, **kwargs):
     from threading import Thread
     thread = Thread(target=target_func, args=args, kwargs=kwargs)
     thread.start()
-
-
-def update_cache_videoid_runtime(window_cls):
-    """Try to update the bookmarkPosition value in cache data in order to get a updated watched status/resume time"""
-    # Other details in:
-    # progress_manager.py method: _save_resume_time()
-    # infolabels.py method: _set_progress_status()
-    runtime = window_cls.getProperty('nf_playback_resume_time')
-    if runtime and runtime.isdigit():
-        from resources.lib.api.data_types import VideoList, VideoListSorted, EpisodeList, SearchVideoList
-        from resources.lib.cache import CacheMiss
-        from resources.lib.database.db_utils import TABLE_SESSION
-        from resources.lib.common import VideoId
-        cache_last_dir_call = g.LOCAL_DB.get_value('cache_last_directory_call', {}, table=TABLE_SESSION)
-        if not cache_last_dir_call:
-            return
-        videoid = VideoId.from_dict(g.LOCAL_DB.get_value('last_videoid_played', {}, table=TABLE_SESSION))
-        try:
-            data_object = g.CACHE.get(cache_last_dir_call['bucket'], cache_last_dir_call['identifier'])
-            if isinstance(data_object, (VideoList, VideoListSorted, SearchVideoList)):
-                data_object.videos[str(videoid.value)]['bookmarkPosition'] = int(runtime)
-            elif isinstance(data_object, EpisodeList):
-                data_object.episodes[str(videoid.value)]['bookmarkPosition'] = int(runtime)
-            else:
-                error('update_cache_videoid_runtime: cache object not mapped, bookmarkPosition not updated')
-            g.CACHE.update(cache_last_dir_call['bucket'], cache_last_dir_call['identifier'], data_object,
-                           cache_last_dir_call['to_disk'])
-        except CacheMiss:
-            # No more valid cache, manual update not needed
-            pass
-        window_cls.setProperty('nf_playback_resume_time', '')

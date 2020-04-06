@@ -187,6 +187,10 @@ class GlobalVariables(object):
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
+        self.CACHE = None
+        self.CACHE_MANAGEMENT = None
+        self.CACHE_TTL = None
+        self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
 
     def init_globals(self, argv, reinitialize_database=False):
@@ -219,19 +223,17 @@ class GlobalVariables(object):
 
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
-        self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
-        self.CACHE_METADATA_TTL = (
-            self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60)
-
         self.URL = urlparse(argv[0])
         try:
             self.PLUGIN_HANDLE = int(argv[1])
             self.IS_SERVICE = False
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
+                                                         netloc=self.URL[1])
         except IndexError:
             self.PLUGIN_HANDLE = 0
             self.IS_SERVICE = True
-        self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
-                                                     netloc=self.URL[1])
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
+                                                         netloc=self.ADDON.getAddonInfo('id'))
         self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
@@ -246,8 +248,16 @@ class GlobalVariables(object):
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        if self.IS_ADDON_FIRSTRUN or self.IS_SERVICE:
-            self._init_cache()
+        # Initialize the cache
+        self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
+        self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
+        self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
+        if self.IS_ADDON_FIRSTRUN:
+            if self.IS_SERVICE:
+                from resources.lib.services.cache.cache_management import CacheManagement
+                self.CACHE_MANAGEMENT = CacheManagement()
+            from resources.lib.common.cache import Cache
+            self.CACHE = Cache()
 
     def _init_database(self, initialize):
         # Initialize local database
@@ -271,18 +281,6 @@ class GlobalVariables(object):
                 ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
                 shared_db_class = db_shared.get_shareddb_class()
                 self.SHARED_DB = shared_db_class()
-
-    def _init_cache(self):
-        if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
-            self._init_filesystem_cache()
-        from resources.lib.cache import Cache
-        self.CACHE = Cache(self.CACHE_PATH, self.PLUGIN_HANDLE)
-
-    def _init_filesystem_cache(self):
-        from xbmcvfs import mkdirs
-        from resources.lib.cache import BUCKET_NAMES
-        for bucket in BUCKET_NAMES:
-            mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
 
     def settings_monitor_suspend(self, is_suspended=True, at_first_change=False):
         """

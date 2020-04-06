@@ -17,16 +17,18 @@ import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
+from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
 from resources.lib.services.nfsession.nfsession_base import needs_login
 from resources.lib.api.exceptions import MissingCredentialsError
 
 
-class NetflixSession(NFSessionAccess):
+class NetflixSession(NFSessionAccess, DirectoryBuilder):
     """Stateful netflix session management"""
 
     def __init__(self):
-        super(NetflixSession, self).__init__()
+        NFSessionAccess.__init__(self)
+        DirectoryBuilder.__init__(self, self)
         self.slots = [
             self.login,
             self.logout,
@@ -34,7 +36,6 @@ class NetflixSession(NFSessionAccess):
             self.parental_control_data,
             self.path_request,
             self.perpetual_path_request,
-            self.perpetual_path_request_switch_profiles,
             self.callpath_request,
             self.get,
             self.post,
@@ -73,9 +74,9 @@ class NetflixSession(NFSessionAccess):
         extracted_content['pin'] = pin
         return extracted_content
 
+    @common.time_execution(immediate=True)
     @common.addonsignals_return_call
     @needs_login
-    @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
@@ -92,13 +93,12 @@ class NetflixSession(NFSessionAccess):
         #                       'authURL': self.auth_url})
 
         g.LOCAL_DB.switch_active_profile(guid)
+        g.CACHE_MANAGEMENT.identifier_prefix = guid
         self.update_session_data()
 
-    @common.addonsignals_return_call
     @needs_login
-    @common.time_execution(immediate=True)
-    def perpetual_path_request_switch_profiles(self, paths, length_params,
-                                               perpetual_range_start=None, no_limit_req=False):
+    def _perpetual_path_request_switch_profiles(self, paths, length_params,
+                                                perpetual_range_start=None, no_limit_req=False):
         """
         Perform a perpetual path request,
         Used exclusively to get My List of a profile other than the current one
@@ -119,19 +119,18 @@ class NetflixSession(NFSessionAccess):
         return path_response
 
     @common.addonsignals_return_call
-    @needs_login
     def path_request(self, paths):
         """Perform a path request against the Shakti API"""
         return self._path_request(paths)
 
     @common.addonsignals_return_call
-    @needs_login
-    @common.time_execution(immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                no_limit_req=False):
         return self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                             no_limit_req)
 
+    @common.time_execution(immediate=True)
+    @needs_login
     def _perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                 no_limit_req=False):
         """Perform a perpetual path request against the Shakti API to retrieve
@@ -176,8 +175,7 @@ class NetflixSession(NFSessionAccess):
             range_start += response_size
             if n_req == (number_of_requests - 1):
                 merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                common.debug('{} has other elements, added _perpetual_range_selector item',
-                             response_type)
+                common.debug('{} has other elements, added _perpetual_range_selector item', response_type)
             else:
                 range_end = range_start + request_size
 
@@ -186,11 +184,11 @@ class NetflixSession(NFSessionAccess):
             if '_perpetual_range_selector' in merged_response:
                 merged_response['_perpetual_range_selector']['previous_start'] = previous_start
             else:
-                merged_response['_perpetual_range_selector'] = {
-                    'previous_start': previous_start}
+                merged_response['_perpetual_range_selector'] = {'previous_start': previous_start}
         return merged_response
 
     @common.time_execution(immediate=True)
+    @needs_login
     def _path_request(self, paths):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))

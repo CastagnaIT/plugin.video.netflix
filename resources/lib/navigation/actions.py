@@ -11,10 +11,11 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MissingCredentialsError, WebsiteParsingError
+from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.globals import g
 
 
@@ -68,15 +69,13 @@ class AddonActionExecutor(object):
     def rate_thumb(self, videoid):
         """Rate an item on Netflix. Ask for a thumb rating"""
         # Get updated user rating info for this videoid
-        from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS
-        video_list = api.custom_video_list([videoid.value], VIDEO_LIST_RATING_THUMB_PATHS)
-        if video_list.videos:
-            videoid_value, video_data = list(video_list.videos.items())[0]  # pylint: disable=unused-variable
+        raw_data = api.get_video_raw_data(videoid, VIDEO_LIST_RATING_THUMB_PATHS)
+        if raw_data.get('videos', {}).get(videoid.value):
+            video_data = raw_data['videos'][videoid.value]
             title = video_data.get('title')
             track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
             is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
-            user_rating = video_data.get('userRating', {}).get('userRating') \
-                if is_thumb_rating else None
+            user_rating = video_data.get('userRating', {}).get('userRating') if is_thumb_rating else None
             ui.show_modal_dialog(False,
                                  ui.xmldialogs.RatingThumb,
                                  'plugin-video-netflix-RatingThumb.xml',
@@ -103,7 +102,7 @@ class AddonActionExecutor(object):
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]
-        api.update_my_list(videoid, operation)
+        api.update_my_list(videoid, operation, self.params)
         _sync_library(videoid, operation)
         common.refresh_container()
 
@@ -111,9 +110,20 @@ class AddonActionExecutor(object):
     @common.time_execution(immediate=False)
     def trailer(self, videoid):
         """Get the trailer list"""
-        video_list = api.supplemental_video_list(videoid, 'trailers')
-        if video_list.videos:
-            url = common.build_url(['supplemental', videoid.value, videoid.mediatype, 'trailers'],
+        from json import dumps
+        menu_data = {'path': ['is_context_menu_item', 'is_context_menu_item'],  # Menu item do not exists
+                     'title': common.get_local_string(30179)}
+        video_id_dict = videoid.to_dict()
+        list_data, extra_data = common.make_call('get_video_list_supplemental',  # pylint: disable=unused-variable
+                                                 {
+                                                     'menu_data': menu_data,
+                                                     'video_id_dict': video_id_dict,
+                                                     'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS
+                                                 })
+        if list_data:
+            url = common.build_url(['supplemental'],
+                                   params={'video_id_dict': dumps(video_id_dict),
+                                           'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
                                    mode=g.MODE_DIRECTORY)
             xbmc.executebuiltin('Container.Update({})'.format(url))
         else:
@@ -122,17 +132,13 @@ class AddonActionExecutor(object):
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
-        g.CACHE.invalidate(self.params.get('on_disk', False))
-        common.send_signal(signal=common.Signals.INVALIDATE_SERVICE_CACHE,
-                           data={'on_disk': self.params.get('on_disk', False), 'bucket_names': None})
-        if not self.params.get('no_notification', False):
-            ui.show_notification(common.get_local_string(30135))
+        g.CACHE.clear(clear_database=self.params.get('on_disk', False))
+        ui.show_notification(common.get_local_string(30135))
 
     def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        from resources.lib.cache import CACHE_COMMON
-        g.CACHE.invalidate_entry(CACHE_COMMON, 'mylist')
-        g.CACHE.invalidate_entry(CACHE_COMMON, 'my_list_items')
+        from resources.lib.common.cache_utils import CACHE_MYLIST
+        g.CACHE.clear(CACHE_MYLIST, clear_database=False)
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""

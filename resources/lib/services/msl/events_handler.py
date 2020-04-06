@@ -13,20 +13,20 @@ import random
 import threading
 import time
 
-try:  # Python 2
-    from urllib import urlencode
-except ImportError:  # Python 3
-    from urllib.parse import urlencode
-
 import xbmc
 
-import resources.lib.api.shakti as api
-import resources.lib.cache as cache
+import resources.lib.api.api_requests as api
 from resources.lib import common
+from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.msl import msl_utils
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
+
+try:  # Python 2
+    from urllib import urlencode
+except ImportError:  # Python 3
+    from urllib.parse import urlencode
 
 try:
     import Queue as queue
@@ -247,5 +247,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = g.LOCAL_DB.get_active_profile_guid() + '_' + g.get_esn() + '_' + videoid.value
-    return g.CACHE.get(cache.CACHE_MANIFESTS, cache_identifier, False)
+    cache_identifier = g.get_esn() + '_' + videoid.value
+    return g.CACHE.get(CACHE_MANIFESTS, cache_identifier)

@@ -15,7 +15,8 @@ import xbmc
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.database.db_utils import (TABLE_SETTINGS_MONITOR)
+from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
+from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR
 from resources.lib.globals import g
 
 try:  # Python 2
@@ -82,8 +83,7 @@ class SettingsMonitor(xbmc.Monitor):
 
             # Check settings changes in sort order of menu
             if menu_data.get('request_context_name'):
-                menu_sortorder_new_setting = int(
-                    g.ADDON.getSettingInt('_'.join(('menu_sortorder', menu_data['path'][1]))))
+                menu_sortorder_new_setting = int(g.ADDON.getSettingInt('menu_sortorder_' + menu_data['path'][1]))
                 menu_sortorder_old_setting = g.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
                                                                   0,
                                                                   TABLE_SETTINGS_MONITOR)
@@ -92,7 +92,7 @@ class SettingsMonitor(xbmc.Monitor):
                                          menu_sortorder_new_setting,
                                          TABLE_SETTINGS_MONITOR)
                     # We remove the cache to allow get the new results in the chosen order
-                    clean_cache = True
+                    g.CACHE.clear([CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH])
 
         # Check changes on content profiles
         # This is necessary because it is possible that some manifests
@@ -106,16 +106,11 @@ class SettingsMonitor(xbmc.Monitor):
         collect_int_old = g.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
         if collect_int != collect_int_old:
             g.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
-            clean_cache = True
+            g.CACHE.clear([CACHE_MANIFESTS])
 
         # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
         if (clean_cache or reboot_addon) and not common.check_credentials():
-            clean_cache = False
             reboot_addon = False
-
-        if clean_cache:
-            common.run_plugin('plugin://plugin.video.netflix/action/purge_cache/'
-                              '?on_disk=True&no_notification=True')
 
         if reboot_addon:
             common.debug('SettingsMonitor: addon will be rebooted')

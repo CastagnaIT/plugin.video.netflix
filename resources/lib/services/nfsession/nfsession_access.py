@@ -158,6 +158,8 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         # Reinitialize the MSL handler (delete msl data file, then reset everything)
         common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
 
+        g.CACHE.clear(clear_database=True)
+
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()

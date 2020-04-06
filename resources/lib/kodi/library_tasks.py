@@ -15,7 +15,7 @@ import re
 
 import xbmcgui
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 from resources.lib.api.exceptions import MetadataNotAvailable
@@ -63,7 +63,7 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
     task = None
     try:
         if task_handler == export_item:
-            metadata = api.metadata(videoid)
+            metadata = api.get_metadata(videoid)
             if videoid.mediatype == common.VideoId.MOVIE:
                 task = _create_export_movie_task(videoid, metadata[0], nfo_settings)
             elif videoid.mediatype in common.VideoId.TV_TYPES:
@@ -72,7 +72,7 @@ def compile_tasks(videoid, task_handler, nfo_settings=None):
                 raise ValueError('Cannot handle {}'.format(videoid))
 
         if task_handler == export_new_item:
-            metadata = api.metadata(videoid, True)
+            metadata = api.get_metadata(videoid, True)
             task = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
         if task_handler == remove_item:

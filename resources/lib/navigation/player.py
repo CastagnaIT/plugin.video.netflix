@@ -14,10 +14,11 @@ import xbmcplugin
 import xbmcgui
 
 from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.api.paths import EVENT_PATHS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.library as library
 import resources.lib.kodi.ui as ui
@@ -56,7 +57,7 @@ def play(videoid):
     is_up_next_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
     metadata = [{}, {}]
     try:
-        metadata = api.metadata(videoid)
+        metadata = api.get_metadata(videoid)
         common.debug('Metadata is {}', metadata)
     except MetadataNotAvailable:
         common.warn('Metadata not available for {}', videoid)
@@ -70,7 +71,6 @@ def play(videoid):
         return
 
     list_item = get_inputstream_listitem(videoid)
-    infos, art = infolabels.add_info_for_playback(videoid, list_item, skip_set_progress_status=True)
 
     resume_position = None
     event_data = {}
@@ -112,15 +112,13 @@ def play(videoid):
 
     xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
-    upnext_info = get_upnext_info(videoid, (infos, art), metadata) if is_up_next_enabled else None
+    upnext_info = get_upnext_info(videoid, metadata) if is_up_next_enabled else None
 
     g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
 
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
-        'infos': infos,
-        'art': art,
         'timeline_markers': get_timeline_markers(metadata[0]),
         'upnext_info': upnext_info,
         'resume_position': resume_position,
@@ -137,6 +135,8 @@ def get_inputstream_listitem(videoid):
                                  offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/dash+xml')
+    list_item.setProperty('isFolder', 'false')
+    list_item.setProperty('IsPlayable', 'true')
 
     import inputstreamhelper
     is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
@@ -175,10 +175,10 @@ def _verify_pin(pin_required):
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    api_data = api.event_info(videoid)
-    if not api_data:
+    raw_data = api.get_video_raw_data(videoid, EVENT_PATHS)
+    if not raw_data:
         return {}
-    videoid_data = api_data['videos'][videoid.value]
+    videoid_data = raw_data['videos'][videoid.value]
     common.debug('Event data: {}', videoid_data)
 
     event_data = {'resume_position':
@@ -195,7 +195,7 @@ def _get_event_data(videoid):
 
 
 @common.time_execution(immediate=False)
-def get_upnext_info(videoid, current_episode, metadata):
+def get_upnext_info(videoid, metadata):
     """Determine next episode and send an AddonSignal to UpNext addon"""
     try:
         next_episode_id = _find_next_episode(videoid, metadata)
@@ -206,6 +206,7 @@ def get_upnext_info(videoid, current_episode, metadata):
         return {}
 
     common.debug('Next episode is {}', next_episode_id)
+    current_episode = infolabels.get_info_for_playback(next_episode_id, True)
     next_episode = infolabels.get_info_for_playback(next_episode_id, True)
     next_info = {
         'current_episode': _upnext_info(videoid, *current_episode),
