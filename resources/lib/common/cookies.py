@@ -61,7 +61,7 @@ def load(account_hash):
     if not xbmcvfs.exists(xbmc.translatePath(filename)):
         common.debug('Cookies file does not exist')
         raise MissingCookiesError()
-    common.debug('Loading cookies from {}', filename)
+    common.debug('Loading cookies from {}', g.py2_decode(filename))
     cookie_file = xbmcvfs.File(filename, 'rb')
     try:
         if g.PY_IS_VER2:
