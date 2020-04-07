@@ -63,22 +63,24 @@ def activate_profile(profile_guid):
 def save_current_lolomo_data():
     """Save the current lolomo data of the current selected profile"""
     # Note: every profile has its root lolomo (that are also visible in the lhpuuidh-browse profiles cookies)
-    context_names = ['continueWatching']
+    context_name = 'continueWatching'
     lolomo_data = common.make_call('path_request',
-                                   [['lolomo', context_names, ['context', 'id', 'index']]])
+                                   [['lolomo', [context_name], ['context', 'id', 'index']]])
     lolomo_root = lolomo_data['lolomo'][1]
     g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
     # Todo: In the new profiles, there is no 'continueWatching' list and no list is returned
     #  How get the lolomo of continueWatching?
-    for context_name in context_names:
-        if context_name in lolomo_data['lolomos'][lolomo_root]:
-            context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
-            context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
-        else:
-            context_index = ''
-            context_id = ''
-        g.LOCAL_DB.set_value('lolomo_{}_index'.format(context_name.lower()), context_index, TABLE_SESSION)
-        g.LOCAL_DB.set_value('lolomo_{}_id'.format(context_name.lower()), context_id, TABLE_SESSION)
+    if ('lolomos' in lolomo_data and
+            lolomo_root in lolomo_data['lolomos'] and
+            context_name in lolomo_data['lolomos'][lolomo_root]):
+        context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
+        context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
+    else:
+        common.debug('Context continueWatching lolomo not found. Returned data: {}', lolomo_data)
+        context_index = ''
+        context_id = ''
+    g.LOCAL_DB.set_value('lolomo_{}_index'.format(context_name.lower()), context_index, TABLE_SESSION)
+    g.LOCAL_DB.set_value('lolomo_{}_id'.format(context_name.lower()), context_id, TABLE_SESSION)
 
 
 def update_lolomo_context(context_name):
