@@ -31,6 +31,7 @@ class ProgressManager(PlaybackActionManager):
         self.last_player_state = {}
         self.is_player_in_pause = False
         self.lock_events = False
+        self.allow_request_update_lolomo = False
         self.window_cls = Window(10000)  # Kodi home window
 
     def _initialize(self, data):
@@ -46,8 +47,8 @@ class ProgressManager(PlaybackActionManager):
             return
         if self.is_player_in_pause and (self.tick_elapsed - self.last_tick_count) >= 1800:
             # When the player is paused for more than 30 minutes we interrupt the sending of events (1800secs=30m)
-            _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
-            _send_event(EVENT_STOP, self.event_data, self.last_player_state)
+            self._send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
+            self._send_event(EVENT_STOP, self.event_data, self.last_player_state)
             self.is_event_start_sent = False
             self.lock_events = True
         else:
@@ -58,15 +59,18 @@ class ProgressManager(PlaybackActionManager):
                 # When the playback starts for the first time, for correctness should send elapsed_seconds value to 0
                 if self.tick_elapsed < 5 and self.event_data['resume_position'] is None:
                     player_state['elapsed_seconds'] = 0
-                _send_event(EVENT_START, self.event_data, player_state)
+                self._send_event(EVENT_START, self.event_data, player_state)
                 self.is_event_start_sent = True
                 self.tick_elapsed = 0
             else:
                 # Generate events to send to Netflix service every 1 minute (60secs=1m)
                 if (self.tick_elapsed - self.last_tick_count) >= 60:
-                    _send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
+                    self._send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
                     self._save_resume_time(player_state['elapsed_seconds'])
                     self.last_tick_count = self.tick_elapsed
+                    # Allow request of lolomo update (for continueWatching and bookmark) only after the first minute
+                    # it seems that most of the time if sent earlier returns error
+                    self.allow_request_update_lolomo = True
         self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
@@ -75,7 +79,7 @@ class ProgressManager(PlaybackActionManager):
             return
         self._reset_tick_count()
         self.is_player_in_pause = True
-        _send_event(EVENT_ENGAGE, self.event_data, player_state)
+        self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._save_resume_time(player_state['elapsed_seconds'])
 
     def on_playback_resume(self, player_state):
@@ -87,15 +91,16 @@ class ProgressManager(PlaybackActionManager):
             # This might happen when ResumeManager skip is performed
             return
         self._reset_tick_count()
-        _send_event(EVENT_ENGAGE, self.event_data, player_state)
+        self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._save_resume_time(player_state['elapsed_seconds'])
+        self.allow_request_update_lolomo = True
 
     def _on_playback_stopped(self):
         if not self.is_event_start_sent or self.lock_events:
             return
         self._reset_tick_count()
-        _send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
-        _send_event(EVENT_STOP, self.event_data, self.last_player_state)
+        self._send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
+        self._send_event(EVENT_STOP, self.event_data, self.last_player_state)
 
     def _save_resume_time(self, resume_time):
         """Save resume time value in order to update the infolabel cache"""
@@ -111,13 +116,13 @@ class ProgressManager(PlaybackActionManager):
         self.tick_elapsed = 0
         self.last_tick_count = 0
 
-
-def _send_event(event_type, event_data, player_state):
-    if not player_state:
-        common.warn('ProgressManager: the event [{}] cannot be sent, missing player_state data', event_type)
-        return
-    common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
-        'event_type': event_type,
-        'event_data': event_data,
-        'player_state': player_state
-    }, non_blocking=True)
+    def _send_event(self, event_type, event_data, player_state):
+        if not player_state:
+            common.warn('ProgressManager: the event [{}] cannot be sent, missing player_state data', event_type)
+            return
+        event_data['allow_request_update_lolomo'] = self.allow_request_update_lolomo
+        common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
+            'event_type': event_type,
+            'event_data': event_data,
+            'player_state': player_state
+        }, non_blocking=True)
