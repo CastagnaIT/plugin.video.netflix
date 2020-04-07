@@ -105,6 +105,11 @@ class EventsHandler(threading.Thread):
                     self.banned_events_ids += [event.get_event_id()]
             except queue.Empty:
                 pass
+            except Exception as exc:  # pylint: disable=broad-except
+                common.error('[Event queue monitor] An error has occurred: {}', exc)
+                import traceback
+                common.error(traceback.format_exc())
+                self.clear_queue()
             monitor.waitForAbort(1)
 
     def _process_event_request(self, event):
