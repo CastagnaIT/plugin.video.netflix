@@ -49,7 +49,7 @@ class StreamContinuityManager(PlaybackActionManager):
         self.player = xbmc.Player()
         self.player_state = {}
         self.resume = {}
-        self.legacy_kodi_version = bool('18.' in common.GetKodiVersion().version)
+        self.legacy_kodi_version = g.KODI_VERSION.is_major_ver('18')
         self.kodi_only_forced_subtitles = None
 
     def _initialize(self, data):

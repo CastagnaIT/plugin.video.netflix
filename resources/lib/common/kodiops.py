@@ -240,27 +240,27 @@ class GetKodiVersion(object):
     # Examples of some types of supported strings:
     # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
     # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
-
     def __init__(self):
-        self._build_version = xbmc.getInfoLabel('System.BuildVersion')
-
-    @property
-    def version(self):
         import re
-        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self._build_version)
-        return result.group(0) if result else 'Unknown'
-
-    @property
-    def date(self):
-        import re
-        result = re.search('(Git:)(\\d+?(?=(-|$)))', self._build_version)
-        return int(result.group(2)) if result and len(result.groups()) >= 2 else None
-
-    @property
-    def stage(self):
-        import re
-        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self._build_version)
+        self.build_version = xbmc.getInfoLabel('System.BuildVersion')
+        # Parse the version number
+        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self.build_version)
+        self.version = result.group(0) if result else ''
+        # Parse the major version number
+        self.major_version = self.version.split('.')[0] if self.version else ''
+        # Parse the date of GIT build
+        result = re.search('(Git:)(\\d+?(?=(-|$)))', self.build_version)
+        self.date = int(result.group(2)) if result and len(result.groups()) >= 2 else None
+        # Parse the stage name
+        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self.build_version)
         if not result:
-            result = re.search('^(.+)(-\\d+\\.\\d+)', self._build_version)
-            return result.group(1) if result else ''
-        return result.group(2) if result else ''
+            result = re.search('^(.+)(-\\d+\\.\\d+)', self.build_version)
+            self.stage = result.group(1) if result else ''
+        else:
+            self.stage = result.group(2) if result else ''
+
+    def is_major_ver(self, major_ver):
+        return bool(major_ver in self.major_version)
+
+    def __str__(self):
+        return self.build_version

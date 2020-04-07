@@ -103,7 +103,7 @@ def play(videoid):
         #  - The call of next video from UpNext is recognized as Skin call, because it's an external addon call, so it causes several operating problems
         is_up_next_enabled = False
 
-    if 'raspberrypi' in common.get_system_platform() and '18' in common.GetKodiVersion().version:
+    if 'raspberrypi' in common.get_system_platform() and g.KODI_VERSION.is_major_ver('18'):
         # OMX Player is not compatible with netflix video streams
         # Only Kodi 18 has this property, on Kodi 19 Omx Player has been removed
         value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})

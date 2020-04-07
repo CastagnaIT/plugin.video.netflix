@@ -100,7 +100,7 @@ def ask_for_resume(resume_position):
     return xbmcgui.Dialog().contextmenu(
         [
             common.get_local_string(12022).format(common.convert_seconds_to_hms_str(resume_position)),
-            common.get_local_string(12023 if '18.' in common.GetKodiVersion().version else 12021)
+            common.get_local_string(12023 if g.KODI_VERSION.is_major_ver('18') else 12021)
         ])
 
 
