@@ -89,12 +89,14 @@ class EventsHandler(threading.Thread):
         self.cache_data_events = {}
         self.banned_events_ids = []
         common.register_slot(signal=common.Signals.QUEUE_VIDEO_EVENT, callback=self.callback_event_video_queue)
+        self._stop_requested = False
 
     def run(self):
         """Monitor and process the event queue"""
         common.debug('[Event queue monitor] Thread started')
         monitor = xbmc.Monitor()
-        while not monitor.abortRequested():
+
+        while not monitor.abortRequested() and not self._stop_requested:
             try:
                 # Take the first queued item
                 event = self.queue_events.get_nowait()
@@ -146,6 +148,10 @@ class EventsHandler(threading.Thread):
             # no longer make any future requests from this event id
         #     return False
         return True
+
+    def stop_join(self):
+        self._stop_requested = True
+        self.join()
 
     def callback_event_video_queue(self, data=None):
         """Callback to add a video event"""

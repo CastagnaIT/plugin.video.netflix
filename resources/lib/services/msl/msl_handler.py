@@ -40,6 +40,7 @@ class MSLHandler(object):
 
     def __init__(self):
         super(MSLHandler, self).__init__()
+        self._events_handler_thread = None
         self._init_msl_handler()
         common.register_slot(
             signal=common.Signals.ESN_CHANGED,
@@ -53,6 +54,9 @@ class MSLHandler(object):
         common.register_slot(
             signal=common.Signals.REINITIALIZE_MSL_HANDLER,
             callback=self.reinitialize_msl_handler)
+        common.register_slot(
+            signal=common.Signals.SWITCH_EVENTS_HANDLER,
+            callback=self.switch_events_handler)
 
     def _init_msl_handler(self):
         self.msl_requests = None
@@ -61,9 +65,8 @@ class MSLHandler(object):
             common.info('Loaded MSL data from disk')
         except Exception:  # pylint: disable=broad-except
             msl_data = None
-
         self.msl_requests = MSLRequests(msl_data)
-        EventsHandler(self.msl_requests.chunked_request).start()
+        self.switch_events_handler()
 
     def reinitialize_msl_handler(self, data=None):  # pylint: disable=unused-argument
         """
@@ -74,6 +77,15 @@ class MSLHandler(object):
         if data is True:
             common.delete_file(MSL_DATA_FILENAME)
         self._init_msl_handler()
+
+    def switch_events_handler(self, data=None):
+        """Switch to enable or disable the Events handler"""
+        if self._events_handler_thread:
+            self._events_handler_thread.stop_join()
+            self._events_handler_thread = None
+        if g.ADDON.getSettingBool('ProgressManager_enabled') or data:
+            self._events_handler_thread = EventsHandler(self.msl_requests.chunked_request)
+            self._events_handler_thread.start()
 
     @display_error_info
     @common.time_execution(immediate=True)

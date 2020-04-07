@@ -108,6 +108,13 @@ class SettingsMonitor(xbmc.Monitor):
             g.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
             g.CACHE.clear([CACHE_MANIFESTS])
 
+        # Check if Progress Manager settings is changed
+        progress_manager_enabled = g.ADDON.getSettingBool('ProgressManager_enabled')
+        progress_manager_enabled_old = g.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
+        if progress_manager_enabled != progress_manager_enabled_old:
+            g.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
+            common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
+
         # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
         if (clean_cache or reboot_addon) and not common.check_credentials():
             reboot_addon = False
