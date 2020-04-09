@@ -45,7 +45,6 @@ class PlaybackController(xbmc.Monitor):
         """
         Callback for addon signal when this addon has initiated a playback
         """
-        self.tracking = True
         self.active_player_id = None
         self.action_managers = [
             ResumeManager(),
@@ -55,6 +54,7 @@ class PlaybackController(xbmc.Monitor):
             UpNextNotifier()
         ]
         self._notify_all(PlaybackActionManager.initialize, data)
+        self.tracking = True
 
     def onNotification(self, sender, method, data):
         # pylint: disable=unused-argument, invalid-name, broad-except
