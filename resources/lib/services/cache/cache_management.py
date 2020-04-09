@@ -221,7 +221,7 @@ class CacheManagement(object):
         else:
             # Clear only specified buckets
             for bucket in buckets:
-                if bucket in self.memory_cache:
+                if bucket['name'] in self.memory_cache:
                     del self.memory_cache[bucket['name']]
                 if clear_database:
                     self._clear_db(bucket)
