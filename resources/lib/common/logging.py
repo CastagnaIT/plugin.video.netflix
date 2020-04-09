@@ -9,21 +9,32 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import sys
 from functools import wraps
 
 from future.utils import iteritems
 import xbmc
 from resources.lib.globals import g
 
+# time.clock() was deprecated in Python 3.3 and removed in Python 3.8
 try:
-    from time import perf_counter
-
-    def clock():
-        return perf_counter() * 1.0e-6
+    # Python 3.8 or later
+    from time import perf_counter as clock
 except ImportError:
+    # Python 3.2 or earlier
     from time import clock
 
 __LOG_LEVEL__ = None
+
+
+if hasattr(sys.modules['time'], 'perf_counter'):
+    # time.perf_counter() returns time in [us]
+    CLOCK_TO_MILLISECONDS = 1.e-3
+elif hasattr(sys.modules['time'], 'clock'):
+    # time.clock() returns time in [s]
+    CLOCK_TO_MILLISECONDS = 1.e3
+else:
+    CLOCK_TO_MILLISECONDS = 1.0
 
 
 def get_log_level():
@@ -143,7 +154,7 @@ def time_execution(immediate):
             try:
                 return func(*args, **kwargs)
             finally:
-                execution_time = int((clock() - start) * 1000)
+                execution_time = int((clock() - start) * CLOCK_TO_MILLISECONDS)
                 if immediate:
                     debug('Call to {} took {}ms'
                           .format(func.__name__, execution_time))
