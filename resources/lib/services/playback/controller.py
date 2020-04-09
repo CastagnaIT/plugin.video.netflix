@@ -16,6 +16,7 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.globals import g
+from resources.lib.kodi import ui
 from .action_manager import PlaybackActionManager
 from .progress_manager import ProgressManager
 from .resume_manager import ResumeManager
@@ -171,10 +172,12 @@ def _notify_managers(manager, notification, data):
             notify_method(data)
         else:
             notify_method()
-    except Exception as exc:
-        common.error('{} disabled due to exception: {}', manager.name, exc)
+    except Exception as exc:  # pylint: disable=broad-except
         manager.enabled = False
-        raise
+        msg = '{} disabled due to exception: {}'.format(manager.name, exc)
+        import traceback
+        common.error(traceback.format_exc())
+        ui.show_notification(title=common.get_local_string(30105), msg=msg)
 
 
 def _get_player_id():
