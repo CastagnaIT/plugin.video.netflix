@@ -89,7 +89,7 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
     # Cases where it can happen:
     # - Calls made by the Skin Widgets, Scripts, Kodi library
     # - Calls made by others Kodi windows (like file browser)
-    # - Calls made by other add-ons (not verified yet)
+    # - Calls made by other add-ons
 
     # To try to solve the problem, when the service is not ready a loop will be started to freeze the add-on instance
     # until the service will be ready.
@@ -111,7 +111,7 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5
-        debug('Skin widget workaround enabled - time elapsed: {}', sec_elapsed)
+        debug('Add-on was initiated by an external call - workaround enabled time elapsed {}s', sec_elapsed)
         g.IS_ADDON_EXTERNAL_CALL = True
         return True
     return False
