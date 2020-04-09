@@ -18,8 +18,8 @@ from resources.lib.globals import g
 
 # time.clock() was deprecated in Python 3.3 and removed in Python 3.8
 try:
-    # Python 3.8 or later
-    from time import perf_counter as clock
+    # Python 3.3 or later
+    from time import perf_counter
 except ImportError:
     # Python 3.2 or earlier
     from time import clock
@@ -28,13 +28,19 @@ __LOG_LEVEL__ = None
 
 
 if hasattr(sys.modules['time'], 'perf_counter'):
-    # time.perf_counter() returns time in [us]
-    CLOCK_TO_MILLISECONDS = 1.e-3
+    def clock_ms():
+        return perf_counter() * 1e-3  # [us] -> [ms]
+
+    def clock_s():
+        return perf_counter() * 1e-6  # [us] -> [s]
 elif hasattr(sys.modules['time'], 'clock'):
-    # time.clock() returns time in [s]
-    CLOCK_TO_MILLISECONDS = 1.e3
+    def clock_ms():
+        return clock() * 1.e3  # [s] -> [ms]
+
+    def clock_s():
+        return clock()  # [s] -> [s]
 else:
-    CLOCK_TO_MILLISECONDS = 1.0
+    raise NotImplementedError
 
 
 def get_log_level():
@@ -150,11 +156,11 @@ def time_execution(immediate):
                 return func(*args, **kwargs)
 
             g.add_time_trace_level()
-            start = clock()
+            start = clock_ms()
             try:
                 return func(*args, **kwargs)
             finally:
-                execution_time = int((clock() - start) * CLOCK_TO_MILLISECONDS)
+                execution_time = int(clock_ms() - start)
                 if immediate:
                     debug('Call to {} took {}ms'
                           .format(func.__name__, execution_time))

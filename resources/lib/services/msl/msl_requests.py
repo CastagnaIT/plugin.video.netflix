@@ -13,7 +13,6 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 import re
-import sys
 import zlib
 from time import time
 
@@ -28,28 +27,10 @@ from resources.lib.services.msl.msl_utils import (ENDPOINTS, EVENT_BIND,
                                                   display_error_info,
                                                   generate_logblobs_params)
 
-# time.clock() was deprecated in Python 3.3 and removed in Python 3.8
-try:
-    # Python 3.8 or later
-    from time import perf_counter as clock
-except ImportError:
-    # Python 3.2 or earlier
-    from time import clock
-
 try:  # Python 2
     from urllib import urlencode
 except ImportError:  # Python 3
     from urllib.parse import urlencode
-
-
-# time.perf_counter() returns time in [us]
-if hasattr(sys.modules['time'], 'perf_counter'):
-    CLOCK_TO_SECONDS = 1.e-6
-# time.clock() returns time in [s]
-elif hasattr(sys.modules['time'], 'clock'):
-    CLOCK_TO_SECONDS = 1.0
-else:
-    CLOCK_TO_SECONDS = 1.0
 
 
 class MSLRequests(MSLRequestBuilder):
@@ -198,9 +179,9 @@ class MSLRequests(MSLRequestBuilder):
     def _post(self, endpoint, request_data):
         """Execute a post request"""
         common.debug('Executing POST request to {}', endpoint)
-        start = clock()
+        start = common.logging.clock_s()
         response = self.session.post(endpoint, request_data)
-        common.debug('Request took {}s', (clock() - start) * CLOCK_TO_SECONDS)
+        common.debug('Request took {}s', common.logging.clock_s() - start)
         common.debug('Request returned response with status {}', response.status_code)
         response.raise_for_status()
         return response

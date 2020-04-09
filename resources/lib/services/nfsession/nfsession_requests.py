@@ -11,7 +11,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-import sys
 
 import requests
 
@@ -27,23 +26,6 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import (NFSessionBase,
                                                              needs_login)
 
-# time.clock() was deprecated in Python 3.3 and removed in Python 3.8
-try:
-    # Python 3.8 or later
-    from time import perf_counter as clock
-except ImportError:
-    # Python 3.2 or earlier
-    from time import clock
-
-
-# time.perf_counter() returns time in [us]
-if hasattr(sys.modules['time'], 'perf_counter'):
-    CLOCK_TO_SECONDS = 1.e-6
-# time.clock() returns time in [s]
-elif hasattr(sys.modules['time'], 'clock'):
-    CLOCK_TO_SECONDS = 1.0
-else:
-    CLOCK_TO_SECONDS = 1.0
 
 
 BASE_URL = 'https://www.netflix.com'
@@ -111,14 +93,14 @@ class NFSessionRequests(NFSessionBase):
                      verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(component,
                                                                  kwargs)
-        start = clock()
+        start = common.logging.clock_s()
         response = method(
             url=url,
             verify=self.verify_ssl,
             headers=headers,
             params=params,
             data=data)
-        common.debug('Request took {}s', (clock() - start) * CLOCK_TO_SECONDS)
+        common.debug('Request took {}s', common.logging.clock_s() - start)
         common.debug('Request returned statuscode {}', response.status_code)
         if response.status_code in [404, 401] and not session_refreshed:
             # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
