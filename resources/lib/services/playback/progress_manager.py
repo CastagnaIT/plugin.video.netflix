@@ -126,3 +126,6 @@ class ProgressManager(PlaybackActionManager):
             'event_data': event_data,
             'player_state': player_state
         }, non_blocking=True)
+
+    def __repr__(self):
+        return 'enabled={}'.format(self.enabled)
