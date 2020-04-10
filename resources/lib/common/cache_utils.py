@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
+import resources.lib.common as common
 from resources.lib.api.exceptions import CacheMiss
 from resources.lib.globals import g
 
@@ -117,9 +118,15 @@ def serialize_data(value):
 
 
 def deserialize_data(value):
-    if g.PY_IS_VER2:
-        # On python 2 pickle.loads wants str
-        from base64 import standard_b64decode
-        return pickle.loads(standard_b64decode(value))
-    # On python 3 pickle.loads wants byte
-    return pickle.loads(value)
+    try:
+        if g.PY_IS_VER2:
+            # On python 2 pickle.loads wants str
+            from base64 import standard_b64decode
+            return pickle.loads(standard_b64decode(value))
+        # On python 3 pickle.loads wants byte
+        return pickle.loads(value)
+    except (pickle.UnpicklingError, TypeError, EOFError):
+        # TypeError/EOFError happen when standard_b64decode fails
+        # This should happen only if manually mixing the database data
+        common.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
+        raise CacheMiss()
