@@ -69,7 +69,7 @@ class AddonActionExecutor(object):
     def rate_thumb(self, videoid):
         """Rate an item on Netflix. Ask for a thumb rating"""
         # Get updated user rating info for this videoid
-        raw_data = api.get_video_raw_data(videoid, VIDEO_LIST_RATING_THUMB_PATHS)
+        raw_data = api.get_video_raw_data([videoid], VIDEO_LIST_RATING_THUMB_PATHS)
         if raw_data.get('videos', {}).get(videoid.value):
             video_data = raw_data['videos'][videoid.value]
             title = video_data.get('title')

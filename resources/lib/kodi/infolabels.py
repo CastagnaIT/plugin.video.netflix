@@ -100,19 +100,6 @@ def _get_art(videoid, item, profile_language_code):
     return art
 
 
-@common.time_execution(immediate=False)
-def get_info_for_playback(videoid, skip_add_from_library):
-    """Get infolabels and art info"""
-    # By getting the info from the library you can not get the length of video required for Up Next addon
-    # waiting for a suitable solution we avoid this method by using skip_add_from_library
-    if not skip_add_from_library:
-        try:
-            return get_info_from_library(videoid)
-        except library.ItemNotFound:
-            common.debug('Can not get infolabels from the library, submit a request to netflix')
-    return get_info_from_netflix(videoid)
-
-
 def get_resume_info_from_library(videoid):
     """Retrieve the resume value from the Kodi library"""
     try:
@@ -250,19 +237,29 @@ def _best_art(arts):
     return next((art for art in arts if art), '')
 
 
-def get_info_from_netflix(videoid):
-    """Get infolabels with info from cache (if exist) or Netflix API"""
+def get_info_from_netflix(videoids):
+    """Get infolabels and arts from cache (if exist) or Netflix API, for multiple videoid"""
     profile_language_code = g.LOCAL_DB.get_profile_config('language', '')
-    try:
-        infos = get_info(videoid, None, None, profile_language_code)[0]
-        art = _get_art(videoid, None, profile_language_code)
-        common.debug('Got infolabels and art from cache')
-    except (AttributeError, TypeError):
-        common.debug('Infolabels or art were not in cache, retrieving from API')
-        raw_data = api.get_video_raw_data(videoid)
-        infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
-        art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
-    return infos, art
+    videoids_to_request = []
+    info_data = {}
+    for videoid in videoids:
+        try:
+            infos = get_info(videoid, None, None, profile_language_code)[0]
+            art = _get_art(videoid, None, profile_language_code)
+            info_data[videoid.value] = infos, art
+            common.debug('Got infolabels and art from cache for videoid {}', videoid)
+        except (AttributeError, TypeError):
+            videoids_to_request.append(videoid)
+
+    if videoids_to_request:
+        # Retrieve missing data from API
+        common.debug('Retrieving infolabels and art from API for videoids {}', videoids_to_request)
+        raw_data = api.get_video_raw_data(videoids_to_request)
+        for videoid in videoids_to_request:
+            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
+            art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
+            info_data[videoid.value] = infos, art
+    return info_data
 
 
 def get_info_from_library(videoid):
