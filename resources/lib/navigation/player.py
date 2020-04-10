@@ -9,7 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
 import xbmcplugin
 import xbmcgui
 
@@ -20,9 +19,7 @@ from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
-import resources.lib.kodi.library as library
 import resources.lib.kodi.ui as ui
-from resources.lib.services.playback import get_timeline_markers
 
 SERVICE_URL_FORMAT = 'http://localhost:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
@@ -53,8 +50,20 @@ class InputstreamError(Exception):
 @common.time_execution(immediate=False)
 def play(videoid):
     """Play an episode or movie as specified by the path"""
-    common.info('Playing {}', videoid)
-    is_up_next_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
+    is_upnext_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
+    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see controller.py
+    is_upnext_callback_received = g.LOCAL_DB.get_value('upnext_play_callback_received', False)
+    is_upnext_callback_file_type_strm = g.LOCAL_DB.get_value('upnext_play_callback_file_type', '') == 'strm'
+    # This is the only way found to know if the played item come from the add-on itself or from Kodi library
+    # also when Up Next Add-on is used
+    is_played_from_addon = not g.IS_ADDON_EXTERNAL_CALL or (g.IS_ADDON_EXTERNAL_CALL and
+                                                            is_upnext_callback_received and
+                                                            not is_upnext_callback_file_type_strm)
+    common.info('Playing {} from {} (Is Up Next Add-on call: {})',
+                videoid,
+                'add-on' if is_played_from_addon else 'external call',
+                is_upnext_callback_received)
+
     metadata = [{}, {}]
     try:
         metadata = api.get_metadata(videoid)
@@ -71,11 +80,23 @@ def play(videoid):
         return
 
     list_item = get_inputstream_listitem(videoid)
-
     resume_position = None
+    info_data = None
     event_data = {}
+    videoid_next_episode = None
 
-    if g.IS_ADDON_EXTERNAL_CALL:
+    if not is_played_from_addon or is_upnext_enabled:
+        if is_upnext_enabled:
+            # When UpNext is enabled, get the next episode to play
+            videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
+        info_data = infolabels.get_info_from_netflix(
+            [videoid, videoid_next_episode] if videoid_next_episode else [videoid])
+        info, arts = info_data[videoid.value]
+        # When a item is played from Kodi library or Up Next add-on is needed set info and art to list_item
+        list_item.setInfo('video', info)
+        list_item.setArt(arts)
+
+    if not is_played_from_addon:
         # Workaround for resuming strm files from library
         resume_position = (infolabels.get_resume_info_from_library(videoid).get('position')
                            if g.ADDON.getSettingBool('ResumeManager_enabled') else None)
@@ -87,21 +108,20 @@ def play(videoid):
                 return
             if index_selected == 1:
                 resume_position = None
-    elif (g.ADDON.getSettingBool('ProgressManager_enabled') and
-          videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]):
-        # To now we have this limits:
-        # - enabled only with items played inside the addon then not Kodi library, need impl. JSON-RPC lib update code
+
+    if (g.ADDON.getSettingBool('ProgressManager_enabled') and
+            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE] and
+            is_played_from_addon):
+        # Enable the progress manager only when:
+        # - It is not an add-on external call
+        # - It is an external call, but the played item is not a STRM file
+        # Todo:
+        #  in theory to enable in Kodi library need implement the update watched status code for items of Kodi library
+        #  by using JSON RPC Files.SetFileDetails https://github.com/xbmc/xbmc/pull/17202
+        #  that can be used only on Kodi 19.x
         event_data = _get_event_data(videoid)
         event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = g.IS_ADDON_EXTERNAL_CALL
-        # Todo: UpNext addon is incompatible with netflix watched status sync feature
-        #  Problems:
-        #  - Need to modify the cache (to update the watched status) on every played item
-        #  - Modifying the cache after the stop, is wrong due to below problems
-        #  - The new fast play, 'play_url' method, cause problems with the Player callbacks, after press play next is missing the Stop event in the controller!
-        #  - To verify possibility problems of data mixing of controller._get_player_state()
-        #  - The call of next video from UpNext is recognized as Skin call, because it's an external addon call, so it causes several operating problems
-        is_up_next_enabled = False
+        event_data['is_played_by_library'] = not is_played_from_addon
 
     if 'raspberrypi' in common.get_system_platform() and g.KODI_VERSION.is_major_ver('18'):
         # OMX Player is not compatible with netflix video streams
@@ -112,27 +132,26 @@ def play(videoid):
 
     xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
-    upnext_info = get_upnext_info(videoid, metadata) if is_up_next_enabled else None
-
     g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
 
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
-        'timeline_markers': get_timeline_markers(metadata[0]),
-        'upnext_info': upnext_info,
+        'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
+        'metadata': metadata,
+        'info_data': info_data,
+        'is_played_from_addon': is_played_from_addon,
         'resume_position': resume_position,
-        'event_data': event_data}, non_blocking=True)
+        'event_data': event_data,
+        'is_upnext_callback_received': is_upnext_callback_received}, non_blocking=True)
 
 
 def get_inputstream_listitem(videoid):
-    """Return a listitem that has all inputstream relevant properties set
-    for playback of the given video_id"""
+    """Return a listitem that has all inputstream relevant properties set for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
         port=g.LOCAL_DB.get_value('msl_service_port', 8000))
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
-    list_item = xbmcgui.ListItem(path=service_url + manifest_path,
-                                 offscreen=True)
+    list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/dash+xml')
     list_item.setProperty('isFolder', 'false')
@@ -175,7 +194,7 @@ def _verify_pin(pin_required):
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    raw_data = api.get_video_raw_data(videoid, EVENT_PATHS)
+    raw_data = api.get_video_raw_data([videoid], EVENT_PATHS)
     if not raw_data:
         return {}
     videoid_data = raw_data['videos'][videoid.value]
@@ -194,43 +213,19 @@ def _get_event_data(videoid):
     return event_data
 
 
-@common.time_execution(immediate=False)
-def get_upnext_info(videoid, metadata):
-    """Determine next episode and send an AddonSignal to UpNext addon"""
+def _upnext_get_next_episode_videoid(videoid, metadata):
+    """Determine the next episode and get the videoid"""
     try:
-        next_episode_id = _find_next_episode(videoid, metadata)
+        videoid_next_episode = _find_next_episode(videoid, metadata)
+        common.debug('Next episode is {}', videoid_next_episode)
+        return videoid_next_episode
     except (TypeError, KeyError):
         # import traceback
         # common.debug(traceback.format_exc())
         common.debug('There is no next episode, not setting up Up Next')
-        return {}
-
-    common.debug('Next episode is {}', next_episode_id)
-    current_episode = infolabels.get_info_for_playback(next_episode_id, True)
-    next_episode = infolabels.get_info_for_playback(next_episode_id, True)
-    next_info = {
-        'current_episode': _upnext_info(videoid, *current_episode),
-        'next_episode': _upnext_info(next_episode_id, *next_episode)
-    }
-
-    if (xbmc.getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id') and
-            library.is_in_library(next_episode_id)):
-        filepath = g.SHARED_DB.get_episode_filepath(
-            next_episode_id.tvshowid,
-            next_episode_id.seasonid,
-            next_episode_id.episodeid)
-        # next_info['play_info'] = {'play_path': g.py2_decode(xbmc.translatePath(filepath))}
-        next_info['play_url'] = g.py2_decode(xbmc.translatePath(filepath))
-    else:
-        # next_info['play_info'] = {'play_path': common.build_url(videoid=next_episode_id,
-        #                                                         mode=g.MODE_PLAY)}
-        next_info['play_url'] = common.build_url(videoid=next_episode_id, mode=g.MODE_PLAY)
-    if 'creditsOffset' in metadata[0]:
-        next_info['notification_offset'] = metadata[0]['creditsOffset']
-    return next_info
+        return None
 
 
-@common.time_execution(immediate=False)
 def _find_next_episode(videoid, metadata):
     try:
         # Find next episode in current season
@@ -247,30 +242,3 @@ def _find_next_episode(videoid, metadata):
         return common.VideoId(tvshowid=videoid.tvshowid,
                               seasonid=next_season['id'],
                               episodeid=episode['id'])
-
-
-def _upnext_info(videoid, infos, art):
-    """Create a data dict for upnext signal"""
-    # Double check to 'rating' key, sometime can be an empty string, not accepted by Up Next add-on
-    rating = infos.get('rating', None)
-    return {
-        'episodeid': videoid.episodeid,
-        'tvshowid': videoid.tvshowid,
-        'title': infos['title'],
-        'art': {
-            'tvshow.poster': art.get('poster', ''),
-            'thumb': art.get('thumb', ''),
-            'tvshow.fanart': art.get('fanart', ''),
-            'tvshow.landscape': art.get('landscape', ''),
-            'tvshow.clearart': art.get('clearart', ''),
-            'tvshow.clearlogo': art.get('clearlogo', '')
-        },
-        'plot': infos['plot'],
-        'showtitle': infos['tvshowtitle'],
-        'playcount': infos.get('playcount', 0),
-        'runtime': infos['duration'],
-        'season': infos['season'],
-        'episode': infos['episode'],
-        'rating': rating if rating else None,
-        'firstaired': infos.get('year', infos.get('firstaired', ''))
-    }
