@@ -125,6 +125,12 @@ class MSLHandler(object):
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
+            expiration = int(manifest['expiration'] / 1000)
+            if (expiration - time.time()) < 14400:
+                # Some devices remain active even longer than 48 hours, if the manifest is at the limit of the deadline
+                # when requested by stream_continuity.py / events_handler.py will cause problems
+                # if it is already expired, so we guarantee a minimum of safety ttl of 4h (14400s = 4 hours)
+                raise CacheMiss()
             if common.is_debug_verbose():
                 common.debug('Manifest for {} obtained from the cache', viewable_id)
                 # Save the manifest to disk as reference
