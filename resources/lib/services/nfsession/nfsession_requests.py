@@ -10,7 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import time
 import json
 import requests
 
@@ -88,14 +87,14 @@ class NFSessionRequests(NFSessionBase):
                      verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(component,
                                                                  kwargs)
-        start = time.clock()
+        start = common.perf_clock()
         response = method(
             url=url,
             verify=self.verify_ssl,
             headers=headers,
             params=params,
             data=data)
-        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request took {}s', common.perf_clock() - start)
         common.debug('Request returned statuscode {}', response.status_code)
         if response.status_code in [404, 401] and not session_refreshed:
             # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
