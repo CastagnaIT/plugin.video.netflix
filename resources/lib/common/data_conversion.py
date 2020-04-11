@@ -82,7 +82,7 @@ def _conv_string_to_json(value):
 def _conv_string_to_datetime(value):
     try:
         return datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
-    except TypeError:
+    except (TypeError, ImportError):
         # Python bug https://bugs.python.org/issue27400
         import time
         # Workaround for http://bugs.python.org/issue8098 only to py2
