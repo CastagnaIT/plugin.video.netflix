@@ -72,7 +72,7 @@ def load(account_hash):
     except Exception as exc:
         import traceback
         common.error('Failed to load cookies from file: {exc}', exc=exc)
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         raise MissingCookiesError()
     finally:
         cookie_file.close()

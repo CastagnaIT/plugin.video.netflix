@@ -130,7 +130,7 @@ def execute_library_tasks_silently(videoid, task_handlers, title=None, nfo_setti
                 task_handler(task, library_path())
             except Exception:  # pylint: disable=broad-except
                 import traceback
-                common.error(traceback.format_exc())
+                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
                 common.error('{} of {} failed', task_handler.__name__, task['title'])
 
 

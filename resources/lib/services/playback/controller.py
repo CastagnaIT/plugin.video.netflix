@@ -80,7 +80,7 @@ class PlaybackController(xbmc.Monitor):
                 self._on_playback_stopped()
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
 
     def on_service_tick(self):
         """
@@ -193,7 +193,7 @@ def _notify_managers(manager, notification, data):
         manager.enabled = False
         msg = '{} disabled due to exception: {}'.format(manager.name, exc)
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_notification(title=common.get_local_string(30105), msg=msg)
 
 

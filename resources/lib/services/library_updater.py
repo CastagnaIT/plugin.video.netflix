@@ -145,6 +145,6 @@ def _compute_next_schedule():
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
         # import traceback
-        # common.debug(traceback.format_exc())
+        # common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
         common.warn('Managed error at _compute_next_schedule')
         return None

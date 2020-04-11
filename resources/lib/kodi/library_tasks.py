@@ -48,7 +48,7 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
             task_handler(task, **kwargs)
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             errors.append({
                 'task_title': task_title,
                 'error': '{}: {}'.format(type(exc).__name__, exc)})

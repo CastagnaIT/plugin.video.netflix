@@ -174,7 +174,7 @@ def addonsignals_return_call(func):
         except Exception as exc:  # pylint: disable=broad-except
             error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             result = {
                 'error': exc.__class__.__name__,
                 'message': unicode(exc),

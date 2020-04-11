@@ -35,7 +35,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             common.debug('Widevine CryptoSession successful constructed')
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             raise MSLError('Failed to construct Widevine CryptoSession')
 
         drm_info = {

@@ -221,7 +221,7 @@ def _upnext_get_next_episode_videoid(videoid, metadata):
         return videoid_next_episode
     except (TypeError, KeyError):
         # import traceback
-        # common.debug(traceback.format_exc())
+        # common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
         common.debug('There is no next episode, not setting up Up Next')
         return None
 

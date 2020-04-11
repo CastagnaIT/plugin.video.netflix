@@ -83,7 +83,7 @@ def get_credentials():
         }
     except Exception:
         import traceback
-        error(traceback.format_exc())
+        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
 

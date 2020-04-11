@@ -360,11 +360,11 @@ class GlobalVariables(object):
         """Remove a level from the time trace"""
         self.time_trace_level -= 2
 
-    def py2_decode(self, value):
+    def py2_decode(self, value, encoding='utf-8'):
         """Decode text only on python 2"""
         # To remove when Kodi 18 support is over / Py2 dead
         if self.PY_IS_VER2:
-            return value.decode('utf-8')
+            return value.decode(encoding)
         return value
 
     def py2_encode(self, value):

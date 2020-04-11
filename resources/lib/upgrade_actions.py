@@ -30,4 +30,4 @@ def delete_cache_folder():
         xbmcvfs.rmdir(cache_path)
     except Exception:  # pylint: disable=broad-except
         import traceback
-        error(traceback.format_exc())
+        error(g.py2_decode(traceback.format_exc(), 'latin-1'))

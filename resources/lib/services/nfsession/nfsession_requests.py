@@ -127,7 +127,7 @@ class NFSessionRequests(NFSessionBase):
             import traceback
             common.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
                         type(exc).__name__)
-            common.debug(traceback.format_exc())
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
                 # This prevent the MSL error: No entity association record found for the user
@@ -136,13 +136,13 @@ class NFSessionRequests(NFSessionBase):
         except requests.exceptions.RequestException:
             import traceback
             common.warn('Failed to refresh session data, request error (RequestException)')
-            common.warn(traceback.format_exc())
+            common.warn(g.py2_decode(traceback.format_exc(), 'latin-1'))
             if raise_exception:
                 raise
         except Exception:
             import traceback
             common.warn('Failed to refresh session data, login expired (Exception)')
-            common.debug(traceback.format_exc())
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             if raise_exception:
                 raise

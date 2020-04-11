@@ -197,7 +197,7 @@ def run(argv):
         except Exception as exc:
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             success = False
 

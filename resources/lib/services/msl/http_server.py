@@ -10,6 +10,8 @@
 from __future__ import absolute_import, division, unicode_literals
 import base64
 
+from resources.lib.globals import g
+
 try:  # Python 3
     from urllib.parse import parse_qs, urlparse
 except ImportError:  # Python 2
@@ -56,7 +58,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(base64.standard_b64decode(b64license))
         except Exception as exc:
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -77,7 +79,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
         except Exception as exc:
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 

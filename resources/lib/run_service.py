@@ -112,7 +112,7 @@ class NetflixService(object):
             self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             return
 
@@ -129,7 +129,7 @@ class NetflixService(object):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 

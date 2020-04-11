@@ -131,7 +131,7 @@ def parse_profiles(profiles_list_data):
             sort_order += 1
     except Exception:
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         common.error('Profile list data: {}', profiles_list_data)
         raise InvalidProfilesError
 
@@ -163,7 +163,7 @@ def parse_profiles(profiles_list_data):
 #            sort_order += 1
 #    except Exception:
 #        import traceback
-#        common.error(traceback.format_exc())
+#        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
 #        common.error('Falkor cache: {}', falkor_cache)
 #        raise
 
@@ -247,7 +247,7 @@ def validate_login(react_context):
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
@@ -326,7 +326,7 @@ def extract_json(content, name):
         if json_str:
             common.error('JSON string trying to load: {}', json_str)
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         raise WebsiteParsingError('Unable to extract {}'.format(name))
 
 

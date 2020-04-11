@@ -51,7 +51,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
-            common.debug(traceback.format_exc())
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
         except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
@@ -119,7 +119,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                                False, True)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             raise
         return False

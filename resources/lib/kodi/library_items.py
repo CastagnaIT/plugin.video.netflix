@@ -238,7 +238,7 @@ def remove_item(item_task, library_home=None):
         common.warn('The video with id {} not exists in the database', videoid)
     except Exception as exc:
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_addon_error_info(exc)
 
 

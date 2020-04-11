@@ -115,7 +115,7 @@ def auto_update_library(sync_with_mylist, silent):
     except Exception:  # pylint: disable=broad-except
         import traceback
         common.error('An error has occurred in the library auto update')
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         g.SHARED_DB.set_value('library_auto_update_is_running', False)
 
 
