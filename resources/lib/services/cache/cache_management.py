@@ -18,7 +18,7 @@ from time import time
 from resources.lib import common
 from resources.lib.api.exceptions import UnknownCacheBucketError, CacheMiss
 from resources.lib.common import g
-from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError
+from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError, ProfilesMissing
 from resources.lib.common.cache_utils import BUCKET_NAMES, BUCKETS
 
 CONN_ISOLATION_LEVEL = None  # Autocommit mode
@@ -122,8 +122,8 @@ class CacheManagement(object):
 
     def get(self, bucket, identifier):
         """Get a item from cache bucket"""
-        identifier = self._add_prefix(identifier)
         try:
+            identifier = self._add_prefix(identifier)
             cache_entry = self._get_cache_bucket(bucket['name'])[identifier]
             if cache_entry['expires'] < int(time()):
                 # Cache expired
@@ -132,7 +132,10 @@ class CacheManagement(object):
         except KeyError:
             if bucket['is_persistent']:
                 return self._get_db(bucket['name'], identifier)
-        raise CacheMiss()
+            raise CacheMiss()
+        except ProfilesMissing:
+            # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
+            raise CacheMiss()
 
     @handle_connection
     def _get_db(self, bucket_name, identifier):
@@ -161,17 +164,21 @@ class CacheManagement(object):
         :param ttl: override default expiration (in seconds)
         :param expires: override default expiration (in timestamp) if specified override also the 'ttl' value
         """
-        identifier = self._add_prefix(identifier)
-        if not expires:
-            if not ttl and bucket['default_ttl']:
-                ttl = getattr(g, bucket['default_ttl'])
-            expires = int(time() + ttl)
-        cache_entry = {'expires': expires, 'data': data}
-        # Save the item data to memory-cache
-        self._get_cache_bucket(bucket['name']).update({identifier: cache_entry})
-        if bucket['is_persistent']:
-            # Save the item data to the cache database
-            self._add_db(bucket['name'], identifier, data, expires)
+        try:
+            identifier = self._add_prefix(identifier)
+            if not expires:
+                if not ttl and bucket['default_ttl']:
+                    ttl = getattr(g, bucket['default_ttl'])
+                expires = int(time() + ttl)
+            cache_entry = {'expires': expires, 'data': data}
+            # Save the item data to memory-cache
+            self._get_cache_bucket(bucket['name']).update({identifier: cache_entry})
+            if bucket['is_persistent']:
+                # Save the item data to the cache database
+                self._add_db(bucket['name'], identifier, data, expires)
+        except ProfilesMissing:
+            # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
+            pass
 
     @handle_connection
     def _add_db(self, bucket_name, identifier, data, expires):
@@ -187,13 +194,17 @@ class CacheManagement(object):
     def delete(self, bucket, identifier):
         """Delete an item from cache bucket"""
         # Delete the item data from in memory-cache
-        identifier = self._add_prefix(identifier)
-        bucket_data = self._get_cache_bucket(bucket['name'])
-        if identifier in bucket_data:
-            del bucket_data[identifier]
-        if bucket['is_persistent']:
-            # Delete the item data from cache database
-            self._delete_db(bucket['name'], identifier)
+        try:
+            identifier = self._add_prefix(identifier)
+            bucket_data = self._get_cache_bucket(bucket['name'])
+            if identifier in bucket_data:
+                del bucket_data[identifier]
+            if bucket['is_persistent']:
+                # Delete the item data from cache database
+                self._delete_db(bucket['name'], identifier)
+        except ProfilesMissing:
+            # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
+            pass
 
     @handle_connection
     def _delete_db(self, bucket_name, identifier):
