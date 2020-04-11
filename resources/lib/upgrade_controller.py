@@ -20,16 +20,18 @@ def check_addon_upgrade():
 
     :return True if this is the first run of the add-on after an installation from scratch
     """
+    from resources.lib.common import is_less_version
     # Upgrades that require user interaction or to be performed outside of the service
     addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None)
     addon_current_ver = g.VERSION
-    if addon_current_ver != addon_previous_ver:
+    if addon_previous_ver is None or is_less_version(addon_previous_ver, addon_current_ver):
         _perform_addon_changes(addon_previous_ver, addon_current_ver)
     return addon_previous_ver is None
 
 
 def check_service_upgrade():
     """Check service upgrade and perform necessary update operations"""
+    from resources.lib.common import is_less_version
     # Upgrades to be performed before starting the service
     # Upgrade the local database
     current_local_db_version = g.LOCAL_DB.get_value('local_db_version', None)
@@ -46,15 +48,14 @@ def check_service_upgrade():
     # Perform service changes
     service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
     service_current_ver = g.VERSION
-    if service_current_ver != service_previous_ver:
+    if service_previous_ver is None or is_less_version(service_previous_ver, service_current_ver):
         _perform_service_changes(service_previous_ver, service_current_ver)
 
 
 def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
-    from resources.lib.common import (debug, is_less_version)
-    debug('Initialize addon upgrade operations, from version {} to {})',
-          previous_ver, current_ver)
+    from resources.lib.common import debug, is_less_version
+    debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
     if previous_ver and is_less_version(previous_ver, '0.15.9'):
         import resources.lib.kodi.ui as ui
         msg = ('This update resets the settings to auto-update library.\r\n'
@@ -68,9 +69,8 @@ def _perform_addon_changes(previous_ver, current_ver):
 
 def _perform_service_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
-    from resources.lib.common import debug
-    debug('Initialize service upgrade operations, from version {} to {})',
-          previous_ver, current_ver)
+    from resources.lib.common import debug, is_less_version
+    debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
     from resources.lib.upgrade_actions import delete_cache_folder
     delete_cache_folder()
     # Always leave this to last - After the operations set current version
