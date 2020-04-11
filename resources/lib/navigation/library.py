@@ -38,7 +38,7 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
-        if ui.ask_for_removal_confirmation():
+        if ui.ask_for_confirmation(common.get_local_string(30030), common.get_local_string(30124)):
             library.execute_library_tasks(videoid,
                                           [library.remove_item],
                                           common.get_local_string(30030))

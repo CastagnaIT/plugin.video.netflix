@@ -83,13 +83,6 @@ def _ask_for_input(heading):
         type=xbmcgui.INPUT_ALPHANUM)) or None
 
 
-def ask_for_removal_confirmation():
-    """Ask the user to finally remove title from the Kodi library"""
-    return ask_for_confirmation(
-        common.get_local_string(30047),
-        common.get_local_string(30124))
-
-
 def ask_for_confirmation(title, message):
     """Ask the user to confirm an operation"""
     return xbmcgui.Dialog().yesno(title, message)

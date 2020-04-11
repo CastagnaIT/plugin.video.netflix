@@ -202,9 +202,7 @@ msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
 msgstr ""
 
-msgctxt "#30047"
-msgid "Do you want to remove it permanently?"
-msgstr "Deseja remover?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
@@ -487,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Deseja mesmo prosseguir?\nIsso excluirá todos os itens exportados anteriormente e exportará todos os itens da Minha Lista para o perfil ativo no momento.\nEsta operação pode demorar algum tempo..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Deseja realmente remover este item?"
 
 msgctxt "#30125"
