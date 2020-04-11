@@ -14,7 +14,6 @@ import xbmc
 import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import MissingCredentialsError, WebsiteParsingError
 from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.globals import g
 
@@ -49,20 +48,21 @@ class AddonActionExecutor(object):
 
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
-        password = ui.ask_for_password()
-        if not password:
-            return
-        try:
-            parental_control_data = api.get_parental_control_data(password)
-            ui.show_modal_dialog(False,
-                                 ui.xmldialogs.ParentalControl,
-                                 'plugin-video-netflix-ParentalControl.xml',
-                                 g.ADDON.getAddonInfo('path'),
-                                 **parental_control_data)
-        except MissingCredentialsError:
-            ui.show_ok_dialog('Netflix', common.get_local_string(30009))
-        except WebsiteParsingError as exc:
-            ui.show_addon_error_info(exc)
+        ui.show_ok_dialog('Netflix', 'This feature will be available in future versions of the add-on')
+        # password = ui.ask_for_password()
+        # if not password:
+        #     return
+        # try:
+        #     parental_control_data = api.get_parental_control_data(password)
+        #     ui.show_modal_dialog(False,
+        #                          ui.xmldialogs.ParentalControl,
+        #                          'plugin-video-netflix-ParentalControl.xml',
+        #                          g.ADDON.getAddonInfo('path'),
+        #                          **parental_control_data)
+        # except MissingCredentialsError:
+        #     ui.show_ok_dialog('Netflix', common.get_local_string(30009))
+        # except WebsiteParsingError as exc:
+        #     ui.show_addon_error_info(exc)
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
