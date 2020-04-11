@@ -31,7 +31,9 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype not in [common.VideoId.SUPPLEMENTAL, common.VideoId.EPISODE]:
         # Library operations for supplemental (trailers etc) and single episodes are not allowed
-        items = _generate_library_ctx_items(videoid)
+        lib_auto_upd_mode = g.ADDON.getSettingInt('lib_auto_upd_mode')
+        if lib_auto_upd_mode != 0:
+            items = _generate_library_ctx_items(videoid, lib_auto_upd_mode)
 
     # Old rating system
     # if videoid.mediatype != common.VideoId.SEASON and \
@@ -57,11 +59,11 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
     return items
 
 
-def _generate_library_ctx_items(videoid):
+def _generate_library_ctx_items(videoid, lib_auto_upd_mode):
     library_actions = []
     allow_lib_operations = True
     lib_is_sync_with_mylist = (g.ADDON.getSettingBool('lib_sync_mylist') and
-                               g.ADDON.getSettingInt('lib_auto_upd_mode') != 0)
+                               lib_auto_upd_mode == 2)
 
     if lib_is_sync_with_mylist:
         # If the synchronization of Netflix "My List" with the Kodi library is enabled

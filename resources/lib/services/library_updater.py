@@ -27,7 +27,7 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def __init__(self):
         try:
-            self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 1
+            self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
             # g.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
@@ -83,7 +83,7 @@ class LibraryUpdateService(xbmc.Monitor):
         # Wait for slow system (like Raspberry Pi) to write the settings
         xbmc.sleep(500)
         # Check if the status is changed
-        self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 1
+        self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         # Then compute the next schedule
         if self.enabled:
             self.next_schedule = _compute_next_schedule()

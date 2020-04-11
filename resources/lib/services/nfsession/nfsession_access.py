@@ -136,7 +136,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         g.settings_monitor_suspend(True)
 
         # Disable and reset auto-update / auto-sync features
-        g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
+        g.ADDON.setSettingInt('lib_auto_upd_mode', 1)
         g.ADDON.setSettingBool('lib_sync_mylist', False)
         g.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
