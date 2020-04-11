@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-01 20:55+0001\n"
+"PO-Revision-Date: 2020-03-22 18:45+0001\n"
 "Last-Translator: J.M. Pongilioni ('boblo1') <djinn2k2@gmail.com>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -208,28 +208,27 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "Exportado"
 
-
 # Unused 30049 to 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Autoselección del perfil"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Quitar autoselección del perfil"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Establecer para autoselección"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Para establecer el perfil, abre el menú contextual en la lista de perfiles"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "El perfil {} ha sido establecido para autoselección"
 
 # Unused 30059
 
@@ -487,7 +486,7 @@ msgstr "¿Realmente deseas continuar?\nEsto borrará todos los elementos exporta
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "¿Realmente deseas eliminar este elemento?"
+msgstr "¿Deseas realmente eliminar este elemento?"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -495,7 +494,7 @@ msgstr "Purgar biblioteca"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "¿Realmente deseas purgar tu biblioteca?\nTodos los elementos exportados se borrarán."
+msgstr "¿Deseas realmente purgar tu biblioteca?\nTodos los elementos exportados se borrarán."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -927,16 +926,20 @@ msgstr "Instalar complemento Up Next"
 
 msgctxt "#30235"
 msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[En desarrollo] Sincronizar el estado de 'visto' de los vídeos con Netflix"
+msgstr "[En desarrollo] Sincronizar el estado de visto de los vídeos con Netflix"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr "Cambiar el estado de 'visto' (localmente)"
+msgstr "Cambiar el estado de visto (localmente)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr "Marcado como visto|Marcado como no visto|Estado de 'visto' de Netflix restaurado"
+msgstr "Marcado como visto|Marcado como no visto|Estado de visto de Netflix restaurado"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Notificaciones de Up Next (ver vídeo siguiente)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Color de la info. argumental complementaria"
