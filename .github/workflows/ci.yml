@@ -16,9 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # FIXME: E1101: Module 'time' has no 'clock' member on Python 3.8
-        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
-        python-version: [2.7, 3.5, 3.6, 3.7]
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
     steps:
     - name: Check out ${{ github.sha }} from repository ${{ github.repository }}
       uses: actions/checkout@v2
