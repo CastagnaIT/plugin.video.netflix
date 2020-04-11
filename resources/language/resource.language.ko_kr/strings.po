@@ -845,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "찜한 것들을 강제 업데이트"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
 msgctxt "#30216"

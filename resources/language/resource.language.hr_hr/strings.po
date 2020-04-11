@@ -846,7 +846,7 @@ msgid "Force the update of my list"
 msgstr "Prisilite ažuriranje popisa"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Označite naslove uključene na moj popis bojom"
 
 msgctxt "#30216"

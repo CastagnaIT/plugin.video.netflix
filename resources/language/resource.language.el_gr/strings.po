@@ -845,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "Επιβολή ενημέρωσης της λίστας μου"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Επισήμανε τίτλους συμπεριλαμβανομένους στην λίστα μου με ενα χρώμα"
 
 msgctxt "#30216"

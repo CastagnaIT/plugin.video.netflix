@@ -845,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "マイリストを強制更新"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "マイリストにあるタイトルの色"
 
 msgctxt "#30216"

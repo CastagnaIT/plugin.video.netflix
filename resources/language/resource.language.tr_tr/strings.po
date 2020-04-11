@@ -845,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "Listemin güncellenmesini zorla"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Listeme dahil edilen başlıkları bir renkle vurgula"
 
 msgctxt "#30216"
