@@ -53,7 +53,7 @@
       <screenshot>resources/media/screenshot-04.jpg</screenshot>
       <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
-    <language>en cs de es hr hu it ja ko nl pl pt sv tr</language>
+    <language>en cs de es hr hu it ja ko nl pl pt tr</language>
     <platform>all</platform>
     <license>MIT</license>
     <website>https://www.netflix.com</website>
