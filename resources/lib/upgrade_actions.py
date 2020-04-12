@@ -14,7 +14,8 @@ import os
 import xbmc
 import xbmcvfs
 
-from resources.lib.common import delete_folder_contents, debug, error
+from resources.lib.common.fileops import delete_folder_contents
+from resources.lib.common.logging import debug, error
 from resources.lib.globals import g
 
 

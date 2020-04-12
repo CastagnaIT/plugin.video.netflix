@@ -9,9 +9,10 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-# import resources.lib.upgrade_actions as upgrade_actions
-from resources.lib.globals import g
+from resources.lib.common.logging import debug
+from resources.lib.common.misc_utils import is_less_version, is_minimum_version
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
+from resources.lib.globals import g
 
 
 def check_addon_upgrade():
@@ -20,7 +21,6 @@ def check_addon_upgrade():
 
     :return True if this is the first run of the add-on after an installation from scratch
     """
-    from resources.lib.common import is_less_version
     # Upgrades that require user interaction or to be performed outside of the service
     addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None)
     addon_current_ver = g.VERSION
@@ -31,7 +31,6 @@ def check_addon_upgrade():
 
 def check_service_upgrade():
     """Check service upgrade and perform necessary update operations"""
-    from resources.lib.common import is_less_version
     # Upgrades to be performed before starting the service
     # Upgrade the local database
     current_local_db_version = g.LOCAL_DB.get_value('local_db_version', None)
@@ -54,7 +53,6 @@ def check_service_upgrade():
 
 def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
-    from resources.lib.common import debug, is_less_version
     debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
     if previous_ver and is_less_version(previous_ver, '0.15.9'):
         import resources.lib.kodi.ui as ui
@@ -69,7 +67,6 @@ def _perform_addon_changes(previous_ver, current_ver):
 
 def _perform_service_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
-    from resources.lib.common import debug, is_less_version
     debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
     if previous_ver and is_less_version(previous_ver, '1.2.0'):
         # In the version 1.2.0 has been implemented a new cache management
@@ -85,7 +82,6 @@ def _perform_service_changes(previous_ver, current_ver):
 def _perform_local_db_changes(current_version, upgrade_to_version):
     """Perform database actions for a db version change"""
     if current_version is not None:
-        from resources.lib.common import debug
         debug('Initialization of local database updates from version {} to {})', current_version, upgrade_to_version)
         run_local_db_updates(current_version, upgrade_to_version)
     g.LOCAL_DB.set_value('local_db_version', upgrade_to_version)
@@ -96,7 +92,6 @@ def _perform_shared_db_changes(current_version, upgrade_to_version):
     # This is a temporary bug fix, to be removed on future addon versions,
     # this because a previous oversight never saved the current version
     # Init fix
-    from resources.lib.common import is_minimum_version
     service_previous_ver = g.LOCAL_DB.get_value('service_previous_version', None)
     if service_previous_ver is not None and\
             current_version is None and\
@@ -105,7 +100,6 @@ def _perform_shared_db_changes(current_version, upgrade_to_version):
     # End fix
 
     if current_version is not None:
-        from resources.lib.common import debug
         debug('Initialization of shared databases updates from version {} to {})', current_version, upgrade_to_version)
         run_shared_db_updates(current_version, upgrade_to_version)
     g.LOCAL_DB.set_value('shared_db_version', upgrade_to_version)
