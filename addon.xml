@@ -40,6 +40,9 @@
     <disclaimer lang="it_IT">Alcune parti di questo add-on potrebbero non essere legali nel proprio paese di residenza - si prega di verificare le leggi locali prima dell'installazione.</disclaimer>
     <summary lang="hu_HU">Netflix</summary>
     <description lang="hu_HU">Netflix VOD kiegészítő a Kodihoz</description>
+	<summary lang="es_ES">Netflix</summary>
+    <description lang="es_ES">Complemento para los Servicios VOD de Netflix</description>
+    <disclaimer lang="es_ES">Algunas partes de este complemento pueden no ser legales en su país de residencia - Por favor, consulte con las leyes locales antes de instalar.</disclaimer>
     <disclaimer lang="hu_HU">Előfordulhat, hogy a kiegészítő néhány része nem törvényes az Ön országában - telepítés előtt tájékozódjon a helyi törvényekről.</disclaimer>
     <summary lang="tr_TR">Netflix</summary>
     <description lang="tr_TR">Netflix VOD Hizmetleri Eklentisi</description>
