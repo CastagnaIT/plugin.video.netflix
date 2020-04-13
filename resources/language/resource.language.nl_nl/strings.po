@@ -102,7 +102,7 @@ msgstr "Op Netflix beoordelen"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Van 'Mijn lijst’ verwijderen"
+msgstr "Van 'Mijn lijst' verwijderen"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
@@ -327,12 +327,12 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Bewaar favorieten voor de library inhoud / markeer als bekeken"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
-msgstr "Cache time-to-live (minuten)"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "'Mijn lijst' cache time-to-live (minuten)"
 
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
-msgstr "Cache time-to-live voor metadata (dagen)"
+msgstr "Metadata cache time-to-live (dagen)"
 
 # Unused 30086
 
@@ -842,11 +842,11 @@ msgstr "InputStream Helper instellingen…"
 
 msgctxt "#30214"
 msgid "Force the update of my list"
-msgstr "Forceer de vernieuwing van Mijn lijst"
+msgstr "Forceer de vernieuwing van 'Mijn lijst'"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Benadruk titels uit Mijn lijst met een kleur"
+msgstr "Benadruk titels uit 'Mijn lijst' met een kleur"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -878,7 +878,7 @@ msgstr "Kinderen account"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synchronisatie gebruikt nu \"Mijn lijst\" van profiel {}"
+msgstr "Synchronisatie gebruikt nu 'Mijn lijst' van profiel {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -898,7 +898,7 @@ msgstr "Synchroniseer Kodi bibliotheek met My List"
 
 msgctxt "#30228"
 msgid "Use \"My list\" of the current profile"
-msgstr "Gebruik \"Mijn lijst\" van het huidige profiel"
+msgstr "Gebruik 'Mijn lijst' van het huidige profiel"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
