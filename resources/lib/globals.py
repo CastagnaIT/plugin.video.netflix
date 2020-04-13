@@ -270,15 +270,18 @@ class GlobalVariables(object):
         use_mysql = g.ADDON.getSettingBool('use_mysql')
         if initialize or use_mysql:
             import resources.lib.database.db_shared as db_shared
-            from resources.lib.database.db_exceptions import MySQLConnectionError
+            from resources.lib.database.db_exceptions import MySQLConnectionError, MySQLError
             try:
                 shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
                 self.SHARED_DB = shared_db_class()
-            except MySQLConnectionError:
+            except (MySQLConnectionError, MySQLError) as exc:
+                import resources.lib.kodi.ui as ui
+                if isinstance(exc, MySQLError):
+                    # There is a problem with the database
+                    ui.show_addon_error_info(exc)
                 # The MySQL database cannot be reached, fallback to local SQLite database
                 # When this code is called from addon, is needed apply the change also in the
                 # service, so disabling it run the SettingsMonitor
-                import resources.lib.kodi.ui as ui
                 self.ADDON.setSettingBool('use_mysql', False)
                 ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
                 shared_db_class = db_shared.get_shareddb_class()
