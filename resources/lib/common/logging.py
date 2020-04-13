@@ -8,9 +8,9 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
-from functools import wraps
-from time import clock
 
+import time
+from functools import wraps
 from future.utils import iteritems
 
 import xbmc
@@ -18,6 +18,16 @@ import xbmc
 from resources.lib.globals import g
 
 __LOG_LEVEL__ = None
+
+
+def perf_clock():
+    if hasattr(time, 'clock'):
+        # time.clock() was deprecated in Python 3.3 and removed in Python 3.8
+        return time.clock()  # pylint: disable=no-member
+    if hasattr(time, 'perf_counter'):
+        # * 1e-6 convert [us] to [s]
+        return time.perf_counter() * 1e-6  # pylint: disable=no-member
+    return time.time()
 
 
 def get_log_level():
@@ -133,11 +143,11 @@ def time_execution(immediate):
                 return func(*args, **kwargs)
 
             g.add_time_trace_level()
-            start = clock()
+            start = perf_clock()
             try:
                 return func(*args, **kwargs)
             finally:
-                execution_time = int((clock() - start) * 1000)
+                execution_time = int((perf_clock() - start) * 1000)
                 if immediate:
                     debug('Call to {} took {}ms'
                           .format(func.__name__, execution_time))

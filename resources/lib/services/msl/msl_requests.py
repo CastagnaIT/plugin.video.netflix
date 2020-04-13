@@ -177,9 +177,9 @@ class MSLRequests(MSLRequestBuilder):
     def _post(self, endpoint, request_data):
         """Execute a post request"""
         common.debug('Executing POST request to {}', endpoint)
-        start = time.clock()
+        start = common.perf_clock()
         response = self.session.post(endpoint, request_data)
-        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request took {}s', common.perf_clock() - start)
         common.debug('Request returned response with status {}', response.status_code)
         response.raise_for_status()
         return response
