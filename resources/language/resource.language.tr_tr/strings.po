@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-02-25 01:50+0000\n"
+"PO-Revision-Date: 2020-04-15 01:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -212,23 +212,23 @@ msgstr "Dışa aktarılan"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Otomatik profil seçimi"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Profilin otomatik-seçimini kaldır"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Otomatik seçim için ayarla"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Profili ayarlamak için, profiller listesinde içerik menüsünü açın"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "{} profili otomatik seçim için ayarlandı"
 
 # Unused 30059
 
