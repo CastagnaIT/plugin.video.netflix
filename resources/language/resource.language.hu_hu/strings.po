@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-27 14:40+0000\n"
+"PO-Revision-Date: 2020-04-14 08:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -334,7 +334,9 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Gyorsítótár-elem metaadatok megőrzése (nap)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Gyorsítótár-elem élettartama a saját listámban (perc)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -846,7 +848,7 @@ msgstr "Saját listám kényszerített frissítése"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Színkiemelés a saját listám elemein"
+msgstr "Saját listám elemeinek színe"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -939,3 +941,7 @@ msgstr "Nézettként jelöl|Nem látottként jelöl|Netflix nézett státusz vis
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next jelzés (következő videó nézése)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "A kiegészítő információ színe"
