@@ -46,7 +46,7 @@ msgstr "Contraseña"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 # Unused 30006
 
@@ -86,7 +86,7 @@ msgstr "Otras opciones"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr ""
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -130,7 +130,7 @@ msgstr "Habilitar carpeta para biblioteca personalizada"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Ruta biblioteca personalizada"
+msgstr "Ruta"
 
 msgctxt "#30028"
 msgid "Playback error"
@@ -158,7 +158,7 @@ msgstr "ESN manual"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "Ajustes de InputStream Adaptive..."
+msgstr "Configurar InputStream Adaptive..."
 
 # Unused 30036
 
@@ -264,7 +264,7 @@ msgstr "diariamente"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "cualquier otro día"
+msgstr "en días alternos"
 
 msgctxt "#30069"
 msgid "every 5 days"
@@ -296,11 +296,11 @@ msgstr "Preguntar si omitir la introducción y resumen"
 
 msgctxt "#30076"
 msgid "Skip intro"
-msgstr "Saltar introducción"
+msgstr "Omitir introducción"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Saltar resumen"
+msgstr "Omitir resumen"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -333,8 +333,6 @@ msgstr "Tiempo de elementos en caché (minutos)"
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Tiempo de elementos en caché para los metadatos (días)"
-
-# Unused 30086
 
 msgctxt "#30086"
 msgid "Cache item time-to-live for my list (minutes)"
@@ -946,4 +944,4 @@ msgstr "Notificaciones de Up Next (ver vídeo siguiente)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr "Color de la información extra para argumento"
+msgstr "Color de la información extra del argumento"
