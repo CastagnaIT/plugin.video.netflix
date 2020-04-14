@@ -225,8 +225,7 @@ msgstr "Postavi za automatski odabir"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
-"Da biste postavili profil, na popisu profila otvorite kontekstni izbornik"
+msgstr "Da biste postavili profil, na popisu profila otvorite kontekstni izbornik"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
