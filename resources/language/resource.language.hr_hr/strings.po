@@ -50,6 +50,7 @@ msgid "E-mail"
 msgstr "E-mail"
 
 # Unused 30006
+
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
 msgstr "PIN za roditeljski nadzor (4 znamenke)"
@@ -71,6 +72,7 @@ msgid "Search"
 msgstr "Traži"
 
 # Unused 30012
+
 msgctxt "#30013"
 msgid "No matches found"
 msgstr "Nema rezultata"
@@ -136,6 +138,7 @@ msgid "Playback error"
 msgstr "Pogreška prilikom reprodukcije"
 
 # Unused 30029
+
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Ukloni iz zbirke"
@@ -145,6 +148,7 @@ msgid "General"
 msgstr "Opće"
 
 # Unused 30032
+
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "Omogući Dolby Digital Plus (DDPlus HQ i Atmos on Premium)"
@@ -158,6 +162,7 @@ msgid "InputStream Adaptive settings..."
 msgstr "Prilagodi postavke InputStream ..."
 
 # Unused 30036
+
 msgctxt "#30037"
 msgid "Views"
 msgstr "Posjete"
@@ -199,11 +204,13 @@ msgid "There is a problem with InputStream Adaptive add-on or the Widevine libra
 msgstr "Postoji problem s dodatkom InputStream Adaptive ili bibliotekom Widevine. Možda nedostaje ili nije omogućena, operacija će se otkazati."
 
 # Unused 30047
+
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Izvezeno"
 
 # Unused 30049 to 30053
+
 msgctxt "#30054"
 msgid "Profile auto-selection"
 msgstr "Automatski odabir profila"
@@ -226,6 +233,7 @@ msgid "The profile {} has been set for auto-selection"
 msgstr "Profil {} postavljen je za automatski odabir"
 
 # Unused 30059
+
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
 msgstr "Omogući HEVC profile (4 k za Android/HDR/DolbyVision)"
@@ -239,6 +247,7 @@ msgid "Parental controls"
 msgstr "Roditeljska kontrola"
 
 # Unused 30063
+
 msgctxt "#30064"
 msgid "Perform auto-update"
 msgstr "Izvršite automatsko ažuriranje"
@@ -332,6 +341,7 @@ msgid "Cache item time-to-live for my list (minutes)"
 msgstr "Vrijeme opstanka u cache-u za “Moj popis” (minute)"
 
 # Unused 30086
+
 msgctxt "#30087"
 msgid "Contains {} and more..."
 msgstr "Sadrži {} i još ..."
@@ -465,8 +475,7 @@ msgid "My List operation successful"
 msgstr "Operacija Mog popisa uspješna"
 
 msgctxt "#30120"
-msgid ""
-"Cannot automatically remove a season from Kodi library, please do it manually"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Ne može se automatski ukloniti sezona iz Kodi zbirke, učinite to ručno"
 
 msgctxt "#30121"
@@ -478,8 +487,7 @@ msgid "Sync My List to Kodi library"
 msgstr "Sinkroniziraj Moju Listu sa Kodi zbirkom"
 
 msgctxt "#30123"
-msgid ""
-"Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
 msgstr "Želite li stvarno nastaviti?\nOvim ćete izbrisati sve prethodno izvezene stavke i izvesti sve stavke s Mog popisa za trenutno aktivni profil.\nOva radnja može potrajati neko vrijeme ..."
 
 msgctxt "#30124"
@@ -499,6 +507,7 @@ msgid "Awarded rating of {}"
 msgstr "Dodijeljena ocjena {}"
 
 # Unused 30128
+
 msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Omogući Up Next integraciju"
@@ -608,6 +617,7 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Imate li Netflix Premium račun?"
 
 # Unused 30156
+
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Konfiguracija je završena"
@@ -701,8 +711,7 @@ msgid "Show trailers & more"
 msgstr "Pokažite trailere"
 
 msgctxt "#30180"
-msgid ""
-"There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
 msgstr "Došlo je do problema s prijavom, moguće je da vaš račun nije potvrđen ili obnovljen."
 
 msgctxt "#30181"
@@ -750,15 +759,8 @@ msgid "Do you want to export NFO files for the {} added to 'My List'?"
 msgstr "Želite li izvesti NFO datoteke za {} dodanu u \"Moj popis\"?"
 
 msgctxt "#30192"
-msgid ""
-"\r\n"
-"These files are used by the provider information scrapers to integrate "
-"movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr ""
-"\r\n"
-"Ove datoteke dobavljači informacija dobavljača koriste za integraciju "
-"filmova i informacija o TV emisijama, korisno za bonus epizode ili "
-"director's cut"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nOve datoteke dobavljači informacija dobavljača koriste za integraciju filmova i informacija o TV emisijama, korisno za bonus epizode ili director's cut"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -826,8 +828,7 @@ msgstr "Provjerite je li ovaj uređaj glavni upravitelj automatskog ažuriranja"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
-msgstr ""
-"Ovaj uređaj sada upravlja automatskim ažuriranjima biblioteke za dijeljenje"
+msgstr "Ovaj uređaj sada upravlja automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of shared-library"
