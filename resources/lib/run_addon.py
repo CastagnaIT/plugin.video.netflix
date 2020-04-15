@@ -164,7 +164,7 @@ def run(argv):
     g.init_globals(argv)
 
     reset_log_level_global_var()
-    info('Started (Version {})'.format(g.VERSION))
+    info('Started (Version {})'.format(g.VERSION_RAW))
     info('URL is {}'.format(g.URL))
     success = True
 
