@@ -334,7 +334,9 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Metaveri için önbellek öğesi yaşam-süresi (gün)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Listem için önbellek öğesi yaşam-süresi (dakika)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -939,3 +941,7 @@ msgstr "İzlendi olarak işaretlendi|İzlenmedi olarak işaretlendi|Netflix izle
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next bildirimleri (sonraki videoyu izle)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Özet bilgisi tamamlayıcı rengi"
