@@ -944,4 +944,4 @@ msgstr "Up Next bildirimleri (sonraki videoyu izle)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr "Özet bilgisi tamamlayıcı rengi"
+msgstr "Özet tamamlayıcı bilgisinin rengi"
