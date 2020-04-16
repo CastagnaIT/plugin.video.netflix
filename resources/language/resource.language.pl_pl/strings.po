@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Adres e-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Podaj PIN do tego profilu"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -200,7 +202,7 @@ msgstr "Usunięto ocenę|Oceniłeś kciuk w dół|Oceniłeś kciuk w górę"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Widevine. Może brakować lub może nie być włączona, operacja zostanie anulowana."
+msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Widevine. Może ich brakować lub mogą nie być włączone, operacja zostanie anulowana."
 
 # Unused 30047
 
@@ -212,23 +214,23 @@ msgstr "Wyeksportowane"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Automatyczny wybór profilu"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Usuń automatczyny wybór profilu"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Wybierz dla automatycznego wyboru"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Aby ustawić profil, twórz menu kontekstowe na liście profili o"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Profil {} został ustawiony do automatycznego wyboru"
 
 # Unused 30059
 
@@ -334,7 +336,9 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Utrzymuj pamięć podręczną metadanych przez (dni)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Czas przechowywania w pamięci podręcznej mojej listy (minuty)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -618,7 +622,7 @@ msgstr "Konfiguracja została zakończona"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "Uruchom kreatora konfiguracji dodatki"
+msgstr "Uruchom kreatora konfiguracji"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -939,3 +943,11 @@ msgstr "Oznacz jako obejrzane|Oznacz jako nieobejrzane|Przywróć stan obejrzeni
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Powiadomienia Up Next (oglądaj następne wideo)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Kolor dodatkowych informacji fabuły"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Usługi w tle nie mogą zostać uruchomione z powodu:\r\n{}"
