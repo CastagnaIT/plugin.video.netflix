@@ -75,8 +75,8 @@ def route(pathitems):
 def _get_nav_handler(root_handler):
     nav_handler = None
     if root_handler == g.MODE_DIRECTORY:
-        from resources.lib.navigation.directory import DirectoryBuilder
-        nav_handler = DirectoryBuilder
+        from resources.lib.navigation.directory import Directory
+        nav_handler = Directory
     if root_handler == g.MODE_ACTION:
         from resources.lib.navigation.actions import AddonActionExecutor
         nav_handler = AddonActionExecutor
@@ -96,7 +96,7 @@ def _execute(executor_type, pathitems, params):
     except AttributeError:
         from resources.lib.api.exceptions import InvalidPathError
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-    debug('Invoking action executor {}', executor.__name__)
+    debug('Invoking action: {}', executor.__name__)
     executor(pathitems=pathitems)
 
 

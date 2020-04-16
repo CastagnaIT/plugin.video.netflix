@@ -36,11 +36,11 @@ from resources.lib.navigation.directory_utils import (finalize_directory, conver
 #  the indexes are: 0 the function name of DirectoryBuilder class, 1 the menu id, 2 an optional id
 
 
-class DirectoryBuilder(object):
-    """Builds directory listings"""
+class Directory(object):
+    """Directory listings"""
 
     def __init__(self, params):
-        common.debug('Initializing directory builder: {}', params)
+        common.debug('Initializing "Directory" with params: {}', params)
         self.params = params
         # After build url the param value is converted as string
         self.perpetual_range_start = (None if self.params.get('perpetual_range_start') == 'None'
