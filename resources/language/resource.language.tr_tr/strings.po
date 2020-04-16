@@ -945,3 +945,7 @@ msgstr "Up Next bildirimleri (sonraki videoyu izle)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Ek özet bilgisinin rengi"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"
