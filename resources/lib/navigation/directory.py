@@ -73,9 +73,9 @@ class DirectoryBuilder(object):
                 g.settings_monitor_suspend(False)
             else:
                 common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
-                api.activate_profile(autoselect_profile_guid)
-                self.home(None, False)
-                return True
+                if self._activate_profile(autoselect_profile_guid):
+                    self.home(None, False)
+                    return True
         return False
 
     @custom_viewmode(g.VIEW_PROFILES)
@@ -95,13 +95,9 @@ class DirectoryBuilder(object):
         """Show home listing"""
         if 'switch_profile_guid' in self.params:
             # This is executed only when you have selected a profile from the profile list
-            pin_result = verify_profile_pin(self.params.get('switch_profile_guid'))
-            if not pin_result:
-                if pin_result is not None:
-                    ui.show_notification(common.get_local_string(30106), time=8000)
+            if not self._activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
                 return
-            api.activate_profile(self.params['switch_profile_guid'])
         common.debug('Showing home listing')
         list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
 
@@ -109,6 +105,15 @@ class DirectoryBuilder(object):
                            title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
         end_of_directory(False, cache_to_disc)
+
+    def _activate_profile(self, guid):
+        pin_result = verify_profile_pin(guid)
+        if not pin_result:
+            if pin_result is not None:
+                ui.show_notification(common.get_local_string(30106), time=8000)
+            return False
+        api.activate_profile(guid)
+        return True
 
     @common.time_execution(immediate=False)
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)
