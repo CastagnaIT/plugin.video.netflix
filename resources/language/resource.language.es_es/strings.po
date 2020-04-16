@@ -945,7 +945,7 @@ msgstr "Notificaciones de Up Next (ver vídeo siguiente)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr "Color de la información extra del argumento"
+msgstr "Color para información extra del argumento"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
