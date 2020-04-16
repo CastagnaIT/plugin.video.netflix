@@ -18,8 +18,10 @@ import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
+from resources.lib.api.api_requests import verify_profile_lock
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
+from resources.lib.kodi.ui import ask_for_pin
 
 
 def custom_viewmode(partial_setting_id):
@@ -123,3 +125,11 @@ def get_title(menu_data, extra_data):
                                         g.LOCAL_DB.get_value(menu_data['path'][1],
                                                              {},
                                                              table=TABLE_MENU_DATA).get('title', '')))
+
+
+def verify_profile_pin(guid):
+    """Verify if the profile is locked by a PIN and ask the PIN"""
+    if not g.LOCAL_DB.get_profile_config('isPinLocked', False, guid=guid):
+        return True
+    pin = ask_for_pin(common.get_local_string(30006))
+    return None if not pin else verify_profile_lock(guid, pin)

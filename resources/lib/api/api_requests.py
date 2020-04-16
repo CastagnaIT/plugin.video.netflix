@@ -347,3 +347,18 @@ def verify_pin(pin):
         ).get('success', False)
     except Exception:  # pylint: disable=broad-except
         return False
+
+
+@common.time_execution(immediate=False)
+def verify_profile_lock(guid, pin):
+    """Send profile PIN to Netflix and verify it."""
+    try:
+        return common.make_call(
+            'post',
+            {'component': 'profile_lock',
+             'data': {'pin': pin,
+                      'action': 'verify',
+                      'guid': guid}}
+        ).get('success', False)
+    except Exception:  # pylint: disable=broad-except
+        return False

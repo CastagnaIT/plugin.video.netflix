@@ -33,6 +33,7 @@ URLS = {
     'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
     'switch_profile': {'endpoint': '/SwitchProfile', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
+    'profile_lock': {'endpoint': '/profileLock', 'is_api_call': True},
     'pin': {'endpoint': '/pin', 'is_api_call': False},
     'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
     'pin_service': {'endpoint': '/pin/service', 'is_api_call': True},
@@ -154,7 +155,7 @@ class NFSessionRequests(NFSessionBase):
         data = kwargs.get('data', {})
         headers = kwargs.get('headers', {})
         params = kwargs.get('params', {})
-        if component in ['set_video_rating', 'set_thumb_rating', 'update_my_list', 'pin_service']:
+        if component in ['set_video_rating', 'set_thumb_rating', 'update_my_list', 'pin_service', 'profile_lock']:
             headers.update({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json, text/javascript, */*'})

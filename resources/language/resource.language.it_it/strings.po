@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Inserisci PIN per accedere a questo profilo"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -403,8 +405,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix ha restituito il seguente errore:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub. Nella segnalazione fornire un report dell'errore completo di log di debug (Attiva \"Logging di debug\" dalle impostazioni di Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub seguendo le istruzioni nel Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -945,3 +947,7 @@ msgstr "Notifiche Up Next (guarda prossimo video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Colore delle info supplementari nella trama"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "I servizi in background non sono stati avviati a causa di questo problema:\r\n{}"

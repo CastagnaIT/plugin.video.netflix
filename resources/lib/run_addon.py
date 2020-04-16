@@ -16,8 +16,13 @@ from xbmcgui import Window
 from resources.lib.globals import g
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
-                                  get_current_kodi_profile_name)
+                                  get_current_kodi_profile_name, get_local_string)
 from resources.lib.upgrade_controller import check_addon_upgrade
+
+
+def _handle_endofdirectory(succeeded=False):
+    from xbmcplugin import endOfDirectory
+    endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=succeeded)
 
 
 def lazy_login(func):
@@ -67,6 +72,23 @@ def route(pathitems):
     _execute(nav_handler, pathitems[1:], g.REQUEST_PARAMS)
 
 
+def _get_nav_handler(root_handler):
+    nav_handler = None
+    if root_handler == g.MODE_DIRECTORY:
+        from resources.lib.navigation.directory import DirectoryBuilder
+        nav_handler = DirectoryBuilder
+    if root_handler == g.MODE_ACTION:
+        from resources.lib.navigation.actions import AddonActionExecutor
+        nav_handler = AddonActionExecutor
+    if root_handler == g.MODE_LIBRARY:
+        from resources.lib.navigation.library import LibraryActionExecutor
+        nav_handler = LibraryActionExecutor
+    if root_handler == g.MODE_HUB:
+        from resources.lib.navigation.hub import HubBrowser
+        nav_handler = HubBrowser
+    return nav_handler
+
+
 def _execute(executor_type, pathitems, params):
     """Execute an action as specified by the path"""
     try:
@@ -76,6 +98,15 @@ def _execute(executor_type, pathitems, params):
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
     debug('Invoking action executor {}', executor.__name__)
     executor(pathitems=pathitems)
+
+
+def _get_service_status(window_cls, prop_nf_service_status):
+    from json import loads
+    try:
+        status = window_cls.getProperty(prop_nf_service_status)
+        return loads(status) if status else {}
+    except Exception:  # pylint: disable=broad-except
+        return {}
 
 
 def _check_addon_external_call(window_cls, prop_nf_service_status):
@@ -107,7 +138,7 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
     if is_other_plugin_name or not getCondVisibility("Window.IsMedia"):
         monitor = Monitor()
         sec_elapsed = 0
-        while not window_cls.getProperty(prop_nf_service_status) == 'running':
+        while not _get_service_status(window_cls, prop_nf_service_status).get('status') == 'running':
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5
@@ -115,23 +146,6 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
         g.IS_ADDON_EXTERNAL_CALL = True
         return True
     return False
-
-
-def _get_nav_handler(root_handler):
-    nav_handler = None
-    if root_handler == g.MODE_DIRECTORY:
-        from resources.lib.navigation.directory import DirectoryBuilder
-        nav_handler = DirectoryBuilder
-    if root_handler == g.MODE_ACTION:
-        from resources.lib.navigation.actions import AddonActionExecutor
-        nav_handler = AddonActionExecutor
-    if root_handler == g.MODE_LIBRARY:
-        from resources.lib.navigation.library import LibraryActionExecutor
-        nav_handler = LibraryActionExecutor
-    if root_handler == g.MODE_HUB:
-        from resources.lib.navigation.hub import HubBrowser
-        nav_handler = HubBrowser
-    return nav_handler
 
 
 def _check_valid_credentials():
@@ -151,11 +165,6 @@ def _check_valid_credentials():
     return True
 
 
-def _handle_endofdirectory(succeeded=False):
-    from xbmcplugin import endOfDirectory
-    endOfDirectory(handle=g.PLUGIN_HANDLE, succeeded=succeeded)
-
-
 def run(argv):
     # pylint: disable=broad-except,ungrouped-imports
     # Initialize globals right away to avoid stale values from the last addon invocation.
@@ -164,7 +173,7 @@ def run(argv):
     g.init_globals(argv)
 
     reset_log_level_global_var()
-    info('Started (Version {})'.format(g.VERSION))
+    info('Started (Version {})'.format(g.VERSION_RAW))
     info('URL is {}'.format(g.URL))
     success = True
 
@@ -173,11 +182,19 @@ def run(argv):
     # If you use multiple Kodi profiles you need to distinguish the property of current profile
     prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
     is_external_call = _check_addon_external_call(window_cls, prop_nf_service_status)
+    service_status = _get_service_status(window_cls, prop_nf_service_status)
 
-    if window_cls.getProperty(prop_nf_service_status) != 'running':
+    if service_status.get('status') != 'running':
         if not is_external_call:
-            from resources.lib.kodi.ui import show_backend_not_ready
-            show_backend_not_ready()
+            if service_status.get('status') == 'error':
+                # The services are not started due to an error exception
+                from resources.lib.kodi.ui import show_error_info
+                show_error_info(get_local_string(30105), get_local_string(30240).format(service_status.get('message')),
+                                False, False)
+            else:
+                # The services are not started yet
+                from resources.lib.kodi.ui import show_backend_not_ready
+                show_backend_not_ready()
         success = False
 
     if success:

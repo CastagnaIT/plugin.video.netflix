@@ -183,34 +183,35 @@ def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
     if metadata and 'seasons' in metadata[0]:
         for season in metadata[0]['seasons']:
             if not nfo_settings:
-                nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
-                                                             VidLibProp['nfo_export'], False)
+                nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['nfo_export'], False)
                 nfo_settings = nfo.NFOSettings(nfo_export)
-
-            if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
-                # The season exists, try to find any missing episode
-                for episode in season['episodes']:
-                    if not g.SHARED_DB.episode_id_exists(
-                            videoid.value, season['id'], episode['id']):
-                        tasks.append(_create_export_episode_task(
-                            videoid=videoid.derive_season(
-                                season['id']).derive_episode(episode['id']),
-                            episode=episode,
-                            season=season,
-                            show=metadata[0],
-                            nfo_settings=nfo_settings
-                        ))
-                        common.debug('Auto exporting episode {}', episode['id'])
-            else:
-                # The season does not exist, build task for the season
-                tasks += _compile_export_season_tasks(
-                    videoid=videoid.derive_season(season['id']),
-                    show=metadata[0],
-                    season=season,
-                    nfo_settings=nfo_settings
-                )
-                common.debug('Auto exporting season {}', season['id'])
+            # Check and add missing seasons and episodes
+            _add_missing_items(tasks, season, videoid, metadata, nfo_settings)
     return tasks
+
+
+def _add_missing_items(tasks, season, videoid, metadata, nfo_settings):
+    if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
+        # The season exists, try to find any missing episode
+        for episode in season['episodes']:
+            if not g.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
+                tasks.append(_create_export_episode_task(
+                    videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
+                    episode=episode,
+                    season=season,
+                    show=metadata[0],
+                    nfo_settings=nfo_settings
+                ))
+                common.debug('Auto exporting episode {}', episode['id'])
+    else:
+        # The season does not exist, build task for the season
+        tasks.append(_compile_export_season_tasks(
+            videoid=videoid.derive_season(season['id']),
+            show=metadata[0],
+            season=season,
+            nfo_settings=nfo_settings
+        ))
+        common.debug('Auto exporting season {}', season['id'])
 
 
 def _create_remove_movie_task(videoid):

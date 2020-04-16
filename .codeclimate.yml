@@ -7,6 +7,11 @@ plugins:
   markdownlint:
     enabled: true
 checks:
+  file-lines:
+    # There is no a real limit imposed, PyLint set it to 1000 lines and raccommanding a refactoring
+    # A good development should be between 250 (default of CodeClimate) and 500 lines
+    config:
+      threshold: 400
   method-complexity:
     config:
       threshold: 10
