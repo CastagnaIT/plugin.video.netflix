@@ -403,7 +403,7 @@ msgid "Netflix returned the following error:"
 msgstr "A Netflix leállt a következő hiba miatt:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, make a report by following the ReadMe instructions on GitHub."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
 msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
 
 msgctxt "#30104"

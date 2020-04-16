@@ -401,7 +401,7 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix로부터의 오류내용:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, make a report by following the ReadMe instructions on GitHub."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
 msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오."
 
 msgctxt "#30104"
