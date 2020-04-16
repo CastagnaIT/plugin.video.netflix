@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Ingrese el PIN para acceder a este perfil"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -334,9 +336,8 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Tiempo de elementos en caché para los metadatos (días)"
 
-msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
-msgstr "Tiempo de elementos en caché para mi lista (minutos)"
+# Unused 30086
+
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -403,8 +404,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix devolvió el siguiente error:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Los detalles del error se han escrito al archivo de registro de Kodi. Si el mensaje de error no te ayuda a resolver el problema o continúas recibiendo este error, por favor, repórtalo en GitHub. Por favor, incluye un registro de depuración completo con tu informe de errores (habilita \"Registro de depuración\" en los ajustes de Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Los detalles del error se han escrito en el archivo de registro de Kodi. Si el mensaje de error no proporciona orientación sobre cómo resolver el problema o si continúa recibiendo este error, infórmelo en GitHub siguiendo las instrucciones del archivo Léame."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -945,3 +946,7 @@ msgstr "Notificaciones de Up Next (ver vídeo siguiente)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Color de la información extra del argumento"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Los servicios en segundo plano no se pueden iniciar debido a este problema:\r\n{}"
