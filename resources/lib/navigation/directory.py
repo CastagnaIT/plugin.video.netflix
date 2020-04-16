@@ -19,7 +19,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list, custom_viewmode,
-                                                      end_of_directory, get_title)
+                                                      end_of_directory, get_title, verify_profile_pin)
 
 # What means dynamic menus (and dynamic id):
 #  Are considered dynamic menus all menus which context name do not exists in the 'lolomo_contexts' of
@@ -49,8 +49,6 @@ class DirectoryBuilder(object):
         if self.perpetual_range_start == '0':
             # For cache identifier purpose
             self.perpetual_range_start = None
-        if 'switch_profile_guid' in params:
-            api.activate_profile(params['switch_profile_guid'])
 
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
@@ -95,6 +93,15 @@ class DirectoryBuilder(object):
     @custom_viewmode(g.VIEW_MAINMENU)
     def home(self, pathitems=None, cache_to_disc=True):  # pylint: disable=unused-argument
         """Show home listing"""
+        if 'switch_profile_guid' in self.params:
+            # This is executed only when you have selected a profile from the profile list
+            pin_result = verify_profile_pin(self.params.get('switch_profile_guid'))
+            if not pin_result:
+                if pin_result is not None:
+                    ui.show_notification(common.get_local_string(30106), time=8000)
+                xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+                return
+            api.activate_profile(self.params['switch_profile_guid'])
         common.debug('Showing home listing')
         list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
 

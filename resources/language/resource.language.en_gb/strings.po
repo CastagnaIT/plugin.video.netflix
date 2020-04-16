@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
