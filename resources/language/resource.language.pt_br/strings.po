@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Addon da Netflix, um serviço de Video Sob Demanda"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Algumas partes deste addon poderão não ser legais no seu país de residência. Por favor, verifique as suas leis locais antes de instalar."
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Email"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN incorreto. Tente novamente."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Buscar"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Sem temporadas disponíveis"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Erro de reprodução"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Addon InputStream ausente"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Geral"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Rastreio"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Ajustes do addon InputStream"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Utilizar sempre o título original para exportar"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Avaliaçao removida|Você avaliou negativamente|Você avaliou positivamente"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "O addon InputStream não está ativo"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Deseja remover?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Exportado"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Atualizar base de dados"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Atualização concluída com sucesso"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Erro no pedido"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Não foi possível concluir a solicitação no momento"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Inicio de sessão automática"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Ativar o início de sessão automática"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Perfil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "ID"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Selecionar perfil na lista de perfis -> menu de contexto"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Início de sessão automática ativado!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Mudar de conta"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Controles Parentais"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "novos episódios adicionados à coleção"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -349,7 +315,7 @@ msgid "Pause when skipping"
 msgstr "Pausar quando pular"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Forçar suporte ao HDCP 2.2 (habilita conteúdo 4K)"
 
 msgctxt "#30082"
@@ -368,9 +334,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Tempo de vida útil do item de cache para metadados (dias)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Invalidar o cache inteiro na modificação da Minha Lista"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -441,11 +405,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Detalhes do erro foram gravados no arquivo de log do Kodi. Se a mensagem de erro não fornecer orientação sobre como resolver o problema ou se você continuar recebendo esse erro, informe-o via GitHub. Por favor, forneça um registro de depuração completo com o seu relatório de erro (ative \"Debug Logging\" nas configurações do Kodi)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "O add-on encontrou o seguinte erro:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Erro no Add-on Netflix"
 
 msgctxt "#30106"
@@ -489,7 +453,7 @@ msgid "Content Profiles"
 msgstr "Conteúdos por Perfis"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Ajustes avançados"
 
 msgctxt "#30117"
@@ -521,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Deseja mesmo prosseguir?\nIsso excluirá todos os itens exportados anteriormente e exportará todos os itens da Minha Lista para o perfil ativo no momento.\nEsta operação pode demorar algum tempo..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Deseja realmente remover este item?"
 
 msgctxt "#30125"
@@ -536,9 +500,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Nota atribuída de {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Sem títulos disponíveis ainda..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +539,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Ativar perfis VP9 (desabilite se causar artefatos)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Os serviços de segundo plano podem ainda não estar disponíveis se você acabou de iniciar o Kodi/addon. Neste caso, tente novamente daqui a pouco."
 
 msgctxt "#30139"
@@ -641,24 +603,22 @@ msgid "Year released"
 msgstr "Ano de lançamento"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Configuração do add-on do Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Você tem uma conta Netflix Premium?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "O seu dispositivo suporta o padrão 4K?\r\nO dispositivo deve:\r\nSer certificado pelo Netflix, suportar o nível L1 de segurança Widevine e ter uma tela 4k HDCP 2.2"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "O painel de configurações do InputStream Adaptive agora será aberto, portanto, você deve alterar esta opção \"Override HDCP status \" para ATIVO"
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Mostrar tela de ajustes ao iniciar o add-on"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "Forçar a atualização da minha lista"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Destacar os títulos incluídos em minha lista com uma cor"
 
 msgctxt "#30216"

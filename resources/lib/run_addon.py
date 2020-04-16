@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-from xbmc import getCondVisibility, Monitor
+from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
 from resources.lib.globals import g
@@ -27,13 +27,14 @@ def lazy_login(func):
     # pylint: missing-docstring
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
-        from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError)
+        from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError,
+                                                  LoginValidateErrorIncorrectPassword)
         try:
             return func(*args, **kwargs)
-        except NotLoggedInError:
+        except (NotLoggedInError, LoginValidateErrorIncorrectPassword):
             debug('Tried to perform an action without being logged in')
             try:
-                from resources.lib.api.shakti import login
+                from resources.lib.api.api_requests import login
                 if not login(ask_credentials=not check_credentials()):
                     _handle_endofdirectory()
                     raise MissingCredentialsError
@@ -61,37 +62,57 @@ def route(pathitems):
         return
     nav_handler = _get_nav_handler(root_handler)
     if not nav_handler:
-        from resources.lib.navigation import InvalidPathError
+        from resources.lib.api.exceptions import InvalidPathError
         raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
-    from resources.lib.navigation import execute
-    execute(_get_nav_handler(root_handler), pathitems[1:], g.REQUEST_PARAMS)
+    _execute(nav_handler, pathitems[1:], g.REQUEST_PARAMS)
 
 
-def _skin_widget_call(window_cls, prop_nf_service_status):
-    """
-    Workaround to intercept calls made by the Skin Widgets currently in use.
-    Currently, the Skin widgets associated with add-ons are executed at Kodi startup immediately
-    without respecting any services needed by the add-ons. This is causing different
-    kinds of problems like widgets not loaded, add-on warning message, etc...
-    this loop freeze the add-on instance until the service is ready.
-    """
-    # Note to "Window.IsMedia":
+def _execute(executor_type, pathitems, params):
+    """Execute an action as specified by the path"""
+    try:
+        executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
+    except AttributeError:
+        from resources.lib.api.exceptions import InvalidPathError
+        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
+    debug('Invoking action executor {}', executor.__name__)
+    executor(pathitems=pathitems)
+
+
+def _check_addon_external_call(window_cls, prop_nf_service_status):
+    """Check system to verify if the calls to the add-on are originated externally"""
+    # The calls that are made from outside do not respect and do not check whether the services required
+    # for the add-on are actually working and operational, causing problems with the execution of the frontend.
+
+    # A clear example are the Skin widgets, that are executed at Kodi startup immediately and this is cause of different
+    # kinds of problems like widgets not loaded, add-on warning message, etc...
+
+    # Cases where it can happen:
+    # - Calls made by the Skin Widgets, Scripts, Kodi library
+    # - Calls made by others Kodi windows (like file browser)
+    # - Calls made by other add-ons
+
+    # To try to solve the problem, when the service is not ready a loop will be started to freeze the add-on instance
+    # until the service will be ready.
+
+    is_other_plugin_name = getInfoLabel('Container.PluginName') != g.ADDON.getAddonInfo('id')
+    limit_sec = 10
+
+    # Note to Kodi boolean condition "Window.IsMedia":
     # All widgets will be either on Home or in a Custom Window, so "Window.IsMedia" will be false
     # When the user is browsing the plugin, Window.IsMedia will be true because video add-ons open
     # in MyVideoNav.xml (which is a Media window)
     # This is not a safe solution, because DEPENDS ON WHICH WINDOW IS OPEN,
     # for example it can fail if you open add-on video browser while widget is still loading.
     # Needed a proper solution by script.skinshortcuts / script.skin.helper.service, and forks
-    limit_sec = 10
-    if not getCondVisibility("Window.IsMedia"):
+    if is_other_plugin_name or not getCondVisibility("Window.IsMedia"):
         monitor = Monitor()
         sec_elapsed = 0
         while not window_cls.getProperty(prop_nf_service_status) == 'running':
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5
-        debug('Skin widget workaround enabled - time elapsed: {}', sec_elapsed)
-        g.IS_SKIN_CALL = True
+        debug('Add-on was initiated by an external call - workaround enabled time elapsed {}s', sec_elapsed)
+        g.IS_ADDON_EXTERNAL_CALL = True
         return True
     return False
 
@@ -120,7 +141,7 @@ def _check_valid_credentials():
     if not check_credentials():
         from resources.lib.api.exceptions import MissingCredentialsError
         try:
-            from resources.lib.api.shakti import login
+            from resources.lib.api.api_requests import login
             if not login():
                 # Wrong login try again
                 return _check_valid_credentials()
@@ -148,12 +169,13 @@ def run(argv):
     success = True
 
     window_cls = Window(10000)  # Kodi home window
+
     # If you use multiple Kodi profiles you need to distinguish the property of current profile
     prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
-    is_widget_skin_call = _skin_widget_call(window_cls, prop_nf_service_status)
+    is_external_call = _check_addon_external_call(window_cls, prop_nf_service_status)
 
     if window_cls.getProperty(prop_nf_service_status) != 'running':
-        if not is_widget_skin_call:
+        if not is_external_call:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()
         success = False
@@ -162,8 +184,9 @@ def run(argv):
         try:
             if _check_valid_credentials():
                 if g.IS_ADDON_FIRSTRUN:
-                    check_addon_upgrade()
-                g.initial_addon_configuration()
+                    if check_addon_upgrade():
+                        from resources.lib.config_wizard import run_addon_configuration
+                        run_addon_configuration()
                 route([part for part in g.PATH.split('/') if part])
             else:
                 success = False
@@ -174,12 +197,10 @@ def run(argv):
         except Exception as exc:
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             success = False
 
     if not success:
         _handle_endofdirectory()
-
-    g.CACHE.commit()
     log_time_trace()

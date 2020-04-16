@@ -11,18 +11,18 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 
-from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
-from .markers import SKIPPABLE_SECTIONS
+from .markers import SKIPPABLE_SECTIONS, get_timeline_markers
 
 
 class SectionSkipper(PlaybackActionManager):
     """
     Checks if a skippable section has been reached and takes appropriate action
     """
-    def __init__(self):  # pylint: disable=super-on-old-class
+    def __init__(self):
         super(SectionSkipper, self).__init__()
         self.markers = {}
         self.auto_skip = False
@@ -34,7 +34,7 @@ class SectionSkipper(PlaybackActionManager):
                         self.pause_on_skip))
 
     def _initialize(self, data):
-        self.markers = data['timeline_markers']
+        self.markers = get_timeline_markers(data['metadata'][0])
         self.auto_skip = g.ADDON.getSettingBool('auto_skip_credits')
         self.pause_on_skip = g.ADDON.getSettingBool('pause_on_skip')
 
@@ -72,13 +72,13 @@ class SectionSkipper(PlaybackActionManager):
         common.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
-        ui.show_modal_dialog(ui.xmldialogs.Skip,
+        ui.show_modal_dialog(True,
+                             ui.xmldialogs.Skip,
                              "plugin-video-netflix-Skip.xml",
                              g.ADDON.getAddonInfo('path'),
                              seconds=dialog_duration,
                              skip_to=self.markers[section]['end'],
-                             label=common.get_local_string(
-                                 SKIPPABLE_SECTIONS[section]))
+                             label=common.get_local_string(SKIPPABLE_SECTIONS[section]))
 
     def _on_playback_stopped(self):
         # Close any dialog remaining open

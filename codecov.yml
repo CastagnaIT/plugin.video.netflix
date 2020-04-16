@@ -10,4 +10,4 @@ coverage:
 comment: false
 ignore:
 - modules/
-- test/
+- tests/

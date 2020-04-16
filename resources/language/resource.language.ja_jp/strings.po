@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-18 22:40+0000\n"
+"PO-Revision-Date: 2020-02-18 23:06+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Netflixアドオン"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください"
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "メールアドレス"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN誤り、確認してください"
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "検索"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "見れるシーズンがありません。"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "再生エラー"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "インプットストリームがありませんね"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "一般設定"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "トラッキング"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "インプットストリームアドオン設定"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "エクスポートの際、オリジナルタイトルを使用"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "親指評価なし|サムズアップ|サムズダウン"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "インプットストリームアドオンが使用できないです。"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "本当に削除しますか。"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "エクスポートされた項目"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "DB更新"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "更新しました。"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "リグエストエラー"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "失敗しました。"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "自動ログイン"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "自動ログイン機能使用"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "プロフィール"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "ＩＤ"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "コンテキストメニューからプロフィールを選んでください。"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "自動ログインを使用可能しました。"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "別のアカウントへ"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "ペアレンタルコントロール"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "新エピソードをライブラリに追加しました。"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +284,7 @@ msgstr "5分以上何もしなかったら"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "コーデック情報を常に表示"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,7 +315,7 @@ msgid "Pause when skipping"
 msgstr "スキップする際に停止"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "HDCP2.2強制支援(4Kコンテンツ)"
 
 msgctxt "#30082"
@@ -368,9 +334,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "メタデータのキャッシュ保存期間(日)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "マイリストが変更されたキャッシュを無効にする。"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -441,11 +405,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "エラーの詳細はログファイルに書いてあります。"
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "エラーが発生しました:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflixアドオンエラー"
 
 msgctxt "#30106"
@@ -489,7 +453,7 @@ msgid "Content Profiles"
 msgstr "コンテンツプロフィール"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "上級者向け設定"
 
 msgctxt "#30117"
@@ -521,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "進みますか。\n既にエクスポートされた項目を削除し、現在のプロフィールからマイリストをエクスポートします。\n時間は掛かりますが。。。"
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "この項目を削除しますか。"
 
 msgctxt "#30125"
@@ -536,9 +500,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "{}の評価により授与しました。"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "そんなタイトルはまだ。。。"
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +539,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9プロフィール使用(問題があったらオフにしてください)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Kodiやアドオンを起動したばかりの場合、バックグラウンドサービスの準備が出来てない可能性があります。しばらく経ってからもう一度。"
 
 msgctxt "#30139"
@@ -641,24 +603,22 @@ msgid "Year released"
 msgstr "公開年"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Netflixアドオン設定"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "このデバイスは4K標準を従っていますか。\r\nこのデバイスは必ず:\r\nNetflixの認証を受け、WidevineセキュリティレベルL1対応や4KディスプレHDCP2.2が必要です。"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "インプットストリーム設定画面が開いたら、\"Override HDCP status\"を ONにしてください"
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "アドオン起動する際に設定画面を見せる。"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "マイリストを強制更新"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "マイリストにあるタイトルの色"
 
 msgctxt "#30216"

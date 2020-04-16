@@ -83,16 +83,9 @@ def _ask_for_input(heading):
         type=xbmcgui.INPUT_ALPHANUM)) or None
 
 
-def ask_for_removal_confirmation():
-    """Ask the user to finally remove title from the Kodi library"""
-    return ask_for_confirmation(
-        common.get_local_string(30047),
-        common.get_local_string(30124))
-
-
 def ask_for_confirmation(title, message):
     """Ask the user to confirm an operation"""
-    return xbmcgui.Dialog().yesno(heading=title, line1=message)
+    return xbmcgui.Dialog().yesno(title, message)
 
 
 def ask_for_resume(resume_position):
@@ -100,13 +93,12 @@ def ask_for_resume(resume_position):
     return xbmcgui.Dialog().contextmenu(
         [
             common.get_local_string(12022).format(common.convert_seconds_to_hms_str(resume_position)),
-            common.get_local_string(12023)
+            common.get_local_string(12023 if g.KODI_VERSION.is_major_ver('18') else 12021)
         ])
 
 
 def show_backend_not_ready():
-    return xbmcgui.Dialog().ok(common.get_local_string(30105),
-                               line1=common.get_local_string(30138))
+    return xbmcgui.Dialog().ok(common.get_local_string(30105), common.get_local_string(30138))
 
 
 def show_ok_dialog(title, message):
@@ -120,10 +112,9 @@ def show_yesno_dialog(title, message, yeslabel=None, nolabel=None):
 def show_error_info(title, message, unknown_error=False, netflix_error=False):
     """Show a dialog that displays the error message"""
     prefix = (30104, 30102, 30101)[unknown_error + netflix_error]
-    return xbmcgui.Dialog().ok(title,
-                               line1=common.get_local_string(prefix),
-                               line2=message,
-                               line3=common.get_local_string(30103))
+    return xbmcgui.Dialog().ok(title, (common.get_local_string(prefix) + '\r\n' +
+                                       message + '\r\n\r\n' +
+                                       common.get_local_string(30103)))
 
 
 def show_addon_error_info(exc):
@@ -135,3 +126,10 @@ def show_addon_error_info(exc):
         show_error_info(title=common.get_local_string(30105),
                         message=': '.join((exc.__class__.__name__, unicode(exc))),
                         netflix_error=False)
+
+
+def show_library_task_errors(notify_errors, errors):
+    if notify_errors and errors:
+        xbmcgui.Dialog().ok(common.get_local_string(0),
+                            '\n'.join(['{} ({})'.format(err['task_title'], err['error'])
+                                       for err in errors]))

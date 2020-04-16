@@ -14,6 +14,7 @@ import time
 
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
+from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import NFSessionBase
 
 LOGIN_COOKIES = ['nfvdid', 'SecureNetflixId', 'NetflixId']
@@ -34,7 +35,7 @@ class NFSessionCookie(NFSessionBase):
             except Exception as exc:
                 import traceback
                 common.error('Failed to load stored cookies: {}', type(exc).__name__)
-                common.error(traceback.format_exc())
+                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
                 return False
             common.info('Successfully loaded stored cookies')
         return True

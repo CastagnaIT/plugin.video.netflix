@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 import xbmc
 import xbmcvfs
 
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MetadataNotAvailable
@@ -34,16 +34,12 @@ class ItemNotFound(Exception):
 
 @common.time_execution(immediate=False)
 def get_item(videoid):
-    """Find an item in the Kodi library by its Netflix videoid and return
-    Kodi DBID and mediatype"""
-    # pylint: disable=broad-except
+    """Find an item in the Kodi library by its Netflix videoid and return Kodi DBID and mediatype"""
     try:
         file_path, media_type = _get_library_entry(videoid)
         return _get_item(media_type, file_path)
-    except (KeyError, AttributeError, IndexError, ItemNotFound):
-        raise ItemNotFound(
-            'The video with id {} is not present in the Kodi library'
-            .format(videoid))
+    except (KeyError, IndexError, ItemNotFound):
+        raise ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid))
 
 
 @common.time_execution(immediate=False)
@@ -75,10 +71,10 @@ def _get_library_entry(videoid):
 def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
-    fname = xbmc.makeLegalFilename(filename).decode("utf-8")
-    untranslated_path = os.path.dirname(fname)
-    translated_path = os.path.dirname(xbmc.translatePath(fname).decode("utf-8"))
-    shortname = os.path.basename(xbmc.translatePath(fname).decode("utf-8"))
+    fname = xbmc.makeLegalFilename(filename)
+    untranslated_path = os.path.dirname(g.py2_decode(fname))
+    translated_path = os.path.dirname(g.py2_decode(xbmc.translatePath(fname)))
+    shortname = os.path.basename(g.py2_decode(xbmc.translatePath(fname)))
     # We get the data from Kodi library using filters.
     # This is much faster than loading all episodes in memory
 
@@ -110,7 +106,7 @@ def get_previously_exported_items():
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
         for filename in xbmcvfs.listdir(folder)[1]:
-            filepath = xbmc.makeLegalFilename('/'.join([folder, filename])).decode('utf-8')
+            filepath = g.py2_decode(xbmc.makeLegalFilename('/'.join([folder, filename])))
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}', filepath)
                 try:
@@ -128,9 +124,8 @@ def get_previously_exported_items():
 
 
 def _lib_folders(section):
-    section_dir = xbmc.translatePath(
-        xbmc.makeLegalFilename('/'.join([library_path(), section])))
-    return [xbmc.makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')]))
+    section_dir = g.py2_decode(xbmc.translatePath(xbmc.makeLegalFilename('/'.join([library_path(), section]))))
+    return [g.py2_decode(xbmc.makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')])))
             for folder
             in xbmcvfs.listdir(section_dir)[0]]
 
@@ -138,7 +133,7 @@ def _lib_folders(section):
 def _get_root_videoid(filename, pattern):
     match = re.search(pattern,
                       xbmcvfs.File(filename, 'r').read().decode('utf-8').split('\n')[-1])
-    metadata = api.metadata(
+    metadata = api.get_metadata(
         common.VideoId(videoid=match.groups()[0]))[0]
     if metadata['type'] == 'show':
         return common.VideoId(tvshowid=metadata['id'])
@@ -213,22 +208,21 @@ def remove_item(item_task, library_home=None):
 
     common.info('Removing {} from library', item_task['title'])
 
-    exported_filename = xbmc.translatePath(item_task['filepath'])
+    exported_filename = g.py2_decode(xbmc.translatePath(item_task['filepath']))
     videoid = item_task['videoid']
     common.debug('VideoId: {}', videoid)
     try:
-        parent_folder = xbmc.translatePath(os.path.dirname(exported_filename))
+        parent_folder = g.py2_decode(xbmc.translatePath(os.path.dirname(exported_filename)))
         if xbmcvfs.exists(exported_filename):
             xbmcvfs.delete(exported_filename)
         else:
-            common.warn('Cannot delete {}, file does not exist', g.py2_decode(exported_filename))
+            common.warn('Cannot delete {}, file does not exist', exported_filename)
         # Remove the NFO files if exists
-        nfo_file = os.path.splitext(g.py2_decode(exported_filename))[0] + '.nfo'
+        nfo_file = os.path.splitext(exported_filename)[0] + '.nfo'
         if xbmcvfs.exists(nfo_file):
             xbmcvfs.delete(nfo_file)
         dirs, files = xbmcvfs.listdir(parent_folder)
-        tvshow_nfo_file = xbmc.makeLegalFilename(
-            '/'.join([g.py2_decode(parent_folder), 'tvshow.nfo']))
+        tvshow_nfo_file = g.py2_decode(xbmc.makeLegalFilename('/'.join([parent_folder, 'tvshow.nfo'])))
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
         if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:
@@ -244,7 +238,7 @@ def remove_item(item_task, library_home=None):
         common.warn('The video with id {} not exists in the database', videoid)
     except Exception as exc:
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_addon_error_info(exc)
 
 

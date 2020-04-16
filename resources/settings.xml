@@ -4,28 +4,28 @@
     <setting label="30014" type="lsep"/><!--Account-->
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="parental_control" type="action" label="30062" action="RunPlugin(plugin://plugin.video.netflix/action/parental_control/)" option="close"/>
-    <setting label="30053" type="lsep"/><!--Auto login-->
+    <setting label="30054" type="lsep"/><!--Profile auto-selection-->
     <setting id="info" type="text" label="30057" default="" enable="false"/>
-    <setting id="autologin_enable" type="bool" label="30054" default="false" enable="eq(0,true)"/>
-    <setting id="autologin_user" type="text" label="30055" default="" enable="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="autologin_id" type="text" label="30056" default="" enable="false" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="autoselect_profile_enabled" type="bool" label="30052" visible="false" default="false"/><!-- Used only as variable purpose for menu settings -->
+    <setting id="autoselect_profile_name" type="action" label="30055" default="" action="RunPlugin(plugin://plugin.video.netflix/action/autoselect_profile_remove/)" option="close" visible="eq(-1,true)"/>
     <setting label="30015" type="lsep"/><!--Other options-->
-    <setting id="highlight_mylist_titles" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760" default="1"/>
+    <setting id="mylist_titles_color" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
+    <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
     <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
   </category>
   <category label="30025"><!--Library-->
     <setting label="30065" type="lsep"/><!--Auto-Update-->
-    <setting id="lib_auto_upd_mode" type="enum" label="30224" lvalues="30225|30226" default="0"/>
-    <setting id="lib_auto_upd_check_now" type="action" label="30230" action="RunPlugin(plugin://plugin.video.netflix/library/auto_upd_run_now/)" subsetting="true"/>
-    <setting id="lib_auto_upd_freq" type="enum" label="30064" lvalues="30067|30068|30069|30070" default="0" visible="gt(-2,0)" subsetting="true"/>
-    <setting id="lib_auto_upd_start" type="time" label="30071" visible="gt(-3,0)" default="00:00" subsetting="true"/>
-    <setting id="lib_auto_upd_wait_idle" type="bool" label="30072" visible="gt(-4,0)" default="false" subsetting="true"/>
-    <setting id="lib_auto_upd_disable_notification" type="bool" label="30219" default="false" visible="gt(-5,0)" subsetting="true"/>
+    <setting id="lib_auto_upd_mode" type="enum" label="30224" lvalues="13106|30225|30226" default="1"/>
+    <setting id="lib_auto_upd_check_now" type="action" label="30230" action="RunPlugin(plugin://plugin.video.netflix/library/auto_upd_run_now/)" visible="gt(-1,0)" subsetting="true"/>
+    <setting id="lib_auto_upd_freq" type="enum" label="30064" lvalues="30067|30068|30069|30070" default="0" visible="gt(-2,1)" subsetting="true"/>
+    <setting id="lib_auto_upd_start" type="time" label="30071" visible="gt(-3,1)" default="00:00" subsetting="true"/>
+    <setting id="lib_auto_upd_wait_idle" type="bool" label="30072" visible="gt(-4,1)" default="false" subsetting="true"/>
+    <setting id="lib_auto_upd_disable_notification" type="bool" label="30219" default="false" visible="gt(-5,1)" subsetting="true"/>
     <setting label="30227" type="lsep"/><!--Synchronize Kodi library with My List-->
-    <setting id="lib_sync_mylist" type="bool" label="30114" default="false" enable="gt(-7,0)"/>
-    <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_sel_profile/)" enable="eq(-1,true) + gt(-8,0)" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="lib_sync_mylist_shw_profile" type="action" label="30229" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_shw_profile/)" enable="eq(-2,true) + gt(-9,0)" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="lib_sync_mylist_now" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist/)" enable="eq(-3,true) + gt(-10,0)" visible="eq(-3,true)" subsetting="true"/>
+    <setting id="lib_sync_mylist" type="bool" label="30114" default="false" enable="gt(-7,1)"/>
+    <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_sel_profile/)" enable="eq(-1,true) + gt(-8,1)" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="lib_sync_mylist_shw_profile" type="action" label="30229" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist_shw_profile/)" enable="eq(-2,true) + gt(-9,1)" visible="eq(-2,true)" subsetting="true"/>
+    <setting id="lib_sync_mylist_now" type="action" label="30121" action="RunPlugin(plugin://plugin.video.netflix/library/sync_mylist/)" enable="eq(-3,true) + gt(-10,1)" visible="eq(-3,true)" subsetting="true"/>
     <setting label="30184" type="lsep"/><!--NFO Files-->
     <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
     <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
@@ -104,14 +104,17 @@
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false"/>
-    <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" enable="eq(-1,true)" visible="!System.HasAddon(service.upnext)" subsetting="true" option="close"/>
-    <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" enable="eq(-2,true)" visible="System.HasAddon(service.upnext)" subsetting="true" option="close"/>
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
+    <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
+    <setting label="30238" type="lsep"/>
+    <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" visible="!System.HasAddon(service.upnext)" option="close"/>
+    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false" visible="System.HasAddon(service.upnext)"/>
+    <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" visible="System.HasAddon(service.upnext)" option="close"/>
   </category>
   <category label="30023"><!--Expert-->
+    <setting id="configuration_wizard" type="action" label="30158" action="RunPlugin(plugin://plugin.video.netflix/action/configuration_wizard/)" option="close"/>
     <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
     <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
     <setting label="30115" type="lsep"/><!--Content Profiles-->
@@ -122,8 +125,8 @@
     <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
     <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
+    <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting label="30016" type="lsep"/><!--ESN-->
     <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://plugin.video.netflix/action/view_esn/)"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
@@ -132,13 +135,13 @@
     <setting id="debug_log_level" type="labelenum" label="30066" values="Disabled|Info|Verbose" default="Disabled"/>
     <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,2)" subsetting="true"/>
     <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,2)" subsetting="true"/>
-    <setting id="run_init_configuration" type="bool" label="30158" default="true"/>
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
     <setting label="30117" type="lsep"/><!--Cache-->
-    <setting id="cache_ttl" type="slider" option="int" range="0,10,525600" label="30084" default="120"/>
-    <setting id="cache_metadata_ttl" type="slider" option="int" range="0,1,365" label="30085" default="30"/>
+    <setting id="cache_ttl" type="slider" option="int" range="5,5,2880" label="30084" default="180"/>
+    <setting id="cache_mylist_ttl" type="slider" option="int" range="10,10,1440" label="30086" default="60"/>
+    <setting id="cache_metadata_ttl" type="slider" option="int" range="1,1,60" label="30085" default="30"/>
     <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/)"/>
     <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://plugin.video.netflix/action/purge_cache/?on_disk=True)"/>
   </category>

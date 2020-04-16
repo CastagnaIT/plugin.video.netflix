@@ -1,0 +1,38 @@
+name: Kodi
+on:
+- pull_request
+- push
+jobs:
+  tests:
+    name: Addon checker
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # FIXME: Required dependencies addon.signals and pycryptodome not available on Matrix yet
+        #kodi-branch: [leia, matrix]
+        kodi-branch: [leia]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ github.repository }}
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libxml2-utils xmlstarlet
+        python -m pip install --upgrade pip packaging
+        # FIXME: Requires changes from xbmc/addon-check#217
+        #pip install kodi-addon-checker
+        pip install git+git://github.com/xbmc/addon-check.git@master
+    - name: Remove unwanted files
+      run: awk '/export-ignore/ { print $1 }' .gitattributes | xargs rm -rf --
+      working-directory: ${{ github.repository }}
+    - name: Rewrite addon.xml for Matrix
+      run: xmlstarlet ed -L -u '/addon/requires/import[@addon="xbmc.python"]/@version' -v "3.0.0" addon.xml
+      working-directory: ${{ github.repository }}
+      if: matrix.kodi-branch == 'matrix'
+    - name: Run kodi-addon-checker
+      run: kodi-addon-checker --branch=${{ matrix.kodi-branch }} ${{ github.repository }}/

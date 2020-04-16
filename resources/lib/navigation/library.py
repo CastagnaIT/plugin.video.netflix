@@ -38,11 +38,11 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
-        if ui.ask_for_removal_confirmation():
+        if ui.ask_for_confirmation(common.get_local_string(30030), common.get_local_string(30124)):
             library.execute_library_tasks(videoid,
                                           [library.remove_item],
                                           common.get_local_string(30030))
-            common.refresh_container()
+            common.refresh_container(use_delay=True)
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
@@ -66,7 +66,6 @@ class LibraryActionExecutor(object):
         nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
         library.execute_library_tasks_silently(
             videoid, [library.export_item],
-            sync_mylist=self.params.get('sync_mylist', False),
             nfo_settings=nfo_settings)
 
     @common.inject_video_id(path_offset=1)
@@ -75,8 +74,7 @@ class LibraryActionExecutor(object):
         (without GUI feedback). This will ignore the setting for syncing my
         list and Kodi library and do no sync, if not explicitly asked to."""
         library.execute_library_tasks_silently(
-            videoid, [library.remove_item],
-            sync_mylist=self.params.get('sync_mylist', False))
+            videoid, [library.remove_item])
 
     # Not used for now
     # @common.inject_video_id(path_offset=1)
@@ -85,8 +83,7 @@ class LibraryActionExecutor(object):
     #    (without GUI feedback). This will ignore the setting for syncing my
     #    list and Kodi library and do no sync, if not explicitly asked to."""
     #    library.execute_library_tasks_silently(
-    #        videoid, [library.remove_item, library.export_item],
-    #        sync_mylist=self.params.get('sync_mylist', False))
+    #        videoid, [library.remove_item, library.export_item])
 
     def sync_mylist(self, pathitems):  # pylint: disable=unused-argument
         """
@@ -105,14 +102,6 @@ class LibraryActionExecutor(object):
                                        common.get_local_string(30231)):
             return
         library_au.auto_update_library(False, False)
-
-    def service_auto_upd_run_now(self, pathitems):  # pylint: disable=unused-argument
-        """
-        Perform an auto update of Kodi library to add new seasons/episodes of tv shows
-        and if set also synchronize the Netflix "My List" with the Kodi library
-        """
-        # Executed by the service in the library_updater module
-        library_au.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'), True)
 
     def _get_mylist_profile_guid(self):
         return g.SHARED_DB.get_value('sync_mylist_profile_guid',
@@ -146,8 +135,7 @@ class LibraryActionExecutor(object):
         """Migrate exported items from old library format to the new format"""
         for videoid in library_items.get_previously_exported_items():
             library.execute_library_tasks(videoid, [library.export_item],
-                                          common.get_local_string(30018),
-                                          sync_mylist=False)
+                                          common.get_local_string(30018))
 
     @common.inject_video_id(path_offset=1)
     def export_new_episodes(self, videoid):

@@ -18,11 +18,13 @@ import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
 import resources.lib.kodi.ui as ui
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
-                                          MissingCredentialsError, InvalidMembershipStatusError)
+                                          MissingCredentialsError, InvalidMembershipStatusError,
+                                          LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -49,7 +51,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
-            common.debug(traceback.format_exc())
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
         except MissingCredentialsError:
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
@@ -105,7 +107,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 ui.show_notification(common.get_local_string(30109))
                 self.update_session_data(current_esn)
                 return True
-            except LoginValidateError as exc:
+            except (LoginValidateError, LoginValidateErrorIncorrectPassword) as exc:
                 self.session.cookies.clear()
                 common.purge_credentials()
                 if not modal_error_message:
@@ -117,7 +119,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                                False, True)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             raise
         return False
@@ -128,16 +130,35 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
 
-        # Disable and reset auto-update / auto-sync features
+        # Perform the website logout
+        self._get('logout')
+
         g.settings_monitor_suspend(True)
-        g.ADDON.setSettingInt('lib_auto_upd_mode', 0)
+
+        # Disable and reset auto-update / auto-sync features
+        g.ADDON.setSettingInt('lib_auto_upd_mode', 1)
         g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.settings_monitor_suspend(False)
         g.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
+        # Disable and reset the auto-select profile
+        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        g.ADDON.setSetting('autoselect_profile_name', '')
+        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+
+        g.settings_monitor_suspend(False)
+
+        # Delete cookie and credentials
+        self.session.cookies.clear()
         cookies.delete(self.account_hash)
-        self._get('logout')
         common.purge_credentials()
+
+        # Reset the ESN obtained from website/generated
+        g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
+
+        # Reinitialize the MSL handler (delete msl data file, then reset everything)
+        common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
+
+        g.CACHE.clear(clear_database=True)
 
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))

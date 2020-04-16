@@ -10,7 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import time
 import json
 import requests
 
@@ -20,7 +19,8 @@ from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
-                                          InvalidMembershipStatusError)
+                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
+                                          LoginValidateErrorIncorrectPassword)
 
 BASE_URL = 'https://www.netflix.com'
 """str: Secure Netflix url"""
@@ -31,6 +31,7 @@ URLS = {
     'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
     'browse': {'endpoint': '/browse', 'is_api_call': False},
     'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
+    'switch_profile': {'endpoint': '/SwitchProfile', 'is_api_call': False},
     'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
     'pin': {'endpoint': '/pin', 'is_api_call': False},
     'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
@@ -86,14 +87,14 @@ class NFSessionRequests(NFSessionBase):
                      verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(component,
                                                                  kwargs)
-        start = time.clock()
+        start = common.perf_clock()
         response = method(
             url=url,
             verify=self.verify_ssl,
             headers=headers,
             params=params,
             data=data)
-        common.debug('Request took {}s', time.clock() - start)
+        common.debug('Request took {}s', common.perf_clock() - start)
         common.debug('Request returned statuscode {}', response.status_code)
         if response.status_code in [404, 401] and not session_refreshed:
             # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
@@ -111,31 +112,36 @@ class NFSessionRequests(NFSessionBase):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
         try:
-            website.extract_session_data(self._get('profiles'))
+            self.auth_url = website.extract_session_data(self._get('profiles'))['auth_url']
             self.update_session_data()
             common.debug('Successfully refreshed session data')
             return True
         except InvalidMembershipStatusError:
             raise
-        except WebsiteParsingError:
-            # it is possible that cookies may not work anymore,
-            # it should be due to updates in the website,
-            # this can happen when opening the addon while executing update_profiles_data
+        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
+            # Possible known causes:
+            # -Cookies may not work anymore most likely due to updates in the website
+            # -Login password has been changed
+            # -Expired cookie profiles? might cause InvalidMembershipStatusAnonymous (i am not really sure)
             import traceback
-            common.warn('Failed to refresh session data, login expired (WebsiteParsingError)')
-            common.debug(traceback.format_exc())
+            common.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
+                        type(exc).__name__)
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
+            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
+                # This prevent the MSL error: No entity association record found for the user
+                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             return self._login()
         except requests.exceptions.RequestException:
             import traceback
             common.warn('Failed to refresh session data, request error (RequestException)')
-            common.warn(traceback.format_exc())
+            common.warn(g.py2_decode(traceback.format_exc(), 'latin-1'))
             if raise_exception:
                 raise
         except Exception:
             import traceback
             common.warn('Failed to refresh session data, login expired (Exception)')
-            common.debug(traceback.format_exc())
+            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             if raise_exception:
                 raise

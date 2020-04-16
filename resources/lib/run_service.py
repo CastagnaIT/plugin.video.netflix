@@ -31,17 +31,26 @@ class NetflixService(object):
     """
     from resources.lib.services.msl.http_server import MSLTCPServer
     from resources.lib.services.nfsession.http_server import NetflixTCPServer
+    from resources.lib.services.cache.http_server import CacheTCPServer
+    # Do not change the init order of the servers,
+    # MSLTCPServer must always be initialized first to get the DRM info
     SERVERS = [
         {
             'name': 'MSL',
             'class': MSLTCPServer,
             'instance': None,
-            'thread': None},
-        {
+            'thread': None
+        }, {
             'name': 'NS',
             'class': NetflixTCPServer,
             'instance': None,
-            'thread': None},
+            'thread': None
+        }, {
+            'name': 'CACHE',
+            'class': CacheTCPServer,
+            'instance': None,
+            'thread': None
+        }
     ]
 
     def __init__(self):
@@ -57,9 +66,9 @@ class NetflixService(object):
     def init_server(self, server):
         server['class'].allow_reuse_address = True
         server['instance'] = server['class'](
-            ('127.0.0.1', select_port(server['name'])))
-        server['thread'] = threading.Thread(
-            target=server['instance'].serve_forever)
+            ('127.0.0.1', select_port(server['name']))
+        )
+        server['thread'] = threading.Thread(target=server['instance'].serve_forever)
 
     def start_services(self):
         """
@@ -97,14 +106,13 @@ class NetflixService(object):
 
     def run(self):
         """Main loop. Runs until xbmc.Monitor requests abort"""
-        # pylint: disable=broad-except
         try:
             self.start_services()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             return
 
@@ -115,12 +123,13 @@ class NetflixService(object):
 
     def _tick_and_wait_for_abort(self):
         try:
-            self.controller.on_playback_tick()
-            self.library_updater.on_tick()
+            self.controller.on_service_tick()
+            self.library_updater.on_service_tick()
+            g.CACHE_MANAGEMENT.on_service_tick()
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification
-            error(traceback.format_exc())
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 

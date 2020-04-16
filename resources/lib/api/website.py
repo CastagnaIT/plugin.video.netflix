@@ -19,7 +19,8 @@ from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
 from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
-                         WebsiteParsingError, LoginValidateError)
+                         WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
+                         LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -46,7 +47,13 @@ PAGE_ITEMS_API_URL = {
     'auth_url': 'models/userInfo/data/authURL',
     # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
-    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl'
+    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',
+    'request_id': 'models/serverDefs/data/requestId',
+    'asset_core': 'models/playerModel/data/config/core/assets/core',
+    'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
+    'browser_info_version': 'models/browserInfo/data/version',
+    'browser_info_os_name': 'models/browserInfo/data/os/name',
+    'browser_info_os_version': 'models/browserInfo/data/os/version',
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
@@ -54,6 +61,8 @@ PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 
 JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
+
+PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
 
 
 @common.time_execution(immediate=True)
@@ -68,6 +77,12 @@ def extract_session_data(content, validate=False):
         validate_login(react_context)
 
     user_data = extract_userdata(react_context)
+    if user_data.get('membershipStatus') == 'ANONYMOUS':
+        # Possible known causes:
+        # -Login password has been changed
+        # -Expired profiles cookies!? (not verified)
+        # In these cases it is mandatory to login again
+        raise InvalidMembershipStatusAnonymous
     if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
         # When NEVER_MEMBER it is possible that the account has not been confirmed or renewed
         common.error('Can not login, the Membership status is {}',
@@ -87,35 +102,36 @@ def extract_session_data(content, validate=False):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+    return api_data
 
 
 @common.time_execution(immediate=True)
 def parse_profiles(profiles_list_data):
     """Parse profile information from Netflix response"""
     try:
-        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'],
-                                                 profiles_list_data))
+        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'], profiles_list_data))
         if not profiles_list:
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
         _delete_non_existing_profiles(profiles_list)
         sort_order = 0
-        debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
         for guid, profile in list(profiles_list.items()):
             common.debug('Parsing profile {}', guid)
             avatar_url = _get_avatar(profiles_list_data, profile)
             profile = profile['summary']
-            for k_info in debug_info:
-                common.debug('Profile info {}', {k_info: profile[k_info]})
             is_active = profile.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
             for key, value in list(profile.items()):
+                if key in PROFILE_DEBUG_INFO:
+                    common.debug('Profile info {}', {key: value})
+                if key == 'profileName':  # The profile name is coded as HTML
+                    value = parse_html(value)
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
     except Exception:
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         common.error('Profile list data: {}', profiles_list_data)
         raise InvalidProfilesError
 
@@ -147,7 +163,7 @@ def parse_profiles(profiles_list_data):
 #            sort_order += 1
 #    except Exception:
 #        import traceback
-#        common.error(traceback.format_exc())
+#        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
 #        common.error('Falkor cache: {}', falkor_cache)
 #        raise
 
@@ -163,12 +179,11 @@ def _delete_non_existing_profiles(profiles_list):
 
 def _get_avatar(profiles_list_data, profile):
     try:
-        profile['avatar'].extend(AVATAR_SUBPATH)
-        return common.get_path(profile['avatar'], profiles_list_data)
-    except KeyError:
-        common.warn('Cannot find avatar for profile {guid}'
-                    .format(guid=profile['summary']['value']['guid']))
-    return ''
+        return common.get_path(profile['avatar'] + AVATAR_SUBPATH, profiles_list_data)
+    except (KeyError, TypeError):
+        common.warn('Cannot find avatar for profile {}', profile['summary']['guid'])
+        common.debug('Profile list data: {}', profiles_list_data)
+        return g.ICON
 
 
 @common.time_execution(immediate=True)
@@ -227,10 +242,12 @@ def validate_login(react_context):
                 error_description = error_code_list['email_' + error_code]
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
+            if 'incorrect_password' in error_code:
+                raise LoginValidateErrorIncorrectPassword(common.remove_html_tags(error_description))
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
-            common.error(traceback.format_exc())
+            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
@@ -240,45 +257,53 @@ def validate_login(react_context):
 
 def generate_esn(user_data):
     """Generate an ESN if on android or return the one from user_data"""
-    import subprocess
-    try:
-        manufacturer = subprocess.check_output(
-            ['/system/bin/getprop',
-             'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
-        if manufacturer:
-            model = subprocess.check_output(
+    if common.get_system_platform() == 'android':
+        import subprocess
+        try:
+            manufacturer = subprocess.check_output(
                 ['/system/bin/getprop',
-                 'ro.product.model']).decode('utf-8').strip(' \t\n\r')
-            product_characteristics = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
-            # Property ro.build.characteristics may also contain more then one value
-            has_product_characteristics_tv = any(
-                value.strip(' ') == 'tv' for value in product_characteristics.split(','))
-            # Netflix Ready Device Platform (NRDP)
-            nrdp_modelgroup = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
+                 'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
+            if manufacturer:
+                model = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.product.model']).decode('utf-8').strip(' \t\n\r')
 
-            esn = ('NFANDROID2-PRV-' if has_product_characteristics_tv else 'NFANDROID1-PRV-')
-            if has_product_characteristics_tv:
-                if nrdp_modelgroup:
-                    esn += nrdp_modelgroup + '-'
+                # This product_characteristics check seem no longer used, some L1 devices not have the 'tv' value
+                # like Xiaomi Mi Box 3 or SM-T590 devices and is cause of wrong esn generation
+                # product_characteristics = subprocess.check_output(
+                #     ['/system/bin/getprop',
+                #      'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
+                # Property ro.build.characteristics may also contain more then one value
+                # has_product_characteristics_tv = any(
+                #     value.strip(' ') == 'tv' for value in product_characteristics.split(','))
+
+                # Netflix Ready Device Platform (NRDP)
+                nrdp_modelgroup = subprocess.check_output(
+                    ['/system/bin/getprop',
+                     'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
+
+                # if has_product_characteristics_tv and \
+                #         g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                if g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                    esn = 'NFANDROID2-PRV-'
+                    if nrdp_modelgroup:
+                        esn += nrdp_modelgroup + '-'
+                    else:
+                        esn += model.replace(' ', '').upper() + '-'
                 else:
-                    esn += model.replace(' ', '').upper() + '-'
-            else:
-                esn += 'T-L3-'
-            esn += '{:=<5.5}'.format(manufacturer.upper())
-            esn += model.replace(' ', '=').upper()
-            esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-            system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
-            if system_id:
-                esn += '-' + str(system_id) + '-'
-            common.debug('Android generated ESN: {}', esn)
-            return esn
-    except OSError:
-        pass
+                    esn = 'NFANDROID1-PRV-'
+                    esn += 'T-L3-'
 
+                esn += '{:=<5.5}'.format(manufacturer.upper())
+                esn += model.replace(' ', '=').upper()
+                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
+                system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+                if system_id:
+                    esn += '-' + str(system_id) + '-'
+                common.debug('Android generated ESN: {}', esn)
+                return esn
+        except OSError:
+            pass
     return user_data.get('esn', '')
 
 
@@ -290,17 +315,18 @@ def extract_json(content, name):
     try:
         json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
         json_str = json_array[0]
-        json_str = json_str.replace('\"', '\\"')  # Escape double-quotes
-        json_str = json_str.replace('\\s', '\\\\s')  # Escape \s
-        json_str = json_str.replace('\\n', '\\\\n')  # Escape line feed
-        json_str = json_str.replace('\\t', '\\\\t')  # Escape tab
-        json_str = json_str.encode().decode('unicode_escape')  # finally decoding...
-        return json.loads(json_str)
+        json_str_replace = json_str.replace('\\"', '\\\\"')  # Escape double-quotes
+        json_str_replace = json_str_replace.replace('\\s', '\\\\s')  # Escape \s
+        json_str_replace = json_str_replace.replace('\\n', '\\\\n')  # Escape line feed
+        json_str_replace = json_str_replace.replace('\\t', '\\\\t')  # Escape tab
+        json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
+        json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
+        return json.loads(json_str_replace)
     except Exception:
         if json_str:
             common.error('JSON string trying to load: {}', json_str)
         import traceback
-        common.error(traceback.format_exc())
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
         raise WebsiteParsingError('Unable to extract {}'.format(name))
 
 
@@ -340,3 +366,12 @@ def extract_parental_control_data(content):
     common.debug('Parsed maturity names: {}', maturity_names)
     return {'maturity_levels': maturity_levels, 'maturity_names': maturity_names,
             'current_level': current_level}
+
+
+def parse_html(html_value):
+    """Parse HTML entities"""
+    try:  # Python 2
+        from HTMLParser import HTMLParser
+    except ImportError:  # Python 3
+        from html.parser import HTMLParser
+    return HTMLParser().unescape(html_value)

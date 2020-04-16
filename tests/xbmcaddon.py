@@ -63,7 +63,7 @@ class Addon:
             ADDON_SETTINGS[self.id][key] = value
         else:
             ADDON_SETTINGS[key] = value
-        with open('test/userdata/addon_settings.json', 'w') as fd:
+        with open('tests/userdata/addon_settings.json', 'w') as fd:
             json.dump(ADDON_SETTINGS, fd, sort_keys=True, indent=4)
 
     def setSettingBool(self, key, value):

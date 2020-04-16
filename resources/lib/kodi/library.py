@@ -14,14 +14,14 @@ from functools import wraps
 
 import xbmc
 
-import resources.lib.api.shakti as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
+from resources.lib.api.paths import MAX_PATH_REQUEST_SIZE
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item, get_item,
                                               ItemNotFound, FOLDER_MOVIES, FOLDER_TV, library_path)
-from resources.lib.kodi.library_tasks import compile_tasks
+from resources.lib.kodi.library_tasks import compile_tasks, execute_tasks
 
 
 def update_kodi_library(library_operation):
@@ -44,10 +44,33 @@ def update_kodi_library(library_operation):
     return kodi_library_update_wrapper
 
 
-def list_contents():
-    """Return a list of all video IDs (movies, shows)
-    contained in the library"""
-    return g.SHARED_DB.get_all_video_id_list()
+def list_contents(perpetual_range_start):
+    """Return a chunked list of all video IDs (movies, shows) contained in the library"""
+    perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
+    number_of_requests = 2
+    video_id_list = g.SHARED_DB.get_all_video_id_list()
+    count = 0
+    chunked_video_list = []
+    perpetual_range_selector = {}
+
+    for index, chunk in enumerate(common.chunked_list(video_id_list, MAX_PATH_REQUEST_SIZE)):
+        if index >= perpetual_range_start:
+            if number_of_requests == 0:
+                if len(video_id_list) > count:
+                    # Exists others elements
+                    perpetual_range_selector['_perpetual_range_selector'] = {'next_start': perpetual_range_start + 1}
+                break
+            chunked_video_list.append(chunk)
+            number_of_requests -= 1
+        count += len(chunk)
+
+    if perpetual_range_start > 0:
+        previous_start = perpetual_range_start - 1
+        if '_perpetual_range_selector' in perpetual_range_selector:
+            perpetual_range_selector['_perpetual_range_selector']['previous_start'] = previous_start
+        else:
+            perpetual_range_selector['_perpetual_range_selector'] = {'previous_start': previous_start}
+    return chunked_video_list, perpetual_range_selector
 
 
 def is_in_library(videoid):
@@ -81,30 +104,24 @@ def export_new_episodes(videoid, silent=False, nfo_settings=None):
         common.debug('Exporting new episodes for {}', videoid)
         method(videoid, [export_new_item],
                title=common.get_local_string(30198),
-               sync_mylist=False,
                nfo_settings=nfo_settings)
     else:
         common.debug('{} is not a tv show, no new episodes will be exported', videoid)
 
 
 @update_kodi_library
-def execute_library_tasks(videoid, task_handlers, title, sync_mylist=True, nfo_settings=None):
+def execute_library_tasks(videoid, task_handlers, title, nfo_settings=None):
     """Execute library tasks for videoid and show errors in foreground"""
     for task_handler in task_handlers:
-        common.execute_tasks(title=title,
-                             tasks=compile_tasks(videoid, task_handler, nfo_settings),
-                             task_handler=task_handler,
-                             notify_errors=True,
-                             library_home=library_path())
-
-        # Exclude update operations
-        if task_handlers != [remove_item, export_item]:
-            _sync_mylist(videoid, task_handler, sync_mylist)
+        execute_tasks(title=title,
+                      tasks=compile_tasks(videoid, task_handler, nfo_settings),
+                      task_handler=task_handler,
+                      notify_errors=True,
+                      library_home=library_path())
 
 
 @update_kodi_library
-def execute_library_tasks_silently(videoid, task_handlers, title=None,
-                                   sync_mylist=False, nfo_settings=None):
+def execute_library_tasks_silently(videoid, task_handlers, title=None, nfo_settings=None):
     """Execute library tasks for videoid and don't show any GUI feedback"""
     # pylint: disable=unused-argument
     for task_handler in task_handlers:
@@ -113,20 +130,8 @@ def execute_library_tasks_silently(videoid, task_handlers, title=None,
                 task_handler(task, library_path())
             except Exception:  # pylint: disable=broad-except
                 import traceback
-                common.error(traceback.format_exc())
+                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
                 common.error('{} of {} failed', task_handler.__name__, task['title'])
-        if sync_mylist and (task_handlers != [remove_item, export_item]):
-            _sync_mylist(videoid, task_handler, sync_mylist)
-
-
-def _sync_mylist(videoid, task_handler, enabled):
-    """Add or remove exported items to My List, if enabled in settings"""
-    operation = {
-        'export_item': 'add',
-        'remove_item': 'remove'}.get(task_handler.__name__)
-    if enabled and operation and g.ADDON.getSettingBool('lib_sync_mylist'):
-        common.info('Syncing my list due to change of Kodi library')
-        api.update_my_list(videoid, operation)
 
 
 def sync_mylist_to_library():
@@ -138,10 +143,13 @@ def sync_mylist_to_library():
     purge()
     nfo_settings = nfo.NFOSettings()
     nfo_settings.show_export_dialog()
-    for videoid in api.mylist_items_switch_profiles():
+
+    mylist_video_id_list, mylist_video_id_list_type = common.make_call('get_mylist_videoids_profile_switch')
+    for index, video_id in enumerate(mylist_video_id_list):
+        videoid = common.VideoId(
+            **{('movieid' if (mylist_video_id_list_type[index] == 'movie') else 'tvshowid'): video_id})
         execute_library_tasks(videoid, [export_item],
                               common.get_local_string(30018),
-                              sync_mylist=False,
                               nfo_settings=nfo_settings)
 
 
@@ -152,13 +160,11 @@ def purge():
     for videoid_value in g.SHARED_DB.get_movies_id_list():
         videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
         execute_library_tasks(videoid, [remove_item],
-                              common.get_local_string(30030),
-                              sync_mylist=False)
+                              common.get_local_string(30030))
     for videoid_value in g.SHARED_DB.get_tvshows_id_list():
         videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
         execute_library_tasks(videoid, [remove_item],
-                              common.get_local_string(30030),
-                              sync_mylist=False)
+                              common.get_local_string(30030))
     # If for some reason such as improper use of the add-on, unexpected error or other
     # has caused inconsistencies with the contents of the database or stored files,
     # make sure that everything is removed

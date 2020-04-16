@@ -1,5 +1,6 @@
 codecov
 future
+kodi-addon-checker
 mysql-connector-python
 polib
 pycrypto
@@ -7,4 +8,6 @@ pycryptodomex==3.4.5
 pydes
 pylint
 requests
-tox-travis
+setuptools >= 41
+tox
+xmlschema==1.0.18; python_version == '2.7'

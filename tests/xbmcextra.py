@@ -76,10 +76,10 @@ def read_addon_xml(path):
 def global_settings():
     """Use the global_settings file"""
     try:
-        with open('test/userdata/global_settings.json') as f:
+        with open('tests/userdata/global_settings.json') as f:
             settings = json.load(f)
     except OSError as e:
-        print("Error using 'test/userdata/global_settings.json' : %s" % e, file=sys.stderr)
+        print("Error using 'tests/userdata/global_settings.json' : %s" % e, file=sys.stderr)
         settings = {
             'locale.language': 'resource.language.en_gb',
             'network.bandwidth': 0,
@@ -105,15 +105,15 @@ def global_settings():
 def addon_settings():
     """Use the addon_settings file"""
     try:
-        with open('test/userdata/addon_settings.json') as f:
+        with open('tests/userdata/addon_settings.json') as f:
             settings = json.load(f)
     except OSError as e:
-        print("Error using 'test/userdata/addon_settings.json': %s" % e, file=sys.stderr)
+        print("Error using 'tests/userdata/addon_settings.json': %s" % e, file=sys.stderr)
         settings = {}
 
     # Read credentials from credentials.json
     try:
-        with open('test/userdata/credentials.json') as f:
+        with open('tests/userdata/credentials.json') as f:
             settings.update(json.load(f))
     except (IOError, OSError) as e:
         if os.environ.get('NETFLIX_USERNAME') and os.environ.get('NETFLIX_PASSWORD'):
@@ -123,7 +123,7 @@ def addon_settings():
         if os.environ.get('NETFLIX_ESN'):
             settings['esn'] = os.environ.get('NETFLIX_ESN')
         if not settings.get('username') and not settings.get('password') or not settings.get('esn'):
-            print("Error using 'test/userdata/credentials.json': %s" % e, file=sys.stderr)
+            print("Error using 'tests/userdata/credentials.json': %s" % e, file=sys.stderr)
     return settings
 
 

@@ -8,6 +8,11 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+# Note: This module is used to dynamically generate return exceptions for IPC Http (see _raise_for_error in ipc.py)
+
+
+class InvalidPathError(Exception):
+    """The requested path is invalid and could not be routed"""
 
 
 class MissingCredentialsError(Exception):
@@ -39,12 +44,20 @@ class InvalidMembershipStatusError(WebsiteParsingError):
     """The user logging in does not have a valid subscription"""
 
 
+class InvalidMembershipStatusAnonymous(WebsiteParsingError):
+    """The user logging failed because of Membership Status Anonymous"""
+
+
 class LoginFailedError(Exception):
     """The login attempt has failed"""
 
 
 class LoginValidateError(Exception):
     """The login validate has generated an error"""
+
+
+class LoginValidateErrorIncorrectPassword(Exception):
+    """The login validate has generated incorrect password error"""
 
 
 class NotLoggedInError(Exception):
@@ -62,3 +75,11 @@ class NotConnected(Exception):
 
 class MetadataNotAvailable(Exception):
     """Metadata not found"""
+
+
+class CacheMiss(Exception):
+    """The Requested item is not in the cache"""
+
+
+class UnknownCacheBucketError(Exception):
+    """The requested cache bucket does not exist"""

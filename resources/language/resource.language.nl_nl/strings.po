@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Bekijk Netflix films en tvprogramma's in Kodi."
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren."
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Onjuiste PIN"
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Zoeken"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Geen seizoenen beschikbaar"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Afspeelfout"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream niet gevonden"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Algemeen"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Tracking"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive instellingen…"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Gebruik altijd de originele titel bij het exporteren"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -206,63 +196,41 @@ msgstr "View voor profielen"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr ""
+msgstr "Beoordeling verwijderen|Je raadt niet meer aan|Je raadt aan"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "InputStream add-on is niet ingeschakeld"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "Er is een probleem met het afspelen van DRM. De InputStream Adaptive add-on is mogelijk niet geactiveerd, of de Widevine CDM library ontbreekt. Het afspelen wordt afgebroken."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Definitief verwijderen?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Geëxporteerd"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Update database"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Succesvol geüpdate"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Request fout"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Het is niet mogelijk om de aanvraag op dit moment te voltooien"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Automatisch aanmelden"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Automatisch aanmelden inschakelen"
+msgid "Profile auto-selection"
+msgstr "Profiel automatisch kiezen"
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profiel"
+msgid "Remove auto-selection of profile"
+msgstr "Automatisch kiezen van profiel desactiveren"
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "Id"
+msgid "Set for auto-selection"
+msgstr "Stel in voor automatische kiezen"
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Selecteer het profiel in de profiellijst -> context menu"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr "Om je automatisch profiel te kiezen, open het context menu in de lijst van profielen"
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Automatisch inloggen ingeschakeld!"
+msgid "The profile {} has been set for auto-selection"
+msgstr "Het profiel {} is gekozen als automatisch profiel"
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Verwissel van account"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Ouderlijktoezicht"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "niewe afleveringen werden toegevoegd in de bibliotheek"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +284,7 @@ msgstr "Begin pas na 5 minuten inactiviteit"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Toon altijd de codec informatie bij het afspelen van video's"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,7 +315,7 @@ msgid "Pause when skipping"
 msgstr "Pauzeer tijdens overslaan"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Forceer ondersteuning van HDCP 2.2 (schakel 4K kwaliteit in)"
 
 msgctxt "#30082"
@@ -368,9 +334,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Cache time-to-live voor metadata (dagen)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Verwijder volledige cache bij wijzigingen van Mijn Lijst"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -441,11 +405,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Een gedetaileerde foutmelding werd weggeschreven in het Kodi logboek. Als de foutmelding niet helpt bij het oplossen van het probleem, of the probleem blijft zich voordoen, gelieve deze fout te melden op GitHub. Voeg de volledige debug log toe aan je probleemrapport (schakel \"Debug logboek\" in in de Kodi instellingen)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Deze add-on ondervond de volgende fout:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix add-on fout"
 
 msgctxt "#30106"
@@ -489,7 +453,7 @@ msgid "Content Profiles"
 msgstr "Inhoudsprofielen"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Geavanceerde add-on configuratie"
 
 msgctxt "#30117"
@@ -521,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Wil je écht verder gaan?\nDit zal al je vorige geëxporteerde items verwijderen en all items van Mijn Lijst voor het huidige actieve profiel exporteren.\nDit zal een tijdje duren..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Wil je dit verwijderen?"
 
 msgctxt "#30125"
@@ -536,9 +500,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Toegekende beoordeling van {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Nog geen titles..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +539,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9 profielen inschakelen (schakel dit uit bij schermartifacten)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "De achtergronddiensten zijn mogelijk nog niet beschikbaar als je net Kodi of de add-on hebt gestart. In dat geval, probeer zo meteen opnieuw."
 
 msgctxt "#30139"
@@ -641,24 +603,22 @@ msgid "Year released"
 msgstr "Jaar van vrijgave"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Netflix add-on configuratie"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Heb je een Netflix Premium account?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Ondersteunt jouw toestel 4K?\nDan moet je toestel:\nNetflix gecertifieerd zijn, Widevine Security level L1 ondersteunen én een 4K display met HDCP 2.2 hebben"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "The InputStream Adaptive instellingen worden geopend zodat je optie \"Override HDCP status\" kan inschakelen"
+msgid "The configuration has been completed"
+msgstr "De configuratie is vervolledigd"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Toon schermcofiguratie tijdens add-on start"
+msgid "Run add-on configuration wizard"
+msgstr "Start de add-on configuratie wizard"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "Forceer de vernieuwing van Mijn lijst"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Benadruk titels uit Mijn lijst met een kleur"
 
 msgctxt "#30216"
@@ -954,4 +914,32 @@ msgstr "Wil je nu controleren voor een update?"
 
 msgctxt "#30232"
 msgid "Restrict by Maturity Level"
-msgstr ""
+msgstr "Beperk op Maturiteit Level"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Video's for {} vereisen een PIN code om af te spelen."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Installeer de Up Next add-on"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Synchroniseer de 'bekeken' status van video's met Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Verander de 'bekeken' status (lokaal)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Markeer als bekeken|Markeer als onbekeken|Herstel Netflix bekeken status"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next meldingen (bekijk volgende video)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Kleur van bijkomende plot informatie"

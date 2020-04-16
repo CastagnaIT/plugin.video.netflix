@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-27 10:54+0100\n"
+"PO-Revision-Date: 2020-02-27 00:05+0100\n"
 "Last-Translator: arvvoid <>\n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Dodatak za Netflix VOD usluge"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Neki dijelovi ovog dodatka možda nisu legalni u vašoj zemlji prebivališta - prije instalacije provjerite lokalne zakone."
 
 msgctxt "#30001"
@@ -49,9 +49,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Neispravan PIN. Pokušajte ponovo."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -73,9 +71,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Traži"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Nema dostupnih sezona"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -141,9 +137,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Pogreška prilikom reprodukcije"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Nedostaje InputStream dodatak"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -153,9 +147,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Opće"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Praćenje"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -169,9 +161,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Prilagodi postavke InputStream ..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Uvijek koristi izvorni naslov pri izvozu"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -210,60 +200,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Ocjena je uklonjena|Ocijenili ste s palac dolje|Ocijenili ste s palac prema gore"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "Dodatak InputStream nije omogućen"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "Postoji problem s dodatkom InputStream Adaptive ili bibliotekom Widevine. Možda nedostaje ili nije omogućena, operacija će se otkazati."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Konačno ukloniti?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Izvezeno"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Ažurirajte DB"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Uspješno ažurirano"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Pogreška u zahtijevu"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Trenutačno nije moguće ispuniti zahtjev"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Automatska prijava"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Omogući automatsku prijavu"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "ID"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Odaberite profil na popisu profila -> kontekstni izbornik"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Omogućeno je automatsko prijavljivanje!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Zamijeni račune"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -277,9 +245,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Roditeljska kontrola"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "nove epizode su dodane u zbirku"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -319,7 +285,7 @@ msgstr "Počnite tek nakon 5 minuta mirovanja"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Uvijek prikaži informacije o kodeku tijekom reprodukcije videozapisa"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -350,8 +316,8 @@ msgid "Pause when skipping"
 msgstr "Pauzirajte prilikom preskakanja"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "Prisilna podrška HDCP 2.2 (omogući 4K sadržaj)"
+msgid "Force HDCP 2.2 video streams"
+msgstr "Prisilno koristi HDCP 2.2 video zapise"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -369,9 +335,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Vrijeme opstanka metapodataka u cache-u (dana)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Poništi cijeli cache kod izmjene Mog popisa"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -442,11 +406,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "Pojedinosti o pogrešci zapisane su u Kodi logfile. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \"Debug Logging\" u Kodi postavkama)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Addon je naišao na sljedeću pogrešku:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Pogreška Netflix Addon-a"
 
 msgctxt "#30106"
@@ -490,7 +454,7 @@ msgid "Content Profiles"
 msgstr "Sadržajni profili"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Napredna konfiguracija Addon-a"
 
 msgctxt "#30117"
@@ -522,7 +486,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Želite li stvarno nastaviti?\nOvim ćete izbrisati sve prethodno izvezene stavke i izvesti sve stavke s Mog popisa za trenutno aktivni profil.\nOva radnja može potrajati neko vrijeme ..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Želite li stvarno ukloniti taj predmet?"
 
 msgctxt "#30125"
@@ -537,9 +501,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Dodijeljena ocjena {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Još nema sadržanih naslova ..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -578,7 +540,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Pozadinske usluge možda još nisu dostupne ako ste tek započeli Kodi / dodatak. U ovom slučaju pokušajte ponovo za trenutak."
 
 msgctxt "#30139"
@@ -642,24 +604,22 @@ msgid "Year released"
 msgstr "Godina izdavanja"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
-msgstr "Konfiguracija dodatka Netflix"
+msgid "Netflix configuration wizard"
+msgstr "Netflix konfiguracijski čarobnjak"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Imate li Netflix Premium račun?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Podržava li vaš uređaj 4K standard?\r\nUređaj mora:\r\nBiti Netflix certificiran, imati podršku za Widevine razinu sigurnosti L1 i 4K ekran sa HDCP 2.2 podrškom"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Panel prilagodljivih postavki InputStream sada će se otvoriti, morate promijeniti opciju \"Override HDCP status\" u ON"
+msgid "The configuration has been completed"
+msgstr "Konfiguracija je završena"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Prikaži zaslon konfiguracije pri pokretanju dodatka"
+msgid "Run add-on configuration wizard"
+msgstr "Pokrenite čarobnjaka za konfiguraciju"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -886,7 +846,7 @@ msgid "Force the update of my list"
 msgstr "Prisilite ažuriranje popisa"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Označite naslove uključene na moj popis bojom"
 
 msgctxt "#30216"
@@ -960,3 +920,24 @@ msgstr "Ograniči prema razini zrelosti"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instaliraj Up Next dodatak"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sinkroniziraj status gledanja videozapisa s Netflixom"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Promjeni status gledanja (lokalno)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Označeno kao gledano|Označeno kao nepogledano|Vraćen Netflixov status gledanja"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next obavijesti (pogledajte sljedeći video)"
+

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-18 22:40+0000\n"
+"PO-Revision-Date: 2020-02-18 23:06+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Netflix VOD 애드온"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "PIN이 틀렸으니, 다시 해보십시오."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "검색"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "볼 수 있는 시즌이 없습니다."
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "재생 오류"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream 애드온이 없군요."
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "일반설정"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "추적"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream 애드온 설정"
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "내보낼 때 항상 원래 제목 사용하기"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "엄지평점 없음|별로에요|좋아요"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "InputStream 애드온을 설치 혹은 켜십시오."
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "정말로 지울까요?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "내보낸 것들"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "DB 새로고침"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "새로고침 성공"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "요청오류"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "실패했습니다."
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "자동로그인"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "자동로그인 켬"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "프로파일"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "아이디"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "컨텍스트 메뉴의 프로파일 리스트에서 하나를 고르세요."
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "자동 로그인이 켜졌습니다!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "다른 계정으로"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "부모의 통제"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "새 에피소드가 라이브러리에 추가되었습니다."
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +284,7 @@ msgstr "5분이상 빈둥거리면 시작합니다."
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "코덱정보를 항상 표시"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,7 +315,7 @@ msgid "Pause when skipping"
 msgstr "건너뛸 때 멈추기"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "HDCP 2.2 강제사용(4K콘텐츠용)"
 
 msgctxt "#30082"
@@ -368,9 +334,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "찜한 것들을 변경하면 캐쉬를 무효화합니다."
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -441,11 +405,11 @@ msgid "Error details have been written to the Kodi logfile. If the error message
 msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "오류가 생겼습니다:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix애드온 오류"
 
 msgctxt "#30106"
@@ -489,7 +453,7 @@ msgid "Content Profiles"
 msgstr "콘텐츠 프로파일"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "고급설정"
 
 msgctxt "#30117"
@@ -521,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "진행하시렵니까?\n이미 내보낸 것들을 모두 삭제하고, 현재 사용중일 프로파일로부터 찜한것들을 모두 내보냅니다.\n시간이 조금 걸립니다."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "정말로 지우시렵니까?"
 
 msgctxt "#30125"
@@ -536,9 +500,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "{}의 평가로 상을 받았습니다."
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "그런 타이틀은 아직..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +539,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9사용(문제가 있으면 사용하지 마십시오.)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "이제 막 Kodi 혹은 애드온을 실행했으면, 백그라운드 서비스가 준비 되지 않았을 수 있으니 잠시후 다시 해 보십시오."
 
 msgctxt "#30139"
@@ -641,24 +603,22 @@ msgid "Year released"
 msgstr "출시일순"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Netflix애드온 설정"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Netflix프리미엄계정을 가지고 있나요?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "이 장치가 4K표준을 따르고 있나요?\r\n이 장치는 반드시:\r\nNetflix로부터 인증을 받고, Widevine 보안등급 L1을 지원하며 4K 디스플레이 HDCP2.2가 필요합니다."
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "InputStream 설정화면이 열리면 \"Override HDCP status\"를 ON으로 바꾸십시오."
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "애드온 시작할 때 설정화면을 보여줍니다."
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "찜한 것들을 강제 업데이트"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
 msgctxt "#30216"
