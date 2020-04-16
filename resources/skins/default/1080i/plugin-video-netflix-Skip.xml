@@ -8,27 +8,23 @@
 			<orientation>horizontal</orientation>
 			<right>30</right>
 			<bottom>30</bottom>
-			<height>80</height>
+			<height>60</height>
 			<width>600</width>
 			<control type="button" id="6012">
 				<description>Skip intro</description>
 				<width max="600">auto</width>
-				<height>80</height>
-				<font>
-					<name>font12</name>
-					<size>12</size>
-					<style>bold</style>
-				</font>
+				<height>60</height>
+				<font>font20_title</font>
 				<label></label>
 				<textcolor>FFededed</textcolor>
 				<focusedcolor>FFededed</focusedcolor>
 				<selectedcolor>FFededed</selectedcolor>
-				<shadowcolor>66000000</shadowcolor>					
+				<shadowcolor>66000000</shadowcolor>
 				<textoffsetx>30</textoffsetx>
 				<aligny>center</aligny>
 				<align>center</align>
-				<texturefocus border="10" colordiffuse="B3000000">smallbutton.png</texturefocus>  <!-- Color ARGB: B3=70% transparency -->
-				<texturenofocus border="10" colordiffuse="B3000000">smallbutton.png</texturenofocus>
+				<texturefocus border="10" colordiffuse="B3161618">smallbutton.png</texturefocus>  <!-- Color ARGB: B3=70% transparency -->
+				<texturenofocus border="10" colordiffuse="B3161618">smallbutton.png</texturenofocus>
 				<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 			</control>

@@ -194,9 +194,8 @@ def convert_seconds_to_hms_str(time):
 
 def remove_html_tags(raw_html):
     import re
-    h = re.compile('<.*?>')
-    text = re.sub(h, '', raw_html)
-    return text
+    pattern = re.compile('<.*?>')
+    return re.sub(pattern, '', raw_html)
 
 
 def censure(value, length=3):
