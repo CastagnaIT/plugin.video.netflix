@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-02-25 01:50+0000\n"
+"PO-Revision-Date: 2020-04-15 01:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -212,23 +212,23 @@ msgstr "Dışa aktarılan"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Otomatik profil seçimi"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Profilin otomatik-seçimini kaldır"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Otomatik seçim için ayarla"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Profili ayarlamak için, profiller listesinde içerik menüsünü açın"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "{} profili otomatik seçim için ayarlandı"
 
 # Unused 30059
 
@@ -334,7 +334,9 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Metaveri için önbellek öğesi yaşam-süresi (gün)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Listem için önbellek öğesi yaşam-süresi (dakika)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -402,7 +404,7 @@ msgstr "Netflix aşağıdaki hatayı döndürdü:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen GitHub üzerinden bildirin. Lütfen hata raporunuzla birlikte tam bir hata ayıklama günlüğü sağlayın (Kodi ayarlarında \"Hata Ayıklama Günlüğü\"nü etkinleştirin)."
+msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen Readme talimatlarını izleyerek GitHub üzerinden bildirin."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -939,3 +941,11 @@ msgstr "İzlendi olarak işaretlendi|İzlenmedi olarak işaretlendi|Netflix izle
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next bildirimleri (sonraki videoyu izle)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Ek özet bilgisinin rengi"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"
