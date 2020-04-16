@@ -403,7 +403,7 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix ha restituito il seguente errore:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, make a report by following the ReadMe instructions on GitHub."
 msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub. Nella segnalazione fornire un report dell'errore completo di log di debug (Attiva \"Logging di debug\" dalle impostazioni di Kodi)."
 
 msgctxt "#30104"
