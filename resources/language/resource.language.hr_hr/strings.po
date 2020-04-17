@@ -341,7 +341,6 @@ msgctxt "#30086"
 msgid "Cache item time-to-live for my list (minutes)"
 msgstr "Vrijeme opstanka u cache-u za “Moj popis” (minute)"
 
-# Unused 30086
 msgctxt "#30087"
 msgid "Contains {} and more..."
 msgstr "Sadrži {} i još ..."
