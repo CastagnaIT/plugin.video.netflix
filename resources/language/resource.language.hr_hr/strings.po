@@ -7,14 +7,15 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-04-14 20:55+0200\n"
+"PO-Revision-Date: 2020-04-17 10:34+0200\n"
 "Last-Translator: arvvoid\n"
 "Language-Team: Croatian\n"
 "Language: hr_HR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 2.3\n"
 
 msgctxt "Addon Summary"
@@ -49,7 +50,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Unesite PIN za pristup ovom profilu"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -340,7 +343,6 @@ msgid "Cache item time-to-live for my list (minutes)"
 msgstr "Vrijeme opstanka u cache-u za “Moj popis” (minute)"
 
 # Unused 30086
-
 msgctxt "#30087"
 msgid "Contains {} and more..."
 msgstr "Sadrži {} i još ..."
@@ -407,7 +409,7 @@ msgstr "Netflix je vratio sljedeću pogrešku:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Pojedinosti o pogrešci zapisane su u Kodi log file-u. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \"Debug Logging\" u Kodi postavkama)."
+msgstr "Detalji o pogrešci napisani su u kodi log datoteci. Ako poruka o pogrešci ne sadrži smjernice o tome kako riješiti problem ili nastavitie primati tu pogrešku, prijavite je na GitHub slijedeći upute u Readme datoteci."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -948,3 +950,7 @@ msgstr "Up Next obavijesti (pogledajte sljedeći video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Boja za dodatni sadržaj na sažetku"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Pozadinske servise nije moguće pokrenuti zbog ovog problema:\r\n{}"
