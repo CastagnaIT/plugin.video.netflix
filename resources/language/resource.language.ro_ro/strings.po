@@ -9,12 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
 "PO-Revision-Date: 2020-04-13 19:54+0000\n"
 "Last-Translator: tmihai20 <>\n"
-"Language-Team: Română\n"
+"Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Adresă email"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Introduceți cod pentru a accesa profilul"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -196,7 +198,7 @@ msgstr "Mod vizualizare pentru profile"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr "Evaluare ștearsă|Evaluare negativ[|Evaluare pozitivă"
+msgstr "Evaluare ștearsă|Evaluare negativă|Evaluare pozitivă"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
@@ -403,8 +405,9 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix a dat de următoarea eroare:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Detalii despre eroare au fost scrise în jurnalul Kodi. Dacă mesajul de eroare nu ajută la rezolvarea problemei sauy dacă continuați să primiți această eroare, vă rugăm să raportați pe GitHub. Vă rugăm să furnizați un jurnal complet de depanare care să conțină raportul cu erori (activați \"Jurnal depanare\" din setările Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr ""
+msgstr "Detalii despre eroare au fost scrise în jurnalul Kodi. Dacă mesajul de eroare nu ajută la rezolvarea problemei sau dacă continuați să primiți această eroare, vă rugăm să raportați pe GitHub folosind instrucțiunile din Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -800,7 +803,7 @@ msgstr "Conectarea la baza de date MySQL a reușit"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "IP"
+msgstr "IP gazdă"
 
 msgctxt "#30204"
 msgid "Port"
@@ -840,7 +843,7 @@ msgstr "Nu există dispozitiv care să gestioneze actualizările automate ale li
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
-msgstr "Setări add-on InputStream Helper"
+msgstr "Setări add-on InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force the update of my list"
@@ -880,7 +883,7 @@ msgstr "Cont copil"
 
 msgctxt "#30223"
 msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Sincronizarea folosește acum 'Lista mea' aferent[ profilului {}"
+msgstr "Sincronizarea folosește acum 'Lista mea' aferentă profilului {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -928,7 +931,7 @@ msgstr "Instalaează add-on-ul Up Next"
 
 msgctxt "#30235"
 msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[Muncă în desfășurare] Sincronizează statutul conținutului urmărit cu Netflix"
+msgstr "[În lucru] Sincronizează statutul conținutului urmărit cu Netflix"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
@@ -945,3 +948,7 @@ msgstr "Notificări Up Next (redă următorul video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Serviciile nu pot fi pornit în fundal din cauza acestei probleme:\r\n{}"
