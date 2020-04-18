@@ -50,7 +50,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr "Ingrese el PIN para acceder a este perfil"
+msgstr "Introduce el PIN para acceder a este perfil"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -266,7 +266,7 @@ msgstr "diariamente"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "en días alternos"
+msgstr "cada dos días"
 
 msgctxt "#30069"
 msgid "every 5 days"
@@ -405,7 +405,7 @@ msgstr "Netflix devolvió el siguiente error:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Los detalles del error se han escrito en el archivo de registro de Kodi. Si el mensaje de error no proporciona orientación sobre cómo resolver el problema o si continúa recibiendo este error, infórmelo en GitHub siguiendo las instrucciones del archivo Léame."
+msgstr Los detalles del error se han escrito en el archivo de registro de Kodi. Si el mensaje de error no proporciona orientación sobre cómo resolver el problema o si continúa recibiendo este error, infórmelo en GitHub siguiendo las instrucciones del archivo Léame."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -673,7 +673,7 @@ msgstr "Nuevos lanzamientos"
 
 msgctxt "#30171"
 msgid "Trending now"
-msgstr "Tendencia ahora"
+msgstr "Tendencias ahora"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
