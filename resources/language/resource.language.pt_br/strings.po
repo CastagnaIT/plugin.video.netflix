@@ -200,7 +200,7 @@ msgstr "Avaliaçao removida|Você avaliou negativamente|Você avaliou positivame
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Há um problema com o add-on InputStream Adaptive ou a biblioteca Widevine. Pode estar ausente ou não habilitada, a operação será cancelada."
 
 # Unused 30047
 
@@ -212,23 +212,23 @@ msgstr "Exportado"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Perfil seleção automática"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Romver seleção automática do perfil"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Definir para seleção automática"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Para definir o perfil, na lista de perfis, abra o menu de contexto"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "O perfil {} foi definido para seleção automática"
 
 # Unused 30059
 
@@ -284,7 +284,7 @@ msgstr "Começar apenas depois de 5 minutos de inatividade"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Sempre apresentar informação do codec durante a reprodução do vídeo"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -614,11 +614,11 @@ msgstr "Você tem uma conta Netflix Premium?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "A configuração foi concluída"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Executar assistente de configuração do add-on"
 
 msgctxt "#30159"
 msgid "View for main menu"
