@@ -72,16 +72,18 @@ class NFSessionBase(object):
         common.info('Initialized new session')
 
     def update_session_data(self, old_esn=None):
-        old_esn = old_esn or g.get_esn()
         self.set_session_header_data()
         cookies.save(self.account_hash, self.session.cookies)
-        _update_esn(old_esn)
+        cookies.log_cookie(self.session.cookies)
+        _update_esn(g.get_esn() if old_esn is None else old_esn)
 
     def set_session_header_data(self):
         try:
             # When the addon is installed from scratch there is no profiles in the database
-            self.session.headers.update(
-                {'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()})
+            self.session.headers.update({
+                'x-netflix.nq.stack': 'prod',
+                'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()
+            })
         except ProfilesMissing:
             pass
 

@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-11-15 10:30+0000\n"
-"Last-Translator: Stefano Gottardo <>\n"
+"PO-Revision-Date: 2020-03-15 10:30+0000\n"
+"Last-Translator: Stefano Gottardo\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,12 +21,12 @@ msgid "Netflix"
 msgstr ""
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
-msgstr "Addon per i servizi VOD di Netflix"
+msgid "Netflix VOD Services Add-on"
+msgstr "Add-on per i servizi VOD di Netflix"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Alcune parti di questa addon potrebbero non essere legali nel tuo paese - verifica le leggi in vigore prima di installare."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Alcune parti di questo add-on potrebbero non essere legali nel tuo paese - verifica le leggi in vigore prima di installare."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -49,8 +49,8 @@ msgid "E-mail"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Il PIN è errato. Riprova."
+msgid "Enter PIN to access this profile"
+msgstr "Inserisci PIN per accedere a questo profilo"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +72,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Ricerca"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Nessuna stagione disponibile"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +138,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Errore di riproduzione"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Addon InputStream mancante"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +148,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Generale"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr ""
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +162,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Configurazione InputStream Adaptive..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Utilizza sempre il titolo originale"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +201,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Valutazione rimossa|Hai valutato con un non mi piace|Hai valutato con un mi piace"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "L'addon InputStream Adaptive non è abilitato"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "Si è verificato un problema con InputStream Adaptive add-on o con la libreria Widevine. Potrebbe essere mancante o non abilitata, l'operazione è stata annullata."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Rimuovere in modo permanente?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Esportati"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Aggiorna DB"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Aggiornamento avvenuto con successo"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Richiesta fallita"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Non è stato possibile completare la richiesta"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Login Automatico"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Abilita l'accesso automatico"
+msgid "Profile auto-selection"
+msgstr "Auto-selezione del profilo"
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profilo"
+msgid "Remove auto-selection of profile"
+msgstr "Rimuovi l'auto-selezione del profilo"
 
 msgctxt "#30056"
-msgid "ID"
-msgstr ""
+msgid "Set for auto-selection"
+msgstr "Imposta per l'auto-selezione"
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Seleziona il profilo dalla lista profili -> menu contestuale"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr "Per impostare un profilo, dall'elenco dei profili apri il menu contestuale"
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Accesso automatico abilitato!"
+msgid "The profile {} has been set for auto-selection"
+msgstr "Il profilo {} è stato impostato per l'auto-selezione"
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Cambia account"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Filtro famiglia"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "nuovi episodi aggiunti alla libreria"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +286,7 @@ msgstr "Avvia solo dopo 5 minuti di inattività"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Visualizza sempre le info di codifica durante la riproduzione"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,8 +317,8 @@ msgid "Pause when skipping"
 msgstr "Dopo il salto metti in pausa"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "Forza il supporto per HDCP 2.2 (abilita contenuti 4K)"
+msgid "Force HDCP 2.2 video streams"
+msgstr "Forza flussi video per HDCP 2.2"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -369,8 +337,8 @@ msgid "Cache item time-to-live for metadata (days)"
 msgstr "Mantieni metadati in Cache per (giorni)"
 
 msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Invalida l'intera cache quando 'La mia lista' viene modificata"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Mantieni 'La mia lista' in Cache per (minuti)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -437,16 +405,16 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix ha restituito il seguente errore:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub. Nella segnalazione fornire un report dell'errore completo di log di debug (Attiva \"Logging di debug\" dalle impostazioni di Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub seguendo le istruzioni nel Readme."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
-msgstr "L'Addon ha riscontrato il seguente errore:"
+msgid "The add-on encountered the following error:"
+msgstr "L'Add-on ha riscontrato il seguente errore:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
-msgstr "Errore Netflix Addon"
+msgid "Netflix Add-on Error"
+msgstr "Errore Netflix Add-on"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
@@ -489,8 +457,8 @@ msgid "Content Profiles"
 msgstr "Profili per contenuti"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
-msgstr "Configurazione avanzata Addon"
+msgid "Advanced Add-on Configuration"
+msgstr "Configurazione avanzata dell'Add-on"
 
 msgctxt "#30117"
 msgid "Cache"
@@ -521,8 +489,8 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Vuoi davvero proseguire?\nQuesta operazione eliminerà tutti gli oggetti esportati in precedenza ed esporterà tutti gli oggetti contenuti in 'La mia lista' per il profilo attualmente attivo.\nQuesta operazione richiederà un pò di tempo..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
-msgstr "Vuoi realmente rimuovere quest'oggetto?"
+msgid "Do you want to remove this item from the library?"
+msgstr "Vuoi rimuovere l'oggetto dalla libreria?"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -536,9 +504,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Punteggio assegnato di {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Per adesso non ci sono ancora dei titoli contenuti..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,12 +543,12 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Abilita profili VP9 (disabilitare se causa artefatti)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Se hai appena avviato Kodi o l'add-on i servizi protrebbero non essere ancora disponibili. In questo caso, riprova tra un momento."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "Abilita IPC su HTTP (utilizzare se si verificano Addon Signals timeout)"
+msgstr "Abilita IPC su HTTP (utilizzare quando si verificano Addon Signals timeout)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
@@ -641,24 +607,22 @@ msgid "Year released"
 msgstr "Anno di uscita"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
-msgstr "Configurazione Netflix addon"
+msgid "Netflix configuration wizard"
+msgstr "Configurazione guidata Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Hai un account Netflix Premium?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Il dispositivo supporta lo standard 4K?\r\nIl dispositivo deve:\r\nEssere certificato Netflix, supportare Widevine Security level L1 ed avere un display 4K HDCP 2.2"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Sarà ora aperto il pannello di InputStream Adaptive, dove è necessario ABILITARE l'opzione \"Override HDCP status\""
+msgid "The configuration has been completed"
+msgstr "La configurazione è stata completata"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Mostra schermata per la configurazione all'avvio dell'addon"
+msgid "Run add-on configuration wizard"
+msgstr "Avvia la configurazione guidata dell'add-on"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,8 +849,8 @@ msgid "Force the update of my list"
 msgstr "Forza l'aggiornamento della mia lista"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
-msgstr "Evidenzia con un colore i titoli inclusi nella mia lista"
+msgid "Color of the titles included in My list"
+msgstr "Colore dei titoli inclusi nella Mia lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -963,3 +927,27 @@ msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Installa Up Next add-on"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sincronizza lo stato guardato dei video con Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Modifica lo stato guardato (localmente)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Segnato come visto|Segnato come non visto|Ripristinato con lo stato di Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notifiche Up Next (guarda prossimo video)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Colore delle info supplementari nella trama"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "I servizi in background non sono stati avviati a causa di questo problema:\r\n{}"

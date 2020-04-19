@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-01-31 20:40+0000\n"
+"PO-Revision-Date: 2020-04-15 01:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Netflix VOD Hizmetleri Eklentisi"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Bu eklentinin bazı bölümleri ikamet ettiğiniz ülkede yasal olmayabilir - lütfen yüklemeden önce yerel yasalarınıza bakın."
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-posta"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Yanlış PIN. Tekrar deneyin."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Ara"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Sezon mevcut değil"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Oynatma hatası"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "InputStream eklentisi eksik"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Genel"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Takip et"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive ayarları..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Dışa aktarımda her zaman orijinal başlığı kullan"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Başparmak oyu kaldırıldı|Başparmak aşağı oyu verdiniz|Başparmak yukarı oyu verdiniz"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "InputStream eklentisi etkin değil"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "InputStream Adaptive eklentisi veya Widevine kitaplığı ile ilgili bir sorun var. Eksik veya etkinleştirilmemiş olabilir, işlem iptal edilecektir."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Sonunda kaldırılsın mı?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Dışa aktarılan"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "DB'yi Güncelle"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Güncelleme tamamlandı"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "İstek Hatası"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "İstek şu anda tamamlanamıyor"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Otomatik Giriş Yap"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Otomatik Girişi Etkinleştir"
+msgid "Profile auto-selection"
+msgstr "Otomatik profil seçimi"
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr "Profilin otomatik-seçimini kaldır"
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "Kimlik"
+msgid "Set for auto-selection"
+msgstr "Otomatik seçim için ayarla"
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Profil listesinden profil seçin -> içerik menüsü"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr "Profili ayarlamak için, profiller listesinde içerik menüsünü açın"
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Otomatik Giriş etkin!"
+msgid "The profile {} has been set for auto-selection"
+msgstr "{} profili otomatik seçim için ayarlandı"
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Hesap değiştir"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Ebeveyn denetimleri"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "kütüphaneye yeni bölümler eklendi"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +284,7 @@ msgstr "Yalnızca 5 dakikalık gecikmeden sonra başlat"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "Video oynatımı sırasında her zaman codec bilgilerini göster"
+msgstr "Video oynatımı sırasında codec bilgilerini her zaman göster"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,8 +315,8 @@ msgid "Pause when skipping"
 msgstr "Atlarken duraklat"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "HDCP 2.2 desteğini zorla (4K içeriği etkinleştir)"
+msgid "Force HDCP 2.2 video streams"
+msgstr "HDCP 2.2 video akışlarını zorla"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -369,8 +335,8 @@ msgid "Cache item time-to-live for metadata (days)"
 msgstr "Metaveri için önbellek öğesi yaşam-süresi (gün)"
 
 msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Listemde değişiklik yapıldığında önbelleğin tamamını geçersiz kıl"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Listem için önbellek öğesi yaşam-süresi (dakika)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -437,16 +403,16 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix aşağıdaki hatayı döndürdü:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen GitHub üzerinden bildirin. Lütfen hata raporunuzla birlikte tam bir hata ayıklama günlüğü sağlayın (Kodi ayarlarında \"Hata Ayıklama Günlüğü\"nü etkinleştirin)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen Readme talimatlarını izleyerek GitHub üzerinden bildirin."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Eklenti şu hatayla karşılaştı:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
-msgstr "Netflix Eklenti Hatası"
+msgid "Netflix Add-on Error"
+msgstr "Netflix Eklentisi Hatası"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
@@ -489,7 +455,7 @@ msgid "Content Profiles"
 msgstr "İçerik Profilleri"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Gelişmiş Eklenti Yapılandırması"
 
 msgctxt "#30117"
@@ -518,10 +484,10 @@ msgstr "Listemi Kodi kitaplığı ile senkronize et"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Gerçekten devam etmek istiyor musunuz?\Bu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
+msgstr "Gerçekten devam etmek istiyor musunuz?\nBu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Bu öğeyi gerçekten kaldırmak istiyor musunuz?"
 
 msgctxt "#30125"
@@ -536,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Verilen derecelendirme {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Henüz hiç başlık yok..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9 profillerini etkinleştir (yapay nesnelere neden oluyorsa devre dışı bırak)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Kodi/Eklenti'yi yeni başlattıysanız, arka plan hizmetleri henüz kullanılamayabilir. Bu durumda, biraz sonra tekrar deneyin."
 
 msgctxt "#30139"
@@ -641,24 +605,22 @@ msgid "Year released"
 msgstr "Çıkış yılı"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
-msgstr "Netflix eklenti yapılandırması"
+msgid "Netflix configuration wizard"
+msgstr "Netflix yapılandırma sihirbazı"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Netflix Premium hesabınız var mı?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Cihazınız 4K standardını destekliyor mu?\r\nCihaz şunları yapmalıdır:\r\nNetflix sertifikalı olmalı, Widevine Güvenlik seviyesi L1 desteği ve 4K ekran HDCP 2.2 olmalıdır"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "InputStream Adaptive ayarlarının paneli şimdi açılacak, böylece \"HDCP durumunu geçersiz kıl\" seçeneğini AÇIK olarak değiştirmeniz gerekir"
+msgid "The configuration has been completed"
+msgstr "Yapılandırma tamamlandı"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Eklenti başlangıcında yapılandırma ekranını göster"
+msgid "Run add-on configuration wizard"
+msgstr "Eklenti yapılandırma sihirbazını çalıştır"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -794,7 +756,7 @@ msgstr "'Listem'e eklenen {} için NFO dosyalarını dışa aktarmak istiyor mus
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nBu dosyalar, bonus bölümleri veya yönetmenin kesimi gibi yararlı olan, filmler ve tv programları bilgilerini entegre etmek için sağlanan bilgileri bilgi sağlayıcıları tarafından kullanır"
+msgstr "\r\nBu dosyalar, bonus bölümleri veya yönetmenin kesimi gibi yararlı olan, filmler ve tv programları bilgilerini entegre etmek için scraper bilgi sağlayıcıları tarafından kullanır"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -885,7 +847,7 @@ msgid "Force the update of my list"
 msgstr "Listemin güncellenmesini zorla"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Listeme dahil edilen başlıkları bir renkle vurgula"
 
 msgctxt "#30216"
@@ -963,3 +925,27 @@ msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gere
 msgctxt "#30234"
 msgid "Install Up Next add-on"
 msgstr "Up Next Eklentisini Yükle"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Videoların izlenme durumunu Netflix ile senkronize et"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "İzlenme durumunu değiştir (yerel olarak)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "İzlendi olarak işaretlendi|İzlenmedi olarak işaretlendi|Netflix izlenme durumu geri alındı"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next bildirimleri (sonraki videoyu izle)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Ek özet bilgisinin rengi"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"

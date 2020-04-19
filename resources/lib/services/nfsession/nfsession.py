@@ -9,24 +9,26 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import time
 import json
 import requests
 
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
+from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
 from resources.lib.services.nfsession.nfsession_base import needs_login
 from resources.lib.api.exceptions import MissingCredentialsError
 
 
-class NetflixSession(NFSessionAccess):
+class NetflixSession(NFSessionAccess, DirectoryBuilder):
     """Stateful netflix session management"""
 
     def __init__(self):
-        super(NetflixSession, self).__init__()
+        NFSessionAccess.__init__(self)
+        DirectoryBuilder.__init__(self, self)
         self.slots = [
             self.login,
             self.logout,
@@ -34,16 +36,13 @@ class NetflixSession(NFSessionAccess):
             self.parental_control_data,
             self.path_request,
             self.perpetual_path_request,
-            self.perpetual_path_request_switch_profiles,
+            self.callpath_request,
             self.get,
             self.post,
             self.startup_requests_module
         ]
         for slot in self.slots:
             common.register_slot(slot)
-        # UpNext Add-on - play call back method
-        # common.register_slot(play_callback, signal=g.ADDON_ID + '_play_action',
-        #                      source_id='upnextprovider')
         self.prefetch_login()
 
     @common.addonsignals_return_call
@@ -72,33 +71,31 @@ class NetflixSession(NFSessionAccess):
         extracted_content['pin'] = pin
         return extracted_content
 
+    @common.time_execution(immediate=True)
     @common.addonsignals_return_call
     @needs_login
-    @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
-        common.info('Activating profile {}', guid)
-        if guid == g.LOCAL_DB.get_active_profile_guid():
-            common.debug('Profile {} is already active', guid)
-            return False
-        self._get(component='activate_profile',
-                  req_type='api',
-                  params={'switchProfileGuid': guid,
-                          '_': int(time.time()),
-                          'authURL': self.auth_url})
-        # When switch profile is performed the authURL change
-        react_context = website.extract_json(self._get('browse'), 'reactContext')
+        common.debug('Switching to profile {}', guid)
+        response = self._get('switch_profile', params={'tkn': guid})
+        react_context = website.extract_json(response, 'reactContext')
         self.auth_url = website.extract_api_data(react_context)['auth_url']
-        g.LOCAL_DB.switch_active_profile(guid)
-        self.update_session_data()
-        common.debug('Successfully activated profile {}', guid)
-        return True
 
-    @common.addonsignals_return_call
+        # if guid != g.LOCAL_DB.get_active_profile_guid():
+        #     common.info('Activating profile {}', guid)
+        #     self._get(component='activate_profile',
+        #               req_type='api',
+        #               params={'switchProfileGuid': guid,
+        #                       '_': int(time.time()),
+        #                       'authURL': self.auth_url})
+
+        g.LOCAL_DB.switch_active_profile(guid)
+        g.CACHE_MANAGEMENT.identifier_prefix = guid
+        self.update_session_data()
+
     @needs_login
-    @common.time_execution(immediate=True)
-    def perpetual_path_request_switch_profiles(self, paths, length_params,
-                                               perpetual_range_start=None, no_limit_req=False):
+    def _perpetual_path_request_switch_profiles(self, paths, length_params,
+                                                perpetual_range_start=None, no_limit_req=False):
         """
         Perform a perpetual path request,
         Used exclusively to get My List of a profile other than the current one
@@ -109,29 +106,28 @@ class NetflixSession(NFSessionAccess):
         # Current profile active
         current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
-        is_profile_switched = self.activate_profile(mylist_profile_guid)
+        self.activate_profile(mylist_profile_guid)
         # Get the My List data
         path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                                      no_limit_req)
-        if is_profile_switched:
+        if mylist_profile_guid != current_profile_guid:
             # Reactive again the previous profile
             self.activate_profile(current_profile_guid)
         return path_response
 
     @common.addonsignals_return_call
-    @needs_login
     def path_request(self, paths):
         """Perform a path request against the Shakti API"""
         return self._path_request(paths)
 
     @common.addonsignals_return_call
-    @needs_login
-    @common.time_execution(immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                no_limit_req=False):
         return self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                             no_limit_req)
 
+    @common.time_execution(immediate=True)
+    @needs_login
     def _perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                 no_limit_req=False):
         """Perform a perpetual path request against the Shakti API to retrieve
@@ -176,8 +172,7 @@ class NetflixSession(NFSessionAccess):
             range_start += response_size
             if n_req == (number_of_requests - 1):
                 merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                common.debug('{} has other elements, added _perpetual_range_selector item',
-                             response_type)
+                common.debug('{} has other elements, added _perpetual_range_selector item', response_type)
             else:
                 range_end = range_start + request_size
 
@@ -186,11 +181,11 @@ class NetflixSession(NFSessionAccess):
             if '_perpetual_range_selector' in merged_response:
                 merged_response['_perpetual_range_selector']['previous_start'] = previous_start
             else:
-                merged_response['_perpetual_range_selector'] = {
-                    'previous_start': previous_start}
+                merged_response['_perpetual_range_selector'] = {'previous_start': previous_start}
         return merged_response
 
     @common.time_execution(immediate=True)
+    @needs_login
     def _path_request(self, paths):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
@@ -208,7 +203,12 @@ class NetflixSession(NFSessionAccess):
             'drmSystem': 'widevine',
             # 'falcor_server': '0.1.0',
             'withSize': 'false',
-            'materialize': 'false'
+            'materialize': 'false',
+            'routeAPIRequestsThroughFTL': 'false',
+            'isVolatileBillboardsEnabled': 'true',
+            'isWatchlistEnabled': 'false',
+            'original_path': '/shakti/{}/pathEvaluator'.format(
+                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
         }
         data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
         data += '&authURL=' + self.auth_url
@@ -218,6 +218,56 @@ class NetflixSession(NFSessionAccess):
             params=params,
             headers=headers,
             data=data)['value']
+
+    @common.addonsignals_return_call
+    @needs_login
+    def callpath_request(self, callpaths, params=None, path_suffixs=None):
+        """Perform a callPath request against the Shakti API"""
+        return self._callpath_request(callpaths, params, path_suffixs)
+
+    @common.time_execution(immediate=True)
+    def _callpath_request(self, callpaths, params=None, path_suffixs=None):
+        """Execute a callPath request with static paths"""
+        # Warning: The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
+        #          if the request have wrong data give error 401
+        #          if the parameters are not formatted correctly will give error 401
+        common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
+                     json.dumps(callpaths),
+                     params,
+                     json.dumps(path_suffixs))
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json, text/javascript, */*'}
+
+        req_params = {
+            'drmSystem': 'widevine',
+            'falcor_server': '0.1.0',
+            'method': 'call',
+            'withSize': 'true',
+            'materialize': 'true',
+            'routeAPIRequestsThroughFTL': 'false',
+            'isVolatileBillboardsEnabled': 'true',
+            'isWatchlistEnabled': 'false',
+            'original_path': '/shakti/{}/pathEvaluator'.format(
+                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+        }
+        data = 'callPath=' + '&callPath='.join(json.dumps(callpath) for callpath in callpaths)
+        if params:
+            data += '&param=' + '&param='.join(params)
+        if path_suffixs:
+            data += '&pathSuffix=' + '&pathSuffix='.join(json.dumps(path_suffix) for path_suffix in path_suffixs)
+        data += '&authURL=' + self.auth_url
+        data = data.replace(' ', '')
+        # common.debug('callPath request data: {}', data)
+        response_data = self._post(
+            component='shakti',
+            req_type='api',
+            params=req_params,
+            headers=headers,
+            data=data)
+        if 'falcor_server' in req_params:
+            return response_data['jsonGraph']
+        return response_data['value']
 
 
 def _set_range_selector(paths, range_start, range_end):
@@ -234,10 +284,3 @@ def _set_range_selector(paths, range_start, range_end):
         except ValueError:
             pass
     return ranged_paths
-
-
-# def play_callback(data):
-#     """Callback function used for upnext integration"""
-#     common.info('Received signal from Up Next. Playing next episode...')
-#     common.stop_playback()
-#     common.play_media(data['play_path'])

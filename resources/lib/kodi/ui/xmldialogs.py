@@ -11,12 +11,11 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import time
-from platform import machine
 
 import xbmc
 import xbmcgui
 
-from resources.lib.common import run_threaded
+from resources.lib.common import run_threaded, get_machine
 from resources.lib.globals import g
 from resources.lib.kodi.ui.dialogs import (show_ok_dialog, show_error_info)
 
@@ -31,8 +30,6 @@ XBFONT_CENTER_X = 0x00000002
 XBFONT_CENTER_Y = 0x00000004
 XBFONT_TRUNCATED = 0x00000008
 XBFONT_JUSTIFY = 0x00000010
-
-OS_MACHINE = machine()
 
 CMD_CLOSE_DIALOG_BY_NOOP = 'AlarmClock(closedialog,Action(noop),{},silent)'
 
@@ -79,10 +76,13 @@ class Skip(xbmcgui.WindowXMLDialog):
                                    ACTION_NAV_BACK,
                                    ACTION_NOOP]
 
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self.getControl(6012).setLabel(self.label)
@@ -116,10 +116,13 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self._generate_levels_labels()
@@ -140,7 +143,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
             # Validate pin length
             if not self._validate_pin(pin):
                 return
-            import resources.lib.api.shakti as api
+            import resources.lib.api.api_requests as api
             data = {'pin': pin,
                     'maturity_level': self.maturity_levels[self.current_level]['value']}
             # Send changes to the service
@@ -150,8 +153,8 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
                                 False, True)
             # I make sure that the metadata are removed,
             # otherwise you get inconsistencies with the request of the pin
-            from resources.lib.cache import CACHE_METADATA
-            g.CACHE.invalidate(True, [CACHE_METADATA])
+            from resources.lib.common.cache_utils import CACHE_METADATA
+            g.CACHE.clear([CACHE_METADATA])
             self.close()
         if controlID in [10029, 100]:  # Close dialog
             self.close()
@@ -224,10 +227,13 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
-        if OS_MACHINE[0:5] == 'armv7':
+        if get_machine()[0:5] == 'armv7':
             xbmcgui.WindowXMLDialog.__init__(self)
         else:
-            xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
 
     def onInit(self):
         self.getControl(10000).setLabel(self.title)
@@ -255,7 +261,7 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         if controlID in [10010, 10020, 10012, 10022]:  # Rating and close
             rating_map = {10010: 2, 10020: 1, 10012: 0, 10022: 0}
             rating_value = rating_map[controlID]
-            from resources.lib.api.shakti import rate_thumb
+            from resources.lib.api.api_requests import rate_thumb
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
         if controlID in [10040, 100]:  # Close

@@ -196,7 +196,7 @@ def translatePath(path):
     if path.startswith('special://home'):
         return path.replace('special://home', os.path.join(os.getcwd(), 'test'))
     if path.startswith('special://profile'):
-        return path.replace('special://profile', os.path.join(os.getcwd(), 'test/usedata'))
+        return path.replace('special://profile', os.path.join(os.getcwd(), 'tests/usedata'))
     if path.startswith('special://userdata'):
-        return path.replace('special://userdata', os.path.join(os.getcwd(), 'test/userdata'))
+        return path.replace('special://userdata', os.path.join(os.getcwd(), 'tests/userdata'))
     return path

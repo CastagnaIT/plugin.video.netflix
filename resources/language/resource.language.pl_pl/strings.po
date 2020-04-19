@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-07-08 22:15+0000\n"
+"PO-Revision-Date: 2020-02-27 10:15+0000\n"
 "Last-Translator: Marcin W. + notoco\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Wtyczka dla usług VOD serwisu Netflix"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Niektóre części tego dodatku mogą być nielegalne w Twoim kraju - sprawdź przed instalacją zgodność z lokalnym prawem."
 
 msgctxt "#30001"
@@ -49,8 +49,8 @@ msgid "E-mail"
 msgstr "Adres e-mail"
 
 msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Nieprawidłowy PIN. Spróbuj ponownie."
+msgid "Enter PIN to access this profile"
+msgstr "Podaj PIN do tego profilu"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +72,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Szukaj"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Brak dostępnych sezonów"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +138,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Błąd odtwarzania"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Brakuje wtyczki InputStream"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +148,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Ogólne"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Śledzenie"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +162,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Ustawienia wtyczki strumieniowej..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Używaj oryginalnego tytułu podczas eksportu"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +201,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Usunięto ocenę|Oceniłeś kciuk w dół|Oceniłeś kciuk w górę"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "Wtyczka strumieniowa nie jest aktywna"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Widevine. Może ich brakować lub mogą nie być włączone, operacja zostanie anulowana."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Czy usunąć definitywnie?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Wyeksportowane"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Aktualizuj bazę"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Aktualizacja zakończona powodzeniem"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Błąd żądania"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Żądanie nie może teraz zostać wykonane"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Logowanie automatyczne"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Aktywuj logowanie automatyczne"
+msgid "Profile auto-selection"
+msgstr "Automatyczny wybór profilu"
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr "Usuń automatczyny wybór profilu"
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "Identyfikator"
+msgid "Set for auto-selection"
+msgstr "Wybierz dla automatycznego wyboru"
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Wybierz profil z listy profili -> menu kontekstowe"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr "Aby ustawić profil, twórz menu kontekstowe na liście profili o"
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Logowanie automatyczne zostało aktywowane!"
+msgid "The profile {} has been set for auto-selection"
+msgstr "Profil {} został ustawiony do automatycznego wyboru"
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Zmień konto"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +246,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Kontrola rodzicielska"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "nowe odcinki dodane do biblioteki"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -318,7 +286,7 @@ msgstr "Uruchom tylko po 5 minutach bezczynności"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Zawsze pokazuj informacje o kodekach podczas odtwarzania"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -349,7 +317,7 @@ msgid "Pause when skipping"
 msgstr "Pauza podczas pomijania"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Wymuś wsparcie HDCP 2.2 (uaktywnia treści 4K)"
 
 msgctxt "#30082"
@@ -369,8 +337,8 @@ msgid "Cache item time-to-live for metadata (days)"
 msgstr "Utrzymuj pamięć podręczną metadanych przez (dni)"
 
 msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Unieważnij całą pamięć podręczną przy modyfikacji Mojej listy"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Czas przechowywania w pamięci podręcznej mojej listy (minuty)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -437,15 +405,15 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix zwrócił poniższy błąd"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub. Podaj pełny dziennik debugowania wraz z raportem o błędzie (włącz \"Dziennikowanie debugowania\" w ustawieniach Kodi)"
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub korzystając z instrukcji Readme"
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Dodatek napotkał następujący błąd:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Błąd dodatku Netflix"
 
 msgctxt "#30106"
@@ -489,7 +457,7 @@ msgid "Content Profiles"
 msgstr "Profile zawartości"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Zaawansowana konfiguracja dodatku"
 
 msgctxt "#30117"
@@ -521,7 +489,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Czy na pewno chcesz kontynuować? \nSpowoduje to usunięcie wszystkich wcześniej wyeksportowanych pozycji i wyeksportowanie wszystkich pozycji z Mojej listy dla aktualnie aktywnego profilu. \nTa operacja może trochę potrwać ..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Czy na pewno chcesz usunąć tę pozycję?"
 
 msgctxt "#30125"
@@ -536,9 +504,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Przyznana ocena {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Brak zawartych tytułów ..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +543,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Włącz profile VP9 (wyłącz jeśli powoduje artefakty)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Usługi w tle mogą nie być jeszcze dostępne, jeśli właśnie uruchomiłeś Kodi/dodatek. W takim przypadku spróbuj ponownie za chwilę."
 
 msgctxt "#30139"
@@ -641,24 +607,22 @@ msgid "Year released"
 msgstr "Rok wydania"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Konfiguracja dodatku Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Czy masz konto Netflix Premium?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Czy twoje urządzenie obsługuje standard 4k?\r\nUrządzenie musi:\r\n Być certyfikowane przez Netflix, wspierać Widevine Security poziom L1 i posiadać ekran 4K HDCP 2.2"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Zostanie otworzone okno ustawień dodatku InputStream Adaptive, żeby włączyć opcję \"Override HDCP status\""
+msgid "The configuration has been completed"
+msgstr "Konfiguracja została zakończona"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Pokaż ekran konfiguracji przy starcie dodatku"
+msgid "Run add-on configuration wizard"
+msgstr "Uruchom kreatora konfiguracji"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +849,7 @@ msgid "Force the update of my list"
 msgstr "Wymuś aktualizację mojej listy"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Podświetl tytuły znajdujące się na Mojej liście kolorem"
 
 msgctxt "#30216"
@@ -959,3 +923,31 @@ msgstr "Ogranicz według poziomu dojrzałości"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Zawartość dla {} będzie wymagała kodu PIN do odtworzenia"
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Zainstaluj dodatek Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Zsynchronizuj status oglądanych filmów z Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Zmień status oglądania (lokalnie)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Oznacz jako obejrzane|Oznacz jako nieobejrzane|Przywróć stan obejrzenia z Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Powiadomienia Up Next (oglądaj następne wideo)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Kolor dodatkowych informacji fabuły"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Usługi w tle nie mogą zostać uruchomione z powodu:\r\n{}"

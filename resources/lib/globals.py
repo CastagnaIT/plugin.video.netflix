@@ -115,7 +115,8 @@ class GlobalVariables(object):
                             'description_id': 30164,
                             'icon': 'DefaultTVShows.png'}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
-                             'lolomo_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked'],
+                             'lolomo_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked', 'watchAgain',
+                                                 'bigRow'],
                              'lolomo_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
@@ -186,6 +187,10 @@ class GlobalVariables(object):
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
+        self.CACHE = None
+        self.CACHE_MANAGEMENT = None
+        self.CACHE_TTL = None
+        self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
 
     def init_globals(self, argv, reinitialize_database=False):
@@ -195,17 +200,18 @@ class GlobalVariables(object):
         module level if reusing a language invoker."""
         # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuselanguageinvoker is not yet used)
         self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
-        self.IS_SKIN_CALL = False
+        self.IS_ADDON_EXTERNAL_CALL = False
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
-        self.ADDON_ID = self.ADDON.getAddonInfo('id')
-        self.PLUGIN = self.ADDON.getAddonInfo('name')
-        self.VERSION = self.ADDON.getAddonInfo('version')
-        self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
-        self.ICON = self.ADDON.getAddonInfo('icon')
-        self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Addon folder
-        self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Addon user data folder
+        self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
+        self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
+        self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
+        self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
+        self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
+        self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
+        self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Addon folder
+        self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Addon user data folder
 
         # Add absolute paths of embedded py modules to python system directory
         module_paths = [
@@ -214,23 +220,21 @@ class GlobalVariables(object):
         for path in module_paths:
             path = xbmc.translatePath(path)
             if path not in sys.path:
-                sys.path.insert(0, path)
+                sys.path.insert(0, g.py2_decode(path))
 
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
-        self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
-        self.CACHE_METADATA_TTL = (
-            self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60)
-
         self.URL = urlparse(argv[0])
         try:
             self.PLUGIN_HANDLE = int(argv[1])
             self.IS_SERVICE = False
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
+                                                         netloc=self.URL[1])
         except IndexError:
             self.PLUGIN_HANDLE = 0
             self.IS_SERVICE = True
-        self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
-                                                     netloc=self.URL[1])
+            self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
+                                                         netloc=self.ADDON_ID)
         self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
@@ -245,8 +249,18 @@ class GlobalVariables(object):
 
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
-        if self.IS_ADDON_FIRSTRUN or self.IS_SERVICE:
-            self._init_cache()
+        # Initialize the cache
+        self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
+        self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
+        self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
+        if self.IS_ADDON_FIRSTRUN:
+            if self.IS_SERVICE:
+                from resources.lib.services.cache.cache_management import CacheManagement
+                self.CACHE_MANAGEMENT = CacheManagement()
+            from resources.lib.common.cache import Cache
+            self.CACHE = Cache()
+        from resources.lib.common.kodiops import GetKodiVersion
+        self.KODI_VERSION = GetKodiVersion()
 
     def _init_database(self, initialize):
         # Initialize local database
@@ -257,86 +271,22 @@ class GlobalVariables(object):
         use_mysql = g.ADDON.getSettingBool('use_mysql')
         if initialize or use_mysql:
             import resources.lib.database.db_shared as db_shared
-            from resources.lib.database.db_exceptions import MySQLConnectionError
+            from resources.lib.database.db_exceptions import MySQLConnectionError, MySQLError
             try:
                 shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
                 self.SHARED_DB = shared_db_class()
-            except MySQLConnectionError:
+            except (MySQLConnectionError, MySQLError) as exc:
+                import resources.lib.kodi.ui as ui
+                if isinstance(exc, MySQLError):
+                    # There is a problem with the database
+                    ui.show_addon_error_info(exc)
                 # The MySQL database cannot be reached, fallback to local SQLite database
                 # When this code is called from addon, is needed apply the change also in the
                 # service, so disabling it run the SettingsMonitor
-                import resources.lib.kodi.ui as ui
                 self.ADDON.setSettingBool('use_mysql', False)
                 ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
                 shared_db_class = db_shared.get_shareddb_class()
                 self.SHARED_DB = shared_db_class()
-
-    def _init_cache(self):
-        if not os.path.exists(g.py2_decode(xbmc.translatePath(self.CACHE_PATH))):
-            self._init_filesystem_cache()
-        from resources.lib.cache import Cache
-        self.CACHE = Cache(self.CACHE_PATH, self.PLUGIN_HANDLE)
-
-    def _init_filesystem_cache(self):
-        from xbmcvfs import mkdirs
-        from resources.lib.cache import BUCKET_NAMES
-        for bucket in BUCKET_NAMES:
-            mkdirs(xbmc.translatePath(os.path.join(self.CACHE_PATH, bucket)))
-
-    def initial_addon_configuration(self):
-        """
-        Initial addon configuration,
-        helps users to automatically configure addon parameters for proper viewing of videos
-        """
-        run_initial_config = self.ADDON.getSettingBool('run_init_configuration')
-        if run_initial_config:
-            from resources.lib.common import (debug, get_system_platform, get_local_string)
-            from resources.lib.kodi.ui import (ask_for_confirmation, show_ok_dialog)
-            self.settings_monitor_suspend(True, False)
-
-            system = get_system_platform()
-            debug('Running initial addon configuration dialogs on system: {}', system)
-            if system in ['osx', 'ios', 'xbox']:
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', True)
-            elif system == 'windows':
-                # Currently inputstream does not support hardware video acceleration on windows,
-                # there is no guarantee that we will get 4K without video hardware acceleration,
-                # so no 4K configuration
-                self.ADDON.setSettingBool('enable_vp9_profiles', True)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            elif system == 'android':
-                ultrahd_capable_device = False
-                premium_account = ask_for_confirmation(get_local_string(30154),
-                                                       get_local_string(30155))
-                if premium_account:
-                    ultrahd_capable_device = ask_for_confirmation(get_local_string(30154),
-                                                                  get_local_string(30156))
-                if ultrahd_capable_device:
-                    show_ok_dialog(get_local_string(30154), get_local_string(30157))
-                    ia_enabled = xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)')
-                    if ia_enabled:
-                        xbmc.executebuiltin('Addon.OpenSettings(inputstream.adaptive)')
-                    else:
-                        show_ok_dialog(get_local_string(30154), get_local_string(30046))
-                    self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                    self.ADDON.setSettingBool('enable_hevc_profiles', True)
-                else:
-                    # VP9 should have better performance since there is no need for 4k
-                    self.ADDON.setSettingBool('enable_vp9_profiles', True)
-                    self.ADDON.setSettingBool('enable_hevc_profiles', False)
-                self.ADDON.setSettingBool('enable_force_hdcp', ultrahd_capable_device)
-            elif system == 'linux':
-                # Too many different linux systems, we can not predict all the behaviors
-                # Some linux distributions have encountered problems with VP9,
-                # OMSC users complain that hevc creates problems
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            else:
-                self.ADDON.setSettingBool('enable_vp9_profiles', False)
-                self.ADDON.setSettingBool('enable_hevc_profiles', False)
-            self.ADDON.setSettingBool('run_init_configuration', False)
-            self.settings_monitor_suspend(False)
 
     def settings_monitor_suspend(self, is_suspended=True, at_first_change=False):
         """
@@ -369,7 +319,7 @@ class GlobalVariables(object):
         """Get the generated esn or if set get the custom esn"""
         from resources.lib.database.db_utils import TABLE_SESSION
         custom_esn = g.ADDON.getSetting('esn')
-        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
+        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
     def get_edge_esn(self):
         """Get a previously generated edge ESN from the settings or generate
@@ -414,11 +364,11 @@ class GlobalVariables(object):
         """Remove a level from the time trace"""
         self.time_trace_level -= 2
 
-    def py2_decode(self, value):
+    def py2_decode(self, value, encoding='utf-8'):
         """Decode text only on python 2"""
         # To remove when Kodi 18 support is over / Py2 dead
         if self.PY_IS_VER2:
-            return value.decode('utf-8')
+            return value.decode(encoding)
         return value
 
     def py2_encode(self, value):
@@ -427,6 +377,13 @@ class GlobalVariables(object):
         if self.PY_IS_VER2:
             return value.encode('utf-8')
         return value
+
+    @staticmethod
+    def remove_ver_suffix(version):
+        """Remove the codename suffix from version value"""
+        import re
+        pattern = re.compile(r'\+\w+\.\d$')  # Example: +matrix.1
+        return re.sub(pattern, '', version)
 
 
 # pylint: disable=invalid-name

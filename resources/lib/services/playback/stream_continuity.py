@@ -13,7 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 
 import resources.lib.common as common
-from resources.lib.cache import CACHE_MANIFESTS
+from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.globals import g
 from .action_manager import PlaybackActionManager
 
@@ -48,13 +48,11 @@ class StreamContinuityManager(PlaybackActionManager):
         self.sc_settings = {}
         self.player = xbmc.Player()
         self.player_state = {}
-        self.did_restore = False
         self.resume = {}
-        self.legacy_kodi_version = bool('18.' in common.GetKodiVersion().version)
+        self.legacy_kodi_version = g.KODI_VERSION.is_major_ver('18')
         self.kodi_only_forced_subtitles = None
 
     def _initialize(self, data):
-        self.did_restore = False
         videoid = common.VideoId.from_dict(data['videoid'])
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
@@ -81,13 +79,9 @@ class StreamContinuityManager(PlaybackActionManager):
             self._restore_stream(stype)
         # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
         # changed by restore, otherwise when _on_tick is executed it will save twice unnecessarily
-        xbmc.sleep(1500)
-        self.did_restore = True
+        xbmc.sleep(1000)
 
     def _on_tick(self, player_state):
-        if not self.did_restore:
-            common.debug('Did not restore streams yet, ignoring tick')
-            return
         self.player_state = player_state
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']
@@ -102,6 +96,12 @@ class StreamContinuityManager(PlaybackActionManager):
         #       otherwise Kodi reacts strangely if only one value of these is restored
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
+        if player_stream is None:
+            # I don't know the cause:
+            # Very rarely can happen that Kodi starts the playback with the subtitles enabled,
+            # but after some seconds subtitles become disabled, and 'currentsubtitle' of player_state data become 'None'
+            # Then _is_stream_value_equal() throw error. We do not handle it as a setting change from the user.
+            return
         is_sub_stream_equal = self._is_stream_value_equal(current_stream, player_stream)
 
         current_sub_enabled = self.current_streams['subtitleenabled']
@@ -247,7 +247,7 @@ class StreamContinuityManager(PlaybackActionManager):
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
             cache_identifier = g.get_esn() + '_' + self.current_videoid.value
-            manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier, False)
+            manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
                        text_track['language'] == audio_language

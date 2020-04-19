@@ -14,13 +14,8 @@ import json
 import xbmc
 
 from resources.lib.globals import g
-
 from .logging import debug
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 LIBRARY_PROPS = {
     'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
@@ -50,7 +45,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    debug('Executing JSON-RPC: {}'.format(request))
+    debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
@@ -61,10 +56,27 @@ def json_rpc(method, params=None):
     return response['result']
 
 
+def json_rpc_multi(method, list_params=None):
+    """
+    Executes multiple JSON-RPC with the same method in Kodi
+
+    :param method: The JSON-RPC method to call
+    :type method: string
+    :param list_params: Multiple list of parameters of the method call
+    :type list_params: a list of dict
+    :returns: dict -- Method call result
+    """
+    request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1, 'params': params or {}} for params in list_params]
+    request = json.dumps(request_data)
+    debug('Executing JSON-RPC: {}', request)
+    raw_response = xbmc.executeJSONRPC(request)
+    if 'error' in raw_response:
+        raise IOError('JSONRPC-Error {}'.format(raw_response))
+    return json.loads(raw_response)
+
+
 def update_library_item_details(dbtype, dbid, details):
-    """
-    Update properties of an item in the Kodi library
-    """
+    """Update properties of an item in the Kodi library"""
     method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
     params = {'{}id'.format(dbtype): dbid}
     params.update(details)
@@ -72,8 +84,7 @@ def update_library_item_details(dbtype, dbid, details):
 
 
 def get_library_items(dbtype, video_filter=None):
-    """Return a list of all items in the Kodi library that are of type
-    dbtype (either movie or episode)"""
+    """Return a list of all items in the Kodi library that are of type dbtype (either movie or episode)"""
     method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
     params = {'properties': ['file']}
     if video_filter:
@@ -97,8 +108,14 @@ def scan_library(path=""):
     return json_rpc(method, params)
 
 
-def refresh_container():
+def refresh_container(use_delay=False):
     """Refresh the current container"""
+    if use_delay:
+        # When operations are performed in the Kodi library before call this method
+        # can be necessary to apply a delay before run the refresh, otherwise the page does not refresh correctly
+        # seems to be caused by a race condition with the Kodi library update (but i am not really sure)
+        from time import sleep
+        sleep(1)
     xbmc.executebuiltin('Container.Refresh')
 
 
@@ -109,17 +126,14 @@ def get_local_string(string_id):
 
 
 def run_plugin_action(path, block=False):
-    """Create an action that can be run with xbmc.executebuiltin in order
-    to run a Kodi plugin specified by path. If block is True (default=False),
-    the execution of code will block until the called plugin has finished
-    running."""
-    return 'XBMC.RunPlugin({}, {})'.format(path, block)
+    """Create an action that can be run with xbmc.executebuiltin in order to run a Kodi plugin specified by path.
+    If block is True (default=False), the execution of code will block until the called plugin has finished running."""
+    return 'RunPlugin({}, {})'.format(path, block)
 
 
 def run_plugin(path, block=False):
     """Run a Kodi plugin specified by path. If block is True (default=False),
-    the execution of code will block until the called plugin has finished
-    running."""
+    the execution of code will block until the called plugin has finished running."""
     xbmc.executebuiltin(run_plugin_action(path, block))
 
 
@@ -150,28 +164,30 @@ def get_current_kodi_profile_name(no_spaces=True):
 
 
 def get_kodi_audio_language():
-    """
-    Return the audio language from Kodi settings
-    """
+    """Return the audio language from Kodi settings"""
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    audio_language = xbmc.convertLanguage(g.py2_encode(audio_language['value']), xbmc.ISO_639_1)
-    audio_language = audio_language if audio_language else xbmc.getLanguage(xbmc.ISO_639_1, False)
-    return audio_language if audio_language else 'en'
+    return convert_language_iso(audio_language['value'])
 
 
 def get_kodi_subtitle_language():
-    """
-    Return the subtitle language from Kodi settings
-    """
+    """Return the subtitle language from Kodi settings"""
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    subtitle_language = xbmc.convertLanguage(g.py2_encode(subtitle_language['value']),
-                                             xbmc.ISO_639_1)
-    subtitle_language = subtitle_language if subtitle_language else xbmc.getLanguage(xbmc.ISO_639_1,
-                                                                                     False)
-    subtitle_language = subtitle_language if subtitle_language else 'en'
-    return subtitle_language
+    return convert_language_iso(subtitle_language['value'])
+
+
+def convert_language_iso(from_value, use_fallback=True):
+    """
+    Convert language code from an English name or three letter code (ISO 639-2) to two letter code (ISO 639-1)
+
+    :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
+    """
+    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), xbmc.ISO_639_1)
+    if not use_fallback:
+        return converted_lang
+    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(xbmc.ISO_639_1, False)
+    return converted_lang if converted_lang else 'en'
 
 
 def fix_locale_languages(data_list):
@@ -198,6 +214,7 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     Locale conversion helper
     Conversion table to prevent Kodi to display
     es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
+    Kodi issue: https://github.com/xbmc/xbmc/issues/15308
     """
     locale_conversion_table = {
         'es-ES': 'es-Spain',
@@ -218,33 +235,32 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     return locale_code
 
 
-def is_internet_connected():
-    """
-    Check internet status
-    :return: True if connected
-    """
-    if not xbmc.getCondVisibility('System.InternetState'):
-        # Double check when Kodi say that it is not connected
-        # i'm not sure the InfoLabel will work properly when Kodi was started a few seconds ago
-        # using getInfoLabel instead of getCondVisibility often return delayed results..
-        return _check_internet()
-    return True
+class GetKodiVersion(object):
+    """Get the kodi version, git date, stage name"""
+    # Examples of some types of supported strings:
+    # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
+    # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
+    def __init__(self):
+        import re
+        self.build_version = xbmc.getInfoLabel('System.BuildVersion')
+        # Parse the version number
+        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self.build_version)
+        self.version = result.group(0) if result else ''
+        # Parse the major version number
+        self.major_version = self.version.split('.')[0] if self.version else ''
+        # Parse the date of GIT build
+        result = re.search('(Git:)(\\d+?(?=(-|$)))', self.build_version)
+        self.date = int(result.group(2)) if result and len(result.groups()) >= 2 else None
+        # Parse the stage name
+        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self.build_version)
+        if not result:
+            result = re.search('^(.+)(-\\d+\\.\\d+)', self.build_version)
+            self.stage = result.group(1) if result else ''
+        else:
+            self.stage = result.group(2) if result else ''
 
+    def is_major_ver(self, major_ver):
+        return bool(major_ver in self.major_version)
 
-def _check_internet():
-    """
-    Checks via socket if the internet works (in about 0,7sec with no timeout error)
-    :return: True if connected
-    """
-    import socket
-    for timeout in [1, 1]:
-        try:
-            socket.setdefaulttimeout(timeout)
-            host = socket.gethostbyname("www.google.com")
-            s = socket.create_connection((host, 80), timeout)
-            s.close()
-            return True
-        except Exception:  # pylint: disable=broad-except
-            # Error when is not reachable
-            pass
-    return False
+    def __str__(self):
+        return self.build_version

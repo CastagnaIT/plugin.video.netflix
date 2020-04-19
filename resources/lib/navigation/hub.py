@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-import resources.lib.api.shakti as api
+import resources.lib.api.api_requests as api
 
 
 # Needs skin support!
@@ -18,12 +18,10 @@ class HubBrowser(object):
     """Fills window properties for browsing the Netflix style Hub"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing hub browser: {}', params)
+        common.debug('Initializing "HubBrowser" with params: {}', params)
         self.params = params
-
-        profile_id = params.get('profile_id')
-        if profile_id:
-            api.activate_profile(profile_id)
+        if 'profile_guid' in params:
+            api.activate_profile(params['profile_guid'])
 
     def browse(self, pathitems):
         """Browse the hub at a given location"""

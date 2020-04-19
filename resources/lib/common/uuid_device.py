@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from .logging import debug
-from .misc_utils import get_system_platform
+from .device_utils import get_system_platform
 
 try:  # Python 2
     unicode
@@ -48,13 +48,15 @@ def _get_system_uuid():
     import uuid
     uuid_value = None
     system = get_system_platform()
-    if system in ['windows', 'xbox']:
+    if system in ['windows', 'uwp']:
         uuid_value = _get_windows_uuid()
     elif system == 'android':
         uuid_value = _get_android_uuid()
     elif system == 'linux':
         uuid_value = _get_linux_uuid()
-    elif system in ['osx', 'ios']:
+    elif system == 'osx':
+        # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
+        # See python limits in the wiki development page
         uuid_value = _get_macos_uuid()
     if not uuid_value:
         debug('It is not possible to get a system UUID creating a new UUID')
@@ -120,8 +122,7 @@ def _get_android_uuid():
                     'persist.sys.timezone', 'persist.sys.locale', 'net.hostname']
         # Warning net.hostname property starting from android 10 is deprecated return empty
         proc = subprocess.Popen(['/system/bin/getprop'], stdout=subprocess.PIPE)
-        output_data = proc.stdout.read().decode('utf-8')
-        proc.stdout.close()
+        output_data = proc.communicate()[0].decode('utf-8')
         list_values = output_data.splitlines()
         for value in list_values:
             value_splitted = re.sub(r'\[|\]|\s', '', value).split(':')
@@ -140,8 +141,7 @@ def _get_macos_uuid():
         proc = subprocess.Popen(
             ['/usr/sbin/system_profiler', 'SPHardwareDataType', '-detaillevel', 'full', '-xml'],
             stdout=subprocess.PIPE)
-        output_data = proc.stdout.read().decode('utf-8')
-        proc.stdout.close()
+        output_data = proc.communicate()[0].decode('utf-8')
         if output_data:
             sp_dict_values = _parse_osx_xml_plist_data(output_data)
     except Exception as exc:
@@ -185,5 +185,10 @@ def _get_fake_uuid(with_hostname=True):
     import platform
     list_values = [xbmc.getInfoLabel('System.Memory(total)')]
     if with_hostname:
-        list_values.append(platform.node())
+        try:
+            list_values.append(platform.node())
+        except Exception:  # pylint: disable=broad-except
+            # Due to OS restrictions on 'ios' and 'tvos' an error happen
+            # See python limits in the wiki development page
+            pass
     return '_'.join(list_values)

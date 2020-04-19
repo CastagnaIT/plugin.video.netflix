@@ -1,0 +1,17 @@
+.github/ export-ignore
+docs/ export-ignore
+LICENSES/ export-ignore
+tests/ export-ignore
+.codeclimate.yml export-ignore
+.editorconfig export-ignore
+.flake8 export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.pylintrc export-ignore
+changelog.txt export-ignore
+Code_of_Conduct.md export-ignore
+codecov.yml export-ignore
+Contributing.md export-ignore
+Makefile export-ignore
+requiremens.txt export-ignore
+tox.ini export-ignore

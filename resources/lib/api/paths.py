@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
-    Path info to query the Shakti pathEvaluator
+    'Path' data and utility to query the Shakti API
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -39,10 +39,10 @@ ART_PARTIAL_PATHS = [
 ]
 
 VIDEO_LIST_PARTIAL_PATHS = [
-    [['summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
+    [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
       'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
-      'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition',
-      'dpSupplementalMessage', 'watched', 'delivery']],
+      'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
@@ -64,20 +64,27 @@ SEASONS_PARTIAL_PATHS = [
 ] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
-    [['summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
+    [['requestId', 'summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
       'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
-      'watched', 'delivery']],
+      'watched', 'delivery', 'trackIds']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime']]
+    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime',
+      'bookmarkPosition', 'creditsOffset']]
 ] + ART_PARTIAL_PATHS
+
+EVENT_PATHS = [
+    [['requestId', 'title', 'runtime', 'queue', 'bookmarkPosition', 'watched', 'trackIds']]
+]
 
 VIDEO_LIST_RATING_THUMB_PATHS = [
     [['summary', 'title', 'userRating', 'trackIds']]
 ]
+
+SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 
 INFO_MAPPINGS = {
     'title': 'title',
@@ -106,6 +113,12 @@ REFERENCE_MAPPINGS = {
     'writer': 'creators',
     'genre': 'genres'
 }
+
+
+def build_paths(base_path, partial_paths):
+    """Build a list of full paths by concatenating each partial path with the base path"""
+    paths = [base_path + partial_path for partial_path in partial_paths]
+    return paths
 
 
 def resolve_refs(references, targets):

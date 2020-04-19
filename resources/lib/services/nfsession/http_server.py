@@ -7,7 +7,9 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 import json
+
 try:  # Python 3
     from http.server import BaseHTTPRequestHandler
 except ImportError:
@@ -32,17 +34,18 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Loads the licence for the requested resource"""
-        common.debug('Handling HTTP IPC call to {}', self.path[1:])
+        common.debug('Handling HTTP POST IPC call to {}', self.path[1:])
         func = getattr(NetflixSession, self.path[1:])
         length = int(self.headers.get('content-length', 0))
         data = json.loads(self.rfile.read(length)) or None
         result = func(self.server.netflix_session, data)
-        self.send_response(200
-                           if (not isinstance(result, dict) or
-                               'error' not in result)
-                           else 500)
-        self.end_headers()
-        self.wfile.write(json.dumps(result).encode('utf-8'))
+        if not isinstance(result, dict) or 'error' not in result:
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps(result).encode('utf-8'))
+        else:
+            self.send_response(500, json.dumps(result))
+            self.end_headers()
 
     def log_message(self, *args):  # pylint: disable=arguments-differ
         """Disable the BaseHTTPServer Log"""

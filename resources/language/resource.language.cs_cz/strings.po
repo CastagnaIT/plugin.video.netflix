@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Nesprávný PIN. Zkuste to znovu."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Hledat"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Řady seriálu nejsou k dispozici"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Chyba přehrávání"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Chybějící doplněk InputStream"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Obecné"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Sledování"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Nastavení InputStream Adaptive ..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Při exportu vždy použít původní název"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Odstraněno hodnocení|Hodnocení jako nelíbí|Hodnocení jako líbí"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "Doplněk InputStream není povolen"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr ""
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Opravdu odstranit?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Exportováno"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Aktualizovat DB"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Aktualizace byla úspěšná"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Chyba požadavku"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "V tuto chvíli nelze požadavek dokončit"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Automatické přihlášení"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Povolit automatické přihlášení"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
+msgid "Set for auto-selection"
 msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Vyberte profil v seznamu profilů -> kontextové menu"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Automatické přihlášení povoleno!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Přepnout účty"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Rodičovská kontrola"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "Nové díly přidány do knihovny"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -349,7 +315,7 @@ msgid "Pause when skipping"
 msgstr "Pauza při přeskočení"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
+msgid "Force HDCP 2.2 video streams"
 msgstr "Vynutit podporu HDCP 2.2 (povolit obsah 4K)"
 
 msgctxt "#30082"
@@ -368,9 +334,7 @@ msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Časová prodleva mezipaměti pro metadata (dny)"
 
-msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Neplatnost celé mezipaměti při úpravě mého seznamu"
+# Unused 30086
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -437,15 +401,15 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix vrátil následující chybu:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
 msgstr "Do protokolu Kodi byly zapsány podrobnosti o chybě. Pokud chybová zpráva neposkytuje návod, jak problém vyřešit, nebo tuto chybu nadále dostáváte, nahlaste ji prostřednictvím GitHubu. S chybovým hlášením zadejte úplný protokol ladění. (povolte \"Protokolování ladění\" v nastavení Kodi)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "Doplňek zaznamenal následující chybu:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Chyba doplňku Netflix"
 
 msgctxt "#30106"
@@ -489,7 +453,7 @@ msgid "Content Profiles"
 msgstr "Obsah profilů"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Pokročilá konfigurace doplňku"
 
 msgctxt "#30117"
@@ -521,7 +485,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Opravdu chcete pokračovat?\nTímto odstraníte všechny dříve exportované položky a exportujete všechny položky z mého seznamu pro aktuálně aktivní profil.\nTato operace může chvíli trvat ..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Opravdu chcete tuto položku odebrat?"
 
 msgctxt "#30125"
@@ -536,9 +500,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Udělené hodnocení {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Zatím žádné získané tituly ..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +539,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Povolit profily VP9 (vypnout, pokud způsobuje artefakty)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Pokud jste spustili Kodi a hned doplněk, nemusí být služby na pozadí ještě k dispozici. V tomto případě to zkuste za chvíli znovu."
 
 msgctxt "#30139"
@@ -641,24 +603,22 @@ msgid "Year released"
 msgstr "Rok vydání"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Konfigurace doplňku Netflix"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Máte účet Netflix Premium?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Podporuje vaše zařízení standard 4K?\r\nZařízení musí:\r\nZískat certifikát Netflix, s podporou pro úroveň zabezpečení Widevine L1 a mít 4K displej HDCP 2.2"
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Nyní se otevře panel nastavení InputStream Adaptive, je nutno změnit tuto možnost \"Přepsat stav HDCP\" na ON"
+msgid "The configuration has been completed"
+msgstr ""
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "Zobrazit konfigurační obrazovku při spuštění doplňku"
+msgid "Run add-on configuration wizard"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,7 +845,7 @@ msgid "Force the update of my list"
 msgstr "Vynutit aktualizaci mého seznamu"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
+msgid "Color of the titles included in My list"
 msgstr "Zvýraznit tituly obsažené v mém seznamu barvou"
 
 msgctxt "#30216"

@@ -83,7 +83,10 @@ class MySQLDatabase(db_base.BaseDatabase):
                     return
                 except mysql.connector.Error as e:
                     common.error('MySql error {}:', e)
-                    raise MySQLConnectionError
+                    if e.errno == 1115:  # Unknown character set: 'utf8mb4'
+                        # Means an outdated MySQL/MariaDB version in use, needed MySQL => 5.5.3 or MariaDB => 5.5
+                        raise MySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade')
+                    raise MySQLError(str(e))
             common.error('MySql error {}:', exc)
             raise MySQLConnectionError
         finally:

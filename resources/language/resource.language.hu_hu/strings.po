@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-12-03 14:40+0000\n"
+"PO-Revision-Date: 2020-04-14 08:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr "Netflix"
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Netflix video kiegészítő"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Előfordulhat, hogy a kiegészítő néhány része nem törvényes az Ön országában - telepítés előtt tájékozódjon a helyi törvényekről"
 
 msgctxt "#30001"
@@ -48,9 +48,7 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-msgctxt "#30006"
-msgid "Incorrect PIN. Try again."
-msgstr "Hibás kód. Próbáld újra."
+# Unused 30006
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -72,9 +70,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Keresés"
 
-msgctxt "#30012"
-msgid "No seasons available"
-msgstr "Nincs elérhető sorozat"
+# Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -140,9 +136,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Lejátszási hiba"
 
-msgctxt "#30029"
-msgid "Missing InputStream addon"
-msgstr "Hiányzó InputStream kiegészítő"
+# Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
@@ -152,9 +146,7 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Általános"
 
-msgctxt "#30032"
-msgid "Tracking"
-msgstr "Követés"
+# Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
@@ -168,9 +160,7 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive beállítások..."
 
-msgctxt "#30036"
-msgid "Always use the original title on export"
-msgstr "Eredeti cím használat az exportálásnál"
+# Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
@@ -209,60 +199,38 @@ msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
 msgstr "Értékelés visszavonva|Saját értékelés le|Saját értékelés fel"
 
 msgctxt "#30046"
-msgid "InputStream addon is not enabled"
-msgstr "InputStream kiegészítő nem engedélyezett"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "Probléma van az Inputstream kiegészítővel, vagy a Widevine könyvtárral. Lehet hogy hiányzik, vagy nincs engedélyezve, a művelet törölve."
 
-msgctxt "#30047"
-msgid "Finally remove?"
-msgstr "Végleg törlöd?"
+# Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
 msgstr "Exportált"
 
-msgctxt "#30049"
-msgid "Update DB"
-msgstr "Adatbázis frissítés"
-
-msgctxt "#30050"
-msgid "Update successful"
-msgstr "Frissítés kész"
-
-msgctxt "#30051"
-msgid "Request Error"
-msgstr "Lekérdezési hiba"
-
-msgctxt "#30052"
-msgid "Unable to complete the request at this time"
-msgstr "Jelenleg nem sikerült teljesíteni a kérést"
-
-msgctxt "#30053"
-msgid "Auto Login"
-msgstr "Automatikus bejelentkezés"
+# Unused 30049 to 30053
 
 msgctxt "#30054"
-msgid "Enable Auto Login"
-msgstr "Automatikus bejelentkezés engedélyezése"
+msgid "Profile auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Profile"
-msgstr "Profil"
+msgid "Remove auto-selection of profile"
+msgstr ""
 
 msgctxt "#30056"
-msgid "ID"
-msgstr "Azonosító"
+msgid "Set for auto-selection"
+msgstr ""
 
 msgctxt "#30057"
-msgid "Select profile in profile listing -> context menu"
-msgstr "Profil választás a listából -> környezeti menü"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr ""
 
 msgctxt "#30058"
-msgid "Auto Login enabled!"
-msgstr "Automatikus bejelentkezés engedélyezve!"
+msgid "The profile {} has been set for auto-selection"
+msgstr ""
 
-msgctxt "#30059"
-msgid "Switch accounts"
-msgstr "Fiók váltása"
+# Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -276,9 +244,7 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Szülői felügyelet"
 
-msgctxt "#30063"
-msgid "new episodes added to library"
-msgstr "új részek hozzáadása a médiatárhoz"
+# Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -349,8 +315,8 @@ msgid "Pause when skipping"
 msgstr "Pillanat állj átugrásnál"
 
 msgctxt "#30081"
-msgid "Force support of HDCP 2.2 (enable 4K content)"
-msgstr "HDCP 2.2 (engedélyeztt 4K tartalom) kényszerítése"
+msgid "Force HDCP 2.2 video streams"
+msgstr "HDCP 2.2 videóstream kényszerítése"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -369,8 +335,8 @@ msgid "Cache item time-to-live for metadata (days)"
 msgstr "Gyorsítótár-elem metaadatok megőrzése (nap)"
 
 msgctxt "#30086"
-msgid "Invalidate entire cache on modification of My List"
-msgstr "Érvénytelenítse a teljes gyorsítótárat a Saját lista módosításakor"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Gyorsítótár-elem élettartama a saját listámban (perc)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -437,15 +403,15 @@ msgid "Netflix returned the following error:"
 msgstr "A Netflix leállt a következő hiba miatt:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
 msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
 
 msgctxt "#30104"
-msgid "The addon encountered the following error:"
+msgid "The add-on encountered the following error:"
 msgstr "A kiegészítő leállt a következő hibával:"
 
 msgctxt "#30105"
-msgid "Netflix Addon Error"
+msgid "Netflix Add-on Error"
 msgstr "Netflix kiegészítő hiba"
 
 msgctxt "#30106"
@@ -489,7 +455,7 @@ msgid "Content Profiles"
 msgstr "Tartalom profilok"
 
 msgctxt "#30116"
-msgid "Advanced Addon Configuration"
+msgid "Advanced Add-on Configuration"
 msgstr "Haladó beállítások"
 
 msgctxt "#30117"
@@ -521,7 +487,7 @@ msgid "Do you really want to proceed?\nThis will delete all previously exported 
 msgstr "Tényleg folytatni akarja?\nEzzel törli az összes korábban exportált elemet, és exportálja az összes elemet a Saját listából az aktív profilhoz.\nEz a művelet eltarthat egy ideig ..."
 
 msgctxt "#30124"
-msgid "Do you really want to remove this item?"
+msgid "Do you want to remove this item from the library?"
 msgstr "Valóban törlöd ezt az elemet?"
 
 msgctxt "#30125"
@@ -536,9 +502,7 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Értékelés {}"
 
-msgctxt "#30128"
-msgid "No contained titles yet..."
-msgstr "Még nem tartalmaz címeket..."
+# Unused 30128
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -577,7 +541,7 @@ msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)"
 
 msgctxt "#30138"
-msgid "The background services may not yet be available if you just started Kodi/the addon. In this case, try again in a moment."
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
 msgstr "Lehet, hogy a háttérszolgáltatások még nem érhetők el, vagy éppen elindította a Kodi/a kiegészítőt. Ebben az esetben próbálkozzon újra egy később"
 
 msgctxt "#30139"
@@ -641,24 +605,22 @@ msgid "Year released"
 msgstr "Bemutató éve"
 
 msgctxt "#30154"
-msgid "Netflix addon configuration"
+msgid "Netflix configuration wizard"
 msgstr "Netflix kiegészítő beállítása"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Van Netflix prémium hozzáférésed?"
 
-msgctxt "#30156"
-msgid "Does your device support the 4K standard?\r\nThe device must:\r\nBe Netflix certified, support for Widevine Security level L1 and have a 4K display HDCP 2.2"
-msgstr "Támogatja-e az eszközöd a 4K-szabványt?\r\nAz eszköznek:\r\nKell rendelkeznie Netflix tanúsítvánnyal, támogatnia kell az L1 Widevine biztonsági szintet, és rendelkeznie kell 4K HDCP 2.2 kijelzővel."
+# Unused 30156
 
 msgctxt "#30157"
-msgid "The InputStream Adaptive settings panel will now be opened, so you have to change this option \"Override HDCP status\" to ON"
-msgstr "Most megnyílik az InputStream Adaptive beállítások panele, tehát ezt a \"HDCP állapot felülbírálása\" beállítást ON-ra kell állítani"
+msgid "The configuration has been completed"
+msgstr "Beállítás kész"
 
 msgctxt "#30158"
-msgid "Show configuration screen at addon startup"
-msgstr "A konfigurációs képernyő megjelenítése az addon indításakor"
+msgid "Run add-on configuration wizard"
+msgstr "Kiegészítő beállítás varázsló indítása"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -885,8 +847,8 @@ msgid "Force the update of my list"
 msgstr "Saját listám kényszerített frissítése"
 
 msgctxt "#30215"
-msgid "Highlight titles included in my list with a color"
-msgstr "Színkiemelés a saját listám elemein"
+msgid "Color of the titles included in My list"
+msgstr "Saját listám elemeinek színe"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -959,3 +921,27 @@ msgstr "Életkor szerint korlátozva"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Tartalom {} meg kell adni a pinkódot a lejátszáshoz."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Up Next kiegészítő telepítése"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Nézett státusz szinkronizálása a Netflix-el"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Nézett státusz változtatása (helyileg)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Nézettként jelöl|Nem látottként jelöl|Netflix nézett státusz visszaállítása"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Up Next jelzés (következő videó nézése)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "A kiegészítő információ színe"
