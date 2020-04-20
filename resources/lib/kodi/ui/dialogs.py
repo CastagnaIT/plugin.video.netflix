@@ -69,6 +69,8 @@ def ask_for_pin(message):
     args = {'heading': message,
             'type': 0,
             'defaultt': ''}
+    if not g.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
+        args['bHiddenInput'] = True
     return xbmcgui.Dialog().numeric(**args) or None
 
 
