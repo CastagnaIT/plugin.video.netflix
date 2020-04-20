@@ -296,6 +296,7 @@ def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added
     to a show by Netflix."""
+    import time
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
     ipc_call = common.make_http_call if g.IS_SERVICE else common.make_call
@@ -303,8 +304,8 @@ def _metadata(video_id):
         'get',
         {
             'component': 'metadata',
-            'req_type': 'api',
-            'params': {'movieid': video_id.value}
+            'params': {'movieid': video_id.value,
+                       '_': int(time.time())}
         })
     if not metadata_data:
         # This return empty
