@@ -24,7 +24,7 @@ from resources.lib.services.nfsession.nfsession_requests import NFSessionRequest
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
                                           MissingCredentialsError, InvalidMembershipStatusError,
-                                          LoginValidateErrorIncorrectPassword)
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -56,7 +56,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
             ui.show_notification(common.get_local_string(30009))
-        except InvalidMembershipStatusError:
+        except (InvalidMembershipStatusError, InvalidMembershipStatusAnonymous):
             ui.show_notification(common.get_local_string(30180), time=10000)
 
     @common.time_execution(immediate=True)
