@@ -80,6 +80,7 @@ def extract_session_data(content, validate=False):
     if user_data.get('membershipStatus') == 'ANONYMOUS':
         # Possible known causes:
         # -Login password has been changed
+        # -In the login request, 'Content-Type' specified is not compliant with data passed or no more supported
         # -Expired profiles cookies!? (not verified)
         # In these cases it is mandatory to login again
         raise InvalidMembershipStatusAnonymous
