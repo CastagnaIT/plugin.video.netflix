@@ -1,0 +1,953 @@
+# Kodi Media Center language file
+# Addon Name: Netflix
+# Addon id: plugin.video.netflix
+# Addon Provider: libdev + jojo + asciidisco + caphm + CastagnaIT
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.netflix\n"
+"Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
+"POT-Creation-Date: 2020-04-13 19:54+0000\n"
+"PO-Revision-Date: 2020-04-17 20:42+0000\n"
+"Last-Translator: tmihai20 <>\n"
+"Language-Team: Romanian (Romania)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "Addon Summary"
+msgid "Netflix"
+msgstr "Netflix"
+
+msgctxt "Addon Description"
+msgid "Netflix VOD Services Add-on"
+msgstr "Add-on pentru servicii video la cerere Netflix"
+
+msgctxt "Addon Disclaimer"
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
+msgstr "Unele porțiuni ale acestui add-on ar putea fi ilegale în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare."
+
+msgctxt "#30001"
+msgid "Recommendations"
+msgstr "Recomandări"
+
+msgctxt "#30002"
+msgid "Enter PIN to watch restricted content"
+msgstr "Introduceți cod pentru a vedea conținut restricționat"
+
+msgctxt "#30003"
+msgid "Search term"
+msgstr "Termen de căutare"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Parolă"
+
+msgctxt "#30005"
+msgid "E-mail"
+msgstr "Adresă email"
+
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Introduceți cod pentru a accesa profilul"
+
+msgctxt "#30007"
+msgid "Parental Control PIN (4 digits)"
+msgstr "Cod pentru control parental (4 cifre)"
+
+msgctxt "#30008"
+msgid "Login failed"
+msgstr "Conectare eșuată"
+
+msgctxt "#30009"
+msgid "Please check your e-mail and password"
+msgstr "Vă rugăm să verificați adresa de email și parola"
+
+msgctxt "#30010"
+msgid "Lists of all kinds"
+msgstr "Listă cu toate tipurile"
+
+msgctxt "#30011"
+msgid "Search"
+msgstr "Căutare"
+
+# Unused 30012
+
+msgctxt "#30013"
+msgid "No matches found"
+msgstr "Nu s-a găsit nimic"
+
+msgctxt "#30014"
+msgid "Account"
+msgstr "Cont"
+
+msgctxt "#30015"
+msgid "Other options"
+msgstr "Alte opțiuni"
+
+msgctxt "#30016"
+msgid "ESN"
+msgstr "ESN"
+
+msgctxt "#30017"
+msgid "Logout"
+msgstr "Deconectare"
+
+msgctxt "#30018"
+msgid "Export to library"
+msgstr "Exportă în librărie"
+
+msgctxt "#30019"
+msgid "Rate on Netflix"
+msgstr "Evaluează pe Netflix"
+
+msgctxt "#30020"
+msgid "Remove from 'My list'"
+msgstr "Șterge din 'Lista mea'"
+
+msgctxt "#30021"
+msgid "Add to 'My list'"
+msgstr "Adaugă în 'Lista mea'"
+
+msgctxt "#30022"
+msgid "(between 0 & 10)"
+msgstr "(între 0 și 10)"
+
+msgctxt "#30023"
+msgid "Expert"
+msgstr "Avansat"
+
+msgctxt "#30024"
+msgid "SSL verification"
+msgstr "Verificare SSL"
+
+msgctxt "#30025"
+msgid "Library"
+msgstr "Librărie"
+
+msgctxt "#30026"
+msgid "Enable custom library folder"
+msgstr "Activează director personalizat în librărie"
+
+msgctxt "#30027"
+msgid "Custom library path"
+msgstr "Cale personalizată pentru librărie"
+
+msgctxt "#30028"
+msgid "Playback error"
+msgstr "Eroare de redare"
+
+# Unused 30029
+
+msgctxt "#30030"
+msgid "Remove from library"
+msgstr "Șterge din librărie"
+
+msgctxt "#30031"
+msgid "General"
+msgstr "General"
+
+# Unused 30032
+
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgstr "Activează Dolby Digital Plus (DDPlus HQ și Atmos la abonament Premium)"
+
+msgctxt "#30034"
+msgid "Manual ESN"
+msgstr "ESN manual"
+
+msgctxt "#30035"
+msgid "InputStream Adaptive settings..."
+msgstr "Setări pentru InputStream Adaptive..."
+
+# Unused 30036
+
+msgctxt "#30037"
+msgid "Views"
+msgstr "Mod vizualizare"
+
+msgctxt "#30038"
+msgid "Enable custom views"
+msgstr "Activează moduri personalizate de vizualizare"
+
+msgctxt "#30039"
+msgid "View for folders"
+msgstr "Mod vizualizare pentru directoare"
+
+msgctxt "#30040"
+msgid "View for movies"
+msgstr "Mod vizualizare pentru filme"
+
+msgctxt "#30041"
+msgid "View for shows"
+msgstr "Mod vizualizare pentru seriale"
+
+msgctxt "#30042"
+msgid "View for seasons"
+msgstr "Mod vizualizare pentru sezoane"
+
+msgctxt "#30043"
+msgid "View for episodes"
+msgstr "Mod vizualizare pentru episoade"
+
+msgctxt "#30044"
+msgid "View for profiles"
+msgstr "Mod vizualizare pentru profile"
+
+msgctxt "#30045"
+msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
+msgstr "Evaluare ștearsă|Evaluare negativă|Evaluare pozitivă"
+
+msgctxt "#30046"
+msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
+msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria Widevine. Ar putea lipsi sau nu este activ, operațiunea va fi anulată"
+
+# Unused 30047
+
+msgctxt "#30048"
+msgid "Exported"
+msgstr "Exportat"
+
+# Unused 30049 to 30053
+
+msgctxt "#30054"
+msgid "Profile auto-selection"
+msgstr "Auto-selectare profil"
+
+msgctxt "#30055"
+msgid "Remove auto-selection of profile"
+msgstr "Șterge auto-selectarea profilului"
+
+msgctxt "#30056"
+msgid "Set for auto-selection"
+msgstr "Ales pentru auto-selectare"
+
+msgctxt "#30057"
+msgid "To set the profile, in the list of profiles open the context menu"
+msgstr "Pentru a alege profilul, deschideți meniul de context în lista de profile"
+
+msgctxt "#30058"
+msgid "The profile {} has been set for auto-selection"
+msgstr "Profilul {} a fost ales pentru auto-selectare"
+
+# Unused 30059
+
+msgctxt "#30060"
+msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgstr "Activează profilele HEVC (4K pentru Android/HDR/Dolby Vision"
+
+msgctxt "#30061"
+msgid "Update inside library"
+msgstr "Actualizează în interiorul librăriei"
+
+msgctxt "#30062"
+msgid "Parental controls"
+msgstr "Control parental"
+
+# Unused 30063
+
+msgctxt "#30064"
+msgid "Perform auto-update"
+msgstr "Execută auto-actualizare"
+
+msgctxt "#30065"
+msgid "Auto-update for tv shows seasons and episodes"
+msgstr "Auto-actualizare pentru sezoanele și episoadele serialelor"
+
+msgctxt "#30066"
+msgid "Debug logging level"
+msgstr "Nivel de jurnal depanare"
+
+msgctxt "#30067"
+msgid "daily"
+msgstr "Zilnic"
+
+msgctxt "#30068"
+msgid "every other day"
+msgstr "O dată la câteva zile"
+
+msgctxt "#30069"
+msgid "every 5 days"
+msgstr "La fiecare 5 zile"
+
+msgctxt "#30070"
+msgid "weekly"
+msgstr "Săptămânal"
+
+msgctxt "#30071"
+msgid "Time of Day"
+msgstr "Ora din zi"
+
+msgctxt "#30072"
+msgid "Only start after 5 minutes of idle"
+msgstr "Pornește doar după 5 minute de inactivitate"
+
+msgctxt "#30073"
+msgid "Always show codec information during video playback"
+msgstr "Arată mereu informații despre codec în timpul redării"
+
+msgctxt "#30074"
+msgid "View for exported"
+msgstr "Mod vizualizare pentru exporturi"
+
+msgctxt "#30075"
+msgid "Ask to skip intro and recap"
+msgstr "Întreabă dacă se dorește să se deruleze peste intro și recapitulare"
+
+msgctxt "#30076"
+msgid "Skip intro"
+msgstr "Derulează peste intro"
+
+msgctxt "#30077"
+msgid "Skip recap"
+msgstr "Derulează peste recapitulare"
+
+msgctxt "#30078"
+msgid "Playback"
+msgstr "Redare"
+
+msgctxt "#30079"
+msgid "Skip automatically"
+msgstr "Derulează în mod automat"
+
+msgctxt "#30080"
+msgid "Pause when skipping"
+msgstr "Pauză la derulare"
+
+msgctxt "#30081"
+msgid "Force HDCP 2.2 video streams"
+msgstr "Forțează utilizarea de fluxuri video HDCP 2.2"
+
+msgctxt "#30082"
+msgid "Remember audio / subtitle preferences"
+msgstr "Memorează preferințele audio / pentru subtitrare"
+
+msgctxt "#30083"
+msgid "Save bookmarks for library items / mark as watched"
+msgstr "Pune semne de carte pentru articolele din librărie / marchează ca văzute"
+
+msgctxt "#30084"
+msgid "Cache item time-to-live (minutes)"
+msgstr "Păstrează obiecte în cache pentru (minute)"
+
+msgctxt "#30085"
+msgid "Cache item time-to-live for metadata (days)"
+msgstr "Păstrează metadate în cache pentru (zile)"
+
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Păstrează 'Lista mea' în cache pentru (minute)"
+
+msgctxt "#30087"
+msgid "Contains {} and more..."
+msgstr "Conține {} și mai multe..."
+
+msgctxt "#30088"
+msgid "Browse related content"
+msgstr "Navighează conținut similar"
+
+msgctxt "#30089"
+msgid "Browse subgenres"
+msgstr "Navighează subgenuri"
+
+msgctxt "#30090"
+msgid "Browse through related video lists and discover more content."
+msgstr "Navighează liste cu conținut similar și descoperă conținut suplimentar."
+
+msgctxt "#30091"
+msgid "Browse and manage contents that were exported to the Kodi library."
+msgstr "Navighează și gestionează conținut care a fost exportat în librăria Kodi"
+
+msgctxt "#30092"
+msgid "Search for content and easily find what you want to watch."
+msgstr "Căută conținut și descoperă ușor ce dorești să vezi."
+
+msgctxt "#30093"
+msgid "Browse content by genre and easily discover related content."
+msgstr "Navighează conținut după gen și descoperiți ușor conținut similar."
+
+msgctxt "#30094"
+msgid "Browse recommendations and pick up on something new you might like."
+msgstr "Navighează recomandări și alegeți ceva nou de urmărit"
+
+msgctxt "#30095"
+msgid "All TV Shows"
+msgstr "Toate serialele TV"
+
+msgctxt "#30096"
+msgid "All Movies"
+msgstr "Toate filmele"
+
+msgctxt "#30097"
+msgid "Main Menu"
+msgstr "meniu principal"
+
+msgctxt "#30098"
+msgid "Enable HDR profiles"
+msgstr "Activează profile HDR"
+
+msgctxt "#30099"
+msgid "Enable DolbyVision profiles"
+msgstr "Activează profile Dolby Vision"
+
+msgctxt "#30100"
+msgid "Results for \"{}\""
+msgstr "Rezultate pentru \"{}\""
+
+msgctxt "#30101"
+msgid "Netflix returned an unknown error."
+msgstr "Netflix a întâlnit o eroare necunoscută."
+
+msgctxt "#30102"
+msgid "Netflix returned the following error:"
+msgstr "Netflix a dat de următoarea eroare:"
+
+msgctxt "#30103"
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Detalii despre eroare au fost scrise în jurnalul Kodi. Dacă mesajul de eroare nu ajută la rezolvarea problemei sau dacă continuați să primiți această eroare, vă rugăm să raportați pe GitHub folosind instrucțiunile din Readme."
+
+msgctxt "#30104"
+msgid "The add-on encountered the following error:"
+msgstr "Add-on-ul a întâlnit următoarea eroare:"
+
+msgctxt "#30105"
+msgid "Netflix Add-on Error"
+msgstr "Eroare addo-on Netflix"
+
+msgctxt "#30106"
+msgid "Invalid PIN"
+msgstr "Cod invalid"
+
+msgctxt "#30107"
+msgid "PIN protection is off."
+msgstr "Protecția cu cod este dezactivată."
+
+msgctxt "#30108"
+msgid "All content is protected by PIN."
+msgstr "Tot conținutul este protejat cu cod."
+
+msgctxt "#30109"
+msgid "Login successful"
+msgstr "Autentificare reușită"
+
+msgctxt "#30110"
+msgid "Background services started"
+msgstr "Servicii pornite în fundal"
+
+msgctxt "#30111"
+msgid "There is no contents"
+msgstr "Nu există conținut"
+
+msgctxt "#30112"
+msgid "You need to be logged in to use Netflix"
+msgstr "Trebuie să fiți autentificat pentru a folosi Netflix"
+
+msgctxt "#30113"
+msgid "Logout successful"
+msgstr "Deconectare reușită"
+
+msgctxt "#30114"
+msgid "Keep My List and Kodi Library in sync"
+msgstr "Păstrează sincronizare 'Lista mea' și librăria Kodi"
+
+msgctxt "#30115"
+msgid "Content Profiles"
+msgstr "Profiluri de conținut"
+
+msgctxt "#30116"
+msgid "Advanced Add-on Configuration"
+msgstr "Configurare avansată pentru add-on"
+
+msgctxt "#30117"
+msgid "Cache"
+msgstr "Gestionare cache"
+
+msgctxt "#30118"
+msgid "API operation failed: {}"
+msgstr "Operațiune API eșuată: {}"
+
+msgctxt "#30119"
+msgid "My List operation successful"
+msgstr "Operațiune reușită pe 'Lista mea'"
+
+msgctxt "#30120"
+msgid "Cannot automatically remove a season from Kodi library, please do it manually"
+msgstr "Nu se poate șterge automat un seson din librăria Kodi, vă rugăm s-o faceți manual"
+
+msgctxt "#30121"
+msgid "Perform full sync now"
+msgstr "Efectuează acum o sincronizare completă"
+
+msgctxt "#30122"
+msgid "Sync My List to Kodi library"
+msgstr "Sincronizează 'Lista mea' cu librăria Kodi"
+
+msgctxt "#30123"
+msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
+msgstr "Sunteți sigur/ă că doriți să continuați?\nVeți șterge toate elementele exportare anterior și veți export toate elementele din 'Lista mea' pentru profilul activ curent.\nAceastă operațiune poate dura mult timp..."
+
+msgctxt "#30124"
+msgid "Do you want to remove this item from the library?"
+msgstr "Doriți să ștergeți acest element din librărie?"
+
+msgctxt "#30125"
+msgid "Purge library"
+msgstr "Golește librăria"
+
+msgctxt "#30126"
+msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?\nToate elementele exportate vor fi șterse."
+
+msgctxt "#30127"
+msgid "Awarded rating of {}"
+msgstr "Ați evaluat cu {}"
+
+# Unused 30128
+
+msgctxt "#30129"
+msgid "Enable Up Next integration"
+msgstr "Activează integrarea cu 'Up Next'"
+
+msgctxt "#30130"
+msgid "Show notification instead of modal dialog for errors"
+msgstr "Arătă notificare în locul unui dialog pentru erori"
+
+msgctxt "#30131"
+msgid "Check the logfile for detailed information"
+msgstr "Verifică jurnalul de erori pentru informații detaliate"
+
+msgctxt "#30132"
+msgid "Purge in-memory cache"
+msgstr "Șterge memoria cache"
+
+msgctxt "#30133"
+msgid "Purge in-memory and on-disk cache"
+msgstr "Șterge cache din memorie și de pe disc"
+
+msgctxt "#30134"
+msgid "Enable execution timing"
+msgstr "Activează timpul de execuție"
+
+msgctxt "#30135"
+msgid "Cache cleared"
+msgstr "Memoria cache golită"
+
+msgctxt "#30136"
+msgid "Enable 1080p Unlock (not recommended for Android)"
+msgstr "Activează deblocarea 1080p (nu e recomandată pe Android)"
+
+msgctxt "#30137"
+msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgstr "Activează profilele VP9 (dezactivați-le dacă produc artefacte)"
+
+msgctxt "#30138"
+msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
+msgstr "Serviciile de fundal ar putea să nu fie disponibile dacă tocmai ați pornit Kodi/add-on-ul. În acest caz, încercați din nou mai târziu"
+
+msgctxt "#30139"
+msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
+msgstr "Activează IPC prin HTTP (folosiți-l atunci când apar mesaje legate de Addon Signals)"
+
+msgctxt "#30140"
+msgid "Migrate Library to new format"
+msgstr "Migrează librăria în noul format"
+
+msgctxt "#30141"
+msgid "Disable startup notification"
+msgstr "Dezactivează notificarea de la pornire"
+
+msgctxt "#30142"
+msgid "Custom"
+msgstr "Personalizat"
+
+msgctxt "#30143"
+msgid "Custom view ID"
+msgstr "ID vizualizare personalizată"
+
+msgctxt "#30144"
+msgid "Disable WebVTT subtitle support"
+msgstr "Dezactivează suportul WebVTT pentru subtitrări"
+
+msgctxt "#30145"
+msgid "Recently added"
+msgstr "Adăugate recent"
+
+msgctxt "#30146"
+msgid "Discover the latest content added."
+msgstr "Descoperă conținut adăugat recent."
+
+msgctxt "#30147"
+msgid "Next page >>"
+msgstr "Pagina următoare >>"
+
+msgctxt "#30148"
+msgid "<< Previous page"
+msgstr "<< Pagina anterioară"
+
+msgctxt "#30149"
+msgid "Sort results by"
+msgstr "Sortează rezultatele"
+
+msgctxt "#30150"
+msgid "Alphabetical order (A-Z)"
+msgstr "În ordine alfabetică (A-Z)"
+
+msgctxt "#30151"
+msgid "Alphabetical order (Z-A)"
+msgstr "În ordine inversă alfabetică (Z-A)"
+
+msgctxt "#30152"
+msgid "Suggestions for you"
+msgstr "Sugestii pentru dumneavoastră"
+
+msgctxt "#30153"
+msgid "Year released"
+msgstr "Anul lansării"
+
+msgctxt "#30154"
+msgid "Netflix configuration wizard"
+msgstr "Asistent configurare Netflix"
+
+msgctxt "#30155"
+msgid "Do you have a Netflix Premium account?"
+msgstr "Aveți un cont premium Netflix?"
+
+# Unused 30156
+
+msgctxt "#30157"
+msgid "The configuration has been completed"
+msgstr "Configurarea s-a terminat"
+
+msgctxt "#30158"
+msgid "Run add-on configuration wizard"
+msgstr "Rulează asistentul de configurare al add-on-ului"
+
+msgctxt "#30159"
+msgid "View for main menu"
+msgstr "Mod vizualizare pentru meniul principal"
+
+msgctxt "#30160"
+msgid "View for search"
+msgstr "Mod vizualizare pentru căutare"
+
+msgctxt "#30161"
+msgid "View for exported"
+msgstr "Mod vizualizare pentru exportări"
+
+msgctxt "#30162"
+msgid "Last used"
+msgstr "Folosit ultima dată"
+
+msgctxt "#30163"
+msgid "Audio description"
+msgstr "Descriere audio"
+
+msgctxt "#30164"
+msgid "Browse contents with audio description."
+msgstr "Navighează conținut cu descriere audio."
+
+msgctxt "#30165"
+msgid "View for my list"
+msgstr "Mod vizualizare pentru 'Lista mea'"
+
+msgctxt "#30166"
+msgid "Main menu items"
+msgstr "Elemente meniu principal"
+
+msgctxt "#30167"
+msgid "My list"
+msgstr "Lista mea"
+
+msgctxt "#30168"
+msgid "Continue watching"
+msgstr "Continuă vizionarea"
+
+msgctxt "#30169"
+msgid "Top picks"
+msgstr "Alegeri de top"
+
+msgctxt "#30170"
+msgid "New releases"
+msgstr "Noutăți"
+
+msgctxt "#30171"
+msgid "Trending now"
+msgstr "Titlurile momentului"
+
+msgctxt "#30172"
+msgid "Popular on Netflix"
+msgstr "Popular pe Netflix"
+
+msgctxt "#30173"
+msgid "Netflix Originals"
+msgstr "Programe originale Netflix"
+
+msgctxt "#30174"
+msgid "Tv Show genres"
+msgstr "Genuri seriale TV"
+
+msgctxt "#30175"
+msgid "Movie genres"
+msgstr "Genuri filme"
+
+msgctxt "#30176"
+msgid "Enable STRM resume workaround (only library)"
+msgstr "Activează truc STRM (doar pentru librărie)"
+
+msgctxt "#30177"
+msgid "Ask to resume the video"
+msgstr "Cere să fie reluat video"
+
+msgctxt "#30178"
+msgid "Open Up Next add-on settings"
+msgstr "Deschide setările add-on-ului Up Next"
+
+msgctxt "#30179"
+msgid "Show trailers & more"
+msgstr "Arată trailere și altele"
+
+msgctxt "#30180"
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
+msgstr "A apărut o problemă la autentificare, este posibil ca contul să nu fie confirmat sau reînnoit."
+
+msgctxt "#30181"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgstr "Dezactivează subtitrările dacă sunt fluxuri cu subtitrări neforțate (funcționează doar dacă Kodi este configurat cu subtitrări \"Numai forțate\")"
+
+msgctxt "#30182"
+msgid "Export NFO files"
+msgstr "Exportă fișierele cu informații"
+
+msgctxt "#30183"
+msgid "Do you want to export NFO files for the {}?"
+msgstr "Doriți să exportați fișierele cu informații pentru {}?"
+
+msgctxt "#30184"
+msgid "NFO Files"
+msgstr "Fișiere cu informații"
+
+msgctxt "#30185"
+msgid "Enable NFO files export"
+msgstr "Activează exportul fișierelor cu informații"
+
+msgctxt "#30186"
+msgid "For Movies"
+msgstr "Pentru filme"
+
+msgctxt "#30187"
+msgid "For TV Show"
+msgstr "Pentru seriale TV"
+
+msgctxt "#30188"
+msgid "Ask"
+msgstr "Întreabă"
+
+msgctxt "#30189"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#30190"
+msgid "TV show"
+msgstr "serial TV"
+
+msgctxt "#30191"
+msgid "Do you want to export NFO files for the {} added to 'My List'?"
+msgstr "Doriți să exportați fișierele cu informații pentru {} adăugat la 'Lista mea'?"
+
+msgctxt "#30192"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "\r\nAceste fișiere sunt utilizare de furnizorii de informații pentru a integra informații despre seriale TV și filme, folositoare pentru conținut bonus sau versiunea regizorului"
+
+msgctxt "#30193"
+msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
+msgstr "Include toate informațiile în fișierele cu informații (folosiți doar cu instrumentul 'Local Information')"
+
+msgctxt "#30194"
+msgid "Limit video stream resolution to"
+msgstr "Limitează rezoluția fluxului video la"
+
+msgctxt "#30195"
+msgid "Export new episodes"
+msgstr "Exportă noile episoade"
+
+msgctxt "#30196"
+msgid "Exclude from auto update"
+msgstr "Exclude din actualizarea automată"
+
+msgctxt "#30197"
+msgid "Include in auto update"
+msgstr "Include în actualizarea automată"
+
+msgctxt "#30198"
+msgid "Exporting new episodes"
+msgstr "Se exportă noile episoade"
+
+msgctxt "#30199"
+msgid "Shared library (Kodi MySQL server is required)"
+msgstr "Librărie partajată (este nevoie de server MySQL Kodi)"
+
+msgctxt "#30200"
+msgid "Use MySQL shared library database"
+msgstr "Folosește baza de date MySQL pentru librăria partajată"
+
+msgctxt "#30201"
+msgid "Username"
+msgstr "Nume utilizator"
+
+msgctxt "#30202"
+msgid "Connection to the MySQL database was successful"
+msgstr "Conectarea la baza de date MySQL a reușit"
+
+msgctxt "#30203"
+msgid "Host IP"
+msgstr "IP gazdă"
+
+msgctxt "#30204"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#30205"
+msgid "Test database connection"
+msgstr "Testează conexiunea cu baza de date"
+
+msgctxt "#30206"
+msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgstr "EROARE: Baza de date MySQL n-a putut fi contactată - va fi utilizată baza de date locală"
+
+msgctxt "#30207"
+msgid "Set this device as main auto-updates manager"
+msgstr "Configurează acest dispozitiv pentru gestiunea actualizărilor automate"
+
+msgctxt "#30208"
+msgid "Check if this device is the main auto-update manager"
+msgstr "Verifică dacă acest dispozitiv gestionează actualizările automate"
+
+msgctxt "#30209"
+msgid "This device now handles the auto-updates of shared-library"
+msgstr "Acest dispozitiv gestionează acum actualizările automate ale librăriei partajate"
+
+msgctxt "#30210"
+msgid "This device handles the auto-updates of shared-library"
+msgstr "Acest dispozitiv gestionează actualizările automate ale librăriei partajate"
+
+msgctxt "#30211"
+msgid "Another device handles the auto-updates of shared-library"
+msgstr "Alt dispozitiv gestionează actualizările automate ale librăriei partajate"
+
+msgctxt "#30212"
+msgid "There is no device that handles the auto-updates of shared-library"
+msgstr "Nu există dispozitiv care să gestioneze actualizările automate ale librăriei partajate"
+
+msgctxt "#30213"
+msgid "InputStream Helper settings..."
+msgstr "Setări add-on InputStream Helper..."
+
+msgctxt "#30214"
+msgid "Force the update of my list"
+msgstr "Forțează actualizarea listei mele"
+
+msgctxt "#30215"
+msgid "Color of the titles included in My list"
+msgstr "Culoarea titlurilor incluse în 'Lista mea'"
+
+msgctxt "#30216"
+msgid "Show ESN in use"
+msgstr "Arată ESN utilizat"
+
+msgctxt "#30217"
+msgid "Reset ESN"
+msgstr "Resetează ESN"
+
+msgctxt "#30218"
+msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgstr "Sunteți sigur că doriți să resetați ESN?\r\nDacă da, așteptați până când primiți mesajul de autentificare."
+
+msgctxt "#30219"
+msgid "Disable notification for synchronization completed"
+msgstr "Dezactivează notificarea pentru completarea sincronizării"
+
+msgctxt "#30220"
+msgid "The Kodi library has been updated"
+msgstr "Librăria Kodi a fost actualizată"
+
+msgctxt "#30221"
+msgid "Owner account"
+msgstr "Cont principal"
+
+msgctxt "#30222"
+msgid "Kid account"
+msgstr "Cont copil"
+
+msgctxt "#30223"
+msgid "Synchronization now uses \"My List\" of profile {}"
+msgstr "Sincronizarea folosește acum 'Lista mea' aferentă profilului {}"
+
+msgctxt "#30224"
+msgid "Auto update mode"
+msgstr "Mod auto actualizare"
+
+msgctxt "#30225"
+msgid "Manual"
+msgstr "Manual"
+
+msgctxt "#30226"
+msgid "Scheduled"
+msgstr "Programat"
+
+msgctxt "#30227"
+msgid "Synchronize Kodi library with My List"
+msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
+
+msgctxt "#30228"
+msgid "Use \"My list\" of the current profile"
+msgstr "Folosește 'Lista mea' pentru profilul curent"
+
+msgctxt "#30229"
+msgid "Show the name of the selected profile"
+msgstr "Arată numele profilului selectat"
+
+msgctxt "#30230"
+msgid "Check for updates now"
+msgstr "Verifică acum dacă există actualizări"
+
+msgctxt "#30231"
+msgid "Do you want to check update now?"
+msgstr "Doriți să verificați acum dacă există actualizări?"
+
+msgctxt "#30232"
+msgid "Restrict by Maturity Level"
+msgstr "Restricționează după nivelul de maturitate"
+
+msgctxt "#30233"
+msgid "Content for {} will require the PIN to start playback."
+msgstr "Conținutul pentru {} va avea nevoie de cod pentru a porni redarea."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instalaează add-on-ul Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[În lucru] Sincronizează statutul conținutului urmărit cu Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Schimbă statutul conținutului urmărit (doar local)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Marchează ca văzut|Marchează ca nevăzut|Statutul conținutul restabilit din Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notificări Up Next (redă următorul video)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Serviciile nu pot fi pornit în fundal din cauza acestei probleme:\r\n{}"
