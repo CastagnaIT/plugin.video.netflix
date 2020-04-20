@@ -21,7 +21,7 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
                                           InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
                                           LoginValidateErrorIncorrectPassword)
-from resources.lib.services.nfsession.nfsession_endpoints import URLS, BASE_URL
+from resources.lib.services.nfsession.nfsession_endpoints import ENDPOINTS, BASE_URL
 
 
 class NFSessionRequests(NFSessionBase):
@@ -56,12 +56,13 @@ class NFSessionRequests(NFSessionBase):
         return self._request(method, component, None, **kwargs)
 
     def _request(self, method, component, session_refreshed, **kwargs):
-        url = (_api_url(component)
-               if URLS[component]['is_api_call']
-               else _document_url(component))
+        endpoint_conf = ENDPOINTS[component]
+        url = (_api_url(endpoint_conf['address'])
+               if endpoint_conf['is_api_call']
+               else _document_url(endpoint_conf['address']))
         common.debug('Executing {verb} request to {url}',
                      verb='GET' if method == self.session.get else 'POST', url=url)
-        data, headers, params = self._prepare_request_properties(component, kwargs)
+        data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = common.perf_clock()
         response = method(
             url=url,
@@ -80,7 +81,7 @@ class NFSessionRequests(NFSessionBase):
                 return self._request(method, component, True, **kwargs)
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
-                if URLS[component]['is_api_call']
+                if endpoint_conf['is_api_call']
                 else response.content)
 
     def try_refresh_session_data(self, raise_exception=False):
@@ -125,15 +126,15 @@ class NFSessionRequests(NFSessionBase):
     def _login(self, modal_error_message=False):
         raise NotImplementedError
 
-    def _prepare_request_properties(self, component, kwargs):
+    def _prepare_request_properties(self, endpoint_conf, kwargs):
         data = kwargs.get('data', {})
         custom_headers = kwargs.get('headers', {})
         custom_params = kwargs.get('params', {})
         params = {}
 
         headers = {'Accept': '*/*'}
-        if URLS[component].get('content_type'):
-            headers['Content-Type'] = URLS[component]['content_type']
+        if endpoint_conf.get('content_type'):
+            headers['Content-Type'] = endpoint_conf['content_type']
         headers.update(custom_headers)  # If needed override headers
         # Meanings parameters known:
         # drmSystem       DRM used
@@ -141,7 +142,7 @@ class NFSessionRequests(NFSessionBase):
         # withSize        Puts the 'size' field inside each dictionary
         # materialize     If True, when a path that no longer exists is requested (like 'storyarts')
         #                   it is still added in an 'empty' form in the response
-        if URLS[component]['use_default_params']:
+        if endpoint_conf['use_default_params']:
             params = {
                 'drmSystem': 'widevine',
                 'withSize': 'false',
@@ -153,7 +154,7 @@ class NFSessionRequests(NFSessionBase):
                 'original_path': '/shakti/{}/pathEvaluator'.format(
                     g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
             }
-        if URLS[component]['add_auth_url'] == 'to_params':
+        if endpoint_conf['add_auth_url'] == 'to_params':
             params['authURL'] = self.auth_url
         params.update(custom_params)  # If needed override parameters
 
@@ -161,25 +162,25 @@ class NFSessionRequests(NFSessionBase):
         # - As string (needs to be correctly formatted)
         # - As dict (will be converted as string here)
         if isinstance(data, dict):
-            if URLS[component]['add_auth_url'] == 'to_data':
+            if endpoint_conf['add_auth_url'] == 'to_data':
                 data['authURL'] = self.auth_url
             data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
         else:
             data_converted = data
-            if URLS[component]['add_auth_url'] == 'to_data':
+            if endpoint_conf['add_auth_url'] == 'to_data':
                 auth_data = 'authURL=' + self.auth_url
                 data_converted += '&' + auth_data if data_converted else auth_data
         return data_converted, headers, params
 
 
-def _document_url(component):
-    return BASE_URL + URLS[component]['endpoint']
+def _document_url(endpoint_address):
+    return BASE_URL + endpoint_address
 
 
-def _api_url(component):
-    return '{baseurl}{componenturl}'.format(
+def _api_url(endpoint_address):
+    return '{baseurl}{endpoint_adr}'.format(
         baseurl=g.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        componenturl=URLS[component]['endpoint'])
+        endpoint_adr=endpoint_address)
 
 
 def _raise_api_error(decoded_response):

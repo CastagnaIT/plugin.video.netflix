@@ -30,9 +30,9 @@ BASE_URL = 'https://www.netflix.com'
 # content_type:
 #   If required add the Content-Type property to request header
 
-URLS = {
+ENDPOINTS = {
     'login':
-        {'endpoint': '/login',
+        {'address': '/login',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
@@ -41,82 +41,82 @@ URLS = {
          # if in the future login raise InvalidMembershipStatusAnonymous can means that json is no more accepted
          'content_type': 'application/json'},
     'logout':
-        {'endpoint': '/SignOut',
+        {'address': '/SignOut',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None},
     'shakti':
-        {'endpoint': '/pathEvaluator',
+        {'address': '/pathEvaluator',
          'is_api_call': True,
          'use_default_params': True,
          'add_auth_url': 'to_data',
          'content_type': 'application/x-www-form-urlencoded'},
     'browse':
-        {'endpoint': '/browse',
+        {'address': '/browse',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None},
     'profiles':
-        {'endpoint': '/profiles/manage',
+        {'address': '/profiles/manage',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None},
     'switch_profile':
-        {'endpoint': '/SwitchProfile',
+        {'address': '/SwitchProfile',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None},
     'activate_profile':
-        {'endpoint': '/profiles/switch',
+        {'address': '/profiles/switch',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': None},
     'profile_lock':
-        {'endpoint': '/profileLock',
+        {'address': '/profileLock',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json'},
     'pin':
-        {'endpoint': '/pin',
+        {'address': '/pin',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None},
     'pin_reset':
-        {'endpoint': '/pin/reset',
+        {'address': '/pin/reset',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': None},
     'pin_service':
-        {'endpoint': '/pin/service',
+        {'address': '/pin/service',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json'},
     'metadata':
-        {'endpoint': '/metadata',
+        {'address': '/metadata',
          'is_api_call': True,
          'use_default_params': True,
          'add_auth_url': 'to_params'},
     'set_video_rating':  # Old rating system
-        {'endpoint': '/setVideoRating',
+        {'address': '/setVideoRating',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json'},
     'set_thumb_rating':
-        {'endpoint': '/setThumbRating',
+        {'address': '/setThumbRating',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json'},
     'update_my_list':
-        {'endpoint': '/playlistop',
+        {'address': '/playlistop',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json'}
     # Don't know what these could be used for. Keeping for reference
-    # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
-    # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
+    # 'video_list_ids': {'address': '/preflight', 'is_api_call': True},
+    # 'kids': {'address': '/Kids', 'is_api_call': False}
 }
