@@ -95,7 +95,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         current_esn = g.get_esn()
         try:
             # First we get the authentication url without logging in, required for login API call
-            react_context = website.extract_json(self._get('profiles'), 'reactContext')
+            react_context = website.extract_json(self._get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
             common.debug('Logging in...')
             login_response = self._post(
