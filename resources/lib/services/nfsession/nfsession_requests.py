@@ -88,7 +88,7 @@ class NFSessionRequests(NFSessionBase):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
         try:
-            self.auth_url = website.extract_session_data(self._get('profiles'))['auth_url']
+            self.auth_url = website.extract_session_data(self._get('browse'))['auth_url']
             self.update_session_data()
             common.debug('Successfully refreshed session data')
             return True
