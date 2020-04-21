@@ -222,7 +222,7 @@ class MSLHandler(object):
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
         params = [{
-            'sessionId': sid,
+            'drmSessionId': sid,
             'clientTime': int(timestamp / 10000),
             'challengeBase64': challenge,
             'xid': xid
@@ -230,7 +230,7 @@ class MSLHandler(object):
         response = self.msl_requests.chunked_request(ENDPOINTS['license'],
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
-                                                                                          'sessionId'),
+                                                                                          'drmSessionId'),
                                                      g.get_esn())
         # This xid must be used also for each future Event request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
@@ -271,10 +271,10 @@ class MSLHandler(object):
             params = [{
                 'url': url,
                 'params': {
-                    'sessionId': sid,
+                    'drmSessionId': sid,
                     'xid': xid
                 },
-                'echo': 'sessionId'
+                'echo': 'drmSessionId'
             }]
 
             response = self.msl_requests.chunked_request(ENDPOINTS['license'],
