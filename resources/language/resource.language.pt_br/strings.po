@@ -48,6 +48,10 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Email"
 
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Entre com o PIN para acessar este perfil"
+							
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
 msgstr "PIN Controle Parental (4 dígitos)"
@@ -66,9 +70,7 @@ msgstr "Listar todos os tipos"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr "Buscar"
-
-# Unused 30012
+msgstr "Buscar"			  
 
 msgctxt "#30013"
 msgid "No matches found"
@@ -158,6 +160,8 @@ msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Ajustes do addon InputStream"
 
+# Unused 30036
+
 msgctxt "#30037"
 msgid "Views"
 msgstr "Modos de Visualizações"
@@ -196,7 +200,7 @@ msgstr "Avaliaçao removida|Você avaliou negativamente|Você avaliou positivame
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Há um problema com o add-on InputStream Adaptive ou a biblioteca Widevine. Pode estar ausente ou não habilitada, a operação será cancelada."
+msgstr ""
 
 # Unused 30047
 
@@ -208,23 +212,23 @@ msgstr "Exportado"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr "Perfil seleção automática"
+msgstr ""
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr "Romver seleção automática do perfil"
+msgstr ""
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr "Definir para seleção automática"
+msgstr ""
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Para definir o perfil, na lista de perfis, abra o menu de contexto"
+msgstr ""
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr "O perfil {} foi definido para seleção automática"
+msgstr ""
 
 # Unused 30059
 
@@ -280,7 +284,7 @@ msgstr "Começar apenas depois de 5 minutos de inatividade"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "Sempre apresentar informação do codec durante a reprodução do vídeo"
+msgstr ""
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -329,6 +333,10 @@ msgstr "Tempo de vida útil do item de cache (minutos)"
 msgctxt "#30085"
 msgid "Cache item time-to-live for metadata (days)"
 msgstr "Tempo de vida útil do item de cache para metadados (dias)"
+
+msgctxt "#30086"
+msgid "Cache item time-to-live for my list (minutes)"
+msgstr "Tempo de vida útil do item de cache da minha lista (minutos)"					 
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -396,7 +404,7 @@ msgstr "Netflix retornou o seguinte erro:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Os detalhes do erro foram gravados no arquivo de log do Kodi. Se a mensagem de erro não fornecer orientações sobre como resolver o problema ou você continuar recebendo esse erro, informe-o no GitHub seguindo as instruções do Leia-me."
+msgstr "Detalhes do erro foram gravados no arquivo de log do Kodi. Se a mensagem de erro não fornecer orientação sobre como resolver o problema ou se você continuar recebendo esse erro, informe-o via GitHub. Por favor, forneça um registro de depuração completo com o seu relatório de erro (ative \"Debug Logging\" nas configurações do Kodi)."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -480,7 +488,7 @@ msgstr "Deseja mesmo prosseguir?\nIsso excluirá todos os itens exportados anter
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "Deseja realmente remover este item da coleção?"
+msgstr "Deseja realmente remover este item?"
 
 msgctxt "#30125"
 msgid "Purge library"
@@ -604,15 +612,13 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Você tem uma conta Netflix Premium?"
 
-# Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr "A configuração foi concluída"
+msgstr ""
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "Executar assistente de configuração do add-on"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -913,3 +919,31 @@ msgstr "Restringir por Nível de Maturidade"
 msgctxt "#30233"
 msgid "Content for {} will require the PIN to start playback."
 msgstr "Conteúdo para {} irá requerer o PIN para iniciar a reprodução."
+															  
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instalar add-on Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sincronize o status assistido dos vídeos com o Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Alterar o estatus assistido (localmente)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Marcar como assistido|Marcado como por assistir|Restaurado estatus de assistido via Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notificações Up Next (assistir próximo vídeo)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Cor das informações suplementares do enredo"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Os serviços em segundo plano não podem ser iniciados devido a este problema:\r\n{}"
