@@ -194,10 +194,15 @@ def convert_language_iso(from_value, use_fallback=True):
 def fix_locale_languages(data_list):
     """Replace locale code, Kodi does not understand the country code"""
     # Get all the ISO 639-1 codes (without country)
+    verify_unofficial_lang = g.KODI_VERSION.is_major_ver('19') or not g.KODI_VERSION.is_less_version('18.7')
     locale_list_nocountry = []
     for item in data_list:
         if item.get('isNoneTrack', False):
             continue
+        if verify_unofficial_lang and item['language'] == 'pt-BR':
+            # Unofficial ISO 639-1 Portuguese (Brazil) language code has been added to Kodi 18.7 and Kodi 19.x
+            # https://github.com/xbmc/xbmc/pull/17689
+            item['language'] = 'pb'
         if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
             locale_list_nocountry.append(item['language'])
     # Replace the locale languages with country with a new one
