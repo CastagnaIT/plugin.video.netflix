@@ -14,6 +14,7 @@ import json
 import xbmc
 
 from resources.lib.globals import g
+from .misc_utils import is_less_version
 from .logging import debug
 
 
@@ -261,6 +262,9 @@ class GetKodiVersion(object):
 
     def is_major_ver(self, major_ver):
         return bool(major_ver in self.major_version)
+
+    def is_less_version(self, ver):
+        return is_less_version(self.version, ver)
 
     def __str__(self):
         return self.build_version
