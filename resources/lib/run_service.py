@@ -9,6 +9,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import threading
+from socket import gaierror
 
 from xbmcgui import Window
 
@@ -52,21 +53,38 @@ class NetflixService(object):
             'thread': None
         }
     ]
+    HOST_ADDRESS = '127.0.0.1'
 
     def __init__(self):
         self.window_cls = Window(10000)  # Kodi home window
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
         self.prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
-        for server in self.SERVERS:
-            self.init_server(server)
         self.controller = None
         self.library_updater = None
         self.settings_monitor = None
 
-    def init_server(self, server):
+    def init_servers(self):
+        """Initialize the http servers"""
+        try:
+            for server in self.SERVERS:
+                self._init_server(server)
+            return True
+        except Exception as exc:  # pylint: disable=broad-except
+            error('Background services do not start due to the following error')
+            import traceback
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            if isinstance(exc, gaierror):
+                message = ('Something is wrong in your network localhost configuration.\r\n'
+                           'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
+            else:
+                message = unicode(exc)
+            self._set_service_status('error', message)
+        return False
+
+    def _init_server(self, server):
         server['class'].allow_reuse_address = True
         server['instance'] = server['class'](
-            ('127.0.0.1', select_port(server['name']))
+            (self.HOST_ADDRESS, select_port(server['name']))
         )
         server['thread'] = threading.Thread(target=server['instance'].serve_forever)
 
@@ -86,7 +104,7 @@ class NetflixService(object):
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
         # Mark the service as active
-        self.window_cls.setProperty(self.prop_nf_service_status, 'running')
+        self._set_service_status('running')
         if not g.ADDON.getSettingBool('disable_startup_notification'):
             from resources.lib.kodi.ui import show_notification
             show_notification(get_local_string(30110))
@@ -95,7 +113,7 @@ class NetflixService(object):
         """
         Stop the background services
         """
-        self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
+        self._set_service_status('stopped')
         for server in self.SERVERS:
             server['instance'].shutdown()
             server['instance'].server_close()
@@ -109,7 +127,7 @@ class NetflixService(object):
         try:
             self.start_services()
         except Exception as exc:  # pylint: disable=broad-except
-            self.window_cls.setProperty(self.prop_nf_service_status, 'stopped')
+            self._set_service_status('stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
             error(g.py2_decode(traceback.format_exc(), 'latin-1'))
@@ -133,6 +151,12 @@ class NetflixService(object):
             show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 
+    def _set_service_status(self, status, message=None):
+        """Save the service status to a Kodi property"""
+        from json import dumps
+        status = {'status': status, 'message': message}
+        self.window_cls.setProperty(self.prop_nf_service_status, dumps(status))
+
 
 def run(argv):
     # Initialize globals right away to avoid stale values from the last addon invocation.
@@ -140,4 +164,6 @@ def run(argv):
     # PR: https://github.com/xbmc/xbmc/pull/13814
     g.init_globals(argv)
     check_service_upgrade()
-    NetflixService().run()
+    netflix_service = NetflixService()
+    if netflix_service.init_servers():
+        netflix_service.run()

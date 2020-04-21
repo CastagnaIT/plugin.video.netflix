@@ -296,6 +296,7 @@ def _metadata(video_id):
     """Retrieve additional metadata for a video.This is a separate method from
     metadata(videoid) to work around caching issues when new episodes are added
     to a show by Netflix."""
+    import time
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
     ipc_call = common.make_http_call if g.IS_SERVICE else common.make_call
@@ -303,8 +304,8 @@ def _metadata(video_id):
         'get',
         {
             'component': 'metadata',
-            'req_type': 'api',
-            'params': {'movieid': video_id.value}
+            'params': {'movieid': video_id.value,
+                       '_': int(time.time())}
         })
     if not metadata_data:
         # This return empty
@@ -344,6 +345,21 @@ def verify_pin(pin):
             'post',
             {'component': 'pin_service',
              'data': {'pin': pin}}
+        ).get('success', False)
+    except Exception:  # pylint: disable=broad-except
+        return False
+
+
+@common.time_execution(immediate=False)
+def verify_profile_lock(guid, pin):
+    """Send profile PIN to Netflix and verify it."""
+    try:
+        return common.make_call(
+            'post',
+            {'component': 'profile_lock',
+             'data': {'pin': pin,
+                      'action': 'verify',
+                      'guid': guid}}
         ).get('success', False)
     except Exception:  # pylint: disable=broad-except
         return False

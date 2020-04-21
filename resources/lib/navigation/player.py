@@ -75,7 +75,7 @@ def play(videoid):
     pin_result = _verify_pin(metadata[0].get('requiresPin', False))
     if not pin_result:
         if pin_result is not None:
-            ui.show_notification(common.get_local_string(30106), time=10000)
+            ui.show_notification(common.get_local_string(30106), time=8000)
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
@@ -188,7 +188,7 @@ def get_inputstream_listitem(videoid):
 def _verify_pin(pin_required):
     if not pin_required:
         return True
-    pin = ui.ask_for_pin()
+    pin = ui.ask_for_pin(common.get_local_string(30002))
     return None if not pin else api.verify_pin(pin)
 
 

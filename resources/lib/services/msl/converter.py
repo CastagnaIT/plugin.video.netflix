@@ -18,7 +18,7 @@ import resources.lib.common as common
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEG-DASH manifest"""
     from xbmcaddon import Addon
-    isa_version = Addon('inputstream.adaptive').getAddonInfo('version')
+    isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
 
     has_drm_streams = manifest['hasDrmStreams']
     protection_info = _get_protection_info(manifest) if has_drm_streams else None

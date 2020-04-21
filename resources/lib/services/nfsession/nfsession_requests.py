@@ -21,31 +21,7 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
                                           InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
                                           LoginValidateErrorIncorrectPassword)
-
-BASE_URL = 'https://www.netflix.com'
-"""str: Secure Netflix url"""
-
-URLS = {
-    'login': {'endpoint': '/login', 'is_api_call': False},
-    'logout': {'endpoint': '/SignOut', 'is_api_call': False},
-    'shakti': {'endpoint': '/pathEvaluator', 'is_api_call': True},
-    'browse': {'endpoint': '/browse', 'is_api_call': False},
-    'profiles': {'endpoint': '/profiles/manage', 'is_api_call': False},
-    'switch_profile': {'endpoint': '/SwitchProfile', 'is_api_call': False},
-    'activate_profile': {'endpoint': '/profiles/switch', 'is_api_call': True},
-    'pin': {'endpoint': '/pin', 'is_api_call': False},
-    'pin_reset': {'endpoint': '/pin/reset', 'is_api_call': True},
-    'pin_service': {'endpoint': '/pin/service', 'is_api_call': True},
-    'metadata': {'endpoint': '/metadata', 'is_api_call': True},
-    'set_video_rating': {'endpoint': '/setVideoRating', 'is_api_call': True},  # Old rating system
-    'set_thumb_rating': {'endpoint': '/setThumbRating', 'is_api_call': True},
-    'update_my_list': {'endpoint': '/playlistop', 'is_api_call': True},
-    # Don't know what these could be used for. Keeping for reference
-    # 'video_list_ids': {'endpoint': '/preflight', 'is_api_call': True},
-    # 'kids': {'endpoint': '/Kids', 'is_api_call': False}
-}
-# List of all static endpoints for HTML/JSON POST/GET requests
-# How many entries of a list will be fetched with one path request
+from resources.lib.services.nfsession.nfsession_endpoints import ENDPOINTS, BASE_URL
 
 
 class NFSessionRequests(NFSessionBase):
@@ -80,13 +56,13 @@ class NFSessionRequests(NFSessionBase):
         return self._request(method, component, None, **kwargs)
 
     def _request(self, method, component, session_refreshed, **kwargs):
-        url = (_api_url(component)
-               if URLS[component]['is_api_call']
-               else _document_url(component))
+        endpoint_conf = ENDPOINTS[component]
+        url = (_api_url(endpoint_conf['address'])
+               if endpoint_conf['is_api_call']
+               else _document_url(endpoint_conf['address']))
         common.debug('Executing {verb} request to {url}',
                      verb='GET' if method == self.session.get else 'POST', url=url)
-        data, headers, params = self._prepare_request_properties(component,
-                                                                 kwargs)
+        data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = common.perf_clock()
         response = method(
             url=url,
@@ -105,14 +81,14 @@ class NFSessionRequests(NFSessionBase):
                 return self._request(method, component, True, **kwargs)
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
-                if URLS[component]['is_api_call']
+                if endpoint_conf['is_api_call']
                 else response.content)
 
     def try_refresh_session_data(self, raise_exception=False):
         """Refresh session_data from the Netflix website"""
         # pylint: disable=broad-except
         try:
-            self.auth_url = website.extract_session_data(self._get('profiles'))['auth_url']
+            self.auth_url = website.extract_session_data(self._get('browse'))['auth_url']
             self.update_session_data()
             common.debug('Successfully refreshed session data')
             return True
@@ -150,27 +126,61 @@ class NFSessionRequests(NFSessionBase):
     def _login(self, modal_error_message=False):
         raise NotImplementedError
 
-    def _prepare_request_properties(self, component, kwargs):
+    def _prepare_request_properties(self, endpoint_conf, kwargs):
         data = kwargs.get('data', {})
-        headers = kwargs.get('headers', {})
-        params = kwargs.get('params', {})
-        if component in ['set_video_rating', 'set_thumb_rating', 'update_my_list', 'pin_service']:
-            headers.update({
-                'Content-Type': 'application/json',
-                'Accept': 'application/json, text/javascript, */*'})
-            data['authURL'] = self.auth_url
-            data = json.dumps(data)
-        return data, headers, params
+        custom_headers = kwargs.get('headers', {})
+        custom_params = kwargs.get('params', {})
+        params = {}
+
+        headers = {'Accept': '*/*'}
+        if endpoint_conf.get('content_type'):
+            headers['Content-Type'] = endpoint_conf['content_type']
+        headers.update(custom_headers)  # If needed override headers
+        # Meanings parameters known:
+        # drmSystem       DRM used
+        # falcor_server   Use JSON Graph (responses like browser)
+        # withSize        Puts the 'size' field inside each dictionary
+        # materialize     If True, when a path that no longer exists is requested (like 'storyarts')
+        #                   it is still added in an 'empty' form in the response
+        if endpoint_conf['use_default_params']:
+            params = {
+                'drmSystem': 'widevine',
+                'withSize': 'false',
+                'materialize': 'false',
+                'routeAPIRequestsThroughFTL': 'false',
+                'isVolatileBillboardsEnabled': 'true',
+                'isTop10Supported': 'true',
+                'isLocoSupported': 'false',
+                'original_path': '/shakti/{}/pathEvaluator'.format(
+                    g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+            }
+        if endpoint_conf['add_auth_url'] == 'to_params':
+            params['authURL'] = self.auth_url
+        params.update(custom_params)  # If needed override parameters
+
+        # The 'data' can be passed in two way:
+        # - As string (needs to be correctly formatted)
+        # - As dict (will be converted as string here)
+        if isinstance(data, dict):
+            if endpoint_conf['add_auth_url'] == 'to_data':
+                data['authURL'] = self.auth_url
+            data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
+        else:
+            data_converted = data
+            if endpoint_conf['add_auth_url'] == 'to_data':
+                auth_data = 'authURL=' + self.auth_url
+                data_converted += '&' + auth_data if data_converted else auth_data
+        return data_converted, headers, params
 
 
-def _document_url(component):
-    return BASE_URL + URLS[component]['endpoint']
+def _document_url(endpoint_address):
+    return BASE_URL + endpoint_address
 
 
-def _api_url(component):
-    return '{baseurl}{componenturl}'.format(
+def _api_url(endpoint_address):
+    return '{baseurl}{endpoint_adr}'.format(
         baseurl=g.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        componenturl=URLS[component]['endpoint'])
+        endpoint_adr=endpoint_address)
 
 
 def _raise_api_error(decoded_response):

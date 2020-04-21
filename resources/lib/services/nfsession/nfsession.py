@@ -15,7 +15,6 @@ import requests
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
@@ -84,7 +83,6 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # if guid != g.LOCAL_DB.get_active_profile_guid():
         #     common.info('Activating profile {}', guid)
         #     self._get(component='activate_profile',
-        #               req_type='api',
         #               params={'switchProfileGuid': guid,
         #                       '_': int(time.time()),
         #                       'authURL': self.auth_url})
@@ -189,34 +187,14 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     def _path_request(self, paths):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json, text/javascript, */*'}
-
-        # params:
-        # drmSystem       drm used
-        # falcor_server   json responses like browser
-        # withSize        puts the 'size' field inside each dictionary
-        # materialize     if true, when a path that no longer exists is requested (like 'storyarts')
-        #                    it is still added in an 'empty' form in the response
-        params = {
-            'drmSystem': 'widevine',
-            # 'falcor_server': '0.1.0',
-            'withSize': 'false',
-            'materialize': 'false',
-            'routeAPIRequestsThroughFTL': 'false',
-            'isVolatileBillboardsEnabled': 'true',
-            'isWatchlistEnabled': 'false',
-            'original_path': '/shakti/{}/pathEvaluator'.format(
-                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+        custom_params = {
+            'method': 'call'
         }
-        data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
-        data += '&authURL=' + self.auth_url
+        # Use separators with dumps because Netflix rejects spaces
+        data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
         return self._post(
             component='shakti',
-            req_type='api',
-            params=params,
-            headers=headers,
+            params=custom_params,
             data=data)['value']
 
     @common.addonsignals_return_call
@@ -228,46 +206,33 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @common.time_execution(immediate=True)
     def _callpath_request(self, callpaths, params=None, path_suffixs=None):
         """Execute a callPath request with static paths"""
-        # Warning: The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
-        #          if the request have wrong data give error 401
-        #          if the parameters are not formatted correctly will give error 401
         common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
                      json.dumps(callpaths),
                      params,
                      json.dumps(path_suffixs))
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json, text/javascript, */*'}
-
-        req_params = {
-            'drmSystem': 'widevine',
+        custom_params = {
             'falcor_server': '0.1.0',
             'method': 'call',
             'withSize': 'true',
             'materialize': 'true',
-            'routeAPIRequestsThroughFTL': 'false',
-            'isVolatileBillboardsEnabled': 'true',
-            'isWatchlistEnabled': 'false',
-            'original_path': '/shakti/{}/pathEvaluator'.format(
-                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
         }
-        data = 'callPath=' + '&callPath='.join(json.dumps(callpath) for callpath in callpaths)
+        # Use separators with dumps because Netflix rejects spaces
+        data = 'callPath=' + '&callPath='.join(
+            json.dumps(callpath, separators=(',', ':')) for callpath in callpaths)
         if params:
+            # The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
+            #          if the request have wrong data will raise error 401
+            #          if the parameters are not formatted correctly will raise error 401
             data += '&param=' + '&param='.join(params)
         if path_suffixs:
-            data += '&pathSuffix=' + '&pathSuffix='.join(json.dumps(path_suffix) for path_suffix in path_suffixs)
-        data += '&authURL=' + self.auth_url
-        data = data.replace(' ', '')
+            data += '&pathSuffix=' + '&pathSuffix='.join(
+                json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)
         # common.debug('callPath request data: {}', data)
         response_data = self._post(
             component='shakti',
-            req_type='api',
-            params=req_params,
-            headers=headers,
+            params=custom_params,
             data=data)
-        if 'falcor_server' in req_params:
-            return response_data['jsonGraph']
-        return response_data['value']
+        return response_data['jsonGraph']
 
 
 def _set_range_selector(paths, range_start, range_end):

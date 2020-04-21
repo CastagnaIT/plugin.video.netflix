@@ -136,7 +136,8 @@ class Dialog:
         return 'Foobar'
 
     @staticmethod
-    def numeric(type, heading, defaultt=''):  # pylint: disable=redefined-builtin
+    # def numeric(type, heading, defaultt=''):  # Kodi 18
+    def numeric(type, heading, defaultt='', bHiddenInput=False):  # pylint: disable=redefined-builtin
         """A stub implementation for the xbmcgui Dialog class numeric() method"""
         return
 

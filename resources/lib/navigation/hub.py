@@ -18,7 +18,7 @@ class HubBrowser(object):
     """Fills window properties for browsing the Netflix style Hub"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing hub browser: {}', params)
+        common.debug('Initializing "HubBrowser" with params: {}', params)
         self.params = params
         if 'profile_guid' in params:
             api.activate_profile(params['profile_guid'])

@@ -9,8 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmcaddon
-
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -93,10 +91,11 @@ def enabled_profiles():
 
 
 def _subtitle_profiles():
-    isversion = xbmcaddon.Addon('inputstream.adaptive').getAddonInfo('version')
+    from xbmcaddon import Addon
+    isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
     subtitle_profile = ['webvtt-lssdh-ios8']
     if g.ADDON.getSettingBool('disable_webvtt_subtitle') \
-       or not common.is_minimum_version(isversion, '2.3.8'):
+       or not common.is_minimum_version(isa_version, '2.3.8'):
         subtitle_profile = ['simplesdh']
     return subtitle_profile
 
