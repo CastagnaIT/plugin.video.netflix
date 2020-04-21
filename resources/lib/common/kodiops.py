@@ -250,17 +250,17 @@ class GetKodiVersion(object):
         import re
         self.build_version = xbmc.getInfoLabel('System.BuildVersion')
         # Parse the version number
-        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self.build_version)
+        result = re.search(r'\d+\.\d+', self.build_version)
         self.version = result.group(0) if result else ''
         # Parse the major version number
         self.major_version = self.version.split('.')[0] if self.version else ''
         # Parse the date of GIT build
-        result = re.search('(Git:)(\\d+?(?=(-|$)))', self.build_version)
+        result = re.search(r'(Git:)(\d+?(?=(-|$)))', self.build_version)
         self.date = int(result.group(2)) if result and len(result.groups()) >= 2 else None
         # Parse the stage name
-        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self.build_version)
+        result = re.search(r'(\d+\.\d+-)(.+)(?=\s)', self.build_version)
         if not result:
-            result = re.search('^(.+)(-\\d+\\.\\d+)', self.build_version)
+            result = re.search(r'^(.+)(-\d+\.\d+)', self.build_version)
             self.stage = result.group(1) if result else ''
         else:
             self.stage = result.group(2) if result else ''
