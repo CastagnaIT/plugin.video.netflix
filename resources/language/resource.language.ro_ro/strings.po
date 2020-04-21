@@ -34,7 +34,7 @@ msgstr "Recomandări"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "Introduceți cod pentru a vedea conținut restricționat"
+msgstr "Introduceți cod pentru a vedea conținutul restricționat"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -474,7 +474,7 @@ msgstr "Operațiune reușită pe 'Lista mea'"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Nu se poate șterge automat un seson din librăria Kodi, vă rugăm s-o faceți manual"
+msgstr "Nu se poate șterge automat un sezon din librăria Kodi, vă rugăm s-o faceți manual"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -950,4 +950,4 @@ msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Serviciile nu pot fi pornit în fundal din cauza acestei probleme:\r\n{}"
+msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:\r\n{}"
