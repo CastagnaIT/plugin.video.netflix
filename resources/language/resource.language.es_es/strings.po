@@ -50,7 +50,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr "Ingrese el PIN para acceder a este perfil"
+msgstr "Introduce el PIN para acceder a este perfil"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -266,7 +266,7 @@ msgstr "diariamente"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "en días alternos"
+msgstr "cada dos días"
 
 msgctxt "#30069"
 msgid "every 5 days"
@@ -673,7 +673,7 @@ msgstr "Nuevos lanzamientos"
 
 msgctxt "#30171"
 msgid "Trending now"
-msgstr "Tendencia ahora"
+msgstr "Tendencias ahora"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
