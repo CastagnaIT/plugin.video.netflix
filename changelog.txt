@@ -1,3 +1,44 @@
+v1.2.0 (2020-04-22)
+-Parental control temporary disabled due to Netflix changes
+-New cache management
+-Add-on now is ready to works also on systems with special chars in the system path
+-Implemented profile PIN protection
+-Implemented masked PIN input (Kodi 19)
+-Implemented auto purge cache of expired items
+-Implemented paginated list of seasons
+-Implemented cache to search menu
+-Implemented Up Next also with "Sync of watched status with Netflix" feature
+-Add support to Python 3.8
+-Add title to search page
+-Add profile name to homepage title
+-Add a better handling of lolomo error with sync of watched status enabled
+-Add romanian, swedish translation
+-Improved watched status threshold
+-Improved watched status update in the GUI display
+-Improved catch of possible errors in events module
+-EventHandler thread now is running only when sync of watched status is enabled
+-Fixed an issue caused of disabling the Up Next setting
+-Fixed an issue which prevented a correctly add/remove operations to paginated My list
+-Fixed an issue caused mixing images with other languages of profiles 
+-Fixed an issue caused error when art data was missing
+-Fixed an issue caused generic wrong error messages of BackendNotReady with HTTP IPC
+-Fixed an issue caused ProfilesMissing with profiles without avatar
+-Fixed an issue that show a wrong title in sub genres menus
+-Fixed a possible cases of service breakage due to server init fails
+-Fixed a possible cases of service controller breakage
+-Fixed an issue caused not update of watched status when play video inside the add-on with Up Next
+-Fixed a particular issue of wrong file url passed to Up Next
+-Fixed a rare case of ImportError error at add-on start
+-Fixed cases of CacheMiss error with Remember audio-subtitle or Sync of watched status
+-Fixed possible issues with internal upgrade function and version rollback
+-Fixed add-on not starts due to possible outdated MySQL or possible MySQL errors
+-Updated translations de, es, hu, it, pl, tr, hr, pt-br
+-A lot of other improvements and fixes
+
+v1.1.1 (2020-03-24)
+-Fixed critical bug caused continuous profile switching
+-Fixed unicode decode error to profile auto-selection
+
 v1.1.0 (2020-03-20)
 -Added more supplemental info to plot info
 -Added customizable color to suppl. plot info
