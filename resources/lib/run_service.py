@@ -30,29 +30,7 @@ class NetflixService(object):
     """
     Netflix addon service
     """
-    from resources.lib.services.msl.http_server import MSLTCPServer
-    from resources.lib.services.nfsession.http_server import NetflixTCPServer
-    from resources.lib.services.cache.http_server import CacheTCPServer
-    # Do not change the init order of the servers,
-    # MSLTCPServer must always be initialized first to get the DRM info
-    SERVERS = [
-        {
-            'name': 'MSL',
-            'class': MSLTCPServer,
-            'instance': None,
-            'thread': None
-        }, {
-            'name': 'NS',
-            'class': NetflixTCPServer,
-            'instance': None,
-            'thread': None
-        }, {
-            'name': 'CACHE',
-            'class': CacheTCPServer,
-            'instance': None,
-            'thread': None
-        }
-    ]
+    SERVERS = []
     HOST_ADDRESS = '127.0.0.1'
 
     def __init__(self):
@@ -66,6 +44,31 @@ class NetflixService(object):
     def init_servers(self):
         """Initialize the http servers"""
         try:
+            # Import modules here to intercept possible missing libraries on linux systems
+            from resources.lib.services.msl.http_server import MSLTCPServer
+            from resources.lib.services.nfsession.http_server import NetflixTCPServer
+            from resources.lib.services.cache.http_server import CacheTCPServer
+            # Do not change the init order of the servers,
+            # MSLTCPServer must always be initialized first to get the DRM info
+            self.SERVERS = [
+                {
+                    'name': 'MSL',
+                    'class': MSLTCPServer,
+                    'instance': None,
+                    'thread': None
+                }, {
+                    'name': 'NS',
+                    'class': NetflixTCPServer,
+                    'instance': None,
+                    'thread': None
+                }, {
+                    'name': 'CACHE',
+                    'class': CacheTCPServer,
+                    'instance': None,
+                    'thread': None
+                }
+            ]
+
             for server in self.SERVERS:
                 self._init_server(server)
             return True
@@ -76,6 +79,10 @@ class NetflixService(object):
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
                            'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
+            elif ImportError(exc, ImportError):
+                message = ('In your system is missing some required library to run Netflix.\r\n'
+                           'Read how to install the add-on in the GitHub Readme.\r\n'
+                           'Error details: {}'.format(exc))
             else:
                 message = unicode(exc)
             self._set_service_status('error', message)
