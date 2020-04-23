@@ -73,8 +73,12 @@ def _perform_service_changes(previous_ver, current_ver):
         from resources.lib.upgrade_actions import delete_cache_folder
         delete_cache_folder()
         # In the version 1.2.0 has been implemented in auto-update mode setting the option to disable the feature
-        lib_auto_upd_mode = g.ADDON.getSettingInt('lib_auto_upd_mode')
-        g.ADDON.setSettingInt('lib_auto_upd_mode', lib_auto_upd_mode + 1)
+        try:
+            lib_auto_upd_mode = g.ADDON.getSettingInt('lib_auto_upd_mode')
+            g.ADDON.setSettingInt('lib_auto_upd_mode', lib_auto_upd_mode + 1)
+        except TypeError:
+            # In case of a previous rollback this could fails
+            g.ADDON.setSettingInt('lib_auto_upd_mode', 1)
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('service_previous_version', current_ver)
 
