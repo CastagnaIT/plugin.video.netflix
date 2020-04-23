@@ -44,7 +44,7 @@ Install add-on via repository - provide automatic installation of updates:
 * [CastagnaIT Repository for KODI 19.x MATRIX - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/matrix/repository.castagnait-1.0.0.zip)
 
 Install add-on manually - updates should always be installed manually:
-* [Daily build - Add-on download link to get latest fixes](http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon) (not always published see dates)
+* Daily builds - To get latest fixes https://bit.ly/citnfdailybuilds (not always published see dates)
 * As Kodi file source, only for Kodi 18:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
