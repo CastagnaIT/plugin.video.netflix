@@ -30,6 +30,9 @@ BASE_URL = 'https://www.netflix.com'
 # content_type:
 #   If required add the Content-Type property to request header
 
+# accept:
+#   If required add the Accept property to request header (if not specified use */*)
+
 ENDPOINTS = {
     'login':
         {'address': '/login',
@@ -39,12 +42,14 @@ ENDPOINTS = {
          # By default to login Netflix use 'application/x-www-form-urlencoded' Content-Type,
          # instead we use 'application/json' for simplicity of data conversion
          # if in the future login raise InvalidMembershipStatusAnonymous can means that json is no more accepted
-         'content_type': 'application/json'},
+         'content_type': 'application/json',
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'logout':
         {'address': '/SignOut',
          'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'shakti':
         {'address': '/pathEvaluator',
          'is_api_call': True,
@@ -55,12 +60,14 @@ ENDPOINTS = {
         {'address': '/browse',
          'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'profiles':
         {'address': '/profiles/manage',
          'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'switch_profile':
         {'address': '/SwitchProfile',
          'is_api_call': False,
@@ -76,7 +83,8 @@ ENDPOINTS = {
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
-         'content_type': 'application/json'},
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
     'pin':
         {'address': '/pin',
          'is_api_call': False,
@@ -92,7 +100,8 @@ ENDPOINTS = {
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
-         'content_type': 'application/json'},
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
     'metadata':
         {'address': '/metadata',
          'is_api_call': True,
@@ -103,19 +112,22 @@ ENDPOINTS = {
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
-         'content_type': 'application/json'},
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
     'set_thumb_rating':
         {'address': '/setThumbRating',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
-         'content_type': 'application/json'},
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
     'update_my_list':
         {'address': '/playlistop',
          'is_api_call': True,
          'use_default_params': False,
          'add_auth_url': 'to_data',
-         'content_type': 'application/json'}
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'}
     # Don't know what these could be used for. Keeping for reference
     # 'video_list_ids': {'address': '/preflight', 'is_api_call': True},
     # 'kids': {'address': '/Kids', 'is_api_call': False}

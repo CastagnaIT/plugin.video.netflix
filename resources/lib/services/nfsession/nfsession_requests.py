@@ -132,7 +132,7 @@ class NFSessionRequests(NFSessionBase):
         custom_params = kwargs.get('params', {})
         params = {}
 
-        headers = {'Accept': '*/*'}
+        headers = {'Accept': endpoint_conf.get('accept', '*/*')}
         if endpoint_conf.get('content_type'):
             headers['Content-Type'] = endpoint_conf['content_type']
         headers.update(custom_headers)  # If needed override headers
