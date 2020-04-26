@@ -52,38 +52,29 @@ class Directory(object):
 
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
-        if not self._home_autoselect_profile():
-            self.profiles()
-
-    def _home_autoselect_profile(self):
-        """
-        Show home listing if profile auto-selection is enabled
-        :return: True when the auto-selection is done correctly
-        """
+        # Update profiles data in the database
+        # (the update sanitize also settings relative to profiles see _delete_non_existing_profiles in website.py)
+        list_data, extra_data = common.make_call('get_profiles')
         autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
         if autoselect_profile_guid:
-            # Check if the GUID still exists in the profile list
-            if autoselect_profile_guid not in g.LOCAL_DB.get_guid_profiles():
-                common.warn('Auto-selection of profile not performed, the GUID {} not exist',
-                            autoselect_profile_guid)
-                g.LOCAL_DB.set_value('autoselect_profile_guid', '')
-                g.settings_monitor_suspend(True)
-                g.ADDON.setSetting('autoselect_profile_name', '')
-                g.ADDON.setSettingBool('autoselect_profile_enabled', False)
-                g.settings_monitor_suspend(False)
-            else:
-                common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
-                if self._activate_profile(autoselect_profile_guid):
-                    self.home(None, False)
-                    return True
-        return False
+            common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
+            # Get the URL parent path of the navigation,
+            # do not perform the switch if you are coming from a page that is not the root url,
+            # prevents switching when returning to the main menu from one of the sub-menus
+            parent_path = xbmc.getInfoLabel('Container.FolderPath')  # It can be found in log as "ParentPath = [xyz]"
+            if parent_path != g.BASE_URL + '/' or self._activate_profile(autoselect_profile_guid):
+                self.home(None, False, True)
+                return
+        self._profiles(list_data, extra_data)
 
     @custom_viewmode(g.VIEW_PROFILES)
     def profiles(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles listing"""
         common.debug('Showing profiles listing')
-        list_data, extra_data = common.make_call('get_profiles')  # pylint: disable=unused-variable
+        list_data, extra_data = common.make_call('get_profiles')
+        self._profiles(list_data, extra_data)
 
+    def _profiles(self, list_data, extra_data):  # pylint: disable=unused-argument
         # The standard kodi theme does not allow to change view type if the content is "files" type,
         # so here we use "images" type, visually better to see
         finalize_directory(convert_list(list_data), g.CONTENT_IMAGES)
@@ -91,16 +82,15 @@ class Directory(object):
 
     @common.time_execution(immediate=False)
     @custom_viewmode(g.VIEW_MAINMENU)
-    def home(self, pathitems=None, cache_to_disc=True):  # pylint: disable=unused-argument
+    def home(self, pathitems=None, cache_to_disc=True, is_autoselect_profile=False):  # pylint: disable=unused-argument
         """Show home listing"""
-        if 'switch_profile_guid' in self.params:
+        if not is_autoselect_profile and 'switch_profile_guid' in self.params:
             # This is executed only when you have selected a profile from the profile list
             if not self._activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
                 return
         common.debug('Showing home listing')
         list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
-
         finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
                            title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))

@@ -10,17 +10,17 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from re import compile as recompile, DOTALL, sub, findall
 from collections import OrderedDict
+from re import compile as recompile, DOTALL, sub, findall
 
 import resources.lib.common as common
-
+from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.globals import g
-from .paths import resolve_refs
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
                          WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
                          LoginValidateErrorIncorrectPassword)
+from .paths import resolve_refs
 
 try:  # Python 2
     unicode
@@ -113,7 +113,6 @@ def parse_profiles(profiles_list_data):
         profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'], profiles_list_data))
         if not profiles_list:
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
-        _delete_non_existing_profiles(profiles_list)
         sort_order = 0
         for guid, profile in list(profiles_list.items()):
             common.debug('Parsing profile {}', guid)
@@ -130,6 +129,7 @@ def parse_profiles(profiles_list_data):
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
+        _delete_non_existing_profiles(profiles_list)
     except Exception:
         import traceback
         common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
@@ -170,12 +170,27 @@ def parse_profiles(profiles_list_data):
 
 
 def _delete_non_existing_profiles(profiles_list):
+    profiles_list = list(profiles_list)
     list_guid = g.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
-        if guid not in list(profiles_list):
+        if guid not in profiles_list:
             common.debug('Deleting non-existing profile {}', guid)
             g.LOCAL_DB.delete_profile(guid)
             g.SHARED_DB.delete_profile(guid)
+    # Ensures at least one active profile
+    try:
+        g.LOCAL_DB.get_active_profile_guid()
+    except ProfilesMissing:
+        g.LOCAL_DB.switch_active_profile(g.LOCAL_DB.get_guid_owner_profile())
+    # Verify if auto select profile exists
+    autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
+    if autoselect_profile_guid and autoselect_profile_guid not in profiles_list:
+        common.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
+        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        g.settings_monitor_suspend(True)
+        g.ADDON.setSetting('autoselect_profile_name', '')
+        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+        g.settings_monitor_suspend(False)
 
 
 def _get_avatar(profiles_list_data, profile):
