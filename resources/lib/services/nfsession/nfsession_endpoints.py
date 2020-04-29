@@ -62,6 +62,13 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': None,
          'accept': '*/*'},
+    'profiles_gate':
+    # This endpoint is used after ending editing profiles page, i think to force close an active profile session
+        {'address': '/ProfilesGate',
+         'is_api_call': False,
+         'use_default_params': False,
+         'add_auth_url': 'to_data',
+         'accept': '*/*'},
     'profiles':
         {'address': '/profiles/manage',
          'is_api_call': False,
