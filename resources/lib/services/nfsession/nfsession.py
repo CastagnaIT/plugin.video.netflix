@@ -184,18 +184,19 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
 
     @common.time_execution(immediate=True)
     @needs_login
-    def _path_request(self, paths):
+    def _path_request(self, paths, use_jsongraph=False):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
-        custom_params = {
-            'method': 'call'
-        }
+        custom_params = {'method': 'call'}
+        if use_jsongraph:
+            custom_params['falcor_server'] = '0.1.0'
         # Use separators with dumps because Netflix rejects spaces
         data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
-        return self._post(
+        response = self._post(
             component='shakti',
             params=custom_params,
-            data=data)['value']
+            data=data)
+        return response['jsonGraph'] if use_jsongraph else response['value']
 
     @common.addonsignals_return_call
     @needs_login
