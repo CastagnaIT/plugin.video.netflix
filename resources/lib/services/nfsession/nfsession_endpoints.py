@@ -28,10 +28,10 @@ BASE_URL = 'https://www.netflix.com'
 #   'to_params' -> It will be added to the request parameters
 
 # content_type:
-#   If required add the Content-Type property to request header
+#   If required add the Content-Type attribute to request header
 
 # accept:
-#   If required add the Accept property to request header (if not specified use */*)
+#   If required add the Accept attribute to request header (if not specified use '*/*')
 
 ENDPOINTS = {
     'login':
@@ -43,13 +43,13 @@ ENDPOINTS = {
          # instead we use 'application/json' for simplicity of data conversion
          # if in the future login raise InvalidMembershipStatusAnonymous can means that json is no more accepted
          'content_type': 'application/json',
-         'accept': 'text/html,application/xhtml+xml,application/xml'},
+         'accept': '*/*'},
     'logout':
         {'address': '/SignOut',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': 'text/html,application/xhtml+xml,application/xml'},
+         'accept': '*/*'},
     'shakti':
         {'address': '/pathEvaluator',
          'is_api_call': True,
@@ -61,18 +61,19 @@ ENDPOINTS = {
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': 'text/html,application/xhtml+xml,application/xml'},
+         'accept': '*/*'},
     'profiles':
         {'address': '/profiles/manage',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': 'text/html,application/xhtml+xml,application/xml'},
+         'accept': '*/*'},
     'switch_profile':
         {'address': '/SwitchProfile',
          'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': '*/*'},
     'activate_profile':
         {'address': '/profiles/switch',
          'is_api_call': True,
