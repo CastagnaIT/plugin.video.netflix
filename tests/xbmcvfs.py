@@ -89,3 +89,8 @@ def rename(file, newFileName):  # pylint: disable=redefined-builtin
 def rmdir(path):
     """A reimplementation of the xbmcvfs rmdir() function"""
     return os.rmdir(path)
+
+
+def makeLegalFilename(filename):  # Kodi >= 19 (on xbmc there is the method for Kodi 18)
+    """A reimplementation of the xbmc makeLegalFilename() function"""
+    return os.path.basename(filename)
