@@ -29,6 +29,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         NFSessionAccess.__init__(self)
         DirectoryBuilder.__init__(self, self)
         self.slots = [
+            self.fetch_initial_page,
             self.login,
             self.logout,
             self.activate_profile,
@@ -37,12 +38,12 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             self.perpetual_path_request,
             self.callpath_request,
             self.get,
-            self.post,
-            self.startup_requests_module
+            self.post
         ]
         for slot in self.slots:
             common.register_slot(slot)
         self.prefetch_login()
+        self.is_profile_session_active = False
 
     @common.addonsignals_return_call
     @needs_login
@@ -73,20 +74,43 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
     @needs_login
+    def fetch_initial_page(self):
+        """Fetch initial page"""
+        common.debug('Fetch initial page')
+        response = self._get('browse')
+        # Update the session data, the profiles data to the database, and update the authURL
+        api_data = website.extract_session_data(response, update_profiles=True)
+        self.auth_url = api_data['auth_url']
+        # Check if the profile session is still active, used only to activate_profile
+        self.is_profile_session_active = api_data['is_profile_session_active']
+
+    @common.time_execution(immediate=True)
+    @common.addonsignals_return_call
+    @needs_login
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
-        response = self._get('switch_profile', params={'tkn': guid})
-        react_context = website.extract_json(response, 'reactContext')
-        self.auth_url = website.extract_api_data(react_context)['auth_url']
-
-        # if guid != g.LOCAL_DB.get_active_profile_guid():
-        #     common.info('Activating profile {}', guid)
-        #     self._get(component='activate_profile',
-        #               params={'switchProfileGuid': guid,
-        #                       '_': int(time.time()),
-        #                       'authURL': self.auth_url})
-
+        current_active_guid = g.LOCAL_DB.get_active_profile_guid()
+        if self.is_profile_session_active and guid == current_active_guid:
+            common.info('The profile session of guid {} is still active, activation not needed.', guid)
+        if not self.is_profile_session_active or (self.is_profile_session_active and
+                                                  guid != current_active_guid):
+            common.info('Activating profile {}', guid)
+            # INIT Method 1 - HTTP mode
+            response = self._get('switch_profile', params={'tkn': guid})
+            self.auth_url = website.extract_session_data(response)['auth_url']
+            # END Method 1
+            # INIT Method 2 - API mode
+            # import time
+            # self._get(component='activate_profile',
+            #           params={'switchProfileGuid': guid,
+            #                   '_': int(time.time()),
+            #                   'authURL': self.auth_url})
+            # # Retrieve browse page to update authURL
+            # response = self._get('browse')
+            # self.auth_url = website.extract_session_data(response)['auth_url']
+            # END Method 2
+            self.is_profile_session_active = True
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
         self.update_session_data()
@@ -184,18 +208,19 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
 
     @common.time_execution(immediate=True)
     @needs_login
-    def _path_request(self, paths):
+    def _path_request(self, paths, use_jsongraph=False):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
-        custom_params = {
-            'method': 'call'
-        }
+        custom_params = {'method': 'call'}
+        if use_jsongraph:
+            custom_params['falcor_server'] = '0.1.0'
         # Use separators with dumps because Netflix rejects spaces
         data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
-        return self._post(
+        response = self._post(
             component='shakti',
             params=custom_params,
-            data=data)['value']
+            data=data)
+        return response['jsonGraph'] if use_jsongraph else response['value']
 
     @common.addonsignals_return_call
     @needs_login

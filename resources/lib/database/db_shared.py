@@ -24,7 +24,7 @@ def get_shareddb_class(use_mysql=False):
     class NFSharedDatabase(base_class):
         def __init__(self):
             if use_mysql:
-                super(NFSharedDatabase, self).__init__()
+                super(NFSharedDatabase, self).__init__()  # pylint: disable=no-value-for-parameter
             else:
                 super(NFSharedDatabase, self).__init__(db_utils.SHARED_DB_FILENAME)
 

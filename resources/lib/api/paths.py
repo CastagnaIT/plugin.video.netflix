@@ -234,3 +234,53 @@ def _remove_nesting(ref):
     return (ref['reference']
             if isinstance(ref, dict) and 'reference' in ref
             else ref)
+
+
+def jgraph_get(key, data, full_data=None):
+    """
+    Expand the standard python dict.get() to implement the resolution of Falcor JSON Graph primitive types.
+    :param full_data: pass the entire JSON Graph data (is only needed to resolve the 'ref' primitive type),
+                      if 'data' is equal to 'full_data' this param can be ignored
+    """
+    return _resolve_type(data.get(key), full_data or data)
+
+
+def jgraph_get_path(path, data, full_data=None):
+    """
+    Retrieve a value from a nested dict by following the path.
+    :param full_data: pass the entire JSON Graph data (is only needed to resolve the 'ref' primitive type),
+                      if 'data' is equal to 'full_data' this param can be ignored
+    :raise KeyError: if any key along the path does not exist
+    """
+    current_value = jgraph_get(path[0], data, full_data or data)
+    if len(path) == 1:
+        return current_value
+    return jgraph_get_path(path[1:], current_value, full_data or data)
+
+
+def _resolve_type(return_data, full_data):
+    """Resolve the data on basis of Falcor JSON Graph primitive types"""
+    if isinstance(return_data, dict):
+        primitive_type = return_data.get('$type')
+        if primitive_type == 'ref':
+            # Reference type: used to find and get a value within the same JSON Graph data
+            return_data = jgraph_get_path(return_data['value'], full_data)
+            # Look for a recursive reference
+            return _resolve_type(return_data, full_data)
+        if primitive_type == 'atom':
+            # Atom: contains a JSON data and other properties (not managed here) to handle metadata
+            return return_data.get('value')
+    return return_data
+
+
+def jgraph_get_list(key, full_data):
+    """
+    Get the data of a list by resolving the Falcor JSON Graph primitive types
+    ('summary' establishes the amount of data to retrieve)
+    :return a dict
+    """
+    data = full_data[key]
+    converted = {}
+    for n in range(0, jgraph_get_path(['summary', 'length'], data)):
+        converted[n] = jgraph_get(str(n), data, full_data)
+    return converted

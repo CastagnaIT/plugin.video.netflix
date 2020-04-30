@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 import xbmcplugin
 
-import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.library as library
 import resources.lib.kodi.ui as ui
@@ -52,26 +51,31 @@ class Directory(object):
 
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
-        # Update profiles data in the database
-        # (the update sanitize also settings relative to profiles see _delete_non_existing_profiles in website.py)
-        list_data, extra_data = common.make_call('get_profiles')
+        # Get the URL parent path of the navigation: xbmc.getInfoLabel('Container.FolderPath')
+        #   it can be found in Kodi log as "ParentPath = [xyz]" but not always return the exact value
+        is_parent_root_path = xbmc.getInfoLabel('Container.FolderPath') == g.BASE_URL + '/'
+        # Fetch initial page to refresh all session data
+        if is_parent_root_path:
+            common.make_call('fetch_initial_page')
+        # Note when the profiles are updated to the database (by fetch_initial_page call),
+        #   the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
         autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
         if autoselect_profile_guid:
-            common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
-            # Get the URL parent path of the navigation,
-            # do not perform the switch if you are coming from a page that is not the root url,
-            # prevents switching when returning to the main menu from one of the sub-menus
-            parent_path = xbmc.getInfoLabel('Container.FolderPath')  # It can be found in log as "ParentPath = [xyz]"
-            if parent_path != g.BASE_URL + '/' or self._activate_profile(autoselect_profile_guid):
+            if is_parent_root_path:
+                common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
+            # Do not perform the profile switch if navigation come from a page that is not the root url,
+            # prevents profile switching when returning to the main menu from one of the sub-menus
+            if not is_parent_root_path or self._activate_profile(autoselect_profile_guid):
                 self.home(None, False, True)
                 return
+        list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
         self._profiles(list_data, extra_data)
 
     @custom_viewmode(g.VIEW_PROFILES)
     def profiles(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles listing"""
         common.debug('Showing profiles listing')
-        list_data, extra_data = common.make_call('get_profiles')
+        list_data, extra_data = common.make_call('get_profiles', {'request_update': True})
         self._profiles(list_data, extra_data)
 
     def _profiles(self, list_data, extra_data):  # pylint: disable=unused-argument
@@ -90,11 +94,27 @@ class Directory(object):
                 xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
                 return
         common.debug('Showing home listing')
-        list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
-        finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
-                           title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
-                                  ' - ' + common.get_local_string(30097)))
-        end_of_directory(False, cache_to_disc)
+        try:
+            list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
+            finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
+                               title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
+                                      ' - ' + common.get_local_string(30097)))
+            end_of_directory(False, cache_to_disc)
+        except Exception as exc:  # pylint: disable=broad-except
+            if str(exc) != 'HTTPError':
+                raise
+            # 30/04/2020 - http error 401 issue
+            # After the profile selection sometime can happen the http error 401 Client Error: Unauthorized for url ...
+            # due to the failure of the first shakti API request.
+            # After a revision of the code of initial access, i have not found any reason that could cause this problem,
+            # i am beginning to suspect that is a problem of the netflix service.
+            # Not found any solutions, two http attempts are already made, so notify the user of the problem.
+            common.error('Stop navigation due to too many http authURL errors (known error currently unresolvable)')
+            ui.show_ok_dialog(common.get_local_string(30105),
+                              ('There was a communication problem with Netflix.\r\n'
+                               'This is a known and unresolvable issue, do not submit reports.\r\n'
+                               'You can try the operation again or exit.'))
+            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
 
     def _activate_profile(self, guid):
         pin_result = verify_profile_pin(guid)
@@ -102,7 +122,7 @@ class Directory(object):
             if pin_result is not None:
                 ui.show_notification(common.get_local_string(30106), time=8000)
             return False
-        api.activate_profile(guid)
+        common.make_call('activate_profile', guid)
         return True
 
     @common.time_execution(immediate=False)

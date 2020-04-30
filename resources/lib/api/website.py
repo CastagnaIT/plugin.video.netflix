@@ -10,8 +10,9 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from collections import OrderedDict
 from re import compile as recompile, DOTALL, sub, findall
+
+from future.utils import iteritems
 
 import resources.lib.common as common
 from resources.lib.database.db_exceptions import ProfilesMissing
@@ -20,7 +21,7 @@ from resources.lib.globals import g
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
                          WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
                          LoginValidateErrorIncorrectPassword)
-from .paths import resolve_refs
+from .paths import jgraph_get, jgraph_get_list, jgraph_get_path
 
 try:  # Python 2
     unicode
@@ -66,7 +67,7 @@ PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'ma
 
 
 @common.time_execution(immediate=True)
-def extract_session_data(content, validate=False):
+def extract_session_data(content, validate=False, update_profiles=False):
     """
     Call all the parsers we need to extract all
     the session relevant data from the HTML page
@@ -91,9 +92,41 @@ def extract_session_data(content, validate=False):
         raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
 
     api_data = extract_api_data(react_context)
-    # Note: falcor cache does not exist if membershipStatus is not CURRENT_MEMBER
-    # falcor cache is not more used to extract profiles data
-    # falcor_cache = extract_json(content, 'falcorCache')
+    # Note: Falcor cache does not exist if membershipStatus is not CURRENT_MEMBER
+    falcor_cache = extract_json(content, 'falcorCache')
+
+    if update_profiles:
+        parse_profiles(falcor_cache)
+
+    # Extract lolomo root id
+    lolomo_root = falcor_cache['lolomo']['value'][1]
+    g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+
+    # Check if current 'profile session' is still active
+    # What means 'profile session':
+    # In web browser, after you select a profile and then you close the browse page,
+    #   when you reopen it you will not be asked to select a profile again, this means that the same profile session
+    #   still active, and the lolomo root id (and child contexts id's) are still the same.
+    #   Here one way to understand this, is checking if there is an 'summary' entry in the lolomos dictionary.
+    is_profile_session_active = 'summary' in falcor_cache['lolomos'][lolomo_root]
+
+    # Extract lolomo continueWatching id and index
+    cw_list_data = jgraph_get('continueWatching', falcor_cache['lolomos'][lolomo_root], falcor_cache)
+    if cw_list_data:
+        context_index = falcor_cache['lolomos'][lolomo_root]['continueWatching']['value'][2]
+        g.LOCAL_DB.set_value('lolomo_continuewatching_index', context_index, TABLE_SESSION)
+        g.LOCAL_DB.set_value('lolomo_continuewatching_id', jgraph_get('id', cw_list_data), TABLE_SESSION)
+    elif is_profile_session_active:
+        # Todo: In the new profiles, there is no 'continueWatching' context
+        #  How get or generate the continueWatching context?
+        #  (needed to update lolomo list for watched state sync, see update_lolomo_context in api_requests.py)
+        cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
+        common.warn('Context continueWatching not found in lolomos for profile guid {}.',
+                    jgraph_get('summary', cur_profile)['guid'])
+        g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
+        g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    else:
+        common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
 
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
@@ -103,25 +136,30 @@ def extract_session_data(content, validate=False):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+
+    api_data['is_profile_session_active'] = is_profile_session_active
     return api_data
 
 
 @common.time_execution(immediate=True)
-def parse_profiles(profiles_list_data):
+def parse_profiles(data):
     """Parse profile information from Netflix response"""
+    profiles_list = jgraph_get_list('profilesList', data)
     try:
-        profiles_list = OrderedDict(resolve_refs(profiles_list_data['profilesList'], profiles_list_data))
         if not profiles_list:
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
         sort_order = 0
-        for guid, profile in list(profiles_list.items()):
-            common.debug('Parsing profile {}', guid)
-            avatar_url = _get_avatar(profiles_list_data, profile)
-            profile = profile['summary']
-            is_active = profile.pop('isActive')
+        current_guids = []
+        for index, profile_data in iteritems(profiles_list):  # pylint: disable=unused-variable
+            summary = jgraph_get('summary', profile_data)
+            guid = summary['guid']
+            current_guids.append(guid)
+            common.debug('Parsing profile {}', summary['guid'])
+            avatar_url = _get_avatar(profile_data, data, guid)
+            is_active = summary.pop('isActive')
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
-            for key, value in list(profile.items()):
+            for key, value in iteritems(summary):
                 if key in PROFILE_DEBUG_INFO:
                     common.debug('Profile info {}', {key: value})
                 if key == 'profileName':  # The profile name is coded as HTML
@@ -129,51 +167,18 @@ def parse_profiles(profiles_list_data):
                 g.LOCAL_DB.set_profile_config(key, value, guid)
             g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
-        _delete_non_existing_profiles(profiles_list)
+        _delete_non_existing_profiles(current_guids)
     except Exception:
         import traceback
         common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
-        common.error('Profile list data: {}', profiles_list_data)
+        common.error('Profile list data: {}', profiles_list)
         raise InvalidProfilesError
 
 
-# @common.time_execution(immediate=True)
-# def extract_profiles(falkor_cache):
-#    """Extract profile information from Netflix website"""
-#    try:
-#        profiles_list = OrderedDict(resolve_refs(falkor_cache['profilesList'], falkor_cache))
-#        if not profiles_list:
-#            common.error('The profiles list from falkor cache is empty. '
-#                         'The profiles were not parsed nor updated!')
-#        else:
-#            _delete_non_existing_profiles(profiles_list)
-#        sort_order = 0
-#        for guid, profile in list(profiles_list.items()):
-#            common.debug('Parsing profile {}', guid)
-#            avatar_url = _get_avatar(falkor_cache, profile)
-#            profile = profile['summary']['value']
-#            debug_info = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
-#            for k_info in debug_info:
-#                common.debug('Profile info {}', {k_info: profile[k_info]})
-#            is_active = profile.pop('isActive')
-#            g.LOCAL_DB.set_profile(guid, is_active, sort_order)
-#            g.SHARED_DB.set_profile(guid, sort_order)
-#            for key, value in list(profile.items()):
-#                g.LOCAL_DB.set_profile_config(key, value, guid)
-#            g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
-#            sort_order += 1
-#    except Exception:
-#        import traceback
-#        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
-#        common.error('Falkor cache: {}', falkor_cache)
-#        raise
-
-
-def _delete_non_existing_profiles(profiles_list):
-    profiles_list = list(profiles_list)
+def _delete_non_existing_profiles(current_guids):
     list_guid = g.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
-        if guid not in profiles_list:
+        if guid not in current_guids:
             common.debug('Deleting non-existing profile {}', guid)
             g.LOCAL_DB.delete_profile(guid)
             g.SHARED_DB.delete_profile(guid)
@@ -184,7 +189,7 @@ def _delete_non_existing_profiles(profiles_list):
         g.LOCAL_DB.switch_active_profile(g.LOCAL_DB.get_guid_owner_profile())
     # Verify if auto select profile exists
     autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
-    if autoselect_profile_guid and autoselect_profile_guid not in profiles_list:
+    if autoselect_profile_guid and autoselect_profile_guid not in current_guids:
         common.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
         g.LOCAL_DB.set_value('autoselect_profile_guid', '')
         g.settings_monitor_suspend(True)
@@ -193,12 +198,13 @@ def _delete_non_existing_profiles(profiles_list):
         g.settings_monitor_suspend(False)
 
 
-def _get_avatar(profiles_list_data, profile):
+def _get_avatar(profile_data, data, guid):
     try:
-        return common.get_path(profile['avatar'] + AVATAR_SUBPATH, profiles_list_data)
+        avatar = jgraph_get('avatar', profile_data, data)
+        return jgraph_get_path(AVATAR_SUBPATH, avatar)
     except (KeyError, TypeError):
-        common.warn('Cannot find avatar for profile {}', profile['summary']['guid'])
-        common.debug('Profile list data: {}', profiles_list_data)
+        common.warn('Cannot find avatar for profile {}', guid)
+        common.debug('Profile list data: {}', profile_data)
         return g.ICON
 
 

@@ -52,8 +52,16 @@ class DirectoryBuilder(DirectoryRequests):
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
-    def get_profiles(self):
-        self.req_profiles_info()
+    def get_profiles(self, request_update):
+        """
+        Get the list of profiles stored to the database
+        :param request_update: when true, perform a request to the shakti API to fetch new profile data
+        """
+        # The profiles data are automatically updated (parsed from falcorCache) in the following situations:
+        # -At first log-in, see '_login' in nf_session_access.py
+        # -When navigation accesses to the root path, see 'root' in directory.py (ref. to 'fetch_initial_page' call)
+        if request_update:
+            self.req_profiles_info()
         return build_profiles_listing()
 
     @common.time_execution(immediate=True)
