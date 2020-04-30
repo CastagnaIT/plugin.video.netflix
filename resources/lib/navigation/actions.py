@@ -138,7 +138,7 @@ class AddonActionExecutor(object):
     def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
         from resources.lib.common.cache_utils import CACHE_MYLIST
-        g.CACHE.clear(CACHE_MYLIST, clear_database=False)
+        g.CACHE.clear([CACHE_MYLIST], clear_database=False)
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
