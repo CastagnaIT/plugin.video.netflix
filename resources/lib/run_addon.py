@@ -29,7 +29,6 @@ def lazy_login(func):
     """
     Decorator to ensure that a valid login is present when calling a method
     """
-    # pylint: missing-docstring
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
         from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError,

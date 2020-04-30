@@ -63,7 +63,6 @@ def cache_output(bucket, fixed_identifier=None,
                  ttl=None,
                  ignore_self_class=False):
     """Decorator that ensures caching the output of a function"""
-    # pylint: too-many-arguments
     def caching_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
