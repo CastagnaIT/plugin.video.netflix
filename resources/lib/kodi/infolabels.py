@@ -26,10 +26,13 @@ try:  # Python 2
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
+# For each videos Netflix provides multiple codecs and the resolutions depends on type of device/SO/DRM used
+# it is not possible to provide specific info, then we set info according to the video properties of the video list data
+# h264 is the entry-level codec always available to all streams, the 4k only works with HEVC
 QUALITIES = [
     {'codec': 'h264', 'width': '960', 'height': '540'},
     {'codec': 'h264', 'width': '1920', 'height': '1080'},
-    {'codec': 'h265', 'width': '3840', 'height': '2160'}
+    {'codec': 'hevc', 'width': '3840', 'height': '2160'}
 ]
 
 JSONRPC_MAPPINGS = {
