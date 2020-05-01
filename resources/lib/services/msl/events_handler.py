@@ -235,7 +235,7 @@ class EventsHandler(threading.Thread):
                 'isUIAutoPlay': False,  # Should be set equal to the manifest request
                 'supportsPreReleasePin': True,  # Should be set equal to the manifest request
                 'supportsWatermark': True,  # Should be set equal to the manifest request
-                'preferUnletterboxed': True,  # Should be set equal to the manifest request
+                'preferUnletterboxed': False,  # Should be set equal to the manifest request
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
                     # Add 'lolomo_id' seems to prevent failure of the 'refreshListByContext' request
