@@ -21,7 +21,10 @@ import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 
-SERVICE_URL_FORMAT = 'http://localhost:{port}'
+# Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),
+# so the time that Kodi takes to start a video increases, (due to requests exchange between ISA and the add-on)
+# not sure if it is an urllib issue
+SERVICE_URL_FORMAT = 'http://127.0.0.1:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
 LICENSE_PATH_FORMAT = '/license?id={videoid}'
 
