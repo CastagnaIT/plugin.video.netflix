@@ -125,12 +125,12 @@ def update_videoid_bookmark(video_id):
 @common.time_execution(immediate=False)
 def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cache to this method
     """Retrieve raw data for specified video id's"""
-    video_ids = [videoid.value for videoid in videoids]
+    video_ids = [int(videoid.value) for videoid in videoids]
     common.debug('Requesting video raw data for {}', video_ids)
     if not custom_partial_path:
         paths = build_paths(['videos', video_ids], EPISODES_PARTIAL_PATHS)
         if videoids[0].mediatype == common.VideoId.EPISODE:
-            paths.extend(build_paths(['videos', videoids[0].tvshowid], ART_PARTIAL_PATHS + [['title']]))
+            paths.extend(build_paths(['videos', int(videoids[0].tvshowid)], ART_PARTIAL_PATHS + [['title']]))
     else:
         paths = build_paths(['videos', video_ids], custom_partial_path)
     return common.make_call('path_request', paths)

@@ -256,7 +256,7 @@ def get_info_from_netflix(videoids):
 
     if videoids_to_request:
         # Retrieve missing data from API
-        common.debug('Retrieving infolabels and art from API for videoids {}', videoids_to_request)
+        common.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
             infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
