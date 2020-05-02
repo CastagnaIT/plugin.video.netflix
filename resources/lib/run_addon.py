@@ -13,10 +13,11 @@ from functools import wraps
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
-from resources.lib.globals import g
+from resources.lib.api.exceptions import HttpError401
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
                                   get_current_kodi_profile_name, get_local_string)
+from resources.lib.globals import g
 from resources.lib.upgrade_controller import check_addon_upgrade
 
 
@@ -165,7 +166,7 @@ def _check_valid_credentials():
 
 
 def run(argv):
-    # pylint: disable=broad-except,ungrouped-imports
+    # pylint: disable=broad-except,ungrouped-imports,too-many-branches
     # Initialize globals right away to avoid stale values from the last addon invocation.
     # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
     # PR: https://github.com/xbmc/xbmc/pull/13814
@@ -209,6 +210,14 @@ def run(argv):
         except BackendNotReady:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()
+            success = False
+        except HttpError401:
+            # Http error 401 Client Error: Unauthorized for url ... issue (see _request in nfsession_requests.py)
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog(get_local_string(30105),
+                           ('There was a communication problem with Netflix.\r\n'
+                            'This is a known and unresolvable issue, do not submit reports.\r\n'
+                            'You can try the operation again or exit.'))
             success = False
         except Exception as exc:
             import traceback

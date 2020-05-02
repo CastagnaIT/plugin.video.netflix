@@ -20,7 +20,7 @@ from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
                                           InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
-                                          LoginValidateErrorIncorrectPassword)
+                                          LoginValidateErrorIncorrectPassword, HttpError401)
 from resources.lib.services.nfsession.nfsession_endpoints import ENDPOINTS, BASE_URL
 
 
@@ -79,6 +79,17 @@ class NFSessionRequests(NFSessionBase):
             common.warn('Try refresh session data due to {} http error', response.status_code)
             if self.try_refresh_session_data():
                 return self._request(method, component, True, **kwargs)
+        if response.status_code == 401:
+            # 30/04/2020: first signal of http error 401 issues
+            # After the profile selection sometime can happen the http error 401 Client Error: Unauthorized for url ...
+            # due to the failure of the first shakti API request.
+            # After a revision of the code of initial access, i have not found any reason that could cause this problem,
+            # i am beginning to suspect that is a problem of the netflix service.
+            # Not found any solutions, two http attempts are already made, so notify the user of the problem.
+            # 02/05/2020: i intercepted this problem even browsing several times the lists,
+            #             does not happen often, so the problem is more complex.
+            common.error('Raise error due to too many http error 401 (known error currently unresolvable)')
+            raise HttpError401
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
                 if endpoint_conf['is_api_call']

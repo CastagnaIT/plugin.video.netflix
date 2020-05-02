@@ -94,27 +94,11 @@ class Directory(object):
                 xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
                 return
         common.debug('Showing home listing')
-        try:
-            list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
-            finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
-                               title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
-                                      ' - ' + common.get_local_string(30097)))
-            end_of_directory(False, cache_to_disc)
-        except Exception as exc:  # pylint: disable=broad-except
-            if str(exc) != 'HTTPError':
-                raise
-            # 30/04/2020 - http error 401 issue
-            # After the profile selection sometime can happen the http error 401 Client Error: Unauthorized for url ...
-            # due to the failure of the first shakti API request.
-            # After a revision of the code of initial access, i have not found any reason that could cause this problem,
-            # i am beginning to suspect that is a problem of the netflix service.
-            # Not found any solutions, two http attempts are already made, so notify the user of the problem.
-            common.error('Stop navigation due to too many http authURL errors (known error currently unresolvable)')
-            ui.show_ok_dialog(common.get_local_string(30105),
-                              ('There was a communication problem with Netflix.\r\n'
-                               'This is a known and unresolvable issue, do not submit reports.\r\n'
-                               'You can try the operation again or exit.'))
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
+        finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
+                           title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
+                                  ' - ' + common.get_local_string(30097)))
+        end_of_directory(False, cache_to_disc)
 
     def _activate_profile(self, guid):
         pin_result = verify_profile_pin(guid)
