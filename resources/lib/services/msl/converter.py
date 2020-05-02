@@ -20,9 +20,6 @@ def convert_to_dash(manifest):
     from xbmcaddon import Addon
     isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
 
-    has_drm_streams = manifest['hasDrmStreams']
-    protection_info = _get_protection_info(manifest) if has_drm_streams else None
-
     seconds = manifest['duration'] / 1000
     init_length = int(seconds / 2 * 12 + 20 * 1000)
     duration = "PT" + str(int(seconds)) + ".00S"
@@ -30,15 +27,21 @@ def convert_to_dash(manifest):
     root = _mpd_manifest_root(duration)
     period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
 
+    has_video_drm_streams = manifest['video_tracks'][0].get('hasDrmStreams', False)
+    video_protection_info = _get_protection_info(manifest['video_tracks'][0]) if has_video_drm_streams else None
+
     for video_track in manifest['video_tracks']:
-        _convert_video_track(video_track, period, init_length, protection_info, has_drm_streams)
+        _convert_video_track(video_track, period, init_length, video_protection_info, has_video_drm_streams)
 
     common.fix_locale_languages(manifest['audio_tracks'])
     common.fix_locale_languages(manifest['timedtexttracks'])
 
+    has_audio_drm_streams = manifest['audio_tracks'][0].get('hasDrmStreams', False)
+
     default_audio_language_index = _get_default_audio_language(manifest)
     for index, audio_track in enumerate(manifest['audio_tracks']):
-        _convert_audio_track(audio_track, period, init_length, (index == default_audio_language_index), has_drm_streams)
+        _convert_audio_track(audio_track, period, init_length, (index == default_audio_language_index),
+                             has_audio_drm_streams)
 
     default_subtitle_language_index = _get_default_subtitle_language(manifest)
     for index, text_track in enumerate(manifest['timedtexttracks']):
@@ -72,31 +75,26 @@ def _add_segment_base(representation, init_length):
         indexRangeExact='true')
 
 
-def _get_protection_info(manifest):
-    try:
-        pssh = None
-        keyid = None
-        if 'drmHeader' in manifest:
-            pssh = manifest['drmHeader']['bytes']
-            keyid = manifest['drmHeader']['keyId']
-    except (KeyError, AttributeError, IndexError):
-        pssh = None
-        keyid = None
+def _get_protection_info(content):
+    pssh = content.get('drmHeader', {}).get('bytes')
+    keyid = content.get('drmHeader', {}).get('keyId')
     return {'pssh': pssh, 'keyid': keyid}
 
 
 def _add_protection_info(adaptation_set, pssh, keyid):
     if keyid:
+        from base64 import standard_b64decode
         protection = ET.SubElement(
             adaptation_set,  # Parent
             'ContentProtection',  # Tag
             value='cenc',
-            schemeIdUri='urn:mpeg:dash:mp4protection:2011').set(
-                'cenc:default_KID', str(uuid.UUID(bytes=keyid)))
-    protection = ET.SubElement(
-        adaptation_set,  # Parent
-        'ContentProtection',  # Tag
-        schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')
+            schemeIdUri='urn:mpeg:dash:mp4protection:2011')
+        protection.set('cenc:default_KID', str(uuid.UUID(bytes=standard_b64decode(keyid))))
+    else:
+        protection = ET.SubElement(
+            adaptation_set,  # Parent
+            'ContentProtection',  # Tag
+            schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')  # Widevine UUID
     ET.SubElement(
         protection,  # Parent
         'widevine:license',  # Tag
@@ -105,7 +103,7 @@ def _add_protection_info(adaptation_set, pssh, keyid):
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 
 
-def _convert_video_track(video_track, period, init_length, protection, drm_streams):
+def _convert_video_track(video_track, period, init_length, protection, has_drm_streams):
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
@@ -114,10 +112,10 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
     if protection:
         _add_protection_info(adaptation_set, **protection)
 
-    limit_res = _limit_video_resolution(video_track['streams'], drm_streams)
+    limit_res = _limit_video_resolution(video_track['streams'], has_drm_streams)
 
     for downloadable in video_track['streams']:
-        if downloadable['isDrm'] != drm_streams:
+        if downloadable['isDrm'] != has_drm_streams:
             continue
         if limit_res:
             if int(downloadable['res_h']) > limit_res:
@@ -125,7 +123,7 @@ def _convert_video_track(video_track, period, init_length, protection, drm_strea
         _convert_video_downloadable(downloadable, adaptation_set, init_length)
 
 
-def _limit_video_resolution(video_tracks, drm_streams):
+def _limit_video_resolution(video_tracks, has_drm_streams):
     """Limit max video resolution to user choice"""
     max_resolution = g.ADDON.getSettingString('stream_max_resolution')
     if max_resolution != '--':
@@ -143,7 +141,7 @@ def _limit_video_resolution(video_tracks, drm_streams):
             return None
         # At least an equal or lower resolution must exist otherwise disable the imposed limit
         for downloadable in video_tracks:
-            if downloadable['isDrm'] != drm_streams:
+            if downloadable['isDrm'] != has_drm_streams:
                 continue
             if int(downloadable['res_h']) <= res_limit:
                 return res_limit
@@ -176,7 +174,7 @@ def _determine_video_codec(content_profile):
     return 'h264'
 
 
-def _convert_audio_track(audio_track, period, init_length, default, drm_streams):  # pylint: disable=unused-argument
+def _convert_audio_track(audio_track, period, init_length, default, has_drm_streams):  # pylint: disable=unused-argument
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -197,7 +195,7 @@ def _convert_audio_track(audio_track, period, init_length, default, drm_streams)
         adaptation_set.set('name', 'ATMOS')
     for downloadable in audio_track['streams']:
         # Some audio stream has no drm
-        # if downloadable['isDrm'] != drm_streams:
+        # if downloadable['isDrm'] != has_drm_streams:
         #     continue
         _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count[downloadable['channels']])
 
