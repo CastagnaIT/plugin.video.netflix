@@ -89,7 +89,7 @@ def play(videoid):
     videoid_next_episode = None
 
     if not is_played_from_addon or is_upnext_enabled:
-        if is_upnext_enabled:
+        if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
             # When UpNext is enabled, get the next episode to play
             videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
         info_data = infolabels.get_info_from_netflix(

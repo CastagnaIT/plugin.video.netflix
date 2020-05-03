@@ -29,7 +29,7 @@ class UpNextNotifier(PlaybackActionManager):
         return 'enabled={}'.format(self.enabled)
 
     def _initialize(self, data):
-        if not data['info_data'] or not data['videoid_next_episode']:
+        if not data['videoid_next_episode'] or not data['info_data']:
             return
         videoid = common.VideoId.from_dict(data['videoid'])
         videoid_next_episode = common.VideoId.from_dict(data['videoid_next_episode'])
