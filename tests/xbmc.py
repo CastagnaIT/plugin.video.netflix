@@ -174,7 +174,7 @@ def log(msg, level):
     print('[32;1m%s: [32;0m%s[0m' % (level, msg))
 
 
-def makeLegalFilename(filename, fatX=None):
+def makeLegalFilename(filename, fatX=None):  # Kodi 18
     """A reimplementation of the xbmc makeLegalFilename() function"""
     if fatX:
         return filename

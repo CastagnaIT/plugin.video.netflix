@@ -23,6 +23,11 @@ from resources.lib.kodi.library_items import (export_item, remove_item, export_n
                                               ItemNotFound, FOLDER_MOVIES, FOLDER_TV, library_path)
 from resources.lib.kodi.library_tasks import compile_tasks, execute_tasks
 
+try:  # Kodi >= 19
+    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
+
 
 def update_kodi_library(library_operation):
     """Decorator that ensures an update of the Kodi library"""
@@ -171,7 +176,7 @@ def purge():
     g.SHARED_DB.purge_library()
     for folder_name in [FOLDER_MOVIES, FOLDER_TV]:
         section_dir = xbmc.translatePath(
-            xbmc.makeLegalFilename('/'.join([library_path(), folder_name])))
+            makeLegalFilename('/'.join([library_path(), folder_name])))
         common.delete_folder_contents(section_dir, delete_subfolders=True)
 
 
