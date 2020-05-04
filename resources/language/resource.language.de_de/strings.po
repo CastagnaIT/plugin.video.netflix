@@ -948,7 +948,7 @@ msgstr "Farbe der zusätzlichen Handlungsinformation"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "Die Hintergrunddienste konnten wegen folgendem Problem nicht gestartet werden:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
