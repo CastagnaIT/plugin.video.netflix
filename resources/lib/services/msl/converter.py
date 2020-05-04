@@ -20,6 +20,11 @@ def convert_to_dash(manifest):
     from xbmcaddon import Addon
     isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
 
+    # If a CDN server has stability problems it may cause errors with streaming,
+    # we allow users to select a different CDN server
+    # (should be managed by ISA but is currently is not implemented)
+    cdn_index = int(g.ADDON.getSettingString('cdn_server')[-1]) - 1
+
     seconds = manifest['duration'] / 1000
     init_length = int(seconds / 2 * 12 + 20 * 1000)
     duration = "PT" + str(int(seconds)) + ".00S"
@@ -31,7 +36,7 @@ def convert_to_dash(manifest):
     video_protection_info = _get_protection_info(manifest['video_tracks'][0]) if has_video_drm_streams else None
 
     for video_track in manifest['video_tracks']:
-        _convert_video_track(video_track, period, init_length, video_protection_info, has_video_drm_streams)
+        _convert_video_track(video_track, period, init_length, video_protection_info, has_video_drm_streams, cdn_index)
 
     common.fix_locale_languages(manifest['audio_tracks'])
     common.fix_locale_languages(manifest['timedtexttracks'])
@@ -41,13 +46,13 @@ def convert_to_dash(manifest):
     default_audio_language_index = _get_default_audio_language(manifest)
     for index, audio_track in enumerate(manifest['audio_tracks']):
         _convert_audio_track(audio_track, period, init_length, (index == default_audio_language_index),
-                             has_audio_drm_streams)
+                             has_audio_drm_streams, cdn_index)
 
     default_subtitle_language_index = _get_default_subtitle_language(manifest)
     for index, text_track in enumerate(manifest['timedtexttracks']):
         if text_track['isNoneTrack']:
             continue
-        _convert_text_track(text_track, period, (index == default_subtitle_language_index), isa_version)
+        _convert_text_track(text_track, period, (index == default_subtitle_language_index), cdn_index, isa_version)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
     if common.is_debug_verbose():
@@ -103,7 +108,7 @@ def _add_protection_info(adaptation_set, pssh, keyid):
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 
 
-def _convert_video_track(video_track, period, init_length, protection, has_drm_streams):
+def _convert_video_track(video_track, period, init_length, protection, has_drm_streams, cdn_index):
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
@@ -120,7 +125,7 @@ def _convert_video_track(video_track, period, init_length, protection, has_drm_s
         if limit_res:
             if int(downloadable['res_h']) > limit_res:
                 continue
-        _convert_video_downloadable(downloadable, adaptation_set, init_length)
+        _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_index)
 
 
 def _limit_video_resolution(video_tracks, has_drm_streams):
@@ -148,7 +153,7 @@ def _limit_video_resolution(video_tracks, has_drm_streams):
     return None
 
 
-def _convert_video_downloadable(downloadable, adaptation_set, init_length):
+def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_index):
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
@@ -160,7 +165,7 @@ def _convert_video_downloadable(downloadable, adaptation_set, init_length):
         codecs=_determine_video_codec(downloadable['content_profile']),
         frameRate=str(downloadable['framerate_value'] / downloadable['framerate_scale']),
         mimeType='video/mp4')
-    _add_base_url(representation, downloadable['urls'][0]['url'])
+    _add_base_url(representation, downloadable['urls'][cdn_index]['url'])
     _add_segment_base(representation, init_length)
 
 
@@ -174,7 +179,8 @@ def _determine_video_codec(content_profile):
     return 'h264'
 
 
-def _convert_audio_track(audio_track, period, init_length, default, has_drm_streams):  # pylint: disable=unused-argument
+# pylint: disable=unused-argument
+def _convert_audio_track(audio_track, period, init_length, default, has_drm_streams, cdn_index):
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -197,10 +203,11 @@ def _convert_audio_track(audio_track, period, init_length, default, has_drm_stre
         # Some audio stream has no drm
         # if downloadable['isDrm'] != has_drm_streams:
         #     continue
-        _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count[downloadable['channels']])
+        _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count[downloadable['channels']],
+                                    cdn_index)
 
 
-def _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count):
+def _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count, cdn_index):
     codec_type = 'aac'
     if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
         codec_type = 'ec-3'
@@ -216,11 +223,11 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length, chann
         'AudioChannelConfiguration',  # Tag
         schemeIdUri='urn:mpeg:dash:23003:3:audio_channel_configuration:2011',
         value=channels_count)
-    _add_base_url(representation, downloadable['urls'][0]['url'])
+    _add_base_url(representation, downloadable['urls'][cdn_index]['url'])
     _add_segment_base(representation, init_length)
 
 
-def _convert_text_track(text_track, period, default, isa_version):
+def _convert_text_track(text_track, period, default, cdn_index, isa_version):
     # Only one subtitle representation per adaptationset
     downloadable = text_track.get('ttDownloadables')
     if not text_track:
@@ -262,7 +269,7 @@ def _convert_text_track(text_track, period, default, isa_version):
         adaptation_set,  # Parent
         'Representation',  # Tag
         nflxProfile=content_profile)
-    _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[0])
+    _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[cdn_index])
 
 
 def _get_default_audio_language(manifest):
