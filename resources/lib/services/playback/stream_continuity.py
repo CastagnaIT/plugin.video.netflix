@@ -43,8 +43,8 @@ class StreamContinuityManager(PlaybackActionManager):
 
     def __init__(self):  # pylint: disable=super-on-old-class
         super(StreamContinuityManager, self).__init__()
-        self.current_videoid = None
         self.videoid = None
+        self.current_videoid = None
         self.current_streams = {}
         self.sc_settings = {}
         self.player = xbmc.Player()
@@ -54,14 +54,13 @@ class StreamContinuityManager(PlaybackActionManager):
         self.kodi_only_forced_subtitles = None
 
     def _initialize(self, data):
-        videoid = common.VideoId.from_dict(data['videoid'])
-        if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+        self.videoid = common.VideoId.from_dict(data['videoid'])
+        if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
             return
-        self.videoid = videoid
-        self.current_videoid = videoid \
-            if videoid.mediatype == common.VideoId.MOVIE \
-            else videoid.derive_parent(0)
+        self.current_videoid = self.videoid \
+            if self.videoid.mediatype == common.VideoId.MOVIE \
+            else self.videoid.derive_parent(0)
         self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
                                                              self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
