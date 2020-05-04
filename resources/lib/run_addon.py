@@ -13,7 +13,7 @@ from functools import wraps
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
-from resources.lib.api.exceptions import HttpError401
+from resources.lib.api.exceptions import HttpError401, InputStreamHelperError
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
                                   get_current_kodi_profile_name, get_local_string)
@@ -210,6 +210,13 @@ def run(argv):
         except BackendNotReady:
             from resources.lib.kodi.ui import show_backend_not_ready
             show_backend_not_ready()
+            success = False
+        except InputStreamHelperError as exc:
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog('InputStream Helper Add-on error',
+                           ('The operation has been cancelled.\r\n'
+                            'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
+                            'Please report it to InputStream Helper github.'.format(exc)))
             success = False
         except HttpError401:
             # Http error 401 Client Error: Unauthorized for url ... issue (see _request in nfsession_requests.py)

@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmcplugin
 import xbmcgui
 
-from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.api.paths import EVENT_PATHS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
@@ -43,10 +43,6 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
     'DXV/U5HK7SaBA6iJ981/aforXbd2vZlRXO/2S+Maa2mHULzsD+S5l4/YGpSt7PnkCe25F+nA'
     'ovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ'
     '0fFdCmw=')
-
-
-class InputstreamError(Exception):
-    """There was an error with setting up inputstream.adaptive"""
 
 
 @common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
@@ -160,11 +156,18 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty('isFolder', 'false')
     list_item.setProperty('IsPlayable', 'true')
 
-    import inputstreamhelper
-    is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+    try:
+        import inputstreamhelper
+        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+        inputstream_ready = is_helper.check_inputstream()
+    except Exception as exc:  # pylint: disable=broad-except
+        # Captures all types of ISH internal errors
+        import traceback
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        raise InputStreamHelperError(str(exc))
 
-    if not is_helper.check_inputstream():
-        raise InputstreamError(common.get_local_string(30046))
+    if not inputstream_ready:
+        raise Exception(common.get_local_string(30046))
 
     list_item.setProperty(
         key=is_helper.inputstream_addon + '.stream_headers',

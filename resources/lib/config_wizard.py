@@ -14,6 +14,7 @@ from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
+from resources.lib.api.exceptions import InputStreamHelperError
 from resources.lib.common import debug, error, get_system_platform, is_device_4k_capable, get_local_string, json_rpc
 from resources.lib.globals import g
 from resources.lib.kodi.ui import show_ok_dialog
@@ -47,10 +48,17 @@ def run_addon_configuration(show_end_msg=False):
 
 def _set_isa_addon_settings(is_4k_capable, hdcp_override):
     """Method for self-configuring of InputStream Adaptive add-on"""
-    is_helper = inputstreamhelper.Helper('mpd')
-    if not is_helper.check_inputstream():
-        show_ok_dialog(get_local_string(30154), get_local_string(30046))
-        return
+    try:
+        is_helper = inputstreamhelper.Helper('mpd')
+        if not is_helper.check_inputstream():
+            show_ok_dialog(get_local_string(30154), get_local_string(30046))
+            return
+    except Exception as exc:  # pylint: disable=broad-except
+        # Captures all types of ISH internal errors
+        import traceback
+        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        raise InputStreamHelperError(str(exc))
+
     isa_addon = Addon('inputstream.adaptive')
     isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
     if isa_addon.getSettingInt('STREAMSELECTION') == 1:
