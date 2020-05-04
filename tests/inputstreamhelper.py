@@ -23,3 +23,4 @@ class Helper:
 
     def check_inputstream(self):
         """A stub implementation of the inputstreamhelper Helper check_inputstream classmethod"""
+        return True
