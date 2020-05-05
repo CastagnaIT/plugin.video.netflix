@@ -1,3 +1,20 @@
+v1.2.1 (2020-05-05)
+-Reviewed access and profile selection to mitigate http error 401 (not resolved)
+-Add Open Connect CDN setting
+-Set time limit for paused playback
+-Fixed a issue caused wrong date in viewing activity
+-Fixed dash content protection data
+-Fixed a issue caused UpNext to crash
+-Fixed a issue caused KeyError when play videos
+-Fixed a issue caused TypeError on more addon rollback
+-Fixed a issue caused a double profile switch on selection
+-Fixed a issue caused slow playback video starts (on windows)
+-Fixed a issue caused missing of h265 media flag
+-Fixed broken "force the update of my list" context menu
+-Some changes for Kodi 19 due to API changes
+-Updated translations de, it
+-Other minor improvements/changes
+
 v1.2.0 (2020-04-22)
 -Parental control temporary disabled due to Netflix changes
 -New cache management
