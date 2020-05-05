@@ -21,6 +21,7 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
+from .exceptions import MSLError
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles
@@ -96,7 +97,17 @@ class MSLHandler(object):
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
         """
-        manifest = self._load_manifest(viewable_id, g.get_esn())
+        try:
+            manifest = self._load_manifest(viewable_id, g.get_esn())
+        except MSLError as exc:
+            if 'Email or password is incorrect' in str(exc):
+                # Known cases when MSL error "Email or password is incorrect." can happen:
+                # - If user change the password when the nf session was still active
+                # - Netflix has reset the password for suspicious activity when the nf session was still active
+                # Then clear the credentials and also user tokens.
+                common.purge_credentials()
+                self.msl_requests.crypto.clear_user_id_tokens()
+            raise
         # Disable 1080p Unlock for now, as it is broken due to Netflix changes
         # if (g.ADDON.getSettingBool('enable_1080p_unlock') and
         #         not g.ADDON.getSettingBool('enable_vp9_profiles') and
