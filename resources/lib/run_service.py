@@ -99,7 +99,7 @@ class NetflixService(object):
         """
         Start the background services
         """
-        from resources.lib.services.playback.controller import PlaybackController
+        from resources.lib.services.playback.action_controller import ActionController
         from resources.lib.services.library_updater import LibraryUpdateService
         from resources.lib.services.settings_monitor import SettingsMonitor
         for server in self.SERVERS:
@@ -107,7 +107,7 @@ class NetflixService(object):
             server['instance'].timeout = 1
             server['thread'].start()
             info('[{}] Thread started'.format(server['name']))
-        self.controller = PlaybackController()
+        self.controller = ActionController()
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
         # Mark the service as active
