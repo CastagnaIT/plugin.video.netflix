@@ -199,7 +199,7 @@ def generate_logblobs_params():
         # 'jssid': '15822792997793',  # Same value of appId
         # 'jsoffms': 1261,
         'clienttime': timestamp,
-        'client_utc': timestamp_utc,
+        'client_utc': int(timestamp_utc),
         'uiver': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION)
     }
 
