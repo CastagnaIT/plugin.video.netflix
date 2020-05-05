@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.2.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.2.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -70,25 +70,22 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.2.0 (2020-04-22)
--Parental control temporary disabled due to Netflix changes
--New cache management
--Add-on now is ready to works also on systems with special chars in the system path
--Implemented profile PIN protection
--Implemented masked PIN input (Kodi 19)
--Implemented auto purge cache of expired items
--Implemented paginated list of seasons
--Implemented cache to search menu
--Implemented Up Next also with "Sync of watched status with Netflix" feature
--Add support to Python 3.8
--Add title to search page
--Add profile name to homepage title
--Add a better handling of lolomo error with sync of watched status enabled
--Add romanian, swedish translation
--Improved watched status threshold
--Improved watched status update in the GUI display
--Improved catch of possible errors in events module
-To see the full list of changes read the changelog.txt
+v1.2.1 (2020-05-05)
+-Reviewed access and profile selection to mitigate http error 401 (not resolved)
+-Add Open Connect CDN setting
+-Set time limit for paused playback
+-Fixed a issue caused wrong date in viewing activity
+-Fixed dash content protection data
+-Fixed a issue caused UpNext to crash
+-Fixed a issue caused KeyError when play videos
+-Fixed a issue caused TypeError on more addon rollback
+-Fixed a issue caused a double profile switch on selection
+-Fixed a issue caused slow playback video starts (on windows)
+-Fixed a issue caused missing of h265 media flag
+-Fixed broken "force the update of my list" context menu
+-Some changes for Kodi 19 due to API changes
+-Updated translations de, it
+-Other minor improvements/changes
     </news>
   </extension>
 </addon>
