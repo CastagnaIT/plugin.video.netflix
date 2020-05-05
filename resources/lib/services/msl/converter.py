@@ -157,7 +157,7 @@ def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_i
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
-        id=str(downloadable['urls'][0]['cdn_id']),
+        id=str(downloadable['urls'][cdn_index]['cdn_id']),
         width=str(downloadable['res_w']),
         height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
@@ -214,7 +214,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length, chann
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
-        id=str(downloadable['urls'][0]['cdn_id']),
+        id=str(downloadable['urls'][cdn_index]['cdn_id']),
         codecs=codec_type,
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
