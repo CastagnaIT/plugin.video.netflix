@@ -19,7 +19,8 @@ from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
 from resources.lib.services.nfsession.nfsession_base import needs_login
-from resources.lib.api.exceptions import MissingCredentialsError
+from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
 
 
 class NetflixSession(NFSessionAccess, DirectoryBuilder):
@@ -79,7 +80,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         common.debug('Fetch initial page')
         response = self._get('browse')
         # Update the session data, the profiles data to the database, and update the authURL
-        api_data = website.extract_session_data(response, update_profiles=True)
+        api_data = self.website_extract_session_data(response, update_profiles=True)
         self.auth_url = api_data['auth_url']
         # Check if the profile session is still active, used only to activate_profile
         self.is_profile_session_active = api_data['is_profile_session_active']
@@ -98,7 +99,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             common.info('Activating profile {}', guid)
             # INIT Method 1 - HTTP mode
             response = self._get('switch_profile', params={'tkn': guid})
-            self.auth_url = website.extract_session_data(response)['auth_url']
+            self.auth_url = self.website_extract_session_data(response)['auth_url']
             # END Method 1
             # INIT Method 2 - API mode
             # import time
@@ -258,6 +259,20 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             params=custom_params,
             data=data)
         return response_data['jsonGraph']
+
+    def website_extract_session_data(self, content, **kwargs):
+        """Extract session data and handle errors"""
+        try:
+            return website.extract_session_data(content, **kwargs)
+        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
+            common.warn('Session data not valid, login can be expired or the password has been changed ({})',
+                        type(exc).__name__)
+            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
+                common.purge_credentials()
+                self.session.cookies.clear()
+                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+                raise NotLoggedInError
+            raise
 
 
 def _set_range_selector(paths, range_start, range_end):
