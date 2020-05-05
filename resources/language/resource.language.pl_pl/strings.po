@@ -950,4 +950,8 @@ msgstr "Kolor dodatkowych informacji fabuły"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Usługi w tle nie mogą zostać uruchomione z powodu:\r\n{}"
+msgstr "usługi w tle nie mogą być uruchomione z powodu:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Otwórz połączenie CDN (niższy indeks jest lepszy)"
