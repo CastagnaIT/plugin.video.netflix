@@ -952,4 +952,4 @@ msgstr "Die Hintergrunddienste konnten wegen folgendem Problem nicht gestartet w
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr "Connect CDN öffnen (niedriger Index ist besser)"
+msgstr "Open Connect CDN (niedriger Index ist besser)"
