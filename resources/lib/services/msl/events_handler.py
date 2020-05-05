@@ -200,7 +200,7 @@ class EventsHandler(threading.Thread):
         # Get previous elaborated data of the same video id
         # Some tags must remain unchanged between events
         previous_data, previous_player_state = self.cache_data_events.get(videoid.value, ({}, None))
-        timestamp = int(time.time() * 10000)
+        timestamp = int(time.time() * 1000)
 
         # Context location values can be easily viewed from tag data-ui-tracking-context
         # of a preview box in website html
