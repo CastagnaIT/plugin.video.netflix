@@ -16,15 +16,15 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.globals import g
 from resources.lib.kodi import ui
-from .action_manager import PlaybackActionManager
-from .progress_manager import ProgressManager
-from .resume_manager import ResumeManager
-from .section_skipping import SectionSkipper
-from .stream_continuity import StreamContinuityManager
-from .upnext import UpNextNotifier
+from .action_manager import ActionManager
+from .am_video_events import AMVideoEvents
+from .am_playback import AMPlayback
+from .am_section_skipping import AMSectionSkipper
+from .am_stream_continuity import AMStreamContinuity
+from .am_upnext_notifier import AMUpNextNotifier
 
 
-class PlaybackController(xbmc.Monitor):
+class ActionController(xbmc.Monitor):
     """
     Tracks status and progress of video playbacks initiated by the add-on
     """
@@ -47,13 +47,13 @@ class PlaybackController(xbmc.Monitor):
             _reset_upnext_callback_state()
         self.active_player_id = None
         self.action_managers = [
-            ResumeManager(),
-            SectionSkipper(),
-            StreamContinuityManager(),
-            ProgressManager(),
-            UpNextNotifier()
+            AMPlayback(),
+            AMSectionSkipper(),
+            AMStreamContinuity(),
+            AMVideoEvents(),
+            AMUpNextNotifier()
         ]
-        self._notify_all(PlaybackActionManager.initialize, data)
+        self._notify_all(ActionManager.call_initialize, data)
         self.tracking = True
 
     def onNotification(self, sender, method, data):  # pylint: disable=unused-argument
@@ -84,16 +84,16 @@ class PlaybackController(xbmc.Monitor):
 
     def on_service_tick(self):
         """
-        Notify action managers of playback tick
+        Notify to action managers that an interval of time has elapsed
         """
         if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
-                self._notify_all(PlaybackActionManager.on_tick, player_state)
+                self._notify_all(ActionManager.call_on_tick, player_state)
 
     def _on_playback_started(self):
         player_id = _get_player_id()
-        self._notify_all(PlaybackActionManager.on_playback_started, self._get_player_state(player_id))
+        self._notify_all(ActionManager.call_on_playback_started, self._get_player_state(player_id))
         if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
         self.active_player_id = player_id
@@ -102,21 +102,21 @@ class PlaybackController(xbmc.Monitor):
         if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
-                self._notify_all(PlaybackActionManager.on_playback_seek,
+                self._notify_all(ActionManager.call_on_playback_seek,
                                  player_state)
 
     def _on_playback_pause(self):
         if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
-                self._notify_all(PlaybackActionManager.on_playback_pause,
+                self._notify_all(ActionManager.call_on_playback_pause,
                                  player_state)
 
     def _on_playback_resume(self):
         if self.tracking and self.active_player_id is not None:
             player_state = self._get_player_state()
             if player_state:
-                self._notify_all(PlaybackActionManager.on_playback_resume,
+                self._notify_all(ActionManager.call_on_playback_resume,
                                  player_state)
 
     def _on_playback_stopped(self):
@@ -124,11 +124,11 @@ class PlaybackController(xbmc.Monitor):
         self.active_player_id = None
         # Immediately send the request to release the license
         common.send_signal(signal=common.Signals.RELEASE_LICENSE, non_blocking=True)
-        self._notify_all(PlaybackActionManager.on_playback_stopped)
+        self._notify_all(ActionManager.call_on_playback_stopped)
         self.action_managers = None
 
     def _notify_all(self, notification, data=None):
-        common.debug('Notifying all managers of {} (data={})', notification.__name__, data)
+        common.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 

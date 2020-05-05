@@ -320,7 +320,7 @@ def set_watched_status(dict_item, video_data, common_data):
                                 video_data.get('creditsOffset', video_data['runtime']))
 
         # To avoid asking to the server again the entire list of titles (after watched a video)
-        # to get the updated value, we override the value with the value saved in memory (see progress_manager.py)
+        # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
         try:
             bookmark_position = g.CACHE.get(CACHE_BOOKMARKS, video_id)
         except CacheMiss:

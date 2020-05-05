@@ -50,7 +50,7 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     is_upnext_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
-    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see controller.py
+    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see action_controller.py
     is_upnext_callback_received = g.LOCAL_DB.get_value('upnext_play_callback_received', False)
     is_upnext_callback_file_type_strm = g.LOCAL_DB.get_value('upnext_play_callback_file_type', '') == 'strm'
     # This is the only way found to know if the played item come from the add-on itself or from Kodi library
