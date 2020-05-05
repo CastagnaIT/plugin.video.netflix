@@ -404,7 +404,7 @@ msgstr "Netflix hat den folgenden Fehler gemeldet:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Details zum Fehler wurden in die Kodi Logdatei geschrieben. Falls die Fehlermeldung keine Rückschlüsse auf die Ursache und mögliche Lösung des Fehlers zulässt oder der Fehler dauerhaft auftritt, melde den Fehler bitte über GitHub. Bitte liefere ein vollständiges Debug-Log mit deinem Fehler-Report (Option \"Debug Logging\" in den Kodi-Einstellungen aktivieren)."
+msgstr "Details zum Fehler wurden in die Kodi Logdatei geschrieben. Falls die Fehlermeldung keine Rückschlüsse auf die Ursache und mögliche Lösung des Fehlers zulässt oder der Fehler dauerhaft auftritt, melde den Fehler bitte über GitHub gemäß den Anweisungen in der Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -945,3 +945,11 @@ msgstr "Up Next Benachrichtigungen (nächstes Video ansehen)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Farbe der zusätzlichen Handlungsinformation"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Die Hintergrunddienste konnten wegen folgendem Problem nicht gestartet werden:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (niedriger Index ist besser)"
