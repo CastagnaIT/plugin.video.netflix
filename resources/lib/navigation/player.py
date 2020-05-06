@@ -152,7 +152,7 @@ def get_inputstream_listitem(videoid):
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
-    list_item.setMimeType('application/dash+xml')
+    list_item.setMimeType('application/xml+dash')
     list_item.setProperty('isFolder', 'false')
     list_item.setProperty('IsPlayable', 'true')
 
@@ -186,7 +186,7 @@ def get_inputstream_listitem(videoid):
         key=is_helper.inputstream_addon + '.server_certificate',
         value=INPUTSTREAM_SERVER_CERTIFICATE)
     list_item.setProperty(
-        key='inputstreamaddon',
+        key='inputstreamaddon' if g.KODI_VERSION.is_major_ver('18') else 'inputstream',
         value=is_helper.inputstream_addon)
     return list_item
 
