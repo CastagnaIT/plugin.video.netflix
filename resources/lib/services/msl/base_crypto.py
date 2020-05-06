@@ -98,12 +98,15 @@ class MSLBaseCrypto(object):
     def save_user_id_token(self, profile_guid, user_token_id):
         """Save or update a user id token associated to a profile guid"""
         if 'user_id_tokens' not in self._msl_data:
+            save_msl_data = True
             self._msl_data['user_id_tokens'] = {
                 profile_guid: user_token_id
             }
         else:
+            save_msl_data = not self._msl_data['user_id_tokens'].get(profile_guid) == user_token_id
             self._msl_data['user_id_tokens'][profile_guid] = user_token_id
-        self._save_msl_data()
+        if save_msl_data:
+            self._save_msl_data()
 
     def clear_user_id_tokens(self):
         """Clear all user id tokens"""
