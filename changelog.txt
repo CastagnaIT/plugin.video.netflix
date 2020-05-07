@@ -1,3 +1,6 @@
+v1.2.2 (2020-05-07)
+-Fixed a issue regression caused problems to 1080P/4K playback
+
 v1.2.1 (2020-05-05)
 -Reviewed access and profile selection to mitigate http error 401 (not resolved)
 -Add Open Connect CDN setting
