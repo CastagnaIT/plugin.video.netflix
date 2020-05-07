@@ -88,18 +88,25 @@ def _get_protection_info(content):
 
 def _add_protection_info(adaptation_set, pssh, keyid):
     if keyid:
+        # Signaling presence of encrypted content
         from base64 import standard_b64decode
-        protection = ET.SubElement(
+        ET.SubElement(
             adaptation_set,  # Parent
             'ContentProtection',  # Tag
-            value='cenc',
-            schemeIdUri='urn:mpeg:dash:mp4protection:2011')
-        protection.set('cenc:default_KID', str(uuid.UUID(bytes=standard_b64decode(keyid))))
-    else:
-        protection = ET.SubElement(
-            adaptation_set,  # Parent
-            'ContentProtection',  # Tag
-            schemeIdUri='urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED')  # Widevine UUID
+            attrib={
+                'schemeIdUri': 'urn:mpeg:dash:mp4protection:2011',
+                'cenc:default_KID': str(uuid.UUID(bytes=standard_b64decode(keyid))),
+                'value': 'cenc'
+            })
+    # Define the DRM system configuration
+    protection = ET.SubElement(
+        adaptation_set,  # Parent
+        'ContentProtection',  # Tag
+        attrib={
+            'schemeIdUri': 'urn:uuid:EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED',
+            'value': 'widevine'
+        })
+    # Add child tags to the DRM system configuration ('widevine:license' is an ISA custom tag)
     ET.SubElement(
         protection,  # Parent
         'widevine:license',  # Tag
