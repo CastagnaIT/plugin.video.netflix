@@ -70,11 +70,9 @@ def convert_list_to_dir_items(list_data):
 
 
 def _convert_dict_to_listitem(dict_item):
-    list_item = xbmcgui.ListItem(label=dict_item['title'], offscreen=True)
+    list_item = xbmcgui.ListItem(label=dict_item['label'], offscreen=True)
     list_item.setContentLookup(False)
     list_item.setProperty('isFolder', str(dict_item['is_folder']))
-    if dict_item.get('label'):
-        list_item.setLabel(dict_item['label'])
 
     if not dict_item['is_folder'] and dict_item['media_type'] in [common.VideoId.EPISODE,
                                                                   common.VideoId.MOVIE,

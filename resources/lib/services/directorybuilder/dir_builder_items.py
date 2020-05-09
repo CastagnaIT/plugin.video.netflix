@@ -58,7 +58,7 @@ def build_mainmenu_listing(lolomo_list):
                                 else '')
             dict_item = {
                 'url': common.build_url(data['path'], mode=g.MODE_DIRECTORY),
-                'title': menu_title,
+                'label': menu_title,
                 'art': {'icon': data['icon']},
                 'info': {'plot': menu_description},  # The description
                 'is_folder': True
@@ -91,7 +91,7 @@ def _create_profile_item(profile_guid, is_active):
                                                                     'profile_guid': profile_guid},
                                                             mode=g.MODE_ACTION))
     dict_item = {
-        'title': profile_name,
+        'label': profile_name,
         'art': {'icon': g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
         'info': {'plot': ', '.join(description)},  # The description
         'is_selected': is_active,
@@ -124,7 +124,7 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
     dict_item = {
         'video_id': seasonid_value,
         'media_type': seasonid.mediatype,
-        'title': season['summary']['name'],
+        'label': season['summary']['name'],
         'is_folder': True
     }
     add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data)
@@ -155,7 +155,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
     episodeid = seasonid.derive_episode(episodeid_value)
     dict_item = {'video_id': episodeid_value,
                  'media_type': episodeid.mediatype,
-                 'title': episode['title'],
+                 'label': episode['title'],
                  'is_folder': False}
     add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
     set_watched_status(dict_item, episode, common_data)
@@ -214,7 +214,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
         else:
             path = 'video_list_sorted'
         pathitems = [path, menu_data['path'][1], list_id]
-    dict_item = {'title': video_list['displayName'],
+    dict_item = {'label': video_list['displayName'],
                  'is_folder': True}
     add_info_dict_item(dict_item, video_list.id, video_list, video_list.data, False, common_data)
     dict_item['art'] = get_art(video_list.id, video_list.artitem, common_data['profile_language_code'])
@@ -257,7 +257,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         # Create the folder for the access to sub-genre
         folder_dict_item = {
             'url': common.build_url(['genres', menu_id, sub_genre_id], mode=g.MODE_DIRECTORY),
-            'title': common.get_local_string(30089),
+            'label': common.get_local_string(30089),
             'art': {'icon': 'DefaultVideoPlaylists.png'},
             'info': {'plot': common.get_local_string(30088)},  # The description
             'is_folder': True
@@ -274,7 +274,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     is_in_mylist = videoid in common_data['mylist_items']
     dict_item = {'video_id': videoid_value,
                  'media_type': videoid.mediatype,
-                 'title': video['title'],
+                 'label': video['title'],
                  'is_folder': is_folder}
     add_info_dict_item(dict_item, videoid, video, video_list.data, is_in_mylist, common_data)
     set_watched_status(dict_item, video, common_data)
@@ -312,6 +312,6 @@ def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     dict_item = {
         'url': common.build_url(pathitems, mode=g.MODE_DIRECTORY),
         'is_folder': True,
-        'title': subgenre_data['name']
+        'label': subgenre_data['name']
     }
     return dict_item
