@@ -17,7 +17,7 @@ import resources.lib.kodi.library as library
 import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
-from resources.lib.navigation.directory_utils import (finalize_directory, convert_list, custom_viewmode,
+from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
                                                       end_of_directory, get_title, verify_profile_pin)
 
 # What means dynamic menus (and dynamic id):
@@ -81,7 +81,7 @@ class Directory(object):
     def _profiles(self, list_data, extra_data):  # pylint: disable=unused-argument
         # The standard kodi theme does not allow to change view type if the content is "files" type,
         # so here we use "images" type, visually better to see
-        finalize_directory(convert_list(list_data), g.CONTENT_IMAGES)
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_IMAGES)
         end_of_directory(False, False)
 
     @common.time_execution(immediate=False)
@@ -95,7 +95,7 @@ class Directory(object):
                 return
         common.debug('Showing home listing')
         list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
-        finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_FOLDER,
                            title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
         end_of_directory(False, cache_to_disc)
@@ -127,7 +127,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_seasons', call_args)
 
-        finalize_directory(convert_list(list_data), g.CONTENT_SEASON, 'sort_only_label',
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_SEASON, 'sort_only_label',
                            title=extra_data.get('title', ''))
         end_of_directory(self.dir_update_listing)
 
@@ -141,7 +141,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_episodes', call_args)
 
-        finalize_directory(convert_list(list_data), g.CONTENT_EPISODE, 'sort_episodes',
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_EPISODE, 'sort_episodes',
                            title=extra_data.get('title', ''))
         end_of_directory(self.dir_update_listing)
 
@@ -159,7 +159,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_video_list', call_args)
 
-        finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(False)
         return menu_data.get('view')
@@ -185,7 +185,7 @@ class Directory(object):
             # so we adding the sort order of kodi
             sort_type = 'sort_label_ignore_folders'
 
-        finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data), sort_type=sort_type)
 
         end_of_directory(self.dir_update_listing)
@@ -203,7 +203,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_genres', call_args)
 
-        finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_FOLDER,
                            title=get_title(menu_data, extra_data), sort_type='sort_label')
         end_of_directory(False)
         return menu_data.get('view')
@@ -222,7 +222,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_video_list_supplemental', call_args)
 
-        finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
@@ -242,7 +242,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_genres', call_args)
 
-        finalize_directory(convert_list(list_data), g.CONTENT_FOLDER,
+        finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_FOLDER,
                            title=get_title(menu_data, extra_data), sort_type='sort_label')
         end_of_directory(False)
         return menu_data.get('view')
@@ -257,7 +257,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_subgenres', call_args)
 
-        finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data),
                            sort_type='sort_label')
         end_of_directory(False)
@@ -292,7 +292,7 @@ class Directory(object):
         }
         list_data, extra_data = common.make_call('get_video_list_chunked', call_args)
 
-        finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
@@ -330,7 +330,7 @@ def _display_search_results(pathitems, perpetual_range_start, dir_update_listing
 @custom_viewmode(g.VIEW_SHOW)
 def _search_results_directory(pathitems, menu_data, list_data, extra_data, dir_update_listing):
     extra_data['title'] = common.get_local_string(30011) + ' - ' + pathitems[2]
-    finalize_directory(convert_list(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
+    finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
                        title=get_title(menu_data, extra_data))
     end_of_directory(dir_update_listing)
     return menu_data.get('view')
