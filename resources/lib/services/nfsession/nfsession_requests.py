@@ -29,34 +29,34 @@ class NFSessionRequests(NFSessionBase):
 
     @common.addonsignals_return_call
     @needs_login
-    def get(self, component, **kwargs):
-        """Execute a GET request to the designated component's URL."""
-        return self._get(component, **kwargs)
+    def get(self, endpoint, **kwargs):
+        """Execute a GET request to the designated endpoint."""
+        return self._get(endpoint, **kwargs)
 
     @common.addonsignals_return_call
     @needs_login
-    def post(self, component, **kwargs):
-        """Execute a POST request to the designated component's URL."""
-        return self._post(component, **kwargs)
+    def post(self, endpoint, **kwargs):
+        """Execute a POST request to the designated endpoint."""
+        return self._post(endpoint, **kwargs)
 
-    def _get(self, component, **kwargs):
+    def _get(self, endpoint, **kwargs):
         return self._request_call(
             method=self.session.get,
-            component=component,
+            endpoint=endpoint,
             **kwargs)
 
-    def _post(self, component, **kwargs):
+    def _post(self, endpoint, **kwargs):
         return self._request_call(
             method=self.session.post,
-            component=component,
+            endpoint=endpoint,
             **kwargs)
 
     @common.time_execution(immediate=True)
-    def _request_call(self, method, component, **kwargs):
-        return self._request(method, component, None, **kwargs)
+    def _request_call(self, method, endpoint, **kwargs):
+        return self._request(method, endpoint, None, **kwargs)
 
-    def _request(self, method, component, session_refreshed, **kwargs):
-        endpoint_conf = ENDPOINTS[component]
+    def _request(self, method, endpoint, session_refreshed, **kwargs):
+        endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
                else _document_url(endpoint_conf['address']))
@@ -78,7 +78,7 @@ class NFSessionRequests(NFSessionBase):
             # So let's try refreshing the session data (just once)
             common.warn('Try refresh session data due to {} http error', response.status_code)
             if self.try_refresh_session_data():
-                return self._request(method, component, True, **kwargs)
+                return self._request(method, endpoint, True, **kwargs)
         if response.status_code == 401:
             # 30/04/2020: first signal of http error 401 issues
             # After the profile selection sometime can happen the http error 401 Client Error: Unauthorized for url ...

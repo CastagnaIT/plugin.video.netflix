@@ -145,7 +145,7 @@ def rate(videoid, rating):
     rating = min(10, max(0, rating)) / 2
     common.make_call(
         'post',
-        {'component': 'set_video_rating',
+        {'endpoint': 'set_video_rating',
          'data': {
              'titleId': int(videoid.value),
              'rating': rating}})
@@ -160,7 +160,7 @@ def rate_thumb(videoid, rating, track_id_jaw):
     event_uuid = common.get_random_uuid()
     response = common.make_call(
         'post',
-        {'component': 'set_thumb_rating',
+        {'endpoint': 'set_thumb_rating',
          'data': {
              'eventUuid': event_uuid,
              'titleId': int(videoid.value),
@@ -182,7 +182,7 @@ def update_my_list(videoid, operation, params):
     common.debug('My List: {} {}', operation, videoid)
     common.make_call(
         'post',
-        {'component': 'update_my_list',
+        {'endpoint': 'update_my_list',
          'data': {
              'operation': operation,
              'videoId': videoid.value}})
@@ -273,7 +273,7 @@ def _metadata(video_id):
     metadata_data = ipc_call(
         'get',
         {
-            'component': 'metadata',
+            'endpoint': 'metadata',
             'params': {'movieid': video_id.value,
                        '_': int(time.time())}
         })
@@ -298,7 +298,7 @@ def set_parental_control_data(data):
     try:
         return common.make_call(
             'post',
-            {'component': 'pin_service',
+            {'endpoint': 'pin_service',
              'data': {'maturityLevel': data['maturity_level'],
                       'password': common.get_credentials().get('password'),
                       'pin': data['pin']}}
@@ -313,7 +313,7 @@ def verify_pin(pin):
     try:
         return common.make_call(
             'post',
-            {'component': 'pin_service',
+            {'endpoint': 'pin_service',
              'data': {'pin': pin}}
         ).get('success', False)
     except Exception:  # pylint: disable=broad-except
@@ -326,7 +326,7 @@ def verify_profile_lock(guid, pin):
     try:
         return common.make_call(
             'post',
-            {'component': 'profile_lock',
+            {'endpoint': 'profile_lock',
              'data': {'pin': pin,
                       'action': 'verify',
                       'guid': guid}}

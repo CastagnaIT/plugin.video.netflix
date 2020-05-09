@@ -218,7 +218,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # Use separators with dumps because Netflix rejects spaces
         data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
         response = self._post(
-            component='shakti',
+            endpoint='shakti',
             params=custom_params,
             data=data)
         return response['jsonGraph'] if use_jsongraph else response['value']
@@ -255,7 +255,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
                 json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)
         # common.debug('callPath request data: {}', data)
         response_data = self._post(
-            component='shakti',
+            endpoint='shakti',
             params=custom_params,
             data=data)
         return response_data['jsonGraph']
