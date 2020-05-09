@@ -93,11 +93,27 @@ ENDPOINTS = {
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
-    'pin':
-        {'address': '/pin',
+    'profile_hub':
+        {'address': '/profilehub',
+         'is_api_call': True,
+         'use_default_params': False,
+         'add_auth_url': 'to_data',
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
+    'content_restrictions':
+        {'address': '/contentRestrictions',
+         'is_api_call': True,
+         'use_default_params': False,
+         'add_auth_url': None,
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
+    'restrictions':
+    # Page of content restrictions (former parental control)
+        {'address': '/settings/restrictions/{}',  # At the end of the address will be appended the profile guid
          'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': '*/*'},
     'pin_reset':
         {'address': '/pin/reset',
          'is_api_call': True,

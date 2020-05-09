@@ -913,12 +913,12 @@ msgid "Do you want to check update now?"
 msgstr "Θέλετε να ελέγξετε τώρα για ενημερώσεις;"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Περιορίστε με βάση το επίπεδο ωριμότητας"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Περιεχόμενο για {} απαιτεί το ΠΙΝ για την έναρξη της αναπαραγωγής."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

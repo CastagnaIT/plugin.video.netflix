@@ -296,15 +296,19 @@ def get_parental_control_data(password):
 def set_parental_control_data(data):
     """Set the parental control data"""
     try:
-        return common.make_call(
+        common.make_call(
             'post',
-            {'endpoint': 'pin_service',
-             'data': {'maturityLevel': data['maturity_level'],
-                      'password': common.get_credentials().get('password'),
-                      'pin': data['pin']}}
+            {'endpoint': 'content_restrictions',
+             'data': {'action': 'update',
+                      'authURL': data['token'],
+                      'experience': data['experience'],
+                      'guid': data['guid'],
+                      'maturity': data['maturity']}}
         )
-    except Exception:  # pylint: disable=broad-except
-        return {}
+        return True
+    except Exception as exc:  # pylint: disable=broad-except
+        common.error('Api call profile_hub raised an error: {}', exc)
+    return False
 
 
 @common.time_execution(immediate=False)

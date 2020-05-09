@@ -916,12 +916,12 @@ msgid "Do you want to check update now?"
 msgstr "¿Deseas comprobar actualizaciones ahora?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Restringir por grado de madurez"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "El contenido para {} requerirá el PIN para iniciar la reproducción."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

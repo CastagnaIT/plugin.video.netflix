@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from re import compile as recompile, DOTALL, sub, findall
+from re import compile as recompile, DOTALL, sub
 
 from future.utils import iteritems
 
@@ -352,42 +352,36 @@ def extract_json(content, name):
         raise WebsiteParsingError('Unable to extract {}'.format(name))
 
 
-def extract_parental_control_data(content):
+def extract_parental_control_data(content, current_maturity):
     """Extract the content of parental control data"""
-    html_ml_points = findall(r'<div class="maturity-input-item\s.*?<\/div>',
-                             content.decode('utf-8'))
-    maturity_levels = []
-    maturity_names = []
-    current_level = -1
-    for ml_point in html_ml_points:
-        is_included = bool(findall(r'class="maturity-input-item[^"<>]*?included', ml_point))
-        value = findall(r'value="(\d+)"', ml_point)
-        name = findall(r'<span class="maturity-name">([^"]+?)<\/span>', ml_point)
-        rating = findall(r'<li[^<>]+class="pin-rating-item">([^"]+?)<\/li>', ml_point)
-        if not value:
-            raise WebsiteParsingError('Unable to find maturity level value: {}'.format(ml_point))
-        if name:
-            maturity_names.append({
-                'name': name[0],
-                'rating': '[CR][' + rating[0] + ']' if rating else ''
-            })
-        maturity_levels.append({
-            'level': len(maturity_levels),
-            'value': value[0],
-            'is_included': is_included
-        })
-        if is_included:
-            current_level += 1
-    if not html_ml_points:
-        raise WebsiteParsingError('Unable to find html maturity level points')
-    if not maturity_levels:
-        raise WebsiteParsingError('Unable to find maturity levels')
-    if not maturity_names:
-        raise WebsiteParsingError('Unable to find maturity names')
-    common.debug('Parsed maturity levels: {}', maturity_levels)
-    common.debug('Parsed maturity names: {}', maturity_names)
-    return {'maturity_levels': maturity_levels, 'maturity_names': maturity_names,
-            'current_level': current_level}
+    try:
+        react_context = extract_json(content, 'reactContext')
+        # Extract country max maturity value
+        max_maturity = common.get_path(['models', 'parentalControls', 'data', 'accountProps', 'countryMaxMaturity'],
+                                       react_context)
+        # Extract rating levels
+        rc_rating_levels = common.get_path(['models', 'memberContext', 'data', 'userInfo', 'ratingLevels'],
+                                           react_context)
+        rating_levels = []
+        levels_count = len(rc_rating_levels) - 1
+        current_level_index = levels_count
+        for index, rating_level in enumerate(rc_rating_levels):
+            if index == levels_count:
+                # Last level must use the country max maturity level
+                level_value = max_maturity
+            else:
+                level_value = int(rating_level['level'])
+            rating_levels.append({'level': index,
+                                  'value': level_value,
+                                  'label': rating_level['labels'][0]['label'],
+                                  'description': parse_html(rating_level['labels'][0]['description'])})
+            if level_value == current_maturity:
+                current_level_index = index
+    except KeyError:
+        raise WebsiteParsingError('Unable to get path in to reactContext data')
+    if not rating_levels:
+        raise WebsiteParsingError('Unable to get maturity rating levels')
+    return {'rating_levels': rating_levels, 'current_level_index': current_level_index}
 
 
 def parse_html(html_value):

@@ -913,9 +913,9 @@ msgid "Do you want to check update now?"
 msgstr "업데이트를 확인하시렵니까?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "연령제한"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "{}을(를) 보려면 PIN을 입력하십시오."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""

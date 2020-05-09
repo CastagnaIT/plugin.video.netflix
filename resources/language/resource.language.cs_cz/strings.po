@@ -913,12 +913,12 @@ msgid "Do you want to check update now?"
 msgstr "Chcete nyní zkontrolovat aktualizaci?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Omezit dle úrovně splatnosti"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Obsah pro {} bude vyžadovat PIN pro zahájení přehrávání."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

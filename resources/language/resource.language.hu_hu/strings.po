@@ -915,12 +915,12 @@ msgid "Do you want to check update now?"
 msgstr "Akarsz most keresni frissítést?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Életkor szerint korlátozva"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Tartalom {} meg kell adni a pinkódot a lejátszáshoz."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
