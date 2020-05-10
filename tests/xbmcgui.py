@@ -252,8 +252,18 @@ class ListItem:
         return
 
     @staticmethod
+    def getProperty(key):
+        """A stub implementation for the xbmcgui ListItem class getProperty() method"""
+        return 'test'
+
+    @staticmethod
     def setProperty(key, value):
         """A stub implementation for the xbmcgui ListItem class setProperty() method"""
+        return
+
+    @staticmethod
+    def setProperties(values):
+        """A stub implementation for the xbmcgui ListItem class setProperties() method"""
         return
 
     @staticmethod
