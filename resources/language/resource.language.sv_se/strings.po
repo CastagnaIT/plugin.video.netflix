@@ -917,12 +917,12 @@ msgid "Do you want to check update now?"
 msgstr "Vill du kontrollera uppdateringen nu?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Begränsning efter mognadsnivå"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Innehåll för {} kräver PIN-koden för att starta uppspelningen."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

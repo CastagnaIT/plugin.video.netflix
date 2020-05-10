@@ -915,12 +915,12 @@ msgid "Do you want to check update now?"
 msgstr "Güncellemeyi şimdi kontrol etmek istiyor musunuz?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Olgunluk Seviyesine Göre Kısıtla"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gerektirir."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

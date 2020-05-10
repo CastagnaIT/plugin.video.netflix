@@ -913,9 +913,9 @@ msgid "Do you want to check update now?"
 msgstr "更新内容を確認しましょうか。"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "成人向け"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "{}を見るのにはPINを入力してください"
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""

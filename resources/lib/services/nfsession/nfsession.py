@@ -50,26 +50,27 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @needs_login
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status
+        profile_guid = g.LOCAL_DB.get_active_profile_guid()
         try:
-            pin_response = self._post('pin_reset',
-                                      data={'task': 'auth',
-                                            'authURL': self.auth_url,
-                                            'password': password})
-            if pin_response.get('status') != 'ok':
-                common.warn('Parental control status issue: {}', pin_response)
+            response = self._post('profile_hub',
+                                  data={'destination': 'contentRestrictions',
+                                        'guid': profile_guid,
+                                        'password': password,
+                                        'task': 'auth'})
+            if response.get('status') != 'ok':
+                common.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
-            pin = pin_response.get('pin')
         except requests.exceptions.HTTPError as exc:
-            if exc.response.status_code == 401:
-                # Unauthorized for url ...
+            if exc.response.status_code == 500:
+                # This endpoint raise HTTP error 500 when the password is wrong
                 raise MissingCredentialsError
             raise
         # Warning - parental control levels vary by country or region, no fixed values can be used
-        # I have not found how to get it through the API, so parse web page to get all info
         # Note: The language of descriptions change in base of the language of selected profile
-        response_content = self._get('pin', data={'password': password})
-        extracted_content = website.extract_parental_control_data(response_content)
-        extracted_content['pin'] = pin
+        response_content = self._get('restrictions', data={'password': password}, append_to_address=profile_guid)
+        extracted_content = website.extract_parental_control_data(response_content, response['maturity'])
+        response['profileInfo']['profileName'] = website.parse_html(response['profileInfo']['profileName'])
+        extracted_content['data'] = response
         return extracted_content
 
     @common.time_execution(immediate=True)
@@ -103,7 +104,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             # END Method 1
             # INIT Method 2 - API mode
             # import time
-            # self._get(component='activate_profile',
+            # self._get(endpoint='activate_profile',
             #           params={'switchProfileGuid': guid,
             #                   '_': int(time.time()),
             #                   'authURL': self.auth_url})

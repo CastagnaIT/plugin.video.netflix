@@ -918,12 +918,12 @@ msgid "Do you want to check update now?"
 msgstr "Želite li provjeriti ažuriranje sada?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Ograniči prema razini zrelosti"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

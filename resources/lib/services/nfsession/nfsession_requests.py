@@ -59,7 +59,7 @@ class NFSessionRequests(NFSessionBase):
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
-               else _document_url(endpoint_conf['address']))
+               else _document_url(endpoint_conf['address'], kwargs))
         common.debug('Executing {verb} request to {url}',
                      verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
@@ -180,7 +180,9 @@ class NFSessionRequests(NFSessionBase):
         return data_converted, headers, params
 
 
-def _document_url(endpoint_address):
+def _document_url(endpoint_address, kwargs):
+    if 'append_to_address' in kwargs:
+        endpoint_address = endpoint_address.format(kwargs['append_to_address'])
     return BASE_URL + endpoint_address
 
 
