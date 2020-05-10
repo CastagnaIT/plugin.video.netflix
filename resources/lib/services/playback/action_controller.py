@@ -33,6 +33,7 @@ class ActionController(xbmc.Monitor):
         self.tracking = False
         self.active_player_id = None
         self.action_managers = None
+        self._last_player_state = {}
         common.register_slot(self.initialize_playback, common.Signals.PLAYBACK_INITIATED)
         # UpNext Add-on - play call back method
         common.register_slot(self._play_callback, signal=g.ADDON_ID + '_play_action', source_id='upnextprovider')
@@ -45,6 +46,7 @@ class ActionController(xbmc.Monitor):
         """
         if data['is_upnext_callback_received']:
             _reset_upnext_callback_state()
+        self._last_player_state = {}
         self.active_player_id = None
         self.action_managers = [
             AMPlayback(),
@@ -149,17 +151,23 @@ class ActionController(xbmc.Monitor):
         except IOError:
             return {}
 
-        # Sometime may happen that when you stop playback, a player status without data is read,
-        # so all dict values are returned with a default empty value,
-        # then return an empty status instead of fake data
-        if not player_state['audiostreams']:
-            return {}
-
         # convert time dict to elapsed seconds
         player_state['elapsed_seconds'] = (
             player_state['time']['hours'] * 3600 +
             player_state['time']['minutes'] * 60 +
             player_state['time']['seconds'])
+
+        # Sometimes may happen that when you stop playback the player status is partial,
+        # this is because the Kodi player stop immediatel but the stop notification
+        # (from the Monitor) arrives late, meanwhile in this interval of time a service
+        # tick may occur.
+        if ((player_state['audiostreams'] and player_state['elapsed_seconds']) or
+                (player_state['audiostreams'] and not player_state['elapsed_seconds'] and not self._last_player_state)):
+            # save player state
+            self._last_player_state = player_state
+        else:
+            # use saved player state
+            player_state = self._last_player_state
 
         return player_state
 
