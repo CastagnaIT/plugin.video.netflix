@@ -40,12 +40,14 @@ def show_modal_dialog(non_blocking, dlg_class, xml, path, **kwargs):
     Show a modal Dialog in the UI.
     Pass kwargs minutes and/or seconds to have the dialog automatically
     close after the specified time.
+
+    :return if exists return self.return_value value of dlg_class (if non_blocking=True return always None)
     """
     # WARNING: doModal when invoked does not release the function immediately!
     # it seems that doModal waiting for all window operations to be completed before return,
     # for example the "Skip" dialog takes about 30 seconds to release the function (test on Kodi 19.x)
     # To be taken into account because it can do very big delays in the execution of the invoking code
-    run_threaded(non_blocking, _show_modal_dialog, dlg_class, xml, path, **kwargs)
+    return run_threaded(non_blocking, _show_modal_dialog, dlg_class, xml, path, **kwargs)
 
 
 def _show_modal_dialog(dlg_class, xml, path, **kwargs):
@@ -61,6 +63,9 @@ def _show_modal_dialog(dlg_class, xml, path, **kwargs):
             alarm_time = '{:02d}:{:02d}'.format(minutes, seconds)
         xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(alarm_time))
     dlg.doModal()
+    if hasattr(dlg, 'return_value'):
+        return dlg.return_value
+    return None
 
 
 class Skip(xbmcgui.WindowXMLDialog):
