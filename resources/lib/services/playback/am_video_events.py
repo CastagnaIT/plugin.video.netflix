@@ -30,7 +30,6 @@ class AMVideoEvents(ActionManager):
         self.is_event_start_sent = False
         self.last_tick_count = 0
         self.tick_elapsed = 0
-        self.last_player_state = {}
         self.is_player_in_pause = False
         self.lock_events = False
         self.allow_request_update_lolomo = False
@@ -52,8 +51,8 @@ class AMVideoEvents(ActionManager):
             return
         if self.is_player_in_pause and (self.tick_elapsed - self.last_tick_count) >= 1800:
             # When the player is paused for more than 30 minutes we interrupt the sending of events (1800secs=30m)
-            self._send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
-            self._send_event(EVENT_STOP, self.event_data, self.last_player_state)
+            self._send_event(EVENT_ENGAGE, self.event_data, player_state)
+            self._send_event(EVENT_STOP, self.event_data, player_state)
             self.is_event_start_sent = False
             self.lock_events = True
         else:
@@ -76,7 +75,6 @@ class AMVideoEvents(ActionManager):
                     # Allow request of lolomo update (for continueWatching and bookmark) only after the first minute
                     # it seems that most of the time if sent earlier returns error
                     self.allow_request_update_lolomo = True
-        self.last_player_state = player_state
         self.tick_elapsed += 1  # One tick almost always represents one second
 
     def on_playback_pause(self, player_state):
@@ -100,12 +98,12 @@ class AMVideoEvents(ActionManager):
         self._save_resume_time(player_state['elapsed_seconds'])
         self.allow_request_update_lolomo = True
 
-    def on_playback_stopped(self):
+    def on_playback_stopped(self, player_state):
         if not self.is_event_start_sent or self.lock_events:
             return
         self._reset_tick_count()
-        self._send_event(EVENT_ENGAGE, self.event_data, self.last_player_state)
-        self._send_event(EVENT_STOP, self.event_data, self.last_player_state)
+        self._send_event(EVENT_ENGAGE, self.event_data, player_state)
+        self._send_event(EVENT_STOP, self.event_data, player_state)
 
     def _save_resume_time(self, resume_time):
         """Save resume time value in order to update the infolabel cache"""
