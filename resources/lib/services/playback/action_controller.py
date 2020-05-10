@@ -126,7 +126,8 @@ class ActionController(xbmc.Monitor):
         self.active_player_id = None
         # Immediately send the request to release the license
         common.send_signal(signal=common.Signals.RELEASE_LICENSE, non_blocking=True)
-        self._notify_all(ActionManager.call_on_playback_stopped)
+        self._notify_all(ActionManager.call_on_playback_stopped,
+                         self._last_player_state)
         self.action_managers = None
 
     def _notify_all(self, notification, data=None):

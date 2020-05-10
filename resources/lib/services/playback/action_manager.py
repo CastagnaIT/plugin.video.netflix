@@ -82,11 +82,11 @@ class ActionManager(object):
         """
         self._call_if_enabled(self.on_playback_resume, player_state=player_state)
 
-    def call_on_playback_stopped(self):
+    def call_on_playback_stopped(self, player_state):
         """
         Notify that a playback has stopped
         """
-        self._call_if_enabled(self.on_playback_stopped)
+        self._call_if_enabled(self.on_playback_stopped, player_state=player_state)
         self.enabled = None
 
     def _call_if_enabled(self, target_func, **kwargs):
@@ -126,5 +126,5 @@ class ActionManager(object):
     def on_playback_resume(self, player_state):
         pass
 
-    def on_playback_stopped(self):
+    def on_playback_stopped(self, player_state):
         pass

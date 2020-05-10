@@ -100,7 +100,7 @@ class AMVideoEvents(ActionManager):
         self._save_resume_time(player_state['elapsed_seconds'])
         self.allow_request_update_lolomo = True
 
-    def on_playback_stopped(self):
+    def on_playback_stopped(self, player_state):
         if not self.is_event_start_sent or self.lock_events:
             return
         self._reset_tick_count()
