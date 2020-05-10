@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>10004</defaultcontrol>
+	<controls>
+		<control type="group">
+			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
+			<top>250</top>
+			<left>200</left>
+			<width>1520</width>
+			<!-- Screen background -->
+			<control type="image">
+				<left>-2000</left>
+				<top>-2000</top>
+				<width>6000</width>
+				<height>6000</height>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<texture colordiffuse="C2FFFFFF">colors/black.png</texture>
+			</control>
+
+			<control type="group">
+				<width>1520</width>
+				<height>570</height>
+				<!-- Window Background -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="FF1A2123">colors/white.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window header -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<height>66</height>
+					<texture colordiffuse="FFFAFAFA" border="2">colors/white70.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window text header -->
+				<control type="label" id="99">
+					<posy>0</posy> <!-- estouchy skin with label control use posy/posx tag instead of top/left -->
+					<posx>40</posx>
+					<top>0</top>
+					<left>40</left>
+					<right>100</right>
+					<height>66</height>
+					<textcolor>FF000000</textcolor>
+					<font>font32_title</font>
+					<label/>
+					<align>left</align>
+					<aligny>center</aligny>
+					<shadowcolor>white</shadowcolor>
+				</control>
+				<!-- Window close button -->
+				<control type="button" id="100">
+					<right>10</right>
+					<left>1450</left>
+					<top>11</top>
+					<width>42</width>
+					<height>42</height>
+					<texturefocus>dialogs/close.png</texturefocus>
+					<texturenofocus>nf_icon.png</texturenofocus>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+			<!-- Background color that encloses and highlights the controls of the window -->
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>490</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+
+			<!-- Controls -->
+			<control type="group" id="10080">
+				<top>0</top>
+				<left>0</left>
+				<width>1160</width>
+				<height>490</height>
+				<defaultcontrol>10004</defaultcontrol>
+				<visible>true</visible>
+				<onright>10090</onright>
+				<control type="list" id="10001">
+					<top>100</top>
+					<left>30</left>
+					<width>1160</width>
+					<height>490</height>
+					<onleft>noop</onleft>
+					<onright>10090</onright>
+					<onup>noop</onup>
+					<ondown>noop</ondown>
+					<pagecontrol>10090</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout width="1160" height="70">
+						<control type="image">
+							<left>10</left>
+							<top>5</top>
+							<width>60</width>
+							<height>60</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>90</left>
+							<top>5</top>
+							<width>600</width>
+							<height>60</height>
+							<font>font13</font>
+							<textcolor>gray</textcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<left>690</left>
+							<top>5</top>
+							<width>400</width>
+							<height>60</height>
+							<font>font10</font>
+							<textcolor>gray</textcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Plot]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout width="1160" height="70">
+						<control type="image">
+							<left>0</left>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">list_focus.png</texture>
+							<visible>Control.HasFocus(10001)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>5</top>
+							<width>60</width>
+							<height>60</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>90</left>
+							<top>5</top>
+							<width>700</width>
+							<height>60</height>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<left>690</left>
+							<top>5</top>
+							<width>400</width>
+							<height>60</height>
+							<font>font10</font>
+							<textcolor>white</textcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Plot]</label>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<!-- Window default side buttons -->
+			<control type="grouplist" id="10090">
+				<left>1210</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>250</height>
+				<itemgap>-10</itemgap>
+				<onleft>10080</onleft>
+
+				<control type="button" id="10029">
+					<description>Cancel button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[222]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

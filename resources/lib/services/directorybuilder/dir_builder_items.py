@@ -92,6 +92,7 @@ def _create_profile_item(profile_guid, is_active):
                                                             mode=g.MODE_ACTION))
     dict_item = {
         'label': profile_name,
+        'properties': {'nf_guid': profile_guid},
         'art': {'icon': g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
         'info': {'plot': ', '.join(description)},  # The description
         'is_selected': is_active,
