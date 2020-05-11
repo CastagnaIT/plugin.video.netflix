@@ -79,7 +79,7 @@ class NetflixService(object):
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
                            'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
-            elif ImportError(exc, ImportError):
+            elif isinstance(exc, ImportError):
                 message = ('In your system is missing some required library to run Netflix.\r\n'
                            'Read how to install the add-on in the GitHub Readme.\r\n'
                            'Error details: {}'.format(exc))
