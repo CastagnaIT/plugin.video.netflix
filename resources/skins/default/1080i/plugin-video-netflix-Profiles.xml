@@ -129,7 +129,7 @@
 							<textcolor>gray</textcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Plot]</label>
+							<label>$INFO[ListItem.Property(nf_description)]</label>
 						</control>
 					</itemlayout>
 					<focusedlayout width="1160" height="70">
@@ -168,7 +168,7 @@
 							<textcolor>white</textcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Plot]</label>
+							<label>$INFO[ListItem.Property(nf_description)]</label>
 						</control>
 					</focusedlayout>
 				</control>

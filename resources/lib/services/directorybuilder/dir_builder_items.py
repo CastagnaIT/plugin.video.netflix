@@ -81,20 +81,26 @@ def build_profiles_listing():
 
 def _create_profile_item(profile_guid, is_active):
     profile_name = g.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
-    description = []
+
+    profile_attributes = []
+    if g.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
+        profile_attributes.append('[COLOR red]' + common.get_local_string(20068) + '[/COLOR]')
     if g.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid):
-        description.append(common.get_local_string(30221))
+        profile_attributes.append(common.get_local_string(30221))
     if g.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
-        description.append(common.get_local_string(30222))
+        profile_attributes.append(common.get_local_string(30222))
+    attributes_desc = '[CR]'.join(profile_attributes) + '[CR]' if profile_attributes else ''
+    description = attributes_desc + '[' + g.LOCAL_DB.get_profile_config('language_desc', '', guid=profile_guid) + ']'
+
     menu_action = common.run_plugin_action(common.build_url(pathitems=['autoselect_profile_set'],
                                                             params={'profile_name': profile_name.encode('utf-8'),
                                                                     'profile_guid': profile_guid},
                                                             mode=g.MODE_ACTION))
     dict_item = {
         'label': profile_name,
-        'properties': {'nf_guid': profile_guid},
+        'properties': {'nf_guid': profile_guid, 'nf_description': description.replace('[CR]', ' - ')},
         'art': {'icon': g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
-        'info': {'plot': ', '.join(description)},  # The description
+        'info': {'plot': description},  # The description
         'is_selected': is_active,
         'menu_items': [(common.get_local_string(30056), menu_action)],
         'url': common.build_url(pathitems=['home'],
