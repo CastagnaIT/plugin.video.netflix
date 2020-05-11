@@ -208,8 +208,7 @@ def censure(value, length=3):
 def run_threaded(non_blocking, target_func, *args, **kwargs):
     """Call a function in a thread, when specified"""
     if not non_blocking:
-        target_func(*args, **kwargs)
-        return
+        return target_func(*args, **kwargs)
     from threading import Thread
-    thread = Thread(target=target_func, args=args, kwargs=kwargs)
-    thread.start()
+    Thread(target=target_func, args=args, kwargs=kwargs).start()
+    return None

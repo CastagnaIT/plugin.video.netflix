@@ -72,18 +72,20 @@ def convert_list_to_dir_items(list_data):
 def _convert_dict_to_listitem(dict_item):
     list_item = xbmcgui.ListItem(label=dict_item['label'], offscreen=True)
     list_item.setContentLookup(False)
-    list_item.setProperty('isFolder', str(dict_item['is_folder']))
+    properties = dict_item.get('properties', {})  # 'properties' key allow to set custom properties to xbmcgui.Listitem
+    properties['isFolder'] = str(dict_item['is_folder'])
 
     if not dict_item['is_folder'] and dict_item['media_type'] in [common.VideoId.EPISODE,
                                                                   common.VideoId.MOVIE,
                                                                   common.VideoId.SUPPLEMENTAL]:
-        list_item.setProperty('IsPlayable', 'true')
-
-        list_item.setProperty('TotalTime', dict_item.get('TotalTime', ''))
-        list_item.setProperty('ResumeTime', dict_item.get('ResumeTime', ''))
-
+        properties.update({
+            'IsPlayable': 'true',
+            'TotalTime': dict_item.get('TotalTime', ''),
+            'ResumeTime': dict_item.get('ResumeTime', '')
+        })
         for stream_type, quality_info in iteritems(dict_item['quality_info']):
             list_item.addStreamInfo(stream_type, quality_info)
+    list_item.setProperties(properties)
     list_item.setInfo('video', dict_item.get('info', {}))
     list_item.setArt(dict_item.get('art', {}))
     list_item.addContextMenuItems(dict_item.get('menu_items', []))

@@ -15,7 +15,7 @@ import time
 import xbmc
 import xbmcgui
 
-from resources.lib.common import run_threaded, get_machine
+from resources.lib.common import run_threaded, get_machine, make_call
 from resources.lib.globals import g
 from resources.lib.kodi.ui.dialogs import show_error_info
 
@@ -40,12 +40,14 @@ def show_modal_dialog(non_blocking, dlg_class, xml, path, **kwargs):
     Show a modal Dialog in the UI.
     Pass kwargs minutes and/or seconds to have the dialog automatically
     close after the specified time.
+
+    :return if exists return self.return_value value of dlg_class (if non_blocking=True return always None)
     """
     # WARNING: doModal when invoked does not release the function immediately!
     # it seems that doModal waiting for all window operations to be completed before return,
     # for example the "Skip" dialog takes about 30 seconds to release the function (test on Kodi 19.x)
     # To be taken into account because it can do very big delays in the execution of the invoking code
-    run_threaded(non_blocking, _show_modal_dialog, dlg_class, xml, path, **kwargs)
+    return run_threaded(non_blocking, _show_modal_dialog, dlg_class, xml, path, **kwargs)
 
 
 def _show_modal_dialog(dlg_class, xml, path, **kwargs):
@@ -61,6 +63,9 @@ def _show_modal_dialog(dlg_class, xml, path, **kwargs):
             alarm_time = '{:02d}:{:02d}'.format(minutes, seconds)
         xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(alarm_time))
     dlg.doModal()
+    if hasattr(dlg, 'return_value'):
+        return dlg.return_value
+    return None
 
 
 class Skip(xbmcgui.WindowXMLDialog):
@@ -267,6 +272,63 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
         if controlID in [10040, 100]:  # Close
+            self.close()
+
+    def onAction(self, action):
+        if action.getId() in self.action_exitkeys_id:
+            self.close()
+
+
+def show_profiles_dialog(title=None):
+    """
+    Show a dialog to select a profile
+
+    :return guid of selected profile or None
+    """
+    # Get profiles data
+    list_data, extra_data = make_call('get_profiles', {'request_update': True})  # pylint: disable=unused-variable
+    return show_modal_dialog(False,
+                             Profiles,
+                             'plugin-video-netflix-Profiles.xml',
+                             g.ADDON.getAddonInfo('path'),
+                             title=title or g.ADDON.getLocalizedString(30128),
+                             list_data=list_data)
+
+
+# pylint: disable=no-member
+class Profiles(xbmcgui.WindowXMLDialog):
+    """
+    Dialog for profile selection
+    """
+    def __init__(self, *args, **kwargs):
+        self.ctrl_list = None
+        self.return_value = None
+        self.title = kwargs['title']
+        self.list_data = kwargs['list_data']
+        self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
+                                   ACTION_PLAYER_STOP,
+                                   ACTION_NAV_BACK]
+        if get_machine()[0:5] == 'armv7':
+            xbmcgui.WindowXMLDialog.__init__(self)
+        else:
+            try:
+                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                xbmcgui.WindowXMLDialog.__init__(self)
+
+    def onInit(self):
+        self.getControl(99).setLabel(self.title)
+        self.ctrl_list = self.getControl(10001)
+        from resources.lib.navigation.directory_utils import convert_list_to_list_items
+        self.ctrl_list.addItems(convert_list_to_list_items(self.list_data))
+
+    def onClick(self, controlID):
+        if controlID == 10001:  # Save and close dialog
+            sel_list_item = self.ctrl_list.getSelectedItem()
+            # 'nf_guid' property is set to Listitems from _create_profile_item of dir_builder_items.py
+            self.return_value = sel_list_item.getProperty('nf_guid')
+            self.close()
+        if controlID in [10029, 100]:  # Close
             self.close()
 
     def onAction(self, action):
