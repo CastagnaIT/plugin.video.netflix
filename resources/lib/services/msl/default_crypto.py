@@ -13,14 +13,14 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 
-try:  # Python 3
+try:  # The crypto package depends on the library installed (see Wiki)
     from Crypto.Random import get_random_bytes
     from Crypto.Hash import HMAC, SHA256
     from Crypto.Cipher import PKCS1_OAEP
     from Crypto.PublicKey import RSA
     from Crypto.Util import Padding
     from Crypto.Cipher import AES
-except ImportError:  # Python 2
+except ImportError:
     from Cryptodome.Random import get_random_bytes
     from Cryptodome.Hash import HMAC, SHA256
     from Cryptodome.Cipher import PKCS1_OAEP
