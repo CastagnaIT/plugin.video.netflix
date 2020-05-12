@@ -56,6 +56,7 @@
     <setting id="show_menu_newrelease" type="bool" label="30170" default="true"/>
     <setting id="menu_sortorder_newrelease" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_currenttitles" type="bool" label="30171" default="true"/>
+    <setting id="show_menu_mostwatched" type="bool" label="30242" default="true"/> <!--Top 10 menu-->
     <setting id="show_menu_mostviewed" type="bool" label="30172" default="true"/>
     <setting id="show_menu_netflixoriginals" type="bool" label="30173" default="true"/>
     <setting id="menu_sortorder_netflixoriginals" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>

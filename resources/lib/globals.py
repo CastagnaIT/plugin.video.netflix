@@ -100,6 +100,9 @@ class GlobalVariables(object):
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'lolomo_contexts': ['trendingNow'],
                            'lolomo_known': True}),
+        ('mostWatched', {'path': ['video_list', 'mostWatched'],  # Top 10 menu
+                         'lolomo_contexts': ['mostWatched'],
+                         'lolomo_known': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'lolomo_contexts': ['popularTitles'],
                         'lolomo_known': True}),
