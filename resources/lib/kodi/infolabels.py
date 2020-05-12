@@ -205,9 +205,9 @@ def parse_art(videoid, item):
     interesting_moment = common.get_multiple_paths(
         paths.ART_PARTIAL_PATHS[1] + ['url'], item, {})
     clearlogo = common.get_path_safe(
-        paths.ART_PARTIAL_PATHS[3] + ['url'], item)
+        paths.ART_PARTIAL_PATHS[2] + ['url'], item)
     fanart = common.get_path_safe(
-        paths.ART_PARTIAL_PATHS[4] + [0, 'url'], item)
+        paths.ART_PARTIAL_PATHS[3] + [0, 'url'], item)
     return _assign_art(videoid,
                        boxart_large=boxarts.get(paths.ART_SIZE_FHD),
                        boxart_small=boxarts.get(paths.ART_SIZE_SD),
@@ -235,8 +235,7 @@ def _assign_art(videoid, **kwargs):
 
 
 def _best_art(arts):
-    """Return the best art (determined by list order of arts) or
-    an empty string if none is available"""
+    """Return the best art (determined by list order of arts) or an empty string if none is available"""
     return next((art for art in arts if art), '')
 
 
