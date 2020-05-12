@@ -9,8 +9,9 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from .logging import debug
+from resources.lib.globals import g
 from .device_utils import get_system_platform
+from .logging import debug, warn
 
 try:  # Python 2
     unicode
@@ -99,14 +100,16 @@ def _get_linux_uuid():
     uuid_value = None
     try:
         uuid_value = subprocess.check_output(['cat', '/var/lib/dbus/machine-id']).decode('utf-8')
-    except Exception:
-        pass
+    except Exception as exc:
+        import traceback
+        warn('_get_linux_uuid first attempt returned: {}', exc)
+        warn(g.py2_decode(traceback.format_exc(), 'latin-1'))
     if not uuid_value:
         try:
             # Fedora linux
             uuid_value = subprocess.check_output(['cat', '/etc/machine-id']).decode('utf-8')
-        except Exception:
-            pass
+        except Exception as exc:
+            warn('_get_linux_uuid second attempt returned: {}', exc)
     return uuid_value
 
 
