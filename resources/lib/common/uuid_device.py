@@ -52,7 +52,7 @@ def _get_system_uuid():
         uuid_value = _get_windows_uuid()
     elif system == 'android':
         uuid_value = _get_android_uuid()
-    elif system == 'linux':
+    elif system in ['linux', 'linux raspberrypi']:
         uuid_value = _get_linux_uuid()
     elif system == 'osx':
         # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
@@ -60,7 +60,7 @@ def _get_system_uuid():
         uuid_value = _get_macos_uuid()
     if not uuid_value:
         debug('It is not possible to get a system UUID creating a new UUID')
-        uuid_value = _get_fake_uuid(system != 'android')
+        uuid_value = _get_fake_uuid(system not in ['android', 'linux', 'linux raspberrypi'])
     return uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_value)).bytes
 
 
@@ -185,6 +185,7 @@ def _get_fake_uuid(with_hostname=True):
     import platform
     list_values = [xbmc.getInfoLabel('System.Memory(total)')]
     if with_hostname:
+        # Note: on linux systems hostname content may change after every system update
         try:
             list_values.append(platform.node())
         except Exception:  # pylint: disable=broad-except
