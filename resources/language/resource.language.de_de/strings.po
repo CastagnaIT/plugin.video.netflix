@@ -504,7 +504,7 @@ msgstr "Mit {} bewertet"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Profil auswählen"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -918,11 +918,11 @@ msgstr "Möchten Sie jetzt auf Aktualisierungen prüfen?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Alterseinstufung für Profil {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Nur Titel mit Einstufung [B]{}[/B] anzeigen"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -955,3 +955,7 @@ msgstr "Die Hintergrunddienste konnten wegen folgendem Problem nicht gestartet w
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
 msgstr "Open Connect CDN (niedriger Index ist besser)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"
