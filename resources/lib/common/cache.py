@@ -58,11 +58,16 @@ class Cache(object):
         }
         self._make_call('add', call_args, serialize_data(data))
 
-    def delete(self, bucket, identifier):
-        """Delete an item from cache bucket"""
+    def delete(self, bucket, identifier, including_suffixes=False):
+        """
+        Delete an item from cache bucket
+
+        :param including_suffixes: if true will delete all items with the identifier that start with it
+        """
         call_args = {
             'bucket': bucket,
-            'identifier': identifier
+            'identifier': identifier,
+            'including_suffixes': including_suffixes
         }
         self._make_call('delete', call_args)
 

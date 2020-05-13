@@ -191,14 +191,26 @@ class CacheManagement(object):
             common.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
 
-    def delete(self, bucket, identifier):
-        """Delete an item from cache bucket"""
+    def delete(self, bucket, identifier, including_suffixes):
+        """
+        Delete an item from cache bucket
+
+        :param including_suffixes: if true will delete all items with the identifier that start with it
+        """
         # Delete the item data from in memory-cache
         try:
             identifier = self._add_prefix(identifier)
             bucket_data = self._get_cache_bucket(bucket['name'])
-            if identifier in bucket_data:
-                del bucket_data[identifier]
+            if including_suffixes:
+                keys_to_delete = []
+                for key_identifier in bucket_data.keys():
+                    if key_identifier.startswith(identifier):
+                        keys_to_delete.append(key_identifier)
+                for key_identifier in keys_to_delete:
+                    del bucket_data[key_identifier]
+            else:
+                if identifier in bucket_data:
+                    del bucket_data[identifier]
             if bucket['is_persistent']:
                 # Delete the item data from cache database
                 self._delete_db(bucket['name'], identifier)
@@ -207,10 +219,14 @@ class CacheManagement(object):
             pass
 
     @handle_connection
-    def _delete_db(self, bucket_name, identifier):
+    def _delete_db(self, bucket_name, identifier, including_suffixes):
         try:
             cursor = self.conn.cursor()
-            query = 'DELETE FROM cache_data WHERE bucket = ? AND identifier = ?'
+            if including_suffixes:
+                identifier += '%'
+                query = 'DELETE FROM cache_data WHERE bucket = ? AND identifier LIKE ?'
+            else:
+                query = 'DELETE FROM cache_data WHERE bucket = ? AND identifier = ?'
             cursor.execute(query, (bucket_name, identifier))
         except sql.Error as exc:
             common.error('SQLite error {}:', exc.args[0])
