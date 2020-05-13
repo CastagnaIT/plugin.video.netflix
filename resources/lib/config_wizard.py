@@ -80,7 +80,7 @@ def _set_profiles(system, is_4k_capable):
         # By default we do not enable VP9 because on some devices do not fully support it
         # By default we do not enable HEVC because not all device support it, then enable it only on 4K capable devices
         enable_hevc_profiles = is_4k_capable
-    elif system == 'linux':
+    elif system in ['linux', 'linux raspberrypi']:
         # Too many different linux systems, we can not predict all the behaviors
         # some linux distributions have encountered problems with VP9,
         # some OSMC users reported that HEVC does not work well
