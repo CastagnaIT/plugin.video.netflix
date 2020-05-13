@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "라이브러리와 본 것들의 북마크를 저장합니다."
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "캐쉬보존시간(분단위)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "돌비비전사용"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "\"{}\"의 검색 결과"
+msgid "Results for '{}'"
+msgstr "'{}'의 검색 결과"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -709,8 +711,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "로그인에 문제가 있습니다. 계정이 아직 처리 중이거나 계약연장을 하지 않았을 수 있습니다."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Forced 자막이 없으면 자막을 표시하지 않습니다(Kodi플레이어가 \"Forced 자막\"으로 설정된 경우"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Forced 자막이 없으면 자막을 표시하지 않습니다(Kodi플레이어가 'Forced 자막'으로 설정된 경우"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -877,8 +879,8 @@ msgid "Kid account"
 msgstr "키즈"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "프로파일 {}의 \"찜한 것들\"을 동기화에 사용합니다."
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "프로파일 {}의 '찜한 것들'을 동기화에 사용합니다."
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +899,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi라이브러리와 내가 찜한 것들을 동기화"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "사용 중인 프로파일로부터 \"찜한 것들\"을 가져옵니다."
+msgid "Use 'My list' of the current profile"
+msgstr "사용 중인 프로파일로부터 '찜한 것들'을 가져옵니다."
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"

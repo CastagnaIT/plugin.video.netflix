@@ -329,15 +329,15 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Pune semne de carte pentru articolele din librărie / marchează ca văzute"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Păstrează obiecte în cache pentru (minute)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Păstrează metadate în cache pentru (zile)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
+msgid "Cache objects 'My list' TTL (minutes)"
 msgstr "Păstrează 'Lista mea' în cache pentru (minute)"
 
 msgctxt "#30087"
@@ -393,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Activează profile Dolby Vision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Rezultate pentru \"{}\""
+msgid "Results for '{}'"
+msgstr "Rezultate pentru '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -713,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "A apărut o problemă la autentificare, este posibil ca contul să nu fie confirmat sau reînnoit."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Dezactivează subtitrările dacă sunt fluxuri cu subtitrări neforțate (funcționează doar dacă Kodi este configurat cu subtitrări \"Numai forțate\")"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Dezactivează subtitrările dacă sunt fluxuri cu subtitrări neforțate (funcționează doar dacă Kodi este configurat cu subtitrări 'Numai forțate')"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -881,7 +881,7 @@ msgid "Kid account"
 msgstr "Cont copil"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
+msgid "Synchronization now uses 'My List' of profile {}"
 msgstr "Sincronizarea folosește acum 'Lista mea' aferentă profilului {}"
 
 msgctxt "#30224"
@@ -901,7 +901,7 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
+msgid "Use 'My list' of the current profile"
 msgstr "Folosește 'Lista mea' pentru profilul curent"
 
 msgctxt "#30229"

@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Αποθήκευση σελιδοδεικτών για τα αντικείμενα βιβλιοθήκης / σήμανση ως προβληθέντα"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Αποθήκευσε προσωρινά το αντικείμενο στο χρόνο-για-ζωντανά (λεπτά)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Αποθήκευσε προσωρινά το αντικείμενο με τα μεταδεδομένα στο χρόνο-για-ζωντανά (μέρες)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Ενεργοποίηση προφίλ Dolbyvision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Αποτελέσματα για \"{}\""
+msgid "Results for '{}'"
+msgstr "Αποτελέσματα για '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -709,8 +711,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Συνέβει κάποιο πρόβλημα με την είσοδο, ενδεχομένως ο λογαριασμός σας να μην έχει επιβεβαιωθεί ή ανανεωθεί."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Απενεργοποίηση των υποτίτλων εάν δεν υπάρχουν επιβεβλημένες ροές υποτίτλων (Δουλεύει μονο οταν ο αναπαραγωγέας του Kodi είναι ρυθμισμένος στους υπότιτλους \"Μόνο επιβεβλημένοι\")"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Απενεργοποίηση των υποτίτλων εάν δεν υπάρχουν επιβεβλημένες ροές υποτίτλων (Δουλεύει μονο οταν ο αναπαραγωγέας του Kodi είναι ρυθμισμένος στους υπότιτλους 'Μόνο επιβεβλημένοι')"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -877,8 +879,8 @@ msgid "Kid account"
 msgstr "Λογαριασμός παιδικός"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Ο συγχρονισμός πλέον χρησιμοποιεί την \"Η Λίστα μου\" του προφίλ {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Ο συγχρονισμός πλέον χρησιμοποιεί την 'Η Λίστα μου' του προφίλ {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +899,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Συγχρονισμός της βιβλιοθήκης του Kodi με την Λίστα μου"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Χρησιμοποίησε την \"Η Λίστα μου\" του τρέχοντος προφίλ"
+msgid "Use 'My list' of the current profile"
+msgstr "Χρησιμοποίησε την 'Η Λίστα μου' του τρέχοντος προφίλ"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"

@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "ライブラリ項目と見た項目のブックマークを保存"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "キャッシュ保存時間(分)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "メタデータのキャッシュ保存期間(日)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "DolbyVision使用"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "\"{}\"の検索結果"
+msgid "Results for '{}'"
+msgstr "'{}'の検索結果"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -709,8 +711,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "ログイン失敗、アカウント確認がまだ取れてないか更新出来なかった可能性があります。"
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "強制字幕のない場合、字幕を表示しない(Kodiプレイヤーが\"強制字幕のみ\"の場合)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "強制字幕のない場合、字幕を表示しない(Kodiプレイヤーが'強制字幕のみ'の場合)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -877,7 +879,7 @@ msgid "Kid account"
 msgstr "お子様アカウント"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
+msgid "Synchronization now uses 'My List' of profile {}"
 msgstr "プロフィールの{}のマイリストを同期化に使う。"
 
 msgctxt "#30224"
@@ -897,7 +899,7 @@ msgid "Synchronize Kodi library with My List"
 msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
+msgid "Use 'My list' of the current profile"
 msgstr "今のプロフィールからマイリストを使う"
 
 msgctxt "#30229"

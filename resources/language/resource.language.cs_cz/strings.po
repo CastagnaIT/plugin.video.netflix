@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Uložit záložky pro knihovnu položky / značky jako shlednuté"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Časová prodleva mezipaměti (minuty)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Časová prodleva mezipaměti pro metadata (dny)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Povolit profily DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Výsledky pro \"{}\""
+msgid "Results for '{}'"
+msgstr "Výsledky pro '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -402,7 +404,7 @@ msgstr "Netflix vrátil následující chybu:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Do protokolu Kodi byly zapsány podrobnosti o chybě. Pokud chybová zpráva neposkytuje návod, jak problém vyřešit, nebo tuto chybu nadále dostáváte, nahlaste ji prostřednictvím GitHubu. S chybovým hlášením zadejte úplný protokol ladění. (povolte \"Protokolování ladění\" v nastavení Kodi)."
+msgstr "Do protokolu Kodi byly zapsány podrobnosti o chybě. Pokud chybová zpráva neposkytuje návod, jak problém vyřešit, nebo tuto chybu nadále dostáváte, nahlaste ji prostřednictvím GitHubu. S chybovým hlášením zadejte úplný protokol ladění. (povolte 'Protokolování ladění' v nastavení Kodi)."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -709,8 +711,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Došlo k potížím s přihlášením, je možné, že váš účet nebyl potvrzen ani obnoven."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Zakázat titulky, pokud neexistují nucené toky titulků (funguje, pouze pokud je Kodi Player nastaven na \"Pouze vynucené\" titulky)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Zakázat titulky, pokud neexistují nucené toky titulků (funguje, pouze pokud je Kodi Player nastaven na 'Pouze vynucené' titulky)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -877,8 +879,8 @@ msgid "Kid account"
 msgstr "Dětský účet"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synchronizace nyní používá \"Můj seznam\" z profilu {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Synchronizace nyní používá 'Můj seznam' z profilu {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +899,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Synchronizovat knihovnu Kodi s mým seznamem"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Použít \"Můj seznam\" z aktuálního profilu"
+msgid "Use 'My list' of the current profile"
+msgstr "Použít 'Můj seznam' z aktuálního profilu"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
