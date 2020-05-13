@@ -94,9 +94,9 @@ def update_lolomo_context(context_name):
     try:
         response = common.make_http_call('callpath_request', callargs)
         common.debug('refreshListByContext response: {}', response)
+        # The call response return the new context id of the previous invalidated lolomo context_id
+        # and if path_suffixs is added return also the new video list data
     except Exception:  # pylint: disable=broad-except
-        # I do not know the reason yet, but sometimes continues to return error 401,
-        # making it impossible to update the bookmark position
         if not common.is_debug_verbose():
             return
         ui.show_notification(title=common.get_local_string(30105),
@@ -116,8 +116,6 @@ def update_videoid_bookmark(video_id):
         response = common.make_http_call('callpath_request', callargs)
         common.debug('refreshVideoCurrentPositions response: {}', response)
     except Exception:  # pylint: disable=broad-except
-        # I do not know the reason yet, but sometimes continues to return error 401,
-        # making it impossible to update the bookmark position
         ui.show_notification(title=common.get_local_string(30105),
                              msg='An error prevented the update the status watched on netflix',
                              time=10000)
