@@ -200,18 +200,30 @@ def _verify_pin(pin_required):
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    raw_data = api.get_video_raw_data([videoid], EVENT_PATHS)
+    is_episode = videoid.mediatype == common.VideoId.EPISODE
+    req_videoids = [videoid]
+    if is_episode:
+        # Get also the tvshow data
+        req_videoids.append(videoid.derive_parent(0))
+
+    raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
     if not raw_data:
         return {}
+    common.debug('Event data: {}', raw_data)
     videoid_data = raw_data['videos'][videoid.value]
-    common.debug('Event data: {}', videoid_data)
+
+    if is_episode:
+        # Get inQueue from tvshow data
+        is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('inQueue', False)
+    else:
+        is_in_mylist = videoid_data['queue'].get('inQueue', False)
 
     event_data = {'resume_position':
                   videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
                   'runtime': videoid_data['runtime'],
                   'request_id': videoid_data['requestId'],
                   'watched': videoid_data['watched'],
-                  'is_in_mylist': videoid_data['queue'].get('inQueue', False)}
+                  'is_in_mylist': is_in_mylist}
     if videoid.mediatype == common.VideoId.EPISODE:
         event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
     else:

@@ -61,6 +61,7 @@ def update_lolomo_context(context_name):
     context_id = g.LOCAL_DB.get_value('lolomo_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
 
     if not context_index:
+        common.warn('Update lolomo context {} skipped due to missing lolomo index', context_name)
         return
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
     # The fourth parameter is like a request-id, but it doesn't seem to match to
