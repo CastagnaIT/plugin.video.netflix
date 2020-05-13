@@ -213,7 +213,7 @@ class CacheManagement(object):
                     del bucket_data[identifier]
             if bucket['is_persistent']:
                 # Delete the item data from cache database
-                self._delete_db(bucket['name'], identifier)
+                self._delete_db(bucket['name'], identifier, including_suffixes)
         except ProfilesMissing:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
             pass

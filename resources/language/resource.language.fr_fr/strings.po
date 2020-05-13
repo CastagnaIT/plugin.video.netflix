@@ -841,8 +841,8 @@ msgid "InputStream Helper settings..."
 msgstr "Paramètres de l'extension InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Forcer la mise à jour de Ma Liste"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"

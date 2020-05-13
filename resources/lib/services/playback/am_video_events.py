@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 from xbmcgui import Window
 
 import resources.lib.common as common
-from resources.lib.common.cache_utils import CACHE_BOOKMARKS
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.globals import g
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
 from .action_manager import ActionManager
@@ -45,6 +45,17 @@ class AMVideoEvents(ActionManager):
             return
         self.event_data = data['event_data']
         self.videoid = common.VideoId.from_dict(data['videoid'])
+
+    @common.time_execution(immediate=True)
+    def on_playback_started(self, player_state):
+        # Clear continue watching list data on the cache, to force loading of new data
+        # but only when the videoid not exists in the continue watching list
+        current_videoid = (self.videoid if self.videoid.mediatype == common.VideoId.MOVIE
+                           else self.videoid.derive_parent(0))
+        videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
+                                                        {'video_id': str(current_videoid.value)})
+        if not videoid_exists:
+            g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
 
     def on_tick(self, player_state):
         if self.lock_events:

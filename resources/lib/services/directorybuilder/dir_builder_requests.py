@@ -72,7 +72,6 @@ class DirectoryRequests(object):
         path_response = self.netflix_session._path_request(**call_args)
         return LoLoMo(path_response)
 
-    @cache_utils.cache_output(cache_utils.CACHE_COMMON, ignore_self_class=True)
     def get_lolomo_list_id_by_context(self, context):
         """Return the dynamic video list ID for a LoLoMo context"""
         try:

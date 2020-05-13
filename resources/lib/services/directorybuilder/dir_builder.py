@@ -39,7 +39,8 @@ class DirectoryBuilder(DirectoryRequests):
             self.get_genres,
             self.get_subgenres,
             self.get_mylist_videoids_profile_switch,
-            self.add_videoids_to_video_list_cache
+            self.add_videoids_to_video_list_cache,
+            self.get_continuewatching_videoid_exists
         ]
         for slot in self.slots:
             common.register_slot(slot)
@@ -158,3 +159,15 @@ class DirectoryBuilder(DirectoryRequests):
         video_list_sorted_data = g.CACHE.get(cache_bucket, cache_identifier)
         merge_data_type(video_list_sorted_data, self.req_datatype_video_list_byid(video_ids))
         g.CACHE.add(cache_bucket, cache_identifier, video_list_sorted_data)
+
+    @common.addonsignals_return_call
+    def get_continuewatching_videoid_exists(self, video_id):
+        """
+        Special method used to know if a video id exists in lolomo continue watching list
+
+        :param video_id: videoid as [string] value
+        :return: a tuple ([bool] true if videoid exists, [string] the current list id, that depends from lolomo id)
+        """
+        list_id = self.get_lolomo_list_id_by_context('continueWatching')
+        video_list = self.req_video_list(list_id).videos if video_id else []
+        return video_id in video_list, list_id

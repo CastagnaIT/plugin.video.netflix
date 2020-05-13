@@ -841,8 +841,8 @@ msgid "InputStream Helper settings..."
 msgstr "Nastevení InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Vynutit aktualizaci mého seznamu"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"

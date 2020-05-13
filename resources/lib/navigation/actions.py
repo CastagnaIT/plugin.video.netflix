@@ -133,10 +133,16 @@ class AddonActionExecutor(object):
         g.CACHE.clear(clear_database=self.params.get('on_disk', False))
         ui.show_notification(common.get_local_string(30135))
 
-    def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
+    def force_update_list(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        from resources.lib.common.cache_utils import CACHE_MYLIST
-        g.CACHE.clear([CACHE_MYLIST], clear_database=False)
+        from resources.lib.common.cache_utils import CACHE_MYLIST, CACHE_COMMON
+        if self.params['menu_id'] == 'myList':
+            g.CACHE.clear([CACHE_MYLIST], clear_database=False)
+        if self.params['menu_id'] == 'continueWatching':
+            # pylint: disable=unused-variable
+            is_exists, list_id = common.make_call('get_continuewatching_videoid_exists', {'video_id': ''})
+            if list_id:
+                g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
