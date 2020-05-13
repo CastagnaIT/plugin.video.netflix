@@ -55,7 +55,11 @@ class AMVideoEvents(ActionManager):
         videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
                                                         {'video_id': str(current_videoid.value)})
         if not videoid_exists:
+            # Delete the cache of continueWatching list
             g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+            # When the continueWatching context is invalidated from a refreshListByContext call
+            # the lolomo need to be updated to obtain the new list id, so we delete the cache to get new data
+            g.CACHE.delete(CACHE_COMMON, 'lolomo_list')
 
     def on_tick(self, player_state):
         if self.lock_events:

@@ -139,10 +139,14 @@ class AddonActionExecutor(object):
         if self.params['menu_id'] == 'myList':
             g.CACHE.clear([CACHE_MYLIST], clear_database=False)
         if self.params['menu_id'] == 'continueWatching':
+            # Delete the cache of continueWatching list
             # pylint: disable=unused-variable
             is_exists, list_id = common.make_call('get_continuewatching_videoid_exists', {'video_id': ''})
             if list_id:
                 g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+            # When the continueWatching context is invalidated from a refreshListByContext call
+            # the lolomo need to be updated to obtain the new list id, so we delete the cache to get new data
+            g.CACHE.delete(CACHE_COMMON, 'lolomo_list')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
