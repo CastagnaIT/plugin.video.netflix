@@ -11,7 +11,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-import requests
 
 import resources.lib.common as common
 import resources.lib.api.website as website
@@ -97,7 +96,7 @@ class NFSessionRequests(NFSessionBase):
 
     def try_refresh_session_data(self, raise_exception=False):
         """Refresh session_data from the Netflix website"""
-        # pylint: disable=broad-except
+        from requests import exceptions
         try:
             self.auth_url = website.extract_session_data(self._get('browse'))['auth_url']
             self.update_session_data()
@@ -115,13 +114,13 @@ class NFSessionRequests(NFSessionBase):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             return self._login()
-        except requests.exceptions.RequestException:
+        except exceptions.RequestException:
             import traceback
             common.warn('Failed to refresh session data, request error (RequestException)')
             common.warn(g.py2_decode(traceback.format_exc(), 'latin-1'))
             if raise_exception:
                 raise
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             import traceback
             common.warn('Failed to refresh session data, login expired (Exception)')
             common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))

@@ -16,8 +16,6 @@ import re
 import time
 import zlib
 
-import requests
-
 import resources.lib.common as common
 from resources.lib.globals import g
 from resources.lib.services.msl.exceptions import MSLError
@@ -36,7 +34,8 @@ class MSLRequests(MSLRequestBuilder):
 
     def __init__(self, msl_data=None):
         super(MSLRequests, self).__init__()
-        self.session = requests.session()
+        from requests import session
+        self.session = session()
         self.session.headers.update({
             'User-Agent': common.get_user_agent(),
             'Content-Type': 'text/plain',

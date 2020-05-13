@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-import requests
 
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
@@ -50,6 +49,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @needs_login
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status
+        from requests import exceptions
         profile_guid = g.LOCAL_DB.get_active_profile_guid()
         try:
             response = self._post('profile_hub',
@@ -60,7 +60,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             if response.get('status') != 'ok':
                 common.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
-        except requests.exceptions.HTTPError as exc:
+        except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
                 raise MissingCredentialsError

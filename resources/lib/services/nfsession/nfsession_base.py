@@ -11,7 +11,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
-import requests
 
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
@@ -64,7 +63,8 @@ class NFSessionBase(object):
             common.info('Session closed')
         except AttributeError:
             pass
-        self.session = requests.session()
+        from requests import session
+        self.session = session()
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
             'Accept-Encoding': 'gzip'

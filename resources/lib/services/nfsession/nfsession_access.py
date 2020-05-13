@@ -10,8 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import requests
-
 import xbmc
 
 import resources.lib.common as common
@@ -39,12 +37,13 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
     def prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
+        from requests import exceptions
         try:
             common.get_credentials()
             if not self.is_logged_in():
                 self._login()
             self.is_prefetch_login = True
-        except requests.exceptions.RequestException as exc:
+        except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
