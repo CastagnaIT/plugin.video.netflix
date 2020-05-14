@@ -519,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Wyczyść pamięć podręczną"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Wyczyść pamięć podręczną i pamięć podręczną na dysku"
 
 msgctxt "#30134"

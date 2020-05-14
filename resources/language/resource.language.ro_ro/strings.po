@@ -519,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Verifică jurnalul de erori pentru informații detaliate"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Șterge memoria cache"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Șterge cache din memorie și de pe disc"
 
 msgctxt "#30134"

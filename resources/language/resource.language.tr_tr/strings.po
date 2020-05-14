@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Ayrıntılı bilgi için günlük dosyasına bakın"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Bellek içindeki önbelleği temizle"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Bellek içindeki ve disk üzerindeki önbelleği temizle"
 
 msgctxt "#30134"

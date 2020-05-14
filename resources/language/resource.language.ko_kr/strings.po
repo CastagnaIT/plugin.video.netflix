@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "자세한 내용은 로그파일을 확인하십시오."
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "메모리캐쉬 삭제"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "메모리/디스크 캐쉬 삭제"
 
 msgctxt "#30134"

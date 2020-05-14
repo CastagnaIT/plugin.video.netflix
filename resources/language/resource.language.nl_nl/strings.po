@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Controleer het logboek voor gedetaileerde informatie"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "In-memory cache leegmaken"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "In-memory en on-disk cache leegmaken"
 
 msgctxt "#30134"

@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "A hibanaplót nézd meg, a részletes infóért"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Memória gyorsítótár törlése"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Lemez gyorsítótár törlése"
 
 msgctxt "#30134"

@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Prüfe die Logdatei für detaillierte Informationen"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "In-Memory Cache löschen"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "In-Memory und Festplatten-Cache löschen"
 
 msgctxt "#30134"

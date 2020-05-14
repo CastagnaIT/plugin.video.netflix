@@ -517,11 +517,11 @@ msgid "Check the logfile for detailed information"
 msgstr "詳細はログファイルを確認してください。"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "メモリキャッシュを削除"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "メモリとディスクキャッシュを削除"
 
 msgctxt "#30134"
