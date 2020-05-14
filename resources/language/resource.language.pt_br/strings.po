@@ -72,6 +72,7 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Buscar"
 
+# Unused 30012			  
 msgctxt "#30013"
 msgid "No matches found"
 msgstr "Não foram encontrados resultados"
@@ -492,7 +493,7 @@ msgstr "Deseja realmente remover este item?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Limpar coleção"
+msgstr "Limpar conteúdos da coleção"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -504,7 +505,7 @@ msgstr "Nota atribuída de {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Selecionar um perfil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -613,6 +614,7 @@ msgstr "Configuração do add-on do Netflix"
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Você tem uma conta Netflix Premium?"
+# Unused 30156		  
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
@@ -844,7 +846,7 @@ msgstr "Ajustes do addon InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Forçar atualização"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -916,11 +918,11 @@ msgstr "Deseja verificar por atualizações agora?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Perfil maturidade da classificação indicativa para {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Mostrar apenas os títulos com classificação indicativa [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -949,3 +951,10 @@ msgstr "Cor das informações suplementares do enredo"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Os serviços em segundo plano não podem ser iniciados devido a este problema:\r\n{}"
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (o índice mais baixo é melhor)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"
