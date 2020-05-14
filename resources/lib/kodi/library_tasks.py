@@ -142,8 +142,7 @@ def _compile_export_show_tasks(videoid, show, nfo_settings):
     """Compile a list of task items for all episodes of all seasons of a tvshow"""
     tasks = []
     for season in show['seasons']:
-        tasks += [task for task in
-                  _compile_export_season_tasks(videoid.derive_season(season['id']), show, season, nfo_settings)]
+        tasks += _compile_export_season_tasks(videoid.derive_season(season['id']), show, season, nfo_settings)
     return tasks
 
 
