@@ -136,11 +136,6 @@ class EventsHandler(threading.Thread):
                 if event.event_data['is_in_mylist']:
                     # If video is in my list, invalidate the continueWatching list (update lolomo context data)
                     api.update_lolomo_context('continueWatching')
-                else:
-                    # Else invalidate the 'queue' list (update lolomo context data)
-                    # Todo: get 'queue' lolomo id/index
-                    # api.update_lolomo_context('queue')
-                    pass
                 api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
