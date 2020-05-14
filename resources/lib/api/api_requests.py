@@ -227,15 +227,19 @@ def _update_mylist_cache(videoid, operation, params):
 @common.time_execution(immediate=False)
 def get_metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
+    metadata_data = {}, None
     # Delete the cache if we need to refresh the all metadata
     if refresh:
-        g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.value)
-    metadata_data = {}, None
+        videoid_cache = (videoid.derive_parent(0)
+                         if videoid.mediatype in [common.VideoId.EPISODE, common.VideoId.SEASON]
+                         else videoid)
+        g.CACHE.delete(cache_utils.CACHE_METADATA, str(videoid_cache))
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
-        metadata_data = _metadata(videoid), None
+        # videoid of type tvshow, movie, supplemental
+        metadata_data = _metadata(video_id=videoid), None
     elif videoid.mediatype == common.VideoId.SEASON:
-        metadata_data = _metadata(videoid.derive_parent(None)), None
-    else:
+        metadata_data = _metadata(video_id=videoid.derive_parent(None)), None
+    else:  # it is an episode
         try:
             metadata_data = _episode_metadata(videoid)
         except KeyError as exc:
@@ -243,18 +247,19 @@ def get_metadata(videoid, refresh=False):
             # data is outdated. In this case, delete the cache entry and
             # try again safely (if it doesn't exist this time, there is no
             # metadata for the episode, so we assign an empty dict).
-            common.debug('{}, refreshing cache', exc)
-            g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.tvshowid)
+            common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
             try:
-                metadata_data = _episode_metadata(videoid)
+                metadata_data = _episode_metadata(videoid, refresh_cache=True)
             except KeyError as exc:
-                common.error(exc)
+                common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
     return metadata_data
 
 
-@common.time_execution(immediate=False)
-def _episode_metadata(videoid):
-    show_metadata = _metadata(videoid)
+def _episode_metadata(videoid, refresh_cache=False):
+    tvshow_videoid = videoid.derive_parent(0)
+    if refresh_cache:
+        g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
+    show_metadata = _metadata(video_id=tvshow_videoid)
     episode_metadata, season_metadata = common.find_episode_metadata(videoid, show_metadata)
     return episode_metadata, season_metadata, show_metadata
 
@@ -262,9 +267,9 @@ def _episode_metadata(videoid):
 @common.time_execution(immediate=False)
 @cache_utils.cache_output(cache_utils.CACHE_METADATA, identify_from_kwarg_name='video_id')
 def _metadata(video_id):
-    """Retrieve additional metadata for a video.This is a separate method from
-    metadata(videoid) to work around caching issues when new episodes are added
-    to a show by Netflix."""
+    """Retrieve additional metadata for a video.
+    This is a separate method from get_metadata(videoid) to work around caching issues
+    when new episodes are added to a tv show by Netflix."""
     import time
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
