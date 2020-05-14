@@ -72,7 +72,8 @@ msgctxt "#30011"
 msgid "Search"
 msgstr "Buscar"
 
-# Unused 30012			  
+# Unused 30012
+
 msgctxt "#30013"
 msgid "No matches found"
 msgstr "Não foram encontrados resultados"
@@ -614,7 +615,8 @@ msgstr "Configuração do add-on do Netflix"
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Você tem uma conta Netflix Premium?"
-# Unused 30156		  
+
+# Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
@@ -951,6 +953,7 @@ msgstr "Cor das informações suplementares do enredo"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Os serviços em segundo plano não podem ser iniciados devido a este problema:\r\n{}"
+
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
 msgstr "Open Connect CDN (o índice mais baixo é melhor)"
