@@ -505,7 +505,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Dodijeljena ocjena {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"

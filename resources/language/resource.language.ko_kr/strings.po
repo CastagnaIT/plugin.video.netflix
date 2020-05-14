@@ -502,7 +502,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "{}의 평가로 상을 받았습니다."
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
