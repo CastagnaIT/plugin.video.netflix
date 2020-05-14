@@ -329,15 +329,15 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Salva segnalibri per le voci della libreria / contrassegnate già viste"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Mantieni oggetti in Cache per (minuti)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Mantieni metadati in Cache per (giorni)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
+msgid "Cache objects 'My list' TTL (minutes)"
 msgstr "Mantieni 'La mia lista' in Cache per (minuti)"
 
 msgctxt "#30087"
@@ -393,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Abilita profili DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Risultati per \"{}\""
+msgid "Results for '{}'"
+msgstr "Risultati per '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -713,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Si è verificato un problema con il login, è possibile che il tuo account non sia stato confermato oppure rinnovato."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli \"Solo forzati\")"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli 'Solo forzati')"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -881,8 +881,8 @@ msgid "Kid account"
 msgstr "Account bambini"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "La sincronizzazione utilizza la \"Mia Lista\" del profilo {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "La sincronizzazione utilizza la 'Mia Lista' del profilo {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -901,8 +901,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sincronizza la libreria Kodi con la Mia Lista"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Utilizza la \"Mia Lista\" del profilo corrente"
+msgid "Use 'My list' of the current profile"
+msgstr "Utilizza la 'Mia Lista' del profilo corrente"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"

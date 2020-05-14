@@ -327,15 +327,15 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Könyvjelzők mentése / nézettként megjelölés"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Gyorsítótár-elem megőrzése (perc)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Gyorsítótár-elem metaadatok megőrzése (nap)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
+msgid "Cache objects 'My list' TTL (minutes)"
 msgstr "Gyorsítótár-elem élettartama a saját listámban (perc)"
 
 msgctxt "#30087"
@@ -391,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "DolbyVision profil engedélyezése"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Találat \"{}\""
+msgid "Results for '{}'"
+msgstr "Találat '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -711,8 +711,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Probléma merült fel a bejelentkezés során, lehetséges, hogy fiókját nem erősítették meg vagy nem újították meg"
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi \"Csak kényszerített\" feliratra van állítva)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi 'Csak kényszerített' feliratra van állítva)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -879,8 +879,8 @@ msgid "Kid account"
 msgstr "Gyermek fiók"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "A szinkronizáció most a  \"Saját listámat\" használja a profilhoz {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "A szinkronizáció most a  'Saját listámat' használja a profilhoz {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -899,8 +899,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi médiatár szinronizálása a Saját listámmal"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Használd a \"Saját listámat\" a jelenlegi profilhoz"
+msgid "Use 'My list' of the current profile"
+msgstr "Használd a 'Saját listámat' a jelenlegi profilhoz"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"

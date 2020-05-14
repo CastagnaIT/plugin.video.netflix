@@ -329,15 +329,15 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Spara bokmärken för biblioteksposter / Markera som sedd"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Cache tid-att-behålla (minuter)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Cache tid-att-behålla för metadata (dagar)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
+msgid "Cache objects 'My list' TTL (minutes)"
 msgstr "Cache tid-att-behålla för 'Min Lista' (minuter)"
 
 msgctxt "#30087"
@@ -393,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Aktivera DolbyVision-profiler"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Resultat för \"{}\""
+msgid "Results for '{}'"
+msgstr "Resultat för '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -713,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Det har uppstått ett problem med inloggningen, det är möjligt att ditt konto inte har bekräftats eller förnyats."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Inaktivera undertexter om det inte finns några tvingade undertextsströmmar (Fungerar bara om Kodi Player är inställd på \"Endast tvingade\" undertexter)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Inaktivera undertexter om det inte finns några tvingade undertextsströmmar (Fungerar bara om Kodi Player är inställd på 'Endast tvingade' undertexter)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -881,8 +881,8 @@ msgid "Kid account"
 msgstr "Barnkonto"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synkroniseringen använder nu \"Min lista\" för profilen {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Synkroniseringen använder nu 'Min lista' för profilen {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -901,8 +901,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Synkronisera Kodi-biblioteket med 'Min Lista'"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Använd \"Min lista\" för den aktuella profilen"
+msgid "Use 'My list' of the current profile"
+msgstr "Använd 'Min lista' för den aktuella profilen"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
