@@ -37,7 +37,6 @@ class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
 
 
-@common.time_execution(immediate=False)
 def get_item(videoid):
     """Find an item in the Kodi library by its Netflix videoid and return Kodi DBID and mediatype"""
     try:
@@ -47,7 +46,6 @@ def get_item(videoid):
         raise ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid))
 
 
-@common.time_execution(immediate=False)
 def _get_library_entry(videoid):
     if videoid.mediatype == common.VideoId.MOVIE:
         file_path = g.SHARED_DB.get_movie_filepath(videoid.value)
@@ -72,7 +70,6 @@ def _get_library_entry(videoid):
     return file_path, media_type
 
 
-@common.time_execution(immediate=False)
 def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
@@ -150,7 +147,6 @@ def export_new_item(item_task, library_home):
     export_item(item_task, library_home)
 
 
-@common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
@@ -206,7 +202,6 @@ def _write_nfo_file(nfo_data, nfo_filename):
         filehandle.close()
 
 
-@common.time_execution(immediate=False)
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except
