@@ -492,7 +492,7 @@ msgstr "Wollen Sie diesen Eintrag aus der Bibliothek entfernen?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Bibliothek-Exporte zurücksetzen"
+msgstr "Bibliotheksinhalte löschen"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -846,7 +846,7 @@ msgstr "InputStream Helper Einstellungen..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Aktualisierung erzwingen"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
