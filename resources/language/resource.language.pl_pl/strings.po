@@ -493,7 +493,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Czy na pewno chcesz usunąć tę pozycję?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Wyczyść bibliotekę"
 
 msgctxt "#30126"
