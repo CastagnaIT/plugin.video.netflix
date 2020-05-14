@@ -59,39 +59,40 @@ def execute_tasks(title, tasks, task_handler, **kwargs):
 @common.time_execution(immediate=False)
 def compile_tasks(videoid, task_handler, nfo_settings=None):
     """Compile a list of tasks for items based on the videoid"""
-    common.debug('Compiling library tasks for {}', videoid)
-    task = None
+    common.debug('Compiling library tasks for task handler "{}" and videoid "{}"', task_handler.__name__, videoid)
+    tasks = None
     try:
         if task_handler == export_item:
             metadata = api.get_metadata(videoid)
             if videoid.mediatype == common.VideoId.MOVIE:
-                task = _create_export_movie_task(videoid, metadata[0], nfo_settings)
+                tasks = _create_export_movie_task(videoid, metadata[0], nfo_settings)
             elif videoid.mediatype in common.VideoId.TV_TYPES:
-                task = _create_export_tv_tasks(videoid, metadata, nfo_settings)
+                tasks = _create_export_tv_tasks(videoid, metadata, nfo_settings)
             else:
-                raise ValueError('Cannot handle {}'.format(videoid))
+                raise ValueError('compile_tasks: cannot handle videoid "{}" for task handler "{}"'
+                                 .format(videoid, task_handler.__name__))
 
         if task_handler == export_new_item:
             metadata = api.get_metadata(videoid, True)
-            task = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
+            tasks = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
 
         if task_handler == remove_item:
             if videoid.mediatype == common.VideoId.MOVIE:
-                task = _create_remove_movie_task(videoid)
+                tasks = _create_remove_movie_task(videoid)
             if videoid.mediatype == common.VideoId.SHOW:
-                task = _compile_remove_tvshow_tasks(videoid)
+                tasks = _compile_remove_tvshow_tasks(videoid)
             if videoid.mediatype == common.VideoId.SEASON:
-                task = _compile_remove_season_tasks(videoid)
+                tasks = _compile_remove_season_tasks(videoid)
             if videoid.mediatype == common.VideoId.EPISODE:
-                task = _create_remove_episode_task(videoid)
+                tasks = _create_remove_episode_task(videoid)
     except MetadataNotAvailable:
-        common.warn('compile_tasks: task_handler {} unavailable metadata for {} task skipped',
+        common.warn('compile_tasks: unavailable metadata for videoid "{}" tasks compiling skipped',
                     task_handler, videoid)
         return [{}]
-    if task is None:
-        common.warn('compile_tasks: task_handler {} did not match any task for {}',
-                    task_handler, videoid)
-    return task
+    if tasks is None:
+        common.warn('compile_tasks: no tasks have been compiled for task handler "{}" and videoid "{}"',
+                    task_handler.__name__, videoid)
+    return tasks
 
 
 def _create_export_movie_task(videoid, movie, nfo_settings):
@@ -138,13 +139,12 @@ def _create_export_tv_tasks(videoid, metadata, nfo_settings):
 
 
 def _compile_export_show_tasks(videoid, show, nfo_settings):
-    """Compile a list of task items for all episodes of all seasons
-    of a tvshow"""
-    # This nested comprehension is nasty but necessary. It flattens
-    # the task lists for each season into one list
-    return [task for season in show['seasons']
-            for task in _compile_export_season_tasks(
-                videoid.derive_season(season['id']), show, season, nfo_settings)]
+    """Compile a list of task items for all episodes of all seasons of a tvshow"""
+    tasks = []
+    for season in show['seasons']:
+        tasks += [task for task in
+                  _compile_export_season_tasks(videoid.derive_season(season['id']), show, season, nfo_settings)]
+    return tasks
 
 
 def _compile_export_season_tasks(videoid, show, season, nfo_settings):
@@ -205,12 +205,12 @@ def _add_missing_items(tasks, season, videoid, metadata, nfo_settings):
                 common.debug('Auto exporting episode {}', episode['id'])
     else:
         # The season does not exist, build task for the season
-        tasks.append(_compile_export_season_tasks(
+        tasks += _compile_export_season_tasks(
             videoid=videoid.derive_season(season['id']),
             show=metadata[0],
             season=season,
             nfo_settings=nfo_settings
-        ))
+        )
         common.debug('Auto exporting season {}', season['id'])
 
 
