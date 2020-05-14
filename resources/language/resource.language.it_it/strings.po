@@ -330,15 +330,15 @@ msgstr "Salva segnalibri per le voci della libreria / contrassegnate già viste"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "Mantieni oggetti in Cache per (minuti)"
+msgstr "Cache oggetti TTL (minuti)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "Mantieni metadati in Cache per (giorni)"
+msgstr "Cache metadati TTL (giorni)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Mantieni 'La mia lista' in Cache per (minuti)"
+msgstr "Cache oggetti 'La mia lista' TTL (minuti)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -494,7 +494,7 @@ msgstr "Vuoi rimuovere l'oggetto dalla libreria?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Svuota libreria"
+msgstr "Elimina i contenuti della libreria"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -506,7 +506,7 @@ msgstr "Punteggio assegnato di {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Seleziona un profilo"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -522,11 +522,11 @@ msgstr "Controlla il file di log per informazioni dettagliate"
 
 msgctxt "#30132"
 msgid "Clear in-memory cache"
-msgstr "Svuota cache in memoria"
+msgstr "Elimina cache in memoria"
 
 msgctxt "#30133"
 msgid "Clear in-memory and on-disk cache"
-msgstr "Svuota cache in memoria e su disco"
+msgstr "Elimina cache in memoria e su disco"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -534,7 +534,7 @@ msgstr "Abilita tempi di esecuzione"
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr "Cache ripulita"
+msgstr "Cache eliminata"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
@@ -848,7 +848,7 @@ msgstr "Configurazione InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Forza l'aggiornamento"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -920,11 +920,11 @@ msgstr "Vuoi verificare gli aggiornamenti ora?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Classificazione per età per il profilo {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Mostra solo titoli con classificazione [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -957,3 +957,7 @@ msgstr "I servizi in background non sono stati avviati a causa di questo problem
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
 msgstr "Open Connect CDN (l'indice più basso è il migliore)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"
