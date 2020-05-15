@@ -119,6 +119,19 @@ def strp(value, form):
         return def_value
 
 
+def strf_timestamp(timestamp, form):
+    """
+    Helper function to safely create string date time from a timestamp value
+
+    :return: string - date time in the specified form
+    """
+    from datetime import datetime
+    try:
+        return datetime.utcfromtimestamp(timestamp).strftime(form)
+    except Exception:  # pylint: disable=broad-except
+        return ''
+
+
 # def compress_data(data):
 #    """GZIP and b64 encode data"""
 #    out = StringIO()
