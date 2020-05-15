@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-04-22 10:40+0000\n"
+"PO-Revision-Date: 2020-05-15 15:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "PIN megadása a profilhoz"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -492,7 +494,7 @@ msgstr "Valóban törlöd ezt az elemet?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Könyvtár tisztítása"
+msgstr "Könyvtár tartalom tisztítása"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -524,7 +526,7 @@ msgstr "Memória gyorsítótár törlése"
 
 msgctxt "#30133"
 msgid "Clear in-memory and on-disk cache"
-msgstr "Lemez gyorsítótár törlése"
+msgstr "Lemez és memória gyorsítótár törlése"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -918,11 +920,11 @@ msgstr "Akarsz most keresni frissítést?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Életkor szerinti értékelés {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Csak az értékelt címeket mutatja [B]{}[/B]"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -947,3 +949,15 @@ msgstr "Up Next jelzés (következő videó nézése)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "A kiegészítő információ színe"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "A háttér folyamat nem indilt el a következő hiba miatt:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Csatlakozás a CDN hez (alacsonyabb index jobb)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"
