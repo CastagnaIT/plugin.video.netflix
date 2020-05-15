@@ -44,7 +44,7 @@ ART_PARTIAL_PATHS = [
 
 VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
-      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
+      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'availability',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
       'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
@@ -103,7 +103,8 @@ INFO_MAPPINGS = {
     'duration': 'runtime',
     # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
     #   to reproduce a background promo video when a ListItem is selected
-    'trailer': ['promoVideo', 'id']
+    'trailer': ['promoVideo', 'id'],
+    'dateadded': ['availability', 'availabilityStartTime']
 }
 
 INFO_TRANSFORMATIONS = {
@@ -111,7 +112,8 @@ INFO_TRANSFORMATIONS = {
     'rating': lambda r: r / 10,
     'playcount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
     'trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
-                                                 mode=g.MODE_PLAY)
+                                                 mode=g.MODE_PLAY),
+    'dateadded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
 }
 
 REFERENCE_MAPPINGS = {
