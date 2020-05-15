@@ -92,7 +92,9 @@ class AMStreamContinuity(ActionManager):
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']
         player_stream = player_state.get(STREAMS['audio']['current'])
-        if not self._is_stream_value_equal(current_stream, player_stream):
+        # If the current audio language is labeled as 'unk' means unknown, skip the save for the next check,
+        #   this has been verified on Kodi 18, the cause is unknown
+        if player_stream['language'] != 'unk' and not self._is_stream_value_equal(current_stream, player_stream):
             self._set_current_stream('audio', player_state)
             self._save_changed_stream('audio', player_stream)
             common.debug('audio has changed from {} to {}', current_stream, player_stream)
@@ -102,7 +104,7 @@ class AMStreamContinuity(ActionManager):
         #       otherwise Kodi reacts strangely if only one value of these is restored
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
-        if player_stream is None:
+        if not player_stream:
             # I don't know the cause:
             # Very rarely can happen that Kodi starts the playback with the subtitles enabled,
             # but after some seconds subtitles become disabled, and 'currentsubtitle' of player_state data become 'None'
@@ -132,11 +134,11 @@ class AMStreamContinuity(ActionManager):
         })
 
     def _restore_stream(self, stype):
-        common.debug('Trying to restore {}...', stype)
         set_stream = STREAMS[stype]['setter']
         stored_stream = self.sc_settings.get(stype)
-        if stored_stream is None:
+        if stored_stream is None or (isinstance(stored_stream, dict) and not stored_stream):
             return
+        common.debug('Trying to restore {} with stored data {}', stype, stored_stream)
         data_type_dict = isinstance(stored_stream, dict)
         if self.legacy_kodi_version:
             # Kodi version 18, this is the old method that have a unresolvable bug:
