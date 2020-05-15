@@ -12,6 +12,7 @@ from future.utils import iteritems
 
 import resources.lib.common as common
 
+from resources.lib.globals import g
 from .exceptions import InvalidReferenceError
 
 MAX_PATH_REQUEST_SIZE = 47  # Stands for 48 results, is the default value defined by netflix for a single request
@@ -45,7 +46,7 @@ VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
       'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence']],
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
@@ -100,14 +101,17 @@ INFO_MAPPINGS = {
     'userrating': ['userRating', 'userRating'],
     'mpaa': ['maturity', 'rating', 'value'],
     'duration': 'runtime',
-    # 'bookmark': 'bookmarkPosition',
-    # 'playcount': 'watched'
+    # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
+    #   to reproduce a background promo video when a ListItem is selected
+    'trailer': ['promoVideo', 'id']
 }
 
 INFO_TRANSFORMATIONS = {
     'season_shortname': lambda sn: ''.join([n for n in sn if n.isdigit()]),
     'rating': lambda r: r / 10,
-    'playcount': lambda w: int(w)  # pylint: disable=unnecessary-lambda
+    'playcount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
+    'trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
+                                                 mode=g.MODE_PLAY)
 }
 
 REFERENCE_MAPPINGS = {
