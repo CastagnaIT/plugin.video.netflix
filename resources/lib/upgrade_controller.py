@@ -59,8 +59,6 @@ def _perform_addon_changes(previous_ver, current_ver):
         msg = ('This update resets the settings to auto-update library.\r\n'
                'Therefore only in case you are using auto-update must be reconfigured.')
         ui.show_ok_dialog('Netflix upgrade', msg)
-    # Clear cache (prevents problems when netflix change data structures)
-    g.CACHE.clear()
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
 
@@ -68,6 +66,8 @@ def _perform_addon_changes(previous_ver, current_ver):
 def _perform_service_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
+    # Clear cache (prevents problems when netflix change data structures)
+    g.CACHE.clear()
     if previous_ver and is_less_version(previous_ver, '1.2.0'):
         # In the version 1.2.0 has been implemented a new cache management
         from resources.lib.upgrade_actions import delete_cache_folder
