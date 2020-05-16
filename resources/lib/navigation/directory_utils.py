@@ -83,8 +83,8 @@ def _convert_dict_to_listitem(dict_item):
             'TotalTime': dict_item.get('TotalTime', ''),
             'ResumeTime': dict_item.get('ResumeTime', '')
         })
-        for stream_type, quality_info in iteritems(dict_item['quality_info']):
-            list_item.addStreamInfo(stream_type, quality_info)
+    for stream_type, quality_info in iteritems(dict_item.get('quality_info', {})):
+        list_item.addStreamInfo(stream_type, quality_info)
     list_item.setProperties(properties)
     list_item.setInfo('video', dict_item.get('info', {}))
     list_item.setArt(dict_item.get('art', {}))
