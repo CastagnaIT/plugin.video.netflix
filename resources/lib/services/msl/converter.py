@@ -170,7 +170,8 @@ def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_i
         bandwidth=str(downloadable['bitrate'] * 1024),
         nflxContentProfile=str(downloadable['content_profile']),
         codecs=_determine_video_codec(downloadable['content_profile']),
-        frameRate=str(downloadable['framerate_value'] / downloadable['framerate_scale']),
+        frameRate='{fps_rate}/{fps_scale}'.format(fps_rate=downloadable['framerate_value'],
+                                                  fps_scale=downloadable['framerate_scale']),
         mimeType='video/mp4')
     _add_base_url(representation, downloadable['urls'][cdn_index]['url'])
     _add_segment_base(representation, init_length)
