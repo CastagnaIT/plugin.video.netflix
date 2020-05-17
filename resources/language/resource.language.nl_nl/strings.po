@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -327,14 +329,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Bewaar favorieten voor de library inhoud / markeer als bekeken"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live for my list (minutes)"
-msgstr "'Mijn lijst' cache time-to-live (minuten)"
+msgid "Cache objects TTL (minutes)"
+msgstr "Cache time-to-live (minuten)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Metadata cache time-to-live (dagen)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "'Mijn lijst' cache time-to-live (minuten)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -354,7 +358,7 @@ msgstr "Doorblader gerelateerde videos en ontdek meer inhoud."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Doorblader en beheer geëxporteerde videos in de Kodi bibliotheek"
+msgstr "Doorblader en beheer geëxporteerde videos in de Kodi bibliotheek."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -389,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Activeer DolbyVision profielen"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Resultaten voor \"{}\""
+msgid "Results for '{}'"
+msgstr "Resultaten voor '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +405,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix had the volgende foutmelding:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Een gedetaileerde foutmelding werd weggeschreven in het Kodi logboek. Als de foutmelding niet helpt bij het oplossen van het probleem, of the probleem blijft zich voordoen, gelieve deze fout te melden op GitHub. Voeg de volledige debug log toe aan je probleemrapport (schakel \"Debug logboek\" in in de Kodi instellingen)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr ""
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,7 +493,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Wil je dit verwijderen?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Bibliotheek leegmaken"
 
 msgctxt "#30126"
@@ -500,7 +504,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Toegekende beoordeling van {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +521,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Controleer het logboek voor gedetaileerde informatie"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "In-memory cache leegmaken"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "In-memory en on-disk cache leegmaken"
 
 msgctxt "#30134"
@@ -709,7 +715,7 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Er was een probleem met het inloggen. Mogelijk moeten je login gegevens nog bevestigd of hernieuwd worden."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
 msgstr "Ondertitels uitschakelen als er geen geforceerde ondertitels worden meegeleverd (Werkt enkel als Kodi Player \"Alleen geforceerde\" ondertitles heeft ingeschakeld)"
 
 msgctxt "#30182"
@@ -841,8 +847,8 @@ msgid "InputStream Helper settings..."
 msgstr "InputStream Helper instellingen…"
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Forceer de vernieuwing van 'Mijn lijst'"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -877,7 +883,7 @@ msgid "Kid account"
 msgstr "Kinderen account"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
+msgid "Synchronization now uses 'My List' of profile {}"
 msgstr "Synchronisatie gebruikt nu 'Mijn lijst' van profiel {}"
 
 msgctxt "#30224"
@@ -897,7 +903,7 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Synchroniseer Kodi bibliotheek met My List"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
+msgid "Use 'My list' of the current profile"
 msgstr "Gebruik 'Mijn lijst' van het huidige profiel"
 
 msgctxt "#30229"
@@ -913,12 +919,12 @@ msgid "Do you want to check update now?"
 msgstr "Wil je nu controleren voor een update?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Beperk op Maturiteit Level"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Video's for {} vereisen een PIN code om af te spelen."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -943,3 +949,15 @@ msgstr "Up Next meldingen (bekijk volgende video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Kleur van bijkomende plot informatie"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""
