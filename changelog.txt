@@ -1,3 +1,7 @@
+v1.3.1 (2020-05-17)
+Note to RPI devices: credentials will be asked again a storage problem has been fixed
+-Fixed KeyError issue
+
 v1.3.0 (2020-05-17)
 Note to RPI devices: credentials will be asked again a storage problem has been fixed
 -Reimplemented parental control
