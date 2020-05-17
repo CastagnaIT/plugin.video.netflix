@@ -956,7 +956,7 @@ msgstr "A háttér folyamat nem indilt el a következő hiba miatt:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr "Csatlakozás a CDN hez (alacsonyabb index jobb)"
+msgstr "Open Connect CDN (alacsonyabb index jobb)"
 
 msgctxt "#30242"
 msgid "Top 10"
