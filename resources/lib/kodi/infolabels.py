@@ -30,17 +30,22 @@ except NameError:  # Python 3
 # it is not possible to provide specific info, then we set info according to the video properties of the video list data
 # h264 is the entry-level codec always available to all streams, the 4k only works with HEVC
 QUALITIES = [
-    {'codec': 'h264', 'width': '960', 'height': '540'},
-    {'codec': 'h264', 'width': '1920', 'height': '1080'},
-    {'codec': 'hevc', 'width': '3840', 'height': '2160'}
+    {'Codec': 'h264', 'width': '960', 'height': '540'},
+    {'Codec': 'h264', 'width': '1920', 'height': '1080'},
+    {'Codec': 'hevc', 'width': '3840', 'height': '2160'}
 ]
 
-JSONRPC_MAPPINGS = {
-    'showtitle': 'tvshowtitle',
-    'userrating': 'rating'
-}
-
 COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
+
+# Mapping of videoid type to ListItem.MediaType
+MEDIA_TYPE_MAPPINGS = {
+    common.VideoId.SHOW: 'tvshow',
+    common.VideoId.SEASON: 'season',
+    common.VideoId.EPISODE: 'episode',
+    common.VideoId.MOVIE: 'movie',
+    common.VideoId.SUPPLEMENTAL: 'video',
+    common.VideoId.UNSPECIFIED: 'video'
+}
 
 
 def get_info(videoid, item, raw_data, profile_language_code=''):
@@ -82,9 +87,17 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
         # Short information about the actors career/awards and similarities/connections with others films or tv shows
         suppl_info.append(item['sequiturEvidence']['value']['text'])
     suppl_text = '[CR][CR]'.join(suppl_info)
-    if suppl_text and infos_copy['plot']:
-        infos_copy['plot'] += '[CR][CR]'
-    infos_copy['plot'] += _colorize_text(common_data['supplemental_info_color'], suppl_text)
+    plot = infos_copy.get('Plot', '')
+    plotoutline = infos_copy.get('PlotOutline', '')
+    if suppl_text:
+        if plot:
+            plot += '[CR][CR]'
+        if plotoutline:
+            plotoutline += '[CR][CR]'
+        infos_copy.update(
+            {'Plot': plot + _colorize_text(common_data['supplemental_info_color'], suppl_text)})
+        infos_copy.update(
+            {'PlotOutline': plotoutline + _colorize_text(common_data['supplemental_info_color'], suppl_text)})
 
 
 def get_art(videoid, item, profile_language_code=''):
@@ -118,21 +131,18 @@ def parse_info(videoid, item, raw_data):
             hasattr(item, 'contained_titles')):
         # Special handling for VideoLists
         return {
-            'plot':
+            'Plot':
                 common.get_local_string(30087).format(
                     ', '.join(item.contained_titles))
                 if item.contained_titles
                 else common.get_local_string(30111)
         }, {}
 
-    infos = {'mediatype': ('tvshow'
-                           if videoid.mediatype == common.VideoId.SHOW or
-                           videoid.mediatype == common.VideoId.SUPPLEMENTAL
-                           else videoid.mediatype)}
+    infos = {'MediaType': MEDIA_TYPE_MAPPINGS[videoid.mediatype]}
     if videoid.mediatype in common.VideoId.TV_TYPES:
-        infos['tvshowtitle'] = raw_data['videos'][videoid.tvshowid]['title']
+        infos['TVShowTitle'] = raw_data['videos'][videoid.tvshowid]['title']
     if item.get('watched', False):
-        infos['playcount'] = 1
+        infos['PlayCount'] = 1
 
     infos.update(_parse_atomic_infos(item))
     infos.update(_parse_referenced_infos(item, raw_data))
@@ -143,20 +153,18 @@ def parse_info(videoid, item, raw_data):
 
 def _parse_atomic_infos(item):
     """Parse those infos into infolabels that are directly accessible from the item dict"""
-    infos = {target: _get_and_transform(source, target, item)
-             for target, source in iteritems(paths.INFO_MAPPINGS)}
-    # When you browse the seasons list, season numbering is provided from a different property
-    season_shortname = infos.pop('season_shortname')
-    if season_shortname:
-        infos.update({'season': season_shortname})
+    infos = {}
+    for target, source in paths.INFO_MAPPINGS:
+        value = common.get_path_safe(source, item)
+        # The dict check is needed when the info requested is not available
+        # and jsonGraph return a dict of $type sentinel
+        if not isinstance(value, dict) and value is not None:
+            infos[target] = _transform_value(target, value)
     return infos
 
 
-def _get_and_transform(source, target, item):
-    """Get the value for source and transform it if necessary"""
-    value = common.get_path_safe(source, item)
-    if isinstance(value, dict) or value is None:
-        return ''
+def _transform_value(target, value):
+    """Transform a target value if necessary"""
     return (paths.INFO_TRANSFORMATIONS[target](value)
             if target in paths.INFO_TRANSFORMATIONS
             else value)
@@ -271,7 +279,7 @@ def get_info_from_library(videoid):
     art = details.pop('art', {})
     infos = {
         'DBID': details.pop('{}id'.format(videoid.mediatype)),
-        'mediatype': videoid.mediatype
+        'MediaType': MEDIA_TYPE_MAPPINGS[videoid.mediatype]
     }
     infos.update(details)
     return infos, art
@@ -281,9 +289,9 @@ def add_title_color(dict_item, infos_copy, common_data):
     """Highlight list item title when the videoid is contained in my-list"""
     updated_title = _colorize_text(common_data['mylist_titles_color'], infos_copy['title'])
     if dict_item['is_folder']:
-        dict_item['label'] = updated_title
+        dict_item['Label'] = updated_title
     # When a xbmcgui.Listitem is not a folder 'label' is replaced by 'title' property of infoLabel
-    infos_copy['title'] = updated_title
+    infos_copy['Title'] = updated_title
 
 
 def _colorize_text(color_name, text):

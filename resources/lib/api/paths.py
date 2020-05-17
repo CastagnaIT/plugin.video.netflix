@@ -90,30 +90,38 @@ VIDEO_LIST_RATING_THUMB_PATHS = [
 
 SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 
-INFO_MAPPINGS = {
-    'title': 'title',
-    'year': 'releaseYear',
-    'plot': 'synopsis',
-    'season': ['summary', 'season'],
-    'season_shortname': ['summary', 'shortName'],  # Add info to item listings._create_season_item
-    'episode': ['summary', 'episode'],
-    'rating': ['userRating', 'matchScore'],
-    'userrating': ['userRating', 'userRating'],
-    'mpaa': ['maturity', 'rating', 'value'],
-    'duration': 'runtime',
+INFO_MAPPINGS = [
+    ('Title', 'title'),
+    ('Year', 'releaseYear'),
+    ('Plot', 'regularSynopsis'),  # Complete plot (Kodi 18 original skins do not use plotoutline)
+    ('PlotOutline', 'synopsis'),  # Small plot
+    ('Season', 'seasonCount'),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
+    ('Season', ['summary', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)
+    ('Season', ['summary', 'season']),  # Path used with episode list data for 'episode' ListItems (get current season)
+    ('Episode', 'episodeCount'),  # Path used with videolist data for 'tvshow' ListItems (get total episodes)
+    ('Episode', ['summary', 'length']),  # Path used with season list data for 'season' ListItems (get total episodes)
+    ('Episode', ['summary', 'episode']),  # Path used with videolist data for 'tvshow' ListItems (get current episode)
+    ('Rating', ['userRating', 'matchScore']),
+    ('UserRating', ['userRating', 'userRating']),
+    ('Mpaa', ['maturity', 'rating', 'value']),
+    ('Duration', 'runtime'),
     # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
     #   to reproduce a background promo video when a ListItem is selected
-    'trailer': ['promoVideo', 'id'],
-    'dateadded': ['availability', 'availabilityStartTime']
-}
+    ('Trailer', ['promoVideo', 'id']),
+    # ListItem.DateAdded: Removed for now, the actual use of this property for tvshow ListItem type is not clear,
+    #                     the documentation says "date of adding in the library", but kodi developers say that
+    #                     is used as the latest update date
+    # ('DateAdded', ['availability', 'availabilityStartTime'])
+]
 
 INFO_TRANSFORMATIONS = {
-    'season_shortname': lambda sn: ''.join([n for n in sn if n.isdigit()]),
-    'rating': lambda r: r / 10,
-    'playcount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
-    'trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
+    'Season': lambda s_value: ''.join([n for n in str(s_value) if n.isdigit()]),  # isdigit is needed for shortName key
+    'Episode': lambda ep: str(ep),  # pylint: disable=unnecessary-lambda
+    'Rating': lambda r: r / 10,
+    'PlayCount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
+    'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
                                                  mode=g.MODE_PLAY),
-    'dateadded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
+    'DateAdded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
 }
 
 REFERENCE_MAPPINGS = {
