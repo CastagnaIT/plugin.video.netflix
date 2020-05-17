@@ -90,14 +90,13 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
     plot = infos_copy.get('Plot', '')
     plotoutline = infos_copy.get('PlotOutline', '')
     if suppl_text:
+        suppl_text = _colorize_text(common_data['supplemental_info_color'], suppl_text)
         if plot:
             plot += '[CR][CR]'
         if plotoutline:
             plotoutline += '[CR][CR]'
-        infos_copy.update(
-            {'Plot': plot + _colorize_text(common_data['supplemental_info_color'], suppl_text)})
-        infos_copy.update(
-            {'PlotOutline': plotoutline + _colorize_text(common_data['supplemental_info_color'], suppl_text)})
+        infos_copy.update({'Plot': plot + suppl_text})
+        infos_copy.update({'PlotOutline': plotoutline + suppl_text})
 
 
 def get_art(videoid, item, profile_language_code=''):
