@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -102,7 +104,7 @@ msgstr "Op Netflix beoordelen"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Van 'Mijn lijst’ verwijderen"
+msgstr "Van 'Mijn lijst' verwijderen"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
@@ -332,11 +334,11 @@ msgstr "Cache time-to-live (minuten)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "Cache time-to-live voor metadata (dagen)"
+msgstr "Metadata cache time-to-live (dagen)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "'Mijn lijst' cache time-to-live (minuten)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -356,7 +358,7 @@ msgstr "Doorblader gerelateerde videos en ontdek meer inhoud."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Doorblader en beheer geëxporteerde videos in de Kodi bibliotheek"
+msgstr "Doorblader en beheer geëxporteerde videos in de Kodi bibliotheek."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -404,7 +406,7 @@ msgstr "Netflix had the volgende foutmelding:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Een gedetaileerde foutmelding werd weggeschreven in het Kodi logboek. Als de foutmelding niet helpt bij het oplossen van het probleem, of the probleem blijft zich voordoen, gelieve deze fout te melden op GitHub. Voeg de volledige debug log toe aan je probleemrapport (schakel 'Debug logboek' in in de Kodi instellingen)."
+msgstr ""
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -850,7 +852,7 @@ msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Benadruk titels uit Mijn lijst met een kleur"
+msgstr "Benadruk titels uit 'Mijn lijst' met een kleur"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -947,3 +949,15 @@ msgstr "Up Next meldingen (bekijk volgende video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Kleur van bijkomende plot informatie"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""
