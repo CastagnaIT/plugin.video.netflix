@@ -226,11 +226,11 @@ msgstr "Establecer para autoselección"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Para establecer el perfil, abre el menú contextual en la lista de perfiles"
+msgstr "Para establecer el perfil, abra el menú contextual en la lista de perfiles"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr "El perfil {} ha sido establecido para autoselección"
+msgstr "El perfil {} ha sido fijado como autoselección"
 
 # Unused 30059
 
@@ -852,7 +852,7 @@ msgstr "Forzar actualización"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Resaltar títulos incluidos en Mi lista con un color"
+msgstr "Color para resaltar títulos incluidos en Mi lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -916,15 +916,15 @@ msgstr "Comprobar actualizaciones ahora"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
-msgstr "¿Deseas comprobar actualizaciones ahora?"
+msgstr "¿Deseas comprobar las actualizaciones ahora?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr "Calificación de madurez del perfil para {}"
+msgstr "Clasificación por edades para {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr "Mostrar solo títulos clasificados [B]{}[/B]."
+msgstr "Mostrar solo títulos calificados como [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -953,6 +953,7 @@ msgstr "Color para información extra del argumento"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Los servicios en segundo plano no se pueden iniciar debido a este problema:\r\n{}"
+
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
 msgstr "Open Connect CDN (el índice más bajo es mejor)"
