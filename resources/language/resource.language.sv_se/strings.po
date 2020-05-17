@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-18 00:00+0000\n"
-"PO-Revision-Date: 2020-04-18 00:00+0000\n"
+"PO-Revision-Date: 2020-05-17 00:00+0000\n"
 "Last-Translator: Tomas Andersson\n"
 "Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr "Ange PIN-kod för att titta på begränsat innehåll"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr "Sökterm"
+msgstr "Sökord"
 
 msgctxt "#30004"
 msgid "Password"
@@ -54,7 +54,7 @@ msgstr "Ange PIN-kod för att få tillgång till den här profilen"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "Föräldrakontroll PIN-kod (4 siffror)"
+msgstr "PIN-kod för Föräldrakontroll(4 siffror)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -76,7 +76,7 @@ msgstr "Sök"
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr "Inga matchningar funna"
+msgstr "Hittade inga matchningar"
 
 msgctxt "#30014"
 msgid "Account"
@@ -156,11 +156,11 @@ msgstr "Aktivera Dolby Digital Plus (DDPlus HQ och Atmos på Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr "Skriv in ESN - Elektroniskt serienummer"
+msgstr "Skriv in ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "InputStream Adaptive inställningar..."
+msgstr "Inställningar för InputStream Adaptive..."
 
 # Unused 30036
 
@@ -202,7 +202,7 @@ msgstr "Betyget har tagits bort|Du gav betyget tumme ner|Du gav betyget tumme up
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Det finns ett problem med InputStream Adaptive-tillägget eller Widevine-biblioteket. Kan saknas eller inte aktiverats, åtgärden kommer att avbrytas."
+msgstr "Det finns ett problem med InputStream Adaptive-tillägget eller Widevine-biblioteket. Kan saknas eller har inte aktiverats, åtgärden kommer att avbrytas."
 
 # Unused 30047
 
@@ -214,7 +214,7 @@ msgstr "Exporterad"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr "Profil auto-val"
+msgstr "Profil för automatiskt val"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
@@ -254,7 +254,7 @@ msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr "Automatisk uppdatering för TV-programs säsonger och avsnitt"
+msgstr "Automatisk uppdatering för TV-program, säsonger och avsnitt"
 
 msgctxt "#30066"
 msgid "Debug logging level"
@@ -294,11 +294,11 @@ msgstr "Vy för exporterad"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Be om att hoppa över intro och sammanfattning"
+msgstr "Fråga om att hoppa över intro och sammanfattning"
 
 msgctxt "#30076"
 msgid "Skip intro"
-msgstr "Hoppa över intro"
+msgstr "Hoppa över introt"
 
 msgctxt "#30077"
 msgid "Skip recap"
@@ -314,7 +314,7 @@ msgstr "Hoppa över automatiskt"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Pausa efter att du hoppat över"
+msgstr "Pausa efter att du har hoppat över introt"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
@@ -338,7 +338,7 @@ msgstr "Cache tid-att-behålla för metadata (dagar)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Cache tid-att-behålla för 'Min Lista' (minuter)"
+msgstr "Cache tid-att-behålla för Min Lista (minuter)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -422,7 +422,7 @@ msgstr "Ogiltig PIN-kod"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr "PIN-skyddet är av."
+msgstr "PIN-skyddet är avstängt."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
@@ -450,7 +450,7 @@ msgstr "Utloggningen lyckades"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Håll 'Min Lista' och Kodi-biblioteket synkroniserade"
+msgstr "Håll Min Lista och Kodi-biblioteket synkroniserade"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -470,7 +470,7 @@ msgstr "API-operationen misslyckades: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr "'Min lista' operationen lyckades"
+msgstr "Operationen lyckades"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -482,11 +482,11 @@ msgstr "Utför full synkronisering nu"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr "Synkronisera 'Min lista' till Kodi-biblioteket"
+msgstr "Synkronisera Min lista till Kodi-biblioteket"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Vill du verkligen fortsätta?\nDetta kommer att ta bort alla tidigare exporterade objekt och exportera alla objekt från 'Min Lista' för den nuvarande aktiva profilen.\nDenna åtgärden kan ta lite tid..."
+msgstr "Vill du verkligen fortsätta?\nDetta kommer att ta bort alla tidigare exporterade objekt och exportera alla objekt från Min Lista för den nuvarande aktiva profilen.\nDenna åtgärden kan ta lite tid..."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -506,7 +506,7 @@ msgstr "Tilldelat betyg på {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Välj en Profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -530,7 +530,7 @@ msgstr "Rensa cachen i minnet och på hårddisken"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
-msgstr "Aktivera körningstidpunkt"
+msgstr "Aktivera körtidpunkt"
 
 msgctxt "#30135"
 msgid "Cache cleared"
@@ -546,15 +546,15 @@ msgstr "Aktivera VP9-profiler (inaktivera om det orsakar artefakter)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
-msgstr "Bakgrundstjänsterna kanske ännu inte är tillgängliga om du just startade Kodi/tillägget. Om så är fallet, försök igen om en liten stund."
+msgstr "Bakgrundstjänsterna kanske ännu inte är tillgängliga om du just startade Kodi/tillägget. Om så är fallet, försök igen om en stund."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "Aktivera IPC via HTTP (använd när Addon Signals timeout-meddelanden visas)"
+msgstr "Aktivera IPC över HTTP (använd när 'Addon Signals timeout'-meddelanden visas)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
-msgstr "Migrera biblioteket till nytt format"
+msgstr "Migrera biblioteket till nya formatet (gäller endast version 13.x)"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -570,7 +570,7 @@ msgstr "Anpassad vy-ID"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "Inaktivera WebVTT-undertextsupport"
+msgstr "Inaktivera WebVTT undertextsupport"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -628,15 +628,15 @@ msgstr "Kör tilläggskonfigurationsguiden"
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr "Vy för huvudmenyn"
+msgstr "Vy för Huvudmenyn"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr "Vy för sök"
+msgstr "Vy för Sök"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr "Vy för exporterad"
+msgstr "Vy för Exporterad"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -652,7 +652,7 @@ msgstr "Bläddra bland innehåll med ljudbeskrivning."
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr "Vy för 'Min Lista'"
+msgstr "Vy för Min Lista"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -696,7 +696,7 @@ msgstr "Filmgenrer"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr "Aktivera STRM-återuppta lösning (endast bibliotek)"
+msgstr "Aktivera 'STRM återuppta'-lösning (endast bibliotek)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
@@ -764,7 +764,7 @@ msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att i
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Inkludera all information i NFO-filerna (används endast med 'Local Information'-skrapa)"
+msgstr "Inkludera all information i NFO-filerna (används endast med 'Lokal Information'-skrapa)"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -804,7 +804,7 @@ msgstr "Anslutningen till MySQL-databasen fungerade"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "Värd IP"
+msgstr "Host IP"
 
 msgctxt "#30204"
 msgid "Port"
@@ -852,7 +852,7 @@ msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Färg på titlarna som ingår i 'Min Lista'"
+msgstr "Färg på titlarna som ingår i Min Lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -892,7 +892,7 @@ msgstr "Automatiskt uppdateringsläge"
 
 msgctxt "#30225"
 msgid "Manual"
-msgstr "Manual"
+msgstr "Manuellt"
 
 msgctxt "#30226"
 msgid "Scheduled"
@@ -900,7 +900,7 @@ msgstr "Planerad"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr "Synkronisera Kodi-biblioteket med 'Min Lista'"
+msgstr "Synkronisera Kodi-biblioteket med Min Lista"
 
 msgctxt "#30228"
 msgid "Use 'My list' of the current profile"
@@ -920,11 +920,11 @@ msgstr "Vill du kontrollera uppdateringen nu?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Åldersgräns-profil för {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Visa bara titlar rankade [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -952,4 +952,12 @@ msgstr "Färg på kompletterande innehållsinformation"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Bakgrundstjänsterna kan inte startas på grund av detta problem:\r\n{}"
+msgstr "Bakgrundstjänsterna kan inte startas på grund av följande problem:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (lägre siffra är bättre)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""
