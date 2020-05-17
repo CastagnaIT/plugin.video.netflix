@@ -286,11 +286,11 @@ def get_info_from_library(videoid):
 
 def add_title_color(dict_item, infos_copy, common_data):
     """Highlight list item title when the videoid is contained in my-list"""
-    updated_title = _colorize_text(common_data['mylist_titles_color'], infos_copy['title'])
-    if dict_item['is_folder']:
-        dict_item['Label'] = updated_title
-    # When a xbmcgui.Listitem is not a folder 'label' is replaced by 'title' property of infoLabel
-    infos_copy['Title'] = updated_title
+    updated_title = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
+    dict_item['label'] = updated_title
+    # When a xbmcgui.Listitem is not a folder 'label' is replaced by 'Title' property of infoLabel
+    if not dict_item['is_folder']:
+        infos_copy['Title'] = updated_title
 
 
 def _colorize_text(color_name, text):
