@@ -13,34 +13,37 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.globals import g
-from .action_manager import PlaybackActionManager
+from .action_manager import ActionManager
 
 
-class UpNextNotifier(PlaybackActionManager):
+class AMUpNextNotifier(ActionManager):
     """
     Prepare the data and trigger the AddonSignal for Up Next add-on integration.
     The signal must be sent after playback started.
     """
+
+    SETTING_ID = 'UpNextNotifier_enabled'
+
     def __init__(self):
-        super(UpNextNotifier, self).__init__()
+        super(AMUpNextNotifier, self).__init__()
         self.upnext_info = None
 
     def __str__(self):
         return 'enabled={}'.format(self.enabled)
 
-    def _initialize(self, data):
-        if not data['info_data'] or not data['videoid_next_episode']:
+    def initialize(self, data):
+        if not data['videoid_next_episode'] or not data['info_data']:
             return
         videoid = common.VideoId.from_dict(data['videoid'])
         videoid_next_episode = common.VideoId.from_dict(data['videoid_next_episode'])
         self.upnext_info = get_upnext_info(videoid, videoid_next_episode, data['info_data'], data['metadata'],
                                            data['is_played_from_addon'])
 
-    def _on_playback_started(self, player_state):  # pylint: disable=unused-argument
+    def on_playback_started(self, player_state):  # pylint: disable=unused-argument
         common.debug('Sending initialization signal to Up Next Add-on')
         common.send_signal(common.Signals.UPNEXT_ADDON_INIT, self.upnext_info, non_blocking=True)
 
-    def _on_tick(self, player_state):
+    def on_tick(self, player_state):
         pass
 
 

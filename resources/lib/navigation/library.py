@@ -22,7 +22,7 @@ class LibraryActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing LibraryActionExecutor: {}', params)
+        common.debug('Initializing "LibraryActionExecutor" with params: {}', params)
         self.params = params
 
     @common.inject_video_id(path_offset=1)

@@ -22,6 +22,11 @@ import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MetadataNotAvailable
 from resources.lib.globals import g
 
+try:  # Kodi >= 19
+    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
+
 LIBRARY_HOME = 'library'
 FOLDER_MOVIES = 'movies'
 FOLDER_TV = 'shows'
@@ -32,7 +37,6 @@ class ItemNotFound(Exception):
     """The requested item could not be found in the Kodi library"""
 
 
-@common.time_execution(immediate=False)
 def get_item(videoid):
     """Find an item in the Kodi library by its Netflix videoid and return Kodi DBID and mediatype"""
     try:
@@ -42,7 +46,6 @@ def get_item(videoid):
         raise ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid))
 
 
-@common.time_execution(immediate=False)
 def _get_library_entry(videoid):
     if videoid.mediatype == common.VideoId.MOVIE:
         file_path = g.SHARED_DB.get_movie_filepath(videoid.value)
@@ -67,11 +70,10 @@ def _get_library_entry(videoid):
     return file_path, media_type
 
 
-@common.time_execution(immediate=False)
 def _get_item(mediatype, filename):
     # To ensure compatibility with previously exported items,
     # make the filename legal
-    fname = xbmc.makeLegalFilename(filename)
+    fname = makeLegalFilename(filename)
     untranslated_path = os.path.dirname(g.py2_decode(fname))
     translated_path = os.path.dirname(g.py2_decode(xbmc.translatePath(fname)))
     shortname = os.path.basename(g.py2_decode(xbmc.translatePath(fname)))
@@ -106,7 +108,7 @@ def get_previously_exported_items():
     videoid_pattern = re.compile('video_id=(\\d+)')
     for folder in _lib_folders(FOLDER_MOVIES) + _lib_folders(FOLDER_TV):
         for filename in xbmcvfs.listdir(folder)[1]:
-            filepath = g.py2_decode(xbmc.makeLegalFilename('/'.join([folder, filename])))
+            filepath = g.py2_decode(makeLegalFilename('/'.join([folder, filename])))
             if filepath.endswith('.strm'):
                 common.debug('Trying to migrate {}', filepath)
                 try:
@@ -124,8 +126,8 @@ def get_previously_exported_items():
 
 
 def _lib_folders(section):
-    section_dir = g.py2_decode(xbmc.translatePath(xbmc.makeLegalFilename('/'.join([library_path(), section]))))
-    return [g.py2_decode(xbmc.makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')])))
+    section_dir = g.py2_decode(xbmc.translatePath(makeLegalFilename('/'.join([library_path(), section]))))
+    return [g.py2_decode(makeLegalFilename('/'.join([section_dir, folder.decode('utf-8')])))
             for folder
             in xbmcvfs.listdir(section_dir)[0]]
 
@@ -145,20 +147,19 @@ def export_new_item(item_task, library_home):
     export_item(item_task, library_home)
 
 
-@common.time_execution(immediate=False)
 def export_item(item_task, library_home):
     """Create strm file for an item and add it to the library"""
     # Paths must be legal to ensure NFS compatibility
-    destination_folder = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+    destination_folder = g.py2_decode(makeLegalFilename('/'.join(
         [library_home, item_task['section'], item_task['destination']])))
     _create_destination_folder(destination_folder)
     if item_task['is_strm']:
-        export_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        export_filename = g.py2_decode(makeLegalFilename('/'.join(
             [destination_folder, item_task['filename'] + '.strm'])))
         _add_to_library(item_task['videoid'], export_filename, (item_task['nfo_data'] is not None))
         _write_strm_file(item_task, export_filename)
     if item_task['nfo_data'] is not None:
-        nfo_filename = g.py2_decode(xbmc.makeLegalFilename('/'.join(
+        nfo_filename = g.py2_decode(makeLegalFilename('/'.join(
             [destination_folder, item_task['filename'] + '.nfo'])))
         _write_nfo_file(item_task['nfo_data'], nfo_filename)
     common.debug('Exported {}', item_task['title'])
@@ -201,7 +202,6 @@ def _write_nfo_file(nfo_data, nfo_filename):
         filehandle.close()
 
 
-@common.time_execution(immediate=False)
 def remove_item(item_task, library_home=None):
     """Remove an item from the library and delete if from disk"""
     # pylint: disable=unused-argument, broad-except
@@ -222,7 +222,7 @@ def remove_item(item_task, library_home=None):
         if xbmcvfs.exists(nfo_file):
             xbmcvfs.delete(nfo_file)
         dirs, files = xbmcvfs.listdir(parent_folder)
-        tvshow_nfo_file = g.py2_decode(xbmc.makeLegalFilename('/'.join([parent_folder, 'tvshow.nfo'])))
+        tvshow_nfo_file = g.py2_decode(makeLegalFilename('/'.join([parent_folder, 'tvshow.nfo'])))
         # Remove tvshow_nfo_file only when is the last file
         # (users have the option of removing even single seasons)
         if xbmcvfs.exists(tvshow_nfo_file) and not dirs and len(files) == 1:

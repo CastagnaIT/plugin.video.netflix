@@ -2,8 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
-    Remember and restore audio stream / subtitle settings between individual
-    episodes of a tv show or movie
+    Remember and restore audio stream / subtitle settings between individual episodes of a tv show or movie
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -15,7 +14,7 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.globals import g
-from .action_manager import PlaybackActionManager
+from .action_manager import ActionManager
 
 STREAMS = {
     'audio': {
@@ -35,14 +34,17 @@ STREAMS = {
 }
 
 
-class StreamContinuityManager(PlaybackActionManager):
+class AMStreamContinuity(ActionManager):
     """
     Detects changes in audio / subtitle streams during playback, saves them
     for the currently playing show and restores them on subsequent episodes.
     """
 
-    def __init__(self):  # pylint: disable=super-on-old-class
-        super(StreamContinuityManager, self).__init__()
+    SETTING_ID = 'StreamContinuityManager_enabled'
+
+    def __init__(self):
+        super(AMStreamContinuity, self).__init__()
+        self.videoid = None
         self.current_videoid = None
         self.current_streams = {}
         self.sc_settings = {}
@@ -52,19 +54,23 @@ class StreamContinuityManager(PlaybackActionManager):
         self.legacy_kodi_version = g.KODI_VERSION.is_major_ver('18')
         self.kodi_only_forced_subtitles = None
 
-    def _initialize(self, data):
-        videoid = common.VideoId.from_dict(data['videoid'])
-        if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+    def __str__(self):
+        return ('enabled={}, current_videoid={}'
+                .format(self.enabled, self.current_videoid))
+
+    def initialize(self, data):
+        self.videoid = common.VideoId.from_dict(data['videoid'])
+        if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
             return
-        self.current_videoid = videoid \
-            if videoid.mediatype == common.VideoId.MOVIE \
-            else videoid.derive_parent(0)
+        self.current_videoid = self.videoid \
+            if self.videoid.mediatype == common.VideoId.MOVIE \
+            else self.videoid.derive_parent(0)
         self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
                                                              self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
-    def _on_playback_started(self, player_state):
+    def on_playback_started(self, player_state):
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
         if self.kodi_only_forced_subtitles and g.ADDON.getSettingBool('forced_subtitle_workaround')\
@@ -81,12 +87,14 @@ class StreamContinuityManager(PlaybackActionManager):
         # changed by restore, otherwise when _on_tick is executed it will save twice unnecessarily
         xbmc.sleep(1000)
 
-    def _on_tick(self, player_state):
+    def on_tick(self, player_state):
         self.player_state = player_state
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']
         player_stream = player_state.get(STREAMS['audio']['current'])
-        if not self._is_stream_value_equal(current_stream, player_stream):
+        # If the current audio language is labeled as 'unk' means unknown, skip the save for the next check,
+        #   this has been verified on Kodi 18, the cause is unknown
+        if player_stream['language'] != 'unk' and not self._is_stream_value_equal(current_stream, player_stream):
             self._set_current_stream('audio', player_state)
             self._save_changed_stream('audio', player_stream)
             common.debug('audio has changed from {} to {}', current_stream, player_stream)
@@ -96,7 +104,7 @@ class StreamContinuityManager(PlaybackActionManager):
         #       otherwise Kodi reacts strangely if only one value of these is restored
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
-        if player_stream is None:
+        if not player_stream:
             # I don't know the cause:
             # Very rarely can happen that Kodi starts the playback with the subtitles enabled,
             # but after some seconds subtitles become disabled, and 'currentsubtitle' of player_state data become 'None'
@@ -126,11 +134,11 @@ class StreamContinuityManager(PlaybackActionManager):
         })
 
     def _restore_stream(self, stype):
-        common.debug('Trying to restore {}...', stype)
         set_stream = STREAMS[stype]['setter']
         stored_stream = self.sc_settings.get(stype)
-        if stored_stream is None:
+        if stored_stream is None or (isinstance(stored_stream, dict) and not stored_stream):
             return
+        common.debug('Trying to restore {} with stored data {}', stype, stored_stream)
         data_type_dict = isinstance(stored_stream, dict)
         if self.legacy_kodi_version:
             # Kodi version 18, this is the old method that have a unresolvable bug:
@@ -246,7 +254,7 @@ class StreamContinuityManager(PlaybackActionManager):
             # --- ONLY FOR KODI VERSION 18 ---
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
-            cache_identifier = g.get_esn() + '_' + self.current_videoid.value
+            cache_identifier = g.get_esn() + '_' + self.videoid.value
             manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
@@ -273,10 +281,6 @@ class StreamContinuityManager(PlaybackActionManager):
             return common.compare_dicts(stream_a, stream_b, ['index'])
         # subtitleenabled is boolean and not a dict
         return stream_a == stream_b
-
-    def __repr__(self):
-        return ('enabled={}, current_videoid={}'
-                .format(self.enabled, self.current_videoid))
 
 
 def _filter_streams(streams, filter_name, match_value):

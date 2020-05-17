@@ -29,11 +29,11 @@ def encrypt_credential(raw):
     """
     # pylint: disable=invalid-name,import-error
     import base64
-    try:  # Python 3
+    try:  # The crypto package depends on the library installed (see Wiki)
         from Crypto import Random
         from Crypto.Cipher import AES
         from Crypto.Util import Padding
-    except ImportError:  # Python 2
+    except ImportError:
         from Cryptodome import Random
         from Cryptodome.Cipher import AES
         from Cryptodome.Util import Padding
@@ -53,10 +53,10 @@ def decrypt_credential(enc, secret=None):
     """
     # pylint: disable=invalid-name,import-error
     import base64
-    try:  # Python 3
+    try:  # The crypto package depends on the library installed (see Wiki)
         from Crypto.Cipher import AES
         from Crypto.Util import Padding
-    except ImportError:  # Python 2
+    except ImportError:
         from Cryptodome.Cipher import AES
         from Cryptodome.Util import Padding
     enc = base64.b64decode(enc)

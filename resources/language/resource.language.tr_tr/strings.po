@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-02-25 01:50+0000\n"
+"PO-Revision-Date: 2020-04-15 01:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -212,23 +212,23 @@ msgstr "Dışa aktarılan"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Otomatik profil seçimi"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Profilin otomatik-seçimini kaldır"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Otomatik seçim için ayarla"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Profili ayarlamak için, profiller listesinde içerik menüsünü açın"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "{} profili otomatik seçim için ayarlandı"
 
 # Unused 30059
 
@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Kütüphane öğeleri için yer imlerini kaydet / izlendiğinde işaretle"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Önbellek öğesi yaşam-süresi (dakika)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Metaveri için önbellek öğesi yaşam-süresi (gün)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Listem için önbellek öğesi yaşam-süresi (dakika)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "DolbyVision profillerini etkinleştir"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "\"{}\" için sonuçlar"
+msgid "Results for '{}'"
+msgstr "'{}' için sonuçlar"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +403,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix aşağıdaki hatayı döndürdü:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen GitHub üzerinden bildirin. Lütfen hata raporunuzla birlikte tam bir hata ayıklama günlüğü sağlayın (Kodi ayarlarında \"Hata Ayıklama Günlüğü\"nü etkinleştirin)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Hata ayrıntıları Kodi günlük dosyasına yazılmıştır. Hata mesajı sorunun nasıl çözüleceğine dair rehberlik sağlamazsa veya bu hatayı almaya devam ediyorsanız, lütfen Readme talimatlarını izleyerek GitHub üzerinden bildirin."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,7 +491,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Bu öğeyi gerçekten kaldırmak istiyor musunuz?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Kitaplığı temizle"
 
 msgctxt "#30126"
@@ -500,7 +502,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Verilen derecelendirme {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Ayrıntılı bilgi için günlük dosyasına bakın"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Bellek içindeki önbelleği temizle"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Bellek içindeki ve disk üzerindeki önbelleği temizle"
 
 msgctxt "#30134"
@@ -709,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Giriş ile ilgili bir sorun oluştu, hesabınızın onaylanmamış veya yenilenmemiş olması mümkündür."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Zorunlu altyazı akışı yoksa altyazıları devre dışı bırak (Sadece Kodi Yürütücü \"Yalnızca zorunlu\" altyazı olarak ayarlanmışsa çalışır)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Zorunlu altyazı akışı yoksa altyazıları devre dışı bırak (Sadece Kodi Yürütücü 'Yalnızca zorunlu' altyazı olarak ayarlanmışsa çalışır)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,8 +845,8 @@ msgid "InputStream Helper settings..."
 msgstr "InputStream Helper ayarları..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Listemin güncellenmesini zorla"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -877,8 +881,8 @@ msgid "Kid account"
 msgstr "Çocuk hesabı"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Senkronizasyon artık {} profilinin \"Listem\"'ini kullanıyor"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Senkronizasyon artık {} profilinin 'Listem''ini kullanıyor"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +901,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi kitaplığını Listem ile senkronize et"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Geçerli profilin \"Listem\"'ini kullan"
+msgid "Use 'My list' of the current profile"
+msgstr "Geçerli profilin 'Listem''ini kullan"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,12 +917,12 @@ msgid "Do you want to check update now?"
 msgstr "Güncellemeyi şimdi kontrol etmek istiyor musunuz?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Olgunluk Seviyesine Göre Kısıtla"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "{} içeriği, oynatmanın başlaması için PIN kodunun girilmesini gerektirir."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -939,3 +943,11 @@ msgstr "İzlendi olarak işaretlendi|İzlenmedi olarak işaretlendi|Netflix izle
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next bildirimleri (sonraki videoyu izle)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Ek özet bilgisinin rengi"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"

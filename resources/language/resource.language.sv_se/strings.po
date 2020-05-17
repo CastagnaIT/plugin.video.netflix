@@ -6,14 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
-"POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2019-09-11 02:42+0000\n"
-"Last-Translator: Dag Wieers <dag@wieers.com>\n"
-"Language-Team: Dutch\n"
+"POT-Creation-Date: 2020-04-18 00:00+0000\n"
+"PO-Revision-Date: 2020-05-17 00:00+0000\n"
+"Last-Translator: Tomas Andersson\n"
+"Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
+"Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -22,97 +22,97 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
-msgstr "Bekijk Netflix films en tvprogramma's in Kodi."
+msgstr "Netflix VOD Service-tillägg"
 
 msgctxt "Addon Disclaimer"
 msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren."
+msgstr "Vissa delar av detta tillägg kanske inte är lagligt i ditt hemland - kontrollera med dina lokala lagar innan du installerar."
 
 msgctxt "#30001"
 msgid "Recommendations"
-msgstr "Aanbevelingen"
+msgstr "Rekommendationer"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "Voer uw PIN in"
+msgstr "Ange PIN-kod för att titta på begränsat innehåll"
 
 msgctxt "#30003"
 msgid "Search term"
-msgstr "Zoekterm"
+msgstr "Sökord"
 
 msgctxt "#30004"
 msgid "Password"
-msgstr "Wachtwoord"
+msgstr "Lösenord"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "E-mail"
+msgstr "E-post"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Ange PIN-kod för att få tillgång till den här profilen"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "Ouderlijktoezicht PIN"
+msgstr "PIN-kod för Föräldrakontroll(4 siffror)"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Inloggen mislukt"
+msgstr "Inloggningen misslyckades"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Controleer uw inloggegevens"
+msgstr "Kontrollera din e-post och lösenord"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr "Alle soorten lijsten"
+msgstr "Listor av alla slag"
 
 msgctxt "#30011"
 msgid "Search"
-msgstr "Zoeken"
+msgstr "Sök"
 
 # Unused 30012
 
 msgctxt "#30013"
 msgid "No matches found"
-msgstr "Geen overeenkomsten gevonden"
+msgstr "Hittade inga matchningar"
 
 msgctxt "#30014"
 msgid "Account"
-msgstr "Account"
+msgstr "Konto"
 
 msgctxt "#30015"
 msgid "Other options"
-msgstr "Andere opties"
+msgstr "Andra alternativ"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr "ESN"
+msgstr "ESN - Elektroniskt serienummer"
 
 msgctxt "#30017"
 msgid "Logout"
-msgstr "Uitloggen"
+msgstr "Logga ut"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "Naar bibliotheek exporteren"
+msgstr "Exportera till bibliotek"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "Op Netflix beoordelen"
+msgstr "Betygsätt på Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Van 'Mijn lijst' verwijderen"
+msgstr "Ta bort från 'Min Lista'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Aan 'Mijn lijst’ toevoegen"
+msgstr "Lägg till i 'Min Lista'"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
-msgstr "(tussen 0 en 10)"
+msgstr "(mellan 0 och 10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -120,345 +120,345 @@ msgstr "Expert"
 
 msgctxt "#30024"
 msgid "SSL verification"
-msgstr "SSL verificatie"
+msgstr "SSL-verifiering"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "Bibliotheek"
+msgstr "Bibliotek"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "Eigen bibliotheek folder toestaan"
+msgstr "Aktivera anpassad biblioteksmapp"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Eigen bibliotheek locatie"
+msgstr "Anpassad bibliotekssökväg"
 
 msgctxt "#30028"
 msgid "Playback error"
-msgstr "Afspeelfout"
+msgstr "Uppspelningsfel"
 
 # Unused 30029
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "Uit de bibliotheek verwijderen"
+msgstr "Ta bort från biblioteket"
 
 msgctxt "#30031"
 msgid "General"
-msgstr "Algemeen"
+msgstr "Allmänt"
 
 # Unused 30032
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "Dolby Digital Plus inschakelen (DDPlus HQ en Atmos op Netflix Premium)"
+msgstr "Aktivera Dolby Digital Plus (DDPlus HQ och Atmos på Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
-msgstr "Handmatig ESN"
+msgstr "Skriv in ESN"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "InputStream Adaptive instellingen…"
+msgstr "Inställningar för InputStream Adaptive..."
 
 # Unused 30036
 
 msgctxt "#30037"
 msgid "Views"
-msgstr "Views"
+msgstr "Vyer"
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr "Activeer aangepaste views"
+msgstr "Aktivera anpassade vyer"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "View voor folders"
+msgstr "Vy för Mappar"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "View voor films"
+msgstr "Vy för Filmer"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "View voor tvprogramma's"
+msgstr "Vy för TV-program"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "View voor seizoenen"
+msgstr "Vy för Säsonger"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "View voor afleveringen"
+msgstr "Vy för Avsnitt"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "View voor profielen"
+msgstr "Vy för Profiler"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr "Beoordeling verwijderen|Je raadt niet meer aan|Je raadt aan"
+msgstr "Betyget har tagits bort|Du gav betyget tumme ner|Du gav betyget tumme upp"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Er is een probleem met het afspelen van DRM. De InputStream Adaptive add-on is mogelijk niet geactiveerd, of de Widevine CDM library ontbreekt. Het afspelen wordt afgebroken."
+msgstr "Det finns ett problem med InputStream Adaptive-tillägget eller Widevine-biblioteket. Kan saknas eller har inte aktiverats, åtgärden kommer att avbrytas."
 
 # Unused 30047
 
 msgctxt "#30048"
 msgid "Exported"
-msgstr "Geëxporteerd"
+msgstr "Exporterad"
 
 # Unused 30049 to 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr "Profiel automatisch kiezen"
+msgstr "Profil för automatiskt val"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr "Automatisch kiezen van profiel desactiveren"
+msgstr "Ta bort automatiskt val av profil"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr "Stel in voor automatische kiezen"
+msgstr "Ställ in för automatiskt val"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Om je automatisch profiel te kiezen, open het context menu in de lijst van profielen"
+msgstr "För att ställa in profilen i listan över profiler, öppna snabbmenyn"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr "Het profiel {} is gekozen als automatisch profiel"
+msgstr "Profilen {} har ställts in för automatisk val"
 
 # Unused 30059
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "Activeer HEVC profielen (4K voor Android/HDR/DolbyVision)"
+msgstr "Aktivera HEVC-profiler (4K för Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "Updaten in de bibliotheek"
+msgstr "Uppdatera inuti biblioteket"
 
 msgctxt "#30062"
 msgid "Parental controls"
-msgstr "Ouderlijktoezicht"
+msgstr "Föräldrakontroll"
 
 # Unused 30063
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "Voer auto-update uit"
+msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr "Auto-update voor tvprogrammas"
+msgstr "Automatisk uppdatering för TV-program, säsonger och avsnitt"
 
 msgctxt "#30066"
 msgid "Debug logging level"
-msgstr "Foutopsporing log niveau"
+msgstr "Felsökningsloggens nivå"
 
 msgctxt "#30067"
 msgid "daily"
-msgstr "dagelijks"
+msgstr "Dagligen"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "iedere andere dag"
+msgstr "Varannan dag"
 
 msgctxt "#30069"
 msgid "every 5 days"
-msgstr "elke 5 dagen"
+msgstr "Var 5:e dag"
 
 msgctxt "#30070"
 msgid "weekly"
-msgstr "wekelijks"
+msgstr "Veckovis"
 
 msgctxt "#30071"
 msgid "Time of Day"
-msgstr "Tijdstip"
+msgstr "Tidpunkt på dygnet"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "Begin pas na 5 minuten inactiviteit"
+msgstr "Starta först efter 5 minuters overksamhet"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "Toon altijd de codec informatie bij het afspelen van video's"
+msgstr "Visa alltid Codec-informationen under videouppspelningen"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "View voor exported"
+msgstr "Vy för exporterad"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Vraag om de intro en korte samenvatting over te slaan"
+msgstr "Fråga om att hoppa över intro och sammanfattning"
 
 msgctxt "#30076"
 msgid "Skip intro"
-msgstr "Sla de intro over"
+msgstr "Hoppa över introt"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Sla de korte samenvatting over"
+msgstr "Hoppa över sammanfattningen"
 
 msgctxt "#30078"
 msgid "Playback"
-msgstr "Afspelen"
+msgstr "Uppspelning"
 
 msgctxt "#30079"
 msgid "Skip automatically"
-msgstr "Sla automatisch over"
+msgstr "Hoppa över automatiskt"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Pauzeer tijdens overslaan"
+msgstr "Pausa efter att du har hoppat över introt"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
-msgstr "Forceer ondersteuning van HDCP 2.2 (schakel 4K kwaliteit in)"
+msgstr "Tvinga HDCP 2.2 videoströmmar"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr "Onthoud geluid / ondertiteling voorkeuren"
+msgstr "Kom ihåg inställningarna för ljud och undertext"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr "Bewaar favorieten voor de library inhoud / markeer als bekeken"
+msgstr "Spara bokmärken för biblioteksposter / Markera som sedd"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "Cache time-to-live (minuten)"
+msgstr "Cache tid-att-behålla (minuter)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "Metadata cache time-to-live (dagen)"
+msgstr "Cache tid-att-behålla för metadata (dagar)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "'Mijn lijst' cache time-to-live (minuten)"
+msgstr "Cache tid-att-behålla för Min Lista (minuter)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr "Bevat {} en meer..."
+msgstr "Innehåller {} och mer..."
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr "Doorblader gerelateerde videos"
+msgstr "Bläddra i relaterat innehåll"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
-msgstr "Doorblader subgenres"
+msgstr "Bläddra i undergenrerna"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "Doorblader gerelateerde videos en ontdek meer inhoud."
+msgstr "Bläddra igenom relaterade videolistor och upptäck mer innehåll."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Doorblader en beheer geëxporteerde videos in de Kodi bibliotheek."
+msgstr "Bläddra och hantera innehåll som exporterades till Kodi-biblioteket."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
-msgstr "Zoek naar videos en vind met gemak wat je zocht."
+msgstr "Sök efter innehåll och hitta enkelt vad du vill titta på."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "Doorblader videos op basis van genre en ontdek met gemak gerelateerde inhoud."
+msgstr "Bläddra bland innehåll efter genre och upptäck enkelt relaterat innehåll."
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr "Doorblader aangeprezen videos en kies iets dat je bevalt."
+msgstr "Bläddra bland rekommendationer och hitta något nytt som du kanske gillar."
 
 msgctxt "#30095"
 msgid "All TV Shows"
-msgstr "Alle tvprogramma's"
+msgstr "Alla TV-program"
 
 msgctxt "#30096"
 msgid "All Movies"
-msgstr "Alle films"
+msgstr "Alla Filmer"
 
 msgctxt "#30097"
 msgid "Main Menu"
-msgstr "Hoofdmenu"
+msgstr "Huvudmeny"
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr "Activeer HDR profielen"
+msgstr "Aktivera HDR-profiler"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr "Activeer DolbyVision profielen"
+msgstr "Aktivera DolbyVision-profiler"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
-msgstr "Resultaten voor '{}'"
+msgstr "Resultat för '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr "Netflix had een onbekende fout."
+msgstr "Netflix returnerade ett okänt fel."
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
-msgstr "Netflix had the volgende foutmelding:"
+msgstr "Netflix returnerade följande fel:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr ""
+msgstr "Felinformationen har skrivits till Kodi-loggfilen. Om felmeddelandet inte ger vägledning om hur du löser problemet, eller om du fortsätter att få det här felet, bör du rapportera det på GitHub genom att följa Readme-instruktionerna där."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
-msgstr "Deze add-on ondervond de volgende fout:"
+msgstr "Tillägget stötte på följande fel:"
 
 msgctxt "#30105"
 msgid "Netflix Add-on Error"
-msgstr "Netflix add-on fout"
+msgstr "Netflix tilläggsfel"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
-msgstr "Foutieve PIN"
+msgstr "Ogiltig PIN-kod"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr "PIN beveiliging uit."
+msgstr "PIN-skyddet är avstängt."
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr "Alle content is beveiligd met de PIN"
+msgstr "Allt innehåll är skyddat med PIN-kod."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Succesvol aangemeld"
+msgstr "Inloggningen lyckades"
 
 msgctxt "#30110"
 msgid "Background services started"
-msgstr "Achtergronddiensten werden gestart"
+msgstr "Bakgrundstjänster startade"
 
 msgctxt "#30111"
 msgid "There is no contents"
-msgstr "Er is geen inhoud"
+msgstr "Det finns inget innehåll"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr "Je moet ingelogd zijn om Netflix te kunnen gebruiken"
+msgstr "Du måste vara inloggad för att kunna använda Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr "Succesvol afgemeld"
+msgstr "Utloggningen lyckades"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Houd Mijn Lijst en de Kodi bibliotheek gesynchroniseerd"
+msgstr "Håll Min Lista och Kodi-biblioteket synkroniserade"
 
 msgctxt "#30115"
 msgid "Content Profiles"
-msgstr "Inhoudsprofielen"
+msgstr "Innehållsprofiler"
 
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
-msgstr "Geavanceerde add-on configuratie"
+msgstr "Avancerad tilläggskonfiguration"
 
 msgctxt "#30117"
 msgid "Cache"
@@ -466,221 +466,221 @@ msgstr "Cache"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
-msgstr "API operatie mislukt: {}"
+msgstr "API-operationen misslyckades: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr "Mijn Lijst operatie was succesvol"
+msgstr "Operationen lyckades"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Het is onmogelijk om automatisch een seizoen te verwijderen uit de Kodi bibliotheek, gelieve dit manueel te doen"
+msgstr "Kan inte ta bort en säsong automatiskt från Kodi-biblioteket, gör det manuellt"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr "Voer een volledige synchronisatie uit"
+msgstr "Utför full synkronisering nu"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr "Synchroniseer Mijn Lijst met de Kodi bibliotheek"
+msgstr "Synkronisera Min lista till Kodi-biblioteket"
 
 msgctxt "#30123"
 msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Wil je écht verder gaan?\nDit zal al je vorige geëxporteerde items verwijderen en all items van Mijn Lijst voor het huidige actieve profiel exporteren.\nDit zal een tijdje duren..."
+msgstr "Vill du verkligen fortsätta?\nDetta kommer att ta bort alla tidigare exporterade objekt och exportera alla objekt från Min Lista för den nuvarande aktiva profilen.\nDenna åtgärden kan ta lite tid..."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "Wil je dit verwijderen?"
+msgstr "Vill du ta bort det här objektet från biblioteket?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Bibliotheek leegmaken"
+msgstr "Rensa biblioteket"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Wil je echt de bibliotheek leegmaken?\nAlle geêxporteerde items worden verwijderd."
+msgstr "Vill du verkligen rensa ditt bibliotek?\nAlla exporterade objekt kommer att raderas."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
-msgstr "Toegekende beoordeling van {}"
+msgstr "Tilldelat betyg på {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Välj en Profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
-msgstr "Activeer Up Next integratie"
+msgstr "Aktivera Up Next-integration"
 
 msgctxt "#30130"
 msgid "Show notification instead of modal dialog for errors"
-msgstr "Toon een melding in plaats van een venster bij fouten"
+msgstr "Visa meddelande istället för modal-dialog för fel"
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
-msgstr "Controleer het logboek voor gedetaileerde informatie"
+msgstr "Kontrollera loggfilen för detaljerad information"
 
 msgctxt "#30132"
 msgid "Clear in-memory cache"
-msgstr "In-memory cache leegmaken"
+msgstr "Rensa cachen i minnet"
 
 msgctxt "#30133"
 msgid "Clear in-memory and on-disk cache"
-msgstr "In-memory en on-disk cache leegmaken"
+msgstr "Rensa cachen i minnet och på hårddisken"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
-msgstr "Timing van uitvoering inschakelen"
+msgstr "Aktivera körtidpunkt"
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr "Cache leegmaken"
+msgstr "Cachen rensad"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "1080p Unlock inschakelen (niet aan te raden op Android)"
+msgstr "Aktivera upplåsning av 1080p (rekommenderas inte för Android)"
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "VP9 profielen inschakelen (schakel dit uit bij schermartifacten)"
+msgstr "Aktivera VP9-profiler (inaktivera om det orsakar artefakter)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
-msgstr "De achtergronddiensten zijn mogelijk nog niet beschikbaar als je net Kodi of de add-on hebt gestart. In dat geval, probeer zo meteen opnieuw."
+msgstr "Bakgrundstjänsterna kanske ännu inte är tillgängliga om du just startade Kodi/tillägget. Om så är fallet, försök igen om en stund."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "IPC over HTTP inschakelen (gebruik it wanneer je Addon Signals timeouts ondervindt)"
+msgstr "Aktivera IPC över HTTP (använd när 'Addon Signals timeout'-meddelanden visas)"
 
 msgctxt "#30140"
 msgid "Migrate Library to new format"
-msgstr "Migreer de bibliotheek naar het nieuwe formaat"
+msgstr "Migrera biblioteket till nya formatet (gäller endast version 13.x)"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "Startmelding uitschakelen"
+msgstr "Inaktivera startmeddelande"
 
 msgctxt "#30142"
 msgid "Custom"
-msgstr "Aangepast"
+msgstr "Anpassad"
 
 msgctxt "#30143"
 msgid "Custom view ID"
-msgstr "Aangepaste view Id"
+msgstr "Anpassad vy-ID"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "WebVTT ondertitels uitschakelen"
+msgstr "Inaktivera WebVTT undertextsupport"
 
 msgctxt "#30145"
 msgid "Recently added"
-msgstr "Recent toegevoegd"
+msgstr "Nyligen tillagd"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr "Ontdek de laatste toegevoegde inhoud."
+msgstr "Upptäck det senaste tillagda innehållet."
 
 msgctxt "#30147"
 msgid "Next page >>"
-msgstr "Volgende pagina >>"
+msgstr "Nästa sida >>"
 
 msgctxt "#30148"
 msgid "<< Previous page"
-msgstr "<< Vorige pagina"
+msgstr "<< Föregående sida"
 
 msgctxt "#30149"
 msgid "Sort results by"
-msgstr "Sorteer resultaten op"
+msgstr "Sortera resultat efter"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
-msgstr "Alfabetische lijst (A-Z)"
+msgstr "Alfabetisk ordning (A-Z)"
 
 msgctxt "#30151"
 msgid "Alphabetical order (Z-A)"
-msgstr "Alfabetische lijst (Z-A)"
+msgstr "Alfabetisk ordning (Z-A)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "Suggesties voor jou"
+msgstr "Förslag till dig"
 
 msgctxt "#30153"
 msgid "Year released"
-msgstr "Jaar van vrijgave"
+msgstr "Releaseår"
 
 msgctxt "#30154"
 msgid "Netflix configuration wizard"
-msgstr "Netflix add-on configuratie"
+msgstr "Netflix konfigurationsguide"
 
 msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
-msgstr "Heb je een Netflix Premium account?"
+msgstr "Har du ett Netflix Premium-konto?"
 
 # Unused 30156
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr "De configuratie is vervolledigd"
+msgstr "Konfigurationen är klar"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "Start de add-on configuratie wizard"
+msgstr "Kör tilläggskonfigurationsguiden"
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr "View voor hoofdmenu"
+msgstr "Vy för Huvudmenyn"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr "View voor zoekopdrachten"
+msgstr "Vy för Sök"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr "View voor geëxporteerd"
+msgstr "Vy för Exporterad"
 
 msgctxt "#30162"
 msgid "Last used"
-msgstr "Laatst bekeken"
+msgstr "Senast använd"
 
 msgctxt "#30163"
 msgid "Audio description"
-msgstr "Audio descriptie"
+msgstr "Ljudbeskrivning"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr "Doorblader inhoud met audio descriptie"
+msgstr "Bläddra bland innehåll med ljudbeskrivning."
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr "View voor Mijn Lijst"
+msgstr "Vy för Min Lista"
 
 msgctxt "#30166"
 msgid "Main menu items"
-msgstr "Hoofdmenu items"
+msgstr "Huvudmenyobjekt"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "Mijn lijst"
+msgstr "Min Lista"
 
 msgctxt "#30168"
 msgid "Continue watching"
-msgstr "Verder kijken"
+msgstr "Fortsätt titta"
 
 msgctxt "#30169"
 msgid "Top picks"
-msgstr "Top keuzes"
+msgstr "Toppval"
 
 msgctxt "#30170"
 msgid "New releases"
-msgstr "Nieuwe uitgaves"
+msgstr "Nya releaser"
 
 msgctxt "#30171"
 msgid "Trending now"
-msgstr "Nu populair"
+msgstr "Trendar nu"
 
 msgctxt "#30172"
 msgid "Popular on Netflix"
-msgstr "Populair op Netflix"
+msgstr "Populärt på Netflix"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
@@ -688,163 +688,163 @@ msgstr "Netflix Originals"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
-msgstr "Tvprogramma genres"
+msgstr "TV-program genrer"
 
 msgctxt "#30175"
 msgid "Movie genres"
-msgstr "Film genres"
+msgstr "Filmgenrer"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr "STRM hervatting inschakelen (enkel bibliotheek)"
+msgstr "Aktivera 'STRM återuppta'-lösning (endast bibliotek)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "Vraag om het afspelen te hervatten"
+msgstr "Be om att återuppta videon"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
-msgstr "Open de Up Next add-on instellingen"
+msgstr "Öppna Up Next tilläggsinställningar"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
-msgstr "Toon voorfilmpjes"
+msgstr "Visa trailers och mer"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
-msgstr "Er was een probleem met het inloggen. Mogelijk moeten je login gegevens nog bevestigd of hernieuwd worden."
+msgstr "Det har uppstått ett problem med inloggningen, det är möjligt att ditt konto inte har bekräftats eller förnyats."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
-msgstr "Ondertitels uitschakelen als er geen geforceerde ondertitels worden meegeleverd (Werkt enkel als Kodi Player 'Alleen geforceerde' ondertitles heeft ingeschakeld)"
+msgstr "Inaktivera undertexter om det inte finns några tvingade undertextsströmmar (Fungerar bara om Kodi Player är inställd på 'Endast tvingade' undertexter)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
-msgstr "NFO bestanden exporteren"
+msgstr "Exportera NFO-filer"
 
 msgctxt "#30183"
 msgid "Do you want to export NFO files for the {}?"
-msgstr "Wil je NFO bestanden exporteren voor {}"
+msgstr "Vill du exportera NFO-filer för {}?"
 
 msgctxt "#30184"
 msgid "NFO Files"
-msgstr "NFO bestanden"
+msgstr "NFO-filer"
 
 msgctxt "#30185"
 msgid "Enable NFO files export"
-msgstr "Schakel NFO bestanden exporteren in"
+msgstr "Aktivera export av NFO-filer"
 
 msgctxt "#30186"
 msgid "For Movies"
-msgstr "Voor films"
+msgstr "För Filmer"
 
 msgctxt "#30187"
 msgid "For TV Show"
-msgstr "Voor tvprogramma"
+msgstr "För TV-program"
 
 msgctxt "#30188"
 msgid "Ask"
-msgstr "Vraag"
+msgstr "Fråga"
 
 msgctxt "#30189"
 msgid "movie"
-msgstr "film"
+msgstr "Film"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "tvprogramma"
+msgstr "TV-program"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "Wil je de NFO bestanden exporteren voor {} toegevoegd aan 'Mijn Lijst'?"
+msgstr "Vill du exportera NFO-filer för {} tillagda till 'Min lista'?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nDeze bestanden worden door de 'provider information scrapers' gebruikt om films en tvprogrammas informatie te integreren, handig voor extra's en director's cut"
+msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att integrera information om filmer och tv-program, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Gebruik all informatie uit NFO bestanden (enkel te gebruiken met 'Local Information' scraper)"
+msgstr "Inkludera all information i NFO-filerna (används endast med 'Lokal Information'-skrapa)"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr "Beperk de video stream kwaliteit tot"
+msgstr "Begränsa upplösningen av videoströmmen till"
 
 msgctxt "#30195"
 msgid "Export new episodes"
-msgstr "Exporteer nieuwe afleveringen"
+msgstr "Exportera nya avsnitt"
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
-msgstr "Uitsluiten van automatische updates"
+msgstr "Uteslut från automatisk uppdatering"
 
 msgctxt "#30197"
 msgid "Include in auto update"
-msgstr "Bijvoegen in automatische updates"
+msgstr "Inkludera i automatisk uppdatering"
 
 msgctxt "#30198"
 msgid "Exporting new episodes"
-msgstr "Exporteer nieuwe afleveringen"
+msgstr "Exportera nya avsnitt"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "Gedeelde-bibliotheek (Kodi MySQL server is noodzakelijk)"
+msgstr "Delat bibliotek (Kodi MySQL-server krävs)"
 
 msgctxt "#30200"
 msgid "Use MySQL shared library database"
-msgstr "Gebruik de MySQL gedeelde-bibliotheek database"
+msgstr "Använd MySQL-delad biblioteksdatabas"
 
 msgctxt "#30201"
 msgid "Username"
-msgstr "Gebruikersnaam"
+msgstr "Användarnamn"
 
 msgctxt "#30202"
 msgid "Connection to the MySQL database was successful"
-msgstr "Succesvol verbonden met de MySQL database"
+msgstr "Anslutningen till MySQL-databasen fungerade"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "IP adres"
+msgstr "Host IP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr "Poort"
+msgstr "Port"
 
 msgctxt "#30205"
 msgid "Test database connection"
-msgstr "Test de database verbinding"
+msgstr "Testa databasanslutningen"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL database is not reachable - the local database will be used"
-msgstr "FOUT: De MySQL database is niet bereikbaar - de lokale database wordt gebruikt"
+msgstr "FEL: MySQL-databasen kan inte nås - den lokala databasen kommer att användas"
 
 msgctxt "#30207"
 msgid "Set this device as main auto-updates manager"
-msgstr "Stel dit device in als hoofdbeheerde van automatische updates"
+msgstr "Ställ in den här enheten som huvudhanteraren för automatiska uppdateringar"
 
 msgctxt "#30208"
 msgid "Check if this device is the main auto-update manager"
-msgstr "Controleer of dit device de hoofd beheerder is van automatische updates"
+msgstr "Kontrollera om den här enheten är huvudhanteraren för automatiska uppdateringar"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
-msgstr "Dit device handelt nu de automatische updates van de gedeelde-bibliotheek af"
+msgstr "Denna enhet hanterar nu automatiska uppdateringar av delade bibliotek"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of shared-library"
-msgstr "Dit device handelt de automatische updates van de gedeelde-bibliotheek af"
+msgstr "Denna enhet hanterar automatiska uppdateringar av delade bibliotek"
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of shared-library"
-msgstr "Een ander device handelt de automatische updates van de gedeelde-bibliotheek af"
+msgstr "En annan enhet hanterar automatiska uppdateringar av delade bibliotek"
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of shared-library"
-msgstr "Er is geen device dat automatische updates van de gedeelde-bibliotheek kan afhandelen"
+msgstr "Det finns ingen enhet som hanterar automatiska uppdateringar av delade bibliotek"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
-msgstr "InputStream Helper instellingen…"
+msgstr "Inställningar för InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
@@ -852,111 +852,111 @@ msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Benadruk titels uit 'Mijn lijst' met een kleur"
+msgstr "Färg på titlarna som ingår i Min Lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
-msgstr "Toon de gebruikte ESN"
+msgstr "Visa ESN som används"
 
 msgctxt "#30217"
 msgid "Reset ESN"
-msgstr "Reset ESN"
+msgstr "Återställ ESN"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Ben je zeker dat je het ESN wil resetten?\r\nAls je reset, wacht dan tot je de login bevestiging krijgt."
+msgstr "Är du säker på att du vill återställa ESN?\r\nOm du bekräftar, vänta tills du får inloggningsmeddelandet."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr "Melding voor 'Synchronisatie voltooid' uitschakelen"
+msgstr "Inaktivering av avisering för synkronisering färdig"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr "De Kodi bibliotheel werd bijgewerkt"
+msgstr "Kodi-biblioteket har uppdaterats"
 
 msgctxt "#30221"
 msgid "Owner account"
-msgstr "Eigenaar account"
+msgstr "Ägarkonto"
 
 msgctxt "#30222"
 msgid "Kid account"
-msgstr "Kinderen account"
+msgstr "Barnkonto"
 
 msgctxt "#30223"
 msgid "Synchronization now uses 'My List' of profile {}"
-msgstr "Synchronisatie gebruikt nu 'Mijn lijst' van profiel {}"
+msgstr "Synkroniseringen använder nu 'Min lista' för profilen {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
-msgstr "Automatisch bijwerken modus"
+msgstr "Automatiskt uppdateringsläge"
 
 msgctxt "#30225"
 msgid "Manual"
-msgstr "Handmatig"
+msgstr "Manuellt"
 
 msgctxt "#30226"
 msgid "Scheduled"
-msgstr "Ingepland"
+msgstr "Planerad"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr "Synchroniseer Kodi bibliotheek met My List"
+msgstr "Synkronisera Kodi-biblioteket med Min Lista"
 
 msgctxt "#30228"
 msgid "Use 'My list' of the current profile"
-msgstr "Gebruik 'Mijn lijst' van het huidige profiel"
+msgstr "Använd 'Min lista' för den aktuella profilen"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
-msgstr "Toon de naam van het geselecteerde profiel"
+msgstr "Visa namnet på den valda profilen"
 
 msgctxt "#30230"
 msgid "Check for updates now"
-msgstr "Controleer nu voor updates"
+msgstr "Sök efter uppdateringar nu"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
-msgstr "Wil je nu controleren voor een update?"
+msgstr "Vill du kontrollera uppdateringen nu?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Åldersgräns-profil för {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Visa bara titlar rankade [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr "Installeer de Up Next add-on"
+msgstr "Installera Up Next-tillägget"
 
 msgctxt "#30235"
 msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[WIP] Synchroniseer de 'bekeken' status van video's met Netflix"
+msgstr "[Under utveckling] Synkronisera visningsstatusen av videorna med Netflix"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr "Verander de 'bekeken' status (lokaal)"
+msgstr "Ändra visningsstatusen (lokalt)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr "Markeer als bekeken|Markeer als onbekeken|Herstel Netflix bekeken status"
+msgstr "Markerad som visad|Markerad som osedd|Återställd visningsstatus för Netflix"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr "Up Next meldingen (bekijk volgende video)"
+msgstr "Up Next-aviseringar (se nästa video)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr "Kleur van bijkomende plot informatie"
+msgstr "Färg på kompletterande innehållsinformation"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "Bakgrundstjänsterna kan inte startas på grund av följande problem:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "Open Connect CDN (lägre siffra är bättre)"
 
 msgctxt "#30242"
 msgid "Top 10"

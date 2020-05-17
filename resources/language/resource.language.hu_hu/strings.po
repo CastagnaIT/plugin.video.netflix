@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-27 14:40+0000\n"
+"PO-Revision-Date: 2020-04-22 10:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Könyvjelzők mentése / nézettként megjelölés"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Gyorsítótár-elem megőrzése (perc)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Gyorsítótár-elem metaadatok megőrzése (nap)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Gyorsítótár-elem élettartama a saját listámban (perc)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "DolbyVision profil engedélyezése"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Találat \"{}\""
+msgid "Results for '{}'"
+msgstr "Találat '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +403,8 @@ msgid "Netflix returned the following error:"
 msgstr "A Netflix leállt a következő hiba miatt:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül. Adjon meg egy teljes hibakeresési naplót a hibajelentésével (engedélyezze a \"Hibakeresés \" lehetőséget a Kodi beállításokban)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "A hiba részleteit a Kodi a naplóba mentette. Ha a hibaüzenet nem ad útmutatást a probléma megoldására, vagy továbbra is jelentkezik a hiba, kérjük, jelentse a GitHubon keresztül, a Readme utasításainak megfelelően."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,7 +491,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Valóban törlöd ezt az elemet?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Könyvtár tisztítása"
 
 msgctxt "#30126"
@@ -500,7 +502,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Értékelés {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "A hibanaplót nézd meg, a részletes infóért"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Memória gyorsítótár törlése"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Lemez gyorsítótár törlése"
 
 msgctxt "#30134"
@@ -709,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Probléma merült fel a bejelentkezés során, lehetséges, hogy fiókját nem erősítették meg vagy nem újították meg"
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi \"Csak kényszerített\" feliratra van állítva)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "A feliratok letiltása, ha nincs kényszerített felirat (csak akkor működik ha a Kodi 'Csak kényszerített' feliratra van állítva)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,12 +845,12 @@ msgid "InputStream Helper settings..."
 msgstr "InputStream Helper beállítások..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Saját listám kényszerített frissítése"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Színkiemelés a saját listám elemein"
+msgstr "Saját listám elemeinek színe"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -877,8 +881,8 @@ msgid "Kid account"
 msgstr "Gyermek fiók"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "A szinkronizáció most a  \"Saját listámat\" használja a profilhoz {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "A szinkronizáció most a  'Saját listámat' használja a profilhoz {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +901,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi médiatár szinronizálása a Saját listámmal"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Használd a \"Saját listámat\" a jelenlegi profilhoz"
+msgid "Use 'My list' of the current profile"
+msgstr "Használd a 'Saját listámat' a jelenlegi profilhoz"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,12 +917,12 @@ msgid "Do you want to check update now?"
 msgstr "Akarsz most keresni frissítést?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Életkor szerint korlátozva"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Tartalom {} meg kell adni a pinkódot a lejátszáshoz."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -939,3 +943,7 @@ msgstr "Nézettként jelöl|Nem látottként jelöl|Netflix nézett státusz vis
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next jelzés (következő videó nézése)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "A kiegészítő információ színe"

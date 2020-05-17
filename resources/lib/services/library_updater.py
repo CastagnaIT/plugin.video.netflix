@@ -19,6 +19,11 @@ import resources.lib.common as common
 import resources.lib.kodi.library as kodi_library
 from resources.lib.kodi.library_autoupdate import auto_update_library
 
+try:  # Kodi >= 19
+    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
+
 
 class LibraryUpdateService(xbmc.Monitor):
     """
@@ -112,7 +117,7 @@ class LibraryUpdateService(xbmc.Monitor):
             common.debug('Kodi library update requested from library auto-update')
             self.scan_awaiting = False
             common.scan_library(
-                xbmc.makeLegalFilename(
+                makeLegalFilename(
                     xbmc.translatePath(
                         kodi_library.library_path())))
         else:

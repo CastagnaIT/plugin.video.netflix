@@ -64,12 +64,14 @@ def ask_for_rating():
         return None
 
 
-def ask_for_pin():
+def ask_for_pin(message):
     """Ask the user for the adult pin"""
-    return xbmcgui.Dialog().numeric(
-        heading=common.get_local_string(30002),
-        type=0,
-        defaultt='') or None
+    args = {'heading': message,
+            'type': 0,
+            'defaultt': ''}
+    if not g.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
+        args['bHiddenInput'] = True
+    return xbmcgui.Dialog().numeric(**args) or None
 
 
 def ask_for_search_term():

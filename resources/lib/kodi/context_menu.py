@@ -18,10 +18,8 @@ from resources.lib.kodi.library_autoupdate import show_excluded_from_auto_update
 def generate_context_menu_mainmenu(menu_id):
     """Generate context menu items for a listitem of the main menu"""
     items = []
-
-    if menu_id == 'myList':
-        items.append(_ctx_item('force_update_mylist', None))
-
+    if menu_id in ['myList', 'continueWatching']:
+        items.append(_ctx_item('force_update_list', None, {'menu_id': menu_id}))
     return items
 
 

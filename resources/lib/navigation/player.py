@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmcplugin
 import xbmcgui
 
-from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.api.paths import EVENT_PATHS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
@@ -21,7 +21,10 @@ import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 
-SERVICE_URL_FORMAT = 'http://localhost:{port}'
+# Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),
+# so the time that Kodi takes to start a video increases, (due to requests exchange between ISA and the add-on)
+# not sure if it is an urllib issue
+SERVICE_URL_FORMAT = 'http://127.0.0.1:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
 LICENSE_PATH_FORMAT = '/license?id={videoid}'
 
@@ -42,16 +45,12 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
     '0fFdCmw=')
 
 
-class InputstreamError(Exception):
-    """There was an error with setting up inputstream.adaptive"""
-
-
 @common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
 @common.time_execution(immediate=False)
 def play(videoid):
     """Play an episode or movie as specified by the path"""
     is_upnext_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
-    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see controller.py
+    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see action_controller.py
     is_upnext_callback_received = g.LOCAL_DB.get_value('upnext_play_callback_received', False)
     is_upnext_callback_file_type_strm = g.LOCAL_DB.get_value('upnext_play_callback_file_type', '') == 'strm'
     # This is the only way found to know if the played item come from the add-on itself or from Kodi library
@@ -75,7 +74,7 @@ def play(videoid):
     pin_result = _verify_pin(metadata[0].get('requiresPin', False))
     if not pin_result:
         if pin_result is not None:
-            ui.show_notification(common.get_local_string(30106), time=10000)
+            ui.show_notification(common.get_local_string(30106), time=8000)
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
@@ -86,7 +85,7 @@ def play(videoid):
     videoid_next_episode = None
 
     if not is_played_from_addon or is_upnext_enabled:
-        if is_upnext_enabled:
+        if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
             # When UpNext is enabled, get the next episode to play
             videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
         info_data = infolabels.get_info_from_netflix(
@@ -153,15 +152,22 @@ def get_inputstream_listitem(videoid):
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
-    list_item.setMimeType('application/dash+xml')
+    list_item.setMimeType('application/xml+dash')
     list_item.setProperty('isFolder', 'false')
     list_item.setProperty('IsPlayable', 'true')
 
-    import inputstreamhelper
-    is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+    try:
+        import inputstreamhelper
+        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+        inputstream_ready = is_helper.check_inputstream()
+    except Exception as exc:  # pylint: disable=broad-except
+        # Captures all types of ISH internal errors
+        import traceback
+        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        raise InputStreamHelperError(str(exc))
 
-    if not is_helper.check_inputstream():
-        raise InputstreamError(common.get_local_string(30046))
+    if not inputstream_ready:
+        raise Exception(common.get_local_string(30046))
 
     list_item.setProperty(
         key=is_helper.inputstream_addon + '.stream_headers',
@@ -180,7 +186,7 @@ def get_inputstream_listitem(videoid):
         key=is_helper.inputstream_addon + '.server_certificate',
         value=INPUTSTREAM_SERVER_CERTIFICATE)
     list_item.setProperty(
-        key='inputstreamaddon',
+        key='inputstreamaddon' if g.KODI_VERSION.is_major_ver('18') else 'inputstream',
         value=is_helper.inputstream_addon)
     return list_item
 
@@ -188,24 +194,36 @@ def get_inputstream_listitem(videoid):
 def _verify_pin(pin_required):
     if not pin_required:
         return True
-    pin = ui.ask_for_pin()
+    pin = ui.ask_for_pin(common.get_local_string(30002))
     return None if not pin else api.verify_pin(pin)
 
 
 def _get_event_data(videoid):
     """Get data needed to send event requests to Netflix and for resume from last position"""
-    raw_data = api.get_video_raw_data([videoid], EVENT_PATHS)
+    is_episode = videoid.mediatype == common.VideoId.EPISODE
+    req_videoids = [videoid]
+    if is_episode:
+        # Get also the tvshow data
+        req_videoids.append(videoid.derive_parent(0))
+
+    raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
     if not raw_data:
         return {}
+    common.debug('Event data: {}', raw_data)
     videoid_data = raw_data['videos'][videoid.value]
-    common.debug('Event data: {}', videoid_data)
+
+    if is_episode:
+        # Get inQueue from tvshow data
+        is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('inQueue', False)
+    else:
+        is_in_mylist = videoid_data['queue'].get('inQueue', False)
 
     event_data = {'resume_position':
                   videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
                   'runtime': videoid_data['runtime'],
                   'request_id': videoid_data['requestId'],
                   'watched': videoid_data['watched'],
-                  'is_in_mylist': videoid_data['queue'].get('inQueue', False)}
+                  'is_in_mylist': is_in_mylist}
     if videoid.mediatype == common.VideoId.EPISODE:
         event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
     else:

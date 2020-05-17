@@ -10,8 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import requests
-
 import xbmc
 
 import resources.lib.common as common
@@ -24,7 +22,7 @@ from resources.lib.services.nfsession.nfsession_requests import NFSessionRequest
 from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
                                           MissingCredentialsError, InvalidMembershipStatusError,
-                                          LoginValidateErrorIncorrectPassword)
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
 
 try:  # Python 2
     unicode
@@ -39,15 +37,13 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
     def prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
+        from requests import exceptions
         try:
             common.get_credentials()
             if not self.is_logged_in():
                 self._login()
-            else:
-                # A hack way to full load requests module without blocking the service startup
-                common.send_signal(signal='startup_requests_module', non_blocking=True)
             self.is_prefetch_login = True
-        except requests.exceptions.RequestException as exc:
+        except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
@@ -56,7 +52,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             common.info('Login prefetch: No stored credentials are available')
         except (LoginFailedError, LoginValidateError):
             ui.show_notification(common.get_local_string(30009))
-        except InvalidMembershipStatusError:
+        except (InvalidMembershipStatusError, InvalidMembershipStatusAnonymous):
             ui.show_notification(common.get_local_string(30180), time=10000)
 
     @common.time_execution(immediate=True)
@@ -75,14 +71,6 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             return self.try_refresh_session_data()
         return True
 
-    def startup_requests_module(self, data=None):  # pylint: disable=unused-argument
-        """A hack way to full load requests module before making any other calls"""
-        # The first call made with 'requests' module, can takes more than one second longer then
-        # usual to elaborate (depend from device/os/connection), to camouflage this delay
-        # and make the add-on frontend faster this request is made when the service is started.
-        # Side note: authURL probably has a expiration time not knowing which one we are obliged to refresh session data
-        self.try_refresh_session_data()
-
     @common.addonsignals_return_call
     def login(self):
         """AddonSignals interface for login function"""
@@ -95,14 +83,14 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         current_esn = g.get_esn()
         try:
             # First we get the authentication url without logging in, required for login API call
-            react_context = website.extract_json(self._get('profiles'), 'reactContext')
+            react_context = website.extract_json(self._get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
             common.debug('Logging in...')
             login_response = self._post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
             try:
-                website.extract_session_data(login_response, validate=True)
+                website.extract_session_data(login_response, validate=True, update_profiles=True)
                 common.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
                 self.update_session_data(current_esn)

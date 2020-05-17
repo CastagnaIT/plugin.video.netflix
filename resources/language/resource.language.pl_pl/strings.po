@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Adres e-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Podaj PIN do tego profilu"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -200,7 +202,7 @@ msgstr "Usunięto ocenę|Oceniłeś kciuk w dół|Oceniłeś kciuk w górę"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Widevine. Może brakować lub może nie być włączona, operacja zostanie anulowana."
+msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Widevine. Może ich brakować lub mogą nie być włączone, operacja zostanie anulowana."
 
 # Unused 30047
 
@@ -212,23 +214,23 @@ msgstr "Wyeksportowane"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Automatyczny wybór profilu"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Usuń automatczyny wybór profilu"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Wybierz dla automatycznego wyboru"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Aby ustawić profil, twórz menu kontekstowe na liście profili o"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Profil {} został ustawiony do automatycznego wyboru"
 
 # Unused 30059
 
@@ -327,14 +329,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Zachowaj zakładki dla pozycji biblioteki / oznacz jako obejrzane"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Utrzymuj w pamięci podręcznej przez (minuty)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Utrzymuj pamięć podręczną metadanych przez (dni)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Czas przechowywania w pamięci podręcznej mojej listy (minuty)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Włącz profile DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Wyniki dla \"{}\""
+msgid "Results for '{}'"
+msgstr "Wyniki dla '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +405,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix zwrócił poniższy błąd"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub. Podaj pełny dziennik debugowania wraz z raportem o błędzie (włącz \"Dziennikowanie debugowania\" w ustawieniach Kodi)"
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Szczegóły błędów zostały zapisane w pliku logu Kodi. Jeśli komunikat o błędzie nie zawiera wskazówek, jak rozwiązać problem lub nadal występuje ten błąd, zgłoś go za pośrednictwem GitHub korzystając z instrukcji Readme"
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,7 +493,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Czy na pewno chcesz usunąć tę pozycję?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Wyczyść bibliotekę"
 
 msgctxt "#30126"
@@ -500,7 +504,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Przyznana ocena {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +521,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Wyczyść pamięć podręczną"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Wyczyść pamięć podręczną i pamięć podręczną na dysku"
 
 msgctxt "#30134"
@@ -618,7 +624,7 @@ msgstr "Konfiguracja została zakończona"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "Uruchom kreatora konfiguracji dodatki"
+msgstr "Uruchom kreatora konfiguracji"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -709,8 +715,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Wystąpił problem z logowaniem, możliwe że twoje konto nie zostało potwierdzone lub odnowione."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Wyłącz napisy, jeśli nie ma wymuszonych strumieni napisów (Działa tylko, jeśli odtwarzacz Kodi jest ustawiony na \"Tylko wymuszone\" napisy)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Wyłącz napisy, jeśli nie ma wymuszonych strumieni napisów (Działa tylko, jeśli odtwarzacz Kodi jest ustawiony na 'Tylko wymuszone' napisy)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,8 +847,8 @@ msgid "InputStream Helper settings..."
 msgstr "Ustawienia InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Wymuś aktualizację mojej listy"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -877,8 +883,8 @@ msgid "Kid account"
 msgstr "Profil dziecka"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synchronizacja używa teraz \"Mojej Listy\" profilu {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Synchronizacja używa teraz 'Mojej Listy' profilu {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +903,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Synchronizuj bibliotekę Kodi z Moją Listą"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Użyj \"Mojej Listy\" bieżacego profilu"
+msgid "Use 'My list' of the current profile"
+msgstr "Użyj 'Mojej Listy' bieżacego profilu"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,12 +919,12 @@ msgid "Do you want to check update now?"
 msgstr "Czy chcesz teraz sprawdzić aktualizację?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Ogranicz według poziomu dojrzałości"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Zawartość dla {} będzie wymagała kodu PIN do odtworzenia"
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -939,3 +945,11 @@ msgstr "Oznacz jako obejrzane|Oznacz jako nieobejrzane|Przywróć stan obejrzeni
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Powiadomienia Up Next (oglądaj następne wideo)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Kolor dodatkowych informacji fabuły"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Usługi w tle nie mogą zostać uruchomione z powodu:\r\n{}"

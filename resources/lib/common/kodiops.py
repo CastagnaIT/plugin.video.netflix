@@ -14,6 +14,7 @@ import json
 import xbmc
 
 from resources.lib.globals import g
+from .misc_utils import is_less_version
 from .logging import debug
 
 
@@ -193,10 +194,15 @@ def convert_language_iso(from_value, use_fallback=True):
 def fix_locale_languages(data_list):
     """Replace locale code, Kodi does not understand the country code"""
     # Get all the ISO 639-1 codes (without country)
+    verify_unofficial_lang = g.KODI_VERSION.is_major_ver('19') or not g.KODI_VERSION.is_less_version('18.7')
     locale_list_nocountry = []
     for item in data_list:
         if item.get('isNoneTrack', False):
             continue
+        if verify_unofficial_lang and item['language'] == 'pt-BR':
+            # Unofficial ISO 639-1 Portuguese (Brazil) language code has been added to Kodi 18.7 and Kodi 19.x
+            # https://github.com/xbmc/xbmc/pull/17689
+            item['language'] = 'pb'
         if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
             locale_list_nocountry.append(item['language'])
     # Replace the locale languages with country with a new one
@@ -244,23 +250,26 @@ class GetKodiVersion(object):
         import re
         self.build_version = xbmc.getInfoLabel('System.BuildVersion')
         # Parse the version number
-        result = re.search('\\d+\\.\\d+?(?=(\\s|-))', self.build_version)
+        result = re.search(r'\d+\.\d+', self.build_version)
         self.version = result.group(0) if result else ''
         # Parse the major version number
         self.major_version = self.version.split('.')[0] if self.version else ''
         # Parse the date of GIT build
-        result = re.search('(Git:)(\\d+?(?=(-|$)))', self.build_version)
+        result = re.search(r'(Git:)(\d+?(?=(-|$)))', self.build_version)
         self.date = int(result.group(2)) if result and len(result.groups()) >= 2 else None
         # Parse the stage name
-        result = re.search('(\\d+\\.\\d+-)(.+)(?=\\s)', self.build_version)
+        result = re.search(r'(\d+\.\d+-)(.+)(?=\s)', self.build_version)
         if not result:
-            result = re.search('^(.+)(-\\d+\\.\\d+)', self.build_version)
+            result = re.search(r'^(.+)(-\d+\.\d+)', self.build_version)
             self.stage = result.group(1) if result else ''
         else:
             self.stage = result.group(2) if result else ''
 
     def is_major_ver(self, major_ver):
         return bool(major_ver in self.major_version)
+
+    def is_less_version(self, ver):
+        return is_less_version(self.version, ver)
 
     def __str__(self):
         return self.build_version

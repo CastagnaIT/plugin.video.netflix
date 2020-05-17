@@ -83,3 +83,11 @@ class CacheMiss(Exception):
 
 class UnknownCacheBucketError(Exception):
     """The requested cache bucket does not exist"""
+
+
+class HttpError401(Exception):
+    """The request has returned http error 401 unauthorized for url ..."""
+
+
+class InputStreamHelperError(Exception):
+    """An internal error has occurred to InputStream Helper add-on"""

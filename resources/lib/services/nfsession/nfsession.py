@@ -10,17 +10,16 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-import requests
 
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
 from resources.lib.services.nfsession.nfsession_base import needs_login
-from resources.lib.api.exceptions import MissingCredentialsError
+from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
 
 
 class NetflixSession(NFSessionAccess, DirectoryBuilder):
@@ -30,6 +29,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         NFSessionAccess.__init__(self)
         DirectoryBuilder.__init__(self, self)
         self.slots = [
+            self.fetch_initial_page,
             self.login,
             self.logout,
             self.activate_profile,
@@ -38,38 +38,53 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             self.perpetual_path_request,
             self.callpath_request,
             self.get,
-            self.post,
-            self.startup_requests_module
+            self.post
         ]
         for slot in self.slots:
             common.register_slot(slot)
         self.prefetch_login()
+        self.is_profile_session_active = False
 
     @common.addonsignals_return_call
     @needs_login
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status
+        from requests import exceptions
+        profile_guid = g.LOCAL_DB.get_active_profile_guid()
         try:
-            pin_response = self._post('pin_reset',
-                                      data={'task': 'auth',
-                                            'authURL': self.auth_url,
-                                            'password': password})
-            if pin_response.get('status') != 'ok':
-                common.warn('Parental control status issue: {}', pin_response)
+            response = self._post('profile_hub',
+                                  data={'destination': 'contentRestrictions',
+                                        'guid': profile_guid,
+                                        'password': password,
+                                        'task': 'auth'})
+            if response.get('status') != 'ok':
+                common.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
-            pin = pin_response.get('pin')
-        except requests.exceptions.HTTPError as exc:
-            if exc.response.status_code == 401:
-                # Unauthorized for url ...
+        except exceptions.HTTPError as exc:
+            if exc.response.status_code == 500:
+                # This endpoint raise HTTP error 500 when the password is wrong
                 raise MissingCredentialsError
             raise
         # Warning - parental control levels vary by country or region, no fixed values can be used
-        # I have not found how to get it through the API, so parse web page to get all info
         # Note: The language of descriptions change in base of the language of selected profile
-        response_content = self._get('pin', data={'password': password})
-        extracted_content = website.extract_parental_control_data(response_content)
-        extracted_content['pin'] = pin
+        response_content = self._get('restrictions', data={'password': password}, append_to_address=profile_guid)
+        extracted_content = website.extract_parental_control_data(response_content, response['maturity'])
+        response['profileInfo']['profileName'] = website.parse_html(response['profileInfo']['profileName'])
+        extracted_content['data'] = response
         return extracted_content
+
+    @common.time_execution(immediate=True)
+    @common.addonsignals_return_call
+    @needs_login
+    def fetch_initial_page(self):
+        """Fetch initial page"""
+        common.debug('Fetch initial page')
+        response = self._get('browse')
+        # Update the session data, the profiles data to the database, and update the authURL
+        api_data = self.website_extract_session_data(response, update_profiles=True)
+        self.auth_url = api_data['auth_url']
+        # Check if the profile session is still active, used only to activate_profile
+        self.is_profile_session_active = api_data['is_profile_session_active']
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
@@ -77,18 +92,27 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
-        response = self._get('switch_profile', params={'tkn': guid})
-        react_context = website.extract_json(response, 'reactContext')
-        self.auth_url = website.extract_api_data(react_context)['auth_url']
-
-        # if guid != g.LOCAL_DB.get_active_profile_guid():
-        #     common.info('Activating profile {}', guid)
-        #     self._get(component='activate_profile',
-        #               req_type='api',
-        #               params={'switchProfileGuid': guid,
-        #                       '_': int(time.time()),
-        #                       'authURL': self.auth_url})
-
+        current_active_guid = g.LOCAL_DB.get_active_profile_guid()
+        if self.is_profile_session_active and guid == current_active_guid:
+            common.info('The profile session of guid {} is still active, activation not needed.', guid)
+        if not self.is_profile_session_active or (self.is_profile_session_active and
+                                                  guid != current_active_guid):
+            common.info('Activating profile {}', guid)
+            # INIT Method 1 - HTTP mode
+            response = self._get('switch_profile', params={'tkn': guid})
+            self.auth_url = self.website_extract_session_data(response)['auth_url']
+            # END Method 1
+            # INIT Method 2 - API mode
+            # import time
+            # self._get(endpoint='activate_profile',
+            #           params={'switchProfileGuid': guid,
+            #                   '_': int(time.time()),
+            #                   'authURL': self.auth_url})
+            # # Retrieve browse page to update authURL
+            # response = self._get('browse')
+            # self.auth_url = website.extract_session_data(response)['auth_url']
+            # END Method 2
+            self.is_profile_session_active = True
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
         self.update_session_data()
@@ -186,38 +210,19 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
 
     @common.time_execution(immediate=True)
     @needs_login
-    def _path_request(self, paths):
+    def _path_request(self, paths, use_jsongraph=False):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json, text/javascript, */*'}
-
-        # params:
-        # drmSystem       drm used
-        # falcor_server   json responses like browser
-        # withSize        puts the 'size' field inside each dictionary
-        # materialize     if true, when a path that no longer exists is requested (like 'storyarts')
-        #                    it is still added in an 'empty' form in the response
-        params = {
-            'drmSystem': 'widevine',
-            # 'falcor_server': '0.1.0',
-            'withSize': 'false',
-            'materialize': 'false',
-            'routeAPIRequestsThroughFTL': 'false',
-            'isVolatileBillboardsEnabled': 'true',
-            'isWatchlistEnabled': 'false',
-            'original_path': '/shakti/{}/pathEvaluator'.format(
-                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
-        }
-        data = 'path=' + '&path='.join(json.dumps(path) for path in paths)
-        data += '&authURL=' + self.auth_url
-        return self._post(
-            component='shakti',
-            req_type='api',
-            params=params,
-            headers=headers,
-            data=data)['value']
+        custom_params = {'method': 'call'}
+        if use_jsongraph:
+            custom_params['falcor_server'] = '0.1.0'
+        # Use separators with dumps because Netflix rejects spaces
+        data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
+        response = self._post(
+            endpoint='shakti',
+            params=custom_params,
+            data=data)
+        return response['jsonGraph'] if use_jsongraph else response['value']
 
     @common.addonsignals_return_call
     @needs_login
@@ -228,46 +233,47 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @common.time_execution(immediate=True)
     def _callpath_request(self, callpaths, params=None, path_suffixs=None):
         """Execute a callPath request with static paths"""
-        # Warning: The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
-        #          if the request have wrong data give error 401
-        #          if the parameters are not formatted correctly will give error 401
         common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
                      json.dumps(callpaths),
                      params,
                      json.dumps(path_suffixs))
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json, text/javascript, */*'}
-
-        req_params = {
-            'drmSystem': 'widevine',
+        custom_params = {
             'falcor_server': '0.1.0',
             'method': 'call',
             'withSize': 'true',
             'materialize': 'true',
-            'routeAPIRequestsThroughFTL': 'false',
-            'isVolatileBillboardsEnabled': 'true',
-            'isWatchlistEnabled': 'false',
-            'original_path': '/shakti/{}/pathEvaluator'.format(
-                g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
         }
-        data = 'callPath=' + '&callPath='.join(json.dumps(callpath) for callpath in callpaths)
+        # Use separators with dumps because Netflix rejects spaces
+        data = 'callPath=' + '&callPath='.join(
+            json.dumps(callpath, separators=(',', ':')) for callpath in callpaths)
         if params:
+            # The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
+            #          if the request have wrong data will raise error 401
+            #          if the parameters are not formatted correctly will raise error 401
             data += '&param=' + '&param='.join(params)
         if path_suffixs:
-            data += '&pathSuffix=' + '&pathSuffix='.join(json.dumps(path_suffix) for path_suffix in path_suffixs)
-        data += '&authURL=' + self.auth_url
-        data = data.replace(' ', '')
+            data += '&pathSuffix=' + '&pathSuffix='.join(
+                json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)
         # common.debug('callPath request data: {}', data)
         response_data = self._post(
-            component='shakti',
-            req_type='api',
-            params=req_params,
-            headers=headers,
+            endpoint='shakti',
+            params=custom_params,
             data=data)
-        if 'falcor_server' in req_params:
-            return response_data['jsonGraph']
-        return response_data['value']
+        return response_data['jsonGraph']
+
+    def website_extract_session_data(self, content, **kwargs):
+        """Extract session data and handle errors"""
+        try:
+            return website.extract_session_data(content, **kwargs)
+        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
+            common.warn('Session data not valid, login can be expired or the password has been changed ({})',
+                        type(exc).__name__)
+            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
+                common.purge_credentials()
+                self.session.cookies.clear()
+                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+                raise NotLoggedInError
+            raise
 
 
 def _set_range_selector(paths, range_start, range_end):

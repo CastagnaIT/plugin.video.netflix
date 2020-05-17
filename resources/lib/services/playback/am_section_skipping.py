@@ -14,16 +14,19 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import g
-from .action_manager import PlaybackActionManager
+from .action_manager import ActionManager
 from .markers import SKIPPABLE_SECTIONS, get_timeline_markers
 
 
-class SectionSkipper(PlaybackActionManager):
+class AMSectionSkipper(ActionManager):
     """
     Checks if a skippable section has been reached and takes appropriate action
     """
+
+    SETTING_ID = 'SectionSkipper_enabled'
+
     def __init__(self):
-        super(SectionSkipper, self).__init__()
+        super(AMSectionSkipper, self).__init__()
         self.markers = {}
         self.auto_skip = False
         self.pause_on_skip = False
@@ -33,12 +36,12 @@ class SectionSkipper(PlaybackActionManager):
                 .format(self.enabled, self.markers, self.auto_skip,
                         self.pause_on_skip))
 
-    def _initialize(self, data):
+    def initialize(self, data):
         self.markers = get_timeline_markers(data['metadata'][0])
         self.auto_skip = g.ADDON.getSettingBool('auto_skip_credits')
         self.pause_on_skip = g.ADDON.getSettingBool('pause_on_skip')
 
-    def _on_tick(self, player_state):
+    def on_tick(self, player_state):
         for section in SKIPPABLE_SECTIONS:
             self._check_section(section, player_state['elapsed_seconds'])
 
@@ -80,6 +83,6 @@ class SectionSkipper(PlaybackActionManager):
                              skip_to=self.markers[section]['end'],
                              label=common.get_local_string(SKIPPABLE_SECTIONS[section]))
 
-    def _on_playback_stopped(self):
+    def on_playback_stopped(self, player_state):
         # Close any dialog remaining open
         xbmc.executebuiltin('Dialog.Close(all,true)')

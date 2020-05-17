@@ -13,11 +13,13 @@ from resources.lib.globals import g
 import resources.lib.common as common
 
 
-class PlaybackActionManager(object):
+class ActionManager(object):
     """
-    Base class for managers that handle executing of specific actions
-    during playback
+    Base class for managers that handle executing of specific actions during playback
     """
+
+    SETTING_ID = None  # ID of the settings.xml property
+
     def __init__(self):
         self._enabled = None
 
@@ -34,8 +36,7 @@ class PlaybackActionManager(object):
         """
         if self._enabled is None:
             common.debug('Loading enabled setting from store')
-            self._enabled = g.ADDON.getSettingBool(
-                '{}_enabled'.format(self.__class__.__name__))
+            self._enabled = g.ADDON.getSettingBool(self.SETTING_ID)
 
         return self._enabled
 
@@ -43,57 +44,56 @@ class PlaybackActionManager(object):
     def enabled(self, enabled):
         self._enabled = enabled
 
-    def initialize(self, data):
+    def call_initialize(self, data):
         """
         Initialize the manager with data when the addon initiates a playback.
         """
-        self._call_if_enabled(self._initialize, data=data)
+        self._call_if_enabled(self.initialize, data=data)
         common.debug('Initialized {}: {}', self.name, self)
 
-    def on_playback_started(self, player_state):
+    def call_on_playback_started(self, player_state):
         """
         Notify that the playback has actually started and supply initial
         player state
         """
-        self._call_if_enabled(self._on_playback_started,
-                              player_state=player_state)
+        self._call_if_enabled(self.on_playback_started, player_state=player_state)
 
-    def on_tick(self, player_state):
+    def call_on_tick(self, player_state):
         """
         Notify that a playback tick has passed and supply current player state
         """
-        self._call_if_enabled(self._on_tick, player_state=player_state)
+        self._call_if_enabled(self.on_tick, player_state=player_state)
 
-    def on_playback_seek(self, player_state):
+    def call_on_playback_seek(self, player_state):
         """
         Notify that a playback has seek
         """
-        self._call_if_enabled(self._on_playback_seek, player_state=player_state)
+        self._call_if_enabled(self.on_playback_seek, player_state=player_state)
 
-    def on_playback_pause(self, player_state):
+    def call_on_playback_pause(self, player_state):
         """
         Notify that the playback is actually in pause
         """
-        self._call_if_enabled(self._on_playback_pause, player_state=player_state)
+        self._call_if_enabled(self.on_playback_pause, player_state=player_state)
 
-    def on_playback_resume(self, player_state):
+    def call_on_playback_resume(self, player_state):
         """
         Notify that the playback has been resumed
         """
-        self._call_if_enabled(self._on_playback_resume, player_state=player_state)
+        self._call_if_enabled(self.on_playback_resume, player_state=player_state)
 
-    def on_playback_stopped(self):
+    def call_on_playback_stopped(self, player_state):
         """
         Notify that a playback has stopped
         """
-        self._call_if_enabled(self._on_playback_stopped)
+        self._call_if_enabled(self.on_playback_stopped, player_state=player_state)
         self.enabled = None
 
     def _call_if_enabled(self, target_func, **kwargs):
         if self.enabled:
             target_func(**kwargs)
 
-    def _initialize(self, data):
+    def initialize(self, data):
         """
         Initialize the manager for a new playback.
         If preconditions are not met, this should raise an exception so the
@@ -101,14 +101,14 @@ class PlaybackActionManager(object):
         """
         raise NotImplementedError
 
-    def _on_playback_started(self, player_state):
+    def on_playback_started(self, player_state):
         """
         This method is called when video playback starts
         NOTE: If possible never use sleep delay inside this method
               otherwise it delay the execution of subsequent action managers
         """
 
-    def _on_tick(self, player_state):
+    def on_tick(self, player_state):
         """
         This method is called every second from the service,
         but only after the 'on_playback_started' method will be called.
@@ -117,14 +117,14 @@ class PlaybackActionManager(object):
         """
         raise NotImplementedError
 
-    def _on_playback_seek(self, player_state):
+    def on_playback_seek(self, player_state):
         pass
 
-    def _on_playback_pause(self, player_state):
+    def on_playback_pause(self, player_state):
         pass
 
-    def _on_playback_resume(self, player_state):
+    def on_playback_resume(self, player_state):
         pass
 
-    def _on_playback_stopped(self):
+    def on_playback_stopped(self, player_state):
         pass

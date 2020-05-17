@@ -12,6 +12,7 @@ from future.utils import iteritems
 
 import resources.lib.common as common
 
+from resources.lib.globals import g
 from .exceptions import InvalidReferenceError
 
 MAX_PATH_REQUEST_SIZE = 47  # Stands for 48 results, is the default value defined by netflix for a single request
@@ -20,6 +21,7 @@ RANGE_SELECTOR = 'RANGE_SELECTOR'
 
 ART_SIZE_POSTER = '_342x684'
 ART_SIZE_FHD = '_1920x1080'
+# ART_SIZE_HD = '_1280x720'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
@@ -33,16 +35,18 @@ LENGTH_ATTRIBUTES = {
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['storyarts', '_1632x873', 'jpg'],  # storyarts seem no more used, never found it in the results
     ['bb2OGLogo', '_550x124', 'png'],
     ['BGImages', '720', 'jpg']
 ]
+# Others image paths for reference
+# ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', ['_550x124', ART_SIZE_HD], 'jpg'], 11/05/2020 image is same of bb2OGLogo
+# ['storyArt', ART_SIZE_SD, 'jpg'], 11/05/2020 image is same of BGImages
 
 VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
-      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount',
+      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'availability',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence']],
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
@@ -86,25 +90,38 @@ VIDEO_LIST_RATING_THUMB_PATHS = [
 
 SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 
-INFO_MAPPINGS = {
-    'title': 'title',
-    'year': 'releaseYear',
-    'plot': 'synopsis',
-    'season': ['summary', 'season'],
-    'season_shortname': ['summary', 'shortName'],  # Add info to item listings._create_season_item
-    'episode': ['summary', 'episode'],
-    'rating': ['userRating', 'matchScore'],
-    'userrating': ['userRating', 'userRating'],
-    'mpaa': ['maturity', 'rating', 'value'],
-    'duration': 'runtime',
-    # 'bookmark': 'bookmarkPosition',
-    # 'playcount': 'watched'
-}
+INFO_MAPPINGS = [
+    ('Title', 'title'),
+    ('Year', 'releaseYear'),
+    ('Plot', 'regularSynopsis'),  # Complete plot (Kodi 18 original skins do not use plotoutline)
+    ('PlotOutline', 'synopsis'),  # Small plot
+    ('Season', 'seasonCount'),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
+    ('Season', ['summary', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)
+    ('Season', ['summary', 'season']),  # Path used with episode list data for 'episode' ListItems (get current season)
+    ('Episode', 'episodeCount'),  # Path used with videolist data for 'tvshow' ListItems (get total episodes)
+    ('Episode', ['summary', 'length']),  # Path used with season list data for 'season' ListItems (get total episodes)
+    ('Episode', ['summary', 'episode']),  # Path used with videolist data for 'tvshow' ListItems (get current episode)
+    ('Rating', ['userRating', 'matchScore']),
+    ('UserRating', ['userRating', 'userRating']),
+    ('Mpaa', ['maturity', 'rating', 'value']),
+    ('Duration', 'runtime'),
+    # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
+    #   to reproduce a background promo video when a ListItem is selected
+    ('Trailer', ['promoVideo', 'id']),
+    # ListItem.DateAdded: Removed for now, the actual use of this property for tvshow ListItem type is not clear,
+    #                     the documentation says "date of adding in the library", but kodi developers say that
+    #                     is used as the latest update date
+    # ('DateAdded', ['availability', 'availabilityStartTime'])
+]
 
 INFO_TRANSFORMATIONS = {
-    'season_shortname': lambda sn: ''.join([n for n in sn if n.isdigit()]),
-    'rating': lambda r: r / 10,
-    'playcount': lambda w: int(w)  # pylint: disable=unnecessary-lambda
+    'Season': lambda s_value: ''.join([n for n in str(s_value) if n.isdigit()]),  # isdigit is needed for shortName key
+    'Episode': lambda ep: str(ep),  # pylint: disable=unnecessary-lambda
+    'Rating': lambda r: r / 10,
+    'PlayCount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
+    'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
+                                                 mode=g.MODE_PLAY),
+    'DateAdded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
 }
 
 REFERENCE_MAPPINGS = {
@@ -234,3 +251,53 @@ def _remove_nesting(ref):
     return (ref['reference']
             if isinstance(ref, dict) and 'reference' in ref
             else ref)
+
+
+def jgraph_get(key, data, full_data=None):
+    """
+    Expand the standard python dict.get() to implement the resolution of Falcor JSON Graph primitive types.
+    :param full_data: pass the entire JSON Graph data (is only needed to resolve the 'ref' primitive type),
+                      if 'data' is equal to 'full_data' this param can be ignored
+    """
+    return _resolve_type(data.get(key), full_data or data)
+
+
+def jgraph_get_path(path, data, full_data=None):
+    """
+    Retrieve a value from a nested dict by following the path.
+    :param full_data: pass the entire JSON Graph data (is only needed to resolve the 'ref' primitive type),
+                      if 'data' is equal to 'full_data' this param can be ignored
+    :raise KeyError: if any key along the path does not exist
+    """
+    current_value = jgraph_get(path[0], data, full_data or data)
+    if len(path) == 1:
+        return current_value
+    return jgraph_get_path(path[1:], current_value, full_data or data)
+
+
+def _resolve_type(return_data, full_data):
+    """Resolve the data on basis of Falcor JSON Graph primitive types"""
+    if isinstance(return_data, dict):
+        primitive_type = return_data.get('$type')
+        if primitive_type == 'ref':
+            # Reference type: used to find and get a value within the same JSON Graph data
+            return_data = jgraph_get_path(return_data['value'], full_data)
+            # Look for a recursive reference
+            return _resolve_type(return_data, full_data)
+        if primitive_type == 'atom':
+            # Atom: contains a JSON data and other properties (not managed here) to handle metadata
+            return return_data.get('value')
+    return return_data
+
+
+def jgraph_get_list(key, full_data):
+    """
+    Get the data of a list by resolving the Falcor JSON Graph primitive types
+    ('summary' establishes the amount of data to retrieve)
+    :return a dict
+    """
+    data = full_data[key]
+    converted = {}
+    for n in range(0, jgraph_get_path(['summary', 'length'], data)):
+        converted[n] = jgraph_get(str(n), data, full_data)
+    return converted

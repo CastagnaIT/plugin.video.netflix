@@ -136,11 +136,6 @@ class EventsHandler(threading.Thread):
                 if event.event_data['is_in_mylist']:
                     # If video is in my list, invalidate the continueWatching list (update lolomo context data)
                     api.update_lolomo_context('continueWatching')
-                else:
-                    # Else invalidate the 'queue' list (update lolomo context data)
-                    # Todo: get 'queue' lolomo id/index
-                    # api.update_lolomo_context('queue')
-                    pass
                 api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
@@ -200,7 +195,7 @@ class EventsHandler(threading.Thread):
         # Get previous elaborated data of the same video id
         # Some tags must remain unchanged between events
         previous_data, previous_player_state = self.cache_data_events.get(videoid.value, ({}, None))
-        timestamp = int(time.time() * 10000)
+        timestamp = int(time.time() * 1000)
 
         # Context location values can be easily viewed from tag data-ui-tracking-context
         # of a preview box in website html
@@ -235,7 +230,7 @@ class EventsHandler(threading.Thread):
                 'isUIAutoPlay': False,  # Should be set equal to the manifest request
                 'supportsPreReleasePin': True,  # Should be set equal to the manifest request
                 'supportsWatermark': True,  # Should be set equal to the manifest request
-                'preferUnletterboxed': True,  # Should be set equal to the manifest request
+                'preferUnletterboxed': False,  # Should be set equal to the manifest request
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
                     # Add 'lolomo_id' seems to prevent failure of the 'refreshListByContext' request

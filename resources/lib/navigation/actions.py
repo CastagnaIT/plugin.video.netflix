@@ -14,6 +14,7 @@ import xbmc
 import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+from resources.lib.api.exceptions import MissingCredentialsError
 from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.globals import g
 
@@ -22,7 +23,7 @@ class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing AddonActionExecutor: {}', params)
+        common.debug('Initializing "AddonActionExecutor" with params: {}', params)
         self.params = params
 
     def logout(self, pathitems=None):  # pylint: disable=unused-argument
@@ -48,21 +49,18 @@ class AddonActionExecutor(object):
 
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
-        ui.show_ok_dialog('Netflix', 'This feature will be available in future versions of the add-on')
-        # password = ui.ask_for_password()
-        # if not password:
-        #     return
-        # try:
-        #     parental_control_data = api.get_parental_control_data(password)
-        #     ui.show_modal_dialog(False,
-        #                          ui.xmldialogs.ParentalControl,
-        #                          'plugin-video-netflix-ParentalControl.xml',
-        #                          g.ADDON.getAddonInfo('path'),
-        #                          **parental_control_data)
-        # except MissingCredentialsError:
-        #     ui.show_ok_dialog('Netflix', common.get_local_string(30009))
-        # except WebsiteParsingError as exc:
-        #     ui.show_addon_error_info(exc)
+        password = ui.ask_for_password()
+        if not password:
+            return
+        try:
+            parental_control_data = api.get_parental_control_data(password)
+            ui.show_modal_dialog(False,
+                                 ui.xmldialogs.ParentalControl,
+                                 'plugin-video-netflix-ParentalControl.xml',
+                                 g.ADDON.getAddonInfo('path'),
+                                 **parental_control_data)
+        except MissingCredentialsError:
+            ui.show_ok_dialog('Netflix', common.get_local_string(30009))
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
@@ -135,10 +133,20 @@ class AddonActionExecutor(object):
         g.CACHE.clear(clear_database=self.params.get('on_disk', False))
         ui.show_notification(common.get_local_string(30135))
 
-    def force_update_mylist(self, pathitems=None):  # pylint: disable=unused-argument
+    def force_update_list(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        from resources.lib.common.cache_utils import CACHE_MYLIST
-        g.CACHE.clear(CACHE_MYLIST, clear_database=False)
+        from resources.lib.common.cache_utils import CACHE_MYLIST, CACHE_COMMON
+        if self.params['menu_id'] == 'myList':
+            g.CACHE.clear([CACHE_MYLIST], clear_database=False)
+        if self.params['menu_id'] == 'continueWatching':
+            # Delete the cache of continueWatching list
+            # pylint: disable=unused-variable
+            is_exists, list_id = common.make_call('get_continuewatching_videoid_exists', {'video_id': ''})
+            if list_id:
+                g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+            # When the continueWatching context is invalidated from a refreshListByContext call
+            # the lolomo need to be updated to obtain the new list id, so we delete the cache to get new data
+            g.CACHE.delete(CACHE_COMMON, 'lolomo_list')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""

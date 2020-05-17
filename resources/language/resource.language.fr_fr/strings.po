@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Sauvegarder les points de reprise dans la médiathèque / marquer comme vu"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Durée de vie du cache des données (minutes)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Durée de vie du cache des métadonnées (jours)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr ""
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Activer les profils DoblyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Résultats pour \"{}\""
+msgid "Results for '{}'"
+msgstr "Résultats pour '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +403,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix a renvoyé l'erreur suivante : "
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message d'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le via GitHub. Veuillez fournir un journal de débogage complet avec votre rapport d'erreur (activez \"Journalisation du débogage\" dans les paramètres Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message d'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le via GitHub. Veuillez fournir un journal de débogage complet avec votre rapport d'erreur (activez 'Journalisation du débogage' dans les paramètres Kodi)."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,7 +491,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Voulez-vous vraiment supprimer cet élement ?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Purger la médiathèque"
 
 msgctxt "#30126"
@@ -500,7 +502,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Note attribuée : {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Vérifier le fichier journal pour les informations détaillées"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Purger la mémoire cache"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Purger la mémoire cache et le cache disque"
 
 msgctxt "#30134"
@@ -709,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Il y a un problème avec vos identifiants, votre compte n'est peut-être pas confirmé ou renouvelé."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Désactiver les sous-titres s'il n'y a pas de piste forcée (Fonctionne seulement si Kodi est configuré sur \"Forcé seulement\" pour les sous-titres"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Désactiver les sous-titres s'il n'y a pas de piste forcée (Fonctionne seulement si Kodi est configuré sur 'Forcé seulement' pour les sous-titres"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,8 +845,8 @@ msgid "InputStream Helper settings..."
 msgstr "Paramètres de l'extension InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Forcer la mise à jour de Ma Liste"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -877,8 +881,8 @@ msgid "Kid account"
 msgstr "Compte enfant"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "La synchronisation utilise \"Ma Liste\" du profil {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "La synchronisation utilise 'Ma Liste' du profil {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -894,11 +898,11 @@ msgstr "Programmé"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with My List"
-msgstr "Synchronisation de la médiathèque Kodi avec \"Ma Liste\""
+msgstr "Synchronisation de la médiathèque Kodi avec 'Ma Liste'"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Utiliser \"Ma Liste\" du profil en cours d'utilisation"
+msgid "Use 'My list' of the current profile"
+msgstr "Utiliser 'Ma Liste' du profil en cours d'utilisation"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,12 +917,12 @@ msgid "Do you want to check update now?"
 msgstr "Voulez-vous vérifier les mises à jour maintenant?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Accès restreint à une certaine catégorie d'âge"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Le contenu pour {} nécessite le code PIN pour être visionné."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -926,7 +930,7 @@ msgstr "Installer l'addon Up Next"
 
 msgctxt "#30235"
 msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[WIP] Synchroniser le status \"vu\" des vidéos avec Netflix"
+msgstr "[WIP] Synchroniser le status 'vu' des vidéos avec Netflix"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"

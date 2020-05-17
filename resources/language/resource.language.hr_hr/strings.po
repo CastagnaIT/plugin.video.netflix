@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-27 00:05+0100\n"
-"Last-Translator: arvvoid <>\n"
+"PO-Revision-Date: 2020-04-17 10:34+0200\n"
+"Last-Translator: arvvoid\n"
 "Language-Team: Croatian\n"
+"Language: hr_HR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hr_HR\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.3\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -49,7 +49,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Unesite PIN za pristup ovom profilu"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -103,11 +105,11 @@ msgstr "Ocijenite na Netflixu"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Ukloni s \"Mog popisa\""
+msgstr "Ukloni s 'Mog popisa'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Dodaj u \"Moj popis\""
+msgstr "Dodaj u 'Moj popis'"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -213,23 +215,23 @@ msgstr "Izvezeno"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Automatski odabir profila"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Ukloni automatski odabir profila"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Postavi za automatski odabir"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Da biste postavili profil, na popisu profila otvorite kontekstni izbornik"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Profil {} postavljen je za automatski odabir"
 
 # Unused 30059
 
@@ -328,14 +330,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Spremi status gledanja za predmete zbirke / označi kao gledane"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Vrijeme opstanka u cache-u (minute)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Vrijeme opstanka metapodataka u cache-u (dana)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Vrijeme opstanka u cache-u za “Moj popis” (minute)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -390,8 +394,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Omogući DolbyVision profile"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Rezultati za \"{}\""
+msgid "Results for '{}'"
+msgstr "Rezultati za '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -402,8 +406,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix je vratio sljedeću pogrešku:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Pojedinosti o pogrešci zapisane su u Kodi logfile. Ako poruka o pogrešci ne daje upute o tome kako riješiti problem ili i dalje primate ovu pogrešku, prijavite je putem GitHub-a. Unesite svoj izvještaj o pogrešci i priložite potpuni Kodi Debug Log (omogućite \"Debug Logging\" u Kodi postavkama)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Detalji o pogrešci napisani su u kodi log datoteci. Ako poruka o pogrešci ne sadrži smjernice o tome kako riješiti problem ili nastavitie primati tu pogrešku, prijavite je na GitHub slijedeći upute u Readme datoteci."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -490,7 +494,7 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Želite li stvarno ukloniti taj predmet?"
 
 msgctxt "#30125"
-msgid "Purge library"
+msgid "Delete library contents"
 msgstr "Izbriši Kodi zbirku"
 
 msgctxt "#30126"
@@ -501,7 +505,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Dodijeljena ocjena {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr ""
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -516,11 +522,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Provjerite logfile za detaljne informacije"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Pročistite cache iz memorije"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Pročistite cache iz memorije i diska"
 
 msgctxt "#30134"
@@ -710,8 +716,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Došlo je do problema s prijavom, moguće je da vaš račun nije potvrđen ili obnovljen."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Onemogućite titlove ako nema prisiljenih titlova (Radi samo ako je Kodi Player postavljen na \"Samo prisilni\" titlovi)"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Onemogućite titlove ako nema prisiljenih titlova (Radi samo ako je Kodi Player postavljen na 'Samo prisilni' titlovi)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -751,7 +757,7 @@ msgstr "TV emisija"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "Želite li izvesti NFO datoteke za {} dodanu u \"Moj popis\"?"
+msgstr "Želite li izvesti NFO datoteke za {} dodanu u 'Moj popis'?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -842,8 +848,8 @@ msgid "InputStream Helper settings..."
 msgstr "Postavke InputStream Helper ..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Prisilite ažuriranje popisa"
+msgid "Force refresh"
+msgstr ""
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -878,8 +884,8 @@ msgid "Kid account"
 msgstr "Dječji račun"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Usklađivanje sada koristi \"Moj popis\" profila {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Usklađivanje sada koristi 'Moj popis' profila {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -898,8 +904,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sinkronizirajte Kodi zbirku s Mojim popisom"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Koristite \"Moj popis\" trenutnog profila"
+msgid "Use 'My list' of the current profile"
+msgstr "Koristite 'Moj popis' trenutnog profila"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -914,12 +920,12 @@ msgid "Do you want to check update now?"
 msgstr "Želite li provjeriti ažuriranje sada?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Ograniči prema razini zrelosti"
+msgid "Profile maturity rating for {}"
+msgstr ""
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Za sadržaj {} bit će potreban PIN da bi se započela reprodukcija."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -941,3 +947,10 @@ msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
 msgstr "Up Next obavijesti (pogledajte sljedeći video)"
 
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Boja za dodatni sadržaj na sažetku"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Pozadinske servise nije moguće pokrenuti zbog ovog problema:\r\n{}"

@@ -100,6 +100,9 @@ class GlobalVariables(object):
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'lolomo_contexts': ['trendingNow'],
                            'lolomo_known': True}),
+        ('mostWatched', {'path': ['video_list', 'mostWatched'],  # Top 10 menu
+                         'lolomo_contexts': ['mostWatched'],
+                         'lolomo_known': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'lolomo_contexts': ['popularTitles'],
                         'lolomo_known': True}),
@@ -206,7 +209,8 @@ class GlobalVariables(object):
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
         self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
-        self.VERSION = self.py2_decode(self.ADDON.getAddonInfo('version'))
+        self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
+        self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
         self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
         self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
         self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Addon folder
@@ -258,8 +262,8 @@ class GlobalVariables(object):
                 self.CACHE_MANAGEMENT = CacheManagement()
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
-        from resources.lib.common.kodiops import GetKodiVersion
-        self.KODI_VERSION = GetKodiVersion()
+            from resources.lib.common.kodiops import GetKodiVersion
+            self.KODI_VERSION = GetKodiVersion()
 
     def _init_database(self, initialize):
         # Initialize local database
@@ -376,6 +380,13 @@ class GlobalVariables(object):
         if self.PY_IS_VER2:
             return value.encode('utf-8')
         return value
+
+    @staticmethod
+    def remove_ver_suffix(version):
+        """Remove the codename suffix from version value"""
+        import re
+        pattern = re.compile(r'\+\w+\.\d$')  # Example: +matrix.1
+        return re.sub(pattern, '', version)
 
 
 # pylint: disable=invalid-name

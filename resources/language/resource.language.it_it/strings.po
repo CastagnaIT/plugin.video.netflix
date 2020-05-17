@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Inserisci PIN per accedere a questo profilo"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -327,16 +329,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Salva segnalibri per le voci della libreria / contrassegnate già viste"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
-msgstr "Mantieni oggetti in Cache per (minuti)"
+msgid "Cache objects TTL (minutes)"
+msgstr "Cache oggetti TTL (minuti)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
-msgstr "Mantieni metadati in Cache per (giorni)"
+msgid "Cache metadata TTL (days)"
+msgstr "Cache metadati TTL (giorni)"
 
 msgctxt "#30086"
-msgid "Cache item time-to-live for my list (minutes)"
-msgstr "Mantieni 'La mia lista' in Cache per (minuti)"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Cache oggetti 'La mia lista' TTL (minuti)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -391,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Abilita profili DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Risultati per \"{}\""
+msgid "Results for '{}'"
+msgstr "Risultati per '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -403,8 +405,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix ha restituito il seguente errore:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub. Nella segnalazione fornire un report dell'errore completo di log di debug (Attiva \"Logging di debug\" dalle impostazioni di Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "I dettagli dell'errore sono stati scritti nel file di log di Kodi. Se il messaggio di errore non fornisce indicazioni su come risolvere il problema o se l'errore continua a presentarsi, si prega di segnalarlo tramite GitHub seguendo le istruzioni nel Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -491,8 +493,8 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Vuoi rimuovere l'oggetto dalla libreria?"
 
 msgctxt "#30125"
-msgid "Purge library"
-msgstr "Svuota libreria"
+msgid "Delete library contents"
+msgstr "Elimina i contenuti della libreria"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -502,7 +504,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Punteggio assegnato di {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr "Seleziona un profilo"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -517,12 +521,12 @@ msgid "Check the logfile for detailed information"
 msgstr "Controlla il file di log per informazioni dettagliate"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
-msgstr "Svuota cache in memoria"
+msgid "Clear in-memory cache"
+msgstr "Elimina cache in memoria"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
-msgstr "Svuota cache in memoria e su disco"
+msgid "Clear in-memory and on-disk cache"
+msgstr "Elimina cache in memoria e su disco"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -530,7 +534,7 @@ msgstr "Abilita tempi di esecuzione"
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr "Cache ripulita"
+msgstr "Cache eliminata"
 
 msgctxt "#30136"
 msgid "Enable 1080p Unlock (not recommended for Android)"
@@ -711,8 +715,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Si è verificato un problema con il login, è possibile che il tuo account non sia stato confermato oppure rinnovato."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli \"Solo forzati\")"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Disabilita i sottotitoli quando non ci sono tracce forzate (Funziona se il Player Kodi viene impostato con sottotitoli 'Solo forzati')"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -843,8 +847,8 @@ msgid "InputStream Helper settings..."
 msgstr "Configurazione InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Forza l'aggiornamento della mia lista"
+msgid "Force refresh"
+msgstr "Forza l'aggiornamento"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -879,8 +883,8 @@ msgid "Kid account"
 msgstr "Account bambini"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "La sincronizzazione utilizza la \"Mia Lista\" del profilo {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "La sincronizzazione utilizza la 'Mia Lista' del profilo {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -899,8 +903,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sincronizza la libreria Kodi con la Mia Lista"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Utilizza la \"Mia Lista\" del profilo corrente"
+msgid "Use 'My list' of the current profile"
+msgstr "Utilizza la 'Mia Lista' del profilo corrente"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -915,12 +919,12 @@ msgid "Do you want to check update now?"
 msgstr "Vuoi verificare gli aggiornamenti ora?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Limitazione in base alla fascia d'età"
+msgid "Profile maturity rating for {}"
+msgstr "Classificazione per età per il profilo {}"
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Per riprodurre i contenuti per {} è necessario il PIN."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr "Mostra solo titoli con classificazione [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -945,3 +949,15 @@ msgstr "Notifiche Up Next (guarda prossimo video)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Colore delle info supplementari nella trama"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "I servizi in background non sono stati avviati a causa di questo problema:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (l'indice più basso è il migliore)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"

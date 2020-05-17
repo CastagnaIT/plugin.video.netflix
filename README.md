@@ -1,6 +1,6 @@
 # Netflix Plugin for Kodi (plugin.video.netflix)
 
-[![Kodi version](https://img.shields.io/badge/kodi%20versions-18-blue)](https://kodi.tv/)
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-18--19-blue)](https://kodi.tv/)
 [![GitHub release](https://img.shields.io/github/release/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/releases)
 [![CI](https://github.com/castagnait/plugin.video.netflix/workflows/CI/badge.svg)](https://github.com/castagnait/plugin.video.netflix/actions?query=workflow:CI)
 [![Code Climate - Maintainability](https://api.codeclimate.com/v1/badges/9fbe3ac732f86c05ff00/maintainability)](https://codeclimate.com/github/CastagnaIT/plugin.video.netflix/maintainability)
@@ -41,12 +41,14 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 
 Install add-on via repository - provide automatic installation of updates:
 * [CastagnaIT Repository for KODI 18.x LEIA - repository.castagnait-1.0.1.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.1.zip)
+* [CastagnaIT Repository for KODI 19.x MATRIX - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/matrix/repository.castagnait-1.0.0.zip)
 
 Install add-on manually - updates should always be installed manually:
-* [Daily build - Add-on download link to get latest fixes](http://www.mediafire.com/folder/vifnw8ve44bi7/KodiNetflixAddon) (not always published see dates)
-* As Kodi file source https://castagnait.github.io/repository.castagnait/ (url to add in the File manager)
+* Daily builds - To get latest fixes https://bit.ly/citnfdailybuilds (not always published see dates)
+* As Kodi file source, only for Kodi 18:<br/>
+https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
-#### Reference table of high resolutions
+## Reference table of high resolutions
 
 This table explains compatibility of high resolutions between devices and operating systems. This may change over time based on updates made by netflix.
 
@@ -83,7 +85,7 @@ FAQs:
 
 Some guides like:
 - [How to export to Kodi library and use auto-sync](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-to-export-and-sync-tv-shows-and-movies-in-Kodi-library)
-- [How to share the exported content in the library with multiple devices](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Library-settings)
+- [How to share the exported content in the library with multiple devices](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Use-library-exported-with-multiple-devices)
 - [How works and limitations of the synchronisation of watched status with Netflix](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
 
 And much more...

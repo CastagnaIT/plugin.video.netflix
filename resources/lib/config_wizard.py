@@ -14,6 +14,7 @@ from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
+from resources.lib.api.exceptions import InputStreamHelperError
 from resources.lib.common import debug, error, get_system_platform, is_device_4k_capable, get_local_string, json_rpc
 from resources.lib.globals import g
 from resources.lib.kodi.ui import show_ok_dialog
@@ -47,10 +48,17 @@ def run_addon_configuration(show_end_msg=False):
 
 def _set_isa_addon_settings(is_4k_capable, hdcp_override):
     """Method for self-configuring of InputStream Adaptive add-on"""
-    is_helper = inputstreamhelper.Helper('mpd')
-    if not is_helper.check_inputstream():
-        show_ok_dialog(get_local_string(30154), get_local_string(30046))
-        return
+    try:
+        is_helper = inputstreamhelper.Helper('mpd')
+        if not is_helper.check_inputstream():
+            show_ok_dialog(get_local_string(30154), get_local_string(30046))
+            return
+    except Exception as exc:  # pylint: disable=broad-except
+        # Captures all types of ISH internal errors
+        import traceback
+        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        raise InputStreamHelperError(str(exc))
+
     isa_addon = Addon('inputstream.adaptive')
     isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
     if isa_addon.getSettingInt('STREAMSELECTION') == 1:
@@ -72,7 +80,7 @@ def _set_profiles(system, is_4k_capable):
         # By default we do not enable VP9 because on some devices do not fully support it
         # By default we do not enable HEVC because not all device support it, then enable it only on 4K capable devices
         enable_hevc_profiles = is_4k_capable
-    elif system == 'linux':
+    elif system in ['linux', 'linux raspberrypi']:
         # Too many different linux systems, we can not predict all the behaviors
         # some linux distributions have encountered problems with VP9,
         # some OSMC users reported that HEVC does not work well

@@ -32,7 +32,7 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
             # todo: change params to sub_genre_id
             previous_page_item = {
                 'url': common.build_url(pathitems=pathitems, params=params, mode=g.MODE_DIRECTORY),
-                'title': common.get_local_string(30148),
+                'label': common.get_local_string(30148),
                 'art': {'thumb': _get_custom_thumb_path('FolderPagePrevious.png')},
                 'is_folder': True
             }
@@ -41,7 +41,7 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
             params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
             next_page_item = {
                 'url': common.build_url(pathitems=pathitems, params=params, mode=g.MODE_DIRECTORY),
-                'title': common.get_local_string(30147),
+                'label': common.get_local_string(30147),
                 'art': {'thumb': _get_custom_thumb_path('FolderPageNext.png')},
                 'is_folder': True
             }

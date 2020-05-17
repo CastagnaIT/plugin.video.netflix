@@ -136,7 +136,8 @@ class Dialog:
         return 'Foobar'
 
     @staticmethod
-    def numeric(type, heading, defaultt=''):  # pylint: disable=redefined-builtin
+    # def numeric(type, heading, defaultt=''):  # Kodi 18
+    def numeric(type, heading, defaultt='', bHiddenInput=False):  # pylint: disable=redefined-builtin
         """A stub implementation for the xbmcgui Dialog class numeric() method"""
         return
 
@@ -251,8 +252,18 @@ class ListItem:
         return
 
     @staticmethod
+    def getProperty(key):
+        """A stub implementation for the xbmcgui ListItem class getProperty() method"""
+        return 'test'
+
+    @staticmethod
     def setProperty(key, value):
         """A stub implementation for the xbmcgui ListItem class setProperty() method"""
+        return
+
+    @staticmethod
+    def setProperties(values):
+        """A stub implementation for the xbmcgui ListItem class setProperties() method"""
         return
 
     @staticmethod

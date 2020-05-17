@@ -48,15 +48,17 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Email"
 
-# Unused 30006
-
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr "Entre com o PIN para acessar este perfil"
+							
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
 msgstr "PIN Controle Parental (4 dígitos)"
 
 msgctxt "#30008"
 msgid "Login failed"
-msgstr "Erro ao inicar sessão"
+msgstr "Erro ao iniciar sessão"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
@@ -158,7 +160,7 @@ msgstr "ESN Manual"
 
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
-msgstr "Ajustes do addon InputStream"
+msgstr "Ajustes do addon InputStream..."
 
 # Unused 30036
 
@@ -180,7 +182,7 @@ msgstr "Visualização para os filmes"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Visualização para as séries"
+msgstr "Visualização para os seriados"
 
 msgctxt "#30042"
 msgid "View for seasons"
@@ -200,7 +202,7 @@ msgstr "Avaliaçao removida|Você avaliou negativamente|Você avaliou positivame
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Há um problema com o complemento InputStream Adaptive ou a biblioteca Widevine. Pode estar ausente ou não habilitado, a operação será cancelada."
 
 # Unused 30047
 
@@ -212,23 +214,23 @@ msgstr "Exportado"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Perfil seleção automática"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Remover seleção automática de perfil"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Definir para seleção automática"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Para definir o perfil, na lista de perfis, abra o menu de contexto"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "O Perfil {} foi definido para seleção automática"
 
 # Unused 30059
 
@@ -284,7 +286,7 @@ msgstr "Começar apenas depois de 5 minutos de inatividade"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr ""
+msgstr "Sempre mostrar informação do codec durante a reprodução de vídeo"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -327,14 +329,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Salvar marcadores para itens na coleção / marcar como assistido"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Tempo de vida útil do item de cache (minutos)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Tempo de vida útil do item de cache para metadados (dias)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Tempo de vida útil do item de cache da minha lista (minutos)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -354,7 +358,7 @@ msgstr "Navegue pelas listas de vídeos relacionados e descubra mais conteúdo."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Navegue e gerencie os conteúdos que foram exportados para a biblioteca Kodi."
+msgstr "Navegue e gerencie os conteúdos que foram exportados para a coleção no Kodi."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -389,8 +393,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Ativar perfis DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Resultados para \"{}\""
+msgid "Results for '{}'"
+msgstr "Resultados para '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +405,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix retornou o seguinte erro:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Detalhes do erro foram gravados no arquivo de log do Kodi. Se a mensagem de erro não fornecer orientação sobre como resolver o problema ou se você continuar recebendo esse erro, informe-o via GitHub. Por favor, forneça um registro de depuração completo com o seu relatório de erro (ative \"Debug Logging\" nas configurações do Kodi)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Os detalhes do erro foram gravados no arquivo de log do Kodi. Se a mensagem de erro não fornecer orientações sobre como resolver o problema ou você continuar recebendo esse erro, informe-o no GitHub seguindo as instruções do Leia-me."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -489,8 +493,8 @@ msgid "Do you want to remove this item from the library?"
 msgstr "Deseja realmente remover este item?"
 
 msgctxt "#30125"
-msgid "Purge library"
-msgstr "Limpar coleção"
+msgid "Delete library contents"
+msgstr "Limpar conteúdos da coleção"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -500,7 +504,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Nota atribuída de {}"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr "Selecionar um perfil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +521,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Verifique o arquivo de log para informações detalhadas"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "Limpar cache na memória"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "Limpar a memória e o cache do disco"
 
 msgctxt "#30134"
@@ -614,11 +620,11 @@ msgstr "Você tem uma conta Netflix Premium?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "A configuração foi concluída"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Rodar add-on assistente de configuração"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -702,15 +708,15 @@ msgstr "Abrir ajustes do add-on Up Next"
 
 msgctxt "#30179"
 msgid "Show trailers & more"
-msgstr "Mostrar os trailers & mais"
+msgstr "Mostrar trailers & mais"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
 msgstr "Houve um problema com o login, é possível que sua conta não tenha sido confirmada ou renovada."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Desativar legendas se não houver fluxos de legendas forçadas (Funciona somente se o Kodi Player estiver configurado para legendas \"Somente forçadas\")"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Desativar legendas se não houver fluxos de legendas forçadas (Funciona somente se o Kodi Player estiver configurado para legendas 'Somente forçadas')"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,8 +847,8 @@ msgid "InputStream Helper settings..."
 msgstr "Ajustes do addon InputStream Helper..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Forçar a atualização da minha lista"
+msgid "Force refresh"
+msgstr "Forçar atualização"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -877,8 +883,8 @@ msgid "Kid account"
 msgstr "Conta infantil"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Sincronize agora usando \"Minha Lista\" do perfil {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Sincronize agora usando 'Minha Lista' do perfil {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +903,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sincroniza coleção do Kodi com minha lista"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Usar \"Minha lista\" do perfil atual"
+msgid "Use 'My list' of the current profile"
+msgstr "Usar 'Minha lista' do perfil atual"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,9 +919,45 @@ msgid "Do you want to check update now?"
 msgstr "Deseja verificar por atualizações agora?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Restringir por Nível de Maturidade"
+msgid "Profile maturity rating for {}"
+msgstr "Perfil maturidade da classificação indicativa para {}"
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Conteúdo para {} irá requerer o PIN para iniciar a reprodução."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr "Mostrar apenas os títulos com classificação indicativa [B]{}[/B]."
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr "Instalar add-on Up Next"
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr "[WIP] Sincronize o estatus assistido dos vídeos com o Netflix"
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr "Alterar o estatus assistido (localmente)"
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr "Marcar como assistido|Marcado como por assistir|Restaurado estatus de assistido via Netflix"
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr "Notificações Up Next (assistir próximo vídeo)"
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr "Cor das informações suplementares do enredo"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Os serviços em segundo plano não podem ser iniciados devido a este problema:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (o índice mais baixo é melhor)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"

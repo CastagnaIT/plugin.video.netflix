@@ -61,9 +61,9 @@ CONTEXT_MENU_ACTIONS = {
     'trailer': {
         'label': common.get_local_string(30179),
         'url': ctx_item_url(['trailer'])},
-    'force_update_mylist': {
+    'force_update_list': {
         'label': common.get_local_string(30214),
-        'url': ctx_item_url(['force_update_mylist'])},
+        'url': ctx_item_url(['force_update_list'])},
     'change_watched_status': {
         'label': common.get_local_string(30236),
         'url': ctx_item_url(['change_watched_status'])}

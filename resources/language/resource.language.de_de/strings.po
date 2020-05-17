@@ -327,14 +327,16 @@ msgid "Save bookmarks for library items / mark as watched"
 msgstr "Fortschritt für Bibliothekseinträge speichern und als gesehen markieren"
 
 msgctxt "#30084"
-msgid "Cache item time-to-live (minutes)"
+msgid "Cache objects TTL (minutes)"
 msgstr "Time-to-live der Cache-Einträge (Minuten)"
 
 msgctxt "#30085"
-msgid "Cache item time-to-live for metadata (days)"
+msgid "Cache metadata TTL (days)"
 msgstr "Time-to-live für Metadaten Cache-Einträge (Tage)"
 
-# Unused 30086
+msgctxt "#30086"
+msgid "Cache objects 'My list' TTL (minutes)"
+msgstr "Time-to-live der Cache-Einträge für meine Liste (Minuten)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -389,8 +391,8 @@ msgid "Enable DolbyVision profiles"
 msgstr "Aktiviere DolbyVision"
 
 msgctxt "#30100"
-msgid "Results for \"{}\""
-msgstr "Ergebnisse für \"{}\""
+msgid "Results for '{}'"
+msgstr "Ergebnisse für '{}'"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
@@ -401,8 +403,8 @@ msgid "Netflix returned the following error:"
 msgstr "Netflix hat den folgenden Fehler gemeldet:"
 
 msgctxt "#30103"
-msgid "Error details have been written to the Kodi logfile. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it via GitHub. Please provide a full debug log with your error report (enable \"Debug Logging\" in Kodi settings)."
-msgstr "Details zum Fehler wurden in die Kodi Logdatei geschrieben. Falls die Fehlermeldung keine Rückschlüsse auf die Ursache und mögliche Lösung des Fehlers zulässt oder der Fehler dauerhaft auftritt, melde den Fehler bitte über GitHub. Bitte liefere ein vollständiges Debug-Log mit deinem Fehler-Report (Option \"Debug Logging\" in den Kodi-Einstellungen aktivieren)."
+msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
+msgstr "Details zum Fehler wurden in die Kodi Logdatei geschrieben. Falls die Fehlermeldung keine Rückschlüsse auf die Ursache und mögliche Lösung des Fehlers zulässt oder der Fehler dauerhaft auftritt, melde den Fehler bitte über GitHub gemäß den Anweisungen in der Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -486,11 +488,11 @@ msgstr "Möchtest du wirklich fortfahren?\nDiese Aktion wird alle vormals export
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "Wollen Sie diesen Eintrag wirklich entfernen?"
+msgstr "Wollen Sie diesen Eintrag aus der Bibliothek entfernen?"
 
 msgctxt "#30125"
-msgid "Purge library"
-msgstr "Bibliothek-Exporte zurücksetzen"
+msgid "Delete library contents"
+msgstr "Bibliotheksinhalte löschen"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -500,7 +502,9 @@ msgctxt "#30127"
 msgid "Awarded rating of {}"
 msgstr "Mit {} bewertet"
 
-# Unused 30128
+msgctxt "#30128"
+msgid "Select a profile"
+msgstr "Profil auswählen"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -515,11 +519,11 @@ msgid "Check the logfile for detailed information"
 msgstr "Prüfe die Logdatei für detaillierte Informationen"
 
 msgctxt "#30132"
-msgid "Purge in-memory cache"
+msgid "Clear in-memory cache"
 msgstr "In-Memory Cache löschen"
 
 msgctxt "#30133"
-msgid "Purge in-memory and on-disk cache"
+msgid "Clear in-memory and on-disk cache"
 msgstr "In-Memory und Festplatten-Cache löschen"
 
 msgctxt "#30134"
@@ -709,8 +713,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Es gab ein Problem bei der Anmeldung, möglicherweise ist Ihr Account nicht bestätigt oder erneuert."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to \"Only forced\" subtitles)"
-msgstr "Deaktiviere Untertitel wenn keine erzwungenen Untertitel vorhanden sind (funktioniert nur wenn der Kodi-Player auf \"Nur erzwungen\" eingesellt ist"
+msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
+msgstr "Deaktiviere Untertitel wenn keine erzwungenen Untertitel vorhanden sind (funktioniert nur wenn der Kodi-Player auf 'Nur erzwungen' eingesellt ist"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,12 +845,12 @@ msgid "InputStream Helper settings..."
 msgstr "InputStream Helper Einstellungen..."
 
 msgctxt "#30214"
-msgid "Force the update of my list"
-msgstr "Aktualisierung meiner Liste erzwingen"
+msgid "Force refresh"
+msgstr "Aktualisierung erzwingen"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Titel aus meiner Liste farblich hervorheben"
+msgstr "Farbe der Titel aus meiner Liste"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -877,8 +881,8 @@ msgid "Kid account"
 msgstr "Kinder-Account"
 
 msgctxt "#30223"
-msgid "Synchronization now uses \"My List\" of profile {}"
-msgstr "Synchronisierung verwendet nun \"Meine Liste\" des Profils {}"
+msgid "Synchronization now uses 'My List' of profile {}"
+msgstr "Synchronisierung verwendet nun 'Meine Liste' des Profils {}"
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -897,8 +901,8 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Synchronisiere Kodi-Bibliothek mit Meiner Liste"
 
 msgctxt "#30228"
-msgid "Use \"My list\" of the current profile"
-msgstr "Verwende \"Meine Liste\" des aktuellen Profils"
+msgid "Use 'My list' of the current profile"
+msgstr "Verwende 'Meine Liste' des aktuellen Profils"
 
 msgctxt "#30229"
 msgid "Show the name of the selected profile"
@@ -913,12 +917,12 @@ msgid "Do you want to check update now?"
 msgstr "Möchten Sie jetzt auf Aktualisierungen prüfen?"
 
 msgctxt "#30232"
-msgid "Restrict by Maturity Level"
-msgstr "Einschränkung nach Alterseinstufung"
+msgid "Profile maturity rating for {}"
+msgstr "Alterseinstufung für Profil {}"
 
 msgctxt "#30233"
-msgid "Content for {} will require the PIN to start playback."
-msgstr "Um den Inhalt für {} abzuspielen ist die Eingabe Ihrer PIN erforderlich."
+msgid "Only show titles rated [B]{}[/B]."
+msgstr "Nur Titel mit Einstufung [B]{}[/B] anzeigen"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -943,3 +947,15 @@ msgstr "Up Next Benachrichtigungen (nächstes Video ansehen)"
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Farbe der zusätzlichen Handlungsinformation"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr "Die Hintergrunddienste konnten wegen folgendem Problem nicht gestartet werden:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr "Open Connect CDN (niedriger Index ist besser)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr "Top 10"

@@ -21,6 +21,7 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
+from .exceptions import MSLError
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles
@@ -96,7 +97,17 @@ class MSLHandler(object):
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
         """
-        manifest = self._load_manifest(viewable_id, g.get_esn())
+        try:
+            manifest = self._load_manifest(viewable_id, g.get_esn())
+        except MSLError as exc:
+            if 'Email or password is incorrect' in str(exc):
+                # Known cases when MSL error "Email or password is incorrect." can happen:
+                # - If user change the password when the nf session was still active
+                # - Netflix has reset the password for suspicious activity when the nf session was still active
+                # Then clear the credentials and also user tokens.
+                common.purge_credentials()
+                self.msl_requests.crypto.clear_user_id_tokens()
+            raise
         # Disable 1080p Unlock for now, as it is broken due to Netflix changes
         # if (g.ADDON.getSettingBool('enable_1080p_unlock') and
         #         not g.ADDON.getSettingBool('enable_vp9_profiles') and
@@ -128,7 +139,7 @@ class MSLHandler(object):
             expiration = int(manifest['expiration'] / 1000)
             if (expiration - time.time()) < 14400:
                 # Some devices remain active even longer than 48 hours, if the manifest is at the limit of the deadline
-                # when requested by stream_continuity.py / events_handler.py will cause problems
+                # when requested by am_stream_continuity.py / events_handler.py will cause problems
                 # if it is already expired, so we guarantee a minimum of safety ttl of 4h (14400s = 4 hours)
                 raise CacheMiss()
             if common.is_debug_verbose():
@@ -222,7 +233,7 @@ class MSLHandler(object):
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
         params = [{
-            'sessionId': sid,
+            'drmSessionId': sid,
             'clientTime': int(timestamp / 10000),
             'challengeBase64': challenge,
             'xid': xid
@@ -230,7 +241,7 @@ class MSLHandler(object):
         response = self.msl_requests.chunked_request(ENDPOINTS['license'],
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
-                                                                                          'sessionId'),
+                                                                                          'drmSessionId'),
                                                      g.get_esn())
         # This xid must be used also for each future Event request, until playback stops
         g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
@@ -271,10 +282,10 @@ class MSLHandler(object):
             params = [{
                 'url': url,
                 'params': {
-                    'sessionId': sid,
+                    'drmSessionId': sid,
                     'xid': xid
                 },
-                'echo': 'sessionId'
+                'echo': 'drmSessionId'
             }]
 
             response = self.msl_requests.chunked_request(ENDPOINTS['license'],

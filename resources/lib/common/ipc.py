@@ -97,7 +97,7 @@ def make_http_call(callname, data):
         from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     import json
     debug('Handling HTTP IPC call to {}'.format(callname))
-    # Note: Using 'localhost' here slowdown the call, not sure if it is an urllib issue
+    # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}/{}'.format(g.LOCAL_DB.get_value('ns_service_port', 8001), callname)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
@@ -121,7 +121,7 @@ def make_http_call_cache(callname, params, data):
         from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
     import json
     # debug('Handling HTTP IPC call to {}'.format(callname))
-    # Note: Using 'localhost' here slowdown the call, not sure if it is an urllib issue
+    # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}/{}'.format(g.LOCAL_DB.get_value('cache_service_port', 8002), callname)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     r = Request(url=url, data=data, headers={'Params': json.dumps(params)})

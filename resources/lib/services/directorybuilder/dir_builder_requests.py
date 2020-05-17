@@ -72,7 +72,6 @@ class DirectoryRequests(object):
         path_response = self.netflix_session._path_request(**call_args)
         return LoLoMo(path_response)
 
-    @cache_utils.cache_output(cache_utils.CACHE_COMMON, ignore_self_class=True)
     def get_lolomo_list_id_by_context(self, context):
         """Return the dynamic video list ID for a LoLoMo context"""
         try:
@@ -89,7 +88,7 @@ class DirectoryRequests(object):
                   ['profilesList', 'current', 'summary'],
                   ['profilesList', {'to': 5}, 'summary'],
                   ['profilesList', {'to': 5}, 'avatar', 'images', 'byWidth', 320]])
-        path_response = self.netflix_session._path_request(paths)
+        path_response = self.netflix_session._path_request(paths, use_jsongraph=True)
         if update_database:
             from resources.lib.api.website import parse_profiles
             parse_profiles(path_response)

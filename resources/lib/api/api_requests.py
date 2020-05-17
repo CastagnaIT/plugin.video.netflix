@@ -53,36 +53,6 @@ def login(ask_credentials=True):
         raise
 
 
-def activate_profile(profile_guid):
-    """Activate the profile with the given GUID"""
-    common.make_call('activate_profile', profile_guid)
-    if g.ADDON.getSettingBool('ProgressManager_enabled'):
-        save_current_lolomo_data()
-
-
-def save_current_lolomo_data():
-    """Save the current lolomo data of the current selected profile"""
-    # Note: every profile has its root lolomo (that are also visible in the lhpuuidh-browse profiles cookies)
-    context_name = 'continueWatching'
-    lolomo_data = common.make_call('path_request',
-                                   [['lolomo', [context_name], ['context', 'id', 'index']]])
-    lolomo_root = lolomo_data['lolomo'][1]
-    g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
-    # Todo: In the new profiles, there is no 'continueWatching' list and no list is returned
-    #  How get the lolomo of continueWatching?
-    if ('lolomos' in lolomo_data and
-            lolomo_root in lolomo_data['lolomos'] and
-            context_name in lolomo_data['lolomos'][lolomo_root]):
-        context_index = lolomo_data['lolomos'][lolomo_root][context_name][2]
-        context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
-    else:
-        common.debug('Context continueWatching lolomo not found. Returned data: {}', lolomo_data)
-        context_index = ''
-        context_id = ''
-    g.LOCAL_DB.set_value('lolomo_{}_index'.format(context_name.lower()), context_index, TABLE_SESSION)
-    g.LOCAL_DB.set_value('lolomo_{}_id'.format(context_name.lower()), context_id, TABLE_SESSION)
-
-
 def update_lolomo_context(context_name):
     """Update the lolomo list by context"""
     lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
@@ -91,6 +61,7 @@ def update_lolomo_context(context_name):
     context_id = g.LOCAL_DB.get_value('lolomo_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
 
     if not context_index:
+        common.warn('Update lolomo context {} skipped due to missing lolomo index', context_name)
         return
     path = [['lolomos', lolomo_root, 'refreshListByContext']]
     # The fourth parameter is like a request-id, but it doesn't seem to match to
@@ -123,9 +94,9 @@ def update_lolomo_context(context_name):
     try:
         response = common.make_http_call('callpath_request', callargs)
         common.debug('refreshListByContext response: {}', response)
+        # The call response return the new context id of the previous invalidated lolomo context_id
+        # and if path_suffixs is added return also the new video list data
     except Exception:  # pylint: disable=broad-except
-        # I do not know the reason yet, but sometimes continues to return error 401,
-        # making it impossible to update the bookmark position
         if not common.is_debug_verbose():
             return
         ui.show_notification(title=common.get_local_string(30105),
@@ -145,8 +116,6 @@ def update_videoid_bookmark(video_id):
         response = common.make_http_call('callpath_request', callargs)
         common.debug('refreshVideoCurrentPositions response: {}', response)
     except Exception:  # pylint: disable=broad-except
-        # I do not know the reason yet, but sometimes continues to return error 401,
-        # making it impossible to update the bookmark position
         ui.show_notification(title=common.get_local_string(30105),
                              msg='An error prevented the update the status watched on netflix',
                              time=10000)
@@ -155,12 +124,12 @@ def update_videoid_bookmark(video_id):
 @common.time_execution(immediate=False)
 def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cache to this method
     """Retrieve raw data for specified video id's"""
-    video_ids = [videoid.value for videoid in videoids]
+    video_ids = [int(videoid.value) for videoid in videoids]
     common.debug('Requesting video raw data for {}', video_ids)
     if not custom_partial_path:
         paths = build_paths(['videos', video_ids], EPISODES_PARTIAL_PATHS)
         if videoids[0].mediatype == common.VideoId.EPISODE:
-            paths.extend(build_paths(['videos', videoids[0].tvshowid], ART_PARTIAL_PATHS + [['title']]))
+            paths.extend(build_paths(['videos', int(videoids[0].tvshowid)], ART_PARTIAL_PATHS + [['title']]))
     else:
         paths = build_paths(['videos', video_ids], custom_partial_path)
     return common.make_call('path_request', paths)
@@ -175,7 +144,7 @@ def rate(videoid, rating):
     rating = min(10, max(0, rating)) / 2
     common.make_call(
         'post',
-        {'component': 'set_video_rating',
+        {'endpoint': 'set_video_rating',
          'data': {
              'titleId': int(videoid.value),
              'rating': rating}})
@@ -190,7 +159,7 @@ def rate_thumb(videoid, rating, track_id_jaw):
     event_uuid = common.get_random_uuid()
     response = common.make_call(
         'post',
-        {'component': 'set_thumb_rating',
+        {'endpoint': 'set_thumb_rating',
          'data': {
              'eventUuid': event_uuid,
              'titleId': int(videoid.value),
@@ -212,7 +181,7 @@ def update_my_list(videoid, operation, params):
     common.debug('My List: {} {}', operation, videoid)
     common.make_call(
         'post',
-        {'component': 'update_my_list',
+        {'endpoint': 'update_my_list',
          'data': {
              'operation': operation,
              'videoId': videoid.value}})
@@ -258,15 +227,19 @@ def _update_mylist_cache(videoid, operation, params):
 @common.time_execution(immediate=False)
 def get_metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
+    metadata_data = {}, None
     # Delete the cache if we need to refresh the all metadata
     if refresh:
-        g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.value)
-    metadata_data = {}, None
+        videoid_cache = (videoid.derive_parent(0)
+                         if videoid.mediatype in [common.VideoId.EPISODE, common.VideoId.SEASON]
+                         else videoid)
+        g.CACHE.delete(cache_utils.CACHE_METADATA, str(videoid_cache))
     if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
-        metadata_data = _metadata(videoid), None
+        # videoid of type tvshow, movie, supplemental
+        metadata_data = _metadata(video_id=videoid), None
     elif videoid.mediatype == common.VideoId.SEASON:
-        metadata_data = _metadata(videoid.derive_parent(None)), None
-    else:
+        metadata_data = _metadata(video_id=videoid.derive_parent(None)), None
+    else:  # it is an episode
         try:
             metadata_data = _episode_metadata(videoid)
         except KeyError as exc:
@@ -274,18 +247,19 @@ def get_metadata(videoid, refresh=False):
             # data is outdated. In this case, delete the cache entry and
             # try again safely (if it doesn't exist this time, there is no
             # metadata for the episode, so we assign an empty dict).
-            common.debug('{}, refreshing cache', exc)
-            g.CACHE.delete(cache_utils.CACHE_METADATA, videoid.tvshowid)
+            common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
             try:
-                metadata_data = _episode_metadata(videoid)
+                metadata_data = _episode_metadata(videoid, refresh_cache=True)
             except KeyError as exc:
-                common.error(exc)
+                common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
     return metadata_data
 
 
-@common.time_execution(immediate=False)
-def _episode_metadata(videoid):
-    show_metadata = _metadata(videoid)
+def _episode_metadata(videoid, refresh_cache=False):
+    tvshow_videoid = videoid.derive_parent(0)
+    if refresh_cache:
+        g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
+    show_metadata = _metadata(video_id=tvshow_videoid)
     episode_metadata, season_metadata = common.find_episode_metadata(videoid, show_metadata)
     return episode_metadata, season_metadata, show_metadata
 
@@ -293,18 +267,19 @@ def _episode_metadata(videoid):
 @common.time_execution(immediate=False)
 @cache_utils.cache_output(cache_utils.CACHE_METADATA, identify_from_kwarg_name='video_id')
 def _metadata(video_id):
-    """Retrieve additional metadata for a video.This is a separate method from
-    metadata(videoid) to work around caching issues when new episodes are added
-    to a show by Netflix."""
+    """Retrieve additional metadata for a video.
+    This is a separate method from get_metadata(videoid) to work around caching issues
+    when new episodes are added to a tv show by Netflix."""
+    import time
     common.debug('Requesting metadata for {}', video_id)
     # Always use params 'movieid' to all videoid identifier
     ipc_call = common.make_http_call if g.IS_SERVICE else common.make_call
     metadata_data = ipc_call(
         'get',
         {
-            'component': 'metadata',
-            'req_type': 'api',
-            'params': {'movieid': video_id.value}
+            'endpoint': 'metadata',
+            'params': {'movieid': video_id.value,
+                       '_': int(time.time())}
         })
     if not metadata_data:
         # This return empty
@@ -325,15 +300,19 @@ def get_parental_control_data(password):
 def set_parental_control_data(data):
     """Set the parental control data"""
     try:
-        return common.make_call(
+        common.make_call(
             'post',
-            {'component': 'pin_service',
-             'data': {'maturityLevel': data['maturity_level'],
-                      'password': common.get_credentials().get('password'),
-                      'pin': data['pin']}}
+            {'endpoint': 'content_restrictions',
+             'data': {'action': 'update',
+                      'authURL': data['token'],
+                      'experience': data['experience'],
+                      'guid': data['guid'],
+                      'maturity': data['maturity']}}
         )
-    except Exception:  # pylint: disable=broad-except
-        return {}
+        return True
+    except Exception as exc:  # pylint: disable=broad-except
+        common.error('Api call profile_hub raised an error: {}', exc)
+    return False
 
 
 @common.time_execution(immediate=False)
@@ -342,8 +321,23 @@ def verify_pin(pin):
     try:
         return common.make_call(
             'post',
-            {'component': 'pin_service',
+            {'endpoint': 'pin_service',
              'data': {'pin': pin}}
+        ).get('success', False)
+    except Exception:  # pylint: disable=broad-except
+        return False
+
+
+@common.time_execution(immediate=False)
+def verify_profile_lock(guid, pin):
+    """Send profile PIN to Netflix and verify it."""
+    try:
+        return common.make_call(
+            'post',
+            {'endpoint': 'profile_lock',
+             'data': {'pin': pin,
+                      'action': 'verify',
+                      'guid': guid}}
         ).get('success', False)
     except Exception:  # pylint: disable=broad-except
         return False
