@@ -1,3 +1,21 @@
+v1.3.0 (2020-05-17)
+Note to RPI devices: credentials will be asked again a storage problem has been fixed
+-Reimplemented parental control
+-Add new "Top 10" menu list
+-Add support to promo video trailer for custom skins
+-Add metadata Season and Episode value to ListItem's
+-Add metadata PlotOutline and Trailer values to ListItem's
+-Continue watching is now working with Netflix watched status sync
+-Fixed wrong video framerate, caused Dolby Vision signal loss and wrong colors
+-Fixed an issue that caused a wrong watched status sync at end of playback
+-Fixed an issue that caused missing to export some new seasons
+-Fixed an issue that caused the library sync to crash in some situations
+-Fixed a possible issue that can cause a wrong audio language selection on the episodes
+-Fixed a possible issue that can cause streamcontinuity to crash due to empty subtitle data
+-Fixed non visible media-flags to tvshows
+-Updated translations en, it, pt-br, de, sv-se, hu, nl, pl
+-Minor improvements/fixes
+
 v1.2.2 (2020-05-07)
 -Fixed a issue regression caused problems to 1080P/4K playback
 
