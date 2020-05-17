@@ -214,23 +214,23 @@ msgstr "Exportált"
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Pofil automatikus választása"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Profil automatikus kiválasztás törlése"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Autamatikus kiválasztásának beállítása"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "A profil beállításához nyissa meg a helyi menüt a profilok listájában"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "A profil {} automatikusan kiválasztva"
 
 # Unused 30059
 
@@ -506,7 +506,7 @@ msgstr "Értékelés {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Profil váasztás"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -848,7 +848,7 @@ msgstr "InputStream Helper beállítások..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Kényszerített frissítés"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
