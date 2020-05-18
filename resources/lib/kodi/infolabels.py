@@ -67,7 +67,9 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
     dict_item['quality_info'] = quality_infos
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
-
+    if 'Plot' not in infos_copy and 'PlotOutline' in infos_copy:
+        # Not all skins support read value from PlotOutline
+        infos_copy['Plot'] = infos_copy['PlotOutline']
     _add_supplemental_plot_info(infos_copy, item, common_data)
     if is_in_mylist and common_data.get('mylist_titles_color'):
         add_title_color(dict_item, infos_copy, common_data)
