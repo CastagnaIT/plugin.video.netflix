@@ -115,7 +115,7 @@ INFO_MAPPINGS = [
 ]
 
 INFO_TRANSFORMATIONS = {
-    'Season': lambda s_value: ''.join([n for n in str(s_value) if n.isdigit()]),  # isdigit is needed for shortName key
+    'Season': lambda s_value: _convert_season(s_value),
     'Episode': lambda ep: str(ep),  # pylint: disable=unnecessary-lambda
     'Rating': lambda r: r / 10,
     'PlayCount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
@@ -130,6 +130,13 @@ REFERENCE_MAPPINGS = {
     'writer': 'creators',
     'genre': 'genres'
 }
+
+
+def _convert_season(value):
+    if isinstance(value, int):
+        return str(value)
+    # isdigit is needed to filter out non numeric characters from 'shortName' key
+    return ''.join([n for n in g.py2_encode(value) if n.isdigit()])
 
 
 def build_paths(base_path, partial_paths):
