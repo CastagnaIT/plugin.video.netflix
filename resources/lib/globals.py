@@ -30,6 +30,11 @@ from future.utils import iteritems
 import xbmc
 import xbmcaddon
 
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin,invalid-name
+
 
 class GlobalVariables(object):
     """Encapsulation for global variables to work around quirks with
@@ -220,10 +225,16 @@ class GlobalVariables(object):
         module_paths = [
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
-        for path in module_paths:
-            path = xbmc.translatePath(path)
-            if path not in sys.path:
-                sys.path.insert(0, g.py2_decode(path))
+
+        # On PY2 sys.path list can contains values as unicode type and string type at same time,
+        #   here we will add only unicode type so filter values by unicode.
+        #   This fix comparing issues with use of "if path not in sys.path:"
+        sys_path_filtered = [value for value in sys.path if isinstance(value, unicode)]
+
+        for path in module_paths:  # module_paths has unicode type values
+            path = g.py2_decode(xbmc.translatePath(path))
+            if path not in sys_path_filtered:
+                sys.path.insert(0, path)  # This add an unicode string type
 
         self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
         self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
