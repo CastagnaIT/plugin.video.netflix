@@ -30,6 +30,7 @@ def select_unused_port():
     """
     import socket
     from contextlib import closing
+    # pylint: disable=no-member
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         sock.bind(('127.0.0.1', 0))
         _, port = sock.getsockname()

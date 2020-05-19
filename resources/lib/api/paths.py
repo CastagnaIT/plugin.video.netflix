@@ -114,11 +114,12 @@ INFO_MAPPINGS = [
     # ('DateAdded', ['availability', 'availabilityStartTime'])
 ]
 
+# pylint: disable=unnecessary-lambda
 INFO_TRANSFORMATIONS = {
     'Season': lambda s_value: _convert_season(s_value),
-    'Episode': lambda ep: str(ep),  # pylint: disable=unnecessary-lambda
+    'Episode': lambda ep: str(ep),
     'Rating': lambda r: r / 10,
-    'PlayCount': lambda w: int(w),  # pylint: disable=unnecessary-lambda
+    'PlayCount': lambda w: int(w),
     'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
                                                  mode=g.MODE_PLAY),
     'DateAdded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
