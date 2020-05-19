@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
-"POT-Creation-Date: 2020-04-18 00:00+0000\n"
+"POT-Creation-Date: 2020-01-07 00:00+0000\n"
 "PO-Revision-Date: 2020-05-17 00:00+0000\n"
 "Last-Translator: Tomas Andersson\n"
 "Language-Team: Swedish (Sweden)\n"
@@ -182,7 +182,7 @@ msgstr "Vy för Filmer"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vy för TV-program"
+msgstr "Vy för Serier"
 
 msgctxt "#30042"
 msgid "View for seasons"
@@ -254,7 +254,7 @@ msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr "Automatisk uppdatering för TV-program, säsonger och avsnitt"
+msgstr "Automatisk uppdatering för Serier, säsonger och avsnitt"
 
 msgctxt "#30066"
 msgid "Debug logging level"
@@ -290,7 +290,7 @@ msgstr "Visa alltid Codec-informationen under videouppspelningen"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "Vy för exporterad"
+msgstr "Vy för Exporterad"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
@@ -330,15 +330,15 @@ msgstr "Spara bokmärken för biblioteksposter / Markera som sedd"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "Cache tid-att-behålla (minuter)"
+msgstr "Cache objekt TTL (minuter)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "Cache tid-att-behålla för metadata (dagar)"
+msgstr "Cache metadata TTL (dagar)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Cache tid-att-behålla för Min Lista (minuter)"
+msgstr "Cache objekt 'Min Lista' TTL (minuter)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -374,7 +374,7 @@ msgstr "Bläddra bland rekommendationer och hitta något nytt som du kanske gill
 
 msgctxt "#30095"
 msgid "All TV Shows"
-msgstr "Alla TV-program"
+msgstr "Alla Serier"
 
 msgctxt "#30096"
 msgid "All Movies"
@@ -470,7 +470,7 @@ msgstr "API-operationen misslyckades: {}"
 
 msgctxt "#30119"
 msgid "My List operation successful"
-msgstr "Operationen lyckades"
+msgstr "Min Lista-operationen lyckades"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -494,7 +494,7 @@ msgstr "Vill du ta bort det här objektet från biblioteket?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Rensa biblioteket"
+msgstr "Rensa biblioteksinnehållet"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
@@ -688,11 +688,11 @@ msgstr "Netflix Originals"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
-msgstr "TV-program genrer"
+msgstr "Serier genrer"
 
 msgctxt "#30175"
 msgid "Movie genres"
-msgstr "Filmgenrer"
+msgstr "Film genrer"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
@@ -716,7 +716,7 @@ msgstr "Det har uppstått ett problem med inloggningen, det är möjligt att dit
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
-msgstr "Inaktivera undertexter om det inte finns några tvingade undertextsströmmar (Fungerar bara om Kodi Player är inställd på 'Endast tvingade' undertexter)"
+msgstr "Inaktivera undertexter om det inte finns några tvingade undertextsströmmar (Fungerar bara om Kodi Player är inställd på 'Endast tvingad' undertext)"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -740,7 +740,7 @@ msgstr "För Filmer"
 
 msgctxt "#30187"
 msgid "For TV Show"
-msgstr "För TV-program"
+msgstr "För Serier"
 
 msgctxt "#30188"
 msgid "Ask"
@@ -752,7 +752,7 @@ msgstr "Film"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "TV-program"
+msgstr "Serier"
 
 msgctxt "#30191"
 msgid "Do you want to export NFO files for the {} added to 'My List'?"
@@ -760,7 +760,7 @@ msgstr "Vill du exportera NFO-filer för {} tillagda till 'Min lista'?"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att integrera information om filmer och tv-program, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
+msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att integrera information om filmer och Serier, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -848,7 +848,7 @@ msgstr "Inställningar för InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Tvinga uppdatering"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -920,11 +920,11 @@ msgstr "Vill du kontrollera uppdateringen nu?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr "Åldersgräns-profil för {}"
+msgstr "Åldersgräns för profilen {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr "Visa bara titlar rankade [B]{}[/B]."
+msgstr "Visa endast titlar med åldersgränsen [B]{}[/B] för den här profilen."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -960,4 +960,4 @@ msgstr "Open Connect CDN (lägre siffra är bättre)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
