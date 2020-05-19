@@ -29,11 +29,11 @@ def select_unused_port():
     :return: int - Free port
     """
     import socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('127.0.0.1', 0))
-    _, port = sock.getsockname()
-    sock.close()
-    return port
+    from contextlib import closing
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        sock.bind(('127.0.0.1', 0))
+        _, port = sock.getsockname()
+        return port
 
 
 def get_system_platform():
