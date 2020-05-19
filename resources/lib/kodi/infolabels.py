@@ -72,7 +72,8 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
         infos_copy['Plot'] = infos_copy['PlotOutline']
     _add_supplemental_plot_info(infos_copy, item, common_data)
     if is_in_mylist and common_data.get('mylist_titles_color'):
-        add_title_color(dict_item, infos_copy, common_data)
+        # Highlight ListItem title when the videoid is contained in my-list
+        dict_item['label'] = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
     dict_item['info'] = infos_copy
 
 
@@ -284,15 +285,6 @@ def get_info_from_library(videoid):
     }
     infos.update(details)
     return infos, art
-
-
-def add_title_color(dict_item, infos_copy, common_data):
-    """Highlight list item title when the videoid is contained in my-list"""
-    updated_title = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
-    dict_item['label'] = updated_title
-    # When a xbmcgui.Listitem is not a folder 'label' is replaced by 'Title' property of infoLabel
-    if not dict_item['is_folder']:
-        infos_copy['Title'] = updated_title
 
 
 def _colorize_text(color_name, text):
