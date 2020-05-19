@@ -385,11 +385,11 @@ class GlobalVariables(object):
             return value.decode(encoding)
         return value
 
-    def py2_encode(self, value):
+    def py2_encode(self, value, encoding='utf-8'):
         """Encode text only on python 2"""
         # To remove when Kodi 18 support is over / Py2 dead
         if self.PY_IS_VER2:
-            return value.encode('utf-8')
+            return value.encode(encoding)
         return value
 
     @staticmethod

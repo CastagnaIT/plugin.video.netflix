@@ -99,8 +99,11 @@ def ask_for_resume(resume_position):
         ])
 
 
-def show_backend_not_ready():
-    return xbmcgui.Dialog().ok(common.get_local_string(30105), common.get_local_string(30138))
+def show_backend_not_ready(error_details=None):
+    message = common.get_local_string(30138)
+    if error_details:
+        message += '\r\n\r\nError details:\r\n' + error_details
+    return xbmcgui.Dialog().ok(common.get_local_string(30105), message)
 
 
 def show_ok_dialog(title, message):

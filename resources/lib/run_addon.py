@@ -207,9 +207,9 @@ def run(argv):
                 route([part for part in g.PATH.split('/') if part])
             else:
                 success = False
-        except BackendNotReady:
+        except BackendNotReady as exc_bnr:
             from resources.lib.kodi.ui import show_backend_not_ready
-            show_backend_not_ready()
+            show_backend_not_ready(g.py2_decode(str(exc_bnr), 'latin-1'))
             success = False
         except InputStreamHelperError as exc:
             from resources.lib.kodi.ui import show_ok_dialog

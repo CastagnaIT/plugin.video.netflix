@@ -107,7 +107,12 @@ def make_http_call(callname, data):
     except HTTPError as exc:
         result = json.loads(exc.reason)
     except URLError as exc:
-        raise BackendNotReady('The service has returned: {}'.format(exc.reason))
+        # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
+        err_msg = g.py2_decode(str(exc), 'latin-1')
+        if '10049' in err_msg:
+            err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
+        error(err_msg)
+        raise BackendNotReady(g.py2_encode(err_msg, encoding='latin-1'))
     _raise_for_error(callname, result)
     return result
 
@@ -133,7 +138,12 @@ def make_http_call_cache(callname, params, data):
         except KeyError:
             raise Exception('The service has returned: {}'.format(exc.reason))
     except URLError as exc:
-        raise BackendNotReady('The service has returned: {}'.format(exc.reason))
+        # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
+        err_msg = g.py2_decode(str(exc), 'latin-1')
+        if '10049' in err_msg:
+            err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
+        error(err_msg)
+        raise BackendNotReady(g.py2_encode(err_msg, encoding='latin-1'))
     return result
 
 
