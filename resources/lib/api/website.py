@@ -313,7 +313,7 @@ def generate_esn(user_data):
                 if g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
                     esn = 'NFANDROID2-PRV-'
                     if nrdp_modelgroup:
-                        esn += nrdp_modelgroup + '-'
+                        esn += nrdp_modelgroup.upper() + '-'
                     else:
                         esn += model.replace(' ', '').upper() + '-'
                 else:
