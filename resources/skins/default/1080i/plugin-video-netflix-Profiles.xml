@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol>10004</defaultcontrol>
+	<defaultcontrol>10001</defaultcontrol>
 	<controls>
 		<control type="group">
 			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
@@ -86,7 +86,7 @@
 				<left>0</left>
 				<width>1160</width>
 				<height>490</height>
-				<defaultcontrol>10004</defaultcontrol>
+				<defaultcontrol>10001</defaultcontrol>
 				<visible>true</visible>
 				<onright>10090</onright>
 				<control type="list" id="10001">
@@ -98,8 +98,6 @@
 					<onright>10090</onright>
 					<onup>noop</onup>
 					<ondown>noop</ondown>
-					<pagecontrol>10090</pagecontrol>
-					<scrolltime>200</scrolltime>
 					<itemlayout width="1160" height="70">
 						<control type="image">
 							<left>10</left>
