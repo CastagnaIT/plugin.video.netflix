@@ -75,11 +75,11 @@ def get_upnext_info(videoid, videoid_next_episode, info_data, metadata, is_playe
 def _upnext_info(videoid, infos, art):
     """Create a data dict for Up Next signal"""
     # Double check to 'rating' key, sometime can be an empty string, not accepted by Up Next add-on
-    rating = infos.get('rating', None)
+    rating = infos.get('Rating', None)
     return {
         'episodeid': videoid.episodeid,
         'tvshowid': videoid.tvshowid,
-        'title': infos['title'],
+        'title': infos['Title'],
         'art': {
             'tvshow.poster': art.get('poster', ''),
             'thumb': art.get('thumb', ''),
@@ -88,12 +88,12 @@ def _upnext_info(videoid, infos, art):
             'tvshow.clearart': art.get('clearart', ''),
             'tvshow.clearlogo': art.get('clearlogo', '')
         },
-        'plot': infos['plot'],
-        'showtitle': infos['tvshowtitle'],
-        'playcount': infos.get('playcount', 0),
-        'runtime': infos['duration'],
-        'season': infos['season'],
-        'episode': infos['episode'],
+        'plot': infos.get('Plot', infos.get('PlotOutline', '')),
+        'showtitle': infos['TVShowTitle'],
+        'playcount': infos.get('PlayCount', 0),
+        'runtime': infos['Duration'],
+        'season': infos['Season'],
+        'episode': infos['Episode'],
         'rating': rating if rating else None,
-        'firstaired': infos.get('year', infos.get('firstaired', ''))
+        'firstaired': infos.get('Year', '')
     }

@@ -91,6 +91,7 @@ VIDEO_LIST_RATING_THUMB_PATHS = [
 SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 
 INFO_MAPPINGS = [
+    ('Title', 'title'),  # Title is needed only for UpNext metadata on play method
     ('Year', 'releaseYear'),
     ('Plot', 'regularSynopsis'),  # Complete plot (Kodi 18 original skins do not use plotoutline)
     ('PlotOutline', 'synopsis'),  # Small plot

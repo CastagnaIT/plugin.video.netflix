@@ -48,7 +48,7 @@ MEDIA_TYPE_MAPPINGS = {
 }
 
 
-def get_info(videoid, item, raw_data, profile_language_code=''):
+def get_info(videoid, item, raw_data, profile_language_code='', include_title=False):
     """Get the infolabels data"""
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
@@ -58,6 +58,8 @@ def get_info(videoid, item, raw_data, profile_language_code=''):
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
         g.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
+    if not include_title:
+        infos.pop('Title', None)
     return infos, quality_infos
 
 
@@ -256,7 +258,8 @@ def get_info_from_netflix(videoids):
     info_data = {}
     for videoid in videoids:
         try:
-            infos = get_info(videoid, None, None, profile_language_code)[0]
+            infos = get_info(videoid, None, None, profile_language_code,
+                             include_title=True)[0]
             art = _get_art(videoid, None, profile_language_code)
             info_data[videoid.value] = infos, art
             common.debug('Got infolabels and art from cache for videoid {}', videoid)
@@ -268,7 +271,8 @@ def get_info_from_netflix(videoids):
         common.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
-            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
+            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code,
+                             include_title=True)[0]
             art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
             info_data[videoid.value] = infos, art
     return info_data
