@@ -21,7 +21,7 @@ import resources.lib.common as common
 from resources.lib.api.api_requests import verify_profile_lock
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
-from resources.lib.kodi.ui import ask_for_pin
+from resources.lib.kodi import ui
 
 
 def custom_viewmode(partial_setting_id):
@@ -138,9 +138,20 @@ def get_title(menu_data, extra_data):
                                                              table=TABLE_MENU_DATA).get('title', '')))
 
 
+def activate_profile(guid):
+    """Activate a profile and ask the PIN if required"""
+    pin_result = verify_profile_pin(guid)
+    if not pin_result:
+        if pin_result is not None:
+            ui.show_notification(common.get_local_string(30106), time=8000)
+        return False
+    common.make_call('activate_profile', guid)
+    return True
+
+
 def verify_profile_pin(guid):
     """Verify if the profile is locked by a PIN and ask the PIN"""
     if not g.LOCAL_DB.get_profile_config('isPinLocked', False, guid=guid):
         return True
-    pin = ask_for_pin(common.get_local_string(30006))
+    pin = ui.ask_for_pin(common.get_local_string(30006))
     return None if not pin else verify_profile_lock(guid, pin)
