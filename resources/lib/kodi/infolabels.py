@@ -58,7 +58,8 @@ def get_info(videoid, item, raw_data, profile_language_code='', include_title=Fa
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
         g.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
-    if not include_title:
+    # The ListItem's of type episode use 'Title' instead 'Label'
+    if not include_title and not videoid.mediatype == common.VideoId.EPISODE:
         infos.pop('Title', None)
     return infos, quality_infos
 
