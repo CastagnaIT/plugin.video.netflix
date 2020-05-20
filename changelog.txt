@@ -1,3 +1,11 @@
+v1.3.2 (2020-05-20)
+-Fixed some issues on chinese systems
+-Fixed errors on loading lists
+-Fixed missing plot in some skins
+-Fixed ESN generation (lower case issue)
+-Fixed UpNext regressions
+-Updated translations es, sv-se
+
 v1.3.1 (2020-05-17)
 Note to RPI devices: credentials will be asked again a storage problem has been fixed
 -Fixed KeyError issue
