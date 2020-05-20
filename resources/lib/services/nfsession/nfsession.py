@@ -98,19 +98,20 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         if not self.is_profile_session_active or (self.is_profile_session_active and
                                                   guid != current_active_guid):
             common.info('Activating profile {}', guid)
+            # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
             # INIT Method 1 - HTTP mode
-            response = self._get('switch_profile', params={'tkn': guid})
-            self.auth_url = self.website_extract_session_data(response)['auth_url']
+            # response = self._get('switch_profile', params={'tkn': guid})
+            # self.auth_url = self.website_extract_session_data(response)['auth_url']
             # END Method 1
             # INIT Method 2 - API mode
-            # import time
-            # self._get(endpoint='activate_profile',
-            #           params={'switchProfileGuid': guid,
-            #                   '_': int(time.time()),
-            #                   'authURL': self.auth_url})
-            # # Retrieve browse page to update authURL
-            # response = self._get('browse')
-            # self.auth_url = website.extract_session_data(response)['auth_url']
+            import time
+            self._get(endpoint='activate_profile',
+                      params={'switchProfileGuid': guid,
+                              '_': int(time.time()),
+                              'authURL': self.auth_url})
+            # Retrieve browse page to update authURL
+            response = self._get('browse')
+            self.auth_url = website.extract_session_data(response)['auth_url']
             # END Method 2
             self.is_profile_session_active = True
         g.LOCAL_DB.switch_active_profile(guid)
