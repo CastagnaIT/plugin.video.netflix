@@ -249,11 +249,11 @@ class AMStreamContinuity(ActionManager):
         # So can cause a wrong subtitle language or in a permanent display of subtitles!
         # This does not reflect the setting chosen in the Kodi player and is very annoying!
         # There is no other solution than to disable the subtitles manually.
-        audio_language = common.get_kodi_audio_language()
         if self.legacy_kodi_version:
             # --- ONLY FOR KODI VERSION 18 ---
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
+            audio_language = common.get_kodi_audio_language()
             cache_identifier = g.get_esn() + '_' + self.videoid.value
             manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
@@ -263,9 +263,22 @@ class AMStreamContinuity(ActionManager):
                 self.sc_settings.update({'subtitleenabled': False})
         else:
             # --- ONLY FOR KODI VERSION 19 ---
-            # Check the current stream
+            audio_language = common.get_kodi_audio_language(iso_format=xbmc.ISO_639_2, use_fallback=False)
+            if audio_language == 'mediadefault':
+                # Find the language of the default audio track
+                audio_list = self.player_state.get(STREAMS['audio']['list'])
+                for audio_track in audio_list:
+                    if audio_track['isdefault']:
+                        audio_language = audio_track['language']
+                        break
             player_stream = self.player_state.get(STREAMS['subtitle']['current'])
-            if not player_stream['isforced'] or player_stream['language'] != audio_language:
+            if audio_language == 'original':
+                # Do nothing
+                is_language_appropriate = True
+            else:
+                is_language_appropriate = player_stream['language'] == audio_language
+            # Check if the current stream is forced and with an appropriate subtitle language
+            if not player_stream['isforced'] or not is_language_appropriate:
                 self.sc_settings.update({'subtitleenabled': False})
 
     def _is_stream_value_equal(self, stream_a, stream_b):

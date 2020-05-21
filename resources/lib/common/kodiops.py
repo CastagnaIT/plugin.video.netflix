@@ -164,31 +164,44 @@ def get_current_kodi_profile_name(no_spaces=True):
     return __CURRENT_KODI_PROFILE_NAME__
 
 
-def get_kodi_audio_language():
-    """Return the audio language from Kodi settings"""
+def get_kodi_audio_language(iso_format=xbmc.ISO_639_1, use_fallback=True):
+    """
+    Return the audio language from Kodi settings
+    WARNING: when use_fallback is False, based on Kodi settings can also return values as: 'mediadefault', 'original'
+    """
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    return convert_language_iso(audio_language['value'])
+    converted_lang = convert_language_iso(audio_language['value'], iso_format, use_fallback)
+    if not converted_lang:
+        if audio_language['value'] == 'default':
+            # Kodi audio language settings is set as "User interface language"
+            converted_lang = xbmc.getLanguage(iso_format, False)  # Get lang. active
+        else:
+            converted_lang = audio_language['value']
+    return converted_lang
 
 
-def get_kodi_subtitle_language():
-    """Return the subtitle language from Kodi settings"""
+def get_kodi_subtitle_language(iso_format=xbmc.ISO_639_1):
+    """
+    Return the subtitle language from Kodi settings
+    """
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
-    return convert_language_iso(subtitle_language['value'])
+    return convert_language_iso(subtitle_language['value'], iso_format)
 
 
-def convert_language_iso(from_value, use_fallback=True):
+def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1, use_fallback=True):
     """
     Convert language code from an English name or three letter code (ISO 639-2) to two letter code (ISO 639-1)
 
+    :param iso_format: specify the iso format (ISO_639_1 or ISO_639_2)
     :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
     """
-    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), xbmc.ISO_639_1)
+    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), iso_format)
     if not use_fallback:
         return converted_lang
-    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(xbmc.ISO_639_1, False)
-    return converted_lang if converted_lang else 'en'
+    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(iso_format, False)  # Get lang. active
+    return converted_lang if converted_lang else 'en' if iso_format == xbmc.ISO_639_1 else 'eng'
 
 
 def fix_locale_languages(data_list):
