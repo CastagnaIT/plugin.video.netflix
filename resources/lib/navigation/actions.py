@@ -47,6 +47,18 @@ class AddonActionExecutor(object):
         g.ADDON.setSettingBool('autoselect_profile_enabled', False)
         g.settings_monitor_suspend(False)
 
+    def library_playback_profile(self, pathitems=None):  # pylint: disable=unused-argument
+        preselect_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
+        selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30050),
+                                                preselect_guid=preselect_guid)
+        if not selected_guid:
+            return
+        # Save the selected profile guid
+        g.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
+        # Save the selected profile name
+        g.ADDON.setSetting('library_playback_profile', g.LOCAL_DB.get_profile_config('profileName', '???',
+                                                                                     guid=selected_guid))
+
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
         password = ui.ask_for_password()
