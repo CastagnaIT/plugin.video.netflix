@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-posta"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -951,3 +953,11 @@ msgstr "Ek özet bilgisinin rengi"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""

@@ -954,3 +954,11 @@ msgstr "Boja za dodatni sadržaj na sažetku"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Pozadinske servise nije moguće pokrenuti zbog ovog problema:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""

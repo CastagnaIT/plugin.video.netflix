@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "E-mail"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -922,4 +924,40 @@ msgstr ""
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
+msgstr ""
+
+msgctxt "#30234"
+msgid "Install Up Next add-on"
+msgstr ""
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr ""
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr ""
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr ""
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
 msgstr ""

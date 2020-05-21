@@ -957,3 +957,7 @@ msgstr "usługi w tle nie mogą być uruchomione z powodu:\r\n{}"
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
 msgstr "Open Connect CDN (niższy indeks jest lepszy)"
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""

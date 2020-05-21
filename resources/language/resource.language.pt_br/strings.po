@@ -51,7 +51,7 @@ msgstr "Email"
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
 msgstr "Entre com o PIN para acessar este perfil"
-							
+
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
 msgstr "PIN Controle Parental (4 dígitos)"

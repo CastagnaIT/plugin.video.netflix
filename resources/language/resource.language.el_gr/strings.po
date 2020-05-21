@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr "Ηλ.ταχυδρομείο"
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -947,3 +949,15 @@ msgstr "Ειδοποιήσεις επομένου (δείτε το επόμεν�
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
 msgstr "Χρωματισμός συμπληρωματικών πληροφοριών πλάνου"
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""

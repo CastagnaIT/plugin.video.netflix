@@ -21,11 +21,11 @@ msgid "Netflix"
 msgstr ""
 
 msgctxt "Addon Description"
-msgid "Netflix VOD Services Addon"
+msgid "Netflix VOD Services Add-on"
 msgstr "Doplněk Netflix VOD"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing."
+msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Některé části tohoto doplňku nemusí být ve vaší zemi pobytu legální - před instalací se prosím obraťte na místní zákony."
 
 msgctxt "#30001"
@@ -48,7 +48,9 @@ msgctxt "#30005"
 msgid "E-mail"
 msgstr ""
 
-# Unused 30006
+msgctxt "#30006"
+msgid "Enter PIN to access this profile"
+msgstr ""
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -926,4 +928,36 @@ msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr "Nainstalovat další doplněk"
+msgstr ""
+
+msgctxt "#30235"
+msgid "[WIP] Synchronize the watched status of the videos with Netflix"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Change watched status (locally)"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
+msgstr ""
+
+msgctxt "#30238"
+msgid "Up Next notifications (watch next video)"
+msgstr ""
+
+msgctxt "#30239"
+msgid "Color of supplemental plot info"
+msgstr ""
+
+msgctxt "#30240"
+msgid "The background services cannot be started due to this problem:\r\n{}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""

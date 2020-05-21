@@ -42,11 +42,11 @@ msgstr "Ricerca per titoli, persone, generi"
 
 msgctxt "#30004"
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
@@ -80,7 +80,7 @@ msgstr "Nessuna corrispondenza trovata"
 
 msgctxt "#30014"
 msgid "Account"
-msgstr ""
+msgstr "Account"
 
 msgctxt "#30015"
 msgid "Other options"
@@ -88,7 +88,7 @@ msgstr "Altre opzioni"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr ""
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"

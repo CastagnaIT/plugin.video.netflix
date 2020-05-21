@@ -953,3 +953,11 @@ msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
 msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:\r\n{}"
+
+msgctxt "#30241"
+msgid "Open Connect CDN (the lower index is better)"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Top 10"
+msgstr ""
