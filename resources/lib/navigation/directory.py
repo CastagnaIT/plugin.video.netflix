@@ -18,7 +18,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
-                                                      end_of_directory, get_title, verify_profile_pin)
+                                                      end_of_directory, get_title, activate_profile)
 
 # What means dynamic menus (and dynamic id):
 #  Are considered dynamic menus all menus which context name do not exists in the 'lolomo_contexts' of
@@ -65,7 +65,7 @@ class Directory(object):
                 common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
             # Do not perform the profile switch if navigation come from a page that is not the root url,
             # prevents profile switching when returning to the main menu from one of the sub-menus
-            if not is_parent_root_path or self._activate_profile(autoselect_profile_guid):
+            if not is_parent_root_path or activate_profile(autoselect_profile_guid):
                 self.home(None, False, True)
                 return
         list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
@@ -90,7 +90,7 @@ class Directory(object):
         """Show home listing"""
         if not is_autoselect_profile and 'switch_profile_guid' in self.params:
             # This is executed only when you have selected a profile from the profile list
-            if not self._activate_profile(self.params['switch_profile_guid']):
+            if not activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
                 return
         common.debug('Showing home listing')
@@ -99,15 +99,6 @@ class Directory(object):
                            title=(g.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
         end_of_directory(False, cache_to_disc)
-
-    def _activate_profile(self, guid):
-        pin_result = verify_profile_pin(guid)
-        if not pin_result:
-            if pin_result is not None:
-                ui.show_notification(common.get_local_string(30106), time=8000)
-            return False
-        common.make_call('activate_profile', guid)
-        return True
 
     @common.time_execution(immediate=False)
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)

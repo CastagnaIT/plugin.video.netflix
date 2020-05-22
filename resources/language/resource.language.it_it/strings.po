@@ -210,7 +210,19 @@ msgctxt "#30048"
 msgid "Exported"
 msgstr "Esportati"
 
-# Unused 30049 to 30053
+msgctxt "#30049"
+msgid "Library"
+msgstr "Libreria"
+
+msgctxt "#30050"
+msgid "Select a profile to play the videos"
+msgstr "Seleziona un profilo per riprodurre i video"
+
+msgctxt "#30051"
+msgid "Ask to select a profile before the playback"
+msgstr "Chiedi di selezionare un profilo prima della riproduzione"
+
+# Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"

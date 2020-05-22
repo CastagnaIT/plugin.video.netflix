@@ -191,15 +191,24 @@ def _delete_non_existing_profiles(current_guids):
         g.LOCAL_DB.get_active_profile_guid()
     except ProfilesMissing:
         g.LOCAL_DB.switch_active_profile(g.LOCAL_DB.get_guid_owner_profile())
+    g.settings_monitor_suspend(True)
     # Verify if auto select profile exists
     autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
     if autoselect_profile_guid and autoselect_profile_guid not in current_guids:
         common.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
         g.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        g.settings_monitor_suspend(True)
         g.ADDON.setSetting('autoselect_profile_name', '')
         g.ADDON.setSettingBool('autoselect_profile_enabled', False)
-        g.settings_monitor_suspend(False)
+    # Verify if profile for library playback exists
+    library_playback_profile_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
+    if library_playback_profile_guid and library_playback_profile_guid not in current_guids:
+        common.warn('Profile set for playback from library cleared, the GUID {} not more exists',
+                    library_playback_profile_guid)
+        # Save the selected profile guid
+        g.LOCAL_DB.set_value('library_playback_profile_guid', '')
+        # Save the selected profile name
+        g.ADDON.setSetting('library_playback_profile', '')
+    g.settings_monitor_suspend(False)
 
 
 def _get_avatar(profile_data, data, guid):

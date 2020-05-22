@@ -63,14 +63,21 @@ def play(videoid):
                 'add-on' if is_played_from_addon else 'external call',
                 is_upnext_callback_received)
 
-    metadata = [{}, {}]
+    # Profile switch when playing from Kodi library
+    if not is_played_from_addon:
+        if not _profile_switch():
+            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+            return
+
+    # Get metadata of videoid
     try:
         metadata = api.get_metadata(videoid)
         common.debug('Metadata is {}', metadata)
     except MetadataNotAvailable:
         common.warn('Metadata not available for {}', videoid)
+        metadata = [{}, {}]
 
-    # Parental control PIN
+    # Check parental control PIN
     pin_result = _verify_pin(metadata[0].get('requiresPin', False))
     if not pin_result:
         if pin_result is not None:
@@ -78,12 +85,20 @@ def play(videoid):
         xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
         return
 
+    # Generate the xbmcgui.ListItem to be played
     list_item = get_inputstream_listitem(videoid)
-    resume_position = None
+
+    # STRM file resume workaround (Kodi library)
+    resume_position = _strm_resume_workaroud(is_played_from_addon, videoid)
+    if resume_position == '':
+        xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
+        return
+
     info_data = None
     event_data = {}
     videoid_next_episode = None
 
+    # Get Infolabels and Arts for the videoid to be played, and for the next video if it is an episode (for UpNext)
     if not is_played_from_addon or is_upnext_enabled:
         if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
             # When UpNext is enabled, get the next episode to play
@@ -95,19 +110,7 @@ def play(videoid):
         list_item.setInfo('video', info)
         list_item.setArt(arts)
 
-    if not is_played_from_addon:
-        # Workaround for resuming strm files from library
-        resume_position = (infolabels.get_resume_info_from_library(videoid).get('position')
-                           if g.ADDON.getSettingBool('ResumeManager_enabled') else None)
-        if resume_position:
-            index_selected = (ui.ask_for_resume(resume_position)
-                              if g.ADDON.getSettingBool('ResumeManager_dialog') else None)
-            if index_selected == -1:
-                xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
-                return
-            if index_selected == 1:
-                resume_position = None
-
+    # Get event data for videoid to be played (needed for sync of watched status with Netflix)
     if (g.ADDON.getSettingBool('ProgressManager_enabled') and
             videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE] and
             is_played_from_addon):
@@ -122,17 +125,14 @@ def play(videoid):
         event_data['videoid'] = videoid.to_dict()
         event_data['is_played_by_library'] = not is_played_from_addon
 
-    if 'raspberrypi' in common.get_system_platform() and g.KODI_VERSION.is_major_ver('18'):
-        # OMX Player is not compatible with netflix video streams
-        # Only Kodi 18 has this property, on Kodi 19 Omx Player has been removed
-        value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})
-        if value.get('value'):
-            common.json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.useomxplayer', 'value': False})
+    if 'raspberrypi' in common.get_system_platform():
+        _raspberry_disable_omxplayer()
 
     xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
     g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
 
+    # Start and initialize the action controller (see action_controller.py)
     common.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
@@ -191,11 +191,57 @@ def get_inputstream_listitem(videoid):
     return list_item
 
 
+def _profile_switch():
+    """Profile switch to play from the library"""
+    # This is needed to play videos with the appropriate Netflix profile to avoid problems like:
+    #   Missing audio/subtitle languages; Missing metadata; Wrong age restrictions;
+    #   Video content not available; Sync with netflix watched status to wrong profile
+    # Of course if the user still selects the wrong profile the problems remains,
+    # but now will be caused only by the user for inappropriate use.
+    is_playback_ask_profile = g.ADDON.getSettingBool('library_playback_ask_profile')
+    if is_playback_ask_profile or not g.LOCAL_DB.get_value('library_playback_profile_guid'):
+        selected_guid = ui.show_profiles_dialog(title_prefix=common.get_local_string(15213),
+                                                preselect_guid=g.LOCAL_DB.get_active_profile_guid())
+    else:
+        selected_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
+    if selected_guid:
+        if not is_playback_ask_profile:
+            # Save the selected profile guid
+            g.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
+            # Save the selected profile name
+            g.ADDON.setSetting('library_playback_profile', g.LOCAL_DB.get_profile_config('profileName', '???',
+                                                                                         guid=selected_guid))
+        # Perform the profile switch
+        # The profile switch is done to NFSession, the MSL part will be switched automatically
+        from resources.lib.navigation.directory_utils import activate_profile
+        if not activate_profile(selected_guid):
+            return False
+    else:
+        return False
+    return True
+
+
 def _verify_pin(pin_required):
     if not pin_required:
         return True
     pin = ui.ask_for_pin(common.get_local_string(30002))
     return None if not pin else api.verify_pin(pin)
+
+
+def _strm_resume_workaroud(is_played_from_addon, videoid):
+    """Workaround for resuming STRM files from library"""
+    if not is_played_from_addon and not g.ADDON.getSettingBool('ResumeManager_enabled'):
+        return None
+    resume_position = infolabels.get_resume_info_from_library(videoid).get('position')
+    if resume_position:
+        index_selected = (ui.ask_for_resume(resume_position)
+                          if g.ADDON.getSettingBool('ResumeManager_dialog') else None)
+        if index_selected == -1:
+            # Cancel playback
+            return ''
+        if index_selected == 1:
+            resume_position = None
+    return resume_position
 
 
 def _get_event_data(videoid):
@@ -260,3 +306,13 @@ def _find_next_episode(videoid, metadata):
         return common.VideoId(tvshowid=videoid.tvshowid,
                               seasonid=next_season['id'],
                               episodeid=episode['id'])
+
+
+def _raspberry_disable_omxplayer():
+    """Check and disable OMXPlayer (not compatible with Netflix video streams)"""
+    # Only Kodi 18 has this property, from Kodi 19 OMXPlayer has been removed
+    if not g.KODI_VERSION.is_major_ver('18'):
+        return
+    value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})
+    if value.get('value'):
+        common.json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.useomxplayer', 'value': False})

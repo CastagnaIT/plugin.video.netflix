@@ -133,6 +133,10 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         g.ADDON.setSetting('autoselect_profile_name', '')
         g.ADDON.setSettingBool('autoselect_profile_enabled', False)
 
+        # Reset of selected profile guid for library playback
+        g.LOCAL_DB.set_value('library_playback_profile_guid', '')
+        g.ADDON.setSetting('library_playback_profile', '')
+
         g.settings_monitor_suspend(False)
 
         # Delete cookie and credentials

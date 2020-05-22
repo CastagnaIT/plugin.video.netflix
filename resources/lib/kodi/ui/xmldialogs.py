@@ -279,20 +279,25 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
             self.close()
 
 
-def show_profiles_dialog(title=None):
+def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
     """
     Show a dialog to select a profile
 
     :return guid of selected profile or None
     """
+    if not title:
+        title = g.ADDON.getLocalizedString(30128)
+    if title_prefix:
+        title = title_prefix + ' - ' + title
     # Get profiles data
     list_data, extra_data = make_call('get_profiles', {'request_update': True})  # pylint: disable=unused-variable
     return show_modal_dialog(False,
                              Profiles,
                              'plugin-video-netflix-Profiles.xml',
                              g.ADDON.getAddonInfo('path'),
-                             title=title or g.ADDON.getLocalizedString(30128),
-                             list_data=list_data)
+                             title=title,
+                             list_data=list_data,
+                             preselect_guid=preselect_guid)
 
 
 # pylint: disable=no-member
@@ -305,6 +310,7 @@ class Profiles(xbmcgui.WindowXMLDialog):
         self.return_value = None
         self.title = kwargs['title']
         self.list_data = kwargs['list_data']
+        self.preselect_guid = kwargs.get('preselect_guid')
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
@@ -321,6 +327,14 @@ class Profiles(xbmcgui.WindowXMLDialog):
         self.ctrl_list = self.getControl(10001)
         from resources.lib.navigation.directory_utils import convert_list_to_list_items
         self.ctrl_list.addItems(convert_list_to_list_items(self.list_data))
+        # Preselect the ListItem by guid
+        self.ctrl_list.selectItem(0)
+        if self.preselect_guid:
+            for index, profile_data in enumerate(self.list_data):
+                if profile_data['properties']['nf_guid'] == self.preselect_guid:
+                    self.ctrl_list.selectItem(index)
+                    break
+        self.setFocusId(10001)
 
     def onClick(self, controlID):
         if controlID == 10001:  # Save and close dialog
