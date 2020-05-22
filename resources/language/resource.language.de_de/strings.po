@@ -212,15 +212,15 @@ msgstr "Exportiert"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Bibliothek"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Wählen Sie ein Profil zur Wiedergabe der Videos aus"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Vor der Wiedergabe nach dem Profil fragen"
 
 # Unused 30052, 30053
 
