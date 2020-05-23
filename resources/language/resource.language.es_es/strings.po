@@ -216,7 +216,7 @@ msgstr "Biblioteca"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr "Seleccione un perfil para reproducir el vídeo"
+msgstr "Seleccione un perfil para reproducir los vídeos"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
