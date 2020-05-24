@@ -212,7 +212,7 @@ def build_lolomo_listing(lolomo_list, menu_data, force_use_videolist_id=False, e
 
 def _create_videolist_item(list_id, video_list, menu_data, common_data, static_lists=False):
     if static_lists and g.is_known_menu_context(video_list['context']):
-        pathitems = menu_data['path']
+        pathitems = list(menu_data['path'])  # Make a copy
         pathitems.append(video_list['context'])
     else:
         # It is a dynamic video list / menu context
