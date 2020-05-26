@@ -182,9 +182,9 @@ class MSLHandler(object):
             'isUIAutoPlay': False,
             'useHttpsStreams': True,
             'imageSubtitleHeight': 1080,
-            'uiVersion': 'shakti-v93016808',
+            'uiVersion': 'shakti-v1b8c742f',
             'uiPlatform': 'SHAKTI',
-            'clientVersion': '6.0016.426.011',
+            'clientVersion': '6.0023.473.011',
             'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
