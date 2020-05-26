@@ -57,8 +57,12 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            ui.show_error_info(common.get_local_string(30028), unicode(exc),
-                               unknown_error=not(unicode(exc)),
+            if isinstance(exc, MSLError):
+                message = g.py2_decode(str(exc))
+            else:
+                message = str(exc)
+            ui.show_error_info(common.get_local_string(30028), message,
+                               unknown_error=not message,
                                netflix_error=isinstance(exc, MSLError))
             raise
     return error_catching_wrapper

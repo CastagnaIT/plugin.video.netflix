@@ -100,7 +100,7 @@ class MSLHandler(object):
         try:
             manifest = self._load_manifest(viewable_id, g.get_esn())
         except MSLError as exc:
-            if 'Email or password is incorrect' in str(exc):
+            if 'Email or password is incorrect' in g.py2_decode(str(exc)):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
                 # - If user change the password when the nf session was still active
                 # - Netflix has reset the password for suspicious activity when the nf session was still active
