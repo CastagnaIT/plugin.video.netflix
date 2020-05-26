@@ -274,9 +274,9 @@ class CacheManagement(object):
             if bucket['is_persistent']:
                 bucket_names_db.append(bucket['name'])
             bucket_content = self._get_cache_bucket(bucket['name'])
-            for identifier, cache_entry in list(bucket_content.items()):  # pylint: disable=unused-variable
+            for identifier, cache_entry in list(bucket_content.items()):
                 if cache_entry['expires'] < timestamp:
-                    del bucket_content['identifier']
+                    del bucket_content[identifier]
         if bucket_names_db:
             self._delete_expired_db(bucket_names_db, timestamp)
 
