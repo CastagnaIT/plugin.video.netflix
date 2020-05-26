@@ -22,6 +22,8 @@ try:  # Python 2
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
+IPC_TIMEOUT_SECS = 20
+
 
 class BackendNotReady(Exception):
     """The background services are not started yet"""
@@ -102,7 +104,7 @@ def make_http_call(callname, data):
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
         result = json.loads(
-            urlopen(url=url, data=json.dumps(data).encode('utf-8'), timeout=16).read(),
+            urlopen(url=url, data=json.dumps(data).encode('utf-8'), timeout=IPC_TIMEOUT_SECS).read(),
             object_pairs_hook=OrderedDict)
     except HTTPError as exc:
         result = json.loads(exc.reason)
@@ -131,7 +133,7 @@ def make_http_call_cache(callname, params, data):
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     r = Request(url=url, data=data, headers={'Params': json.dumps(params)})
     try:
-        result = urlopen(r, timeout=16).read()
+        result = urlopen(r, timeout=IPC_TIMEOUT_SECS).read()
     except HTTPError as exc:
         try:
             raise apierrors.__dict__[exc.reason]()
@@ -156,7 +158,7 @@ def make_addonsignals_call(callname, data):
         source_id=g.ADDON_ID,
         signal=callname,
         data=data,
-        timeout_ms=16000)
+        timeout_ms=IPC_TIMEOUT_SECS * 1000)
     _raise_for_error(callname, result)
     if result is None:
         raise Exception('Addon Signals call timeout')
