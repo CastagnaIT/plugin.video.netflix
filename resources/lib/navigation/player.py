@@ -230,7 +230,7 @@ def _verify_pin(pin_required):
 
 def _strm_resume_workaroud(is_played_from_addon, videoid):
     """Workaround for resuming STRM files from library"""
-    if not is_played_from_addon and not g.ADDON.getSettingBool('ResumeManager_enabled'):
+    if is_played_from_addon or not g.ADDON.getSettingBool('ResumeManager_enabled'):
         return None
     resume_position = infolabels.get_resume_info_from_library(videoid).get('position')
     if resume_position:
