@@ -14,7 +14,8 @@ from future.utils import iteritems
 from resources.lib import common
 from resources.lib.api.data_types import merge_data_type
 from resources.lib.api.exceptions import CacheMiss
-from resources.lib.common import VideoId, g
+from resources.lib.common import VideoId
+from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder_items import (build_video_listing, build_subgenres_listing,
                                                                        build_season_listing, build_episode_listing,
                                                                        build_lolomo_listing, build_mainmenu_listing,

@@ -18,7 +18,8 @@ from resources.lib.api.exceptions import InvalidVideoListTypeError
 from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_SELECTOR, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                      SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                                      GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, MAX_PATH_REQUEST_SIZE, build_paths)
-from resources.lib.common import cache_utils, g
+from resources.lib.common import cache_utils
+from resources.lib.globals import g
 
 
 # pylint: disable=protected-access
