@@ -202,15 +202,15 @@ class CacheManagement(object):
             identifier = self._add_prefix(identifier)
             bucket_data = self._get_cache_bucket(bucket['name'])
             if including_suffixes:
-                keys_to_delete = []
-                for key_identifier in bucket_data.keys():
-                    if key_identifier.startswith(identifier):
-                        keys_to_delete.append(key_identifier)
-                for key_identifier in keys_to_delete:
-                    del bucket_data[key_identifier]
+                keys_to_delete = [key_identifier for key_identifier in bucket_data.keys()
+                                  if key_identifier.startswith(identifier)]
             else:
-                if identifier in bucket_data:
-                    del bucket_data[identifier]
+                keys_to_delete = [identifier]
+            for key_identifier in keys_to_delete:
+                try:
+                    del bucket_data[key_identifier]
+                except KeyError:
+                    pass
             if bucket['is_persistent']:
                 # Delete the item data from cache database
                 self._delete_db(bucket['name'], identifier, including_suffixes)
@@ -276,7 +276,10 @@ class CacheManagement(object):
             bucket_content = self._get_cache_bucket(bucket['name'])
             for identifier, cache_entry in list(bucket_content.items()):
                 if cache_entry['expires'] < timestamp:
-                    del bucket_content[identifier]
+                    try:
+                        del bucket_content[identifier]
+                    except KeyError:
+                        pass
         if bucket_names_db:
             self._delete_expired_db(bucket_names_db, timestamp)
 
