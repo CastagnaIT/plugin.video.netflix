@@ -182,7 +182,7 @@ def parse_profiles(data):
             g.LOCAL_DB.set_profile(guid, is_active, sort_order)
             g.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
-            summary['language_desc'] = xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME)
+            summary['language_desc'] = g.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
             for key, value in iteritems(summary):
                 if key in PROFILE_DEBUG_INFO:
                     common.debug('Profile info {}', {key: value})
