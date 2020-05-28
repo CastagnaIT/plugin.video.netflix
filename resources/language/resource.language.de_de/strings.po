@@ -50,7 +50,7 @@ msgstr "E-Mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Geben Sie die PIN zu diesem Profil ein"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -212,15 +212,15 @@ msgstr "Exportiert"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Bibliothek"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Wählen Sie ein Profil zur Wiedergabe der Videos aus"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Vor der Wiedergabe nach dem Profil fragen"
 
 # Unused 30052, 30053
 
