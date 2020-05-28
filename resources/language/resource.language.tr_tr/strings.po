@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-04-15 01:00+0000\n"
+"PO-Revision-Date: 2020-05-28 18:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr "E-posta"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Bu profile erişmek için PIN kodunu girin"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -212,15 +212,15 @@ msgstr "Dışa aktarılan"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Kitaplık"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Videoları oynatmak için bir profil seç"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Oynatmadan önce bir profil seçmeyi iste"
 
 # Unused 30052, 30053
 
@@ -454,7 +454,7 @@ msgstr "İçerik yok"
 
 msgctxt "#30112"
 msgid "You need to be logged in to use Netflix"
-msgstr "Netflix'i kullanmak için giriş yapmalısınız"
+msgstr "Netflix'i kullanabilmek için giriş yapmalısınız"
 
 msgctxt "#30113"
 msgid "Logout successful"
@@ -518,7 +518,7 @@ msgstr "Verilen derecelendirme {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Bir profil seçin"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -860,7 +860,7 @@ msgstr "InputStream Helper ayarları..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Zorla yenile"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -932,11 +932,11 @@ msgstr "Güncellemeyi şimdi kontrol etmek istiyor musunuz?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "{} için profil olgunluk derecesi"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Yalnızca [B]{}[/B] olarak derecelendirilmiş başlıkları göster."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -968,8 +968,8 @@ msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "CDN bağlantısını aç (alt dizin daha iyidir)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
