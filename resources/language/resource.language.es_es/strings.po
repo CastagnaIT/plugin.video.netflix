@@ -212,15 +212,15 @@ msgstr "Exportado"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Biblioteca"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Seleccione un perfil para reproducir los vídeos"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Solicitar seleccionar un perfil antes de reproducir"
 
 # Unused 30052, 30053
 
@@ -306,7 +306,7 @@ msgstr "Vista para los exportados"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Preguntar si omitir la introducción y resumen"
+msgstr "Preguntar si se omite la introducción y el resumen"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -864,7 +864,7 @@ msgstr "Forzar actualización"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Color para resaltar títulos incluidos en Mi lista"
+msgstr "Color para títulos incluidos en Mi lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
