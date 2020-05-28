@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-04-21 13:41+0000\n"
+"PO-Revision-Date: 2020-05-28 17:40+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
@@ -212,15 +212,15 @@ msgstr "Exportat"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Librărie"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Selectați un profil pentru a reda video"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Cere selectarea unui profil înainte de redare"
 
 # Unused 30052, 30053
 
@@ -518,7 +518,7 @@ msgstr "Ați evaluat cu {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Alegeți un profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -860,7 +860,7 @@ msgstr "Setări add-on InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Forțează reîmprospătarea"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -932,11 +932,11 @@ msgstr "Doriți să verificați acum dacă există actualizări?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Clasificarea maturității pentru profilul {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Arată doar titluri cu clasificarea [B]{}[/B]"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -968,8 +968,8 @@ msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:\r\n{
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "Open Connect CDN (indicele mai mic este mai bun)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
