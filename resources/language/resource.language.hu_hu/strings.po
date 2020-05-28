@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-05-15 15:40+0000\n"
+"PO-Revision-Date: 2020-05-28 7:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -124,15 +124,15 @@ msgstr "SSL ellenőrzés"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "Könyvtár"
+msgstr "Médiatár"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "Saját könyvtár mappa engedélyezése"
+msgstr "Saját médiatár mappa engedélyezése"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Saját könyvtár elérése"
+msgstr "Saját médiatár elérése"
 
 msgctxt "#30028"
 msgid "Playback error"
@@ -212,21 +212,21 @@ msgstr "Exportált"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Médiatár"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Válassz profilt a filmlejátszáshoz"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Rákérdez a profilválasztásra, a lejátszás előtt"
 
 # Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr "Pofil automatikus választása"
+msgstr "Profil automatikus kiválasztása"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
@@ -234,7 +234,7 @@ msgstr "Profil automatikus kiválasztás törlése"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr "Autamatikus kiválasztásának beállítása"
+msgstr "Automatikus kiválasztás beállítása"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
@@ -518,7 +518,7 @@ msgstr "Értékelés {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr "Profil váasztás"
+msgstr "Profil választás"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -964,7 +964,7 @@ msgstr "A kiegészítő információ színe"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "A háttér folyamat nem indilt el a következő hiba miatt:\r\n{}"
+msgstr "A háttér folyamat nem indult el a következő hiba miatt:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
