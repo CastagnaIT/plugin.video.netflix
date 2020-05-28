@@ -285,7 +285,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # 25/05/2020 Method used for accounts "loco" page type enabled only
         # accounts that use "loco" at this moment it is not possible to use extract_session_data (see website.py)
         # to obtain "loco" data then we force the use of "lolomo"
-        if not g.LOCAL_DB.get_value('is_loco_supported', table=TABLE_SESSION):
+        if g.LOCAL_DB.get_value('is_loco_supported', table=TABLE_SESSION) == 'False':
             return
         lolomo_root = ''
         context_index = ''
