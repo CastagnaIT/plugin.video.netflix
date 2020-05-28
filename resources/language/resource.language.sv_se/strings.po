@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-07 00:00+0000\n"
-"PO-Revision-Date: 2020-05-17 00:00+0000\n"
+"PO-Revision-Date: 2020-05-28 00:00+0000\n"
 "Last-Translator: Tomas Andersson\n"
 "Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
@@ -212,15 +212,15 @@ msgstr "Exporterad"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Bibliotek"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Välj en profil för att spela upp videor"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Fråga efter en profil innan uppspelningen"
 
 # Unused 30052, 30053
 
@@ -708,11 +708,11 @@ msgstr "Film genrer"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround (only library)"
-msgstr "Aktivera 'STRM återuppta'-lösning (endast bibliotek)"
+msgstr "Aktivera problemlösningen för att återuppta STRM (endast bibliotek)"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "Be om att återuppta videon"
+msgstr "Fråga om att återuppta videon"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
