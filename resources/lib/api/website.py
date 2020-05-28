@@ -43,7 +43,8 @@ PAGE_ITEMS_INFO = [
     'models/userInfo/data/pinEnabled',
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/esnGeneratorModel/data/esn',
-    'models/memberContext/data/geo/preferredLocale'
+    'models/memberContext/data/geo/preferredLocale',
+    'models/truths/data/isLocoSupported'
 ]
 
 PAGE_ITEMS_API_URL = {
@@ -100,35 +101,54 @@ def extract_session_data(content, validate=False, update_profiles=False):
     if update_profiles:
         parse_profiles(falcor_cache)
 
-    # Extract lolomo root id
-    lolomo_root = falcor_cache['lolomo']['value'][1]
-    g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+    g.LOCAL_DB.set_value('is_loco_supported', user_data.get('isLocoSupported'), TABLE_SESSION)
+    if user_data.get('isLocoSupported'):
+        # 21/05/2020 - Netflix is introducing a new paging type called "loco", it is similar to "lolomo"
+        # The lolomo data here is obtained by a separated request from update_lolomo_data in nfsession.py
 
-    # Check if current 'profile session' is still active
-    # What means 'profile session':
-    # In web browser, after you select a profile and then you close the browse page,
-    #   when you reopen it you will not be asked to select a profile again, this means that the same profile session
-    #   still active, and the lolomo root id (and child contexts id's) are still the same.
-    #   Here one way to understand this, is checking if there is an 'summary' entry in the lolomos dictionary.
-    is_profile_session_active = 'summary' in falcor_cache['lolomos'][lolomo_root]
+        # Extract loco root id
+        # NOTE: loco root ID is not same of lolomo root id
+        loco_root = falcor_cache['loco']['value'][1]
+        # g.LOCAL_DB.set_value('lolomo_root_id', loco_root, TABLE_SESSION)
 
-    # Extract lolomo continueWatching id and index
-    cw_list_data = jgraph_get('continueWatching', falcor_cache['lolomos'][lolomo_root], falcor_cache)
-    if cw_list_data:
-        context_index = falcor_cache['lolomos'][lolomo_root]['continueWatching']['value'][2]
-        g.LOCAL_DB.set_value('lolomo_continuewatching_index', context_index, TABLE_SESSION)
-        g.LOCAL_DB.set_value('lolomo_continuewatching_id', jgraph_get('id', cw_list_data), TABLE_SESSION)
-    elif is_profile_session_active:
-        # Todo: In the new profiles, there is no 'continueWatching' context
-        #  How get or generate the continueWatching context?
-        #  (needed to update lolomo list for watched state sync, see update_lolomo_context in api_requests.py)
-        cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
-        common.warn('Context continueWatching not found in lolomos for profile guid {}.',
-                    jgraph_get('summary', cur_profile)['guid'])
-        g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
-        g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+        # Check if current 'profile session' is still active
+        # Todo: 25/05/2020 - This not works, currently the "locos" list is always empty
+        is_profile_session_active = 'componentSummary' in falcor_cache['locos'][loco_root]
+
+        # Extract loco continueWatching id and index
+        # Todo: 25/05/2020 - Without the "locos" list is not possible get this data here
+        # g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
+        # g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
     else:
-        common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
+        # Extract lolomo root id
+        lolomo_root = falcor_cache['lolomo']['value'][1]
+        g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+
+        # Check if current 'profile session' is still active
+        # What means 'profile session':
+        # In web browser, after you select a profile and then you close the browse page,
+        #   when you reopen it you will not be asked to select a profile again, this means that the same profile session
+        #   still active, and the lolomo root id (and child contexts id's) are still the same.
+        #   Here one way to understand this, is checking if there is an 'summary' entry in the lolomos dictionary.
+        is_profile_session_active = 'summary' in falcor_cache['lolomos'][lolomo_root]
+
+        # Extract lolomo continueWatching id and index
+        cw_list_data = jgraph_get('continueWatching', falcor_cache['lolomos'][lolomo_root], falcor_cache)
+        if cw_list_data:
+            context_index = falcor_cache['lolomos'][lolomo_root]['continueWatching']['value'][2]
+            g.LOCAL_DB.set_value('lolomo_continuewatching_index', context_index, TABLE_SESSION)
+            g.LOCAL_DB.set_value('lolomo_continuewatching_id', jgraph_get('id', cw_list_data), TABLE_SESSION)
+        elif is_profile_session_active:
+            # Todo: In the new profiles, there is no 'continueWatching' context
+            #  How get or generate the continueWatching context?
+            #  (needed to update lolomo list for watched state sync, see update_lolomo_context in api_requests.py)
+            cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
+            common.warn('Context continueWatching not found in lolomos for profile guid {}.',
+                        jgraph_get('summary', cur_profile)['guid'])
+            g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
+            g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+        else:
+            common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
 
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
