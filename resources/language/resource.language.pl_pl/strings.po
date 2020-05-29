@@ -212,15 +212,15 @@ msgstr "Wyeksportowane"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Bibilioteka"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Wybierz profil do odtwarzania"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Pytaj o wybór profilu przed odtwarzaniem"
 
 # Unused 30052, 30053
 
@@ -518,7 +518,7 @@ msgstr "Przyznana ocena {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Wybierz profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -860,7 +860,7 @@ msgstr "Ustawienia InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Wymuś odświeżenie"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -932,11 +932,11 @@ msgstr "Czy chcesz teraz sprawdzić aktualizację?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Ograniczenia wiekowe dla {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Pokaż tylko tytuły ocenione [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -972,4 +972,4 @@ msgstr "Open Connect CDN (niższy indeks jest lepszy)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
