@@ -968,7 +968,7 @@ msgstr "Bu sorun nedeniyle arka plan hizmetleri başlatılamıyor:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr "CDN bağlantısını aç (alt dizin daha iyidir)"
+msgstr "Open Connect CDN (alt dizin daha iyidir)"
 
 msgctxt "#30242"
 msgid "Top 10"
