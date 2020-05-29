@@ -707,8 +707,8 @@ msgid "Movie genres"
 msgstr "Genuri filme"
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
-msgstr "Activează truc STRM (doar pentru librărie)"
+msgid "Enable STRM resume workaround"
+msgstr "Activează truc STRM"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"

@@ -707,8 +707,8 @@ msgid "Movie genres"
 msgstr "Είδη ταινιών"
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
-msgstr "Ενεργοποίηση ελιγμού για την συνέχιση (μόνο για την βιβλιοθήκη)"
+msgid "Enable STRM resume workaround"
+msgstr "Ενεργοποίηση ελιγμού για την συνέχιση"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"

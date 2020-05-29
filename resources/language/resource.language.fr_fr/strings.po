@@ -707,8 +707,8 @@ msgid "Movie genres"
 msgstr "Genres de films"
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
-msgstr "Activer la reprise des fichiers STRM (média thèque uniquement)"
+msgid "Enable STRM resume workaround"
+msgstr "Activer la reprise des fichiers STRM"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"

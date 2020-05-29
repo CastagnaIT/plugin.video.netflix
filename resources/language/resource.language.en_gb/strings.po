@@ -707,7 +707,7 @@ msgid "Movie genres"
 msgstr ""
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
+msgid "Enable STRM resume workaround"
 msgstr ""
 
 msgctxt "#30177"

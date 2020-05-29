@@ -708,8 +708,8 @@ msgid "Movie genres"
 msgstr "Filmovi žanrovi"
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
-msgstr "Omogući STRM nastavak (samo zbirka)"
+msgid "Enable STRM resume workaround"
+msgstr "Omogući STRM nastavak"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"

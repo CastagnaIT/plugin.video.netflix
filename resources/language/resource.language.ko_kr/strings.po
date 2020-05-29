@@ -707,8 +707,8 @@ msgid "Movie genres"
 msgstr "영화"
 
 msgctxt "#30176"
-msgid "Enable STRM resume workaround (only library)"
-msgstr "보던 곳 부터 보기기능 사용(라이브러리만)"
+msgid "Enable STRM resume workaround"
+msgstr "보던 곳 부터 보기기능 사용"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
