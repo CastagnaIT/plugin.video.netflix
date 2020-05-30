@@ -1,3 +1,20 @@
+v1.4.0 (2020-05-30)
+-Implemented profile selection to library (preferences in the settings/playback)
+   This also fixes following related issues when play from library:
+   -Missing audio/subtitle languages
+   -Missing metadata
+   -Wrong age restrictions
+   -Video content not available
+-Initial adaptions for the new NF changes (cause of KeyError "lolomo")
+-Fixed profile switch for PIN protected profiles
+-Fixed forced subtitles sel. issues when Kodi audio lang setting is Original/Media default (Kodi 19)
+-Fixed regression for missing skin codec media-flag
+-Fixed an issue that caused loss of skin view type after switch profile
+-Fixed KeyError issue when performed the scheduled clear expired cache
+-Fixed unicodedecode error with Kodi 18 and MSL errors
+-Updated translations de, es, hu, ro, sv-se, tr, pl
+-Other minor fixes
+
 v1.3.2 (2020-05-20)
 -Fixed some issues on chinese systems
 -Fixed errors on loading lists
