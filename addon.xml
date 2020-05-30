@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.3.2" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.4.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -70,13 +70,22 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.3.2 (2020-05-20)
--Fixed some issues on chinese systems
--Fixed errors on loading lists
--Fixed missing plot in some skins
--Fixed ESN generation (lower case issue)
--Fixed UpNext regressions
--Updated translations es, sv-se
+v1.4.0 (2020-05-30)
+-Implemented profile selection to library (preferences in the settings/playback)
+   This also fixes following related issues when play from library:
+   -Missing audio/subtitle languages
+   -Missing metadata
+   -Wrong age restrictions
+   -Video content not available
+-Initial adaptions for the new NF changes (cause of KeyError "lolomo")
+-Fixed profile switch for PIN protected profiles
+-Fixed forced subtitles sel. issues when Kodi audio lang setting is Original/Media default (Kodi 19)
+-Fixed regression for missing skin codec media-flag
+-Fixed an issue that caused loss of skin view type after switch profile
+-Fixed KeyError issue when performed the scheduled clear expired cache
+-Fixed unicodedecode error with Kodi 18 and MSL errors
+-Updated translations de, es, hu, ro, sv-se, tr, pl
+-Other minor fixes
     </news>
   </extension>
 </addon>
