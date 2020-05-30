@@ -107,6 +107,7 @@
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
+    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting label="30049" type="lsep"/><!--Library-->
     <setting id="library_playback_ask_profile" type="bool" label="30051" default="true"/>
     <setting id="library_playback_profile" type="action" label="30050" default="" action="RunPlugin(plugin://plugin.video.netflix/action/library_playback_profile/)" visible="eq(-1,false)" subsetting="true" option="close"/>

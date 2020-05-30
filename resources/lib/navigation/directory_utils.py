@@ -155,3 +155,50 @@ def verify_profile_pin(guid):
         return True
     pin = ui.ask_for_pin(common.get_local_string(30006))
     return None if not pin else verify_profile_lock(guid, pin)
+
+
+def auto_scroll(list_data):
+    """
+    Auto scroll the current viewed list to select the last partial watched or next episode to be watched,
+    works only with Sync of watched status with netflix
+    """
+    # A sad implementation to a Kodi feature available only for the Kodi library
+    if not g.ADDON.getSettingBool('ProgressManager_enabled') or not g.ADDON.getSettingBool('select_first_unwatched'):
+        return
+    total_items = len(list_data)
+    if total_items:
+        # Delay a bit to wait for the completion of the screen update
+        xbmc.sleep(150)
+        # Check if a selection is already done (CurrentItem return the index)
+        if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
+            return
+        # Check if all items are already watched
+        watched_items = sum(dict_item['info'].get('PlayCount', '0') != '0' for dict_item in list_data)
+        to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
+        if total_items == watched_items or (watched_items + to_resume_items) == 0:
+            return
+        steps = 1
+        # Find last watched item
+        for index in range(total_items - 1, 0, -1):
+            dict_item = list_data[index]
+            if dict_item['info'].get('PlayCount', '0') != '0':
+                # Last watched item
+                steps += index + 1
+                break
+            if dict_item.get('ResumeTime', '0') != '0':
+                # Last partial watched item
+                steps += index
+                break
+        gui_sound_mode = common.json_rpc('Settings.GetSettingValue',
+                                         {'setting': 'audiooutput.guisoundmode'})['value']
+        if gui_sound_mode != 0:
+            # Disable GUI sounds to avoid squirting sound with item selections
+            common.json_rpc('Settings.SetSettingValue',
+                            {'setting': 'audiooutput.guisoundmode', 'value': 0})
+        # Auto scroll the list
+        for _ in range(0, steps):
+            common.json_rpc('Input.Down')
+        if gui_sound_mode != 0:
+            # Restore GUI sounds
+            common.json_rpc('Settings.SetSettingValue',
+                            {'setting': 'audiooutput.guisoundmode', 'value': gui_sound_mode})

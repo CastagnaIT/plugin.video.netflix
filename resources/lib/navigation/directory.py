@@ -18,7 +18,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
-                                                      end_of_directory, get_title, activate_profile)
+                                                      end_of_directory, get_title, activate_profile, auto_scroll)
 
 # What means dynamic menus (and dynamic id):
 #  Are considered dynamic menus all menus which context name do not exists in the 'lolomo_contexts' of
@@ -135,6 +135,7 @@ class Directory(object):
         finalize_directory(convert_list_to_dir_items(list_data), g.CONTENT_EPISODE, 'sort_episodes',
                            title=extra_data.get('title', ''))
         end_of_directory(self.dir_update_listing)
+        auto_scroll(list_data)
 
     @common.time_execution(immediate=False)
     @custom_viewmode(g.VIEW_SHOW)
