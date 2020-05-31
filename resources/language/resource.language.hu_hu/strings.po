@@ -973,3 +973,7 @@ msgstr "Open Connect CDN (alacsonyabb index jobb)"
 msgctxt "#30242"
 msgid "Top 10"
 msgstr "Top 10"
+
+msgctxt "#30243"
+msgid "Select first unwatched TV show episode"
+msgstr ""

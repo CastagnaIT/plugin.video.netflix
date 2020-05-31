@@ -974,3 +974,7 @@ msgstr ""
 msgctxt "#30242"
 msgid "Top 10"
 msgstr ""
+
+msgctxt "#30243"
+msgid "Select first unwatched TV show episode"
+msgstr ""
