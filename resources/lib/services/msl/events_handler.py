@@ -133,9 +133,9 @@ class EventsHandler(threading.Thread):
         if event.event_type == EVENT_STOP:
             self.clear_queue()
             if event.event_data['allow_request_update_lolomo']:
-                if event.event_data['is_in_mylist']:
-                    # If video is in my list, invalidate the continueWatching list (update lolomo context data)
-                    api.update_lolomo_context('continueWatching')
+                # if event.event_data['is_in_mylist']:
+                #     # If video is in my list, invalidate the continueWatching list (update lolomo context data)
+                #     api.update_lolomo_context('continueWatching')
                 api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():

@@ -55,6 +55,11 @@ def login(ask_credentials=True):
 
 def update_lolomo_context(context_name):
     """Update the lolomo list by context"""
+    # 01/06/2020: refreshListByContext often return HTTP error 500, currently i have seen that in the website is
+    #   performed only when the video played is not added to "my list", but with a strange mixed data:
+    #     context_id: the id of continueWatching
+    #     context_index: that seem to point to "My list" id context index
+    #   This api is no more needed to update the continueWatching lolomo list
     lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
 
     context_index = g.LOCAL_DB.get_value('lolomo_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
@@ -107,7 +112,8 @@ def update_lolomo_context(context_name):
 def update_videoid_bookmark(video_id):
     """Update the videoid bookmark position"""
     # You can check if this function works through the official android app
-    # by checking if the status bar watched of the video will be updated
+    # by checking if the red status bar of watched time position appears and will be updated,
+    # or also if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
     callargs = {
         'callpaths': [['refreshVideoCurrentPositions']],
         'params': ['[' + video_id + ']', '[]'],
