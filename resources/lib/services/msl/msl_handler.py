@@ -116,19 +116,20 @@ class MSLHandler(object):
         #     manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)
 
-    def get_edge_manifest(self, viewable_id, chrome_manifest):
-        """Load a manifest with an EDGE ESN and replace playback_context and drm_context"""
-        common.debug('Loading EDGE manifest')
-        esn = g.get_edge_esn()
-        common.debug('Switching MSL data to EDGE')
-        self.msl_requests.perform_key_handshake(esn)
-        manifest = self._load_manifest(viewable_id, esn)
-        manifest['playbackContextId'] = chrome_manifest['playbackContextId']
-        manifest['drmContextId'] = chrome_manifest['drmContextId']
-        common.debug('Successfully loaded EDGE manifest')
-        common.debug('Resetting MSL data to Chrome')
-        self.msl_requests.perform_key_handshake()
-        return manifest
+    # Old EDGE ESN no longer exists, keep for future possible workarounds
+    # def get_edge_manifest(self, viewable_id, chrome_manifest):
+    #     """Load a manifest with an EDGE ESN and replace playback_context and drm_context"""
+    #     common.debug('Loading EDGE manifest')
+    #     esn = g.get_edge_esn()
+    #     common.debug('Switching MSL data to EDGE')
+    #     self.msl_requests.perform_key_handshake(esn)
+    #     manifest = self._load_manifest(viewable_id, esn)
+    #     manifest['playbackContextId'] = chrome_manifest['playbackContextId']
+    #     manifest['drmContextId'] = chrome_manifest['drmContextId']
+    #     common.debug('Successfully loaded EDGE manifest')
+    #     common.debug('Resetting MSL data to Chrome')
+    #     self.msl_requests.perform_key_handshake()
+    #     return manifest
 
     @common.time_execution(immediate=True)
     def _load_manifest(self, viewable_id, esn):
