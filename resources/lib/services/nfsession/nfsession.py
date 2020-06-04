@@ -92,6 +92,9 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @common.addonsignals_return_call
     @needs_login
     def activate_profile(self, guid, ignore_update_lolomo_data=False):
+        self._activate_profile(guid, ignore_update_lolomo_data)
+
+    def _activate_profile(self, guid, ignore_update_lolomo_data=False):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
         current_active_guid = g.LOCAL_DB.get_active_profile_guid()
@@ -135,13 +138,13 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # Current profile active
         current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
-        self.activate_profile(mylist_profile_guid, ignore_update_lolomo_data=True)
+        self._activate_profile(mylist_profile_guid, ignore_update_lolomo_data=True)
         # Get the My List data
         path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                                      no_limit_req)
         if mylist_profile_guid != current_profile_guid:
             # Reactive again the previous profile
-            self.activate_profile(current_profile_guid, ignore_update_lolomo_data=True)
+            self._activate_profile(current_profile_guid, ignore_update_lolomo_data=True)
         return path_response
 
     @common.addonsignals_return_call
