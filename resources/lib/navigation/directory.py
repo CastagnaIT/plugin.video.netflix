@@ -229,7 +229,7 @@ class Directory(object):
         call_args = {
             'menu_data': menu_data,
             # When genre_id is None is loaded the lolomo root the list of contexts specified in the menu data
-            'genre_id': None if len(pathitems) < 3 else pathitems[2],
+            'genre_id': None if len(pathitems) < 3 else int(pathitems[2]),
             'force_use_videolist_id': False,
         }
         list_data, extra_data = common.make_call('get_genres', call_args)

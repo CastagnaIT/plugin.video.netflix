@@ -57,7 +57,7 @@ VIDEO_LIST_BASIC_PARTIAL_PATHS = [
 
 GENRE_PARTIAL_PATHS = [
     [["id", "requestId", "summary", "name"]],
-    [{"from": 0, "to": 50},
+    [{"from": 0, "to": 48},
      ["context", "displayName", "genreId", "id", "isTallRow", "length",
       "requestId", "type", "videoId"]]
 ]
