@@ -66,7 +66,7 @@ class MSLRequests(MSLRequestBuilder):
         # pylint: disable=unused-argument
         esn = data or g.get_esn()
         if not esn:
-            common.info('Cannot perform key handshake, missing ESN')
+            common.warn('Cannot perform key handshake, missing ESN')
             return False
 
         common.debug('Performing key handshake. ESN: {}', esn)
