@@ -223,8 +223,8 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
         pathitems = [path, menu_data['path'][1], list_id]
     dict_item = {'label': video_list['displayName'],
                  'is_folder': True}
-    add_info_dict_item(dict_item, video_list.id, video_list, video_list.data, False, common_data)
-    dict_item['art'] = get_art(video_list.id, video_list.artitem, common_data['profile_language_code'])
+    add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data)
+    dict_item['art'] = get_art(video_list.videoid, video_list.artitem, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(pathitems,
                                         # genre_id add possibility to browse the sub-genres (see build_video_listing)
                                         params={'genre_id': unicode(video_list.get('genreId'))},

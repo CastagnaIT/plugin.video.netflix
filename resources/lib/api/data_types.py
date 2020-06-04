@@ -83,11 +83,12 @@ class VideoList:
         self.contained_titles = None
         self.videoids = None
         if has_data:
-            self.id = common.VideoId(
+            # Generate one videoid, or from the first id of the list or with specified one
+            self.videoid = common.VideoId(
                 videoid=(list_id
                          if list_id
                          else next(iter(self.data['lists']))))
-            self.videos = OrderedDict(resolve_refs(self.data['lists'][self.id.value], self.data))
+            self.videos = OrderedDict(resolve_refs(self.data['lists'][self.videoid.value], self.data))
             if self.videos:
                 # self.artitem = next(itervalues(self.videos))
                 self.artitem = listvalues(self.videos)[0]
@@ -98,11 +99,11 @@ class VideoList:
                     self.videoids = None
 
     def __getitem__(self, key):
-        return _check_sentinel(self.data['lists'][self.id.value][key])
+        return _check_sentinel(self.data['lists'][self.videoid.value][key])
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return _check_sentinel(self.data['lists'][self.id.value].get(key, default))
+        return _check_sentinel(self.data['lists'][self.videoid.value].get(key, default))
 
 
 class VideoListSorted:
