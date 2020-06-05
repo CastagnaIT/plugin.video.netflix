@@ -943,8 +943,8 @@ msgid "Install Up Next add-on"
 msgstr "Installera Up Next-tillägget"
 
 msgctxt "#30235"
-msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[Under utveckling] Synkronisera visningsstatusen av videorna med Netflix"
+msgid "Synchronize the watched status of the videos with Netflix"
+msgstr "Synkronisera visningsstatusen av videorna med Netflix"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"

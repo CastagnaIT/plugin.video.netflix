@@ -943,8 +943,8 @@ msgid "Install Up Next add-on"
 msgstr "Εγκατάσταση του προσθέτου για τα επόμενα"
 
 msgctxt "#30235"
-msgid "[WIP] Synchronize the watched status of the videos with Netflix"
-msgstr "[ΕΣΕ] Συγχρονισμός της κατάστασης προβολής των βίντεο με το Νέτφλιξ"
+msgid "Synchronize the watched status of the videos with Netflix"
+msgstr "Συγχρονισμός της κατάστασης προβολής των βίντεο με το Νέτφλιξ"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
