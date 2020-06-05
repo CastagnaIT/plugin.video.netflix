@@ -74,8 +74,6 @@ def _convert_dict_to_listitem(dict_item):
     list_item.setContentLookup(False)
     properties = dict_item.get('properties', {})  # 'properties' key allow to set custom properties to xbmcgui.Listitem
     properties['isFolder'] = str(dict_item['is_folder'])
-    info = dict_item.get('info', {})
-    info['title'] = dict_item['label']
 
     if not dict_item['is_folder'] and dict_item['media_type'] in [common.VideoId.EPISODE,
                                                                   common.VideoId.MOVIE,
@@ -88,7 +86,7 @@ def _convert_dict_to_listitem(dict_item):
     for stream_type, quality_info in iteritems(dict_item.get('quality_info', {})):
         list_item.addStreamInfo(stream_type, quality_info)
     list_item.setProperties(properties)
-    list_item.setInfo('video', info)
+    list_item.setInfo('video', dict_item.get('info', {}))
     list_item.setArt(dict_item.get('art', {}))
     list_item.addContextMenuItems(dict_item.get('menu_items', []))
     if dict_item.get('is_selected'):
