@@ -48,7 +48,7 @@ MEDIA_TYPE_MAPPINGS = {
 }
 
 
-def get_info(videoid, item, raw_data, profile_language_code='', include_title=False):
+def get_info(videoid, item, raw_data, profile_language_code=''):
     """Get the infolabels data"""
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
@@ -58,9 +58,6 @@ def get_info(videoid, item, raw_data, profile_language_code='', include_title=Fa
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
         g.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
-    # The ListItem's of type episode use 'Title' instead 'Label'
-    if not include_title and not videoid.mediatype == common.VideoId.EPISODE:
-        infos.pop('Title', None)
     return infos, quality_infos
 
 
@@ -77,6 +74,7 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
     if is_in_mylist and common_data.get('mylist_titles_color'):
         # Highlight ListItem title when the videoid is contained in my-list
         dict_item['label'] = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
+    infos_copy['title'] = dict_item['label']
     dict_item['info'] = infos_copy
 
 
@@ -259,8 +257,7 @@ def get_info_from_netflix(videoids):
     info_data = {}
     for videoid in videoids:
         try:
-            infos = get_info(videoid, None, None, profile_language_code,
-                             include_title=True)[0]
+            infos = get_info(videoid, None, None, profile_language_code)[0]
             art = _get_art(videoid, None, profile_language_code)
             info_data[videoid.value] = infos, art
             common.debug('Got infolabels and art from cache for videoid {}', videoid)
@@ -272,8 +269,7 @@ def get_info_from_netflix(videoids):
         common.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
-            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code,
-                             include_title=True)[0]
+            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
             art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
             info_data[videoid.value] = infos, art
     return info_data
