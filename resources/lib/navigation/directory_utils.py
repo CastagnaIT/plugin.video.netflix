@@ -179,7 +179,7 @@ def auto_scroll(list_data):
             return
         steps = 1
         # Find last watched item
-        for index in range(total_items - 1, 0, -1):
+        for index in range(total_items - 1, -1, -1):
             dict_item = list_data[index]
             if dict_item['info'].get('PlayCount', '0') != '0':
                 # Last watched item
