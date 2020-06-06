@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 import uuid
 import xml.etree.ElementTree as ET
 
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 
@@ -107,10 +108,18 @@ def _add_protection_info(adaptation_set, pssh, keyid):
             'value': 'widevine'
         })
     # Add child tags to the DRM system configuration ('widevine:license' is an ISA custom tag)
+    if (g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+            and not g.ADDON.getSettingBool('force_widevine_l3')):
+        # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices,
+        # if it is set on L3 devices ISA already remove it automatically.
+        # But some L1 devices with non regular Widevine library cause issues then need to be handled
+        robustness_level = 'HW_SECURE_CODECS_REQUIRED'
+    else:
+        robustness_level = ''
     ET.SubElement(
         protection,  # Parent
         'widevine:license',  # Tag
-        robustness_level='HW_SECURE_CODECS_REQUIRED')
+        robustness_level=robustness_level)
     if pssh:
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 

@@ -18,7 +18,7 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.database.db_exceptions import ProfilesMissing
-from resources.lib.database.db_utils import (TABLE_SESSION)
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
                          WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
@@ -153,7 +153,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
-        g.LOCAL_DB.set_value('esn', generate_esn(user_data), TABLE_SESSION)
+        g.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
     g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Save api urls
     for key, path in list(api_data.items()):
@@ -308,58 +308,6 @@ def validate_login(react_context):
                 'react_context data may have changed.')
             common.error(error_msg)
             raise LoginValidateError(error_msg)
-
-
-def generate_esn(user_data):
-    """Generate an ESN if on android or return the one from user_data"""
-    if common.get_system_platform() == 'android':
-        import subprocess
-        try:
-            manufacturer = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r')
-            if manufacturer:
-                model = subprocess.check_output(
-                    ['/system/bin/getprop',
-                     'ro.product.model']).decode('utf-8').strip(' \t\n\r')
-
-                # This product_characteristics check seem no longer used, some L1 devices not have the 'tv' value
-                # like Xiaomi Mi Box 3 or SM-T590 devices and is cause of wrong esn generation
-                # product_characteristics = subprocess.check_output(
-                #     ['/system/bin/getprop',
-                #      'ro.build.characteristics']).decode('utf-8').strip(' \t\n\r')
-                # Property ro.build.characteristics may also contain more then one value
-                # has_product_characteristics_tv = any(
-                #     value.strip(' ') == 'tv' for value in product_characteristics.split(','))
-
-                # Netflix Ready Device Platform (NRDP)
-                nrdp_modelgroup = subprocess.check_output(
-                    ['/system/bin/getprop',
-                     'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r')
-
-                # if has_product_characteristics_tv and \
-                #         g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
-                if g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
-                    esn = 'NFANDROID2-PRV-'
-                    if nrdp_modelgroup:
-                        esn += nrdp_modelgroup.upper() + '-'
-                    else:
-                        esn += model.replace(' ', '').upper() + '-'
-                else:
-                    esn = 'NFANDROID1-PRV-'
-                    esn += 'T-L3-'
-
-                esn += '{:=<5.5}'.format(manufacturer.upper())
-                esn += model.replace(' ', '=').upper()
-                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-                system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
-                if system_id:
-                    esn += '-' + str(system_id) + '-'
-                common.debug('Android generated ESN: {}', esn)
-                return esn
-        except OSError:
-            pass
-    return user_data.get('esn', '')
 
 
 @common.time_execution(immediate=True)

@@ -79,7 +79,9 @@ def is_device_4k_capable():
     if get_system_platform() == 'android':
         from resources.lib.database.db_utils import TABLE_SESSION
         # Check if the drm has security level L1
-        is_drm_l1_security_level = g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+        is_l3_forced = g.ADDON.getSettingBool('force_widevine_l3')
+        is_drm_l1_security_level = (g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+                                    and not is_l3_forced)
         # Check if HDCP level is 2.2 or up
         hdcp_level = get_hdcp_level()
         hdcp_4k_capable = hdcp_level and hdcp_level >= 2.2
