@@ -966,6 +966,9 @@ class KodiHelper(object):
         play_item.setProperty(
             key='inputstreamaddon',
             value=is_helper.inputstream_addon)
+        play_item.setProperty(
+            key='inputstream',
+            value=is_helper.inputstream_addon)
 
         # check if we have a bookmark e.g. start offset position
         if int(start_offset) > 0:
