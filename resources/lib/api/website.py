@@ -66,7 +66,7 @@ PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
-PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel']
+PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
 
 
 @common.time_execution(immediate=True)
