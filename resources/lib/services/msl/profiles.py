@@ -18,7 +18,6 @@ CENC_PRK = 'dash-cenc-prk'
 CENC = 'dash-cenc'
 CENC_TL = 'dash-cenc-tl'
 HDR = 'hevc-hdr-main10-'
-DV = 'hevc-dv-main10-'
 DV5 = 'hevc-dv5-main10-'
 VP9_PROFILE0 = 'vp9-profile0-'
 VP9_PROFILE2 = 'vp9-profile2-'
@@ -60,8 +59,6 @@ PROFILES = {
                          tails=[(BASE_LEVELS, CENC),
                                 (BASE_LEVELS, CENC_PRK)]),
     'dolbyvision':
-        _profile_strings(base=DV,
-                         tails=[(BASE_LEVELS, CENC)]) +
         _profile_strings(base=DV5,
                          tails=[(BASE_LEVELS, CENC_PRK)]),
     'vp9profile0':
