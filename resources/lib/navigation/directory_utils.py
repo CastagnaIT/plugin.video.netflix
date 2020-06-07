@@ -168,7 +168,11 @@ def auto_scroll(list_data):
     total_items = len(list_data)
     if total_items:
         # Delay a bit to wait for the completion of the screen update
-        xbmc.sleep(150)
+        xbmc.sleep(100)
+        # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
+        is_sort_method_episode = xbmc.getCondVisibility('Container.SortMethod(23)')
+        if not is_sort_method_episode:
+            return
         # Check if a selection is already done (CurrentItem return the index)
         if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
             return
@@ -177,7 +181,7 @@ def auto_scroll(list_data):
         to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
         if total_items == watched_items or (watched_items + to_resume_items) == 0:
             return
-        steps = 1
+        steps = 0
         # Find last watched item
         for index in range(total_items - 1, -1, -1):
             dict_item = list_data[index]
@@ -189,6 +193,10 @@ def auto_scroll(list_data):
                 # Last partial watched item
                 steps += index
                 break
+        # Get the sort order of the view
+        is_sort_descending = xbmc.getInfoLabel('Container.SortOrder') == 'Descending'
+        if is_sort_descending:
+            steps = (total_items - 1) - steps
         gui_sound_mode = common.json_rpc('Settings.GetSettingValue',
                                          {'setting': 'audiooutput.guisoundmode'})['value']
         if gui_sound_mode != 0:
@@ -196,7 +204,7 @@ def auto_scroll(list_data):
             common.json_rpc('Settings.SetSettingValue',
                             {'setting': 'audiooutput.guisoundmode', 'value': 0})
         # Auto scroll the list
-        for _ in range(0, steps):
+        for _ in range(0, steps + 1):
             common.json_rpc('Input.Down')
         if gui_sound_mode != 0:
             # Restore GUI sounds
