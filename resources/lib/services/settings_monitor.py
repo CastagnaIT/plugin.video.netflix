@@ -16,7 +16,7 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
-from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR
+from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR, TABLE_SESSION
 from resources.lib.globals import g
 
 try:  # Python 2
@@ -61,12 +61,7 @@ class SettingsMonitor(xbmc.Monitor):
         if not use_mysql_after and use_mysql_old:
             g.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
 
-        # Check if the custom esn is changed
-        custom_esn = g.ADDON.getSetting('esn')
-        custom_esn_old = g.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
-        if custom_esn != custom_esn_old:
-            g.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
-            common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
+        _esn_checks()
 
         # Check menu settings changes
         for menu_id, menu_data in iteritems(g.MAIN_MENU_ITEMS):
@@ -126,3 +121,22 @@ class SettingsMonitor(xbmc.Monitor):
             url = 'plugin://plugin.video.netflix/directory/root'
             # Open root page
             xbmc.executebuiltin('Container.Update({})'.format(url))  # replace=reset history
+
+
+def _esn_checks():
+    # Check if the custom esn is changed
+    custom_esn = g.ADDON.getSetting('esn')
+    custom_esn_old = g.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
+    if custom_esn != custom_esn_old:
+        g.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
+        common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
+
+    if not custom_esn:
+        # Check if "Force identification as L3 Widevine device" is changed (ANDROID ONLY)
+        is_l3_forced = bool(g.ADDON.getSettingBool('force_widevine_l3'))
+        is_l3_forced_old = g.LOCAL_DB.get_value('force_widevine_l3', False, TABLE_SETTINGS_MONITOR)
+        if is_l3_forced != is_l3_forced_old:
+            g.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
+            # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
+            g.LOCAL_DB.set_value('esn', common.generate_android_esn() or '', TABLE_SESSION)
+            common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())

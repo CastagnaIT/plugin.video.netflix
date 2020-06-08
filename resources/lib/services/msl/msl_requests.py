@@ -48,13 +48,6 @@ class MSLRequests(MSLRequestBuilder):
         try:
             self.crypto.load_msl_data(msl_data)
             self.crypto.load_crypto_session(msl_data)
-
-            # Add-on just installed, the service starts but there is no esn
-            if g.get_esn():
-                # This is also done here only try to speed up the loading of manifest
-                self._check_mastertoken_validity()
-        except MSLError:
-            raise
         except Exception:  # pylint: disable=broad-except
             import traceback
             common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
@@ -66,7 +59,7 @@ class MSLRequests(MSLRequestBuilder):
         # pylint: disable=unused-argument
         esn = data or g.get_esn()
         if not esn:
-            common.info('Cannot perform key handshake, missing ESN')
+            common.warn('Cannot perform key handshake, missing ESN')
             return False
 
         common.debug('Performing key handshake. ESN: {}', esn)

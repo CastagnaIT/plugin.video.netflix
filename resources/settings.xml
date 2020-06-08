@@ -140,6 +140,7 @@
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="disable_modal_error_display" type="bool" label="30130" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
+    <setting id="force_widevine_l3" type="bool" label="30244" visible="System.Platform.Android" default="false"/>
     <setting label="30016" type="lsep"/><!--ESN-->
     <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://plugin.video.netflix/action/view_esn/)"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>

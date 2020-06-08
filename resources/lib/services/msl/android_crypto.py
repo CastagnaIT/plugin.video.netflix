@@ -64,6 +64,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             common.warn('Widevine CryptoSession system id not obtained!')
         common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
+        if g.ADDON.getSettingBool('force_widevine_l3'):
+            common.warn('Widevine security level is forced to L3 by user settings!')
         common.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
         common.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
         common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))

@@ -335,23 +335,6 @@ class GlobalVariables(object):
         custom_esn = g.ADDON.getSetting('esn')
         return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
-    def get_edge_esn(self):
-        """Get a previously generated edge ESN from the settings or generate
-        a new one if none exists"""
-        return self.ADDON.getSetting('edge_esn') or self.generate_edge_esn()
-
-    def generate_edge_esn(self):
-        """Generate a random EDGE ESN and save it to the settings"""
-        import random
-        esn = ['NFCDIE-02-']
-        possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        for _ in range(0, 30):
-            esn.append(random.choice(possible))
-        edge_esn = ''.join(esn)
-        self.settings_monitor_suspend(True, True)
-        self.ADDON.setSetting('edge_esn', edge_esn)
-        return edge_esn
-
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with lolomo_known=True"""
         for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
