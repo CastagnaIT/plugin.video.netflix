@@ -169,32 +169,22 @@ def auto_scroll(list_data):
     if total_items:
         # Delay a bit to wait for the completion of the screen update
         xbmc.sleep(100)
-        # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
-        is_sort_method_episode = xbmc.getCondVisibility('Container.SortMethod(23)')
-        if not is_sort_method_episode:
-            return
-        # Check if a selection is already done (CurrentItem return the index)
-        if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
-            return
+        if not g.KODI_VERSION.is_major_ver('18'):  # These infoLabel not works on Kodi 18.x
+            # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
+            is_sort_method_episode = xbmc.getCondVisibility('Container.SortMethod(23)')
+            if not is_sort_method_episode:
+                return
+            # Check if a selection is already done (CurrentItem return the index)
+            if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
+                return
         # Check if all items are already watched
         watched_items = sum(dict_item['info'].get('PlayCount', '0') != '0' for dict_item in list_data)
         to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
         if total_items == watched_items or (watched_items + to_resume_items) == 0:
             return
-        steps = 0
-        # Find last watched item
-        for index in range(total_items - 1, -1, -1):
-            dict_item = list_data[index]
-            if dict_item['info'].get('PlayCount', '0') != '0':
-                # Last watched item
-                steps += index + 1
-                break
-            if dict_item.get('ResumeTime', '0') != '0':
-                # Last partial watched item
-                steps += index
-                break
+        steps = _find_index_last_watched(total_items, list_data)
         # Get the sort order of the view
-        is_sort_descending = xbmc.getInfoLabel('Container.SortOrder') == 'Descending'
+        is_sort_descending = xbmc.getCondVisibility('Container.SortDirection(descending)')
         if is_sort_descending:
             steps = (total_items - 1) - steps
         gui_sound_mode = common.json_rpc('Settings.GetSettingValue',
@@ -210,3 +200,16 @@ def auto_scroll(list_data):
             # Restore GUI sounds
             common.json_rpc('Settings.SetSettingValue',
                             {'setting': 'audiooutput.guisoundmode', 'value': gui_sound_mode})
+
+
+def _find_index_last_watched(total_items, list_data):
+    """Find last watched item"""
+    for index in range(total_items - 1, -1, -1):
+        dict_item = list_data[index]
+        if dict_item['info'].get('PlayCount', '0') != '0':
+            # Last watched item
+            return index + 1
+        if dict_item.get('ResumeTime', '0') != '0':
+            # Last partial watched item
+            return index
+    return 0
