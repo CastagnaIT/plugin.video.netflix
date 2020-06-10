@@ -34,7 +34,7 @@ msgstr "Aanbevelingen"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "Voer uw PIN in"
+msgstr "Voer uw PIN in voor beschermde toegang"
 
 msgctxt "#30003"
 msgid "Search term"
@@ -50,11 +50,11 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Voer uw PIN in voor toegang tot dit profiel"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "Ouderlijktoezicht PIN"
+msgstr "Ouderlijktoezicht PIN (4 cijfers)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -212,15 +212,15 @@ msgstr "Geëxporteerd"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Bibliotheek"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Selecteer een profiel om video's af te spelen"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Vraag voor een profiel alvorens af te spelen"
 
 # Unused 30052, 30053
 
@@ -418,7 +418,7 @@ msgstr "Netflix had the volgende foutmelding:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr ""
+msgstr "Foutmeldingdetails werden geschreven in het Kodi logboek. Als het de foutmelding niet voldoende duidelijk zijn om het probleem op te lossen, of je krijgt de melding opnieuw, gelieve dit te rapporteren op GitHub door de Readme instructies te volgen."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -518,7 +518,7 @@ msgstr "Toegekende beoordeling van {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Selecteer een profiel"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -860,7 +860,7 @@ msgstr "InputStream Helper instellingen…"
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Forceer hernieuwing"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -884,7 +884,7 @@ msgstr "Melding voor 'Synchronisatie voltooid' uitschakelen"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr "De Kodi bibliotheel werd bijgewerkt"
+msgstr "De Kodi bibliotheek werd bijgewerkt"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -932,11 +932,11 @@ msgstr "Wil je nu controleren voor een update?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Maturiteitsrating voor profiel {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Toon enkel video's met rating [B]{}[/B]"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -964,20 +964,20 @@ msgstr "Kleur van bijkomende plot informatie"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "De achtergrond diensten kunnen niet gestart worden door het volgende probleem:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "Open Connect CDN (een lagere index is beter)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "Selecteer de eerste niet-bekeken tvprogramma aflevering"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Forceer Widevine beveiligingslevel L3"
