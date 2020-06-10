@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
@@ -152,7 +152,7 @@ msgstr "Allgemein"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "Aktiviere Dolby Digital Plus (DDPlus HQ und Atom mit Premium)"
+msgstr "Aktiviere Dolby Digital Plus (DDPlus HQ und Atmos mit Premium)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
@@ -976,8 +976,8 @@ msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "Erste ungesehene Serien-Episode auswählen"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Widevine-Sicherheitslevel L3 erzwingen"
