@@ -13,7 +13,6 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 import re
-import time
 import zlib
 
 import resources.lib.common as common
@@ -54,18 +53,18 @@ class MSLRequests(MSLRequestBuilder):
 
     @display_error_info
     @common.time_execution(immediate=True)
-    def perform_key_handshake(self, data=None):
+    def perform_key_handshake(self, data=None):  # pylint: disable=unused-argument
         """Perform a key handshake and initialize crypto keys"""
-        # pylint: disable=unused-argument
-        esn = data or g.get_esn()
+        esn = g.get_esn()
         if not esn:
             common.warn('Cannot perform key handshake, missing ESN')
             return False
 
-        common.debug('Performing key handshake. ESN: {}', esn)
+        common.info('Performing key handshake with ESN: {}',
+                    common.censure(esn) if g.ADDON.getSetting('esn') else esn)
         response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
         header_data = self.decrypt_header_data(response['headerdata'], False)
-        self.crypto.parse_key_response(header_data, True)
+        self.crypto.parse_key_response(header_data, esn, True)
 
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()
@@ -91,27 +90,27 @@ class MSLRequests(MSLRequestBuilder):
                                         force_auth_credential=True)
         common.debug('Response of logblob request: {}', response)
 
-    def _check_mastertoken_validity(self):
-        """Return the mastertoken validity and executes a new key handshake when necessary"""
+    def _mastertoken_checks(self):
+        """Perform checks to the MasterToken and executes a new key handshake when necessary"""
+        is_handshake_required = False
         if self.crypto.mastertoken:
-            time_now = time.time()
-            renewable = self.crypto.renewal_window < time_now
-            expired = self.crypto.expiration <= time_now
-        else:
-            renewable = False
-            expired = True
-        if expired:
-            if not self.crypto.mastertoken:
-                debug_msg = 'Stored MSL data not available, a new key handshake will be performed'
+            if self.crypto.is_current_mastertoken_expired():
+                common.debug('Stored MSL MasterToken is expired, a new key handshake will be performed')
+                is_handshake_required = True
             else:
-                debug_msg = 'Stored MSL data is expired, a new key handshake will be performed'
-            common.debug(debug_msg)
+                # Check if the current ESN is same of ESN bound to MasterToken
+                if g.get_esn() != self.crypto.bound_esn:
+                    common.debug('Stored MSL MasterToken is bound to a different ESN, '
+                                 'a new key handshake will be performed')
+                    is_handshake_required = True
+        else:
+            common.debug('MSL MasterToken is not available, a new key handshake will be performed')
+            is_handshake_required = True
+        if is_handshake_required:
             if self.perform_key_handshake():
                 msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
                 self.crypto.load_msl_data(msl_data)
                 self.crypto.load_crypto_session(msl_data)
-            return self._check_mastertoken_validity()
-        return {'renewable': renewable, 'expired': expired}
 
     def _check_user_id_token(self, disable_msl_switch, force_auth_credential=False):
         """
@@ -155,14 +154,12 @@ class MSLRequests(MSLRequestBuilder):
     @common.time_execution(immediate=True)
     def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
         """Do a POST request and process the chunked response"""
-
-        mt_validity = self._check_mastertoken_validity()
+        self._mastertoken_checks()
         auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
         common.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
-            mt_validity['renewable'] if mt_validity else None,
             save_uid_token_to_owner=auth_data['user_id_token'] is None)
         return chunked_response['result']
 
@@ -178,7 +175,7 @@ class MSLRequests(MSLRequestBuilder):
 
     # pylint: disable=unused-argument
     @common.time_execution(immediate=True)
-    def _process_chunked_response(self, response, mt_renewable, save_uid_token_to_owner=False):
+    def _process_chunked_response(self, response, save_uid_token_to_owner=False):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
         try:
@@ -190,7 +187,7 @@ class MSLRequests(MSLRequestBuilder):
             common.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
             # TODO: sending for the renewal request is not yet implemented
-            # if mt_renewable:
+            # if self.crypto.get_current_mastertoken_validity()['is_renewable']:
             #     # Check if mastertoken is renewed
             #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
 

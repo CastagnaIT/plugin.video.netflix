@@ -79,8 +79,6 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
     @common.time_execution(immediate=True)
     def _login(self, modal_error_message=False):
         """Perform account login"""
-        # If exists get the current esn value before extract a new session data
-        current_esn = g.get_esn()
         try:
             # First we get the authentication url without logging in, required for login API call
             react_context = website.extract_json(self._get('login'), 'reactContext')
@@ -93,7 +91,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 website.extract_session_data(login_response, validate=True, update_profiles=True)
                 common.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
-                self.update_session_data(current_esn)
+                self.update_session_data()
                 return True
             except (LoginValidateError, LoginValidateErrorIncorrectPassword) as exc:
                 self.session.cookies.clear()

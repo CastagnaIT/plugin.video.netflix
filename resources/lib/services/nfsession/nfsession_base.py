@@ -71,11 +71,10 @@ class NFSessionBase(object):
         })
         common.info('Initialized new session')
 
-    def update_session_data(self, old_esn=None):
+    def update_session_data(self):
         self.set_session_header_data()
         cookies.save(self.account_hash, self.session.cookies)
         cookies.log_cookie(self.session.cookies)
-        _update_esn(g.get_esn() if old_esn is None else old_esn)
 
     def set_session_header_data(self):
         try:
@@ -102,10 +101,3 @@ class NFSessionBase(object):
     @auth_url.setter
     def auth_url(self, value):
         g.LOCAL_DB.set_value('auth_url', value, TABLE_SESSION)
-
-
-def _update_esn(old_esn):
-    """Perform key handshake if the esn has changed on Session initialization"""
-    current_esn = g.get_esn()
-    if old_esn != current_esn:
-        common.send_signal(signal=common.Signals.ESN_CHANGED, data=current_esn)

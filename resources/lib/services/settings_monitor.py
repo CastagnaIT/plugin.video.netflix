@@ -129,7 +129,7 @@ def _esn_checks():
     custom_esn_old = g.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
     if custom_esn != custom_esn_old:
         g.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
-        common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
+        common.send_signal(signal=common.Signals.ESN_CHANGED)
 
     if not custom_esn:
         # Check if "Force identification as L3 Widevine device" is changed (ANDROID ONLY)
@@ -139,4 +139,4 @@ def _esn_checks():
             g.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
             # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
             g.LOCAL_DB.set_value('esn', common.generate_android_esn() or '', TABLE_SESSION)
-            common.send_signal(signal=common.Signals.ESN_CHANGED, data=g.get_esn())
+            common.send_signal(signal=common.Signals.ESN_CHANGED)
