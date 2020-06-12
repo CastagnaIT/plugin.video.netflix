@@ -65,7 +65,7 @@ class MSLRequests(MSLRequestBuilder):
         common.debug('Performing key handshake. ESN: {}', esn)
         response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
         header_data = self.decrypt_header_data(response['headerdata'], False)
-        self.crypto.parse_key_response(header_data, not common.is_edge_esn(esn))
+        self.crypto.parse_key_response(header_data, True)
 
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()

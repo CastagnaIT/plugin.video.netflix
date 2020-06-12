@@ -173,11 +173,6 @@ def enclose_quotes(content):
     return '"' + content + '"'
 
 
-def is_edge_esn(esn):
-    """Return True if the esn is an EDGE esn"""
-    return esn.startswith('NFCDIE-02-')
-
-
 def is_minimum_version(version, min_version):
     """Return True if version is equal or greater to min_version"""
     return list(map(int, version.split('.'))) >= list(map(int, min_version.split('.')))
