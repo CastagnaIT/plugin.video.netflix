@@ -124,7 +124,7 @@ class MSLBaseCrypto(object):
         """Check if user id token is expired"""
         token_data = json.loads(base64.standard_b64decode(user_id_token['tokendata']))
         # Subtract 5min as a safety measure
-        return (token_data['expiration'] - 300) > time.time()
+        return (token_data['expiration'] - 300) < time.time()
 
     def is_current_mastertoken_expired(self):
         """Check if the current MasterToken is expired"""
