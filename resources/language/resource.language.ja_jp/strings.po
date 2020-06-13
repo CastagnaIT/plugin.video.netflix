@@ -48,7 +48,7 @@ msgstr "メールアドレス"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "このプロフィールを使うにはPINを入力してください。"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -927,6 +927,7 @@ msgstr ""
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr ""
+msgstr "[B]{}[/B]のタイトルのみ見せる。"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"

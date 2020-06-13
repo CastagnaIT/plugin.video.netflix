@@ -48,7 +48,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "이 프로파일을 이용하려면 PIN을 입력하십시오."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -926,7 +926,7 @@ msgstr ""
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "{}을(를) 보려면 PIN을 입력하십시오."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
