@@ -1,3 +1,12 @@
+v1.4.1 (2020-06-13)
+-Disabled menus: All tv shows, All movies, Browse sub-genres sub-menus due to nf changes
+-Add auto-selection of episode to play (only with sync watched status)
+-Add option to force Widevine security level L3 (only android)
+-Fixed a bug that could prevent library sync
+-Updated logo
+-Updated translations it, sv_se, pr_br, ro, de, nl, po, es
+-Minor changes/fixes
+
 v1.4.0 (2020-05-30)
 -Implemented profile selection to library (preferences in the settings/playback)
    This also fixes following related issues when play from library:
