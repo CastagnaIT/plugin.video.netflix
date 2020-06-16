@@ -126,3 +126,9 @@ By participating in this project you agree to abide by its terms.
 ## License
 
 Licensed under The MIT License.
+
+## Contributions and collaborations
+
+[Info for contribute and donations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Contribute-and-donations)
+
+[Info for Business collaboration](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Business-collaboration)
