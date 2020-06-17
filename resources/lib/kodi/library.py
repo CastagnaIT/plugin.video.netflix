@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import os
+import random
 from functools import wraps
 
 import xbmc
@@ -156,6 +157,8 @@ def sync_mylist_to_library():
         execute_library_tasks(videoid, [export_item],
                               common.get_local_string(30018),
                               nfo_settings=nfo_settings)
+        # Add some randomness between operations to limit servers load and ban risks
+        xbmc.sleep(random.randint(1000, 3001))
 
 
 @common.time_execution(immediate=False)
