@@ -21,7 +21,7 @@ RANGE_SELECTOR = 'RANGE_SELECTOR'
 
 ART_SIZE_POSTER = '_342x684'
 ART_SIZE_FHD = '_1920x1080'
-# ART_SIZE_HD = '_1280x720'
+ART_SIZE_HD = '_1280x720'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
@@ -35,12 +35,14 @@ LENGTH_ATTRIBUTES = {
 ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['bb2OGLogo', '_550x124', 'png'],
-    ['BGImages', '720', 'jpg']
+    ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', '_550x124', 'png'],  # 11/05/2020 same img of bb2OGLogo
+    ['storyArt', ART_SIZE_SD, 'jpg']  # 11/05/2020 same img of BGImages
 ]
-# Others image paths for reference
-# ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', ['_550x124', ART_SIZE_HD], 'jpg'], 11/05/2020 image is same of bb2OGLogo
-# ['storyArt', ART_SIZE_SD, 'jpg'], 11/05/2020 image is same of BGImages
+
+# Old image paths for reference
+# ['bb2OGLogo', '_550x124', 'png']
+# ['BGImages', '720', 'jpg']
+
 
 VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue',
