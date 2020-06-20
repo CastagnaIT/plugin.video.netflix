@@ -132,7 +132,7 @@ class EventsHandler(threading.Thread):
                 common.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
-            if event.event_data['allow_request_update_lolomo']:
+            if event.event_data['allow_request_update_loco']:
                 # if event.event_data['is_in_mylist']:
                 #     # If video is in my list, invalidate the continueWatching list (update loco context data)
                 #     api.update_loco_context('continueWatching')

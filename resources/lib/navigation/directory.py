@@ -21,7 +21,7 @@ from resources.lib.navigation.directory_utils import (finalize_directory, conver
                                                       end_of_directory, get_title, activate_profile, auto_scroll)
 
 # What means dynamic menus (and dynamic id):
-#  Are considered dynamic menus all menus which context name do not exists in the 'lolomo_contexts' of
+#  Are considered dynamic menus all menus which context name do not exists in the 'loco_contexts' of
 #  MAIN_MENU_ITEMS items in globals.py.
 #  These menus are generated on the fly (they are not hardcoded) and their data references are saved in TABLE_MENU_DATA
 #  as menu item (with same structure of MAIN_MENU_ITEMS items in globals.py)
@@ -222,13 +222,13 @@ class Directory(object):
     @common.time_execution(immediate=False)
     @custom_viewmode(g.VIEW_FOLDER)
     def genres(self, pathitems):
-        """Show lolomo list of a genre or from lolomo root the list of contexts specified in the menu data"""
+        """Show loco list of a genre or from loco root the list of contexts specified in the menu data"""
         menu_data = g.MAIN_MENU_ITEMS.get(pathitems[1])
         if not menu_data:  # Dynamic menus
             menu_data = g.LOCAL_DB.get_value(pathitems[1], table=TABLE_MENU_DATA, data_type=dict)
         call_args = {
             'menu_data': menu_data,
-            # When genre_id is None is loaded the lolomo root the list of contexts specified in the menu data
+            # When genre_id is None is loaded the loco root the list of contexts specified in the menu data
             'genre_id': None if len(pathitems) < 3 else int(pathitems[2]),
             'force_use_videolist_id': False,
         }

@@ -64,8 +64,8 @@ class DirectoryRequests(object):
         """Retrieve root LoCo list"""
         # It is used to following cases:
         # - To get items for the main menu
-        #      (when 'lolomo_known'==True and lolomo_contexts is set, see MAIN_MENU_ITEMS in globals.py)
-        # - To get list items for menus that have multiple contexts set to 'lolomo_contexts' like 'recommendations' menu
+        #      (when 'loco_known'==True and loco_contexts is set, see MAIN_MENU_ITEMS in globals.py)
+        # - To get list items for menus that have multiple contexts set to 'loco_contexts' like 'recommendations' menu
         common.debug('Requesting LoCo root lists')
         paths = ([['loco', {'from': 0, 'to': 50}, "componentSummary"]] +
                  # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
@@ -94,6 +94,14 @@ class DirectoryRequests(object):
         """Return the dynamic video list ID for a LoLoMo context"""
         try:
             list_id = next(iter(self.req_lolomo_list_root().lists_by_context(context, True)))[0]
+        except StopIteration:
+            raise InvalidVideoListTypeError('No lists with context {} available'.format(context))
+        return list_id
+
+    def get_loco_list_id_by_context(self, context):
+        """Return the dynamic video list ID for a LoCo context"""
+        try:
+            list_id = next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
         except StopIteration:
             raise InvalidVideoListTypeError('No lists with context {} available'.format(context))
         return list_id

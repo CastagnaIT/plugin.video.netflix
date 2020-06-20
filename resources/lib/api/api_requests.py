@@ -65,13 +65,13 @@ def update_loco_context(context_name):
         common.warn('Update loco context {} skipped due to missing loco index', context_name)
         return
     path = [['locos', loco_root, 'refreshListByContext']]
-    # The fourth parameter is like a request-id, but it doesn't seem to match to
-    # serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
-    # nor to request_id of the video event request
-    # has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed,
-    # and i am no longer able to trace the source.
-    # I noticed also that this request can also be made with the fourth parameter empty,
-    # but it still doesn't update the continueWatching list of lolomo, that is strange because of no error
+    # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
+    #   The fourth parameter is like a request-id, but it doesn't seem to match to
+    #   serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
+    #   nor to request_id of the video event request,
+    #   has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed
+    #   and i am no longer able to trace the source.
+    #   I noticed also that this request can also be made with the fourth parameter empty.
     params = [common.enclose_quotes(context_id),
               context_index,
               common.enclose_quotes(context_name),

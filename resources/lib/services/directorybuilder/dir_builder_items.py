@@ -34,7 +34,7 @@ except NameError:  # Python 3
 
 
 @common.time_execution(immediate=True)
-def build_mainmenu_listing(lolomo_list):
+def build_mainmenu_listing(loco_list):
     """Builds the main menu listing (my list, continue watching, etc.)"""
     from resources.lib.kodi.context_menu import generate_context_menu_mainmenu
     directory_items = []
@@ -45,8 +45,8 @@ def build_mainmenu_listing(lolomo_list):
     for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
         if not g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
             continue
-        if data['lolomo_known']:
-            list_id, video_list = lolomo_list.find_by_context(data['lolomo_contexts'][0])
+        if data['loco_known']:
+            list_id, video_list = loco_list.find_by_context(data['loco_contexts'][0])
             if not list_id:
                 continue
             menu_title = video_list['displayName']
@@ -173,23 +173,23 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
 
 
 @common.time_execution(immediate=True)
-def build_lolomo_listing(lolomo_list, menu_data, force_use_videolist_id=False, exclude_lolomo_known=False):
-    """Build a listing of video lists (LoLoMo)"""
-    # If contexts are specified (lolomo_contexts in the menu_data), then the lolomo_list data will be filtered by
-    # the specified contexts, otherwise all LoLoMo items will be added
+def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclude_loco_known=False):
+    """Build a listing of video lists (LoCo)"""
+    # If contexts are specified (loco_contexts in the menu_data), then the loco_list data will be filtered by
+    # the specified contexts, otherwise all LoCo items will be added
     common_data = {
         'menu_data': menu_data,
         'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color')),
         'profile_language_code': g.LOCAL_DB.get_profile_config('language', '')
     }
-    contexts = menu_data.get('lolomo_contexts')
-    items_list = lolomo_list.lists_by_context(contexts) if contexts else iteritems(lolomo_list.lists)
+    contexts = menu_data.get('loco_contexts')
+    items_list = loco_list.lists_by_context(contexts) if contexts else iteritems(loco_list.lists)
     directory_items = []
     for video_list_id, video_list in items_list:
         menu_parameters = common.MenuIdParameters(video_list_id)
         if not menu_parameters.is_menu_id:
             continue
-        if exclude_lolomo_known and menu_parameters.type_id != '28':
+        if exclude_loco_known and menu_parameters.type_id != '28':
             # Keep only the menus genre
             continue
         list_id = (menu_parameters.context_id
@@ -198,8 +198,8 @@ def build_lolomo_listing(lolomo_list, menu_data, force_use_videolist_id=False, e
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
-        sub_menu_data['lolomo_known'] = False
-        sub_menu_data['lolomo_contexts'] = None
+        sub_menu_data['loco_known'] = False
+        sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
@@ -250,14 +250,14 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
                        in iteritems(video_list.videos)]
-    # If genre_id exists add possibility to browse LoLoMo sub-genres
+    # If genre_id exists add possibility to browse LoCo sub-genres
     if sub_genre_id and sub_genre_id != 'None':
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         menu_id = 'subgenre_' + sub_genre_id
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, sub_genre_id]
-        sub_menu_data['lolomo_known'] = False
-        sub_menu_data['lolomo_contexts'] = None
+        sub_menu_data['loco_known'] = False
+        sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
         sub_menu_data.update({'title': common.get_local_string(30089)})
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
@@ -303,8 +303,8 @@ def build_subgenres_listing(subgenre_list, menu_data):
         sel_video_list_id = unicode(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
-        sub_menu_data['lolomo_known'] = False
-        sub_menu_data['lolomo_contexts'] = None
+        sub_menu_data['loco_known'] = False
+        sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
         sub_menu_data['title'] = subgenre_data['name']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])

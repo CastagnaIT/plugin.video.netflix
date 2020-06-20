@@ -170,12 +170,12 @@ def extract_session_data(content, validate=False, update_profiles=False):
     #     cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
     #     common.warn('Context continueWatching not found in locos for profile guid {}.',
     #                 jgraph_get('summary', cur_profile)['guid'])
-    #     g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
-    #     g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('loco_continuewatching_index', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('loco_continuewatching_id', '', TABLE_SESSION)
     # else:
     #     common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
-    #     g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
-    #     g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('loco_continuewatching_index', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('loco_continuewatching_id', '', TABLE_SESSION)
     # -- END --
 
     # Save only some info of the current profile from user data

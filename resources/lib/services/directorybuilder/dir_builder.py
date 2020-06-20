@@ -18,7 +18,7 @@ from resources.lib.common import VideoId
 from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder_items import (build_video_listing, build_subgenres_listing,
                                                                        build_season_listing, build_episode_listing,
-                                                                       build_lolomo_listing, build_mainmenu_listing,
+                                                                       build_loco_listing, build_mainmenu_listing,
                                                                        build_profiles_listing)
 from resources.lib.services.directorybuilder.dir_builder_requests import DirectoryRequests
 
@@ -85,7 +85,7 @@ class DirectoryBuilder(DirectoryRequests):
     @common.addonsignals_return_call
     def get_video_list(self, list_id, menu_data, is_dynamic_id):
         if not is_dynamic_id:
-            list_id = self.get_lolomo_list_id_by_context(menu_data['lolomo_contexts'][0])
+            list_id = self.get_loco_list_id_by_context(menu_data['loco_contexts'][0])
         return build_video_listing(self.req_video_list(list_id), menu_data, mylist_items=self.req_mylist_items())
 
     @common.time_execution(immediate=True)
@@ -95,7 +95,7 @@ class DirectoryBuilder(DirectoryRequests):
         if is_dynamic_id and pathitems[2] != 'None':
             # Dynamic IDs for common video lists
             # The context_id can be:
-            # -In the lolomo list: 'video list id'
+            # -In the loco list: 'video list id'
             # -In the video list: 'sub-genre id'
             # -In the list of genres: 'sub-genre id'
             context_id = pathitems[2]
@@ -129,14 +129,15 @@ class DirectoryBuilder(DirectoryRequests):
     @common.addonsignals_return_call
     def get_genres(self, menu_data, genre_id, force_use_videolist_id):
         if genre_id:
-            # Load the LoLoMo list of the specified genre
-            lolomo_list = self.req_lolomo_list_genre(genre_id)
-            exclude_lolomo_known = True
+            # Load the LoCo list of the specified genre
+            # Todo
+            loco_list = self.req_lolomo_list_genre(genre_id)
+            exclude_loco_known = True
         else:
-            # Load the LoLoMo root list filtered by 'lolomo_contexts' specified in the menu_data
-            lolomo_list = self.req_lolomo_list_root()
-            exclude_lolomo_known = False
-        return build_lolomo_listing(lolomo_list, menu_data, force_use_videolist_id, exclude_lolomo_known)
+            # Load the LoCo root list filtered by 'loco_contexts' specified in the menu_data
+            loco_list = self.req_loco_list_root()
+            exclude_loco_known = False
+        return build_loco_listing(loco_list, menu_data, force_use_videolist_id, exclude_loco_known)
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
@@ -167,11 +168,11 @@ class DirectoryBuilder(DirectoryRequests):
     @common.addonsignals_return_call
     def get_continuewatching_videoid_exists(self, video_id):
         """
-        Special method used to know if a video id exists in lolomo continue watching list
+        Special method used to know if a video id exists in loco continue watching list
 
         :param video_id: videoid as [string] value
-        :return: a tuple ([bool] true if videoid exists, [string] the current list id, that depends from lolomo id)
+        :return: a tuple ([bool] true if videoid exists, [string] the current list id, that depends from loco id)
         """
-        list_id = self.get_lolomo_list_id_by_context('continueWatching')
+        list_id = self.get_loco_list_id_by_context('continueWatching')
         video_list = self.req_video_list(list_id).videos if video_id else []
         return video_id in video_list, list_id
