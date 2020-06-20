@@ -77,6 +77,31 @@ class DirectoryRequests(object):
         return LoCo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
+    def req_loco_list_genre(self, genre_id):
+        """Retrieve LoCo for the given genre"""
+        common.debug('Requesting LoCo for genre {}', genre_id)
+        # Todo: 20/06/2020 Currently make requests for genres raise this exception from netflix server
+        #       (errors visible only with jsonGraph enabled on path request):
+        # Msg: No signature of method: api.Lolomo.getLolomoRequest() is applicable for argument types:
+        #      (java.util.ArrayList, null, java.lang.Boolean) values: [[jaw, jawEpisode, jawTrailer], null, false]
+        # ErrCause: groovy.lang.MissingMethodException: No signature of method: api.Lolomo.getLolomoRequest()
+        #           is applicable for argument types: (java.util.ArrayList, null, java.lang.Boolean)
+        #           values: [[jaw, jawEpisode, jawTrailer], null, false]
+        # For reference the PR to restore the functionality: https://github.com/CastagnaIT/plugin.video.netflix/pull/685
+        paths = ([['genres', genre_id, 'name'] +
+                  ['genres', genre_id, 'rw', 'componentSummary'] +
+                  # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
+                  ['genres', genre_id, 'rw',
+                   {'from': 0, 'to': 48}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
+                 # Art for the first video of each context list (needed only to add art to the menu item)
+                 build_paths(['genres', genre_id, 'rw', {'from': 0, 'to': 48}, 0, 'reference'], ART_PARTIAL_PATHS) +
+                 # IDs and names of sub-genres
+                 [['genres', 34399, 'subgenres', {'from': 0, 'to': 30}, ['id', 'name']]])
+        call_args = {'paths': paths}
+        path_response = self.netflix_session._path_request(**call_args)
+        return LoCo(path_response)
+
+    @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
     def req_lolomo_list_genre(self, genre_id):
         """Retrieve LoLoMos for the given genre"""
         common.debug('Requesting LoLoMo for genre {}', genre_id)
