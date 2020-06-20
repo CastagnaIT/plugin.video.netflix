@@ -221,7 +221,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     def _path_request(self, paths, use_jsongraph=False):
         """Execute a path request with static paths"""
         common.debug('Executing path request: {}', json.dumps(paths))
-        custom_params = {'method': 'call'}
+        custom_params = {}
         if use_jsongraph:
             custom_params['falcor_server'] = '0.1.0'
         # Use separators with dumps because Netflix rejects spaces
