@@ -43,8 +43,8 @@ PAGE_ITEMS_INFO = [
     'models/userInfo/data/pinEnabled',
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/esnGeneratorModel/data/esn',
-    'models/memberContext/data/geo/preferredLocale',
-    'models/truths/data/isLocoSupported'
+    'models/memberContext/data/geo/preferredLocale'
+    # 'models/profilesGate/data/idle_timer'  # Time in minutes of the profile session
 ]
 
 PAGE_ITEMS_API_URL = {
@@ -67,6 +67,25 @@ JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
 PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
+PROFILE_GATE_STATES = {
+    0: 'CLOSED',
+    1: 'LIST',
+    2: 'LOAD_PROFILE',
+    3: 'LOAD_PROFILE_ERROR',
+    4: 'CREATE_PROFILE',
+    5: 'CREATE_PROFILE_ERROR',
+    6: 'UPDATE_PROFILE',
+    7: 'UPDATE_PROFILE_ERROR',
+    8: 'DELETE_PROFILE',
+    9: 'DELETE_PROFILE_ERROR',
+    10: 'RELOADING_PROFILES',
+    11: 'MANAGE_PROFILES',
+    12: 'MANAGE_PROFILES_ERROR',
+    13: 'SELECT_AVATAR',
+    14: 'SELECT_AVATAR_ERROR',
+    15: 'PROMPT_PROFILE_PIN',
+    16: 'PROMPT_PROFILE_PIN_ERROR'
+}
 
 
 @common.time_execution(immediate=True)
@@ -101,54 +120,63 @@ def extract_session_data(content, validate=False, update_profiles=False):
     if update_profiles:
         parse_profiles(falcor_cache)
 
-    g.LOCAL_DB.set_value('is_loco_supported', user_data.get('isLocoSupported'), TABLE_SESSION)
-    if user_data.get('isLocoSupported'):
-        # 21/05/2020 - Netflix is introducing a new paging type called "loco", it is similar to "lolomo"
-        # The lolomo data here is obtained by a separated request from update_lolomo_data in nfsession.py
+    if common.is_debug_verbose():
+        # Only for debug purpose not sure if can be useful
+        try:
+            common.debug('ReactContext profileGateState {} ({})',
+                         PROFILE_GATE_STATES[react_context['models']['profileGateState']['data']],
+                         react_context['models']['profileGateState']['data'])
+        except KeyError:
+            common.error('ReactContext unknown profileGateState {}',
+                         react_context['models']['profileGateState']['data'])
 
-        # Extract loco root id
-        # NOTE: loco root ID is not same of lolomo root id
-        loco_root = falcor_cache['loco']['value'][1]
-        # g.LOCAL_DB.set_value('lolomo_root_id', loco_root, TABLE_SESSION)
+    # Profile idle timeout (not sure if will be useful, to now for documentation purpose)
+    # NOTE: On the website this value is used to update the profilesNewSession cookie expiration after a profile switch
+    #       and also to update the expiration of this cookie on each website interaction.
+    #       When the session is expired the 'profileGateState' will be 0 and the website return auto. to profiles page
+    # g.LOCAL_DB.set_value('profile_gate_idle_timer', user_data.get('idle_timer', 30), TABLE_SESSION)
 
-        # Check if current 'profile session' is still active
-        # Todo: 25/05/2020 - This not works, currently the "locos" list is always empty
-        is_profile_session_active = 'componentSummary' in falcor_cache['locos'][loco_root]
+    # 21/05/2020 - Netflix has introduced a new paging type called "loco" similar to the old "lolomo"
+    # Extract loco root id
+    loco_root = falcor_cache['loco']['value'][1]
+    g.LOCAL_DB.set_value('loco_root_id', loco_root, TABLE_SESSION)
 
-        # Extract loco continueWatching id and index
-        # Todo: 25/05/2020 - Without the "locos" list is not possible get this data here
-        # g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
-        # g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    # Check if the profile session is still active
+    #  (when a session expire in the website, the screen return automatically to the profiles page)
+    is_profile_session_active = 'componentSummary' in falcor_cache['locos'][loco_root]
+
+    # Extract loco root request id
+    if is_profile_session_active:
+        component_summary = falcor_cache['locos'][loco_root]['componentSummary']['value']
+        # Note: 18/06/2020 now the request id is the equal to reactContext models/serverDefs/data/requestId
+        g.LOCAL_DB.set_value('loco_root_requestid', component_summary['requestId'], TABLE_SESSION)
     else:
-        # Extract lolomo root id
-        lolomo_root = falcor_cache['lolomo']['value'][1]
-        g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
+        g.LOCAL_DB.set_value('loco_root_requestid', '', TABLE_SESSION)
 
-        # Check if current 'profile session' is still active
-        # What means 'profile session':
-        # In web browser, after you select a profile and then you close the browse page,
-        #   when you reopen it you will not be asked to select a profile again, this means that the same profile session
-        #   still active, and the lolomo root id (and child contexts id's) are still the same.
-        #   Here one way to understand this, is checking if there is an 'summary' entry in the lolomos dictionary.
-        is_profile_session_active = 'summary' in falcor_cache['lolomos'][lolomo_root]
-
-        # Extract lolomo continueWatching id and index
-        cw_list_data = jgraph_get('continueWatching', falcor_cache['lolomos'][lolomo_root], falcor_cache)
-        if cw_list_data:
-            context_index = falcor_cache['lolomos'][lolomo_root]['continueWatching']['value'][2]
-            g.LOCAL_DB.set_value('lolomo_continuewatching_index', context_index, TABLE_SESSION)
-            g.LOCAL_DB.set_value('lolomo_continuewatching_id', jgraph_get('id', cw_list_data), TABLE_SESSION)
-        elif is_profile_session_active:
-            # Todo: In the new profiles, there is no 'continueWatching' context
-            #  How get or generate the continueWatching context?
-            #  (needed to update lolomo list for watched state sync, see update_lolomo_context in api_requests.py)
-            cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
-            common.warn('Context continueWatching not found in lolomos for profile guid {}.',
-                        jgraph_get('summary', cur_profile)['guid'])
-            g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
-            g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
-        else:
-            common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
+    # Extract loco continueWatching id and index
+    #   The following commented code was needed for update_loco_context in api_requests.py, but currently
+    #   seem not more required to update the continueWatching list then we keep this in case of future nf changes
+    # -- INIT --
+    # cw_list_data = jgraph_get('continueWatching', falcor_cache['locos'][loco_root], falcor_cache)
+    # if cw_list_data:
+    #     context_index = falcor_cache['locos'][loco_root]['continueWatching']['value'][2]
+    #     g.LOCAL_DB.set_value('loco_continuewatching_index', context_index, TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('loco_continuewatching_id',
+    #                          jgraph_get('componentSummary', cw_list_data)['id'], TABLE_SESSION)
+    # elif is_profile_session_active:
+    #     # Todo: In the new profiles, there is no 'continueWatching' context
+    #     #  How get or generate the continueWatching context?
+    #     #  NOTE: it was needed for update_loco_context in api_requests.py
+    #     cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
+    #     common.warn('Context continueWatching not found in locos for profile guid {}.',
+    #                 jgraph_get('summary', cur_profile)['guid'])
+    #     g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    # else:
+    #     common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
+    #     g.LOCAL_DB.set_value('lolomo_continuewatching_index', '', TABLE_SESSION)
+    #     g.LOCAL_DB.set_value('lolomo_continuewatching_id', '', TABLE_SESSION)
+    # -- END --
 
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)

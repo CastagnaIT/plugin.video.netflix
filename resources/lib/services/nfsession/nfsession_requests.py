@@ -156,7 +156,7 @@ class NFSessionRequests(NFSessionBase):
                 'routeAPIRequestsThroughFTL': 'false',
                 'isVolatileBillboardsEnabled': 'true',
                 'isTop10Supported': 'true',
-                'isLocoSupported': 'false',
+                'categoryCraversEnabled': 'false',
                 'original_path': '/shakti/{}/pathEvaluator'.format(
                     g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
             }

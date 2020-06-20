@@ -14,7 +14,6 @@ import json
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
@@ -39,8 +38,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             self.perpetual_path_request,
             self.callpath_request,
             self.get,
-            self.post,
-            self.update_lolomo_data
+            self.post
         ]
         for slot in self.slots:
             common.register_slot(slot)
@@ -91,10 +89,10 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
     @needs_login
-    def activate_profile(self, guid, ignore_update_lolomo_data=False):
-        self._activate_profile(guid, ignore_update_lolomo_data)
+    def activate_profile(self, guid):
+        self._activate_profile(guid)
 
-    def _activate_profile(self, guid, ignore_update_lolomo_data=False):
+    def _activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
         current_active_guid = g.LOCAL_DB.get_active_profile_guid()
@@ -122,8 +120,6 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
         self.update_session_data()
-        if not ignore_update_lolomo_data:
-            self.update_lolomo_data()
 
     @needs_login
     def _perpetual_path_request_switch_profiles(self, paths, length_params,
@@ -138,13 +134,13 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # Current profile active
         current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
-        self._activate_profile(mylist_profile_guid, ignore_update_lolomo_data=True)
+        self._activate_profile(mylist_profile_guid)
         # Get the My List data
         path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
                                                      no_limit_req)
         if mylist_profile_guid != current_profile_guid:
             # Reactive again the previous profile
-            self._activate_profile(current_profile_guid, ignore_update_lolomo_data=True)
+            self._activate_profile(current_profile_guid)
         return path_response
 
     @common.addonsignals_return_call
@@ -282,27 +278,6 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
                 raise NotLoggedInError
             raise
-
-    def update_lolomo_data(self, data=None):  # pylint: disable=unused-argument
-        """Get and save current lolomo data"""
-        # 25/05/2020 Method used for accounts "loco" page type enabled only
-        # accounts that use "loco" at this moment it is not possible to use extract_session_data (see website.py)
-        # to obtain "loco" data then we force the use of "lolomo"
-        if g.LOCAL_DB.get_value('is_loco_supported', table=TABLE_SESSION) == 'False':
-            return
-        lolomo_root = ''
-        context_index = ''
-        context_id = ''
-        if g.ADDON.getSettingBool('ProgressManager_enabled') and self.is_logged_in():
-            lolomo_data = self._path_request([['lolomo', ['continueWatching'], ['context', 'id', 'index']]])
-            lolomo_root = lolomo_data['lolomo'][1]
-            # Todo: In the new profiles, there is no 'continueWatching' list and no list is returned
-            if 'continueWatching' in lolomo_data['lolomos'][lolomo_root]:
-                context_index = lolomo_data['lolomos'][lolomo_root]['continueWatching'][2]
-                context_id = lolomo_data['lolomos'][lolomo_root][context_index][1]
-        g.LOCAL_DB.set_value('lolomo_root_id', lolomo_root, TABLE_SESSION)
-        g.LOCAL_DB.set_value('lolomo_continuewatching_index', context_index, TABLE_SESSION)
-        g.LOCAL_DB.set_value('lolomo_continuewatching_id', context_id, TABLE_SESSION)
 
 
 def _set_range_selector(paths, range_start, range_end):

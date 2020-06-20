@@ -134,8 +134,8 @@ class EventsHandler(threading.Thread):
             self.clear_queue()
             if event.event_data['allow_request_update_lolomo']:
                 # if event.event_data['is_in_mylist']:
-                #     # If video is in my list, invalidate the continueWatching list (update lolomo context data)
-                #     api.update_lolomo_context('continueWatching')
+                #     # If video is in my list, invalidate the continueWatching list (update loco context data)
+                #     api.update_loco_context('continueWatching')
                 api.update_videoid_bookmark(event.get_video_id())
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
@@ -233,11 +233,12 @@ class EventsHandler(threading.Thread):
                 'preferUnletterboxed': False,  # Should be set equal to the manifest request
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
-                    # Add 'lolomo_id' seems to prevent failure of the 'refreshListByContext' request
-                    'lolomo_id': g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION),  # not mandatory
+                    # lolomo_id: use loco root id value
+                    'lolomo_id': g.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION),
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
-                    'request_id': event_data['request_id'],
+                    # request_id: use requestId of loco root
+                    'request_id': g.LOCAL_DB.get_value('loco_root_requestid', '', TABLE_SESSION),
                     'row': 0,  # Purpose not known
                     'track_id': event_data['track_id'],
                     'video_id': videoid.value

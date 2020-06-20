@@ -12,8 +12,8 @@ from __future__ import absolute_import, division, unicode_literals
 from future.utils import iteritems
 
 from resources.lib import common
-from resources.lib.api.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, VideoList,
-                                          SearchVideoList, CustomVideoList)
+from resources.lib.api.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
+                                          VideoList, SearchVideoList, CustomVideoList)
 from resources.lib.api.exceptions import InvalidVideoListTypeError
 from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_SELECTOR, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                      SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -58,6 +58,23 @@ class DirectoryRequests(object):
         call_args = {'paths': paths}
         path_response = self.netflix_session._path_request(**call_args)
         return LoLoMo(path_response)
+
+    @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='loco_list', ignore_self_class=True)
+    def req_loco_list_root(self):
+        """Retrieve root LoCo list"""
+        # It is used to following cases:
+        # - To get items for the main menu
+        #      (when 'lolomo_known'==True and lolomo_contexts is set, see MAIN_MENU_ITEMS in globals.py)
+        # - To get list items for menus that have multiple contexts set to 'lolomo_contexts' like 'recommendations' menu
+        common.debug('Requesting LoCo root lists')
+        paths = ([['loco', {'from': 0, 'to': 50}, "componentSummary"]] +
+                 # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
+                 [['loco', {'from': 0, 'to': 50}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
+                 # Art for the first video of each context list (needed only to add art to the menu item)
+                 build_paths(['loco', {'from': 0, 'to': 50}, 0, 'reference'], ART_PARTIAL_PATHS))
+        call_args = {'paths': paths}
+        path_response = self.netflix_session._path_request(**call_args)
+        return LoCo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
     def req_lolomo_list_genre(self, genre_id):

@@ -109,8 +109,6 @@ class SettingsMonitor(xbmc.Monitor):
         if progress_manager_enabled != progress_manager_enabled_old:
             g.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
             common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
-            # Get or reset the lolomo data
-            common.send_signal(signal='update_lolomo_data')
 
         # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
         if (clean_cache or reboot_addon) and not common.check_credentials():

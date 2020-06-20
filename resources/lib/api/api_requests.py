@@ -53,22 +53,18 @@ def login(ask_credentials=True):
         raise
 
 
-def update_lolomo_context(context_name):
-    """Update the lolomo list by context"""
-    # 01/06/2020: refreshListByContext often return HTTP error 500, currently i have seen that in the website is
-    #   performed only when the video played is not added to "my list", but with a strange mixed data:
-    #     context_id: the id of continueWatching
-    #     context_index: that seem to point to "My list" id context index
-    #   This api is no more needed to update the continueWatching lolomo list
-    lolomo_root = g.LOCAL_DB.get_value('lolomo_root_id', '', TABLE_SESSION)
+def update_loco_context(context_name):
+    """Update a loco list by context"""
+    # This api seem no more needed to update the continueWatching loco list
+    loco_root = g.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION)
 
-    context_index = g.LOCAL_DB.get_value('lolomo_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
-    context_id = g.LOCAL_DB.get_value('lolomo_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
+    context_index = g.LOCAL_DB.get_value('loco_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
+    context_id = g.LOCAL_DB.get_value('loco_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
 
     if not context_index:
-        common.warn('Update lolomo context {} skipped due to missing lolomo index', context_name)
+        common.warn('Update loco context {} skipped due to missing loco index', context_name)
         return
-    path = [['lolomos', lolomo_root, 'refreshListByContext']]
+    path = [['locos', loco_root, 'refreshListByContext']]
     # The fourth parameter is like a request-id, but it doesn't seem to match to
     # serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
     # nor to request_id of the video event request
@@ -81,15 +77,8 @@ def update_lolomo_context(context_name):
               common.enclose_quotes(context_name),
               '']
     # path_suffixs = [
-    #    [['trackIds', 'context', 'length', 'genreId', 'videoId', 'displayName', 'isTallRow', 'isShowAsARow',
-    #      'impressionToken', 'showAsARow', 'id', 'requestId']],
-    #    [{'from': 0, 'to': 100}, 'reference', 'summary'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'title'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'titleMaturity'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'userRating'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'userRatingRequestId'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'boxarts', '_342x192', 'jpg'],
-    #    [{'from': 0, 'to': 100}, 'reference', 'promoVideo']
+    #    [{'from': 0, 'to': 100}, 'itemSummary'],
+    #    [['componentSummary']]
     # ]
     callargs = {
         'callpaths': path,
@@ -99,13 +88,13 @@ def update_lolomo_context(context_name):
     try:
         response = common.make_http_call('callpath_request', callargs)
         common.debug('refreshListByContext response: {}', response)
-        # The call response return the new context id of the previous invalidated lolomo context_id
+        # The call response return the new context id of the previous invalidated loco context_id
         # and if path_suffixs is added return also the new video list data
     except Exception:  # pylint: disable=broad-except
         if not common.is_debug_verbose():
             return
         ui.show_notification(title=common.get_local_string(30105),
-                             msg='An error prevented the update the lolomo context on netflix',
+                             msg='An error prevented the update the loco context on netflix',
                              time=10000)
 
 

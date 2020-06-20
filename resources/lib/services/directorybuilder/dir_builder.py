@@ -50,8 +50,8 @@ class DirectoryBuilder(DirectoryRequests):
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
     def get_mainmenu(self):
-        lolomo_list = self.req_lolomo_list_root()
-        return build_mainmenu_listing(lolomo_list)
+        loco_list = self.req_loco_list_root()
+        return build_mainmenu_listing(loco_list)
 
     @common.time_execution(immediate=True)
     @common.addonsignals_return_call
