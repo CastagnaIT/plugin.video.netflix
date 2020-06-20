@@ -110,7 +110,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
             import time
             self._get(endpoint='activate_profile',
                       params={'switchProfileGuid': guid,
-                              '_': int(time.time()),
+                              '_': int(time.time() * 1000),
                               'authURL': self.auth_url})
             # Retrieve browse page to update authURL
             response = self._get('browse')

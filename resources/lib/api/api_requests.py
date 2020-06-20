@@ -271,7 +271,7 @@ def _metadata(video_id):
         {
             'endpoint': 'metadata',
             'params': {'movieid': video_id.value,
-                       '_': int(time.time())}
+                       '_': int(time.time() * 1000)}
         })
     if not metadata_data:
         # This return empty
