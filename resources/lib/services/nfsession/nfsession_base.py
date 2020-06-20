@@ -13,8 +13,6 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 
 import resources.lib.common as common
-import resources.lib.common.cookies as cookies
-from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.globals import g
 from resources.lib.database.db_utils import (TABLE_SESSION)
 from resources.lib.api.exceptions import (NotLoggedInError, NotConnected)
@@ -67,24 +65,9 @@ class NFSessionBase(object):
         self.session = session()
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
-            'Accept-Encoding': 'gzip'
+            'Accept-Encoding': 'gzip, deflate, br'
         })
         common.info('Initialized new session')
-
-    def update_session_data(self):
-        self.set_session_header_data()
-        cookies.save(self.account_hash, self.session.cookies)
-        cookies.log_cookie(self.session.cookies)
-
-    def set_session_header_data(self):
-        try:
-            # When the addon is installed from scratch there is no profiles in the database
-            self.session.headers.update({
-                'x-netflix.nq.stack': 'prod',
-                'x-netflix.request.client.user.guid': g.LOCAL_DB.get_active_profile_guid()
-            })
-        except ProfilesMissing:
-            pass
 
     @property
     def account_hash(self):

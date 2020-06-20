@@ -14,6 +14,7 @@ import json
 
 import resources.lib.common as common
 import resources.lib.api.website as website
+from resources.lib.common import cookies
 from resources.lib.globals import g
 from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
 from resources.lib.database.db_utils import TABLE_SESSION
@@ -99,7 +100,7 @@ class NFSessionRequests(NFSessionBase):
         from requests import exceptions
         try:
             self.auth_url = website.extract_session_data(self._get('browse'))['auth_url']
-            self.update_session_data()
+            cookies.save(self.account_hash, self.session.cookies)
             common.debug('Successfully refreshed session data')
             return True
         except InvalidMembershipStatusError:
@@ -139,6 +140,9 @@ class NFSessionRequests(NFSessionBase):
         params = {}
 
         headers = {'Accept': endpoint_conf.get('accept', '*/*')}
+        if endpoint_conf['address'] not in ['/login', '/browse', '/SignOut']:
+            headers['x-netflix.nq.stack'] = 'prod'
+            headers['x-netflix.request.client.user.guid'] = g.LOCAL_DB.get_active_profile_guid()
         if endpoint_conf.get('content_type'):
             headers['Content-Type'] = endpoint_conf['content_type']
         headers.update(custom_headers)  # If needed override headers

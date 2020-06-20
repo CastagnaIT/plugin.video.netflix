@@ -14,6 +14,7 @@ import json
 import resources.lib.common as common
 import resources.lib.api.paths as apipaths
 import resources.lib.api.website as website
+from resources.lib.common import cookies
 from resources.lib.globals import g
 from resources.lib.services.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_access import NFSessionAccess
@@ -98,28 +99,31 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         current_active_guid = g.LOCAL_DB.get_active_profile_guid()
         if self.is_profile_session_active and guid == current_active_guid:
             common.info('The profile session of guid {} is still active, activation not needed.', guid)
-        if not self.is_profile_session_active or (self.is_profile_session_active and
-                                                  guid != current_active_guid):
-            common.info('Activating profile {}', guid)
-            # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
-            # INIT Method 1 - HTTP mode
-            # response = self._get('switch_profile', params={'tkn': guid})
-            # self.auth_url = self.website_extract_session_data(response)['auth_url']
-            # END Method 1
-            # INIT Method 2 - API mode
-            import time
-            self._get(endpoint='activate_profile',
-                      params={'switchProfileGuid': guid,
-                              '_': int(time.time() * 1000),
-                              'authURL': self.auth_url})
-            # Retrieve browse page to update authURL
-            response = self._get('browse')
-            self.auth_url = website.extract_session_data(response)['auth_url']
-            # END Method 2
-            self.is_profile_session_active = True
+        import time
+        timestamp = time.time()
+        common.info('Activating profile {}', guid)
+        # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
+        # INIT Method 1 - HTTP mode
+        # response = self._get('switch_profile', params={'tkn': guid})
+        # self.auth_url = self.website_extract_session_data(response)['auth_url']
+        # END Method 1
+        # INIT Method 2 - API mode
+        self._get(endpoint='activate_profile',
+                  params={'switchProfileGuid': guid,
+                          '_': int(timestamp * 1000),
+                          'authURL': self.auth_url})
+        # Retrieve browse page to update authURL
+        response = self._get('browse')
+        self.auth_url = website.extract_session_data(response)['auth_url']
+        # END Method 2
+
+        self.is_profile_session_active = True
+        # Update the session profile cookie (only a test, see 'Profile idle timeout' in website.py)
+        # expires = int(timestamp) + (g.LOCAL_DB.get_value('profile_gate_idle_timer', 30, TABLE_SESSION) * 60)
+        # self.session.cookies.set('profilesNewSession', '0', domain='.netflix.com', path='/', expires=expires)
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
-        self.update_session_data()
+        cookies.save(self.account_hash, self.session.cookies)
 
     @needs_login
     def _perpetual_path_request_switch_profiles(self, paths, length_params,

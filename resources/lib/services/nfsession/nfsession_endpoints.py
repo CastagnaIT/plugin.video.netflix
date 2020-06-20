@@ -43,13 +43,13 @@ ENDPOINTS = {
          # instead we use 'application/json' for simplicity of data conversion
          # if in the future login raise InvalidMembershipStatusAnonymous can means that json is no more accepted
          'content_type': 'application/json',
-         'accept': '*/*'},
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'logout':
         {'address': '/SignOut',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': '*/*'},
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'shakti':
         {'address': '/pathEvaluator',
          'is_api_call': True,
@@ -61,7 +61,7 @@ ENDPOINTS = {
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': '*/*'},
+         'accept': 'text/html,application/xhtml+xml,application/xml'},
     'profiles_gate':
     # This endpoint is used after ending editing profiles page, i think to force close an active profile session
         {'address': '/ProfilesGate',
