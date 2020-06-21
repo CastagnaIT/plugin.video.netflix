@@ -39,10 +39,6 @@ def ask_credentials():
     password = ask_for_password()
     common.verify_credentials(password)
     common.set_credentials(email, password)
-    return {
-        'email': email,
-        'password': password
-    }
 
 
 def ask_for_password():
