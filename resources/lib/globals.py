@@ -65,8 +65,8 @@ class GlobalVariables(object):
     '''
     --Main Menu key infos--
     path : passes information to the called method generally structured as follows: [func. name, menu id, context id]
-    lolomo_contexts : contexts used to obtain the list of contents (use only one context when lolomo_known = True)
-    lolomo_known : if True, keys label_id/description_id/icon are ignored, the values are obtained from lolomo list
+    loco_contexts : contexts used to obtain the list of contents (use only one context when loco_known = True)
+    loco_known : if True, keys label_id/description_id/icon are ignored, these values are obtained from LoCo list
     label_id : menu title
     description_id : description info text
     icon : set a default image
@@ -74,109 +74,109 @@ class GlobalVariables(object):
     content_type : override the default content type (CONTENT_SHOW)
 
     Explanation of function names in the 'path' key:
-        video_list: automatically gets the list_id by making a lolomo request,
-                    the list_id search is made using the value specified on the lolomo_contexts key
+        video_list: automatically gets the list_id by making a loco request,
+                    the list_id search is made using the value specified on the loco_contexts key
         video_list_sorted: to work must have a third argument on the path that is the context_id
                            or instead specified the key request_context_name
     '''
     MAIN_MENU_ITEMS = collections.OrderedDict([
         ('myList', {'path': ['video_list_sorted', 'myList'],
-                    'lolomo_contexts': ['queue'],
-                    'lolomo_known': True,
+                    'loco_contexts': ['queue'],
+                    'loco_known': True,
                     'request_context_name': 'mylist',
                     'view': VIEW_MYLIST}),
         ('continueWatching', {'path': ['video_list', 'continueWatching'],
-                              'lolomo_contexts': ['continueWatching'],
-                              'lolomo_known': True}),
+                              'loco_contexts': ['continueWatching'],
+                              'loco_known': True}),
         ('chosenForYou', {'path': ['video_list', 'chosenForYou'],
-                          'lolomo_contexts': ['topTen'],
-                          'lolomo_known': True}),
+                          'loco_contexts': ['topTen'],
+                          'loco_known': True}),
         ('recentlyAdded', {'path': ['video_list_sorted', 'recentlyAdded', '1592210'],
-                           'lolomo_contexts': None,
-                           'lolomo_known': False,
+                           'loco_contexts': None,
+                           'loco_known': False,
                            'request_context_name': 'genres',
                            'label_id': 30145,
                            'description_id': 30146,
                            'icon': 'DefaultRecentlyAddedMovies.png'}),
         ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
-                        'lolomo_contexts': ['newRelease'],
-                        'lolomo_known': True,
+                        'loco_contexts': ['newRelease'],
+                        'loco_known': True,
                         'request_context_name': 'newrelease'}),
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
-                           'lolomo_contexts': ['trendingNow'],
-                           'lolomo_known': True}),
+                           'loco_contexts': ['trendingNow'],
+                           'loco_known': True}),
         ('mostWatched', {'path': ['video_list', 'mostWatched'],  # Top 10 menu
-                         'lolomo_contexts': ['mostWatched'],
-                         'lolomo_known': True}),
+                         'loco_contexts': ['mostWatched'],
+                         'loco_known': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
-                        'lolomo_contexts': ['popularTitles'],
-                        'lolomo_known': True}),
+                        'loco_contexts': ['popularTitles'],
+                        'loco_known': True}),
         ('netflixOriginals', {'path': ['video_list_sorted', 'netflixOriginals', '839338'],
-                              'lolomo_contexts': ['netflixOriginals'],
-                              'lolomo_known': True,
+                              'loco_contexts': ['netflixOriginals'],
+                              'loco_known': True,
                               'request_context_name': 'genres'}),
         ('assistiveAudio', {'path': ['video_list_sorted', 'assistiveAudio', 'None'],
-                            'lolomo_contexts': None,
-                            'lolomo_known': False,
+                            'loco_contexts': None,
+                            'loco_known': False,
                             'request_context_name': 'assistiveAudio',
                             'label_id': 30163,
                             'description_id': 30164,
                             'icon': 'DefaultTVShows.png'}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
-                             'lolomo_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked', 'watchAgain',
-                                                 'bigRow'],
-                             'lolomo_known': False,
+                             'loco_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked', 'watchAgain',
+                                               'bigRow'],
+                             'loco_known': False,
                              'label_id': 30001,
                              'description_id': 30094,
                              'icon': 'DefaultUser.png'}),
         ('tvshowsGenres', {'path': ['subgenres', 'tvshowsGenres', '83'],
-                           'lolomo_contexts': None,
-                           'lolomo_known': False,
+                           'loco_contexts': None,
+                           'loco_known': False,
                            'request_context_name': 'genres',  # Used for sub-menus
                            'label_id': 30174,
                            'description_id': None,
                            'icon': 'DefaultTVShows.png'}),
         ('moviesGenres', {'path': ['subgenres', 'moviesGenres', '34399'],
-                          'lolomo_contexts': None,
-                          'lolomo_known': False,
+                          'loco_contexts': None,
+                          'loco_known': False,
                           'request_context_name': 'genres',  # Used for sub-menus
                           'label_id': 30175,
                           'description_id': None,
                           'icon': 'DefaultMovies.png',
                           'content_type': CONTENT_MOVIE}),
-        # Todo: Disabled All tv shows/All movies lolomo menu due to website changes
+        # Todo: Disabled All tv shows/All movies loco menu due to website changes
         # ('tvshows', {'path': ['genres', 'tvshows', '83'],
-        #              'lolomo_contexts': None,
-        #              'lolomo_known': False,
+        #              'loco_contexts': None,
+        #              'loco_known': False,
         #              'request_context_name': 'genres',  # Used for sub-menus
         #              'label_id': 30095,
         #              'description_id': None,
         #              'icon': 'DefaultTVShows.png'}),
         # ('movies', {'path': ['genres', 'movies', '34399'],
-        #             'lolomo_contexts': None,
-        #             'lolomo_known': False,
+        #             'loco_contexts': None,
+        #             'loco_known': False,
         #             'request_context_name': 'genres',  # Used for sub-menus
         #             'label_id': 30096,
         #             'description_id': None,
         #             'icon': 'DefaultMovies.png',
         #             'content_type': CONTENT_MOVIE}),
         ('genres', {'path': ['genres', 'genres'],
-                    'lolomo_contexts': ['genre'],
-                    'lolomo_known': False,
+                    'loco_contexts': ['genre'],
+                    'loco_known': False,
                     'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30010,
                     'description_id': 30093,
                     'icon': 'DefaultGenre.png'}),
         ('search', {'path': ['search', 'search'],
-                    'lolomo_contexts': None,
-                    'lolomo_known': False,
+                    'loco_contexts': None,
+                    'loco_known': False,
                     'label_id': 30011,
                     'description_id': 30092,
                     'icon': None,
                     'view': VIEW_SEARCH}),
         ('exported', {'path': ['exported', 'exported'],
-                      'lolomo_contexts': None,
-                      'lolomo_known': False,
+                      'loco_contexts': None,
+                      'loco_known': False,
                       'label_id': 30048,
                       'description_id': 30091,
                       'icon': 'DefaultHardDisk.png',
@@ -337,10 +337,10 @@ class GlobalVariables(object):
         return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
     def is_known_menu_context(self, context):
-        """Return true if context are one of the menu with lolomo_known=True"""
+        """Return true if context are one of the menu with loco_known=True"""
         for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
-            if data['lolomo_known']:
-                if data['lolomo_contexts'][0] == context:
+            if data['loco_known']:
+                if data['loco_contexts'][0] == context:
                     return True
         return False
 

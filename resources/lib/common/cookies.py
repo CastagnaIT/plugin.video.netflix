@@ -30,15 +30,16 @@ class CookiesExpiredError(Exception):
     """Stored cookies are expired"""
 
 
-def save(account_hash, cookie_jar):
+def save(account_hash, cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
-    # pylint: disable=broad-except
+    if log_output:
+        log_cookie(cookie_jar)
     g.COOKIES[account_hash] = cookie_jar
     cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
         # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         common.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
         cookie_file.close()
@@ -46,12 +47,11 @@ def save(account_hash, cookie_jar):
 
 def delete(account_hash):
     """Delete cookies for an account from in-memory storage and the disk"""
-    # pylint: disable=broad-except
     if g.COOKIES.get(account_hash):
         del g.COOKIES[account_hash]
     try:
         xbmcvfs.delete(cookie_filename(account_hash))
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         common.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
@@ -69,7 +69,7 @@ def load(account_hash):
             cookie_jar = pickle.loads(cookie_file.read())
         else:
             cookie_jar = pickle.loads(cookie_file.readBytes())
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         import traceback
         common.error('Failed to load cookies from file: {exc}', exc=exc)
         common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))

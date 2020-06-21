@@ -61,8 +61,6 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         valid_login = self._load_cookies() and \
             self._verify_session_cookies() and \
             self._verify_esn_existence()
-        if valid_login and not self.is_prefetch_login:
-            self.set_session_header_data()
         return valid_login
 
     def _verify_esn_existence(self):
@@ -91,7 +89,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
                 website.extract_session_data(login_response, validate=True, update_profiles=True)
                 common.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
-                self.update_session_data()
+                cookies.save(self.account_hash, self.session.cookies)
                 return True
             except (LoginValidateError, LoginValidateErrorIncorrectPassword) as exc:
                 self.session.cookies.clear()

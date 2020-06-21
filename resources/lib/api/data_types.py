@@ -71,6 +71,82 @@ class LoLoMo(object):
         return None, None
 
 
+class LoCo(object):
+    """List of components (LoCo)"""
+    def __init__(self, path_response):
+        self.data = path_response
+        common.debug('LoCo data: {}', self.data)
+        _filterout_loco_contexts(self.data, ['billboard'])
+        self.id = next(iter(self.data['locos']))  # Get loco root id
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data['locos'][self.id][key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this LoLoMo."""
+        return self.data['locos'][self.id].get(key, default)
+
+    def lists_by_context(self, contexts, break_on_first=False):
+        """
+        Get all video lists of the given contexts
+
+        :param contexts: list of context names
+        :param break_on_first: stop the research at first match
+        :return iteritems of a dict where key=list id, value=VideoListLoCo object data
+        """
+        lists = {}
+        for list_id, list_data in iteritems(self.data['lists']):
+            if list_data['componentSummary']['context'] in contexts:
+                lists.update({list_id: VideoListLoCo(self.data, list_id)})
+                if break_on_first:
+                    break
+        return iteritems(lists)
+
+    def find_by_context(self, context):
+        """Return the video list and the id list of a context"""
+        for list_id, data in iteritems(self.data['lists']):
+            if data['componentSummary']['context'] != context:
+                continue
+            return list_id, VideoListLoCo(self.data, list_id)
+        return None, None
+
+
+class VideoListLoCo:
+    """A video list, for LoCo data"""
+    def __init__(self, path_response, list_id):
+        # common.debug('VideoListLoCo data: {}', path_response)
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
+        self.data = path_response
+        self.list_id = list_id
+        self.videoids = None
+        # Set a 'UNSPECIFIED' type videoid (special handling for menus see parse_info in infolabels.py)
+        self.videoid = common.VideoId(videoid=list_id)
+        self.contained_titles = None
+        self.artitem = None
+        if 'lists' not in path_response:
+            # No data in path response
+            return
+        # Set videos data for the specified list id
+        self.videos = OrderedDict(resolve_refs(self.data['lists'][list_id], self.data))
+        if not self.videos:
+            return
+        # Set first videos titles (special handling for menus see parse_info in infolabels.py)
+        self.contained_titles = _get_titles(self.videos)
+        # Set art data of first video (special handling for menus see parse_info in infolabels.py)
+        self.artitem = listvalues(self.videos)[0]
+        try:
+            self.videoids = _get_videoids(self.videos)
+        except KeyError:
+            self.videoids = None
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'][key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this VideoList."""
+        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'].get(key, default))
+
+
 class VideoList:
     """A video list"""
     def __init__(self, path_response, list_id=None):
@@ -238,8 +314,7 @@ def _check_sentinel(value):
 
 
 def _get_title(video):
-    """Get the title of a video (either from direct key or nested within
-    summary)"""
+    """Get the title of a video (either from direct key or nested within summary)"""
     return video.get('title', video.get('summary', {}).get('title'))
 
 
@@ -270,3 +345,14 @@ def _filterout_contexts(data, contexts):
                     del data['lolomos'][_id][idkey]
                     break
             del data['lists'][listid]
+
+
+def _filterout_loco_contexts(data, contexts):
+    """Deletes from the data all records related to the specified contexts"""
+    root_id = next(iter(data['locos']))
+    for index in range(len(data['locos'][root_id]) - 1, -1, -1):
+        list_id = data['locos'][root_id][str(index)][1]
+        if not data['lists'][list_id]['componentSummary'].get('context') in contexts:
+            continue
+        del data['lists'][list_id]
+        del data['locos'][root_id][str(index)]

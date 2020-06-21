@@ -32,7 +32,7 @@ class AMVideoEvents(ActionManager):
         self.tick_elapsed = 0
         self.is_player_in_pause = False
         self.lock_events = False
-        self.allow_request_update_lolomo = False
+        self.allow_request_update_loco = False
         self.window_cls = Window(10000)  # Kodi home window
 
     def __str__(self):
@@ -58,8 +58,8 @@ class AMVideoEvents(ActionManager):
             # Delete the cache of continueWatching list
             g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
             # When the continueWatching context is invalidated from a refreshListByContext call
-            # the lolomo need to be updated to obtain the new list id, so we delete the cache to get new data
-            g.CACHE.delete(CACHE_COMMON, 'lolomo_list')
+            # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
+            g.CACHE.delete(CACHE_COMMON, 'loco_list')
 
     def on_tick(self, player_state):
         if self.lock_events:
@@ -87,9 +87,9 @@ class AMVideoEvents(ActionManager):
                     self._send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
                     self._save_resume_time(player_state['elapsed_seconds'])
                     self.last_tick_count = self.tick_elapsed
-                    # Allow request of lolomo update (for continueWatching and bookmark) only after the first minute
+                    # Allow request of loco update (for continueWatching and bookmark) only after the first minute
                     # it seems that most of the time if sent earlier returns error
-                    self.allow_request_update_lolomo = True
+                    self.allow_request_update_loco = True
         self.tick_elapsed += 1  # One tick almost always represents one second
 
     def on_playback_pause(self, player_state):
@@ -111,7 +111,7 @@ class AMVideoEvents(ActionManager):
         self._reset_tick_count()
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._save_resume_time(player_state['elapsed_seconds'])
-        self.allow_request_update_lolomo = True
+        self.allow_request_update_loco = True
 
     def on_playback_stopped(self, player_state):
         if not self.is_event_start_sent or self.lock_events:
@@ -138,7 +138,7 @@ class AMVideoEvents(ActionManager):
         if not player_state:
             common.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
             return
-        event_data['allow_request_update_lolomo'] = self.allow_request_update_lolomo
+        event_data['allow_request_update_loco'] = self.allow_request_update_loco
         common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
             'event_type': event_type,
             'event_data': event_data,

@@ -157,8 +157,8 @@ class AddonActionExecutor(object):
             if list_id:
                 g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
             # When the continueWatching context is invalidated from a refreshListByContext call
-            # the lolomo need to be updated to obtain the new list id, so we delete the cache to get new data
-            g.CACHE.delete(CACHE_COMMON, 'lolomo_list')
+            # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
+            g.CACHE.delete(CACHE_COMMON, 'loco_list')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
