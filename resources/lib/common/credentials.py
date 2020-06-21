@@ -110,8 +110,8 @@ def set_credentials(email, password):
     Does nothing if either email or password are not supplied.
     """
     if email and password:
-        g.LOCAL_DB.set_value('account_email', encrypt_credential(email))
-        g.LOCAL_DB.set_value('account_password', encrypt_credential(password))
+        g.LOCAL_DB.set_value('account_email', encrypt_credential(email.strip()))
+        g.LOCAL_DB.set_value('account_password', encrypt_credential(password.strip()))
 
 
 def purge_credentials():
