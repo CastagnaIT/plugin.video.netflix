@@ -172,7 +172,7 @@ class GlobalVariables(object):
                     'loco_known': False,
                     'label_id': 30011,
                     'description_id': 30092,
-                    'icon': None,
+                    'icon': 'DefaultAddonsSearch.png',
                     'view': VIEW_SEARCH}),
         ('exported', {'path': ['exported', 'exported'],
                       'loco_contexts': None,
