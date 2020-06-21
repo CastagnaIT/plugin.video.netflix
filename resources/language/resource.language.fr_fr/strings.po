@@ -66,7 +66,7 @@ msgstr "Vérifiez vos identifiants"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
-msgstr "Tous les genres"
+msgstr "Listes de toutes sortes"
 
 msgctxt "#30011"
 msgid "Search"
@@ -198,7 +198,7 @@ msgstr "Vue pour les profils"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
-msgstr "Evaluation supprimée|'Pouce baissé' enregistré|'Pouce levé' enregistré"
+msgstr "Évaluation supprimée|'Pouce baissé' enregistré|'Pouce levé' enregistré"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
@@ -418,7 +418,7 @@ msgstr "Netflix a renvoyé l'erreur suivante : "
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message de l'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le sur GitHub en suivant les instructions du Readme"
+msgstr "Les détails de l'erreur ont été écrits dans le fichier journal de Kodi. Si le message de l'erreur ne vous indique pas comment résoudre le problème ou si vous continuez à recevoir cette erreur, signalez-le sur GitHub en suivant les instructions du Readme."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -578,7 +578,7 @@ msgstr "Personalisée"
 
 msgctxt "#30143"
 msgid "Custom view ID"
-msgstr "Numéro de la vue personalisée"
+msgstr "Identifiant de la vue personalisée"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
@@ -660,7 +660,7 @@ msgstr "Audiodescription"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr "Parcourez les programmes disponibles en audiodescription"
+msgstr "Parcourez les programmes disponibles en audiodescription."
 
 msgctxt "#30165"
 msgid "View for my list"
@@ -777,7 +777,7 @@ msgstr "\r\nCes fichiers sont utilisés par les fournisseurs d'informations pour
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Inclure toutes les informations dans les fichiers NFO (à utiliser uniquement avec le fournisseur d'informations 'Local information only')"
+msgstr "Inclure toutes les informations dans les fichiers NFO (à utiliser uniquement avec le fournisseur d'informations 'Local information')"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
