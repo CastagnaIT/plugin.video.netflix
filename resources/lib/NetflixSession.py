@@ -269,15 +269,18 @@ class NetflixSession(object):
             return True
 
         # load the profiles page (to verify the user)
-        response = self._session_get(component='profiles')
-        if response:
-            # parse out the needed inline information
-            user_data, profiles = self.extract_inline_netflix_page_data(
-                content=response.content)
-            self.profiles = profiles
-            # if we have profiles, cookie is still valid
-            if self.profiles:
-                return True
+        if not self.profiles:
+            response = self._session_get(component='profiles')
+            if response:
+                # parse out the needed inline information
+                user_data, profiles = self.extract_inline_netflix_page_data(
+                    content=response.content)
+                self.profiles = profiles
+                # if we have profiles, cookie is still valid
+                if self.profiles:
+                    return True
+        else:
+            return True
         return False
 
     def logout(self, mslResetCmd=None):
