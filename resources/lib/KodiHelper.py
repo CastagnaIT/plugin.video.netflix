@@ -1193,8 +1193,8 @@ class KodiHelper(object):
             li_infos['quality'] = quality
         if 'tvshowtitle' in entry_keys:
             title = entry.get('tvshowtitle', '')
-            if not isinstance(title, compat_unicode):
-                title = base64.urlsafe_b64decode(title).decode('utf-8')
+            #if not isinstance(title, compat_unicode):
+            title = base64.urlsafe_b64decode(title).decode('utf-8')
             infos.update({'tvshowtitle': title})
         self.library.write_metadata_file(
             video_id=str(entry['id']), content=infos)
