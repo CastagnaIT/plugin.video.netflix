@@ -976,8 +976,8 @@ msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "İzlenmeyen ilk TV şovu bölümünü seçin"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Widevine güvenlik seviyesi L3'ü zorla"
