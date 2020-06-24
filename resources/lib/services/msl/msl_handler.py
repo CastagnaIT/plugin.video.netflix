@@ -183,9 +183,9 @@ class MSLHandler(object):
             'isUIAutoPlay': False,
             'useHttpsStreams': True,
             'imageSubtitleHeight': 1080,
-            'uiVersion': 'shakti-v1b8c742f',
+            'uiVersion': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
-            'clientVersion': '6.0023.473.011',
+            'clientVersion': g.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
             'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
