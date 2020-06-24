@@ -192,7 +192,7 @@ class MSLHandler(object):
             'supportsUnequalizedDownloadables': True,
             'showAllSubDubTracks': False,
             'titleSpecificData': {
-                viewable_id: {
+                unicode(viewable_id): {
                     'unletterboxed': True
                 }
             },
@@ -205,7 +205,8 @@ class MSLHandler(object):
             'preferAssistiveAudio': False
         }
 
-        manifest = self.msl_requests.chunked_request(ENDPOINTS['manifest'],
+        endpoint_url = ENDPOINTS['manifest'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/manifest'
+        manifest = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data('/manifest', params),
                                                      esn,
                                                      disable_msl_switch=False)
@@ -239,7 +240,8 @@ class MSLHandler(object):
             'challengeBase64': challenge,
             'xid': xid
         }]
-        response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+        endpoint_url = ENDPOINTS['license'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/license'
+        response = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
                                                                                           'drmSessionId'),
