@@ -67,7 +67,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
                  'keydata': {
                      'publickey': public_key.decode('utf-8'),
                      'mechanism': 'JWK_RSA',
-                     'keypairid': 'superKeyPair'
+                     'keypairid': 'rsaKeypairId'
                  }}]
 
     def encrypt(self, plaintext, esn):
