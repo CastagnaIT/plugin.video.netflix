@@ -67,7 +67,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
                  'keydata': {
                      'publickey': public_key.decode('utf-8'),
                      'mechanism': 'JWK_RSA',
-                     'keypairid': 'superKeyPair'
+                     'keypairid': 'rsaKeypairId'
                  }}]
 
     def encrypt(self, plaintext, esn):
@@ -78,15 +78,14 @@ class DefaultMSLCrypto(MSLBaseCrypto):
         """
         init_vector = get_random_bytes(16)
         cipher = AES.new(self.encryption_key, AES.MODE_CBC, init_vector)
+        ciphertext = base64.standard_b64encode(
+            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16))).decode('utf-8')
         encryption_envelope = {
-            'ciphertext': '',
+            'ciphertext': ciphertext,
             'keyid': '_'.join((esn, str(self.sequence_number))),
             'sha256': 'AA==',
             'iv': base64.standard_b64encode(init_vector).decode('utf-8')
         }
-        encryption_envelope['ciphertext'] = base64.standard_b64encode(
-            cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16))).decode('utf-8')
-
         return json.dumps(encryption_envelope)
 
     def decrypt(self, init_vector, ciphertext):

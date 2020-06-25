@@ -92,10 +92,16 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
 
         common.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
+
+        # Save the key request (challenge data) required for manifest requests
+        # Todo: to be implemented if/when it becomes mandatory
+        key_request = base64.standard_b64encode(key_request).decode('utf-8')
+        # g.LOCAL_DB.set_value('drm_session_challenge', key_request, TABLE_SESSION)
+
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
-                'keyrequest': base64.standard_b64encode(key_request).decode('utf-8')
+                'keyrequest': key_request
             }
         }]
 

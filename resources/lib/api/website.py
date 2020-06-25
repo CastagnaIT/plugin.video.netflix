@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from re import compile as recompile, DOTALL, sub
+from re import search, compile as recompile, DOTALL, sub
 
 from future.utils import iteritems
 
@@ -183,6 +183,13 @@ def extract_session_data(content, validate=False, update_profiles=False):
     if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
         g.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
     g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
+    # Extract the client version from assets core
+    result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
+    if not result:
+        common.error('It was not possible to extract the client version!')
+        api_data['client_version'] = '6.0023.976.011'
+    else:
+        api_data['client_version'] = result.groups()[0]
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)

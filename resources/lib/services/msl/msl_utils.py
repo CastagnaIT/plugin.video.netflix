@@ -11,7 +11,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import random
-import re
 import time
 from functools import wraps
 
@@ -160,11 +159,7 @@ def generate_logblobs_params():
     screen_size = str(xbmcgui.getScreenWidth()) + 'x' + str(xbmcgui.getScreenHeight())
     timestamp_utc = time.time()
     timestamp = int(timestamp_utc * 1000)
-    client_ver = g.LOCAL_DB.get_value('asset_core', '', table=TABLE_SESSION)
     app_id = int(time.time()) * 10000 + random.randint(1, 10001)  # Should be used with all log requests
-    if client_ver:
-        result = re.search(r'-([0-9\.]+)\.js$', client_ver)
-        client_ver = result.groups()[0]
 
     # Here you have to enter only the real data, falsifying the data would cause repercussions in netflix server logs
     # therefore since it is possible to exclude data, we avoid entering data that we do not have
@@ -190,7 +185,7 @@ def generate_logblobs_params():
         'type': 'startup',
         'sev': 'info',
         'devmod': 'chrome-cadmium',
-        'clver': client_ver,  # e.g. '6.0021.220.051'
+        'clver': g.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),  # e.g. '6.0021.220.051'
         'osplatform': g.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
         'osver': g.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
         'browsername': 'Chrome',

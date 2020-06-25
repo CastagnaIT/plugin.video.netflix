@@ -38,6 +38,34 @@ class MSLHandler(object):
     licenses_session_id = []
     licenses_xid = []
     licenses_release_url = []
+    manifest_challenge = ('CAESwQsKhgsIARLsCQqvAggCEhGN3Th6q2GhvXw9bD+X9aW2ChjQ8PLmBSKOAjCCAQoCggEBANsVUL5yI9K'
+                          'UG1TPpb1A0bzk6df3YwbpDEkh+IOj52RfnKyspASRN1JQvCRrKwiq433M9BV+8ZkzkheYEPZ9X5rl5Ydkwp'
+                          'qedzdZRAiuaVp/mMA5zUM3I3fZogVxGnVzh4mB2URg+g7TFwbPWz2x1uzPumO+2ImOPIUyR7auoOKrZml30'
+                          '8w8Edwdd1HwFyrJEZHLDN2P51PJhVrUBWUlxebY05NhfIUvWQ/pyXAa6AahTf7PTVow/uu1d0vc6gHSxmj0'
+                          'hodvaxrkDcBY9NoOH2XCW7LNJnKC487CVwCHOJC9+6fakaHnjHepayeGEp2JL2AaCrGGqAOZdG8F11Pa0H8'
+                          'CAwEAASirbxKAAmFqOFvUp7caxO5/q2QK5yQ8/AA5E1KOQJxZrqwREPbGUX3670XGw9bamA0bxc37DUi6Dw'
+                          'rOyWKWSaW/qVNie86mW/7KdVSpZPGcF/TxO+kd4iXMIjH0REZst/mMJhv5UMMO9dDFGR3RBqkPbDTdzvX1u'
+                          'E/loVPDH8QEfDACzDkeCA1P0zAcjWKGPzaeUrogsnBEQN4wCVRQqufDXkgImhDUCUkmyQDJXQkhgMMWtbbC'
+                          'HMa/DMGEZAhu4I8G32m8XxU3NoK1kDsb+s5VUgOdkX3ZnFw1uf3niQ9FCTYlzv4SIBJGEokJjkHagT6kVWf'
+                          'hsvSHMHzayKb00OwIn/6NsNEatAUKrgIIARIQiX9ghrmqxsdcq/w8cprG8Bj46/LmBSKOAjCCAQoCggEBAL'
+                          'udF8e+FexCGnOsPQCNtaIvTRW8XsqiTxdo5vElAnGMoOZn6Roy2jwDkc1Gy2ucybY926xk0ZP2Xt5Uy/atI'
+                          '5yAvn7WZGWzbR5BbMbXIxaCyDysm7L+X6Fid55YbJ8GLl2/ToOY2CVYT+EciaTj56OjcyBJLDW/0Zqp25gn'
+                          'da61HwomZOVLoFmLbeZtC5DjvEv8c2NIDXXketqd/vj0I1nWKtEy8nKIPw/2nhitR6QFUnfEb8hJgPgdTAp'
+                          'TkxWm4hSpWsM0j8CQOYNzDL2/kfP1cYw0Fh7oJMSEt2H6AUjC4lIkp54rPHAhLYE+tmwKSYfrmjEoTVErcI'
+                          'jl6jEvwtsCAwEAASirbxKAA0OHZIfwXbTghTVi4awHyXje/8D5fdtggtTa0Edec0KmZbHwBbLJ9OCBc9RrR'
+                          'L8O4WgQPG/5RVLc9IsR9x/Gw1vg/X+MmWEBnY62XNdVAUjbYGwRQuHQFMkwEQdzxfcH9oWoJtOZdLEN2X/p'
+                          'Ws7MeM4KZc8gTUqcDHekq1QqKNs+Voc8Q5hIX7fims9llY/RUHNatDPFVuEyJ0Vqx5l+Rrrdqk+b1fXuVR6'
+                          'yxP1h4S/C/UtedUyZxZgc/1OJ0mLr5x1tkRbFVyzA8Z/qfZeYq3HV4pAGg7nLg0JRBTbjiZH8eUhr1JtwLi'
+                          'udU9vLvDnv1Y6bsfaT62vfLOttozSZVIeWo7acZHICduOL/tH1Kx7f6e7ierwQYAOng1LGs/PLofQ874C1A'
+                          'tNkN0tVe6cSSAvN+Vl33GbICXpX6Rq8LBPqqhzGMGBMiybnmXqOaXz8ngSQCiXqp/ImaOKfx8OE6qH92rUV'
+                          'Wgw68qBy9ExEOl95SSEx9A/B4vEYFHaHwzqh2BoYChFhcmNoaXRlY3R1cmVfbmFtZRIDYXJtGhYKDGNvbXB'
+                          'hbnlfbmFtZRIGR29vZ2xlGhcKCm1vZGVsX25hbWUSCUNocm9tZUNETRoZCg1wbGF0Zm9ybV9uYW1lEghDaH'
+                          'JvbWVPUxojChR3aWRldmluZV9jZG1fdmVyc2lvbhILNC4xMC4xNjEwLjYyCAgBEAAYACABEiwKKgoUCAESE'
+                          'AAAAAAD0mdJAAAAAAAAAAAQARoQA5cwqbEo4TSV6p1qQZy26BgBIOSrw/cFMBUagAIp7zGUC9p3XZ9sp0w+'
+                          'yd6/wyRa1V22NyPF4BsNivSEkMtcEaQiUOW+LrGhHO+RrukWeJlzVbtpai5/vjOAbsaouQ0yMp8yfpquZcV'
+                          'kpPugSOPKu1A0W5w5Ou9NOGsMaJi6+LicGxhS+7xAp/lv/9LATCcQJXS2elBCz6f6VUQyMOPyjQYBrH3h27'
+                          'tVRcsnTRQATcogwCytXohKroBGvODIYcpVFsy2saOCyh4HTezzXJvgogx2f15ViyF5rDqho4YsW0z4it9TF'
+                          'BT0OOLkk0fQ6a1LSqA49eN3RufKYq4LT+G+ffdgoDmKpIWS3bp7xQ6GeYtDAUh0D8Ipwc8aKzP2')
 
     def __init__(self):
         super(MSLHandler, self).__init__()
@@ -183,16 +211,16 @@ class MSLHandler(object):
             'isUIAutoPlay': False,
             'useHttpsStreams': True,
             'imageSubtitleHeight': 1080,
-            'uiVersion': 'shakti-v1b8c742f',
+            'uiVersion': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
-            'clientVersion': '6.0023.473.011',
+            'clientVersion': g.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
             'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
             'supportsUnequalizedDownloadables': True,
             'showAllSubDubTracks': False,
             'titleSpecificData': {
-                viewable_id: {
+                unicode(viewable_id): {
                     'unletterboxed': True
                 }
             },
@@ -205,7 +233,18 @@ class MSLHandler(object):
             'preferAssistiveAudio': False
         }
 
-        manifest = self.msl_requests.chunked_request(ENDPOINTS['manifest'],
+        if 'linux' in common.get_system_platform() and 'arm' in common.get_machine():
+            # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
+            #   is mandatory to add the widevine challenge data (key request) to the manifest request.
+            # Is not possible get the key request from the default_crypto, is needed to implement
+            #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
+            #   under android OS.
+            # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
+            #   then when ISA perform the license callback we replace it with the fresh license challenge data.
+            params['challenge'] = self.manifest_challenge
+
+        endpoint_url = ENDPOINTS['manifest'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/manifest'
+        manifest = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data('/manifest', params),
                                                      esn,
                                                      disable_msl_switch=False)
@@ -239,7 +278,9 @@ class MSLHandler(object):
             'challengeBase64': challenge,
             'xid': xid
         }]
-        response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+        self.manifest_challenge = challenge
+        endpoint_url = ENDPOINTS['license'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/license'
+        response = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
                                                                                           'drmSessionId'),
