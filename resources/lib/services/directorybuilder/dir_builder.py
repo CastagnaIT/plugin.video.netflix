@@ -151,8 +151,11 @@ class DirectoryBuilder(DirectoryRequests):
     def get_mylist_videoids_profile_switch(self):
         # Special method used for library sync with my list
         video_list = self.req_datatype_video_list_full('mylist', True)
-        video_id_list = [video_id for video_id, video in iteritems(video_list.videos)]
-        video_id_list_type = [video['summary']['type'] for video_id, video in iteritems(video_list.videos)]
+        video_id_list = []
+        video_id_list_type = []
+        for video_id, video in iteritems(video_list.videos):
+            video_id_list.append(video_id)
+            video_id_list_type.append(video['summary']['type'])
         return video_id_list, video_id_list_type
 
     @common.time_execution(immediate=True)
