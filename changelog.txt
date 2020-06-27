@@ -1,3 +1,7 @@
+v1.5.1 (2020-06-27)
+-Implemented fix/workaround to get resolutions until to 1080p with ARM devices
+-Updated translations tr
+
 v1.5.0 (2020-06-21)
 -Add support to the new LoCo Netflix pages
 -Fixed KeyError 'lolomo' (LoLoMo seem now deprecated)
