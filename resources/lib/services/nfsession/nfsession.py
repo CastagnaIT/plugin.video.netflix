@@ -99,6 +99,7 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         current_active_guid = g.LOCAL_DB.get_active_profile_guid()
         if self.is_profile_session_active and guid == current_active_guid:
             common.info('The profile session of guid {} is still active, activation not needed.', guid)
+            return
         import time
         timestamp = time.time()
         common.info('Activating profile {}', guid)
