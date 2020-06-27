@@ -250,7 +250,7 @@ def _get_event_data(videoid):
     req_videoids = [videoid]
     if is_episode:
         # Get also the tvshow data
-        req_videoids.append(videoid.derive_parent(0))
+        req_videoids.append(videoid.derive_parent(common.VideoId.SHOW))
 
     raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
     if not raw_data:

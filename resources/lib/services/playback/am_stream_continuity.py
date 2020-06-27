@@ -63,9 +63,7 @@ class AMStreamContinuity(ActionManager):
         if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
             return
-        self.current_videoid = self.videoid \
-            if self.videoid.mediatype == common.VideoId.MOVIE \
-            else self.videoid.derive_parent(0)
+        self.current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
         self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
                                                              self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'

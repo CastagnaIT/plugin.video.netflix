@@ -37,11 +37,11 @@ def find(value_to_find, attribute, search_space):
     raise KeyError('Metadata for {} does not exist'.format(value_to_find))
 
 
-def find_episode_metadata(videoid, metadata):
+def find_episode_metadata(episode_videoid, metadata):
     """Find metadata for a specific episode within a show metadata dict"""
-    season = find(int(videoid.seasonid), 'id', metadata['seasons'])
-    return (find(int(videoid.episodeid), 'id', season.get('episodes', {})),
-            season)
+    season = find(int(episode_videoid.seasonid), 'id', metadata['seasons'])
+    episode = find(int(episode_videoid.episodeid), 'id', season.get('episodes', {}))
+    return episode, season
 
 
 def get_class_methods(class_item=None):

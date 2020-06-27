@@ -22,8 +22,7 @@ class InvalidVideoId(Exception):
 
 
 class VideoId(object):
-    """Universal representation of a video id. Video IDs can be of multiple
-    types:
+    """Universal representation of a video id. Video IDs can be of multiple types:
     - supplemental: a single identifier only for supplementalid, all other values must be None
     - movie: a single identifier only for movieid, all other values must be None
     - show: a single identifier only for tvshowid, all other values must be None
@@ -207,8 +206,7 @@ class VideoId(object):
         of this show. Raises InvalidVideoId is this instance does not
         represent a show."""
         if self.mediatype != VideoId.SHOW:
-            raise InvalidVideoId('Cannot derive season VideoId from {}'
-                                 .format(self))
+            raise InvalidVideoId('Cannot derive season VideoId from {}'.format(self))
         return type(self)(tvshowid=self.tvshowid, seasonid=unicode(seasonid))
 
     def derive_episode(self, episodeid):
@@ -216,24 +214,30 @@ class VideoId(object):
         of this season. Raises InvalidVideoId is this instance does not
         represent a season."""
         if self.mediatype != VideoId.SEASON:
-            raise InvalidVideoId('Cannot derive episode VideoId from {}'
-                                 .format(self))
+            raise InvalidVideoId('Cannot derive episode VideoId from {}'.format(self))
         return type(self)(tvshowid=self.tvshowid, seasonid=self.seasonid,
                           episodeid=unicode(episodeid))
 
-    def derive_parent(self, depth):
-        """Returns a new videoid for the parent mediatype (season for episodes,
-        show for seasons) that is at the depth's level of the mediatype
-        hierarchy or this instance if there is no parent mediatype."""
-        if self.mediatype == VideoId.SEASON:
+    def derive_parent(self, videoid_type):
+        """
+        Derive a parent VideoId, you can obtain:
+          [tvshow] from season, episode
+          [season] from episode
+        When it is not possible get a derived VideoId, it is returned the same VideoId instance.
+
+        :param videoid_type: The type of VideoId to be derived
+        :return: The parent VideoId of specified type, or when not match the same VideoId instance.
+        """
+        if videoid_type == VideoId.SHOW:
+            if self.mediatype not in [VideoId.SEASON, VideoId.EPISODE]:
+                return self
             return type(self)(tvshowid=self.tvshowid)
-        if self.mediatype == VideoId.EPISODE:
-            if depth == 0:
-                return type(self)(tvshowid=self.tvshowid)
-            if depth == 1:
-                return type(self)(tvshowid=self.tvshowid,
-                                  seasonid=self.seasonid)
-        return self
+        if videoid_type == VideoId.SEASON:
+            if self.mediatype != VideoId.SEASON:
+                return self
+            return type(self)(tvshowid=self.tvshowid,
+                              seasonid=self.seasonid)
+        raise InvalidVideoId('VideoId type {} not valid'.format(videoid_type))
 
     def _assigned_id_values(self):
         """Return a list of all id_values that are not None"""
@@ -258,7 +262,7 @@ class VideoId(object):
 
 
 def _get_unicode_kwargs(kwargs):
-    # Example of return value: (None, None, '70084801', None, None, None, None) this is a movieid
+    # Example of return value: (None, None, '70084801', None, None, None) this is a movieid
     return tuple((unicode(kwargs[idpart])
                   if kwargs.get(idpart)
                   else None)

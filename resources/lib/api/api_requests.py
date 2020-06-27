@@ -220,39 +220,33 @@ def _update_mylist_cache(videoid, operation, params):
 def get_metadata(videoid, refresh=False):
     """Retrieve additional metadata for the given VideoId"""
     metadata_data = {}, None
+    # Get the parent VideoId (when the 'videoid' is a type of EPISODE/SEASON)
+    parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
     # Delete the cache if we need to refresh the all metadata
     if refresh:
-        videoid_cache = (videoid.derive_parent(0)
-                         if videoid.mediatype in [common.VideoId.EPISODE, common.VideoId.SEASON]
-                         else videoid)
-        g.CACHE.delete(cache_utils.CACHE_METADATA, str(videoid_cache))
-    if videoid.mediatype not in [common.VideoId.EPISODE, common.VideoId.SEASON]:
-        # videoid of type tvshow, movie, supplemental
-        metadata_data = _metadata(video_id=videoid), None
-    elif videoid.mediatype == common.VideoId.SEASON:
-        metadata_data = _metadata(video_id=videoid.derive_parent(None)), None
-    else:  # it is an episode
+        g.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
+    if videoid.mediatype == common.VideoId.EPISODE:
         try:
-            metadata_data = _episode_metadata(videoid)
+            metadata_data = _episode_metadata(videoid, parent_videoid)
         except KeyError as exc:
-            # Episode metadata may not exist if its a new episode and cached
-            # data is outdated. In this case, delete the cache entry and
-            # try again safely (if it doesn't exist this time, there is no
-            # metadata for the episode, so we assign an empty dict).
+            # The episode metadata not exist (case of new episode and cached data outdated)
+            # In this case, delete the cache entry and try again safely
             common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
             try:
-                metadata_data = _episode_metadata(videoid, refresh_cache=True)
+                metadata_data = _episode_metadata(videoid, parent_videoid, refresh_cache=True)
             except KeyError as exc:
+                # The new metadata does not contain the episode
                 common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
+    else:
+        metadata_data = _metadata(video_id=parent_videoid), None
     return metadata_data
 
 
-def _episode_metadata(videoid, refresh_cache=False):
-    tvshow_videoid = videoid.derive_parent(0)
+def _episode_metadata(episode_videoid, tvshow_videoid, refresh_cache=False):
     if refresh_cache:
         g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
     show_metadata = _metadata(video_id=tvshow_videoid)
-    episode_metadata, season_metadata = common.find_episode_metadata(videoid, show_metadata)
+    episode_metadata, season_metadata = common.find_episode_metadata(episode_videoid, show_metadata)
     return episode_metadata, season_metadata, show_metadata
 
 

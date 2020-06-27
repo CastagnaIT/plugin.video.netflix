@@ -50,8 +50,7 @@ class AMVideoEvents(ActionManager):
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
-        current_videoid = (self.videoid if self.videoid.mediatype == common.VideoId.MOVIE
-                           else self.videoid.derive_parent(0))
+        current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
         videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
                                                         {'video_id': str(current_videoid.value)})
         if not videoid_exists:
