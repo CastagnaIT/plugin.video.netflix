@@ -202,37 +202,37 @@ msgstr "내보낸 것들"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "라이브러리"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "비디오 재생에 사용할 프로파일 선택"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "재생하기 전에 프로파일을 선택합니다."
 
 # Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "자동선택"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "프로파일 자동 선택을 해제합니다."
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "자동선택 설정"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "컨텍스트 메뉴에서 프로파일을 고르십시오."
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "프로파일 {}을 자동선택으로 설정했습니다."
 
 # Unused 30059
 
@@ -340,7 +340,7 @@ msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "'내가 찜한것'의 캐쉬보존기간(분단위)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -626,7 +626,7 @@ msgstr ""
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "애드온설정 마법사 실행"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -926,31 +926,31 @@ msgstr ""
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr "{}을(를) 보려면 PIN을 입력하십시오."
+msgstr ""
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr ""
+msgstr "Up Next 애드온 설치"
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
-msgstr ""
+msgstr "시청상태를 Netflix와 동기화합니다."
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr ""
+msgstr "시청상태를 변경(Kodi에서만)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr ""
+msgstr "본것으로|안본것으로|Netflix로부터"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr ""
+msgstr "Up Next알림(다음것 보기)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr ""
+msgstr "추가정보에 사용할 색"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
@@ -958,19 +958,19 @@ msgstr ""
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "CDN서버 설정(낮을 수록 좋다)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "상위10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "보지않은 첫 에피소드를 선택"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Wideivine보안레벨을 L3로 설정"
 
 # Unused 30244 to 30299
 

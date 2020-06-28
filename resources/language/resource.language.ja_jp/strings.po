@@ -202,37 +202,37 @@ msgstr "エクスポートされた項目"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "ライブラリ"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "ビデオを観るプロファイル"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "再生する前選択"
 
 # Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "プロファイル自動選択"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "自動選択解除"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "自動選択"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "自動選択をするのには、プロファイルのリストから。。。"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "{}のプロファイルを自動選択にしました。"
 
 # Unused 30059
 
@@ -340,7 +340,7 @@ msgstr "メタデータのキャッシュ保存期間(日)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "'マイリスト'のキャッシュ保存期間(分)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -626,7 +626,7 @@ msgstr ""
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "アドオン設定"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -698,11 +698,11 @@ msgstr "映画"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround"
-msgstr ""
+msgstr "中断した所から続いて観る"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "見る度に聞く"
+msgstr "中断した所から観るか聞く"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
@@ -927,31 +927,30 @@ msgstr ""
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr ""
-msgstr "[B]{}[/B]のタイトルのみ見せる。"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr ""
+msgstr "Up Nextアドオンインストール"
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
-msgstr ""
+msgstr "視聴状態をNetflixと同期する。"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr ""
+msgstr "視聴状態を変更(ローカルのみ)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr ""
+msgstr "視聴済みにする|未視聴にする|視聴状態をNetflixから持って来る"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr ""
+msgstr "Up Next知らせ(続きをみる)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr ""
+msgstr "追加情報の色"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
@@ -959,19 +958,19 @@ msgstr ""
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "CDNサーバー設定(低いほど良い)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "トップ10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "最初の未視聴のエピソードを選択"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "WidevineセキュリティレベルをL3にする"
 
 # Unused 30244 to 30299
 
