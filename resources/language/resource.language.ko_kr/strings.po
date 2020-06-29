@@ -958,7 +958,7 @@ msgstr ""
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr "CDN서버 설정(낮을 수록 좋다)"
+msgstr "Open Connect CDN서버 설정(낮을 수록 좋다)"
 
 msgctxt "#30242"
 msgid "Top 10"
