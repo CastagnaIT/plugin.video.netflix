@@ -34,7 +34,7 @@ def check_service_upgrade():
     # Upgrades to be performed before starting the service
     # Upgrade the local database
     current_local_db_version = g.LOCAL_DB.get_value('local_db_version', None)
-    upgrade_to_local_db_version = '0.1'
+    upgrade_to_local_db_version = '0.2'
     if current_local_db_version != upgrade_to_local_db_version:
         _perform_local_db_changes(current_local_db_version, upgrade_to_local_db_version)
 
