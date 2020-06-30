@@ -60,13 +60,13 @@ def ask_for_rating():
         return None
 
 
-def ask_for_pin(message):
-    """Ask the user for the adult pin"""
+def show_dlg_input_numeric(message, mask_input=True):
+    """Ask the user to enter numbers"""
     args = {'heading': message,
             'type': 0,
             'defaultt': ''}
     if not g.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
-        args['bHiddenInput'] = True
+        args['bHiddenInput'] = mask_input
     return xbmcgui.Dialog().numeric(**args) or None
 
 

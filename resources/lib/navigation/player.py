@@ -224,7 +224,7 @@ def _profile_switch():
 def _verify_pin(pin_required):
     if not pin_required:
         return True
-    pin = ui.ask_for_pin(common.get_local_string(30002))
+    pin = ui.show_dlg_input_numeric(common.get_local_string(30002))
     return None if not pin else api.verify_pin(pin)
 
 
