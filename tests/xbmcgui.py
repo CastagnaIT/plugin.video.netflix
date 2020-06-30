@@ -135,6 +135,10 @@ class Dialog:
             return 'Family'
         return 'Foobar'
 
+    def select(self, heading, autoclose=None, preselect=None, useDetails=False):
+        """A stub implementation for the xbmcgui Dialog class select() method"""
+        return -1
+
     @staticmethod
     # def numeric(type, heading, defaultt=''):  # Kodi 18
     def numeric(type, heading, defaultt='', bHiddenInput=False):  # pylint: disable=redefined-builtin

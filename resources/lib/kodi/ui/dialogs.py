@@ -134,3 +134,12 @@ def show_library_task_errors(notify_errors, errors):
         xbmcgui.Dialog().ok(common.get_local_string(0),
                             '\n'.join(['{} ({})'.format(err['task_title'], err['error'])
                                        for err in errors]))
+
+
+def show_dlg_select(title, item_list):
+    """
+    Show a select dialog for a list of objects
+
+    :return index of selected item, or -1 when cancelled
+    """
+    return xbmcgui.Dialog().select(title, item_list)
