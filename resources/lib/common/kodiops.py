@@ -120,6 +120,12 @@ def refresh_container(use_delay=False):
     xbmc.executebuiltin('Container.Refresh')
 
 
+def container_update(url, reset_history=False):
+    """Update the current container"""
+    func_str = 'Container.Update({},replace)' if reset_history else 'Container.Update({})'
+    xbmc.executebuiltin(func_str.format(url))
+
+
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
     src = xbmc if string_id < 30000 else g.ADDON
