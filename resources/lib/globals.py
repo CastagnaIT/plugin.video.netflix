@@ -170,7 +170,7 @@ class GlobalVariables(object):
         ('search', {'path': ['search', 'search'],
                     'loco_contexts': None,
                     'loco_known': False,
-                    'label_id': 30011,
+                    'label_id': 30400,
                     'description_id': 30092,
                     'icon': 'DefaultAddonsSearch.png',
                     'view': VIEW_SEARCH}),

@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from datetime import datetime
+
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
 import resources.lib.database.db_utils as db_utils
@@ -111,3 +113,53 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         query = 'SELECT Guid FROM profiles ORDER BY SortOrder'
         cur = self._execute_query(query)
         return [row[0] for row in cur.fetchall()]
+
+    @db_sqlite.handle_connection
+    def get_search_list(self):
+        guid = self.get_active_profile_guid()
+        query = ('SELECT * FROM search '
+                 'WHERE Guid = ? '
+                 'ORDER BY datetime("LastAccess") DESC')
+        cur = self.get_cursor_for_dict_results()
+        cur = self._execute_query(query, (guid,), cur)
+        return cur.fetchall()
+
+    @db_sqlite.handle_connection
+    def get_search_item(self, row_id):
+        query = 'SELECT * FROM search WHERE ID = ?'
+        cur = self.get_cursor_for_dict_results()
+        cur = self._execute_query(query, (row_id,), cur)
+        return cur.fetchone()
+
+    @db_sqlite.handle_connection
+    def insert_search_item(self, search_type, value, parameters=None):
+        """Insert a new search item and return the ID of the new entry"""
+        insert_query = ('INSERT INTO search (Guid, Type, Value, Parameters, LastAccess) '
+                        'VALUES (?, ?, ?, ?, ?)')
+        if parameters:
+            parameters = common.convert_to_string(parameters)
+        guid = self.get_active_profile_guid()
+        date_last_access = common.convert_to_string(datetime.now())
+        cur = self.get_cursor()
+        self._execute_non_query(insert_query, (guid, search_type, value, parameters, date_last_access), cur)
+        return str(cur.lastrowid)
+
+    @db_sqlite.handle_connection
+    def delete_search_item(self, row_id):
+        """Delete a search item"""
+        query = 'DELETE FROM search WHERE ID = ?'
+        self._execute_non_query(query, (row_id,))
+
+    @db_sqlite.handle_connection
+    def clear_search_items(self):
+        """Delete all search items"""
+        query = 'DELETE FROM search WHERE Guid = ?'
+        guid = self.get_active_profile_guid()
+        self._execute_non_query(query, (guid,))
+
+    @db_sqlite.handle_connection
+    def update_search_item_last_access(self, row_id):
+        """Update the last access data to a search item"""
+        update_query = 'UPDATE search SET LastAccess = ? WHERE ID = ?'
+        date_last_access = common.convert_to_string(datetime.now())
+        self._execute_non_query(update_query, (date_last_access, row_id))

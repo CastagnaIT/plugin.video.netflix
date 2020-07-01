@@ -32,7 +32,7 @@ from resources.lib.navigation.directory_utils import (finalize_directory, conver
 
 # The 'pathitems':
 #  It should match the 'path' key in MAIN_MENU_ITEMS of globals.py (or when not listed the dynamic menu item)
-#  the indexes are: 0 the function name of DirectoryBuilder class, 1 the menu id, 2 an optional id
+#  the indexes are: 0 the function name of this 'Directory' class, 1 the menu id, 2 an optional id
 
 
 class Directory(object):
@@ -256,12 +256,8 @@ class Directory(object):
         return menu_data.get('view')
 
     def search(self, pathitems):
-        """Ask for a search term if none is given via path, query API
-        and display search results"""
-        if len(pathitems) == 2:
-            _ask_search_term_and_redirect()
-        else:
-            _display_search_results(pathitems, self.perpetual_range_start, self.dir_update_listing)
+        from resources.lib.navigation.directory_search import route_search_nav
+        route_search_nav(pathitems, self.perpetual_range_start, self.dir_update_listing, self.params)
 
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
@@ -288,41 +284,3 @@ class Directory(object):
                            title=get_title(menu_data, extra_data))
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
-
-
-def _ask_search_term_and_redirect():
-    search_term = ui.ask_for_search_term()
-    if search_term:
-        url = common.build_url(['search', 'search', search_term], mode=g.MODE_DIRECTORY)
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
-        xbmc.executebuiltin('Container.Update({})'.format(url))
-    else:
-        url = common.build_url(pathitems=['home'], mode=g.MODE_DIRECTORY)
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=True)
-        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
-
-
-def _display_search_results(pathitems, perpetual_range_start, dir_update_listing):
-    menu_data = g.MAIN_MENU_ITEMS['search']
-    call_args = {
-        'menu_data': menu_data,
-        'search_term': pathitems[2],
-        'pathitems': pathitems,
-        'perpetual_range_start': perpetual_range_start
-    }
-    list_data, extra_data = common.make_call('get_video_list_search', call_args)
-    if list_data:
-        _search_results_directory(pathitems, menu_data, list_data, extra_data, dir_update_listing)
-    else:
-        ui.show_notification(common.get_local_string(30013))
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
-
-
-@common.time_execution(immediate=False)
-@custom_viewmode(g.VIEW_SHOW)
-def _search_results_directory(pathitems, menu_data, list_data, extra_data, dir_update_listing):
-    extra_data['title'] = common.get_local_string(30011) + ' - ' + pathitems[2]
-    finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', g.CONTENT_SHOW),
-                       title=get_title(menu_data, extra_data))
-    end_of_directory(dir_update_listing)
-    return menu_data.get('view')

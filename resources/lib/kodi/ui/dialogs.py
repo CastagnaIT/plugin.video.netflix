@@ -72,7 +72,7 @@ def show_dlg_input_numeric(message, mask_input=True):
 
 def ask_for_search_term():
     """Ask the user for a search term"""
-    return _ask_for_input(common.get_local_string(30003))
+    return _ask_for_input(common.get_local_string(30402))
 
 
 def _ask_for_input(heading):
