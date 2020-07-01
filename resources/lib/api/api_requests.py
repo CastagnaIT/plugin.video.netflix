@@ -11,6 +11,8 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
+from future.utils import itervalues
+
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
@@ -327,3 +329,27 @@ def verify_profile_lock(guid, pin):
         ).get('success', False)
     except Exception:  # pylint: disable=broad-except
         return False
+
+
+def get_available_audio_languages():
+    """Get the list of available audio languages of videos"""
+    call_args = {
+        'paths': [['spokenAudioLanguages', {'from': 0, 'to': 25}, ['id', 'name']]]
+    }
+    response = common.make_call('path_request', call_args)
+    lang_list = {}
+    for lang_dict in itervalues(response.get('spokenAudioLanguages', {})):
+        lang_list[lang_dict['id']] = lang_dict['name']
+    return lang_list
+
+
+def get_available_subtitles_languages():
+    """Get the list of available subtitles languages of videos"""
+    call_args = {
+        'paths': [['subtitleLanguages', {'from': 0, 'to': 25}, ['id', 'name']]]
+    }
+    response = common.make_call('path_request', call_args)
+    lang_list = {}
+    for lang_dict in itervalues(response.get('subtitleLanguages', {})):
+        lang_list[lang_dict['id']] = lang_dict['name']
+    return lang_list

@@ -36,9 +36,7 @@ msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
 msgstr "制限コンテンツを見るのにはPINを入力してください。"
 
-msgctxt "#30003"
-msgid "Search term"
-msgstr "キーワード"
+# Unused 30003
 
 msgctxt "#30004"
 msgid "Password"
@@ -68,15 +66,7 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "ジャンル"
 
-msgctxt "#30011"
-msgid "Search"
-msgstr "検索"
-
-# Unused 30012
-
-msgctxt "#30013"
-msgid "No matches found"
-msgstr "一致する項目はありませんでした。"
+# Unused 30011, 30012, 30013
 
 msgctxt "#30014"
 msgid "Account"
@@ -980,4 +970,52 @@ msgstr ""
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
+msgstr ""
+
+# Unused 30244 to 30399
+
+msgctxt "#30400"
+msgid "Search"
+msgstr "検索"
+
+msgctxt "#30401"
+msgid "Type of research"
+msgstr ""
+
+msgctxt "#30402"
+msgid "Search titles, people, genres"
+msgstr ""
+
+msgctxt "#30403"
+msgid "New search..."
+msgstr ""
+
+msgctxt "#30404"
+msgid "Clear search history"
+msgstr ""
+
+msgctxt "#30405"
+msgid "Select the language"
+msgstr ""
+
+msgctxt "#30406"
+msgid "Do you want to delete the entire contents?"
+msgstr ""
+
+msgctxt "#30407"
+msgid "No matches found"
+msgstr "一致する項目はありませんでした。"
+
+# Unused 30408, 30409
+
+msgctxt "#30410"
+msgid "By term"
+msgstr ""
+
+msgctxt "#30411"
+msgid "By audio language"
+msgstr ""
+
+msgctxt "#30412"
+msgid "By subtitles language"
 msgstr ""

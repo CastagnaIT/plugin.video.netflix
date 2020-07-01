@@ -60,23 +60,24 @@ def ask_for_rating():
         return None
 
 
-def ask_for_pin(message):
-    """Ask the user for the adult pin"""
+def show_dlg_input_numeric(message, mask_input=True):
+    """Ask the user to enter numbers"""
     args = {'heading': message,
             'type': 0,
             'defaultt': ''}
     if not g.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
-        args['bHiddenInput'] = True
+        args['bHiddenInput'] = mask_input
     return xbmcgui.Dialog().numeric(**args) or None
 
 
-def ask_for_search_term():
+def ask_for_search_term(default_text=None):
     """Ask the user for a search term"""
-    return _ask_for_input(common.get_local_string(30003))
+    return _ask_for_input(common.get_local_string(30402), default_text)
 
 
-def _ask_for_input(heading):
+def _ask_for_input(heading, default_text=None):
     return g.py2_decode(xbmcgui.Dialog().input(
+        defaultt=default_text,
         heading=heading,
         type=xbmcgui.INPUT_ALPHANUM)) or None
 
@@ -134,3 +135,12 @@ def show_library_task_errors(notify_errors, errors):
         xbmcgui.Dialog().ok(common.get_local_string(0),
                             '\n'.join(['{} ({})'.format(err['task_title'], err['error'])
                                        for err in errors]))
+
+
+def show_dlg_select(title, item_list):
+    """
+    Show a select dialog for a list of objects
+
+    :return index of selected item, or -1 when cancelled
+    """
+    return xbmcgui.Dialog().select(title, item_list)

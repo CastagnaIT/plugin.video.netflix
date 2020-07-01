@@ -23,6 +23,15 @@ def generate_context_menu_mainmenu(menu_id):
     return items
 
 
+def generate_context_menu_searchitem(row_id, search_type):
+    """Generate context menu items for a listitem of the search menu"""
+    items = []
+    if search_type == 'text':
+        items.append(_ctx_item('search_edit', None, {'row_id': row_id}))
+    items.append(_ctx_item('search_remove', None, {'row_id': row_id}))
+    return items
+
+
 def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None):
     """Generate context menu items for a listitem"""
     items = []

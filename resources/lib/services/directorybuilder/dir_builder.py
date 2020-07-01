@@ -35,6 +35,7 @@ class DirectoryBuilder(DirectoryRequests):
             self.get_episodes,
             self.get_video_list,
             self.get_video_list_sorted,
+            self.get_video_list_sorted_sp,
             self.get_video_list_supplemental,
             self.get_video_list_chunked,
             self.get_video_list_search,
@@ -104,6 +105,17 @@ class DirectoryBuilder(DirectoryRequests):
                                                 perpetual_range_start=perpetual_range_start,
                                                 menu_data=menu_data)
         return build_video_listing(video_list, menu_data, sub_genre_id, pathitems, perpetual_range_start,
+                                   self.req_mylist_items())
+
+    @common.time_execution(immediate=True)
+    @common.addonsignals_return_call
+    def get_video_list_sorted_sp(self, pathitems, menu_data, context_name, context_id, perpetual_range_start):
+        # Method used for the menu search
+        video_list = self.req_video_list_sorted(context_name,
+                                                context_id=context_id,
+                                                perpetual_range_start=perpetual_range_start,
+                                                menu_data=menu_data)
+        return build_video_listing(video_list, menu_data, None, pathitems, perpetual_range_start,
                                    self.req_mylist_items())
 
     @common.time_execution(immediate=True)

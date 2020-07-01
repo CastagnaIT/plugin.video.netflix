@@ -17,7 +17,25 @@ def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disabl
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
     if common.is_less_version(current_version, '0.2'):
-        pass
+        # Changes: added table 'search'
+        import sqlite3 as sql
+        from resources.lib.database.db_base_sqlite import CONN_ISOLATION_LEVEL
+        from resources.lib.database import db_utils
+
+        shared_db_conn = sql.connect(db_utils.get_local_db_path(db_utils.LOCAL_DB_FILENAME),
+                                     isolation_level=CONN_ISOLATION_LEVEL)
+        cur = shared_db_conn.cursor()
+
+        table = str('CREATE TABLE search ('
+                    'ID         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+                    'Guid       TEXT    NOT NULL REFERENCES profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE,'
+                    'Type       TEXT    NOT NULL,'
+                    'Value      TEXT    NOT NULL,'
+                    'Parameters TEXT,'
+                    'LastAccess TEXT);')
+        cur.execute(table)
+        shared_db_conn.close()
+
     if common.is_less_version(current_version, '0.3'):
         pass
 

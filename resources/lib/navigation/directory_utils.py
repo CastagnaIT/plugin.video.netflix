@@ -153,7 +153,7 @@ def verify_profile_pin(guid):
     """Verify if the profile is locked by a PIN and ask the PIN"""
     if not g.LOCAL_DB.get_profile_config('isPinLocked', False, guid=guid):
         return True
-    pin = ui.ask_for_pin(common.get_local_string(30006))
+    pin = ui.show_dlg_input_numeric(common.get_local_string(30006))
     return None if not pin else verify_profile_lock(guid, pin)
 
 

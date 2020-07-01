@@ -66,5 +66,11 @@ CONTEXT_MENU_ACTIONS = {
         'url': ctx_item_url(['force_update_list'])},
     'change_watched_status': {
         'label': common.get_local_string(30236),
-        'url': ctx_item_url(['change_watched_status'])}
+        'url': ctx_item_url(['change_watched_status'])},
+    'search_remove': {
+        'label': common.get_local_string(15015),
+        'url': ctx_item_url(['search', 'search', 'remove'], g.MODE_DIRECTORY)},
+    'search_edit': {
+        'label': common.get_local_string(21450),
+        'url': ctx_item_url(['search', 'search', 'edit'], g.MODE_DIRECTORY)}
 }

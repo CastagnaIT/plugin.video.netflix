@@ -65,19 +65,20 @@ class SettingsMonitor(xbmc.Monitor):
 
         # Check menu settings changes
         for menu_id, menu_data in iteritems(g.MAIN_MENU_ITEMS):
-            # Check settings changes in show menu
-            show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
-            show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
-                                                         True,
-                                                         TABLE_SETTINGS_MONITOR)
-            if show_menu_new_setting != show_menu_old_setting:
-                g.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
-                                     show_menu_new_setting,
-                                     TABLE_SETTINGS_MONITOR)
-                reboot_addon = True
+            # Check settings changes in show/hide menu
+            if menu_data.get('has_show_setting', True):
+                show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
+                show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
+                                                             True,
+                                                             TABLE_SETTINGS_MONITOR)
+                if show_menu_new_setting != show_menu_old_setting:
+                    g.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
+                                         show_menu_new_setting,
+                                         TABLE_SETTINGS_MONITOR)
+                    reboot_addon = True
 
             # Check settings changes in sort order of menu
-            if menu_data.get('request_context_name'):
+            if menu_data.get('has_sort_setting'):
                 menu_sortorder_new_setting = int(g.ADDON.getSettingInt('menu_sortorder_' + menu_data['path'][1]))
                 menu_sortorder_old_setting = g.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
                                                                   0,
