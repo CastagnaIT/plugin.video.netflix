@@ -64,27 +64,31 @@ class GlobalVariables(object):
 
     '''
     --Main Menu key infos--
-    path : passes information to the called method generally structured as follows: [func. name, menu id, context id]
-    loco_contexts : contexts used to obtain the list of contents (use only one context when loco_known = True)
-    loco_known : if True, keys label_id/description_id/icon are ignored, these values are obtained from LoCo list
-    label_id : menu title
-    description_id : description info text
-    icon : set a default image
-    view : override the default "partial menu id" of view
-    content_type : override the default content type (CONTENT_SHOW)
+    path                Passes information to the called method
+                          generally structured as follows: [func. name, menu id, context id]
+    loco_contexts       Contexts used to obtain the list of contents (use only one context when loco_known = True)
+    loco_known          If True, keys label_id/description_id/icon are ignored, these values are obtained from LoCo list
+    label_id            The ID for the menu title
+    description_id      Description info text
+    icon                Set a default image
+    view                Override the default "partial menu id" of view
+    content_type        Override the default content type (CONTENT_SHOW)
+    has_show_setting    Means that the menu has the show/hide settings, by default is True
+    has_sort_setting    Means that the menu has the sort settings, by default is False
 
     Explanation of function names in the 'path' key:
-        video_list: automatically gets the list_id by making a loco request,
-                    the list_id search is made using the value specified on the loco_contexts key
-        video_list_sorted: to work must have a third argument on the path that is the context_id
-                           or instead specified the key request_context_name
+        video_list        Automatically gets the list_id by making a loco request,
+                            the list_id search is made using the value specified on the loco_contexts key
+        video_list_sorted To work must have a third argument on the path that is the context_id
+                            or instead specified the key request_context_name
     '''
     MAIN_MENU_ITEMS = collections.OrderedDict([
         ('myList', {'path': ['video_list_sorted', 'myList'],
                     'loco_contexts': ['queue'],
                     'loco_known': True,
                     'request_context_name': 'mylist',
-                    'view': VIEW_MYLIST}),
+                    'view': VIEW_MYLIST,
+                    'has_sort_setting': True}),
         ('continueWatching', {'path': ['video_list', 'continueWatching'],
                               'loco_contexts': ['continueWatching'],
                               'loco_known': True}),
@@ -97,11 +101,13 @@ class GlobalVariables(object):
                            'request_context_name': 'genres',
                            'label_id': 30145,
                            'description_id': 30146,
-                           'icon': 'DefaultRecentlyAddedMovies.png'}),
+                           'icon': 'DefaultRecentlyAddedMovies.png',
+                           'has_sort_setting': True}),
         ('newRelease', {'path': ['video_list_sorted', 'newRelease'],
                         'loco_contexts': ['newRelease'],
                         'loco_known': True,
-                        'request_context_name': 'newrelease'}),
+                        'request_context_name': 'newrelease',
+                        'has_sort_setting': True}),
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'loco_contexts': ['trendingNow'],
                            'loco_known': True}),
@@ -114,14 +120,16 @@ class GlobalVariables(object):
         ('netflixOriginals', {'path': ['video_list_sorted', 'netflixOriginals', '839338'],
                               'loco_contexts': ['netflixOriginals'],
                               'loco_known': True,
-                              'request_context_name': 'genres'}),
+                              'request_context_name': 'genres',
+                              'has_sort_setting': True}),
         ('assistiveAudio', {'path': ['video_list_sorted', 'assistiveAudio', 'None'],
                             'loco_contexts': None,
                             'loco_known': False,
                             'request_context_name': 'assistiveAudio',
                             'label_id': 30163,
                             'description_id': 30164,
-                            'icon': 'DefaultTVShows.png'}),
+                            'icon': 'DefaultTVShows.png',
+                            'has_sort_setting': True}),
         ('recommendations', {'path': ['recommendations', 'recommendations'],
                              'loco_contexts': ['similars', 'becauseYouAdded', 'becauseYouLiked', 'watchAgain',
                                                'bigRow'],
@@ -135,7 +143,8 @@ class GlobalVariables(object):
                            'request_context_name': 'genres',  # Used for sub-menus
                            'label_id': 30174,
                            'description_id': None,
-                           'icon': 'DefaultTVShows.png'}),
+                           'icon': 'DefaultTVShows.png',
+                           'has_sort_setting': True}),
         ('moviesGenres', {'path': ['subgenres', 'moviesGenres', '34399'],
                           'loco_contexts': None,
                           'loco_known': False,
@@ -143,7 +152,8 @@ class GlobalVariables(object):
                           'label_id': 30175,
                           'description_id': None,
                           'icon': 'DefaultMovies.png',
-                          'content_type': CONTENT_MOVIE}),
+                          'content_type': CONTENT_MOVIE,
+                          'has_sort_setting': True}),
         # Todo: Disabled All tv shows/All movies loco menu due to website changes
         # ('tvshows', {'path': ['genres', 'tvshows', '83'],
         #              'loco_contexts': None,
@@ -151,7 +161,8 @@ class GlobalVariables(object):
         #              'request_context_name': 'genres',  # Used for sub-menus
         #              'label_id': 30095,
         #              'description_id': None,
-        #              'icon': 'DefaultTVShows.png'}),
+        #              'icon': 'DefaultTVShows.png',
+        #              'has_sort_setting': True}),
         # ('movies', {'path': ['genres', 'movies', '34399'],
         #             'loco_contexts': None,
         #             'loco_known': False,
@@ -159,21 +170,24 @@ class GlobalVariables(object):
         #             'label_id': 30096,
         #             'description_id': None,
         #             'icon': 'DefaultMovies.png',
-        #             'content_type': CONTENT_MOVIE}),
+        #             'content_type': CONTENT_MOVIE,
+        #             'has_sort_setting': True}),
         ('genres', {'path': ['genres', 'genres'],
                     'loco_contexts': ['genre'],
                     'loco_known': False,
                     'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30010,
                     'description_id': 30093,
-                    'icon': 'DefaultGenre.png'}),
+                    'icon': 'DefaultGenre.png',
+                    'has_sort_setting': True}),
         ('search', {'path': ['search', 'search'],
                     'loco_contexts': None,
                     'loco_known': False,
                     'label_id': 30400,
                     'description_id': 30092,
                     'icon': 'DefaultAddonsSearch.png',
-                    'view': VIEW_SEARCH}),
+                    'view': VIEW_SEARCH,
+                    'has_sort_setting': True}),
         ('exported', {'path': ['exported', 'exported'],
                       'loco_contexts': None,
                       'loco_known': False,

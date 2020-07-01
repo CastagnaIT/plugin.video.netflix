@@ -43,7 +43,7 @@ def build_mainmenu_listing(loco_list):
         'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color'))
     }
     for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
-        if not g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
+        if data.get('has_show_setting', True) and not g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
             continue
         if data['loco_known']:
             list_id, video_list = loco_list.find_by_context(data['loco_contexts'][0])
