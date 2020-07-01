@@ -38,6 +38,8 @@ def route_search_nav(pathitems, perpetual_range_start, dir_update_listing, param
         search_list()
     elif path == 'add':
         ret = search_add()
+    elif path == 'edit':
+        search_edit(params['row_id'])
     elif path == 'remove':
         search_remove(params['row_id'])
     elif path == 'clear':
@@ -103,6 +105,21 @@ def _search_add_bylang(search_type, dict_languages):
     value = search_type_desc + ': ' + lang_desc
     row_id = g.LOCAL_DB.insert_search_item(search_type, value, {'lang_code': lang_code})
     return row_id
+
+
+def search_edit(row_id):
+    """Edit a search item"""
+    search_item = g.LOCAL_DB.get_search_item(row_id)
+    search_type = search_item['Type']
+    ret = False
+    if search_type == 'text':
+        search_term = ui.ask_for_search_term(search_item['Value'])
+        if search_term and search_term.strip():
+            g.LOCAL_DB.update_search_item_value(row_id, search_term.strip())
+            ret = True
+    if not ret:
+        return
+    common.container_update(common.build_url(['search', 'search', row_id], mode=g.MODE_DIRECTORY))
 
 
 def search_remove(row_id):
@@ -208,6 +225,6 @@ def _create_dictitem_from_row(row):
         'url': common.build_url(['search', 'search', row_id], mode=g.MODE_DIRECTORY),
         'label': row['Value'],
         'info': {'plot': search_desc},  # The description
-        'menu_items': generate_context_menu_searchitem(row_id),
+        'menu_items': generate_context_menu_searchitem(row_id, row['Type']),
         'is_folder': True
     }

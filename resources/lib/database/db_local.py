@@ -163,3 +163,10 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         update_query = 'UPDATE search SET LastAccess = ? WHERE ID = ?'
         date_last_access = common.convert_to_string(datetime.now())
         self._execute_non_query(update_query, (date_last_access, row_id))
+
+    @db_sqlite.handle_connection
+    def update_search_item_value(self, row_id, value):
+        """Update the 'value' data to a search item"""
+        update_query = 'UPDATE search SET Value = ?, LastAccess = ? WHERE ID = ?'
+        date_last_access = common.convert_to_string(datetime.now())
+        self._execute_non_query(update_query, (value, date_last_access, row_id))

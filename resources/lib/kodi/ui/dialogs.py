@@ -70,13 +70,14 @@ def show_dlg_input_numeric(message, mask_input=True):
     return xbmcgui.Dialog().numeric(**args) or None
 
 
-def ask_for_search_term():
+def ask_for_search_term(default_text=None):
     """Ask the user for a search term"""
-    return _ask_for_input(common.get_local_string(30402))
+    return _ask_for_input(common.get_local_string(30402), default_text)
 
 
-def _ask_for_input(heading):
+def _ask_for_input(heading, default_text=None):
     return g.py2_decode(xbmcgui.Dialog().input(
+        defaultt=default_text,
         heading=heading,
         type=xbmcgui.INPUT_ALPHANUM)) or None
 
