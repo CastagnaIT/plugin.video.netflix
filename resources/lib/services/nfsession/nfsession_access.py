@@ -10,8 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.api.website as website
@@ -110,7 +108,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
 
     @common.addonsignals_return_call
     @common.time_execution(immediate=True)
-    def logout(self, url):
+    def logout(self):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
 
@@ -151,9 +149,9 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
-        xbmc.executebuiltin('Container.Update(path,replace)')  # Go to a fake page to clear screen
+        common.container_update('path', True)  # Go to a fake page to clear screen
         # Open root page
-        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
+        common.container_update(g.BASE_URL, True)
 
 
 def _login_payload(credentials, auth_url):

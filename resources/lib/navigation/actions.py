@@ -136,7 +136,7 @@ class AddonActionExecutor(object):
                                    params={'video_id_dict': dumps(video_id_dict),
                                            'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
                                    mode=g.MODE_DIRECTORY)
-            xbmc.executebuiltin('Container.Update({})'.format(url))
+            common.container_update(url)
         else:
             ui.show_notification(common.get_local_string(30111))
 
@@ -180,9 +180,8 @@ class AddonActionExecutor(object):
         # Perform a new login to get/generate a new ESN
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen
-        url = 'plugin://plugin.video.netflix'
         # Open root page
-        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
+        common.container_update(g.BASE_URL, True)
 
     @common.inject_video_id(path_offset=1)
     def change_watched_status(self, videoid):

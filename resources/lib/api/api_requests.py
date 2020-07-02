@@ -36,7 +36,7 @@ def catch_api_errors(func):
 
 def logout():
     """Logout of the current account"""
-    common.make_call('logout', g.BASE_URL)
+    common.make_call('logout')
 
 
 def login(ask_credentials=True):

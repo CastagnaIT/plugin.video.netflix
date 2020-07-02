@@ -117,9 +117,8 @@ class SettingsMonitor(xbmc.Monitor):
 
         if reboot_addon:
             common.debug('SettingsMonitor: addon will be rebooted')
-            url = 'plugin://plugin.video.netflix/directory/root'
             # Open root page
-            xbmc.executebuiltin('Container.Update({})'.format(url))  # replace=reset history
+            common.container_update(common.build_url(['root'], mode=g.MODE_DIRECTORY))
 
 
 def _esn_checks():
