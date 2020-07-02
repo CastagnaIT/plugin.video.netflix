@@ -972,7 +972,13 @@ msgctxt "#30244"
 msgid "Force Widevine security level L3"
 msgstr "Forțează nivel securitate L3 pentru Widevine"
 
-# Unused 30244 to 30399
+# Unused 30244 to 30299
+
+msgctxt "#30300"
+msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
+msgstr ""
+
+# Unused 30301 to 30399
 
 msgctxt "#30400"
 msgid "Search"

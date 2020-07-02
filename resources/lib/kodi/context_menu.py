@@ -32,7 +32,7 @@ def generate_context_menu_searchitem(row_id, search_type):
     return items
 
 
-def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None):
+def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None, add_remove_watched_status=False):
     """Generate context menu items for a listitem"""
     items = []
 
@@ -49,6 +49,8 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
         items.insert(0, _ctx_item('rate_thumb', videoid))
+        if add_remove_watched_status:
+            items.insert(0, _ctx_item('remove_watched_status', videoid))
 
     if (videoid.mediatype != common.VideoId.SUPPLEMENTAL and
             videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]):

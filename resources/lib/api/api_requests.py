@@ -353,3 +353,20 @@ def get_available_subtitles_languages():
     for lang_dict in itervalues(response.get('subtitleLanguages', {})):
         lang_list[lang_dict['id']] = lang_dict['name']
     return lang_list
+
+
+def remove_watched_status(videoid):
+    """Request to Netflix service to delete the watched status (delete also the item from "continue watching" list)"""
+    # WARNING: THE NF SERVICE MAY TAKE UNTIL TO 24 HOURS TO REMOVE IT
+    try:
+        data = common.make_call(
+            'post',
+            {'endpoint': 'viewing_activity',
+             'data': {'movieID': videoid.value,
+                      'seriesAll': videoid.mediatype == common.VideoId.SHOW,
+                      'guid': g.LOCAL_DB.get_active_profile_guid()}}
+        )
+        return data.get('status', False)
+    except Exception as exc:  # pylint: disable=broad-except
+        common.error('remove_watched_status raised this error: {}', exc)
+        return False
