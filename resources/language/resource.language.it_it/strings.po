@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-03-15 10:30+0000\n"
+"PO-Revision-Date: 2020-07-02 10:30+0000\n"
 "Last-Translator: Stefano Gottardo\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -976,7 +976,7 @@ msgstr "Forza livello di sicurezza Widevine L3"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Vuoi rimuovere lo stato guardato di '{}'?[CR][CR]L'operazione potrà impiegare fino a 24h, pertanto il titolo potrebbe continuare ad apparire nella lista."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Cerca"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Tipo di ricerca"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Cerca titoli, persone, generi"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Nuova ricerca..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Elimina cronologia di ricerca"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Seleziona la lingua"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Vuoi eliminare l'intero contenuto?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Nessuna corrispondenza trovata"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Per termine"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Per lingua audio"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Per lingua sottotitoli"
