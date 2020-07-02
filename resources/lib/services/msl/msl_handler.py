@@ -180,7 +180,7 @@ class MSLHandler(object):
             pass
 
         isa_addon = xbmcaddon.Addon('inputstream.adaptive')
-        hdcp_override = isa_addon is not None and isa_addon.getSettingBool('HDCPOVERRIDE')
+        hdcp_override = isa_addon.getSettingBool('HDCPOVERRIDE')
         hdcp_4k_capable = common.is_device_4k_capable() or g.ADDON.getSettingBool('enable_force_hdcp')
 
         hdcp_version = []
