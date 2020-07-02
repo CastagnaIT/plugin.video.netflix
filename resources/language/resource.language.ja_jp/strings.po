@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-18 23:06+0900\n"
+"PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -192,7 +192,7 @@ msgstr "親指評価なし|サムズアップ|サムズダウン"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "InputStream Adaptive又はWidevineに問題があるようです。インストールされなかったり、無効になっておりますので、起動をキャンセルします。"
 
 # Unused 30047
 
@@ -210,7 +210,7 @@ msgstr "ビデオを観るプロファイル"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr "再生する前選択"
+msgstr "再生する前にプロフィールを選択"
 
 # Unused 30052, 30053
 
@@ -220,11 +220,11 @@ msgstr "プロファイル自動選択"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr "自動選択解除"
+msgstr "自動選択を解除する"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr "自動選択"
+msgstr "自動選択に設定する"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
@@ -508,7 +508,7 @@ msgstr "{}の評価により授与しました。"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "プロフィールを選ぶ"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -596,11 +596,11 @@ msgstr "並び替え"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
-msgstr "昇順(作品目)"
+msgstr "昇順(作品名)"
 
 msgctxt "#30151"
 msgid "Alphabetical order (Z-A)"
-msgstr "降順(作品目)"
+msgstr "降順(作品名)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
@@ -622,7 +622,7 @@ msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "設定を完了しました。"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
@@ -850,7 +850,7 @@ msgstr "インプットストリームヘルパーアドオン設定"
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "強制更新する"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -922,11 +922,11 @@ msgstr "更新内容を確認しましょうか。"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "{}さんの年齢制限"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "[B]{}[/B]の作品のみ視聴できます。"
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -954,7 +954,7 @@ msgstr "追加情報の色"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "バッググラウンドサービスが起動しなかった理由は:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
@@ -986,27 +986,27 @@ msgstr "検索"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "検索方法"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "タイトル、人物、ジャンル"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "新たな検索"
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "検索履歴削除"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "言語"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "全てを削除しますか。"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "一致する項目はありませんでした。"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "項目"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "音声"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "字幕"
