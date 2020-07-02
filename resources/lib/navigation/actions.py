@@ -115,7 +115,7 @@ class AddonActionExecutor(object):
         operation = pathitems[1]
         api.update_my_list(videoid, operation, self.params)
         _sync_library(videoid, operation)
-        common.refresh_container()
+        common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
@@ -200,7 +200,7 @@ class AddonActionExecutor(object):
             txt_index = 0
             g.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
         ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
-        common.refresh_container()
+        common.container_refresh()
 
     def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
         """Run the add-on configuration wizard"""
@@ -228,7 +228,7 @@ class AddonActionExecutor(object):
                 common.json_rpc('Input.Down')  # Avoids selection back to the top
             except CacheMiss:
                 pass
-        common.refresh_container()
+        common.container_refresh()
 
 
 def _sync_library(videoid, operation):

@@ -109,7 +109,7 @@ def scan_library(path=""):
     return json_rpc(method, params)
 
 
-def refresh_container(use_delay=False):
+def container_refresh(use_delay=False):
     """Refresh the current container"""
     if use_delay:
         # When operations are performed in the Kodi library before call this method
