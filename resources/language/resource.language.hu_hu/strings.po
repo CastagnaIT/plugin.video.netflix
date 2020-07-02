@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-05-28 7:40+0000\n"
+"PO-Revision-Date: 2020-07-02 10:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -966,11 +966,11 @@ msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "Első nem látott sorozatrész kiválasztása"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Kényszerített Widevine L3 biztonsági szint"
 
 # Unused 30244 to 30399
 
@@ -980,27 +980,27 @@ msgstr "Keresés"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Keresési típus"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Címek, emberek, műfajok keresése"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Új keresés"
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Keresési előzmények törlése"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Nyelv választás"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Törlöd a tartalmat?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1010,12 +1010,12 @@ msgstr "Nincs találat"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Kifejezés szerint"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Szinkronhang nyelv szerint"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Feliratnyelv szerint"
