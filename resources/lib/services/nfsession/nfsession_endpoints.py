@@ -151,6 +151,13 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
+    'viewing_activity':
+        {'address': '/viewingactivity',
+         'is_api_call': True,
+         'use_default_params': False,
+         'add_auth_url': 'to_data',
+         'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'}
     # Don't know what these could be used for. Keeping for reference
     # 'video_list_ids': {'address': '/preflight', 'is_api_call': True},
