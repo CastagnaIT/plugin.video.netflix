@@ -980,7 +980,7 @@ msgid "Search"
 msgstr "Traži"
 
 msgctxt "#30401"
-msgid "Type of research"
+msgid "Type of search"
 msgstr ""
 
 msgctxt "#30402"
