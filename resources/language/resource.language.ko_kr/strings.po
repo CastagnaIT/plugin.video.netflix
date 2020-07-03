@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-02-18 23:06+0900\n"
+"PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "이 프로파일을 이용하려면 PIN을 입력하십시오."
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -192,7 +192,7 @@ msgstr "엄지평점 없음|별로에요|좋아요"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "InputStream Adaptive 혹은 Widevine에 문제가 있습니다. 설치되지 않았거나 사용하지 않음으로 되어 있어 동작을 취소합니다."
 
 # Unused 30047
 
@@ -202,37 +202,37 @@ msgstr "내보낸 것들"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "라이브러리"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "비디오 재생에 사용할 프로파일 선택"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "재생하기 전에 프로파일을 선택합니다."
 
 # Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "자동선택"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "프로파일 자동 선택을 해제합니다."
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "자동선택 설정"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "컨텍스트 메뉴에서 프로파일을 고르십시오."
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "프로파일 {}을 자동선택으로 설정했습니다."
 
 # Unused 30059
 
@@ -340,7 +340,7 @@ msgstr "메타데이타의 캐쉬보존기간(일단위)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "'내가 찜한것'의 캐쉬보존기간(분단위)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -508,7 +508,7 @@ msgstr "{}의 평가로 상을 받았습니다."
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "프로파일 선택"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -622,11 +622,11 @@ msgstr "Netflix프리미엄계정을 가지고 있나요?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "설정을 완료하였습니다."
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "애드온설정 마법사 실행"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -850,7 +850,7 @@ msgstr "InputStream Helper 애드온 설정"
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "강제로 새로 고칩니다"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -922,61 +922,61 @@ msgstr "업데이트를 확인하시렵니까?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "{} 프로파일의 관람등급"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "[B]{}[/B]의 콘텐츠만 보여줍니다."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr ""
+msgstr "Up Next 애드온 설치"
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
-msgstr ""
+msgstr "시청상태를 Netflix와 동기화합니다."
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr ""
+msgstr "시청상태를 변경(Kodi에서만)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr ""
+msgstr "본것으로|안본것으로|Netflix로부터"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr ""
+msgstr "Up Next알림(다음것 보기)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr ""
+msgstr "추가정보에 사용할 색"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "백그라운드 서비스를 시작하지 못한 이유는:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "Open Connect CDN서버 설정(낮을 수록 좋다)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "상위10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "보지않은 첫 에피소드를 선택"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Wideivine보안레벨을 L3로 설정"
 
 # Unused 30244 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "{}의 시청상태를 지울까요?[CR][CR]24시간 정도 걸리기 때문에 리스트에 보일 수도 있습니다."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "검색"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "검색 방법"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "타이틀, 인물, 장르"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "새로운 검색"
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "검색 결과 삭제"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "언어"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "모두 다 지울까요?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "일치하는 것이 없습니다."
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "항목"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "음성"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "자막"
