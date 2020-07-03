@@ -48,7 +48,7 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Pro přístup k tomuto profilu zadejte PIN"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -210,7 +210,7 @@ msgstr "Vyberte profil pro přehrávání videí"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Před přehráváním vyberte profil"
 
 # Unused 30052, 30053
 
@@ -220,7 +220,7 @@ msgstr "Automatický výběr profilu"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Odebrat automatický výběr profilu"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
@@ -328,7 +328,7 @@ msgstr "Zapamatovat si předvolby zvuku / titulků"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr "Uložit záložky pro knihovnu položky / značky jako shlednuté"
+msgstr "Uložit záložky pro knihovnu položky / značky jako zhlédnuté"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -622,11 +622,11 @@ msgstr "Máte účet Netflix Premium?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "Konfigurace byla dokončena"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Spustit průvodce konfigurací doplňku"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -942,7 +942,7 @@ msgstr "Změnit sledovaný stav (místně)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr "Označeno jako shlednuté|Označeno jako neshlednuté|Obnoven shlednutý stav Netflixu"
+msgstr "Označeno jako zhlédnuté|Označeno jako nezhlédnuté|Obnoven zhlédnutý stav Netflixu"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
@@ -966,7 +966,7 @@ msgstr ""
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr "Vyberte první neshlednutou epizodu seriálu"
+msgstr "Vyberte první nezhlédnutou epizodu seriálu"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
@@ -976,7 +976,7 @@ msgstr "Vynutit úroveň zabezpečení Widevine L3"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr "Chcete odebrat shlednuté z '{}'?[CR][CR]Operace může trvat až 24 hodin, proto se název může v seznamu stále zobrazovat."
+msgstr "Chcete odebrat zhlédnuté z '{}'?[CR][CR]Operace může trvat až 24 hodin, proto se název může v seznamu stále zobrazovat."
 
 # Unused 30301 to 30399
 
@@ -1023,5 +1023,5 @@ msgid "By audio language"
 msgstr "Podle jazyka zvuku"
 
 msgctxt "#30412"
-msgid "By subtitles language"
+msgid "By subtitle language"
 msgstr "Podle jazyka titulků"
