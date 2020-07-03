@@ -976,7 +976,7 @@ msgstr "Widevine güvenlik seviyesi L3'ü zorla"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "'{}' için izlenme durumunu kaldırmak istiyor musunuz?[CR][CR]İşlem 24 saat kadar sürebilir, bu nedenle başlık hala listede görünebilir."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Ara"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Arama türü"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Başlık, kişi, tür ara"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Yeni arama..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Arama geçmişini temizle"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Dili seçin"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Tüm içeriği silmek istiyor musunuz?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Hiçbir sonuç bulunamadı"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Terime göre"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Ses diline göre"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Altyazı diline göre"
