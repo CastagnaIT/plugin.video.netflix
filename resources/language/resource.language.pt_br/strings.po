@@ -986,7 +986,7 @@ msgstr "Buscar"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr "Tipo de procura"
+msgstr "Tipo de pesquisa"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
