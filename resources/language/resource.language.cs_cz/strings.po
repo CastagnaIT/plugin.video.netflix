@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
@@ -44,7 +44,7 @@ msgstr "Heslo"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
@@ -78,7 +78,7 @@ msgstr "Další možnosti"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr ""
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -106,7 +106,7 @@ msgstr "(mezi 0 a 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr ""
+msgstr "Expertní"
 
 msgctxt "#30024"
 msgid "SSL verification"
@@ -810,7 +810,7 @@ msgstr "Hostitelská IP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30205"
 msgid "Test database connection"
@@ -962,7 +962,7 @@ msgstr "Otevřete Connect CDN (dolní index je lepší)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
