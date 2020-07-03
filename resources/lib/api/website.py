@@ -44,7 +44,6 @@ PAGE_ITEMS_INFO = [
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/esnGeneratorModel/data/esn',
     'models/memberContext/data/geo/preferredLocale'
-    # 'models/profilesGate/data/idle_timer'  # Time in minutes of the profile session
 ]
 
 PAGE_ITEMS_API_URL = {
@@ -67,25 +66,6 @@ JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
 PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
-PROFILE_GATE_STATES = {
-    0: 'CLOSED',
-    1: 'LIST',
-    2: 'LOAD_PROFILE',
-    3: 'LOAD_PROFILE_ERROR',
-    4: 'CREATE_PROFILE',
-    5: 'CREATE_PROFILE_ERROR',
-    6: 'UPDATE_PROFILE',
-    7: 'UPDATE_PROFILE_ERROR',
-    8: 'DELETE_PROFILE',
-    9: 'DELETE_PROFILE_ERROR',
-    10: 'RELOADING_PROFILES',
-    11: 'MANAGE_PROFILES',
-    12: 'MANAGE_PROFILES_ERROR',
-    13: 'SELECT_AVATAR',
-    14: 'SELECT_AVATAR_ERROR',
-    15: 'PROMPT_PROFILE_PIN',
-    16: 'PROMPT_PROFILE_PIN_ERROR'
-}
 
 
 @common.time_execution(immediate=True)
@@ -119,22 +99,6 @@ def extract_session_data(content, validate=False, update_profiles=False):
 
     if update_profiles:
         parse_profiles(falcor_cache)
-
-    if common.is_debug_verbose():
-        # Only for debug purpose not sure if can be useful
-        try:
-            common.debug('ReactContext profileGateState {} ({})',
-                         PROFILE_GATE_STATES[react_context['models']['profileGateState']['data']],
-                         react_context['models']['profileGateState']['data'])
-        except KeyError:
-            common.error('ReactContext unknown profileGateState {}',
-                         react_context['models']['profileGateState']['data'])
-
-    # Profile idle timeout (not sure if will be useful, to now for documentation purpose)
-    # NOTE: On the website this value is used to update the profilesNewSession cookie expiration after a profile switch
-    #       and also to update the expiration of this cookie on each website interaction.
-    #       When the session is expired the 'profileGateState' will be 0 and the website return auto. to profiles page
-    # g.LOCAL_DB.set_value('profile_gate_idle_timer', user_data.get('idle_timer', 30), TABLE_SESSION)
 
     # 21/05/2020 - Netflix has introduced a new paging type called "loco" similar to the old "lolomo"
     # Extract loco root id

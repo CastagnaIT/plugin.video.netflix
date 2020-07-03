@@ -119,9 +119,6 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # END Method 2
 
         self.is_profile_session_active = True
-        # Update the session profile cookie (only a test, see 'Profile idle timeout' in website.py)
-        # expires = int(timestamp) + (g.LOCAL_DB.get_value('profile_gate_idle_timer', 30, TABLE_SESSION) * 60)
-        # self.session.cookies.set('profilesNewSession', '0', domain='.netflix.com', path='/', expires=expires)
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
         cookies.save(self.account_hash, self.session.cookies)

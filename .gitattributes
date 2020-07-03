@@ -13,5 +13,5 @@ Code_of_Conduct.md export-ignore
 codecov.yml export-ignore
 Contributing.md export-ignore
 Makefile export-ignore
-requiremens.txt export-ignore
+requirements.txt export-ignore
 tox.ini export-ignore

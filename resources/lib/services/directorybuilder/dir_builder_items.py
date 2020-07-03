@@ -245,7 +245,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         'mylist_titles_color': (get_color_name(g.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'
                                 else None),
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', '')
+        'profile_language_code': g.LOCAL_DB.get_profile_config('language', ''),
+        'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching'
     }
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
@@ -290,7 +291,8 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     dict_item['url'] = common.build_url(videoid=videoid,
                                         mode=g.MODE_DIRECTORY if is_folder else g.MODE_PLAY,
                                         params=common_data['params'])
-    dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start)
+    dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
+                                                          common_data['ctxmenu_remove_watched_status'])
     return dict_item
 
 

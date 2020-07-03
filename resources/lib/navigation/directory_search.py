@@ -127,7 +127,7 @@ def search_remove(row_id):
     common.debug('Removing search item with ID {}', row_id)
     g.LOCAL_DB.delete_search_item(row_id)
     common.json_rpc('Input.Down')  # Avoids selection back to the top
-    common.refresh_container()
+    common.container_refresh()
 
 
 def search_clear():

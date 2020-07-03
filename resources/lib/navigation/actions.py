@@ -14,8 +14,9 @@ import xbmc
 import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import MissingCredentialsError
+from resources.lib.api.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
+from resources.lib.common import cache_utils
 from resources.lib.globals import g
 
 
@@ -114,7 +115,7 @@ class AddonActionExecutor(object):
         operation = pathitems[1]
         api.update_my_list(videoid, operation, self.params)
         _sync_library(videoid, operation)
-        common.refresh_container()
+        common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     @common.time_execution(immediate=False)
@@ -135,7 +136,7 @@ class AddonActionExecutor(object):
                                    params={'video_id_dict': dumps(video_id_dict),
                                            'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
                                    mode=g.MODE_DIRECTORY)
-            xbmc.executebuiltin('Container.Update({})'.format(url))
+            common.container_update(url)
         else:
             ui.show_notification(common.get_local_string(30111))
 
@@ -147,18 +148,17 @@ class AddonActionExecutor(object):
 
     def force_update_list(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
-        from resources.lib.common.cache_utils import CACHE_MYLIST, CACHE_COMMON
         if self.params['menu_id'] == 'myList':
-            g.CACHE.clear([CACHE_MYLIST], clear_database=False)
+            g.CACHE.clear([cache_utils.CACHE_MYLIST], clear_database=False)
         if self.params['menu_id'] == 'continueWatching':
             # Delete the cache of continueWatching list
             # pylint: disable=unused-variable
             is_exists, list_id = common.make_call('get_continuewatching_videoid_exists', {'video_id': ''})
             if list_id:
-                g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+                g.CACHE.delete(cache_utils.CACHE_COMMON, list_id, including_suffixes=True)
             # When the continueWatching context is invalidated from a refreshListByContext call
             # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
-            g.CACHE.delete(CACHE_COMMON, 'loco_list')
+            g.CACHE.delete(cache_utils.CACHE_COMMON, 'loco_list')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
@@ -180,9 +180,8 @@ class AddonActionExecutor(object):
         # Perform a new login to get/generate a new ESN
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen
-        url = 'plugin://plugin.video.netflix'
         # Open root page
-        xbmc.executebuiltin('Container.Update({},replace)'.format(url))  # replace=reset history
+        common.container_update(g.BASE_URL, True)
 
     @common.inject_video_id(path_offset=1)
     def change_watched_status(self, videoid):
@@ -201,12 +200,35 @@ class AddonActionExecutor(object):
             txt_index = 0
             g.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
         ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
-        common.refresh_container()
+        common.container_refresh()
 
     def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
         """Run the add-on configuration wizard"""
         from resources.lib.config_wizard import run_addon_configuration
         run_addon_configuration(show_end_msg=True)
+
+    @common.inject_video_id(path_offset=1)
+    def remove_watched_status(self, videoid):
+        """Remove the watched status from the Netflix service"""
+        if not ui.ask_for_confirmation(common.get_local_string(30168),
+                                       common.get_local_string(30300).format(xbmc.getInfoLabel('ListItem.Label'))):
+            return
+        if not api.remove_watched_status(videoid):
+            ui.show_notification('The operation was cancelled due to an unexpected error')
+            return
+        # Check if item is in the cache
+        videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
+                                                        {'video_id': str(videoid.value)})
+        if videoid_exists:
+            # Try to remove the videoid from the list in the cache
+            try:
+                video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_COMMON, list_id)
+                del video_list_sorted_data.videos[videoid.value]
+                g.CACHE.add(cache_utils.CACHE_COMMON, list_id, video_list_sorted_data)
+                common.json_rpc('Input.Down')  # Avoids selection back to the top
+            except CacheMiss:
+                pass
+        common.container_refresh()
 
 
 def _sync_library(videoid, operation):

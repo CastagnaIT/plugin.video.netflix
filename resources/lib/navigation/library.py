@@ -42,7 +42,7 @@ class LibraryActionExecutor(object):
             library.execute_library_tasks(videoid,
                                           [library.remove_item],
                                           common.get_local_string(30030))
-            common.refresh_container(use_delay=True)
+            common.container_refresh(use_delay=True)
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
@@ -53,7 +53,7 @@ class LibraryActionExecutor(object):
                                       [library.remove_item, library.export_item],
                                       common.get_local_string(30061),
                                       nfo_settings=nfo_settings)
-        common.refresh_container()
+        common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     def export_silent(self, videoid):
@@ -144,12 +144,12 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def exclude_from_auto_update(self, videoid):
         library_au.exclude_show_from_auto_update(videoid, True)
-        common.refresh_container()
+        common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     def include_in_auto_update(self, videoid):
         library_au.exclude_show_from_auto_update(videoid, False)
-        common.refresh_container()
+        common.container_refresh()
 
     def mysql_test(self, pathitems):
         """Perform a MySQL database connection test"""
