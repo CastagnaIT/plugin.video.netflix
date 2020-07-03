@@ -990,7 +990,7 @@ msgstr "Art der Suche"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr "Titel, Leute, Gene suchen"
+msgstr "Titel, Leute, Genre suchen"
 
 msgctxt "#30403"
 msgid "New search..."
