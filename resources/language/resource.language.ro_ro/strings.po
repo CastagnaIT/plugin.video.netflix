@@ -702,7 +702,7 @@ msgstr "Activează truc STRM"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "Cere să fie reluat video"
+msgstr "Cere ca redarea să fie reluată"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
@@ -976,7 +976,7 @@ msgstr "Forțează nivel securitate L3 pentru Widevine"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Doriți să ștergeți '{}' din lista de vizualizare?[CR][CR]Operațiunea poate lua până la 24 de ore, timp în care titul ar putea să mai apară în listă."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Căutare"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Tip de căutare"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Caută titluri, oameni, genuri"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Căutare nouă..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Șterge istoricul de căutare"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Alege limba"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Doriți să ștergeți întreg conținutul"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Nu s-a găsit nimic"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "După termen"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "După limba vorbită"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "După limba subtitrării"
