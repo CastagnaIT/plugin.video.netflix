@@ -970,13 +970,13 @@ msgstr "Erste ungesehene Serien-Episode auswählen"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Widevine-Sicherheitslevel L3 erzwingen"
 
 # Unused 30244 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Möchten Sie den Gesehen-Status von '{}' entfernen?[CR][CR]Dieser Vorgang kann bis zu 24 Stunden dauern, bis dahin kann dieser Titel noch in der Liste auftauchen."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Suche"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Art der Suche"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Titel, Leute, Gene suchen"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Neue Suche..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Suchverlauf löschen"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Sprache auswählen"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Wollen Sie alle Inhalte löschen?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Keine Titel gefunden"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Nach Suchbegriff"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Nach Audiosprache"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Nach Untertitelsprache"
