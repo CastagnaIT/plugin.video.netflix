@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-07 00:00+0000\n"
-"PO-Revision-Date: 2020-06-09 00:00+0000\n"
+"PO-Revision-Date: 2020-07-02 00:00+0000\n"
 "Last-Translator: Tomas Andersson\n"
 "Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
@@ -976,7 +976,7 @@ msgstr "Tvinga Widevine säkerhetsnivå L3"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Vill du ta bort statusen sedd för '{}'?[CR][CR]Operationen kan ta upp till 24 timmar, därför kan titeln fortfarande visas i listan."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Sök"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Typ av sökning"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Sök titlar, personer, genrer"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Ny sökning"
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Rensa sökhistoriken"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Välj språk"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Vill du radera hela innehållet?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Hittade inga matchningar"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Efter benämning"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Efter ljudspråk"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Efter undertextspråk"
