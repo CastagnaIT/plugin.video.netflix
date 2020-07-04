@@ -1,3 +1,9 @@
+v1.6.0 (2020-07-04)
+-New search menu
+-New search types (by term, by audio lang, by subtitles lang)
+-Implemented option to remove titles from Continue watching list
+-Updated translations it, de, hu, tr, ro, jk, kr, pt-br, sv-se, fr, el-gr
+
 v1.5.1 (2020-06-27)
 -Implemented fix/workaround to get resolutions until to 1080p with ARM devices
 -Updated translations tr
