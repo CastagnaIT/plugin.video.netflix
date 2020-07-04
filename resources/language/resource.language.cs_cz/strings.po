@@ -1023,5 +1023,5 @@ msgid "By audio language"
 msgstr "Podle jazyka zvuku"
 
 msgctxt "#30412"
-msgid "By subtitle language"
+msgid "By subtitles language"
 msgstr "Podle jazyka titulků"
