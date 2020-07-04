@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-01-21 15:40+0000\n"
+"PO-Revision-Date: 2020-06-03 15:40+0000\n"
 "Last-Translator: otava5\n"
 "Language-Team: Czech (Czech Republic)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Netflix"
-msgstr ""
+msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
@@ -44,11 +44,11 @@ msgstr "Heslo"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Pro přístup k tomuto profilu zadejte PIN"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -78,7 +78,7 @@ msgstr "Další možnosti"
 
 msgctxt "#30016"
 msgid "ESN"
-msgstr ""
+msgstr "ESN"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -106,7 +106,7 @@ msgstr "(mezi 0 a 10)"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr ""
+msgstr "Expertní"
 
 msgctxt "#30024"
 msgid "SSL verification"
@@ -192,7 +192,7 @@ msgstr "Odstraněno hodnocení|Hodnocení jako nelíbí|Hodnocení jako líbí"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr ""
+msgstr "Došlo k potížím s doplňkem InputStream Adaptive nebo s knihovnou Widevine. Může chybět nebo není povoleno, operace bude zrušena."
 
 # Unused 30047
 
@@ -202,37 +202,37 @@ msgstr "Exportováno"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Knihovna"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Vyberte profil pro přehrávání videí"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Před přehráváním vyberte profil"
 
 # Unused 30052, 30053
 
 msgctxt "#30054"
 msgid "Profile auto-selection"
-msgstr ""
+msgstr "Automatický výběr profilu"
 
 msgctxt "#30055"
 msgid "Remove auto-selection of profile"
-msgstr ""
+msgstr "Odebrat automatický výběr profilu"
 
 msgctxt "#30056"
 msgid "Set for auto-selection"
-msgstr ""
+msgstr "Nastavení  automatického výběru"
 
 msgctxt "#30057"
 msgid "To set the profile, in the list of profiles open the context menu"
-msgstr ""
+msgstr "Chcete-li nastavit profil, otevřete v seznamu profilů kontextovou nabídku"
 
 msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
-msgstr ""
+msgstr "Profil {} byl nastaven pro automatický výběr"
 
 # Unused 30059
 
@@ -328,19 +328,19 @@ msgstr "Zapamatovat si předvolby zvuku / titulků"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr "Uložit záložky pro knihovnu položky / značky jako shlednuté"
+msgstr "Uložit záložky pro knihovnu položky / značky jako zhlédnuté"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "Časová prodleva mezipaměti (minuty)"
+msgstr "Cache TTL (minuty)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "Časová prodleva mezipaměti pro metadata (dny)"
+msgstr "Cache pro metadata TTL (dny)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "Cache pro 'Můj seznam' TTL (minuty)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -508,7 +508,7 @@ msgstr "Udělené hodnocení {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Vyberte profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -622,11 +622,11 @@ msgstr "Máte účet Netflix Premium?"
 
 msgctxt "#30157"
 msgid "The configuration has been completed"
-msgstr ""
+msgstr "Konfigurace byla dokončena"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr ""
+msgstr "Spustit průvodce konfigurací doplňku"
 
 msgctxt "#30159"
 msgid "View for main menu"
@@ -810,7 +810,7 @@ msgstr "Hostitelská IP"
 
 msgctxt "#30204"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30205"
 msgid "Test database connection"
@@ -850,7 +850,7 @@ msgstr "Nastevení InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr ""
+msgstr "Vynutit aktualizaci"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -922,61 +922,61 @@ msgstr "Chcete nyní zkontrolovat aktualizaci?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
-msgstr ""
+msgstr "Hodnocení vyspělosti profilu pro {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr ""
+msgstr "Zobrazit pouze hodnocené tituly [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
-msgstr ""
+msgstr "Nainstalovat Up Next dolpněk"
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
-msgstr ""
+msgstr "Synchronizujte sledovaný stav videí s Netflixem"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr ""
+msgstr "Změnit sledovaný stav (místně)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr ""
+msgstr "Označeno jako zhlédnuté|Označeno jako nezhlédnuté|Obnoven zhlédnutý stav Netflixu"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr ""
+msgstr "Up Next notifikace (sledovat další video)"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
-msgstr ""
+msgstr "Barva doplňujících informací v postranním panelu"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr ""
+msgstr "Z důvodu tohoto problému nelze spustit služby na pozadí:\r\n{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr ""
+msgstr "Otevřete Connect CDN (dolní index je lepší)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr ""
+msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr ""
+msgstr "Vyberte první nezhlédnutou epizodu seriálu"
 
 msgctxt "#30244"
 msgid "Force Widevine security level L3"
-msgstr ""
+msgstr "Vynutit úroveň zabezpečení Widevine L3"
 
 # Unused 30244 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Chcete odebrat zhlédnuté z '{}'?[CR][CR]Operace může trvat až 24 hodin, proto se název může v seznamu stále zobrazovat."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Hledat"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Typ vyhledávání"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Hledejte tituly, lidi, žánry"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Nové hledání..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Vymazat historii vyhledávání"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Vyberte jazyk"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Chcete smazat celý obsah?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "Nebyly nalezeny žádné díly"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Podle výrazu"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Podle jazyka zvuku"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Podle jazyka titulků"
