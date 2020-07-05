@@ -48,7 +48,7 @@ msgstr "Ηλ.ταχυδρομείο"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr ""
+msgstr "Εισάγετε το PIN για να προσπελάσετε αυτό το προφίλ"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -202,15 +202,15 @@ msgstr "Εξήχθη"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr ""
+msgstr "Βιβλιοθήκη"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr ""
+msgstr "Επιλέξτε προφίλ για να αναπαράξετε τα βίντεο"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
-msgstr ""
+msgstr "Ερώτηση πριν την επιλογή του προφίλ πρίν απο την αναπαραγωγή"
 
 # Unused 30052, 30053
 
@@ -332,7 +332,7 @@ msgstr "Αποθήκευση σελιδοδεικτών για τα αντικε
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "Αποθήκευσε προσωρινά το αντικείμενο στο χρόνο-για-ζωντανά (λεπτά)"
+msgstr "Αποθήκευσε προσωρινά τα αντικείμενα στο χρόνο-για-ζωντανά (λεπτά)"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
@@ -340,7 +340,7 @@ msgstr "Αποθήκευσε προσωρινά το αντικείμενο με
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr ""
+msgstr "Αποθήκευσε προσωρινά τα αντικείμενα της 'Λίστας μου' στο χρόνο-για-ζωντανά (λεπτά)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -508,7 +508,7 @@ msgstr "Απονεμήθει βαθμολόγηση για {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr ""
+msgstr "Επιλέξτε ένα προφίλ"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
