@@ -109,7 +109,12 @@ If something doesn't work for you:
 4. Open a new github issue (of type *Problem report*) by following the instructions in the report
 
 We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
-Please also use a service like pastebin or better [Kodi paste](http://paste.kodi.tv) to provide logs and refrain from uploading them to where they'll be hidden behind an ad-wall or any other sketchy services.
+
+Rules for the log:
+- Use a service like [Kodi paste](http://paste.kodi.tv) to copy the log content
+- Do not paste the content of the log directly into a GH message
+- Do not cut, edit or remove parts of the log (there are no sensitive data)
+- If the log file is really huge (more 1Mb) in Kodi settings disable 'Component-specific logging'
 
 When the problem will be solved, remember to disable the debug logging, to avoid unnecessary slowing down in your device.
 
