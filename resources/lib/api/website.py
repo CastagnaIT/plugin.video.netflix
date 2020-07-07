@@ -65,7 +65,7 @@ PAGE_ITEM_ERROR_CODE_LIST = 'models\\i18nStrings\\data\\login/login'
 JSON_REGEX = r'netflix\.{}\s*=\s*(.*?);\s*</script>'
 AVATAR_SUBPATH = ['images', 'byWidth', '320']
 
-PROFILE_DEBUG_INFO = ['profileName', 'isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
+PROFILE_DEBUG_INFO = ['isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
 
 
 @common.time_execution(immediate=True)
@@ -183,7 +183,7 @@ def parse_profiles(data):
             # Add profile language description translated from locale
             summary['language_desc'] = g.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
             for key, value in iteritems(summary):
-                if key in PROFILE_DEBUG_INFO:
+                if common.is_debug_verbose() and key in PROFILE_DEBUG_INFO:
                     common.debug('Profile info {}', {key: value})
                 if key == 'profileName':  # The profile name is coded as HTML
                     value = parse_html(value)
