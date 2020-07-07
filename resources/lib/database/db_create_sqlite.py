@@ -65,6 +65,15 @@ def _create_local_database(db_file_path):
                 'Value TEXT);')
     cur.execute(table)
 
+    table = str('CREATE TABLE search ('
+                'ID         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+                'Guid       TEXT    NOT NULL REFERENCES profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE,'
+                'Type       TEXT    NOT NULL,'
+                'Value      TEXT    NOT NULL,'
+                'Parameters TEXT,'
+                'LastAccess TEXT);')
+    cur.execute(table)
+
     if conn:
         conn.close()
 
