@@ -254,8 +254,6 @@ class MSLHandler(object):
         # Save the manifest to the cache to retrieve it during its validity
         expiration = int(manifest['expiration'] / 1000)
         g.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
-        if 'result' in manifest:
-            return manifest['result']
         return manifest
 
     @display_error_info
