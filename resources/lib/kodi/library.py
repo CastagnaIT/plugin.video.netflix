@@ -18,7 +18,7 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
-from resources.lib.api.paths import MAX_PATH_REQUEST_SIZE
+from resources.lib.api.paths import PATH_REQUEST_SIZE_STD
 from resources.lib.globals import g
 from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item, get_item,
                                               ItemNotFound, FOLDER_MOVIES, FOLDER_TV, library_path)
@@ -59,7 +59,7 @@ def list_contents(perpetual_range_start):
     chunked_video_list = []
     perpetual_range_selector = {}
 
-    for index, chunk in enumerate(common.chunked_list(video_id_list, MAX_PATH_REQUEST_SIZE)):
+    for index, chunk in enumerate(common.chunked_list(video_id_list, PATH_REQUEST_SIZE_STD)):
         if index >= perpetual_range_start:
             if number_of_requests == 0:
                 if len(video_id_list) > count:

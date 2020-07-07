@@ -15,9 +15,10 @@ from resources.lib import common
 from resources.lib.api.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
                                           VideoList, SearchVideoList, CustomVideoList)
 from resources.lib.api.exceptions import InvalidVideoListTypeError
-from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_SELECTOR, VIDEO_LIST_BASIC_PARTIAL_PATHS,
+from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                      SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                                     GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, MAX_PATH_REQUEST_SIZE, build_paths)
+                                     GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
+                                     PATH_REQUEST_SIZE_MAX)
 from resources.lib.common import cache_utils
 from resources.lib.globals import g
 
@@ -168,7 +169,7 @@ class DirectoryRequests(object):
             raise common.InvalidVideoId('Cannot request episode list for {}'.format(videoid))
         common.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
-                 build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_SELECTOR], EPISODES_PARTIAL_PATHS) +
+                 build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
                  build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
         call_args = {
             'paths': paths,
@@ -185,7 +186,7 @@ class DirectoryRequests(object):
         # Some of this type of request have results fixed at ~40 from netflix
         # The 'length' tag never return to the actual total count of the elements
         common.debug('Requesting video list {}', list_id)
-        paths = build_paths(['lists', list_id, RANGE_SELECTOR, 'reference'], VIDEO_LIST_PARTIAL_PATHS)
+        paths = build_paths(['lists', list_id, RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS)
         call_args = {
             'paths': paths,
             'length_params': ['stdlist', ['lists', list_id]],
@@ -214,7 +215,7 @@ class DirectoryRequests(object):
             int(g.ADDON.getSettingInt('menu_sortorder_' + menu_data.get('initial_menu_id', menu_data['path'][1])))
         ]
         base_path.append(req_sort_order_type)
-        paths = build_paths(base_path + [RANGE_SELECTOR], VIDEO_LIST_PARTIAL_PATHS)
+        paths = build_paths(base_path + [RANGE_PLACEHOLDER], VIDEO_LIST_PARTIAL_PATHS)
 
         path_response = self.netflix_session._perpetual_path_request(paths,
                                                                      [response_type, base_path],
@@ -255,9 +256,9 @@ class DirectoryRequests(object):
     def req_video_list_search(self, search_term, perpetual_range_start=None):
         """Retrieve a video list by search term"""
         common.debug('Requesting video list by search term "{}"', search_term)
-        base_path = ['search', 'byTerm', '|' + search_term, 'titles', MAX_PATH_REQUEST_SIZE]
+        base_path = ['search', 'byTerm', '|' + search_term, 'titles', PATH_REQUEST_SIZE_STD]
         paths = ([base_path + [['id', 'name', 'requestId']]] +
-                 build_paths(base_path + [RANGE_SELECTOR, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
+                 build_paths(base_path + [RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
         call_args = {
             'paths': paths,
             'length_params': ['searchlist', ['search', 'byReference']],
@@ -279,11 +280,12 @@ class DirectoryRequests(object):
         contains only minimal video info
         """
         common.debug('Requesting the full video list for {}', context_name)
-        paths = build_paths([context_name, 'az', RANGE_SELECTOR], VIDEO_LIST_BASIC_PARTIAL_PATHS)
+        paths = build_paths([context_name, 'az', RANGE_PLACEHOLDER], VIDEO_LIST_BASIC_PARTIAL_PATHS)
         call_args = {
             'paths': paths,
             'length_params': ['stdlist', [context_name, 'az']],
             'perpetual_range_start': None,
+            'request_size': PATH_REQUEST_SIZE_MAX,
             'no_limit_req': True
         }
         if switch_profiles:

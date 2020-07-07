@@ -15,9 +15,13 @@ import resources.lib.common as common
 from resources.lib.globals import g
 from .exceptions import InvalidReferenceError
 
-MAX_PATH_REQUEST_SIZE = 47  # Stands for 48 results, is the default value defined by netflix for a single request
+# Limit size for the path request
+# The requests to sorted lists can get more then 48 results,
+# but the nf server blocks request if the response will result in too much data
+PATH_REQUEST_SIZE_STD = 47  # Standard limit defined by netflix (48 results)
+PATH_REQUEST_SIZE_MAX = 199
 
-RANGE_SELECTOR = 'RANGE_SELECTOR'
+RANGE_PLACEHOLDER = 'RANGE_PLACEHOLDER'
 
 ART_SIZE_POSTER = '_342x684'
 ART_SIZE_FHD = '_1920x1080'
@@ -65,7 +69,7 @@ GENRE_PARTIAL_PATHS = [
 ]
 
 SEASONS_PARTIAL_PATHS = [
-    ['seasonList', RANGE_SELECTOR, 'summary'],
+    ['seasonList', RANGE_PLACEHOLDER, 'summary'],
     ['title']
 ] + ART_PARTIAL_PATHS
 
