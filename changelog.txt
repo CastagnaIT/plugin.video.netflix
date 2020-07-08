@@ -1,3 +1,7 @@
+v1.6.1 (2020-07-08)
+-Fixed broken search menu on fresh installations
+-Updated el-gr translation
+
 v1.6.0 (2020-07-04)
 -New search menu
 -New search types (by term, by audio lang, by subtitles lang)
