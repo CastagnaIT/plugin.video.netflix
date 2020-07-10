@@ -219,11 +219,12 @@ def run(argv):
                             'Please report it to InputStream Helper github.'.format(exc)))
             success = False
         except HttpError401:
-            # Http error 401 Client Error: Unauthorized for url ... issue (see _request in nfsession_requests.py)
+            # The service has raised http error 401 Client Error: Unauthorized for url ...
+            # Can happen when the http request for some reason has failed
+            # for example for possible change of data format or malformed data in the http request
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog(get_local_string(30105),
                            ('There was a communication problem with Netflix.\r\n'
-                            'This is a known and unresolvable issue, do not submit reports.\r\n'
                             'You can try the operation again or exit.'))
             success = False
         except Exception as exc:

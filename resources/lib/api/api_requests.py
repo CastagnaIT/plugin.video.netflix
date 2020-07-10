@@ -140,7 +140,7 @@ def rate(videoid, rating):
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
-        'post',
+        'post_safe',
         {'endpoint': 'set_video_rating',
          'data': {
              'titleId': int(videoid.value),
@@ -155,7 +155,7 @@ def rate_thumb(videoid, rating, track_id_jaw):
     common.debug('Thumb rating {} as {}', videoid.value, rating)
     event_uuid = common.get_random_uuid()
     response = common.make_call(
-        'post',
+        'post_safe',
         {'endpoint': 'set_thumb_rating',
          'data': {
              'eventUuid': event_uuid,
@@ -177,7 +177,7 @@ def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""
     common.debug('My List: {} {}', operation, videoid)
     common.make_call(
-        'post',
+        'post_safe',
         {'endpoint': 'update_my_list',
          'data': {
              'operation': operation,
@@ -263,7 +263,7 @@ def _metadata(video_id):
     # Always use params 'movieid' to all videoid identifier
     ipc_call = common.make_http_call if g.IS_SERVICE else common.make_call
     metadata_data = ipc_call(
-        'get',
+        'get_safe',
         {
             'endpoint': 'metadata',
             'params': {'movieid': video_id.value,
@@ -289,7 +289,7 @@ def set_parental_control_data(data):
     """Set the parental control data"""
     try:
         common.make_call(
-            'post',
+            'post_safe',
             {'endpoint': 'content_restrictions',
              'data': {'action': 'update',
                       'authURL': data['token'],
@@ -308,7 +308,7 @@ def verify_pin(pin):
     """Send adult PIN to Netflix and verify it."""
     try:
         return common.make_call(
-            'post',
+            'post_safe',
             {'endpoint': 'pin_service',
              'data': {'pin': pin}}
         ).get('success', False)
@@ -321,7 +321,7 @@ def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
     try:
         return common.make_call(
-            'post',
+            'post_safe',
             {'endpoint': 'profile_lock',
              'data': {'pin': pin,
                       'action': 'verify',
@@ -360,7 +360,7 @@ def remove_watched_status(videoid):
     # WARNING: THE NF SERVICE MAY TAKE UNTIL TO 24 HOURS TO REMOVE IT
     try:
         data = common.make_call(
-            'post',
+            'post_safe',
             {'endpoint': 'viewing_activity',
              'data': {'movieID': videoid.value,
                       'seriesAll': videoid.mediatype == common.VideoId.SHOW,

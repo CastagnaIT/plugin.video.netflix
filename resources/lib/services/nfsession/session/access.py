@@ -3,24 +3,25 @@
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
     Copyright (C) 2019 Stefano Gottardo - @CastagnaIT
-    Stateful Netflix session management: handle the authentication access
+    Handle the authentication access
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import resources.lib.api.website as website
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
-import resources.lib.api.website as website
 import resources.lib.kodi.ui as ui
-from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_requests import NFSessionRequests
-from resources.lib.services.nfsession.nfsession_cookie import NFSessionCookie
 from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
                                           MissingCredentialsError, InvalidMembershipStatusError,
-                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword,
+                                          NotConnected, NotLoggedInError)
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
+from resources.lib.services.nfsession.session.cookie import SessionCookie
+from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
 
 try:  # Python 2
     unicode
@@ -28,8 +29,14 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 
-class NFSessionAccess(NFSessionRequests, NFSessionCookie):
+class SessionAccess(SessionCookie, SessionHTTPRequests):
     """Handle the authentication access"""
+
+    def __init__(self):
+        super(SessionAccess, self).__init__()
+        self.is_prefetch_login = False
+        # Share the login function to SessionBase class
+        self.external_func_login = self.login
 
     @common.time_execution(immediate=True)
     def prefetch_login(self):
@@ -39,7 +46,7 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         try:
             common.get_credentials()
             if not self.is_logged_in():
-                self._login()
+                self.login(modal_error_message=False)
             self.is_prefetch_login = True
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
@@ -53,34 +60,47 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
         except (InvalidMembershipStatusError, InvalidMembershipStatusAnonymous):
             ui.show_notification(common.get_local_string(30180), time=10000)
 
-    @common.time_execution(immediate=True)
+    def assert_logged_in(self):
+        """Raise an exception when login cannot be established or maintained"""
+        if not common.is_internet_connected():
+            raise NotConnected('Internet connection not available')
+        if not self.is_logged_in():
+            raise NotLoggedInError
+
     def is_logged_in(self):
         """Check if there are valid login data"""
-        valid_login = self._load_cookies() and \
-            self._verify_session_cookies() and \
-            self._verify_esn_existence()
+        valid_login = self._load_cookies() and self._verify_session_cookies() and self._verify_esn_existence()
         return valid_login
 
-    def _verify_esn_existence(self):
-        # if for any reason esn is no longer exist get one
-        if not g.get_esn():
-            return self.try_refresh_session_data()
-        return True
+    @staticmethod
+    def _verify_esn_existence():
+        return bool(g.get_esn())
 
-    @common.addonsignals_return_call
-    def login(self):
-        """AddonSignals interface for login function"""
-        return self._login(modal_error_message=True)
+    def get_safe(self, endpoint, **kwargs):
+        """
+        Before execute a GET request to the designated endpoint,
+        check the connection and the validity of the login
+        """
+        self.assert_logged_in()
+        return self.get(endpoint, **kwargs)
+
+    def post_safe(self, endpoint, **kwargs):
+        """
+        Before execute a POST request to the designated endpoint,
+        check the connection and the validity of the login
+        """
+        self.assert_logged_in()
+        return self.post(endpoint, **kwargs)
 
     @common.time_execution(immediate=True)
-    def _login(self, modal_error_message=False):
+    def login(self, modal_error_message=True):
         """Perform account login"""
         try:
             # First we get the authentication url without logging in, required for login API call
-            react_context = website.extract_json(self._get('login'), 'reactContext')
+            react_context = website.extract_json(self.get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
             common.debug('Logging in...')
-            login_response = self._post(
+            login_response = self.post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
             try:
@@ -106,14 +126,13 @@ class NFSessionAccess(NFSessionRequests, NFSessionCookie):
             raise
         return False
 
-    @common.addonsignals_return_call
     @common.time_execution(immediate=True)
     def logout(self):
         """Logout of the current account and reset the session"""
         common.debug('Logging out of current account')
 
         # Perform the website logout
-        self._get('logout')
+        self.get('logout')
 
         g.settings_monitor_suspend(True)
 

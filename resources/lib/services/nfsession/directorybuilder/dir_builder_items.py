@@ -16,8 +16,8 @@ from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import g
 from resources.lib.kodi.context_menu import generate_context_menu_items
 from resources.lib.kodi.infolabels import get_art, get_color_name, add_info_dict_item, set_watched_status
-from resources.lib.services.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
-                                                                       add_items_previous_next_page)
+from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
+                                                                                 add_items_previous_next_page)
 
 try:  # Python 2
     unicode

@@ -3,7 +3,7 @@
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
     Copyright (C) 2019 Stefano Gottardo - @CastagnaIT
-    Stateful Netflix session management: handle the cookies
+    Handle the cookies
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -15,12 +15,12 @@ import time
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_base import NFSessionBase
+from resources.lib.services.nfsession.session.base import SessionBase
 
 LOGIN_COOKIES = ['nfvdid', 'SecureNetflixId', 'NetflixId']
 
 
-class NFSessionCookie(NFSessionBase):
+class SessionCookie(SessionBase):
     """Handle the cookies"""
 
     @common.time_execution(immediate=True)

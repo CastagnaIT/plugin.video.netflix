@@ -2,7 +2,7 @@
 """
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2020 Stefano Gottardo (original implementation module)
-    Methods to make 'path' requests through the Shakti API
+    Builds and executes PATH requests for the directories
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -23,12 +23,10 @@ from resources.lib.common import cache_utils
 from resources.lib.globals import g
 
 
-# pylint: disable=protected-access
-class DirectoryRequests(object):
-    # This module make requests (of 'path' type) to the shakti API and convert the raw data returned from the API
-    # in an DataType object (data_types.py), where the data will be more easily accessible
+class DirectoryPathRequests(object):
+    """Builds and executes PATH requests for the directories"""
 
-    netflix_session = None
+    nfsession = None
 
     @cache_utils.cache_output(cache_utils.CACHE_MYLIST, fixed_identifier='my_list_items', ignore_self_class=True)
     def req_mylist_items(self):
@@ -57,7 +55,7 @@ class DirectoryRequests(object):
                  # Art for first video in each video list (will be displayed as video list art)
                  build_paths(['lolomo', {'from': 0, 'to': 40}, {'from': 0, 'to': 0}, 'reference'], ART_PARTIAL_PATHS))
         call_args = {'paths': paths}
-        path_response = self.netflix_session._path_request(**call_args)
+        path_response = self.nfsession.path_request(**call_args)
         return LoLoMo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='loco_list', ignore_self_class=True)
@@ -74,7 +72,7 @@ class DirectoryRequests(object):
                  # Art for the first video of each context list (needed only to add art to the menu item)
                  build_paths(['loco', {'from': 0, 'to': 50}, 0, 'reference'], ART_PARTIAL_PATHS))
         call_args = {'paths': paths}
-        path_response = self.netflix_session._path_request(**call_args)
+        path_response = self.nfsession.path_request(**call_args)
         return LoCo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
@@ -99,7 +97,7 @@ class DirectoryRequests(object):
                  # IDs and names of sub-genres
                  [['genres', 34399, 'subgenres', {'from': 0, 'to': 30}, ['id', 'name']]])
         call_args = {'paths': paths}
-        path_response = self.netflix_session._path_request(**call_args)
+        path_response = self.nfsession.path_request(**call_args)
         return LoCo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
@@ -113,7 +111,7 @@ class DirectoryRequests(object):
                  # IDs and names of sub-genres
                  [['genres', genre_id, 'subgenres', {'from': 0, 'to': 48}, ['id', 'name']]])
         call_args = {'paths': paths}
-        path_response = self.netflix_session._path_request(**call_args)
+        path_response = self.nfsession.path_request(**call_args)
         return LoLoMo(path_response)
 
     def get_lolomo_list_id_by_context(self, context):
@@ -140,7 +138,7 @@ class DirectoryRequests(object):
                   ['profilesList', 'current', 'summary'],
                   ['profilesList', {'to': 5}, 'summary'],
                   ['profilesList', {'to': 5}, 'avatar', 'images', 'byWidth', 320]])
-        path_response = self.netflix_session._path_request(paths, use_jsongraph=True)
+        path_response = self.nfsession.path_request(paths, use_jsongraph=True)
         if update_database:
             from resources.lib.api.website import parse_profiles
             parse_profiles(path_response)
@@ -158,7 +156,7 @@ class DirectoryRequests(object):
             'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']],
             'perpetual_range_start': perpetual_range_start
         }
-        path_response = self.netflix_session._perpetual_path_request(**call_args)
+        path_response = self.nfsession.perpetual_path_request(**call_args)
         return SeasonList(videoid, path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='videoid',
@@ -176,7 +174,7 @@ class DirectoryRequests(object):
             'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']],
             'perpetual_range_start': perpetual_range_start
         }
-        path_response = self.netflix_session._perpetual_path_request(**call_args)
+        path_response = self.nfsession.perpetual_path_request(**call_args)
         return EpisodeList(videoid, path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_append_from_kwarg_name='perpetual_range_start',
@@ -192,7 +190,7 @@ class DirectoryRequests(object):
             'length_params': ['stdlist', ['lists', list_id]],
             'perpetual_range_start': perpetual_range_start
         }
-        path_response = self.netflix_session._perpetual_path_request(**call_args)
+        path_response = self.nfsession.perpetual_path_request(**call_args)
         return VideoList(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='context_id',
@@ -217,9 +215,7 @@ class DirectoryRequests(object):
         base_path.append(req_sort_order_type)
         paths = build_paths(base_path + [RANGE_PLACEHOLDER], VIDEO_LIST_PARTIAL_PATHS)
 
-        path_response = self.netflix_session._perpetual_path_request(paths,
-                                                                     [response_type, base_path],
-                                                                     perpetual_range_start)
+        path_response = self.nfsession.perpetual_path_request(paths, [response_type, base_path], perpetual_range_start)
         return VideoListSorted(path_response, context_name, context_id, req_sort_order_type)
 
     @cache_utils.cache_output(cache_utils.CACHE_SUPPLEMENTAL, identify_append_from_kwarg_name='supplemental_type',
@@ -232,7 +228,7 @@ class DirectoryRequests(object):
         path = build_paths(
             ['videos', videoid.value, supplemental_type, {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS
         )
-        path_response = self.netflix_session._path_request(path)
+        path_response = self.nfsession.path_request(path)
         return VideoListSorted(path_response, 'videos', videoid.value, supplemental_type)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='chunked_video_list',
@@ -244,7 +240,7 @@ class DirectoryRequests(object):
         merged_response = {}
         for videoids_list in chunked_video_list:
             path = build_paths(['videos', videoids_list], VIDEO_LIST_PARTIAL_PATHS)
-            path_response = self.netflix_session._path_request(path)
+            path_response = self.nfsession.path_request(path)
             common.merge_dicts(path_response, merged_response)
 
         if perpetual_range_selector:
@@ -264,14 +260,14 @@ class DirectoryRequests(object):
             'length_params': ['searchlist', ['search', 'byReference']],
             'perpetual_range_start': perpetual_range_start
         }
-        path_response = self.netflix_session._perpetual_path_request(**call_args)
+        path_response = self.nfsession.perpetual_path_request(**call_args)
         return SearchVideoList(path_response)
 
     def req_subgenres(self, genre_id):
         """Retrieve sub-genres for the given genre"""
         common.debug('Requesting sub-genres of the genre {}', genre_id)
         path = [['genres', genre_id, 'subgenres', {'from': 0, 'to': 47}, ['id', 'name']]]
-        path_response = self.netflix_session._path_request(path)
+        path_response = self.nfsession.path_request(path)
         return SubgenreList(path_response)
 
     def req_datatype_video_list_full(self, context_name, switch_profiles=False):
@@ -294,9 +290,9 @@ class DirectoryRequests(object):
             # and it could cause a wrong query request to nf server.
             # So we try to switch the profile, get My List items and restore previous
             # active profile in a "single call" to try perform the operations in a faster way.
-            path_response = self.netflix_session._perpetual_path_request_switch_profiles(**call_args)
+            path_response = self.nfsession.perpetual_path_request_switch_profiles(**call_args)
         else:
-            path_response = self.netflix_session._perpetual_path_request(**call_args)
+            path_response = self.nfsession.perpetual_path_request(**call_args)
         return {} if not path_response else VideoListSorted(path_response, context_name, None, 'az')
 
     def req_datatype_video_list_byid(self, video_ids, custom_partial_paths=None):
@@ -304,5 +300,5 @@ class DirectoryRequests(object):
         common.debug('Requesting a video list for {} videos', video_ids)
         paths = build_paths(['videos', video_ids],
                             custom_partial_paths if custom_partial_paths else VIDEO_LIST_PARTIAL_PATHS)
-        path_response = self.netflix_session._path_request(paths)
+        path_response = self.nfsession.path_request(paths)
         return CustomVideoList(path_response)
