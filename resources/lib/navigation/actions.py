@@ -235,7 +235,7 @@ def _sync_library(videoid, operation):
     operation = {
         'add': 'export_silent',
         'remove': 'remove_silent'}.get(operation)
-    if operation and g.ADDON.getSettingBool('lib_sync_mylist'):
+    if operation and g.ADDON.getSettingBool('lib_sync_mylist') and g.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
         sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
                                                          g.LOCAL_DB.get_guid_owner_profile())
         # Allow to sync library with My List only by chosen profile
