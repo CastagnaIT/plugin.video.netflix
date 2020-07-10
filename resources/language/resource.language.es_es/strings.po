@@ -48,7 +48,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr "Introduce el PIN para acceder a este perfil"
+msgstr "Introduzca el PIN para acceder a este perfil"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -476,7 +476,7 @@ msgstr "Operación Mi lista completada"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "No se puede eliminar automáticamente una temporada de la biblioteca de Kodi, por favor, hazlo manualmente"
+msgstr "No se puede eliminar automáticamente una temporada de la biblioteca de Kodi, por favor, hágalo manualmente"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -976,7 +976,7 @@ msgstr "Forzar nivel de seguridad Widevine L3"
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "¿Desea eliminar el estado visto de '{}'?[CR][CR]La operación puede tardar hasta 24 horas, por lo tanto, el título aún puede aparecer en la lista."
 
 # Unused 30301 to 30399
 
@@ -986,27 +986,27 @@ msgstr "Buscar"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Tipo de búsqueda"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Buscar título, personas, géneros"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Nueva búsqueda..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Limpiar historial de búsqueda"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Selecciona el idioma"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "¿Quieres eliminar todo el contenido?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1016,12 +1016,12 @@ msgstr "No se encontraron coincidencias"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Por término"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Por idioma de audio"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Por idioma de subtítulos"
