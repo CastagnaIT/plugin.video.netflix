@@ -142,7 +142,7 @@ msgstr "常规"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "启用杜比 Plus（DDPlus HQ和Premium上的Atmos）"
+msgstr "启用杜比 Plus（对于netflix高级账户启用DDPlus HQ和Atmos）"
 
 msgctxt "#30034"
 msgid "Manual ESN"
