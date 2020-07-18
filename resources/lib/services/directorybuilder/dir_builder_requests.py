@@ -285,8 +285,8 @@ class DirectoryRequests(object):
             'paths': paths,
             'length_params': ['stdlist', [context_name, 'az']],
             'perpetual_range_start': None,
-            'request_size': PATH_REQUEST_SIZE_MAX,
-            'no_limit_req': True
+            'no_limit_req': True,
+            'request_size': PATH_REQUEST_SIZE_MAX
         }
         if switch_profiles:
             # Used only with library auto-update with the sync with Netflix "My List" enabled.

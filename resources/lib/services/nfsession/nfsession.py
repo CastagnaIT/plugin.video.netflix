@@ -124,8 +124,8 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         cookies.save(self.account_hash, self.session.cookies)
 
     @needs_login
-    def _perpetual_path_request_switch_profiles(self, paths, length_params,
-                                                perpetual_range_start=None, no_limit_req=False):
+    def _perpetual_path_request_switch_profiles(self, paths, length_params, perpetual_range_start=None,
+                                                no_limit_req=False, request_size=apipaths.PATH_REQUEST_SIZE_STD):
         """
         Perform a perpetual path request,
         Used exclusively to get My List of a profile other than the current one
@@ -138,8 +138,8 @@ class NetflixSession(NFSessionAccess, DirectoryBuilder):
         # Switch profile (only if necessary) in order to get My List videos
         self._activate_profile(mylist_profile_guid)
         # Get the My List data
-        path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start,
-                                                     no_limit_req)
+        path_response = self._perpetual_path_request(paths, length_params, perpetual_range_start, no_limit_req,
+                                                     request_size)
         if mylist_profile_guid != current_profile_guid:
             # Reactive again the previous profile
             self._activate_profile(current_profile_guid)
