@@ -368,6 +368,11 @@ def parse_html(html_value):
     """Parse HTML entities"""
     try:  # Python 2
         from HTMLParser import HTMLParser
-    except ImportError:  # Python 3
-        from html.parser import HTMLParser
-    return HTMLParser().unescape(html_value)
+        return HTMLParser().unescape(html_value)
+    except ImportError:
+        try:  # Python >= 3.4
+            from html import unescape
+            return unescape(html_value)
+        except ImportError:  # Python <= 3.3
+            from html.parser import HTMLParser
+            return HTMLParser().unescape(html_value)
