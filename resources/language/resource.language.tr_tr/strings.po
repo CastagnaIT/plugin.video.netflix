@@ -194,7 +194,9 @@ msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
 msgstr "InputStream Adaptive eklentisi veya Widevine kitaplığı ile ilgili bir sorun var. Eksik veya etkinleştirilmemiş olabilir, işlem iptal edilecektir."
 
-# Unused 30047
+msgctxt "#30047"
+msgid "Library update in progress"
+msgstr ""
 
 msgctxt "#30048"
 msgid "Exported"
@@ -234,7 +236,9 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr "{} profili otomatik seçim için ayarlandı"
 
-# Unused 30059
+msgctxt "#30059"
+msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
+msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -248,7 +252,9 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Ebeveyn denetimleri"
 
-# Unused 30063
+msgctxt "#30063"
+msgid "An update is already in progress"
+msgstr ""
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -487,8 +493,8 @@ msgid "Sync My List to Kodi library"
 msgstr "Listemi Kodi kitaplığı ile senkronize et"
 
 msgctxt "#30123"
-msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Gerçekten devam etmek istiyor musunuz?\nBu, daha önce dışa aktarılan tüm öğeleri silecek ve o anda etkin olan profil için Listem'deki tüm öğeleri dışa aktaracak.\nBu işlem biraz zaman alabilir..."
+msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
+msgstr ""
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -756,9 +762,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "TV programı"
 
-msgctxt "#30191"
-msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "'Listem'e eklenen {} için NFO dosyalarını dışa aktarmak istiyor musunuz?"
+# Unused 30191
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -884,9 +888,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "Çocuk hesabı"
 
-msgctxt "#30223"
-msgid "Synchronization now uses 'My List' of profile {}"
-msgstr "Senkronizasyon artık {} profilinin 'Listem''ini kullanıyor"
+# Unused 30223
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -905,12 +907,10 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi kitaplığını Listem ile senkronize et"
 
 msgctxt "#30228"
-msgid "Use 'My list' of the current profile"
-msgstr "Geçerli profilin 'Listem''ini kullan"
+msgid "Set a profile for synchronization"
+msgstr ""
 
-msgctxt "#30229"
-msgid "Show the name of the selected profile"
-msgstr "Seçilen profilin adını göster"
+# Unused 30229
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -972,7 +972,11 @@ msgctxt "#30244"
 msgid "Force Widevine security level L3"
 msgstr "Widevine güvenlik seviyesi L3'ü zorla"
 
-# Unused 30244 to 30299
+msgctxt "#30245"
+msgid "Deleting files exported to the library"
+msgstr ""
+
+# Unused 30246 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."

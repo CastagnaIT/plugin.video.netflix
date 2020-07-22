@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
+from resources.lib.globals import g
 from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
@@ -25,7 +26,7 @@ class NetflixSession(object):
         # Initialize correlated features
         self.directory_builder = DirectoryBuilder(self.nfsession)
         # Register the functions to IPC
-        slots = self.nfsession.slots + self.directory_builder.slots
+        slots = self.nfsession.slots + self.directory_builder.slots + [self.library_auto_update]
         for slot in slots:
             func_name = slot.__name__
             enveloped_func = common.EnvelopeIPCReturnCall(slot).call
@@ -35,3 +36,17 @@ class NetflixSession(object):
             common.register_slot(enveloped_func, func_name)
         # Silent login
         self.nfsession.prefetch_login()
+
+    def library_auto_update(self):
+        """Run the library auto update"""
+        # Call the function in a thread to return immediately without blocking the service
+        common.run_threaded(True, self._run_library_auto_update)
+
+    def _run_library_auto_update(self):
+        from resources.lib.kodi.library import Library
+        library_cls = Library(self.nfsession.get_metadata,
+                              self.directory_builder.get_mylist_videoids_profile_switch,
+                              self.directory_builder.req_profiles_info)
+        library_cls.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'),
+                                        show_prg_dialog=False,
+                                        update_profiles=True)

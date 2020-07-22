@@ -9,11 +9,14 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import time
+
 import resources.lib.api.website as website
 import resources.lib.common as common
 from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)
-from resources.lib.common import cookies
+                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword,
+                                          MetadataNotAvailable)
+from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import g
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
 
@@ -34,7 +37,8 @@ class NFSessionOperations(SessionPathRequests):
             self.callpath_request,
             self.fetch_initial_page,
             self.activate_profile,
-            self.parental_control_data
+            self.parental_control_data,
+            self.get_metadata
         ]
         self.is_profile_session_active = False
         # Share the activate profile function to SessionBase class
@@ -59,7 +63,6 @@ class NFSessionOperations(SessionPathRequests):
         if self.is_profile_session_active and guid == current_active_guid:
             common.info('The profile session of guid {} is still active, activation not needed.', guid)
             return
-        import time
         timestamp = time.time()
         common.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
@@ -123,3 +126,54 @@ class NFSessionOperations(SessionPathRequests):
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
                 raise NotLoggedInError
             raise
+
+    @common.time_execution(immediate=True)
+    def get_metadata(self, videoid, refresh=False):
+        """Retrieve additional metadata for the given VideoId"""
+        if isinstance(videoid, list):  # IPC call send the videoid as "path" list
+            videoid = common.VideoId.from_path(videoid)
+        metadata_data = {}, None
+        # Get the parent VideoId (when the 'videoid' is a type of EPISODE/SEASON)
+        parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
+        # Delete the cache if we need to refresh the all metadata
+        if refresh:
+            g.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
+        if videoid.mediatype == common.VideoId.EPISODE:
+            try:
+                metadata_data = self._episode_metadata(videoid, parent_videoid)
+            except KeyError as exc:
+                # The episode metadata not exist (case of new episode and cached data outdated)
+                # In this case, delete the cache entry and try again safely
+                common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
+                try:
+                    metadata_data = self._episode_metadata(videoid, parent_videoid, refresh_cache=True)
+                except KeyError as exc:
+                    # The new metadata does not contain the episode
+                    common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
+        else:
+            metadata_data = self._metadata(video_id=parent_videoid), None
+        return metadata_data
+
+    def _episode_metadata(self, episode_videoid, tvshow_videoid, refresh_cache=False):
+        if refresh_cache:
+            g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
+        show_metadata = self._metadata(video_id=tvshow_videoid)
+        episode_metadata, season_metadata = common.find_episode_metadata(episode_videoid, show_metadata)
+        return episode_metadata, season_metadata, show_metadata
+
+    @cache_utils.cache_output(cache_utils.CACHE_METADATA, identify_from_kwarg_name='video_id', ignore_self_class=True)
+    def _metadata(self, video_id):
+        """Retrieve additional metadata for a video.
+        This is a separate method from get_metadata() to work around caching issues
+        when new episodes are added to a tv show by Netflix."""
+        common.debug('Requesting metadata for {}', video_id)
+        metadata_data = self.get_safe(endpoint='metadata',
+                                      params={'movieid': video_id.value,
+                                              '_': int(time.time() * 1000)})
+        if not metadata_data:
+            # This return empty
+            # - if the metadata is no longer available
+            # - if it has been exported a tv show/movie from a specific language profile that is not
+            #   available using profiles with other languages
+            raise MetadataNotAvailable
+        return metadata_data['video']

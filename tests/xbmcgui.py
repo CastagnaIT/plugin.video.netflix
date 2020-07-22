@@ -161,7 +161,7 @@ class DialogProgress:
     @staticmethod
     def close():
         """A stub implementation for the xbmcgui DialogProgress class close() method"""
-        print()
+        return
 
     @staticmethod
     # def create(heading, line1=None, line2=None, line3=None):  # Kodi 18
@@ -181,6 +181,47 @@ class DialogProgress:
     # def update(self, percent, line1=None, line2=None, line3=None):  # Kodi 18
     def update(self, percent, message=None):
         """A stub implementation for the xbmcgui DialogProgress class update() method"""
+        if (percent - 5) < self.percent:
+            return
+        self.percent = percent
+        message = kodi_to_ansi(message)
+        if message:
+            print('\033[37;100mPROGRESS:\033[35;0m [%d%%] \033[35;0m%s\033[39;0m' % (percent, message))
+        else:
+            print('\033[1G\033[37;100mPROGRESS:\033[35;0m [%d%%]\033[39;0m' % (percent), end='')
+
+
+class DialogProgressBG:
+    """A reimplementation of the xbmcgui DialogProgressBG"""
+
+    def __init__(self):
+        """A stub constructor for the xbmcgui DialogProgressBG class"""
+        self.percent = 0
+
+    @staticmethod
+    def close():
+        """A stub implementation for the xbmcgui DialogProgressBG class close() method"""
+        return
+
+    @staticmethod
+    # def create(heading, line1=None, line2=None, line3=None):  # Kodi 18
+    def create(heading, message=None):
+        """A stub implementation for the xbmcgui DialogProgressBG class create() method"""
+        heading = kodi_to_ansi(heading)
+        if message:
+            message = kodi_to_ansi(message)
+            print('\033[37;100mPROGRESS:\033[35;0m [%s] \033[35;0m%s\033[39;0m' % (heading, message))
+        else:
+            print('\033[37;100mPROGRESS:\033[39;0m [%s]' % heading)
+
+    @staticmethod
+    def isFinished():
+        """A stub implementation for the xbmcgui DialogProgressBG class isFinished() method"""
+        return True
+
+    # def update(self, percent, line1=None, line2=None, line3=None):  # Kodi 18
+    def update(self, percent=None, heading=None, message=None):
+        """A stub implementation for the xbmcgui DialogProgressBG class update() method"""
         if (percent - 5) < self.percent:
             return
         self.percent = percent

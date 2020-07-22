@@ -10,11 +10,18 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import os
+import xml.etree.ElementTree as ET
 
 import xbmc
 import xbmcvfs
 
 from resources.lib.globals import g
+from .misc_utils import build_url
+
+try:  # Kodi >= 19
+    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
 
 
 def check_folder_path(path):
@@ -37,6 +44,15 @@ def folder_exists(path):
     :return: True if exists
     """
     return xbmcvfs.exists(check_folder_path(path))
+
+
+def create_folder(path):
+    """
+    Create a folder if not exists
+    :param path: The path
+    """
+    if not folder_exists(path):
+        xbmcvfs.mkdirs(path)
 
 
 def file_exists(filename, data_path=g.DATA_PATH):
@@ -90,6 +106,14 @@ def load_file(filename, mode='rb'):
         file_handle.close()
 
 
+def delete_file_safe(file_path):
+    if xbmcvfs.exists(file_path):
+        try:
+            xbmcvfs.delete(file_path)
+        finally:
+            pass
+
+
 def delete_file(filename):
     file_path = xbmc.translatePath(os.path.join(g.DATA_PATH, filename))
     try:
@@ -98,12 +122,12 @@ def delete_file(filename):
         pass
 
 
-def list_dir(data_path=g.DATA_PATH):
+def list_dir(path=g.DATA_PATH):
     """
     List the contents of a folder
-    :return: The contents of the folder
+    :return: The contents of the folder as tuple (directories, files)
     """
-    return xbmcvfs.listdir(xbmc.translatePath(data_path))
+    return xbmcvfs.listdir(path)
 
 
 def delete_folder_contents(path, delete_subfolders=False):
@@ -112,7 +136,7 @@ def delete_folder_contents(path, delete_subfolders=False):
     :param path: Path to perform delete contents
     :param delete_subfolders: If True delete also all subfolders
     """
-    directories, files = list_dir(path)
+    directories, files = list_dir(xbmc.translatePath(path))
     for filename in files:
         xbmcvfs.delete(os.path.join(path, filename))
     if not delete_subfolders:
@@ -126,6 +150,32 @@ def delete_folder_contents(path, delete_subfolders=False):
 
 def delete_ndb_files(data_path=g.DATA_PATH):
     """Delete all .ndb files in a folder"""
-    for filename in list_dir(data_path)[1]:
+    for filename in list_dir(xbmc.translatePath(data_path))[1]:
         if filename.endswith('.ndb'):
             xbmcvfs.delete(os.path.join(g.DATA_PATH, filename))
+
+
+def write_strm_file(videoid, file_path):
+    """Write a playable URL to a STRM file"""
+    filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
+    try:
+        filehandle.write(bytearray(build_url(videoid=videoid,
+                                             mode=g.MODE_PLAY).encode('utf-8')))
+    finally:
+        filehandle.close()
+
+
+def write_nfo_file(nfo_data, file_path):
+    """Write a NFO file"""
+    filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
+    try:
+        filehandle.write(bytearray('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8')))
+        filehandle.write(bytearray(ET.tostring(nfo_data, encoding='utf-8', method='xml')))
+    finally:
+        filehandle.close()
+
+
+def join_folders_paths(*args):
+    """Join multiple folder paths in a safe way"""
+    # Avoid the use of os.path.join, in some cases with special chars like % break the path
+    return g.py2_decode(makeLegalFilename('/'.join(args)))

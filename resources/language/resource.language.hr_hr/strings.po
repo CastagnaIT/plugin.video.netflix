@@ -195,7 +195,9 @@ msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
 msgstr "Postoji problem s dodatkom InputStream Adaptive ili bibliotekom Widevine. Možda nedostaje ili nije omogućena, operacija će se otkazati."
 
-# Unused 30047
+msgctxt "#30047"
+msgid "Library update in progress"
+msgstr ""
 
 msgctxt "#30048"
 msgid "Exported"
@@ -235,7 +237,9 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr "Profil {} postavljen je za automatski odabir"
 
-# Unused 30059
+msgctxt "#30059"
+msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
+msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -249,7 +253,9 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "Roditeljska kontrola"
 
-# Unused 30063
+msgctxt "#30063"
+msgid "An update is already in progress"
+msgstr ""
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -488,8 +494,8 @@ msgid "Sync My List to Kodi library"
 msgstr "Sinkroniziraj Moju Listu sa Kodi zbirkom"
 
 msgctxt "#30123"
-msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "Želite li stvarno nastaviti?\nOvim ćete izbrisati sve prethodno izvezene stavke i izvesti sve stavke s Mog popisa za trenutno aktivni profil.\nOva radnja može potrajati neko vrijeme ..."
+msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
+msgstr ""
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -757,9 +763,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "TV emisija"
 
-msgctxt "#30191"
-msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "Želite li izvesti NFO datoteke za {} dodanu u 'Moj popis'?"
+# Unused 30191
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -885,9 +889,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "Dječji račun"
 
-msgctxt "#30223"
-msgid "Synchronization now uses 'My List' of profile {}"
-msgstr "Usklađivanje sada koristi 'Moj popis' profila {}"
+# Unused 30223
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -906,12 +908,10 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Sinkronizirajte Kodi zbirku s Mojim popisom"
 
 msgctxt "#30228"
-msgid "Use 'My list' of the current profile"
-msgstr "Koristite 'Moj popis' trenutnog profila"
+msgid "Set a profile for synchronization"
+msgstr ""
 
-msgctxt "#30229"
-msgid "Show the name of the selected profile"
-msgstr "Pokažite ime odabranog profila"
+# Unused 30229
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -973,7 +973,11 @@ msgctxt "#30244"
 msgid "Force Widevine security level L3"
 msgstr ""
 
-# Unused 30244 to 30299
+msgctxt "#30245"
+msgid "Deleting files exported to the library"
+msgstr ""
+
+# Unused 30246 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."

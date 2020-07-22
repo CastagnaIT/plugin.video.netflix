@@ -70,16 +70,16 @@ def build_mainmenu_listing(loco_list):
     return directory_items, {}
 
 
-def build_profiles_listing():
+def build_profiles_listing(preselect_guid=None):
     """Builds the profiles listing"""
     directory_items = []
-    active_guid_profile = g.LOCAL_DB.get_active_profile_guid()
+    preselect_profile_guid = preselect_guid or g.LOCAL_DB.get_active_profile_guid()
     for guid in g.LOCAL_DB.get_guid_profiles():
-        directory_items.append(_create_profile_item(guid, (guid == active_guid_profile)))
+        directory_items.append(_create_profile_item(guid, (guid == preselect_profile_guid)))
     return directory_items, {}
 
 
-def _create_profile_item(profile_guid, is_active):
+def _create_profile_item(profile_guid, is_selected):
     profile_name = g.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
 
     profile_attributes = []
@@ -101,7 +101,7 @@ def _create_profile_item(profile_guid, is_active):
         'properties': {'nf_guid': profile_guid, 'nf_description': description.replace('[CR]', ' - ')},
         'art': {'icon': g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
         'info': {'plot': description},  # The description
-        'is_selected': is_active,
+        'is_selected': is_selected,
         'menu_items': [(common.get_local_string(30056), menu_action)],
         'url': common.build_url(pathitems=['home'],
                                 params={'switch_profile_guid': profile_guid},

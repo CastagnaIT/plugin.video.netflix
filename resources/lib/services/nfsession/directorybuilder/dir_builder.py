@@ -53,17 +53,18 @@ class DirectoryBuilder(DirectoryPathRequests):
         return build_mainmenu_listing(loco_list)
 
     @common.time_execution(immediate=True)
-    def get_profiles(self, request_update):
+    def get_profiles(self, request_update, preselect_guid=None):
         """
         Get the list of profiles stored to the database
         :param request_update: when true, perform a request to the shakti API to fetch new profile data
+        :param preselect_guid: if set the specified profile will be highlighted, else the current active profile
         """
         # The profiles data are automatically updated (parsed from falcorCache) in the following situations:
         # -At first log-in, see '_login' in nf_session_access.py
         # -When navigation accesses to the root path, see 'root' in directory.py (ref. to 'fetch_initial_page' call)
         if request_update:
             self.req_profiles_info()
-        return build_profiles_listing()
+        return build_profiles_listing(preselect_guid)
 
     @common.time_execution(immediate=True)
     def get_seasons(self, pathitems, tvshowid_dict, perpetual_range_start):
@@ -151,9 +152,10 @@ class DirectoryBuilder(DirectoryPathRequests):
         video_list = self.req_datatype_video_list_full('mylist', True)
         video_id_list = []
         video_id_list_type = []
-        for video_id, video in iteritems(video_list.videos):
-            video_id_list.append(video_id)
-            video_id_list_type.append(video['summary']['type'])
+        if video_list:
+            for video_id, video in iteritems(video_list.videos):
+                video_id_list.append(video_id)
+                video_id_list_type.append(video['summary']['type'])
         return video_id_list, video_id_list_type
 
     @common.time_execution(immediate=True)

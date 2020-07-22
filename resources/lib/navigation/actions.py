@@ -18,6 +18,7 @@ from resources.lib.api.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
 from resources.lib.globals import g
+from resources.lib.kodi.library import get_library_cls
 
 
 class AddonActionExecutor(object):
@@ -232,15 +233,14 @@ class AddonActionExecutor(object):
 
 
 def _sync_library(videoid, operation):
-    operation = {
-        'add': 'export_silent',
-        'remove': 'remove_silent'}.get(operation)
     if operation and g.ADDON.getSettingBool('lib_sync_mylist') and g.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
         sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
                                                          g.LOCAL_DB.get_guid_owner_profile())
         # Allow to sync library with My List only by chosen profile
         if sync_mylist_profile_guid != g.LOCAL_DB.get_active_profile_guid():
             return
-        common.debug('Syncing library due to change of my list')
-        # xbmc.executebuiltin is running with Block, to prevent update the list before op. is done
-        common.run_plugin(common.build_url([operation], videoid, mode=g.MODE_LIBRARY), block=True)
+        common.debug('Syncing library due to change of My list')
+        if operation == 'add':
+            get_library_cls().export_to_library(videoid, False)
+        elif operation == 'remove':
+            get_library_cls().remove_from_library(videoid, False)

@@ -17,19 +17,6 @@ from resources.lib.globals import g
 from .misc_utils import is_less_version
 from .logging import debug
 
-
-LIBRARY_PROPS = {
-    'episode': ['title', 'plot', 'writer', 'playcount', 'director', 'season',
-                'episode', 'originaltitle', 'showtitle', 'lastplayed', 'file',
-                'resume', 'dateadded', 'art', 'userrating', 'firstaired', 'runtime'],
-    'movie': ['title', 'genre', 'year', 'director', 'trailer',
-              'tagline', 'plot', 'plotoutline', 'originaltitle', 'lastplayed',
-              'playcount', 'writer', 'studio', 'mpaa', 'country',
-              'imdbnumber', 'runtime', 'set', 'showlink', 'premiered',
-              'top250', 'file', 'sorttitle', 'resume', 'setid', 'dateadded',
-              'tag', 'art', 'userrating']
-}
-
 __CURRENT_KODI_PROFILE_NAME__ = None
 
 
@@ -74,39 +61,6 @@ def json_rpc_multi(method, list_params=None):
     if 'error' in raw_response:
         raise IOError('JSONRPC-Error {}'.format(raw_response))
     return json.loads(raw_response)
-
-
-def update_library_item_details(dbtype, dbid, details):
-    """Update properties of an item in the Kodi library"""
-    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-    params = {'{}id'.format(dbtype): dbid}
-    params.update(details)
-    return json_rpc(method, params)
-
-
-def get_library_items(dbtype, video_filter=None):
-    """Return a list of all items in the Kodi library that are of type dbtype (either movie or episode)"""
-    method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
-    params = {'properties': ['file']}
-    if video_filter:
-        params.update({'filter': video_filter})
-    return json_rpc(method, params)[dbtype + 's']
-
-
-def get_library_item_details(dbtype, itemid):
-    """Return details for an item from the Kodi library"""
-    method = 'VideoLibrary.Get{}Details'.format(dbtype.capitalize())
-    params = {
-        dbtype + 'id': itemid,
-        'properties': LIBRARY_PROPS[dbtype]}
-    return json_rpc(method, params)[dbtype + 'details']
-
-
-def scan_library(path=""):
-    """Start a library scanning in a specified folder"""
-    method = 'VideoLibrary.Scan'
-    params = {'directory': path}
-    return json_rpc(method, params)
 
 
 def container_refresh(use_delay=False):

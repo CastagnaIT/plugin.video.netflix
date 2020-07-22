@@ -16,7 +16,6 @@ from future.utils import iteritems, itervalues
 import resources.lib.api.paths as paths
 import resources.lib.api.api_requests as api
 import resources.lib.common as common
-import resources.lib.kodi.library as library
 from resources.lib.api.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
 from resources.lib.globals import g
@@ -123,7 +122,7 @@ def get_resume_info_from_library(videoid):
     """Retrieve the resume value from the Kodi library"""
     try:
         return get_info_from_library(videoid)[0].get('resume', {})
-    except library.ItemNotFound:
+    except common.ItemNotFound:
         common.warn('Can not get resume value from the library')
     return {}
 
@@ -277,7 +276,7 @@ def get_info_from_netflix(videoids):
 
 def get_info_from_library(videoid):
     """Get infolabels with info from Kodi library"""
-    details = library.get_item(videoid)
+    details = common.get_library_item_by_videoid(videoid)
     common.debug('Got file info from library: {}'.format(details))
     art = details.pop('art', {})
     infos = {

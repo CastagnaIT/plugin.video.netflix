@@ -16,8 +16,7 @@ import xbmc
 
 from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.kodi.library as kodi_library
-from resources.lib.kodi.library_autoupdate import auto_update_library
+from resources.lib.kodi.library_utils import get_library_path
 
 try:  # Kodi >= 19
     from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
@@ -29,41 +28,40 @@ class LibraryUpdateService(xbmc.Monitor):
     """
     Checks if a library update is scheduled and triggers it
     """
-
     def __init__(self):
+        xbmc.Monitor.__init__(self)
         try:
             self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
             # g.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
-            # If any other error appears, we don't want the service to crash,
-            # let's return None in all case
             self.enabled = False
-
         self.startidle = 0
         self.next_schedule = _compute_next_schedule()
-
-        # Update library variables
-        xbmc.Monitor.__init__(self)
+        # Request library update variables
         self.scan_in_progress = False
         self.scan_awaiting = False
-        AddonSignals.registerSlot(
-            g.ADDON.getAddonInfo('id'), common.Signals.LIBRARY_UPDATE_REQUESTED,
-            self.update_kodi_library)
+        self.clean_in_progress = False
+        self.clean_awaiting = False
+        AddonSignals.registerSlot(g.ADDON.getAddonInfo('id'),
+                                  common.Signals.REQUEST_KODI_LIBRARY_UPDATE,
+                                  self.request_kodi_library_update)
 
     def on_service_tick(self):
         """Check if update is due and trigger it"""
-        if not self.enabled:
+        if not self.enabled or self.next_schedule is None:
             return
-        if (self.next_schedule is not None
-                and self.next_schedule <= datetime.now()
-                and self.is_idle()):
-            common.debug('Triggering auto update library')
-
-            common.run_threaded(True, auto_update_library, g.ADDON.getSettingBool('lib_sync_mylist'), True)
-
-            g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
+        if self.next_schedule <= datetime.now() and self.is_idle():
+            # Check if the schedule value is changed
+            # (when a manual update/full sync is done, we avoid to perform again the update)
             self.next_schedule = _compute_next_schedule()
+            if self.next_schedule >= datetime.now():
+                return
+            common.debug('Triggering auto update library')
+            # Send signal to nfsession to run the library auto update
+            common.send_signal('library_auto_update')
+            # Compute the next schedule
+            self.next_schedule = _compute_next_schedule(datetime.now())
 
     def is_idle(self):
         """
@@ -71,7 +69,6 @@ class LibraryUpdateService(xbmc.Monitor):
         """
         if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
             return True
-
         lastidle = xbmc.getGlobalIdleTime()
         if xbmc.Player().isPlaying():
             self.startidle = lastidle
@@ -82,8 +79,7 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def onSettingsChanged(self):
         """
-        As settings changed, we will compute next schedule again
-        to ensure it's still correct
+        As settings changed, we will compute next schedule again to ensure it's still correct
         """
         # Wait for slow system (like Raspberry Pi) to write the settings
         xbmc.sleep(500)
@@ -95,36 +91,68 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def onScanStarted(self, library):
         """Monitor library scan to avoid multiple calls"""
-        # Kodi cancels the update if called with JSON RPC twice
-        # so we monitor events to ensure we're not cancelling a previous scan
         if library == 'video':
             self.scan_in_progress = True
 
     def onScanFinished(self, library):
         """Monitor library scan to avoid multiple calls"""
-        # Kodi cancels the update if called with JSON RPC twice
-        # so we monitor events to ensure we're not cancelling a previous scan
         if library == 'video':
             self.scan_in_progress = False
-            if self.scan_awaiting:
-                common.debug('Kodi library update requested from library auto-update (from awaiting)')
-                self.update_kodi_library()
+            self.check_awaiting_operations()
 
-    def update_kodi_library(self, data=None):  # pylint: disable=unused-argument
-        # Update only the elements in the addon export folder for faster processing with a large library (on Kodi 18.x)
-        # If a scan is already in progress, the scan is delayed until onScanFinished event
-        if not self.scan_in_progress:
-            common.debug('Kodi library update requested from library auto-update')
+    def onCleanStarted(self, library):
+        """Monitor library clean to avoid multiple calls"""
+        if library == 'video':
+            self.clean_in_progress = True
+
+    def onCleanFinished(self, library):
+        """Monitor library clean to avoid multiple calls"""
+        if library == 'video':
+            self.clean_in_progress = False
+            self.check_awaiting_operations()
+
+    def request_kodi_library_update(self, data=None):
+        """Make a request for scan/clean the Kodi library database"""
+        # Kodi library scan/clean has some issues (Kodi 18/19), for example:
+        # - If more than one scan calls will be performed, the last call cancel the previous scan
+        # - If a clean is in progress, a new scan/clean call will be ignored
+        # To manage these problems we monitor the events to check if a scan/clean is currently in progress
+        # (from this or others add-ons) and delay the call until the current scan/clean will be finished.
+        if data.get('clean'):
+            self.start_clean_kodi_library()
+        if data.get('scan'):
+            self.start_update_kodi_library()
+
+    def check_awaiting_operations(self):
+        if self.clean_awaiting:
+            common.debug('Kodi library clean requested (from awaiting)')
+            self.start_clean_kodi_library()
+        if self.scan_awaiting:
+            common.debug('Kodi library scan requested (from awaiting)')
+            self.start_update_kodi_library()
+
+    def start_update_kodi_library(self):
+        if not self.scan_in_progress and not self.clean_in_progress:
+            common.debug('Start Kodi library scan')
+            self.scan_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
             self.scan_awaiting = False
-            common.scan_library(
-                makeLegalFilename(
-                    xbmc.translatePath(
-                        kodi_library.library_path())))
+            # Update only the library elements in the add-on export folder
+            # for faster processing (on Kodi 18.x) with a large library
+            common.scan_library(makeLegalFilename(xbmc.translatePath(get_library_path())))
         else:
             self.scan_awaiting = True
 
+    def start_clean_kodi_library(self):
+        if not self.scan_in_progress and not self.clean_in_progress:
+            common.debug('Start Kodi library clean')
+            self.clean_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
+            self.clean_awaiting = False
+            common.clean_library(False)
+        else:
+            self.clean_awaiting = True
 
-def _compute_next_schedule():
+
+def _compute_next_schedule(date_last_start=None):
     try:
         if g.ADDON.getSettingBool('use_mysql'):
             client_uuid = g.LOCAL_DB.get_value('client_uuid')
@@ -135,8 +163,8 @@ def _compute_next_schedule():
                 return None
 
         time = g.ADDON.getSetting('lib_auto_upd_start') or '00:00'
-        last_run = g.SHARED_DB.get_value('library_auto_update_last_start',
-                                         datetime.utcfromtimestamp(0))
+        last_run = date_last_start or g.SHARED_DB.get_value('library_auto_update_last_start',
+                                                            datetime.utcfromtimestamp(0))
         update_frequency = g.ADDON.getSettingInt('lib_auto_upd_freq')
 
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))

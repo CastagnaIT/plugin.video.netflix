@@ -34,11 +34,11 @@ class DirectoryPathRequests(object):
         common.debug('Requesting "my list" video list as videoid items')
         try:
             items = []
-            videos = self.req_datatype_video_list_full(g.MAIN_MENU_ITEMS['myList']['request_context_name'])
-            if videos:
+            video_list = self.req_datatype_video_list_full(g.MAIN_MENU_ITEMS['myList']['request_context_name'])
+            if video_list:
                 # pylint: disable=unused-variable
                 items = [common.VideoId.from_videolist_item(video)
-                         for video_id, video in iteritems(videos.videos)
+                         for video_id, video in iteritems(video_list.videos)
                          if video['queue'].get('inQueue', False)]
             return items
         except InvalidVideoListTypeError:
@@ -281,8 +281,8 @@ class DirectoryPathRequests(object):
             'paths': paths,
             'length_params': ['stdlist', [context_name, 'az']],
             'perpetual_range_start': None,
-            'no_limit_req': True,
-            'request_size': PATH_REQUEST_SIZE_MAX
+            'request_size': PATH_REQUEST_SIZE_MAX,
+            'no_limit_req': True
         }
         if switch_profiles:
             # Used only with library auto-update with the sync with Netflix "My List" enabled.
@@ -293,7 +293,7 @@ class DirectoryPathRequests(object):
             path_response = self.nfsession.perpetual_path_request_switch_profiles(**call_args)
         else:
             path_response = self.nfsession.perpetual_path_request(**call_args)
-        return {} if not path_response else VideoListSorted(path_response, context_name, None, 'az')
+        return None if not path_response else VideoListSorted(path_response, context_name, None, 'az')
 
     def req_datatype_video_list_byid(self, video_ids, custom_partial_paths=None):
         """Retrieve a video list which contains the specified by video ids and return a CustomVideoList object"""
