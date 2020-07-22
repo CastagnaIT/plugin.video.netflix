@@ -10,17 +10,16 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-import resources.lib.kodi.library as library
-import resources.lib.kodi.library_autoupdate as library_au
-import resources.lib.kodi.library_items as library_items
-import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
+import resources.lib.kodi.library_utils as lib_utils
 from resources.lib.globals import g
+from resources.lib.kodi.library import get_library_cls
 
 
+# pylint: disable=no-self-use
 class LibraryActionExecutor(object):
     """Executes actions"""
-    # pylint: disable=no-self-use
+
     def __init__(self, params):
         common.debug('Initializing "LibraryActionExecutor" with params: {}', params)
         self.params = params
@@ -28,62 +27,23 @@ class LibraryActionExecutor(object):
     @common.inject_video_id(path_offset=1)
     def export(self, videoid):
         """Export an item to the Kodi library"""
-        nfo_settings = nfo.NFOSettings()
-        nfo_settings.show_export_dialog(videoid.mediatype)
-        library.execute_library_tasks(videoid,
-                                      [library.export_item],
-                                      common.get_local_string(30018),
-                                      nfo_settings=nfo_settings)
+        get_library_cls().export_to_library(videoid)
+        common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     def remove(self, videoid):
         """Remove an item from the Kodi library"""
-        if ui.ask_for_confirmation(common.get_local_string(30030), common.get_local_string(30124)):
-            library.execute_library_tasks(videoid,
-                                          [library.remove_item],
-                                          common.get_local_string(30030))
-            common.container_refresh(use_delay=True)
+        if not ui.ask_for_confirmation(common.get_local_string(30030),
+                                       common.get_local_string(30124)):
+            return
+        get_library_cls().remove_from_library(videoid)
+        common.container_refresh(use_delay=True)
 
     @common.inject_video_id(path_offset=1)
     def update(self, videoid):
         """Update an item in the Kodi library"""
-        nfo_settings = nfo.NFOSettings()
-        nfo_settings.show_export_dialog(videoid.mediatype)
-        library.execute_library_tasks(videoid,
-                                      [library.remove_item, library.export_item],
-                                      common.get_local_string(30061),
-                                      nfo_settings=nfo_settings)
+        get_library_cls().update_library(videoid)
         common.container_refresh()
-
-    @common.inject_video_id(path_offset=1)
-    def export_silent(self, videoid):
-        """Silently export an item to the Kodi library
-        (without GUI feedback). This will ignore the setting for syncing my
-        list and Kodi library and do no sync, if not explicitly asked to.
-        Will only ask for NFO export based on user settings"""
-        # pylint: disable=broad-except
-        nfo_settings = nfo.NFOSettings()
-        nfo_settings.show_export_dialog(videoid.mediatype, common.get_local_string(30191))
-        library.execute_library_tasks_silently(
-            videoid, [library.export_item],
-            nfo_settings=nfo_settings)
-
-    @common.inject_video_id(path_offset=1)
-    def remove_silent(self, videoid):
-        """Silently remove an item from the Kodi library
-        (without GUI feedback). This will ignore the setting for syncing my
-        list and Kodi library and do no sync, if not explicitly asked to."""
-        library.execute_library_tasks_silently(
-            videoid, [library.remove_item])
-
-    # Not used for now
-    # @common.inject_video_id(path_offset=1)
-    # def update_silent(self, videoid):
-    #    """Silently update an item in the Kodi library
-    #    (without GUI feedback). This will ignore the setting for syncing my
-    #    list and Kodi library and do no sync, if not explicitly asked to."""
-    #    library.execute_library_tasks_silently(
-    #        videoid, [library.remove_item, library.export_item])
 
     def sync_mylist(self, pathitems):  # pylint: disable=unused-argument
         """
@@ -92,7 +52,7 @@ class LibraryActionExecutor(object):
         if not ui.ask_for_confirmation(common.get_local_string(30122),
                                        common.get_local_string(30123)):
             return
-        library.sync_mylist_to_library()
+        get_library_cls().sync_library_with_mylist()
 
     def auto_upd_run_now(self, pathitems):  # pylint: disable=unused-argument
         """
@@ -101,54 +61,43 @@ class LibraryActionExecutor(object):
         if not ui.ask_for_confirmation(common.get_local_string(30065),
                                        common.get_local_string(30231)):
             return
-        library_au.auto_update_library(False, False)
-
-    def _get_mylist_profile_guid(self):
-        return g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                     g.LOCAL_DB.get_guid_owner_profile())
+        get_library_cls().auto_update_library(False)
 
     def sync_mylist_sel_profile(self, pathitems):  # pylint: disable=unused-argument
         """
-        Set the current profile for the synchronization of Netflix "My List" with the Kodi library
+        Select a profile for the synchronization of Kodi library with Netflix "My List"
         """
-        g.SHARED_DB.set_value('sync_mylist_profile_guid', g.LOCAL_DB.get_active_profile_guid())
-        profile_name = g.LOCAL_DB.get_profile_config('profileName', '')
-        ui.show_notification(common.get_local_string(30223).format(profile_name), time=10000)
-
-    def sync_mylist_shw_profile(self, pathitems):  # pylint: disable=unused-argument
-        """
-        Show the name of profile chosen
-        for the synchronization of Netflix "My List" with the Kodi library
-        """
-        profile_guid = self._get_mylist_profile_guid()
-        profile_name = g.LOCAL_DB.get_profile_config('profileName', '', profile_guid)
-        ui.show_ok_dialog('Netflix',
-                          common.get_local_string(30223).format(profile_name))
+        preselect_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                               g.LOCAL_DB.get_guid_owner_profile())
+        selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30228),
+                                                preselect_guid=preselect_guid)
+        if not selected_guid:
+            return
+        g.SHARED_DB.set_value('sync_mylist_profile_guid', selected_guid)
 
     def purge(self, pathitems):  # pylint: disable=unused-argument
         """Delete all previously exported items from the Kodi library"""
-        if ui.ask_for_confirmation(common.get_local_string(30125),
-                                   common.get_local_string(30126)):
-            library.purge()
+        if not ui.ask_for_confirmation(common.get_local_string(30125),
+                                       common.get_local_string(30126)):
+            return
+        get_library_cls().clear_library()
 
     def migrate(self, pathitems):  # pylint: disable=unused-argument
-        """Migrate exported items from old library format to the new format"""
-        for videoid in library_items.get_previously_exported_items():
-            library.execute_library_tasks(videoid, [library.export_item],
-                                          common.get_local_string(30018))
+        """Migrate exported items from old library format (add-on version 13.x) to the new format"""
+        get_library_cls().import_library(is_old_format=True)
 
     @common.inject_video_id(path_offset=1)
     def export_new_episodes(self, videoid):
-        library.export_new_episodes(videoid)
+        get_library_cls().export_to_library_new_episodes(videoid)
 
     @common.inject_video_id(path_offset=1)
     def exclude_from_auto_update(self, videoid):
-        library_au.exclude_show_from_auto_update(videoid, True)
+        lib_utils.set_show_excluded_from_auto_update(videoid, True)
         common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     def include_in_auto_update(self, videoid):
-        library_au.exclude_show_from_auto_update(videoid, False)
+        lib_utils.set_show_excluded_from_auto_update(videoid, False)
         common.container_refresh()
 
     def mysql_test(self, pathitems):
@@ -172,6 +121,5 @@ class LibraryActionExecutor(object):
             msg = common.get_local_string(30212)
         else:
             client_uuid = g.LOCAL_DB.get_value('client_uuid')
-            msg = common.get_local_string(30210) \
-                if client_uuid == uuid else common.get_local_string(30211)
+            msg = common.get_local_string(30210 if client_uuid == uuid else 30211)
         ui.show_notification(msg, time=8000)

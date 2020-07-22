@@ -3,44 +3,20 @@
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
     Copyright (C) 2019 Stefano Gottardo - @CastagnaIT
-    Stateful Netflix session management: initialize the netflix session
+    Initialize the netflix session
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from functools import wraps
-
 import resources.lib.common as common
+from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
-from resources.lib.database.db_utils import (TABLE_SESSION)
-from resources.lib.api.exceptions import (NotLoggedInError, NotConnected)
 
 
-def needs_login(func):
-    """
-    Decorator to ensure that a valid login is present when calling a method
-    """
-    # pylint: disable=protected-access, missing-docstring
-    @wraps(func)
-    def ensure_login(*args, **kwargs):
-        session = args[0]
-        # I make sure that the connection is present..
-        if not common.is_internet_connected():
-            raise NotConnected('Internet connection not available')
-        # ..this check verifies only if locally there are the data to correctly perform the login
-        if not session.is_logged_in():
-            raise NotLoggedInError
-        return func(*args, **kwargs)
-    return ensure_login
-
-
-class NFSessionBase(object):
+class SessionBase(object):
     """Initialize the netflix session"""
-
-    slots = None
-    """Slots to be registered with AddonSignals. Is set in _register_slots"""
 
     session = None
     """The requests.session object to handle communication to Netflix"""
@@ -48,12 +24,14 @@ class NFSessionBase(object):
     verify_ssl = True
     """Use SSL verification when performing requests"""
 
+    # Functions from derived classes to allow perform particular operations in parent classes
+    external_func_login = None  # (set by access.py)
+    external_func_activate_profile = None  # (set by nfsession_op.py)
+
     def __init__(self):
         self.verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
-        self.is_prefetch_login = False
         self._init_session()
 
-    @common.time_execution(immediate=True)
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
@@ -78,7 +56,7 @@ class NFSessionBase(object):
 
     @property
     def auth_url(self):
-        """Return authentication url"""
+        """Access rights to make HTTP requests on an endpoint"""
         return g.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
 
     @auth_url.setter

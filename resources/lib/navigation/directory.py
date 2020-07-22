@@ -13,7 +13,7 @@ import xbmc
 import xbmcplugin
 
 import resources.lib.common as common
-import resources.lib.kodi.library as library
+import resources.lib.kodi.library_utils as lib_utils
 import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import g
@@ -262,7 +262,7 @@ class Directory(object):
     @common.time_execution(immediate=False)
     def exported(self, pathitems=None):
         """List all items that are exported to the Kodi library"""
-        chunked_video_list, perpetual_range_selector = library.list_contents(self.perpetual_range_start)
+        chunked_video_list, perpetual_range_selector = lib_utils.list_contents(self.perpetual_range_start)
         if chunked_video_list:
             self._exported_directory(pathitems, chunked_video_list, perpetual_range_selector)
         else:

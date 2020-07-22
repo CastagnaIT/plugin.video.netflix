@@ -288,7 +288,7 @@ class GlobalVariables(object):
                 self.CACHE_MANAGEMENT = CacheManagement()
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
-            from resources.lib.common.kodiops import GetKodiVersion
+            from resources.lib.common.kodi_ops import GetKodiVersion
             self.KODI_VERSION = GetKodiVersion()
 
     def _init_database(self, initialize):

@@ -10,9 +10,8 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
+import resources.lib.kodi.library_utils as lib_utils
 from resources.lib.globals import g
-from resources.lib.kodi.library import is_in_library
-from resources.lib.kodi.library_autoupdate import show_excluded_from_auto_update
 
 
 def generate_context_menu_mainmenu(menu_id):
@@ -83,7 +82,7 @@ def _generate_library_ctx_items(videoid, lib_auto_upd_mode):
         allow_lib_operations = sync_mylist_profile_guid == g.LOCAL_DB.get_active_profile_guid()
 
     if allow_lib_operations:
-        _is_in_library = is_in_library(videoid)
+        _is_in_library = lib_utils.is_videoid_in_db(videoid)
         if lib_is_sync_with_mylist:
             if _is_in_library:
                 library_actions = ['update']
@@ -92,7 +91,7 @@ def _generate_library_ctx_items(videoid, lib_auto_upd_mode):
 
         if videoid.mediatype == common.VideoId.SHOW and _is_in_library:
             library_actions.append('export_new_episodes')
-            if show_excluded_from_auto_update(videoid):
+            if lib_utils.is_show_excluded_from_auto_update(videoid):
                 library_actions.append('include_in_auto_update')
             else:
                 library_actions.append('exclude_from_auto_update')

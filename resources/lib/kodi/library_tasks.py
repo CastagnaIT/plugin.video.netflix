@@ -13,252 +13,277 @@ from __future__ import absolute_import, division, unicode_literals
 import os
 import re
 
-import xbmcgui
-
-import resources.lib.api.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 from resources.lib.api.exceptions import MetadataNotAvailable
-from resources.lib.database.db_utils import (VidLibProp)
+from resources.lib.database.db_utils import VidLibProp
 from resources.lib.globals import g
-from resources.lib.kodi.library_items import (export_item, remove_item, export_new_item,
-                                              FOLDER_MOVIES, FOLDER_TV, ILLEGAL_CHARACTERS)
+from resources.lib.kodi import ui
+from resources.lib.kodi.library_jobs import LibraryJobs
+from resources.lib.kodi.library_utils import (get_episode_title_from_path, get_library_path,
+                                              ILLEGAL_CHARACTERS, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS)
 from resources.lib.kodi.ui import show_library_task_errors
 
 
-def execute_tasks(title, tasks, task_handler, **kwargs):
-    """
-    Run all tasks through task_handler and display a progress dialog in the GUI. Additional kwargs will be
-    passed into task_handler on each invocation.
-    Returns a list of errors that occured during execution of tasks.
-    """
-    errors = []
-    notify_errors = kwargs.pop('notify_errors', False)
-    progress = xbmcgui.DialogProgress()
-    progress.create(title)
-    for task_num, task in enumerate(tasks):
-        task_title = task.get('title', 'Unknown Task')
-        progress.update(int(task_num * 100 / len(tasks)), task_title)
-#        xbmc.sleep(25)
-        if progress.iscanceled():
-            break
-        if not task:
-            continue
+class LibraryTasks(LibraryJobs):
+    """Compile the jobs for a videoid task and execute them"""
+
+    def execute_library_task(self, videoid, task_type, nfo_settings=None, notify_errors=False):
+        """
+        Execute a library task for a videoid
+        :param videoid: the videoid
+        :param task_type: the type of task for the jobs (same used to execute the jobs)
+        :param nfo_settings: the NFOSettings object containing the user's NFO settings
+        :param notify_errors: if True a dialog box will be displayed at each error
+        """
+        list_errors = []
+        # Preparation of jobs data for the task
+        jobs_data = self.compile_jobs_data(videoid, task_type, nfo_settings)
+        if not jobs_data:
+            return
+        total_jobs = len(jobs_data)
+        # Execute the jobs for the task
+        for index, job_data in enumerate(jobs_data):
+            self._execute_job(task_type, job_data, list_errors)
+            yield index, total_jobs, job_data['title']
+        show_library_task_errors(notify_errors, list_errors)
+
+    def execute_library_task_gui(self, videoid, task_type, title, nfo_settings=None, show_prg_dialog=True):
+        """
+        Execute a library task for a videoid, by showing a GUI progress bar/dialog
+        :param videoid: the videoid
+        :param task_type: the type of task for the jobs (same used to execute the jobs)
+        :param title: title for the progress dialog/background progress bar
+        :param nfo_settings: the NFOSettings object containing the user's NFO settings
+        :param show_prg_dialog: if True show progress dialog, otherwise, a background progress bar
+        """
+        list_errors = []
+        # Preparation of jobs data for the task
+        jobs_data = self.compile_jobs_data(videoid, task_type, nfo_settings)
+        # Set a progress bar
+        progress_class = ui.ProgressDialog if show_prg_dialog else ui.ProgressBarBG
+        with progress_class(show_prg_dialog, title, max_value=len(jobs_data)) as progress_bar:
+            # Execute the jobs for the task
+            for job_data in jobs_data:
+                self._execute_job(task_type, job_data, list_errors)
+                progress_bar.perform_step()
+                progress_bar.set_message('{} ({}/{})'.format(job_data['title'],
+                                                             progress_bar.value,
+                                                             progress_bar.max_value))
+                if progress_bar.is_cancelled():
+                    common.warn('Library operations interrupted by User')
+                    break
+                if self.monitor.abortRequested():
+                    common.warn('Library operations interrupted by Kodi')
+                    break
+        show_library_task_errors(show_prg_dialog, list_errors)
+
+    def _execute_job(self, job_handler, job_data, list_errors):
+        if not job_data:  # No metadata or unexpected job case
+            return
         try:
-            task_handler(task, **kwargs)
+            job_handler(job_data, get_library_path())
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
-            errors.append({
-                'task_title': task_title,
-                'error': '{}: {}'.format(type(exc).__name__, exc)})
-    show_library_task_errors(notify_errors, errors)
-    return errors
+            common.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
+            list_errors.append({'title': job_data['title'],
+                                'error': '{}: {}'.format(type(exc).__name__, exc)})
 
+    @common.time_execution(immediate=True)
+    def compile_jobs_data(self, videoid, task_type, nfo_settings=None):
+        """Compile a list of jobs data based on the videoid"""
+        common.debug('Compiling list of jobs data for task handler "{}" and videoid "{}"',
+                     task_type.__name__, videoid)
+        jobs_data = None
+        try:
+            if task_type == self.export_item:
+                metadata = self.ext_func_get_metadata(videoid)  # pylint: disable=not-callable
+                if videoid.mediatype == common.VideoId.MOVIE:
+                    jobs_data = [self._create_export_movie_job(videoid, metadata[0], nfo_settings)]
+                if videoid.mediatype in common.VideoId.TV_TYPES:
+                    jobs_data = self._create_export_tvshow_jobs(videoid, metadata, nfo_settings)
 
-@common.time_execution(immediate=False)
-def compile_tasks(videoid, task_handler, nfo_settings=None):
-    """Compile a list of tasks for items based on the videoid"""
-    common.debug('Compiling library tasks for task handler "{}" and videoid "{}"', task_handler.__name__, videoid)
-    tasks = None
-    try:
-        if task_handler == export_item:
-            metadata = api.get_metadata(videoid)
-            if videoid.mediatype == common.VideoId.MOVIE:
-                tasks = _create_export_movie_task(videoid, metadata[0], nfo_settings)
-            elif videoid.mediatype in common.VideoId.TV_TYPES:
-                tasks = _create_export_tv_tasks(videoid, metadata, nfo_settings)
-            else:
-                raise ValueError('compile_tasks: cannot handle videoid "{}" for task handler "{}"'
-                                 .format(videoid, task_handler.__name__))
+            if task_type == self.export_new_item:
+                metadata = self.ext_func_get_metadata(videoid, True)  # pylint: disable=not-callable
+                jobs_data = self._create_export_new_episodes_jobs(videoid, metadata, nfo_settings)
 
-        if task_handler == export_new_item:
-            metadata = api.get_metadata(videoid, True)
-            tasks = _create_new_episodes_tasks(videoid, metadata, nfo_settings)
+            if task_type == self.remove_item:
+                if videoid.mediatype == common.VideoId.MOVIE:
+                    jobs_data = [self._create_remove_movie_job(videoid)]
+                if videoid.mediatype == common.VideoId.SHOW:
+                    jobs_data = self._create_remove_tvshow_jobs(videoid)
+                if videoid.mediatype == common.VideoId.SEASON:
+                    jobs_data = self._create_remove_season_jobs(videoid)
+                if videoid.mediatype == common.VideoId.EPISODE:
+                    jobs_data = [self._create_remove_episode_job(videoid)]
+        except MetadataNotAvailable:
+            common.warn('Unavailable metadata for videoid "{}", list of jobs not compiled', videoid)
+            return None
+        if jobs_data is None:
+            common.error('Unexpected job compile case for task type "{}" and videoid "{}", list of jobs not compiled',
+                         task_type.__name__, videoid)
+        return jobs_data
 
-        if task_handler == remove_item:
-            if videoid.mediatype == common.VideoId.MOVIE:
-                tasks = _create_remove_movie_task(videoid)
-            if videoid.mediatype == common.VideoId.SHOW:
-                tasks = _compile_remove_tvshow_tasks(videoid)
-            if videoid.mediatype == common.VideoId.SEASON:
-                tasks = _compile_remove_season_tasks(videoid)
-            if videoid.mediatype == common.VideoId.EPISODE:
-                tasks = _create_remove_episode_task(videoid)
-    except MetadataNotAvailable:
-        common.warn('compile_tasks: unavailable metadata for videoid "{}" tasks compiling skipped',
-                    task_handler, videoid)
-        return [{}]
-    if tasks is None:
-        common.warn('compile_tasks: no tasks have been compiled for task handler "{}" and videoid "{}"',
-                    task_handler.__name__, videoid)
-    return tasks
+    def _create_export_movie_job(self, videoid, movie, nfo_settings):
+        """Create job data to export a movie"""
+        # Reset NFO export to false if we never want movies nfo
+        filename = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
+        create_nfo_file = nfo_settings and nfo_settings.export_movie_enabled
+        nfo_data = nfo.create_movie_nfo(movie) if create_nfo_file else None
+        return self._build_export_job_data(True, create_nfo_file,
+                                           videoid=videoid, title=movie['title'],
+                                           root_folder_name=FOLDER_NAME_MOVIES,
+                                           folder_name=filename,
+                                           filename=filename,
+                                           nfo_data=nfo_data)
 
+    def _create_export_tvshow_jobs(self, videoid, metadata, nfo_settings):
+        """
+        Create jobs data to export a: tv show, season or episode.
+        The data for the jobs will be generated by extrapolating every single episode.
+        """
+        if videoid.mediatype == common.VideoId.SHOW:
+            tasks = self._get_export_tvshow_jobs(videoid, metadata[0], nfo_settings)
+        elif videoid.mediatype == common.VideoId.SEASON:
+            tasks = self._get_export_season_jobs(videoid,
+                                                 metadata[0],
+                                                 common.find(int(videoid.seasonid),
+                                                             'id',
+                                                             metadata[0]['seasons']),
+                                                 nfo_settings)
+        else:
+            tasks = [self._create_export_episode_job(videoid, *metadata, nfo_settings=nfo_settings)]
 
-def _create_export_movie_task(videoid, movie, nfo_settings):
-    """Create a task for a movie"""
-    # Reset NFO export to false if we never want movies nfo
-    name = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
-    return [_create_export_item_task(name, FOLDER_MOVIES, videoid, name, name,
-                                     nfo.create_movie_nfo(movie) if
-                                     nfo_settings and nfo_settings.export_movie_enabled else None)]
+        if nfo_settings and nfo_settings.export_full_tvshow:
+            # Create tvshow.nfo file
+            # In episode metadata, the show data is at 3rd position,
+            # In show metadata, the show data is at 1st position.
+            # Best is to enumerate values to find the correct key position
+            key_index = -1
+            for i, item in enumerate(metadata):
+                if item and item.get('type', None) == 'show':
+                    key_index = i
+            if key_index > -1:
+                tasks.append(self._build_export_job_data(False, True,
+                                                         videoid=videoid, title='tvshow.nfo',
+                                                         root_folder_name=FOLDER_NAME_SHOWS,
+                                                         folder_name=metadata[key_index]['title'],
+                                                         filename='tvshow',
+                                                         nfo_data=nfo.create_show_nfo(metadata[key_index])))
+        return tasks
 
+    def _get_export_tvshow_jobs(self, videoid, show, nfo_settings):
+        """Get jobs data to export a tv show (join all jobs data of the seasons)"""
+        tasks = []
+        for season in show['seasons']:
+            tasks += self._get_export_season_jobs(videoid.derive_season(season['id']), show, season, nfo_settings)
+        return tasks
 
-def _create_export_tv_tasks(videoid, metadata, nfo_settings):
-    """Create tasks for a show, season or episode.
-    If videoid represents a show or season, tasks will be generated for
-    all contained seasons and episodes"""
-    if videoid.mediatype == common.VideoId.SHOW:
-        tasks = _compile_export_show_tasks(videoid, metadata[0], nfo_settings)
-    elif videoid.mediatype == common.VideoId.SEASON:
-        tasks = _compile_export_season_tasks(videoid,
-                                             metadata[0],
-                                             common.find(int(videoid.seasonid),
-                                                         'id',
-                                                         metadata[0]['seasons']),
-                                             nfo_settings)
-    else:
-        tasks = [_create_export_episode_task(videoid, *metadata, nfo_settings=nfo_settings)]
+    def _get_export_season_jobs(self, videoid, show, season, nfo_settings):
+        """Get jobs data to export a season (join all jobs data of the episodes)"""
+        return [self._create_export_episode_job(videoid.derive_episode(episode['id']),
+                                                episode, season, show, nfo_settings)
+                for episode in season['episodes']]
 
-    if nfo_settings and nfo_settings.export_full_tvshow:
-        # Create tvshow.nfo file
-        # In episode metadata, show data is at 3rd position,
-        # while it's at first position in show metadata.
-        # Best is to enumerate values to find the correct key position
-        key_index = -1
-        for i, item in enumerate(metadata):
-            if item and item.get('type', None) == 'show':
-                key_index = i
-        if key_index > -1:
-            tasks.append(_create_export_item_task('tvshow.nfo', FOLDER_TV, videoid,
-                                                  metadata[key_index]['title'],
-                                                  'tvshow',
-                                                  nfo.create_show_nfo(metadata[key_index]),
-                                                  False))
-    return tasks
+    def _create_export_episode_job(self, videoid, episode, season, show, nfo_settings):
+        """Create job data to export a single episode"""
+        filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
+        title = ' - '.join((show['title'], filename))
+        create_nfo_file = nfo_settings and nfo_settings.export_tvshow_enabled
+        nfo_data = nfo.create_episode_nfo(episode, season, show) if create_nfo_file else None
+        return self._build_export_job_data(True, create_nfo_file,
+                                           videoid=videoid, title=title,
+                                           root_folder_name=FOLDER_NAME_SHOWS,
+                                           folder_name=show['title'],
+                                           filename=filename,
+                                           nfo_data=nfo_data)
 
+    def _build_export_job_data(self, create_strm_file, create_nfo_file, **kwargs):
+        """Build the data used to execute an "export" job"""
+        return {
+            'create_strm_file': create_strm_file,  # True/False
+            'create_nfo_file': create_nfo_file,  # True/False
+            'videoid': kwargs['videoid'],
+            'title': kwargs['title'],  # Progress dialog and debug purpose
+            'root_folder_name': kwargs['root_folder_name'],
+            'folder_name': re.sub(ILLEGAL_CHARACTERS, '', kwargs['folder_name']),
+            'filename': re.sub(ILLEGAL_CHARACTERS, '', kwargs['filename']),
+            'nfo_data': kwargs['nfo_data']
+        }
 
-def _compile_export_show_tasks(videoid, show, nfo_settings):
-    """Compile a list of task items for all episodes of all seasons of a tvshow"""
-    tasks = []
-    for season in show['seasons']:
-        tasks += _compile_export_season_tasks(videoid.derive_season(season['id']), show, season, nfo_settings)
-    return tasks
+    def _create_export_new_episodes_jobs(self, videoid, metadata, nfo_settings=None):
+        """Create jobs data to export missing seasons and episodes"""
+        tasks = []
+        if metadata and 'seasons' in metadata[0]:
+            for season in metadata[0]['seasons']:
+                if not nfo_settings:
+                    nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['nfo_export'], False)
+                    nfo_settings = nfo.NFOSettings(nfo_export)
+                # Check and add missing seasons and episodes
+                self._add_missing_items(tasks, season, videoid, metadata, nfo_settings)
+        return tasks
 
+    def _add_missing_items(self, tasks, season, videoid, metadata, nfo_settings):
+        if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
+            # The season exists, try to find any missing episode
+            for episode in season['episodes']:
+                if not g.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
+                    tasks.append(self._create_export_episode_job(
+                        videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
+                        episode=episode,
+                        season=season,
+                        show=metadata[0],
+                        nfo_settings=nfo_settings
+                    ))
+                    common.debug('Exporting missing new episode {}', episode['id'])
+        else:
+            # The season does not exist, build task for the season
+            tasks += self._get_export_season_jobs(
+                videoid=videoid.derive_season(season['id']),
+                show=metadata[0],
+                season=season,
+                nfo_settings=nfo_settings
+            )
+            common.debug('Exporting missing new season {}', season['id'])
 
-def _compile_export_season_tasks(videoid, show, season, nfo_settings):
-    """Compile a list of task items for all episodes in a season"""
-    return [_create_export_episode_task(videoid.derive_episode(episode['id']),
-                                        episode, season, show, nfo_settings)
-            for episode in season['episodes']]
+    def _create_remove_movie_job(self, videoid):
+        """Create a job data to remove a movie"""
+        file_path = g.SHARED_DB.get_movie_filepath(videoid.value)
+        title = os.path.splitext(os.path.basename(file_path))[0]
+        return self._build_remove_job_data(title, file_path, videoid)
 
+    def _create_remove_tvshow_jobs(self, videoid):
+        """Create jobs data to remove a tv show (will result jobs data of all the episodes)"""
+        row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_tvshow(videoid.value)
+        return self._create_remove_jobs_from_rows(row_results)
 
-def _create_export_episode_task(videoid, episode, season, show, nfo_settings):
-    """Export a single episode to the library"""
-    filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
-    title = ' - '.join((show['title'], filename, episode['title']))
-    return _create_export_item_task(
-        title, FOLDER_TV, videoid, show['title'], filename,
-        nfo.create_episode_nfo(episode, season, show)
-        if nfo_settings and nfo_settings.export_tvshow_enabled else None)
+    def _create_remove_season_jobs(self, videoid):
+        """Create jobs data to remove a season (will result jobs data of all the episodes)"""
+        row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_season(
+            videoid.tvshowid, videoid.seasonid)
+        return self._create_remove_jobs_from_rows(row_results)
 
+    def _create_remove_episode_job(self, videoid):
+        """Create a job data to remove an episode"""
+        file_path = g.SHARED_DB.get_episode_filepath(
+            videoid.tvshowid, videoid.seasonid, videoid.episodeid)
+        return self._build_remove_job_data(get_episode_title_from_path(file_path),
+                                           file_path, videoid)
 
-def _create_export_item_task(title, section, videoid, destination, filename, nfo_data=None,
-                             is_strm=True):
-    """Create a single task item"""
-    return {
-        'title': title,
-        'section': section,
-        'videoid': videoid,
-        'destination': re.sub(ILLEGAL_CHARACTERS, '', destination),
-        'filename': re.sub(ILLEGAL_CHARACTERS, '', filename),
-        'nfo_data': nfo_data,
-        'is_strm': is_strm
-    }
+    def _create_remove_jobs_from_rows(self, row_results):
+        """Create jobs data to remove episodes, from the rows results of the database"""
+        return [self._build_remove_job_data(get_episode_title_from_path(row['FilePath']),
+                                            row['FilePath'],
+                                            common.VideoId(tvshowid=row['TvShowID'],
+                                                           seasonid=row['SeasonID'],
+                                                           episodeid=row['EpisodeID']))
+                for row in row_results]
 
-
-def _create_new_episodes_tasks(videoid, metadata, nfo_settings=None):
-    tasks = []
-    if metadata and 'seasons' in metadata[0]:
-        for season in metadata[0]['seasons']:
-            if not nfo_settings:
-                nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['nfo_export'], False)
-                nfo_settings = nfo.NFOSettings(nfo_export)
-            # Check and add missing seasons and episodes
-            _add_missing_items(tasks, season, videoid, metadata, nfo_settings)
-    return tasks
-
-
-def _add_missing_items(tasks, season, videoid, metadata, nfo_settings):
-    if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
-        # The season exists, try to find any missing episode
-        for episode in season['episodes']:
-            if not g.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
-                tasks.append(_create_export_episode_task(
-                    videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
-                    episode=episode,
-                    season=season,
-                    show=metadata[0],
-                    nfo_settings=nfo_settings
-                ))
-                common.debug('Auto exporting episode {}', episode['id'])
-    else:
-        # The season does not exist, build task for the season
-        tasks += _compile_export_season_tasks(
-            videoid=videoid.derive_season(season['id']),
-            show=metadata[0],
-            season=season,
-            nfo_settings=nfo_settings
-        )
-        common.debug('Auto exporting season {}', season['id'])
-
-
-def _create_remove_movie_task(videoid):
-    filepath = g.SHARED_DB.get_movie_filepath(videoid.value)
-    title = os.path.splitext(os.path.basename(filepath))[0]
-    return [_create_remove_item_task(title, filepath, videoid)]
-
-
-def _compile_remove_tvshow_tasks(videoid):
-    row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_tvshow(videoid.value)
-    return _create_remove_tv_tasks(row_results)
-
-
-def _compile_remove_season_tasks(videoid):
-    row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_season(
-        videoid.tvshowid, videoid.seasonid)
-    return _create_remove_tv_tasks(row_results)
-
-
-def _create_remove_episode_task(videoid):
-    filepath = g.SHARED_DB.get_episode_filepath(
-        videoid.tvshowid, videoid.seasonid, videoid.episodeid)
-    return [_create_remove_item_task(
-        _episode_title_from_path(filepath),
-        filepath, videoid)]
-
-
-def _create_remove_tv_tasks(row_results):
-    return [_create_remove_item_task(_episode_title_from_path(row['FilePath']),
-                                     row['FilePath'],
-                                     common.VideoId.from_dict(
-                                         {'mediatype': common.VideoId.SHOW,
-                                          'tvshowid': row['TvShowID'],
-                                          'seasonid': row['SeasonID'],
-                                          'episodeid': row['EpisodeID']}))
-            for row in row_results]
-
-
-def _create_remove_item_task(title, filepath, videoid):
-    """Create a single task item"""
-    return {
-        'title': title,
-        'filepath': filepath,
-        'videoid': videoid
-    }
-
-
-def _episode_title_from_path(filepath):
-    fname = os.path.splitext(os.path.basename(filepath))[0]
-    path = os.path.split(os.path.split(filepath)[0])[1]
-    return '{} - {}'.format(path, fname)
+    def _build_remove_job_data(self, title, file_path, videoid):
+        """Build the data used to execute an "remove" job"""
+        return {
+            'title': title,  # Progress dialog and debug purpose
+            'file_path': file_path,
+            'videoid': videoid
+        }

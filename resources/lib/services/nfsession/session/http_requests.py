@@ -3,7 +3,7 @@
     Copyright (C) 2017 Sebastian Golasch (plugin.video.netflix)
     Copyright (C) 2018 Caphm (original implementation module)
     Copyright (C) 2019 Stefano Gottardo - @CastagnaIT
-    Stateful Netflix session management: handle the http requests
+    Manages the HTTP requests
 
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
@@ -12,40 +12,30 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-import resources.lib.common as common
 import resources.lib.api.website as website
-from resources.lib.common import cookies
-from resources.lib.globals import g
-from resources.lib.services.nfsession.nfsession_base import NFSessionBase, needs_login
-from resources.lib.database.db_utils import TABLE_SESSION
+import resources.lib.common as common
 from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
                                           InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
                                           LoginValidateErrorIncorrectPassword, HttpError401)
-from resources.lib.services.nfsession.nfsession_endpoints import ENDPOINTS, BASE_URL
+from resources.lib.common import cookies
+from resources.lib.database.db_utils import TABLE_SESSION
+from resources.lib.globals import g
+from resources.lib.services.nfsession.session.base import SessionBase
+from resources.lib.services.nfsession.session.endpoints import ENDPOINTS, BASE_URL
 
 
-class NFSessionRequests(NFSessionBase):
-    """Handle the http requests"""
+class SessionHTTPRequests(SessionBase):
+    """Manages the HTTP requests"""
 
-    @common.addonsignals_return_call
-    @needs_login
     def get(self, endpoint, **kwargs):
         """Execute a GET request to the designated endpoint."""
-        return self._get(endpoint, **kwargs)
-
-    @common.addonsignals_return_call
-    @needs_login
-    def post(self, endpoint, **kwargs):
-        """Execute a POST request to the designated endpoint."""
-        return self._post(endpoint, **kwargs)
-
-    def _get(self, endpoint, **kwargs):
         return self._request_call(
             method=self.session.get,
             endpoint=endpoint,
             **kwargs)
 
-    def _post(self, endpoint, **kwargs):
+    def post(self, endpoint, **kwargs):
+        """Execute a POST request to the designated endpoint."""
         return self._request_call(
             method=self.session.post,
             endpoint=endpoint,
@@ -71,7 +61,7 @@ class NFSessionRequests(NFSessionBase):
             params=params,
             data=data)
         common.debug('Request took {}s', common.perf_clock() - start)
-        common.debug('Request returned statuscode {}', response.status_code)
+        common.debug('Request returned status code {}', response.status_code)
         if response.status_code in [404, 401] and not session_refreshed:
             # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
             # 401 - It may happen when authURL is not more valid (Unauthorized for url)
@@ -80,15 +70,7 @@ class NFSessionRequests(NFSessionBase):
             if self.try_refresh_session_data():
                 return self._request(method, endpoint, True, **kwargs)
         if response.status_code == 401:
-            # 30/04/2020: first signal of http error 401 issues
-            # After the profile selection sometime can happen the http error 401 Client Error: Unauthorized for url ...
-            # due to the failure of the first shakti API request.
-            # After a revision of the code of initial access, i have not found any reason that could cause this problem,
-            # i am beginning to suspect that is a problem of the netflix service.
-            # Not found any solutions, two http attempts are already made, so notify the user of the problem.
-            # 02/05/2020: i intercepted this problem even browsing several times the lists,
-            #             does not happen often, so the problem is more complex.
-            common.error('Raise error due to too many http error 401 (known error currently unresolvable)')
+            common.error('Raise error due to too many http error 401')
             raise HttpError401
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
@@ -96,10 +78,10 @@ class NFSessionRequests(NFSessionBase):
                 else response.content)
 
     def try_refresh_session_data(self, raise_exception=False):
-        """Refresh session_data from the Netflix website"""
+        """Refresh session data from the Netflix website"""
         from requests import exceptions
         try:
-            self.auth_url = website.extract_session_data(self._get('browse'))['auth_url']
+            self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
             cookies.save(self.account_hash, self.session.cookies)
             common.debug('Successfully refreshed session data')
             return True
@@ -114,7 +96,7 @@ class NFSessionRequests(NFSessionBase):
             if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-            return self._login()
+            return self.external_func_login(modal_error_message=False)  # pylint: disable=not-callable
         except exceptions.RequestException:
             import traceback
             common.warn('Failed to refresh session data, request error (RequestException)')
@@ -129,9 +111,6 @@ class NFSessionRequests(NFSessionBase):
             if raise_exception:
                 raise
         return False
-
-    def _login(self, modal_error_message=False):
-        raise NotImplementedError
 
     def _prepare_request_properties(self, endpoint_conf, kwargs):
         data = kwargs.get('data', {})

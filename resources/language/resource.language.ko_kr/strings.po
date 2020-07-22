@@ -194,7 +194,9 @@ msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
 msgstr "InputStream Adaptive 혹은 Widevine에 문제가 있습니다. 설치되지 않았거나 사용하지 않음으로 되어 있어 동작을 취소합니다."
 
-# Unused 30047
+msgctxt "#30047"
+msgid "Library update in progress"
+msgstr ""
 
 msgctxt "#30048"
 msgid "Exported"
@@ -234,7 +236,9 @@ msgctxt "#30058"
 msgid "The profile {} has been set for auto-selection"
 msgstr "프로파일 {}을 자동선택으로 설정했습니다."
 
-# Unused 30059
+msgctxt "#30059"
+msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
+msgstr ""
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -248,7 +252,9 @@ msgctxt "#30062"
 msgid "Parental controls"
 msgstr "부모의 통제"
 
-# Unused 30063
+msgctxt "#30063"
+msgid "An update is already in progress"
+msgstr ""
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -487,8 +493,8 @@ msgid "Sync My List to Kodi library"
 msgstr "찜한 것들과 Kodi 라이브러리를 동기화"
 
 msgctxt "#30123"
-msgid "Do you really want to proceed?\nThis will delete all previously exported items and export all items from My List for the currently active profile.\nThis operation may take some time..."
-msgstr "진행하시렵니까?\n이미 내보낸 것들을 모두 삭제하고, 현재 사용중일 프로파일로부터 찜한것들을 모두 내보냅니다.\n시간이 조금 걸립니다."
+msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
+msgstr ""
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -756,9 +762,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "TV프로그램"
 
-msgctxt "#30191"
-msgid "Do you want to export NFO files for the {} added to 'My List'?"
-msgstr "'찜한 것들'에 추가된 {}의 NFO파일을 내보낼까요?"
+# Unused 30191
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
@@ -884,9 +888,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "키즈"
 
-msgctxt "#30223"
-msgid "Synchronization now uses 'My List' of profile {}"
-msgstr "프로파일 {}의 '찜한 것들'을 동기화에 사용합니다."
+# Unused 30223
 
 msgctxt "#30224"
 msgid "Auto update mode"
@@ -905,12 +907,10 @@ msgid "Synchronize Kodi library with My List"
 msgstr "Kodi라이브러리와 내가 찜한 것들을 동기화"
 
 msgctxt "#30228"
-msgid "Use 'My list' of the current profile"
-msgstr "사용 중인 프로파일로부터 '찜한 것들'을 가져옵니다."
+msgid "Set a profile for synchronization"
+msgstr ""
 
-msgctxt "#30229"
-msgid "Show the name of the selected profile"
-msgstr "프로파일 이름을 보여줍니다."
+# Unused 30229
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -972,7 +972,11 @@ msgctxt "#30244"
 msgid "Force Widevine security level L3"
 msgstr "Wideivine보안레벨을 L3로 설정"
 
-# Unused 30244 to 30299
+msgctxt "#30245"
+msgid "Deleting files exported to the library"
+msgstr ""
+
+# Unused 30246 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."

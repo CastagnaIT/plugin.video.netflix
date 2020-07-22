@@ -23,6 +23,7 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 IPC_TIMEOUT_SECS = 20
+IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
 
 
 class BackendNotReady(Exception):
@@ -35,7 +36,7 @@ class Signals(object):  # pylint: disable=no-init
     PLAYBACK_INITIATED = 'playback_initiated'
     ESN_CHANGED = 'esn_changed'
     RELEASE_LICENSE = 'release_license'
-    LIBRARY_UPDATE_REQUESTED = 'library_update_requested'
+    REQUEST_KODI_LIBRARY_UPDATE = 'request_kodi_library_update'
     UPNEXT_ADDON_INIT = 'upnext_data'
     QUEUE_VIDEO_EVENT = 'queue_video_event'
     CLEAR_USER_ID_TOKENS = 'clean_user_id_tokens'
@@ -45,7 +46,7 @@ class Signals(object):  # pylint: disable=no-init
 
 def register_slot(callback, signal=None, source_id=None):
     """Register a callback with AddonSignals for return calls"""
-    name = signal if signal else _signal_name(callback)
+    name = signal if signal else callback.__name__
     AddonSignals.registerSlot(
         signaler_id=source_id or g.ADDON_ID,
         signal=name,
@@ -55,7 +56,7 @@ def register_slot(callback, signal=None, source_id=None):
 
 def unregister_slot(callback, signal=None):
     """Remove a registered callback from AddonSignals"""
-    name = signal if signal else _signal_name(callback)
+    name = signal if signal else callback.__name__
     AddonSignals.unRegisterSlot(
         signaler_id=g.ADDON_ID,
         signal=name)
@@ -115,7 +116,7 @@ def make_http_call(callname, data):
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         error(err_msg)
         raise BackendNotReady(g.py2_encode(err_msg, encoding='latin-1'))
-    _raise_for_error(callname, result)
+    _raise_for_error(result)
     return result
 
 
@@ -159,55 +160,105 @@ def make_addonsignals_call(callname, data):
         signal=callname,
         data=data,
         timeout_ms=IPC_TIMEOUT_SECS * 1000)
-    _raise_for_error(callname, result)
+    _raise_for_error(result)
     if result is None:
         raise Exception('Addon Signals call timeout')
     return result
 
 
-def _raise_for_error(callname, result):
-    if isinstance(result, dict) and 'error' in result:
+def _raise_for_error(result):
+    # The json exception data format is set by ipc_convert_exc_to_json function
+    if isinstance(result, dict) and IPC_EXCEPTION_PLACEHOLDER in result:
+        result = result[IPC_EXCEPTION_PLACEHOLDER]
         try:
-            if not result['error'] == 'CacheMiss':
-                error('IPC call {callname} returned {error}: {message}'.format(callname=callname, **result))
-            raise apierrors.__dict__[result['error']](result['message'])
+            raise apierrors.__dict__[result['class']](result['message'])
         except KeyError:
-            raise Exception(result['error'])
+            raise Exception(result['class'] + '\r\nError details:\r\n' + result.get('message', '--'))
 
 
-def addonsignals_return_call(func):
-    """Makes func return callable through AddonSignals and handles catching, conversion and forwarding of exceptions"""
+def ipc_return_call(func):
+    """
+    Decorator to make a func return callable through IPC
+    and handles catching, conversion and forwarding of exceptions
+    """
     @wraps(func)
     def make_return_call(instance, data):
-        """Makes func return callable through AddonSignals and
-        handles catching, conversion and forwarding of exceptions"""
-        try:
-            result = call(instance, func, data)
-        except Exception as exc:  # pylint: disable=broad-except
-            error('IPC callback raised exception: {exc}', exc=exc)
-            import traceback
-            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
-            result = {
-                'error': exc.__class__.__name__,
-                'message': unicode(exc),
-            }
-        if g.IPC_OVER_HTTP:
-            return result
-        # Do not return None or AddonSignals will keep waiting till timeout
-        if result is None:
-            result = {}
-        AddonSignals.returnCall(signal=_signal_name(func), source_id=g.ADDON_ID, data=result)
-        return result
+        _perform_ipc_return_call_instance(instance, func, data)
     return make_return_call
 
 
-def call(instance, func, data):
+class EnvelopeIPCReturnCall(object):
+    """Makes a function callable through IPC and handles catching, conversion and forwarding of exceptions"""
+    # Defines a type of in-memory reference to avoids define functions in the source code just to handle IPC return call
+    def __init__(self, func):
+        self._func = func
+
+    def call(self, data):
+        """Routes the call to the function associated to the class"""
+        return _perform_ipc_return_call(self._func, data, self._func.__name__)
+
+
+def _perform_ipc_return_call_instance(instance, func, data):
+    try:
+        result = _call_with_instance(instance, func, data)
+    except Exception as exc:  # pylint: disable=broad-except
+        if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
+            error('IPC callback raised exception: {exc}', exc=exc)
+            import traceback
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        result = ipc_convert_exc_to_json(exc)
+    return _execute_addonsignals_return_call(result, func.__name__)
+
+
+def _perform_ipc_return_call(func, data, func_name=None):
+    try:
+        result = _call(func, data)
+    except Exception as exc:  # pylint: disable=broad-except
+        if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
+            error('IPC callback raised exception: {exc}', exc=exc)
+            import traceback
+            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        result = ipc_convert_exc_to_json(exc)
+    return _execute_addonsignals_return_call(result, func_name)
+
+
+def ipc_convert_exc_to_json(exc=None, class_name=None, message=None):
+    """
+    Convert an exception to a json data exception
+    :param exc: exception class
+
+    or else, build a json data exception
+    :param class_name: custom class name
+    :param message: custom message
+    """
+    return {IPC_EXCEPTION_PLACEHOLDER: {
+        'class': class_name or exc.__class__.__name__,
+        'message': message or unicode(exc),
+    }}
+
+
+def _execute_addonsignals_return_call(result, func_name):
+    """If enabled execute AddonSignals return callback"""
+    if g.IPC_OVER_HTTP:
+        return result
+    # Do not return None or AddonSignals will keep waiting till timeout
+    if result is None:
+        result = {}
+    AddonSignals.returnCall(signal=func_name, source_id=g.ADDON_ID, data=result)
+    return result
+
+
+def _call(func, data):
+    if isinstance(data, dict):
+        return func(**data)
+    if data is not None:
+        return func(data)
+    return func()
+
+
+def _call_with_instance(instance, func, data):
     if isinstance(data, dict):
         return func(instance, **data)
     if data is not None:
         return func(instance, data)
     return func(instance)
-
-
-def _signal_name(func):
-    return func.__name__

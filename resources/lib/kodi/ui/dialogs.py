@@ -133,7 +133,7 @@ def show_addon_error_info(exc):
 def show_library_task_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(common.get_local_string(0),
-                            '\n'.join(['{} ({})'.format(err['task_title'], err['error'])
+                            '\n'.join(['{} ({})'.format(err['title'], err['error'])
                                        for err in errors]))
 
 
@@ -144,3 +144,85 @@ def show_dlg_select(title, item_list):
     :return index of selected item, or -1 when cancelled
     """
     return xbmcgui.Dialog().select(title, item_list)
+
+
+class ProgressDialog(xbmcgui.DialogProgress):
+    """Context manager to handle a progress dialog window"""
+    # Keep the same arguments for all progress bar classes
+    def __init__(self, is_enabled, title=None, initial_value=0, max_value=1):
+        xbmcgui.DialogProgress.__init__(self)
+        self.is_enabled = is_enabled
+        self.max_value = max_value
+        self.value = initial_value
+        self._percent = int(initial_value * 100 / max_value) if max_value else 0
+        if is_enabled:
+            self.create(title or common.get_local_string(30047))
+
+    def __enter__(self):
+        if self.is_enabled:
+            self.update(self._percent, common.get_local_string(261))  # "Waiting for start..."
+        return self
+
+    def set_message(self, message):
+        if self.is_enabled:
+            self.update(self._percent, message)
+
+    def set_wait_message(self):
+        if self.is_enabled:
+            self.update(self._percent, common.get_local_string(20186))  # "Please wait"
+
+    def is_cancelled(self):
+        """Return True when the user has pressed cancel button"""
+        return self.is_enabled and self.iscanceled()
+
+    def perform_step(self):
+        self.value += 1
+        self._percent = int(self.value * 100 / self.max_value)
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if self.is_enabled:
+            self.close()
+
+
+class ProgressBarBG(xbmcgui.DialogProgressBG):
+    """Context manager to handle a progress bar in background"""
+    # Keep the same arguments for all progress bar classes
+    def __init__(self, is_enabled, title, initial_value=None, max_value=None):
+        xbmcgui.DialogProgressBG.__init__(self)
+        self.is_enabled = is_enabled
+        self.max_value = max_value
+        self.value = 0 if max_value and initial_value is None else initial_value
+        self._percent = int(initial_value * 100 / max_value) if initial_value and max_value else None
+        if is_enabled:
+            self.create(title)
+
+    def __enter__(self):
+        if self.is_enabled:
+            self._update(common.get_local_string(261))  # "Waiting for start..."
+        return self
+
+    def set_message(self, message):
+        if self.is_enabled:
+            self._update(message)
+
+    def set_wait_message(self):
+        if self.is_enabled:
+            self._update(common.get_local_string(20186))  # "Please wait"
+
+    def perform_step(self):
+        self.value += 1
+        self._percent = int(self.value * 100 / self.max_value)
+
+    def _update(self, message):
+        kwargs = {'message': message}
+        if self._percent is not None:
+            kwargs['percent'] = self._percent
+        self.update(**kwargs)  # Here all the arguments are optionals
+
+    def is_cancelled(self):
+        # Not supported - only need to ensure consistency in dynamic class management
+        return False
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if self.is_enabled:
+            self.close()
