@@ -37,7 +37,7 @@ class AMUpNextNotifier(ActionManager):
         videoid = common.VideoId.from_dict(data['videoid'])
         videoid_next_episode = common.VideoId.from_dict(data['videoid_next_episode'])
         self.upnext_info = get_upnext_info(videoid, videoid_next_episode, data['info_data'], data['metadata'],
-                                           data['is_played_from_addon'])
+                                           data['is_played_from_strm'])
 
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
         common.debug('Sending initialization signal to Up Next Add-on')
@@ -47,25 +47,25 @@ class AMUpNextNotifier(ActionManager):
         pass
 
 
-def get_upnext_info(videoid, videoid_next_episode, info_data, metadata, is_played_from_addon):
+def get_upnext_info(videoid, videoid_next_episode, info_data, metadata, is_played_from_strm):
     """Get the data to send to Up Next add-on"""
     upnext_info = {
         'current_episode': _upnext_info(videoid, *info_data[videoid.value]),
         'next_episode': _upnext_info(videoid_next_episode, *info_data[videoid_next_episode.value])
     }
 
-    if is_played_from_addon:
-        url = common.build_url(videoid=videoid_next_episode,
-                               mode=g.MODE_PLAY,
-                               params={'profile_guid': g.LOCAL_DB.get_active_profile_guid()})
-    else:
-        # Played from Kodi library get the strm file path
+    if is_played_from_strm:
+        # The current video played is a STRM, then generate the path of next STRM file
         file_path = g.SHARED_DB.get_episode_filepath(
             videoid_next_episode.tvshowid,
             videoid_next_episode.seasonid,
             videoid_next_episode.episodeid)
         url = g.py2_decode(xbmc.translatePath(file_path))
-    upnext_info['play_info'] = {'play_path': url}
+    else:
+        url = common.build_url(videoid=videoid_next_episode,
+                               mode=g.MODE_PLAY,
+                               params={'profile_guid': g.LOCAL_DB.get_active_profile_guid()})
+    upnext_info['play_url'] = url
 
     if 'creditsOffset' in metadata[0]:
         upnext_info['notification_offset'] = metadata[0]['creditsOffset']
