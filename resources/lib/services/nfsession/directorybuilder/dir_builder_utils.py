@@ -50,8 +50,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
 
 def get_param_watched_status_by_profile():
     """
-    Get a value used as parameter in the ListItem (of videos),
-    in order to differentiate the watched status and other Kodi data by profiles
+    Get a the current profile guid, will be used as parameter in the ListItem's (of videos),
+    so that Kodi database can distinguish the data (like watched status) according to each Netflix profile
     :return: a dictionary to be add to 'build_url' params
     """
     return {'profile_guid': g.LOCAL_DB.get_active_profile_guid()}
