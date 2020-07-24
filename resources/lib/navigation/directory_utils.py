@@ -9,7 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import random
 from functools import wraps
 
 from future.utils import iteritems
@@ -214,10 +213,3 @@ def _find_index_last_watched(total_items, list_data):
             # Last partial watched item
             return index
     return 0
-
-
-def delay_anti_ban():
-    """Adds some random delay between operations to limit servers load and ban risks"""
-    # Not so reliable workaround NF has strict control over the number/type of requests in a short space of time
-    # More than 100~ of requests could still cause HTTP errors by blocking requests to the server
-    xbmc.sleep(random.randint(1000, 4001))

@@ -27,8 +27,7 @@ from resources.lib.kodi.library_tasks import LibraryTasks
 from resources.lib.kodi.library_utils import (request_kodi_library_update, get_library_path,
                                               FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS,
                                               is_auto_update_library_running, request_kodi_library_scan_decorator,
-                                              get_library_subfolders)
-from resources.lib.navigation.directory_utils import delay_anti_ban
+                                              get_library_subfolders, delay_anti_ban)
 
 try:  # Python 2
     unicode

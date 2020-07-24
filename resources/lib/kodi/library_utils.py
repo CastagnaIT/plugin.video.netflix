@@ -10,8 +10,11 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import os
+import random
 from datetime import datetime, timedelta
 from functools import wraps
+
+import xbmc
 
 from resources.lib import common
 from resources.lib.api.paths import PATH_REQUEST_SIZE_STD
@@ -159,3 +162,10 @@ def list_contents(perpetual_range_start):
         else:
             perpetual_range_selector['_perpetual_range_selector'] = {'previous_start': previous_start}
     return chunked_video_list, perpetual_range_selector
+
+
+def delay_anti_ban():
+    """Adds some random delay between operations to limit servers load and ban risks"""
+    # Not so reliable workaround NF has strict control over the number/type of requests in a short space of time
+    # More than 100~ of requests could still cause HTTP errors by blocking requests to the server
+    xbmc.sleep(random.randint(1000, 4001))
