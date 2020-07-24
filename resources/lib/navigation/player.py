@@ -14,7 +14,6 @@ import xbmcgui
 
 from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.api.paths import EVENT_PATHS
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 import resources.lib.common as common
 import resources.lib.api.api_requests as api
@@ -46,25 +45,26 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
 
 
 @common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
-@common.time_execution(immediate=False)
+def play_strm(videoid):
+    _play(videoid, True)
+
+
+@common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
 def play(videoid):
+    _play(videoid, False)
+
+
+@common.time_execution(immediate=False)
+def _play(videoid, is_played_from_strm=False):
     """Play an episode or movie as specified by the path"""
     is_upnext_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
-    # For db settings 'upnext_play_callback_received' and 'upnext_play_callback_file_type' see action_controller.py
-    is_upnext_callback_received = g.LOCAL_DB.get_value('upnext_play_callback_received', False)
-    is_upnext_callback_file_type_strm = g.LOCAL_DB.get_value('upnext_play_callback_file_type', '') == 'strm'
-    # This is the only way found to know if the played item come from the add-on itself or from Kodi library
-    # also when Up Next Add-on is used
-    is_played_from_addon = not g.IS_ADDON_EXTERNAL_CALL or (g.IS_ADDON_EXTERNAL_CALL and
-                                                            is_upnext_callback_received and
-                                                            not is_upnext_callback_file_type_strm)
-    common.info('Playing {} from {} (Is Up Next Add-on call: {})',
+    common.info('Playing {}{}{}',
                 videoid,
-                'add-on' if is_played_from_addon else 'external call',
-                is_upnext_callback_received)
+                ' [STRM file]' if is_played_from_strm else '',
+                ' [external call]' if g.IS_ADDON_EXTERNAL_CALL else '')
 
-    # Profile switch when playing from Kodi library
-    if not is_played_from_addon:
+    # Profile switch when playing from a STRM file (library)
+    if is_played_from_strm:
         if not _profile_switch():
             xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
             return
@@ -89,7 +89,7 @@ def play(videoid):
     list_item = get_inputstream_listitem(videoid)
 
     # STRM file resume workaround (Kodi library)
-    resume_position = _strm_resume_workaroud(is_played_from_addon, videoid)
+    resume_position = _strm_resume_workaroud(is_played_from_strm, videoid)
     if resume_position == '':
         xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
         return
@@ -99,7 +99,7 @@ def play(videoid):
     videoid_next_episode = None
 
     # Get Infolabels and Arts for the videoid to be played, and for the next video if it is an episode (for UpNext)
-    if not is_played_from_addon or is_upnext_enabled:
+    if is_played_from_strm or is_upnext_enabled or g.IS_ADDON_EXTERNAL_CALL:
         if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
             # When UpNext is enabled, get the next episode to play
             videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
@@ -113,7 +113,7 @@ def play(videoid):
     # Get event data for videoid to be played (needed for sync of watched status with Netflix)
     if (g.ADDON.getSettingBool('ProgressManager_enabled') and
             videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE] and
-            is_played_from_addon):
+            not is_played_from_strm):
         # Enable the progress manager only when:
         # - It is not an add-on external call
         # - It is an external call, but the played item is not a STRM file
@@ -123,14 +123,10 @@ def play(videoid):
         #  that can be used only on Kodi 19.x
         event_data = _get_event_data(videoid)
         event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = not is_played_from_addon
+        event_data['is_played_by_library'] = is_played_from_strm
 
     if 'raspberrypi' in common.get_system_platform():
         _raspberry_disable_omxplayer()
-
-    xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
-
-    g.LOCAL_DB.set_value('last_videoid_played', videoid.to_dict(), table=TABLE_SESSION)
 
     # Start and initialize the action controller (see action_controller.py)
     common.debug('Sending initialization signal')
@@ -139,10 +135,12 @@ def play(videoid):
         'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
         'metadata': metadata,
         'info_data': info_data,
-        'is_played_from_addon': is_played_from_addon,
+        'is_played_from_strm': is_played_from_strm,
         'resume_position': resume_position,
-        'event_data': event_data,
-        'is_upnext_callback_received': is_upnext_callback_received}, non_blocking=True)
+        'event_data': event_data}, non_blocking=True)
+    # Send callback after send the initialization signal
+    # to give a bit of more time to the action controller (see note in initialize_playback of action_controller.py)
+    xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
 
 def get_inputstream_listitem(videoid):
@@ -228,9 +226,9 @@ def _verify_pin(pin_required):
     return None if not pin else api.verify_pin(pin)
 
 
-def _strm_resume_workaroud(is_played_from_addon, videoid):
+def _strm_resume_workaroud(is_played_from_strm, videoid):
     """Workaround for resuming STRM files from library"""
-    if is_played_from_addon or not g.ADDON.getSettingBool('ResumeManager_enabled'):
+    if not is_played_from_strm or not g.ADDON.getSettingBool('ResumeManager_enabled'):
         return None
     resume_position = infolabels.get_resume_info_from_library(videoid).get('position')
     if resume_position:

@@ -57,7 +57,7 @@ def convert_to_dash(manifest):
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
     if common.is_debug_verbose():
-        common.save_file('manifest.mpd', xml)
+        common.save_file_def('manifest.mpd', xml)
     return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
 
 

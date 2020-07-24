@@ -132,7 +132,6 @@ class NFSessionOperations(SessionPathRequests):
         """Retrieve additional metadata for the given VideoId"""
         if isinstance(videoid, list):  # IPC call send the videoid as "path" list
             videoid = common.VideoId.from_path(videoid)
-        metadata_data = {}, None
         # Get the parent VideoId (when the 'videoid' is a type of EPISODE/SEASON)
         parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
         # Delete the cache if we need to refresh the all metadata
@@ -150,6 +149,7 @@ class NFSessionOperations(SessionPathRequests):
                 except KeyError as exc:
                     # The new metadata does not contain the episode
                     common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
+                    raise MetadataNotAvailable
         else:
             metadata_data = self._metadata(video_id=parent_videoid), None
         return metadata_data

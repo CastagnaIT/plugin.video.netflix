@@ -108,7 +108,7 @@ class MSLRequests(MSLRequestBuilder):
             is_handshake_required = True
         if is_handshake_required:
             if self.perform_key_handshake():
-                msl_data = json.loads(common.load_file(MSL_DATA_FILENAME))
+                msl_data = json.loads(common.load_file_def(MSL_DATA_FILENAME))
                 self.crypto.load_msl_data(msl_data)
                 self.crypto.load_crypto_session(msl_data)
 

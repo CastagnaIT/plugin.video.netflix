@@ -19,8 +19,7 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MetadataNotAvailable
 from resources.lib.globals import g
-from resources.lib.kodi.library_utils import (get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS,
-                                              remove_videoid_from_db, insert_videoid_to_db)
+from resources.lib.kodi.library_utils import remove_videoid_from_db, insert_videoid_to_db
 
 
 class LibraryJobs(object):
@@ -99,35 +98,76 @@ class LibraryJobs(object):
 
     # -------------------------- The follow functions not concern jobs for tasks
 
-    def imports_videoids_from_existing_old_library(self):
+    def import_videoid_from_existing_strm(self, folder_path, folder_name):
         """
-        Gets a list of VideoId of type movie and show from STRM files that were exported,
-        from the old add-on version 13.x
+        Get a VideoId from an existing STRM file that was exported
         """
-        videoid_pattern = re.compile('video_id=(\\d+)')
-        for folder in get_library_subfolders(FOLDER_NAME_MOVIES) + get_library_subfolders(FOLDER_NAME_SHOWS):
-            for filename in common.list_dir(folder)[1]:
-                file_path = common.join_folders_paths(folder, filename)
-                if file_path.endswith('.strm'):
-                    common.debug('Trying to migrate {}', file_path)
-                    try:
-                        # Only get a VideoId from the first file in each folder.
-                        # For shows, all episodes will result in the same VideoId
-                        # and movies only contain one file
-                        yield self._get_root_videoid(file_path, videoid_pattern)
-                    except MetadataNotAvailable:
-                        common.warn('Metadata not available, item skipped')
-                    except (AttributeError, IndexError):
-                        common.warn('Item does not conform to old format')
-                    break
+        for filename in common.list_dir(folder_path)[1]:
+            filename = g.py2_decode(filename)
+            if not filename.endswith('.strm'):
+                continue
+            file_path = common.join_folders_paths(folder_path, filename)
+            # Only get a VideoId from the first file in each folder.
+            # For tv shows all episodes will result in the same VideoId, the movies only contain one file.
+            file_content = common.load_file(file_path)
+            if not file_content:
+                common.warn('Import error: folder "{}" skipped, STRM file empty or corrupted', folder_name)
+                return None
+            if 'action=play_video' in file_content:
+                common.debug('Trying to import (v0.13.x): {}', file_path)
+                return self._import_videoid_old(file_content, folder_name)
+            common.debug('Trying to import: {}', file_path)
+            return self._import_videoid(file_content, folder_name)
 
-    def _get_root_videoid(self, filename, pattern):
-        match = re.search(pattern,
-                          xbmcvfs.File(filename, 'r').read().decode('utf-8').split('\n')[-1])
-        # pylint: disable=not-callable
-        metadata = self.ext_func_get_metadata(
-            common.VideoId(videoid=match.groups()[0])
-        )[0]
-        if metadata['type'] == 'show':
-            return common.VideoId(tvshowid=metadata['id']), metadata.get('title', 'Tv show')
-        return common.VideoId(movieid=metadata['id']), metadata.get('title', 'Movie')
+    def _import_videoid_old(self, file_content, folder_name):
+        try:
+            # The STRM file in add-on v13.x is different and can contains two lines, example:
+            #   #EXTINF:-1,Tv show title - "meta data ..."
+            #   plugin://plugin.video.netflix/?video_id=12345678&action=play_video
+            # Get last line and extract the videoid value
+            match = re.search(r'video_id=(\d+)', file_content.split('\n')[-1])
+            # Create a videoid of UNSPECIFIED type (we do not know the real type of videoid)
+            videoid = common.VideoId(videoid=match.groups()[0])
+            # Try to get the videoid metadata:
+            # - To know if the videoid still exists on netflix
+            # - To get the videoid type
+            # - To get the Tv show videoid, in the case of STRM of an episode
+            metadata = self.ext_func_get_metadata(videoid)[0]  # pylint: disable=not-callable
+            # Generate the a good videoid
+            if metadata['type'] == 'show':
+                return common.VideoId(tvshowid=metadata['id'])
+            return common.VideoId(movieid=metadata['id'])
+        except MetadataNotAvailable:
+            common.warn('Import error: folder {} skipped, metadata not available', folder_name)
+            return None
+        except (AttributeError, IndexError):
+            common.warn('Import error: folder {} skipped, STRM not conform to v0.13.x format', folder_name)
+            return None
+
+    def _import_videoid(self, file_content, folder_name):
+        file_content = file_content.strip('\t\n\r')
+        if g.BASE_URL not in file_content:
+            common.warn('Import error: folder "{}" skipped, unrecognized plugin name in STRM file', folder_name)
+            raise ImportWarning
+        file_content = file_content.replace(g.BASE_URL, '')
+        # file_content should result as, example:
+        # - Old STRM path: '/play/show/xxxxxxxx/season/xxxxxxxx/episode/xxxxxxxx/' (used before ver 1.7.0)
+        # - New STRM path: '/play_strm/show/xxxxxxxx/season/xxxxxxxx/episode/xxxxxxxx/' (used from ver 1.7.0)
+        pathitems = file_content.strip('/').split('/')
+        if g.MODE_PLAY not in pathitems and g.MODE_PLAY_STRM not in pathitems:
+            common.warn('Import error: folder "{}" skipped, unsupported play path in STRM file', folder_name)
+            raise ImportWarning
+        pathitems = pathitems[1:]
+        try:
+            if pathitems[0] == common.VideoId.SHOW:
+                # Get always VideoId of tvshow type (not season or episode)
+                videoid = common.VideoId.from_path(pathitems[:2])
+            else:
+                videoid = common.VideoId.from_path(pathitems)
+            # Try to get the videoid metadata, to know if the videoid still exists on netflix
+            self.ext_func_get_metadata(videoid)  # pylint: disable=not-callable
+            return videoid
+        except MetadataNotAvailable:
+            common.warn('Import error: folder {} skipped, metadata not available for videoid {}',
+                        folder_name, pathitems[1])
+            return None

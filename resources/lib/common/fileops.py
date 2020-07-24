@@ -78,28 +78,48 @@ def copy_file(from_path, to_path):
         pass
 
 
-def save_file(filename, content, mode='wb'):
+def save_file_def(filename, content, mode='wb'):
     """
-    Saves the given content under given filename
+    Saves the given content under given filename, in the default add-on data folder
     :param filename: The filename
     :param content: The content of the file
+    :param mode: optional mode options
     """
-    file_handle = xbmcvfs.File(
-        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    save_file(os.path.join(g.DATA_PATH, filename), content, mode)
+
+
+def save_file(file_path, content, mode='wb'):
+    """
+    Saves the given content under given filename path
+    :param file_path: The filename path
+    :param content: The content of the file
+    :param mode: optional mode options
+    """
+    file_handle = xbmcvfs.File(xbmc.translatePath(file_path), mode)
     try:
         file_handle.write(bytearray(content))
     finally:
         file_handle.close()
 
 
-def load_file(filename, mode='rb'):
+def load_file_def(filename, mode='rb'):
     """
-    Loads the content of a given filename
+    Loads the content of a given filename, from the default add-on data folder
     :param filename: The file to load
+    :param mode: optional mode options
     :return: The content of the file
     """
-    file_handle = xbmcvfs.File(
-        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    return load_file(os.path.join(g.DATA_PATH, filename), mode)
+
+
+def load_file(file_path, mode='rb'):
+    """
+    Loads the content of a given filename
+    :param file_path: The file path to load
+    :param mode: optional mode options
+    :return: The content of the file
+    """
+    file_handle = xbmcvfs.File(xbmc.translatePath(file_path), mode)
     try:
         return file_handle.readBytes().decode('utf-8')
     finally:
@@ -138,21 +158,22 @@ def delete_folder_contents(path, delete_subfolders=False):
     """
     directories, files = list_dir(xbmc.translatePath(path))
     for filename in files:
-        xbmcvfs.delete(os.path.join(path, filename))
+        xbmcvfs.delete(os.path.join(path, g.py2_decode(filename)))
     if not delete_subfolders:
         return
     for directory in directories:
-        delete_folder_contents(os.path.join(path, directory), True)
+        delete_folder_contents(os.path.join(path, g.py2_decode(directory)), True)
         # Give time because the system performs previous op. otherwise it can't delete the folder
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(path, directory))
+        xbmcvfs.rmdir(os.path.join(path, g.py2_decode(directory)))
 
 
-def delete_ndb_files(data_path=g.DATA_PATH):
-    """Delete all .ndb files in a folder"""
-    for filename in list_dir(xbmc.translatePath(data_path))[1]:
-        if filename.endswith('.ndb'):
-            xbmcvfs.delete(os.path.join(g.DATA_PATH, filename))
+def delete_folder(path):
+    """Delete a folder with all his contents"""
+    delete_folder_contents(path, True)
+    # Give time because the system performs previous op. otherwise it can't delete the folder
+    xbmc.sleep(80)
+    xbmcvfs.rmdir(xbmc.translatePath(path))
 
 
 def write_strm_file(videoid, file_path):
@@ -160,7 +181,7 @@ def write_strm_file(videoid, file_path):
     filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
     try:
         filehandle.write(bytearray(build_url(videoid=videoid,
-                                             mode=g.MODE_PLAY).encode('utf-8')))
+                                             mode=g.MODE_PLAY_STRM).encode('utf-8')))
     finally:
         filehandle.close()
 

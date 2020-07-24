@@ -61,6 +61,10 @@ def route(pathitems):
         from resources.lib.navigation.player import play
         play(videoid=pathitems[1:])
         return
+    if root_handler == g.MODE_PLAY_STRM:
+        from resources.lib.navigation.player import play_strm
+        play_strm(videoid=pathitems[1:])
+        return
     if root_handler == 'extrafanart':
         warn('Route: ignoring extrafanart invocation')
         _handle_endofdirectory()
@@ -200,11 +204,21 @@ def run(argv):
     if success:
         try:
             if _check_valid_credentials():
+                cancel_playback = False
+                pathitems = [part for part in g.PATH.split('/') if part]
                 if g.IS_ADDON_FIRSTRUN:
-                    if check_addon_upgrade():
+                    is_first_run_install, cancel_playback = check_addon_upgrade()
+                    if is_first_run_install:
                         from resources.lib.config_wizard import run_addon_configuration
                         run_addon_configuration()
-                route([part for part in g.PATH.split('/') if part])
+                if cancel_playback and g.MODE_PLAY in pathitems[:1]:
+                    # Temporary for migration library STRM to new format. todo: to be removed in future releases
+                    # When a user do the add-on upgrade, the first time that the add-on will be opened will be executed
+                    # the library migration. But if a user instead to open the add-on, try to play a video from Kodi
+                    # library, Kodi will open the old STRM file because the migration is executed after.
+                    success = False
+                else:
+                    route(pathitems)
             else:
                 success = False
         except BackendNotReady as exc_bnr:

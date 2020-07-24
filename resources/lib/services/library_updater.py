@@ -67,8 +67,12 @@ class LibraryUpdateService(xbmc.Monitor):
         """
         Check if Kodi has been idle for 5 minutes
         """
-        if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
-            return True
+        try:
+            if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
+                return True
+        except TypeError:
+            # Could happen when the service tick is executed at the same time when the settings are written
+            return False
         lastidle = xbmc.getGlobalIdleTime()
         if xbmc.Player().isPlaying():
             self.startidle = lastidle

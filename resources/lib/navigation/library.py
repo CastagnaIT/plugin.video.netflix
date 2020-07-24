@@ -82,9 +82,12 @@ class LibraryActionExecutor(object):
             return
         get_library_cls().clear_library()
 
-    def migrate(self, pathitems):  # pylint: disable=unused-argument
-        """Migrate exported items from old library format (add-on version 13.x) to the new format"""
-        get_library_cls().import_library(is_old_format=True)
+    def import_library(self, pathitems):  # pylint: disable=unused-argument
+        """Import previous exported STRM files to add-on and/or convert them to the current STRM format type"""
+        if not ui.ask_for_confirmation(common.get_local_string(30140),
+                                       common.get_local_string(20135)):
+            return
+        get_library_cls().import_library()
 
     @common.inject_video_id(path_offset=1)
     def export_new_episodes(self, videoid):
