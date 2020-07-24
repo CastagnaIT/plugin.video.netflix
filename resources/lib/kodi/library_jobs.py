@@ -103,6 +103,7 @@ class LibraryJobs(object):
         Get a VideoId from an existing STRM file that was exported
         """
         for filename in common.list_dir(folder_path)[1]:
+            filename = g.py2_decode(filename)
             if not filename.endswith('.strm'):
                 continue
             file_path = common.join_folders_paths(folder_path, filename)

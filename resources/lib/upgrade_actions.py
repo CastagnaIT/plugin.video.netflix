@@ -66,6 +66,7 @@ def migrate_library():
 def _migrate_strm_files(folder_path):
     # Change path in STRM files
     for filename in list_dir(folder_path)[1]:
+        filename = g.py2_decode(filename)
         if not filename.endswith('.strm'):
             continue
         file_path = join_folders_paths(folder_path, filename)

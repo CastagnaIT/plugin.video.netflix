@@ -158,14 +158,14 @@ def delete_folder_contents(path, delete_subfolders=False):
     """
     directories, files = list_dir(xbmc.translatePath(path))
     for filename in files:
-        xbmcvfs.delete(os.path.join(path, filename))
+        xbmcvfs.delete(os.path.join(path, g.py2_decode(filename)))
     if not delete_subfolders:
         return
     for directory in directories:
-        delete_folder_contents(os.path.join(path, directory), True)
+        delete_folder_contents(os.path.join(path, g.py2_decode(directory)), True)
         # Give time because the system performs previous op. otherwise it can't delete the folder
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(path, directory))
+        xbmcvfs.rmdir(os.path.join(path, g.py2_decode(directory)))
 
 
 def delete_folder(path):
