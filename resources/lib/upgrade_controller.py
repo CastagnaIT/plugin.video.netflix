@@ -59,6 +59,9 @@ def _perform_addon_changes(previous_ver, current_ver):
         msg = ('This update resets the settings to auto-update library.\r\n'
                'Therefore only in case you are using auto-update must be reconfigured.')
         ui.show_ok_dialog('Netflix upgrade', msg)
+    if previous_ver and is_less_version(previous_ver, '1.7.0'):
+        from resources.lib.upgrade_actions import migrate_library
+        migrate_library()
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
 
