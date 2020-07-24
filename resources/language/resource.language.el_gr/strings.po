@@ -561,8 +561,8 @@ msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
 msgstr "Ενεργοποίηση του IPC πάνω απο HTTP (κάνε χρηση όταν εμφανιστούν τα μηνύματα λήξης χρόνου από το Addon Signals)"
 
 msgctxt "#30140"
-msgid "Migrate Library to new format"
-msgstr "Αποδήμηση της βιβλιοθήκης στη νέα μορφή"
+msgid "Import existing library"
+msgstr ""
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -976,7 +976,11 @@ msgctxt "#30245"
 msgid "Deleting files exported to the library"
 msgstr ""
 
-# Unused 30246 to 30299
+msgctxt "#30246"
+msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
+msgstr ""
+
+# Unused 30247 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
