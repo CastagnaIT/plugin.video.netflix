@@ -34,7 +34,7 @@
     <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
     <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
     <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://plugin.video.netflix/library/purge/)"/>
-    <setting id="migrate_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/migrate/)"/>
+    <setting id="import_library" type="action" label="30140" action="RunPlugin(plugin://plugin.video.netflix/library/import_library/)"/>
     <setting label="30199" type="lsep"/><!--Shared library-->
     <setting id="use_mysql" type="bool" label="30200" default="false"/>
     <setting id="mysql_username" type="text" label="30201" default="kodi" visible="eq(-1,true)" subsetting="true"/>

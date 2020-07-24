@@ -10,9 +10,12 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import os
 from datetime import datetime
 
 from future.utils import iteritems
+
+import xbmc
 
 import resources.lib.api.api_requests as api
 import resources.lib.common as common
@@ -23,7 +26,8 @@ from resources.lib.globals import g
 from resources.lib.kodi.library_tasks import LibraryTasks
 from resources.lib.kodi.library_utils import (request_kodi_library_update, get_library_path,
                                               FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS,
-                                              is_auto_update_library_running, request_kodi_library_scan_decorator)
+                                              is_auto_update_library_running, request_kodi_library_scan_decorator,
+                                              get_library_subfolders)
 from resources.lib.navigation.directory_utils import delay_anti_ban
 
 try:  # Python 2
@@ -300,40 +304,71 @@ class Library(LibraryTasks):
         common.clean_library(show_prg_dialog)
         return True
 
-    @request_kodi_library_scan_decorator
-    def import_library(self, is_old_format):
+    def import_library(self):
         """
-        Imports an already existing library into the add-on library database (and also update seasons/episodes),
-        allows you to restore an existing library, avoiding to recreate it from scratch.
-        :param is_old_format: if True, imports library items with old format version (add-on version 13.x)
+        Imports an already existing exported STRM library into the add-on library database,
+        allows you to restore an existing library, by avoiding to recreate it from scratch.
+        This operations also update the missing tv shows seasons and episodes, and automatically
+        converts old STRM format type from add-on version 0.13.x or before 1.7.0 to new format.
         """
         # If set ask to user if want to export NFO files
         nfo_settings = nfo.NFOSettings()
         nfo_settings.show_export_dialog()
-        # Choose the format type func to import
-        if is_old_format:
-            common.info('Start importing Kodi library (old format type)')
-            import_videoids_func = self.imports_videoids_from_existing_old_library
-        else:
-            raise NotImplementedError
-        # Start importing files to add-on library database
-        with ui.ProgressDialog(True) as progress_bar:
-            videoids = import_videoids_func()
-            progress_bar.max_value = len(videoids)
-            for videoid in videoids:
-                # Execute the task
-                for index, total_tasks, title in self.execute_library_task(videoid,
-                                                                           self.export_item,
-                                                                           nfo_settings=nfo_settings,
-                                                                           notify_errors=True):
-                    label_partial_op = ' ({}/{})'.format(index + 1, total_tasks) if total_tasks > 1 else ''
-                    progress_bar.set_message(title + label_partial_op)
-                if progress_bar.is_cancelled():
-                    common.warn('Import library interrupted by User')
-                    break
-                if self.monitor.abortRequested():
-                    common.warn('Import library interrupted by Kodi')
-                    break
+        common.info('Start importing Kodi library')
+        remove_folders = []  # List of failed imports paths to be optionally removed
+        remove_titles = []  # List of failed imports titles to be optionally removed
+        # Start importing STRM files
+        folders = get_library_subfolders(FOLDER_NAME_MOVIES) + get_library_subfolders(FOLDER_NAME_SHOWS)
+        with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
+            for folder_path in folders:
+                folder_name = os.path.basename(g.py2_decode(xbmc.translatePath(folder_path)))
+                progress_bar.set_message(folder_name)
+                try:
+                    videoid = self.import_videoid_from_existing_strm(folder_path, folder_name)
+                    if videoid is None:
+                        # Failed to import, add folder to remove list
+                        remove_folders.append(folder_path)
+                        remove_titles.append(folder_name)
+                        continue
+                    # Successfully imported, Execute the task
+                    for index, total_tasks, title in self.execute_library_task(videoid,
+                                                                               self.export_item,
+                                                                               nfo_settings=nfo_settings,
+                                                                               notify_errors=True):
+                        label_partial_op = ' ({}/{})'.format(index + 1, total_tasks) if total_tasks > 1 else ''
+                        progress_bar.set_message(title + label_partial_op)
+                    if progress_bar.is_cancelled():
+                        common.warn('Import library interrupted by User')
+                        return
+                    if self.monitor.abortRequested():
+                        common.warn('Import library interrupted by Kodi')
+                        return
+                except ImportWarning:
+                    # Ignore it, something was wrong in STRM file (see _import_videoid in library_jobs.py)
+                    pass
                 progress_bar.perform_step()
                 progress_bar.set_wait_message()
                 delay_anti_ban()
+        ret = self._import_library_remove(remove_titles, remove_folders)
+        request_kodi_library_update(scan=True, clean=ret)
+
+    def _import_library_remove(self, remove_titles, remove_folders):
+        if not remove_folders:
+            return False
+        # If there are STRM files that it was not possible to import them,
+        # we will ask to user if you want to delete them
+        tot_folders = len(remove_folders)
+        if tot_folders > 50:
+            remove_titles = remove_titles[:50] + ['...']
+        message = common.get_local_string(30246).format(tot_folders) + '[CR][CR]' + ', '.join(remove_titles)
+        if not ui.ask_for_confirmation(common.get_local_string(30140), message):
+            return False
+        # Delete all folders
+        common.info('Start deleting folders')
+        with ui.ProgressDialog(True, max_value=tot_folders) as progress_bar:
+            for file_path in remove_folders:
+                progress_bar.set_message('{}/{}'.format(progress_bar.value, tot_folders))
+                common.debug('Deleting folder: {}', file_path)
+                common.delete_folder(file_path)
+                progress_bar.perform_step()
+        return True
