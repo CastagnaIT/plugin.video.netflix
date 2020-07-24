@@ -13,24 +13,17 @@
 This plugin is not officially commissioned/supported by Netflix.
 The trademark "Netflix" is registered by "Netflix, Inc."
 
-## Features
+## Main features
 
-- Access to multiple profiles
-- Search Netflix including suggestions
-- Netflix categories, recommendations, My List, continue watching and more
-- Browse all movies and all TV shows Netflix style includes genres
-- Browse trailers & more of TV shows and movies (by context menu)
-- Can synchronize the watched status with Netflix service - [How works and limitations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
-- Rate TV shows and movies
-- Add or remove to/from My List
-- Export of TV shows & movies in Kodi local library
-- Keep Netflix My List and Kodi local library in sync
-- Automatic export of new seasons/episodes to Kodi local library when they become available on Netflix
-- Share/Sync the Kodi local library with multiple devices that running Kodi with the same account (requires a MySQL server)
-- Possibility of playback at 1080P and 4K (see high resolutions table)
-- Support of hi-res audio Dolby Digital Plus and Dolby Digital Atmos (requires a premium account)
-- Support of HDR / HDR10 only on capable android devices (requires a premium account)
-- Support of Dolby Vision only on capable android devices (requires a premium account)
+- Access to all profiles and relative My list management
+- Show the most used lists such as New releases, Recently added, Netflix originals, ...
+- Show trailers lists (by context menu)
+- Synchronize the watched status with Netflix service - [How works and limitations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
+- Export and synchronize Kodi library with Netflix
+- Share/Sync a Kodi library with multiple devices that using Kodi (requires a MySQL server)
+- Capability of 1080P and 4K resolutions (see high resolutions table)
+- Dolby Digital Plus and Dolby Digital Atmos (requires a premium account)
+- HDR / HDR10 / Dolby Vision only on capable Android devices (requires a premium account)
 - Support integration with Up Next add-on (proposes to play the next episode automatically)
 
 ## Installation & Updates
