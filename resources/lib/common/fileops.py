@@ -176,13 +176,6 @@ def delete_folder(path):
     xbmcvfs.rmdir(xbmc.translatePath(path))
 
 
-def delete_ndb_files(data_path=g.DATA_PATH):
-    """Delete all .ndb files in a folder"""
-    for filename in list_dir(xbmc.translatePath(data_path))[1]:
-        if filename.endswith('.ndb'):
-            xbmcvfs.delete(os.path.join(g.DATA_PATH, filename))
-
-
 def write_strm_file(videoid, file_path):
     """Write a playable URL to a STRM file"""
     filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
