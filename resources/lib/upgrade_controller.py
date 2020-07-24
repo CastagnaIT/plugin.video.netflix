@@ -19,14 +19,17 @@ def check_addon_upgrade():
     """
     Check addon upgrade and perform necessary update operations
 
-    :return True if this is the first run of the add-on after an installation from scratch
+    :return tuple boolean 1: True if this is the first run of the add-on after an installation from scratch
+                  boolean 2: True to cancel a playback after upgrade
+                             (if user was trying to playback from kodi library so without open the add-on interface)
     """
     # Upgrades that require user interaction or to be performed outside of the service
+    cancel_playback = False
     addon_previous_ver = g.LOCAL_DB.get_value('addon_previous_version', None)
     addon_current_ver = g.VERSION
     if addon_previous_ver is None or is_less_version(addon_previous_ver, addon_current_ver):
-        _perform_addon_changes(addon_previous_ver, addon_current_ver)
-    return addon_previous_ver is None
+        cancel_playback = _perform_addon_changes(addon_previous_ver, addon_current_ver)
+    return addon_previous_ver is None, cancel_playback
 
 
 def check_service_upgrade():
@@ -53,6 +56,7 @@ def check_service_upgrade():
 
 def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
+    cancel_playback = False
     debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
     if previous_ver and is_less_version(previous_ver, '0.15.9'):
         import resources.lib.kodi.ui as ui
@@ -62,8 +66,10 @@ def _perform_addon_changes(previous_ver, current_ver):
     if previous_ver and is_less_version(previous_ver, '1.7.0'):
         from resources.lib.upgrade_actions import migrate_library
         migrate_library()
+        cancel_playback = True
     # Always leave this to last - After the operations set current version
     g.LOCAL_DB.set_value('addon_previous_version', current_ver)
+    return cancel_playback
 
 
 def _perform_service_changes(previous_ver, current_ver):
