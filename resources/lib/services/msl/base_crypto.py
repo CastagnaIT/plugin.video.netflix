@@ -83,7 +83,7 @@ class MSLBaseCrypto(object):
         self._msl_data['tokens'] = {'mastertoken': self.mastertoken}
         self._msl_data.update(self._export_keys())
         self._msl_data['bound_esn'] = self.bound_esn
-        common.save_file(MSL_DATA_FILENAME, json.dumps(self._msl_data).encode('utf-8'))
+        common.save_file_def(MSL_DATA_FILENAME, json.dumps(self._msl_data).encode('utf-8'))
         common.debug('Successfully saved MSL data to disk')
 
     def _init_keys(self, key_response_data):

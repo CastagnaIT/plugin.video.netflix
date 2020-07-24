@@ -78,28 +78,48 @@ def copy_file(from_path, to_path):
         pass
 
 
-def save_file(filename, content, mode='wb'):
+def save_file_def(filename, content, mode='wb'):
     """
-    Saves the given content under given filename
+    Saves the given content under given filename, in the default add-on data folder
     :param filename: The filename
     :param content: The content of the file
+    :param mode: optional mode options
     """
-    file_handle = xbmcvfs.File(
-        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    save_file(os.path.join(g.DATA_PATH, filename), content, mode)
+
+
+def save_file(file_path, content, mode='wb'):
+    """
+    Saves the given content under given filename path
+    :param file_path: The filename path
+    :param content: The content of the file
+    :param mode: optional mode options
+    """
+    file_handle = xbmcvfs.File(xbmc.translatePath(file_path), mode)
     try:
         file_handle.write(bytearray(content))
     finally:
         file_handle.close()
 
 
-def load_file(filename, mode='rb'):
+def load_file_def(filename, mode='rb'):
     """
-    Loads the content of a given filename
+    Loads the content of a given filename, from the default add-on data folder
     :param filename: The file to load
+    :param mode: optional mode options
     :return: The content of the file
     """
-    file_handle = xbmcvfs.File(
-        xbmc.translatePath(os.path.join(g.DATA_PATH, filename)), mode)
+    return load_file(os.path.join(g.DATA_PATH, filename), mode)
+
+
+def load_file(file_path, mode='rb'):
+    """
+    Loads the content of a given filename
+    :param file_path: The file path to load
+    :param mode: optional mode options
+    :return: The content of the file
+    """
+    file_handle = xbmcvfs.File(xbmc.translatePath(file_path), mode)
     try:
         return file_handle.readBytes().decode('utf-8')
     finally:
