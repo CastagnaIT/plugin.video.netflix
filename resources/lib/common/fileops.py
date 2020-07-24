@@ -188,7 +188,7 @@ def write_strm_file(videoid, file_path):
     filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
     try:
         filehandle.write(bytearray(build_url(videoid=videoid,
-                                             mode=g.MODE_PLAY).encode('utf-8')))
+                                             mode=g.MODE_PLAY_STRM).encode('utf-8')))
     finally:
         filehandle.close()
 

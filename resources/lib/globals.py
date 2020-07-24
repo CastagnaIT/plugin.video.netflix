@@ -201,6 +201,7 @@ class GlobalVariables(object):
     MODE_HUB = 'hub'
     MODE_ACTION = 'action'
     MODE_PLAY = 'play'
+    MODE_PLAY_STRM = 'play_strm'
     MODE_LIBRARY = 'library'
 
     def __init__(self):

@@ -61,6 +61,10 @@ def route(pathitems):
         from resources.lib.navigation.player import play
         play(videoid=pathitems[1:])
         return
+    if root_handler == g.MODE_PLAY_STRM:
+        from resources.lib.navigation.player import play_strm
+        play_strm(videoid=pathitems[1:])
+        return
     if root_handler == 'extrafanart':
         warn('Route: ignoring extrafanart invocation')
         _handle_endofdirectory()
