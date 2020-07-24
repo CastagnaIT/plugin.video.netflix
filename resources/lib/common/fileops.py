@@ -168,6 +168,14 @@ def delete_folder_contents(path, delete_subfolders=False):
         xbmcvfs.rmdir(os.path.join(path, directory))
 
 
+def delete_folder(path):
+    """Delete a folder with all his contents"""
+    delete_folder_contents(path, True)
+    # Give time because the system performs previous op. otherwise it can't delete the folder
+    xbmc.sleep(80)
+    xbmcvfs.rmdir(xbmc.translatePath(path))
+
+
 def delete_ndb_files(data_path=g.DATA_PATH):
     """Delete all .ndb files in a folder"""
     for filename in list_dir(xbmc.translatePath(data_path))[1]:
