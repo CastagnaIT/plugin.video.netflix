@@ -14,10 +14,8 @@ import resources.lib.api.website as website
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import (LoginFailedError, LoginValidateError,
-                                          MissingCredentialsError, InvalidMembershipStatusError,
-                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword,
-                                          NotConnected, NotLoggedInError)
+from resources.lib.api.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
+                                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
 from resources.lib.services.nfsession.session.cookie import SessionCookie
@@ -34,7 +32,6 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
     def __init__(self):
         super(SessionAccess, self).__init__()
-        self.is_prefetch_login = False
         # Share the login function to SessionBase class
         self.external_func_login = self.login
 
@@ -47,18 +44,13 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             common.get_credentials()
             if not self.is_logged_in():
                 self.login(modal_error_message=False)
-            self.is_prefetch_login = True
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
             common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
-        except MissingCredentialsError:
-            common.info('Login prefetch: No stored credentials are available')
-        except (LoginFailedError, LoginValidateError):
-            ui.show_notification(common.get_local_string(30009))
-        except (InvalidMembershipStatusError, InvalidMembershipStatusAnonymous):
-            ui.show_notification(common.get_local_string(30180), time=10000)
+        except Exception as exc:  # pylint: disable=broad-except
+            common.warn('Login prefetch: failed {}', exc)
 
     def assert_logged_in(self):
         """Raise an exception when login cannot be established or maintained"""
@@ -109,16 +101,18 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                 ui.show_notification(common.get_local_string(30109))
                 cookies.save(self.account_hash, self.session.cookies)
                 return True
-            except (LoginValidateError, LoginValidateErrorIncorrectPassword) as exc:
+            except LoginValidateError as exc:
                 self.session.cookies.clear()
                 common.purge_credentials()
                 if not modal_error_message:
                     raise
                 ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
-        except InvalidMembershipStatusError:
-            ui.show_error_info(common.get_local_string(30008),
-                               common.get_local_string(30180),
-                               False, True)
+            except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
+                if not modal_error_message:
+                    raise
+                ui.show_error_info(common.get_local_string(30008),
+                                   common.get_local_string(30180),
+                                   False, True)
         except Exception:  # pylint: disable=broad-except
             import traceback
             common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))

@@ -40,29 +40,32 @@ class InvalidProfilesError(Exception):
     """Cannot get profiles data from Netflix"""
 
 
-class InvalidMembershipStatusError(WebsiteParsingError):
-    """The user logging in does not have a valid subscription"""
+class MbrStatusError(Exception):
+    """Membership status error: The user logging in does not have a valid subscription"""
 
 
-class InvalidMembershipStatusAnonymous(WebsiteParsingError):
-    """The user logging failed because of Membership Status Anonymous"""
+class MbrStatusAnonymousError(Exception):
+    """
+    Membership status error: The user logging failed --mainly-- for:
+    password changed / expired cookies / request to disconnect devices
+    there may also be other unknown cases
+    """
 
 
-class LoginFailedError(Exception):
-    """The login attempt has failed"""
+class MbrStatusNeverMemberError(Exception):
+    """Membership status error: The user logging failed because of account not been confirmed"""
+
+
+class MbrStatusFormerMemberError(Exception):
+    """Membership status error: The user logging failed because of account not been reactivated"""
 
 
 class LoginValidateError(Exception):
-    """The login validate has generated an error"""
-
-
-class LoginValidateErrorIncorrectPassword(Exception):
-    """The login validate has generated incorrect password error"""
+    """The login request has failed for a specified reason"""
 
 
 class NotLoggedInError(Exception):
-    """The requested operation requires a valid and active login, which
-    is not present"""
+    """A check has determined the non-logged status"""
 
 
 class APIError(Exception):

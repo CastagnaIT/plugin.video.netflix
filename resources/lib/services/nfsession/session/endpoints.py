@@ -41,7 +41,7 @@ ENDPOINTS = {
          'add_auth_url': None,
          # By default to login Netflix use 'application/x-www-form-urlencoded' Content-Type,
          # instead we use 'application/json' for simplicity of data conversion
-         # if in the future login raise InvalidMembershipStatusAnonymous can means that json is no more accepted
+         # if in the future login raise MbrStatusAnonymousError can means that json is no more accepted
          'content_type': 'application/json',
          'accept': 'text/html,application/xhtml+xml,application/xml'},
     'logout':

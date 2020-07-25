@@ -720,8 +720,8 @@ msgid "Show trailers & more"
 msgstr "Pokažite trailere"
 
 msgctxt "#30180"
-msgid "There has been a problem with login, it is possible that your account has not been confirmed or renewed."
-msgstr "Došlo je do problema s prijavom, moguće je da vaš račun nije potvrđen ili obnovljen."
+msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
+msgstr ""
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
