@@ -20,9 +20,9 @@ import resources.lib.common as common
 from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError, InvalidMembershipStatusError,
-                         WebsiteParsingError, LoginValidateError, InvalidMembershipStatusAnonymous,
-                         LoginValidateErrorIncorrectPassword)
+from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
+                         WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
+                         MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from .paths import jgraph_get, jgraph_get_list, jgraph_get_path
 
 try:  # Python 2
@@ -80,18 +80,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
         validate_login(react_context)
 
     user_data = extract_userdata(react_context)
-    if user_data.get('membershipStatus') == 'ANONYMOUS':
-        # Possible known causes:
-        # -Login password has been changed
-        # -In the login request, 'Content-Type' specified is not compliant with data passed or no more supported
-        # -Expired profiles cookies!? (not verified)
-        # In these cases it is mandatory to login again
-        raise InvalidMembershipStatusAnonymous
-    if user_data.get('membershipStatus') != 'CURRENT_MEMBER':
-        # When NEVER_MEMBER it is possible that the account has not been confirmed or renewed
-        common.error('Can not login, the Membership status is {}',
-                     user_data.get('membershipStatus'))
-        raise InvalidMembershipStatusError(user_data.get('membershipStatus'))
+    _check_membership_status(user_data.get('membershipStatus'))
 
     api_data = extract_api_data(react_context)
     # Note: Falcor cache does not exist if membershipStatus is not CURRENT_MEMBER
@@ -160,6 +149,26 @@ def extract_session_data(content, validate=False, update_profiles=False):
 
     api_data['is_profile_session_active'] = is_profile_session_active
     return api_data
+
+
+def _check_membership_status(status):
+    if status == 'CURRENT_MEMBER':
+        return
+    if status == 'ANONYMOUS':
+        # Possible known causes:
+        # -Login password has been changed
+        # -In the login request, 'Content-Type' specified is not compliant with data passed or no more supported
+        # -Expired profiles cookies!? (not verified)
+        # In these cases it is mandatory to login again
+        raise MbrStatusAnonymousError
+    if status == 'NEVER_MEMBER':
+        # The account has not been confirmed
+        raise MbrStatusNeverMemberError
+    if status == 'FORMER_MEMBER':
+        # The account has not been reactivated
+        raise MbrStatusFormerMemberError
+    common.error('Can not login, the Membership status is {}', status)
+    raise MbrStatusError(status)
 
 
 @common.time_execution(immediate=True)
@@ -282,7 +291,7 @@ def extract_api_data(react_context, debug_log=True):
 def assert_valid_auth_url(user_data):
     """Raise an exception if user_data does not contain a valid authURL"""
     if len(user_data.get('auth_url', '')) != 42:
-        raise InvalidAuthURLError('authURL is invalid')
+        raise InvalidAuthURLError('authURL is not valid')
     return user_data
 
 
@@ -302,8 +311,6 @@ def validate_login(react_context):
                 error_description = error_code_list['email_' + error_code]
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
-            if 'incorrect_password' in error_code:
-                raise LoginValidateErrorIncorrectPassword(common.remove_html_tags(error_description))
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
@@ -312,7 +319,7 @@ def validate_login(react_context):
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
             common.error(error_msg)
-            raise LoginValidateError(error_msg)
+            raise WebsiteParsingError(error_msg)
 
 
 @common.time_execution(immediate=True)

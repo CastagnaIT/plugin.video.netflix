@@ -14,9 +14,8 @@ import json
 
 import resources.lib.api.website as website
 import resources.lib.common as common
-from resources.lib.api.exceptions import (APIError, WebsiteParsingError,
-                                          InvalidMembershipStatusError, InvalidMembershipStatusAnonymous,
-                                          LoginValidateErrorIncorrectPassword, HttpError401)
+from resources.lib.api.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
+                                          HttpError401)
 from resources.lib.common import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import g
@@ -85,15 +84,15 @@ class SessionHTTPRequests(SessionBase):
             cookies.save(self.account_hash, self.session.cookies)
             common.debug('Successfully refreshed session data')
             return True
-        except InvalidMembershipStatusError:
+        except MbrStatusError:
             raise
-        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
+        except (WebsiteParsingError, MbrStatusAnonymousError) as exc:
             import traceback
             common.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
                         type(exc).__name__)
             common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
-            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
+            if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             return self.external_func_login(modal_error_message=False)  # pylint: disable=not-callable

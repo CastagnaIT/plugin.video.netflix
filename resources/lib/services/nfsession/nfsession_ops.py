@@ -14,8 +14,7 @@ import time
 import resources.lib.api.website as website
 import resources.lib.common as common
 from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                          InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword,
-                                          MetadataNotAvailable)
+                                          MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError)
 from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import g
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
@@ -117,15 +116,15 @@ class NFSessionOperations(SessionPathRequests):
         """Extract session data and handle errors"""
         try:
             return website.extract_session_data(content, **kwargs)
-        except (WebsiteParsingError, InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword) as exc:
-            common.warn('Session data not valid, login can be expired or the password has been changed ({})',
-                        type(exc).__name__)
-            if isinstance(exc, (InvalidMembershipStatusAnonymous, LoginValidateErrorIncorrectPassword)):
-                common.purge_credentials()
-                self.session.cookies.clear()
-                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-                raise NotLoggedInError
+        except WebsiteParsingError as exc:
+            common.error('An error occurs in extract session data: {}', exc)
             raise
+        except (LoginValidateError, MbrStatusAnonymousError) as exc:
+            common.warn('The session data is not more valid ({})', type(exc).__name__)
+            common.purge_credentials()
+            self.session.cookies.clear()
+            common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+            raise NotLoggedInError
 
     @common.time_execution(immediate=True)
     def get_metadata(self, videoid, refresh=False):
