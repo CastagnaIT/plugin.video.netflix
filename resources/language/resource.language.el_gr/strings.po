@@ -25,7 +25,7 @@ msgid "Netflix VOD Services Add-on"
 msgstr "Πρόσθετο υπηρεσιών κατά παραγγελία του Νέτφλιξ"
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
+msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Ορισμένα μέρη αυτού του προσθέτου μπορεί να μην είναι νόμιμα στην χώρα που κατοικείτε - παρακαλώ ελέγξτε τους τοπικούς νόμους πριν την εγκατάσταση."
 
 msgctxt "#30001"

@@ -25,7 +25,7 @@ msgid "Netflix VOD Services Add-on"
 msgstr "Bekijk Netflix films en tvprogramma's in Kodi."
 
 msgctxt "Addon Disclaimer"
-msgid "Some parts of this add-on may not be legal in your country of residence - please check with your local laws before installing."
+msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
 msgstr "Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren."
 
 msgctxt "#30001"
