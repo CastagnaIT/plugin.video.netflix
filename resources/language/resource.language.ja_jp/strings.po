@@ -26,7 +26,7 @@ msgstr "Netflixアドオン"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください"
+msgstr "一部の国では、このアドオンを使用するのが不法でありますので、設置する前に必ず関連法律を確認してください"
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -720,7 +720,7 @@ msgstr "予告編など"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "ログイン失敗、アカウント確認がまだ取れてないか再入会が出来なかった可能性があります。"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"

@@ -26,7 +26,7 @@ msgstr "Netflix VOD 애드온"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
+msgstr "일부 국가에서는 이 애드온을 사용하는 것이 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -720,7 +720,7 @@ msgstr "예고편 및 다른 영상"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "로그인에 문제가 있습니다. 계정이 아직 처리 중이거나 활성화 되지 않았을 수 있습니다."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
