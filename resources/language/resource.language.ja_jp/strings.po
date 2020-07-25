@@ -196,7 +196,7 @@ msgstr "InputStream Adaptive又はWidevineに問題があるようです。イ�
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "ライブラリ更新中"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "{}のプロファイルを自動選択にしました。"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "警告！多め({}個)ののタイトルを更新しようとします。[CR]これは大変な問題を起こすか、アカウントが一時的にブロックされる可能性があります。[CR]宜しいですか。"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "ペアレンタルコントロール"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "更新中です。"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -414,7 +414,7 @@ msgstr "Netflixからのエラーメッセージ:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "エラーの詳細はログファイルに書いてあります。"
+msgstr "エラーの詳細はログファイルに書いてあります。解決方法が見つからなかったり同じエラー続くと、GithubのReadmeの指示通り報告してください。"
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -494,7 +494,7 @@ msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "全ての同期化を実行することによって以前エクスポートしたタイトルが削除されます。[CR]タイトルが多い場合は時間が掛かります。[CR]宜しいですか。"
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "HTTP経由IPCを使う(アドオンタイムアウトが発生したら�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "既存のライブラリをインポート"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -908,7 +908,7 @@ msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "同期化用プロフィール設定"
 
 # Unused 30229
 
@@ -974,11 +974,11 @@ msgstr "WidevineセキュリティレベルをL3にする"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "ライブラリにエクスポートしたファイルを削除中"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "{}個のタイトルはインポート出来ません。[CR]削除しましょうか。"
 
 # Unused 30247 to 30299
 

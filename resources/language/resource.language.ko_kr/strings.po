@@ -196,7 +196,7 @@ msgstr "InputStream Adaptive 혹은 Widevine에 문제가 있습니다. 설치�
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "라이브러를 새로 고치는 중"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "프로파일 {}을 자동선택으로 설정했습니다."
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "상당히 많은 수({})의 새로 고치려고하는 군요.[CR]심각한 문제를 일으키거나 잠시 계정을 사용하지 못할 수도 있으니 주의하십시오.[CR]계속 하시렵니까?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "부모의 통제"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "새로 고치고 있는 중입니다."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -414,7 +414,7 @@ msgstr "Netflix로부터의 오류내용:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오."
+msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오. 로그에 해결 방법이 나와 았지 않거나 계속 이 내용을 보게 되면, Github의 Readme에 나온 대로 우리에게 알려 주십시오."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -494,7 +494,7 @@ msgstr "찜한 것들과 Kodi 라이브러리를 동기화"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "전체 동기를 하면 전에 내보냈던 것들이 모두 지워집니다.[CR]타이틀이 많은 경우에는 시간이 걸립니다.[CR]계속 하시렵니까?"
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "HTTP경유의 IPC사용(애드온 타임아웃이 생기는 경우 사�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "라이브러리에서 가져오기"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -908,7 +908,7 @@ msgstr "Kodi라이브러리와 내가 찜한 것들을 동기화"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "동기화할 프로파일을 설정합니다."
 
 # Unused 30229
 
@@ -974,11 +974,11 @@ msgstr "Wideivine보안레벨을 L3로 설정"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "라이브러리로 내보낸 것들을 삭제 중"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "{}개의 타이틀은 가져올 수 없습니다.[CR]삭제하시렵니까?"
 
 # Unused 30247 to 30299
 
