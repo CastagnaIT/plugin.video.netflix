@@ -50,6 +50,7 @@ AUDIO_CHANNELS_CONV = {1: '1.0', 2: '2.0', 6: '5.1', 8: '7.1'}
 def display_error_info(func):
     """Decorator that catches errors raise by the decorated function,
     displays an error info dialog in the UI and re-raises the error"""
+    # (Show the error to the user before canceling the response to InputStream Adaptive callback)
     # pylint: disable=missing-docstring
     @wraps(func)
     def error_catching_wrapper(*args, **kwargs):
@@ -57,9 +58,9 @@ def display_error_info(func):
             return func(*args, **kwargs)
         except Exception as exc:
             if isinstance(exc, MSLError):
-                message = g.py2_decode(str(exc))
+                message = exc.__class__.__name__ + ': ' + g.py2_decode(str(exc))
             else:
-                message = str(exc)
+                message = exc.__class__.__name__ + ': ' + str(exc)
             ui.show_error_info(common.get_local_string(30028), message,
                                unknown_error=not message,
                                netflix_error=isinstance(exc, MSLError))
