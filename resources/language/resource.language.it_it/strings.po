@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-07-02 10:30+0000\n"
+"PO-Revision-Date: 2020-07-25 10:30+0000\n"
 "Last-Translator: Stefano Gottardo\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Add-on per i servizi VOD di Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Alcune parti di questo add-on potrebbero non essere legali nel tuo paese - verifica le leggi in vigore prima di installare."
+msgstr "L'utilizzo di questo add-on potrebbe non essere legale nel vostro paese di residenza - si prega di verificare le leggi in vigore prima dell'installazione."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Si è verificato un problema con InputStream Adaptive add-on o con la li
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Aggiornamento della libreria in corso"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "Il profilo {} è stato impostato per l'auto-selezione"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Fare attenzione, stai per aggiornare molti titoli {}.[CR]Questo potrebbe causare problemi di servizio o il temporaneo blocco dell'account.[CR]Vuoi continuare?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,11 +254,11 @@ msgstr "Filtro famiglia"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Un aggiornamento è già in corso"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "Esegui l'auto-aggiornamento"
+msgstr "Programma l'aggiornamento"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -486,7 +486,7 @@ msgstr "Non è possibile rimuovere automaticamente una stagione dalla libreria K
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr "Esegui la sincronizzazione completa ora"
+msgstr "Esegui adesso la sincronizzazione completa"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
@@ -494,7 +494,7 @@ msgstr "Sincronizza 'La mia lista' con la libreria Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Vuoi continuare?[CR]La sincronizzazione completa eliminerà tutti i file esportati in precedenza.[CR]Se sono presenti molti titoli questa operazione potrebbe richiedere un pò di tempo."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "Abilita IPC su HTTP (utilizzare quando si verificano Addon Signals timeo
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importa libreria esistente"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +720,7 @@ msgstr "Mostra trailer e altro"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Si è verificato un problema con il login, è possibile che il vostro account non sia stato confermato oppure riattivato."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,13 +908,13 @@ msgstr "Sincronizza la libreria Kodi con la Mia Lista"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Imposta un profilo per la sincronizzazione"
 
 # Unused 30229
 
 msgctxt "#30230"
 msgid "Check for updates now"
-msgstr "Verifica gli aggiornamenti ora"
+msgstr "Esegui adesso gli aggiornamenti"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
@@ -974,11 +974,11 @@ msgstr "Forza livello di sicurezza Widevine L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Eliminazione dei file esportati nella libreria"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Ci sono {} titoli che non possono essere importati.[CR]Vuoi eliminare questi files?"
 
 # Unused 30247 to 30299
 
