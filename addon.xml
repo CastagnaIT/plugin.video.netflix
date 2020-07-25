@@ -53,6 +53,9 @@
     <summary lang="sv_SE">Netflix</summary>
     <description lang="sv_SE">Netflix VOD Service-tillägg</description>
     <disclaimer lang="sv_SE">Vissa delar av detta tillägg kanske inte är lagligt i ditt hemland - kontrollera med dina lokala lagar innan du installerar.</disclaimer>
+    <summary lang="zh_CN">Netflix</summary>
+    <description lang="zh_CN">Netflix VOD服务附加组件</description>
+    <disclaimer lang="zh_CN">此附加组件在您的居住国可能不合法-请在安装前与您当地的法律核对。</disclaimer>
     <assets>
       <icon>resources/media/icon.png</icon>
       <fanart>resources/media/fanart.jpg</fanart>
@@ -62,7 +65,7 @@
       <screenshot>resources/media/screenshot-04.jpg</screenshot>
       <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
-    <language>en cs de es hr hu it ja ko nl pl pt ro sv tr</language>
+    <language>en cs de es hr hu it ja ko nl pl pt ro sv tr zh</language>
     <platform>all</platform>
     <license>MIT</license>
     <website>https://www.netflix.com</website>
