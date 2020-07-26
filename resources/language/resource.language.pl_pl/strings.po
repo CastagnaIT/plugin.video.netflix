@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-06-11 19:15+0000\n"
+"PO-Revision-Date: 2020-07-26 15:54+0000\n"
 "Last-Translator: Marcin W. + notoco\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -196,7 +196,7 @@ msgstr "Wystąpił problem z dodatkiem InputStream Adaptive lub biblioteką Wide
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Aktualizacja biblioteki w toku"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "Profil {} został ustawiony do automatycznego wyboru"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Uważaj, masz zamiar zaktualizować wiele tytułów {}.[CR]Może to spowodować problemy z usługą lub tymczasową blokadę konta.[CR]Czy chcesz kontynuować?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "Kontrola rodzicielska"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Aktualizacja jest w toku"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +494,7 @@ msgstr "Synchronizuj Moją Listę do biblioteki Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Czy chcesz kontynuować?[CR]Pełna synchronizacja spowoduje usunięcie wszystkich wcześniej wyeksportowanych tytułów.[CR]Jeśli istnieje wiele tytułów, operacja ta może zająć trochę czasu."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "Włącz IPC przez HTTP (użyj, gdy występują przekroczenia czasu Addon
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importuj istniejącą bibliotekę"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +720,7 @@ msgstr "Pokaż zwiastuny i więcej"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Wystąpił problem z logowaniem, możliwe, że Twoje konto nie zostało potwierdzone lub reaktywowane"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +908,7 @@ msgstr "Synchronizuj bibliotekę Kodi z Moją Listą"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Ustaw profil dla synchronizacji"
 
 # Unused 30229
 
@@ -974,17 +974,17 @@ msgstr "Wymuś poziom zabezpieczeń Widevine L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Usuwanie plików wyeksportowanych do biblioteki"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Istnieje {} tytułów, których nie można zaimportować.[CR]Czy chcesz usunąć te pliki?"
 
 # Unused 30247 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr ""
+msgstr "Czy chcesz usunąć status oglądania '{}'?[CR][CR]Operacja może zająć do 24 godzin, dlatego tytuł może nadal pojawiać się na liście."
 
 # Unused 30301 to 30399
 
@@ -994,27 +994,27 @@ msgstr "Szukaj"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Typ wyszukiwania"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Szukaj tytułu, postaci, gatunków"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Nowe wyszukiwanie"
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Wyczyść historię wyszukiwania"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Wybierz język"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "Czy chcesz usunąć całą zawartość?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1024,12 +1024,12 @@ msgstr "Brak pasujących wyników"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Wg. słowa"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Wg. języka audio"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr ""
+msgstr "Wg. języka napisów"
