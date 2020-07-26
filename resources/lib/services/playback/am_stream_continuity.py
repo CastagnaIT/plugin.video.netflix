@@ -14,6 +14,7 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.globals import g
+from resources.lib.kodi import ui
 from .action_manager import ActionManager
 
 STREAMS = {
@@ -69,6 +70,17 @@ class AMStreamContinuity(ActionManager):
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
     def on_playback_started(self, player_state):
+        if (not self.legacy_kodi_version and
+                player_state.get(STREAMS['subtitle']['current']) is None and
+                player_state.get('currentvideostream') is None):
+            # Kodi 19 BUG JSON RPC: "Player.GetProperties" is broken: https://github.com/xbmc/xbmc/issues/17915
+            # The first call return wrong data the following calls return OSError, and then _notify_all will be blocked
+            self.enabled = False
+            common.error('Due of Kodi 19 bug has been disabled: '
+                         'Ask to skip dialog, remember audio/subtitles preferences and other features')
+            ui.show_notification(title=common.get_local_string(30105),
+                                 msg='Due to Kodi bug has been disabled all Netflix features')
+            return
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
         if self.kodi_only_forced_subtitles and g.ADDON.getSettingBool('forced_subtitle_workaround')\

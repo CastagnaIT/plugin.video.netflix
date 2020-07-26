@@ -178,7 +178,8 @@ class ActionController(xbmc.Monitor):
                     'percentage',
                     'time']
             })
-        except IOError:
+        except IOError as exc:
+            common.warn('_get_player_state: {}', exc)
             return {}
 
         # convert time dict to elapsed seconds
