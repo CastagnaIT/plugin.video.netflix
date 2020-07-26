@@ -103,7 +103,7 @@ class AMStreamContinuity(ActionManager):
         current_stream = self.current_streams['subtitle']
         player_stream = player_state.get(STREAMS['subtitle']['current'])
         if not player_stream:
-            # I don't know the cause:
+            # Manage case of no subtitles, and an issue:
             # Very rarely can happen that Kodi starts the playback with the subtitles enabled,
             # but after some seconds subtitles become disabled, and 'currentsubtitle' of player_state data become 'None'
             # Then _is_stream_value_equal() throw error. We do not handle it as a setting change from the user.
@@ -270,6 +270,8 @@ class AMStreamContinuity(ActionManager):
                         audio_language = audio_track['language']
                         break
             player_stream = self.player_state.get(STREAMS['subtitle']['current'])
+            if player_stream is None:
+                return
             if audio_language == 'original':
                 # Do nothing
                 is_language_appropriate = True
