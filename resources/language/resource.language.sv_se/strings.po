@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-07 00:00+0000\n"
-"PO-Revision-Date: 2020-07-02 00:00+0000\n"
+"PO-Revision-Date: 2020-07-26 00:00+0000\n"
 "Last-Translator: Tomas Andersson\n"
 "Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Netflix VOD Service-tillägg"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Vissa delar av detta tillägg kanske inte är lagligt i ditt hemland - kontrollera med dina lokala lagar innan du installerar."
+msgstr "Användandet av detta tillägg kanske inte är lagligt i ditt hemland - kontrollera med dina lokala lagar innan du installerar."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Det finns ett problem med InputStream Adaptive-tillägget eller Widevine
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Biblioteksuppdatering pågår"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "Profilen {} har ställts in för automatisk val"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Var försiktig, du håller på att uppdatera många titlar {}.[CR]Detta kan orsaka serviceproblem eller tillfälligt förbud att använda kontot.[CR]Vill du fortsätta?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "Föräldrakontroll"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "En uppdatering pågår redan"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +494,7 @@ msgstr "Synkronisera Min lista till Kodi-biblioteket"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Vill du fortsätta?[CR]Fullständig synkronisering raderar alla tidigare exporterade titlar.[CR]Om det finns många titlar kan denna operation ta lite tid."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "Aktivera IPC över HTTP (använd när 'Addon Signals timeout'-meddelande
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importera befintligt bibliotek"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +720,7 @@ msgstr "Visa trailers och mer"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Det har uppstått ett problem med inloggningen, det är möjligt att ditt konto inte har bekräftats eller återaktiverats."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -810,7 +810,7 @@ msgstr "Anslutningen till MySQL-databasen fungerade"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "Host IP"
+msgstr "Värd IP"
 
 msgctxt "#30204"
 msgid "Port"
@@ -908,7 +908,7 @@ msgstr "Synkronisera Kodi-biblioteket med Min Lista"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Ställ in en profil för synkronisering"
 
 # Unused 30229
 
@@ -974,11 +974,11 @@ msgstr "Tvinga Widevine säkerhetsnivå L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Tar bort filer exporterade till biblioteket"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Det finns {} titlar som inte kan importeras.[CR]Vill du ta bort dessa filer?"
 
 # Unused 30247 to 30299
 
