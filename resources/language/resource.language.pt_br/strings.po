@@ -26,7 +26,7 @@ msgstr "Addon da Netflix, um serviço de Video Sob Demanda"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Algumas partes deste addon poderão não ser legais no seu país de residência. Por favor, verifique as suas leis locais antes de instalar."
+msgstr "O uso deste addon pode não ser legal no seu país de residência - por favor, verifique as suas leis locais antes de instalar."
 
 msgctxt "#30001"
 msgid "Recommendations"
