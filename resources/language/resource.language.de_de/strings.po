@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-01-27 22:15+0000\n"
-"Last-Translator: moebelwagen\n"
+"PO-Revision-Date: 2020-07-24 21:39+0000\n"
+"Last-Translator: Tobias Weimer\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +26,7 @@ msgstr "Addon für Netflix VOD-Dienste"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Möglicherweise sind einge Teile dieses Addons in Ihrem Land illegal, Sie sollten dies unbedingt vor der Installation überprüfen."
+msgstr "Möglicherweise ist die Verwendung dieses Addons in Ihrem Land illegal, Sie sollten dies unbedingt vor der Installation überprüfen."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Ein Problem mit Addon InputStream Adaptive oder der Widevine-Bibliothek 
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Bibliothek wird gerade aktualisiert"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -208,7 +208,7 @@ msgstr "Bibliothek"
 
 msgctxt "#30050"
 msgid "Select a profile to play the videos"
-msgstr "Wählen Sie ein Profil zur Wiedergabe der Videos aus"
+msgstr "Profil zur Wiedergabe der Videos auswählen"
 
 msgctxt "#30051"
 msgid "Ask to select a profile before the playback"
@@ -238,7 +238,7 @@ msgstr "Das Profil {} wird nun automatisch ausgewählt"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Seien Sie vorsichtig, sie aktualisieren viele Titel {}.[CR]Dies kann ernste Probleme oder eine temporäre Sperre Ihres Kontos verursachen.[CR]Möchten Sie fortfahren?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "Kindersicherung"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Es wird bereits eine Aktualisierung durchgeführt."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +494,7 @@ msgstr "Meine Liste in Kodi Bilbiothek synchronisieren"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Möchten Sie fortfahren?[CR]Die vollständige Synchronisation wird alle vormals exportierten Titel löschen.[CR]Wenn es da viele Titel gibt, lann diese Operation etwas dauern."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -506,7 +506,7 @@ msgstr "Bibliotheksinhalte löschen"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Möchtest du wirklich deine Bibliothek-Exporte zurücksetzen?\nAlle vormals exportierten Einträge werden hierdurch gelöscht."
+msgstr "Möchten Sie wirklich Ihre Bibliothek-Exporte zurücksetzen?\nAlle vormals exportierten Einträge werden hierdurch gelöscht."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -554,7 +554,7 @@ msgstr "Aktiviere VP9-Profile (deaktivieren wenn es Artefakte verursacht)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
-msgstr "Falls du Kodi oder das Addon gerade erst gestartet hast, kann es sein, dass die Hintergrundservices noch nicht verfügbar sind. Versuche es in diesem Fall in einem kurzen Moment einfach nochmal."
+msgstr "Falls Sie Kodi oder das Addon gerade erst gestartet haben, kann es sein, dass die Hintergrunddienste noch nicht verfügbar sind. Versuchen Sie es in diesem Fall in einem kurzen Moment einfach nochmal."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
@@ -562,11 +562,11 @@ msgstr "Aktiviere IPC über HTTP (bei Addon Signals Timeouts benutzen)"
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Existierende Bibliothek importieren"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "Deaktiviere Benachrichtigung beim Start der Hintergrunddienste"
+msgstr "Deaktiviere Benachrichtigung beim Start"
 
 msgctxt "#30142"
 msgid "Custom"
@@ -720,7 +720,7 @@ msgstr "Zeige Trailer & Mehr"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Es gab ein Problem bei der Anmeldung, möglicherweise ist Ihr Account nicht bestätigt oder reaktiviert."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -732,7 +732,7 @@ msgstr "Exportiere NFO-Dateien"
 
 msgctxt "#30183"
 msgid "Do you want to export NFO files for the {}?"
-msgstr "Wollen sie NFO-Dateien für {} exportieren?"
+msgstr "Wollen Sie NFO-Dateien für {} exportieren?"
 
 msgctxt "#30184"
 msgid "NFO Files"
@@ -908,7 +908,7 @@ msgstr "Synchronisiere Kodi-Bibliothek mit Meiner Liste"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Profil zur Synchronisierung auswählen"
 
 # Unused 30229
 
@@ -942,7 +942,7 @@ msgstr "'Gesehen'-Status ändern (lokal)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr "Als gesehen markiert|Als nicht gesehen markiert|'Gesehen'-Status von Netflix wiederhergestellt"
+msgstr "Als gesehen markiert|Als nicht gesehen markiert|'Gesehen'-Status von Netflix wiederherstellen"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
@@ -974,11 +974,11 @@ msgstr "Widevine-Sicherheitslevel L3 erzwingen"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Dateien löschen, die in die Bibliothek importiert wurden"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Es gibt {} Titel, die nicht importiert werden können.[CR]Möchten Sie diese Dateien löschen?"
 
 # Unused 30247 to 30299
 
