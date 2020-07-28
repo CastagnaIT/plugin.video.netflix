@@ -32,10 +32,10 @@
     <disclaimer lang="nl_NL">Sommige delen van deze add-on zijn mogelijk onwettig in jouw land - raadpleeg de lokale wetgeving alvorens deze add-on te installeren.</disclaimer>
     <summary lang="ja_JP">Netflix</summary>
     <description lang="ja_JP">Netflix VOD サービスアドオン</description>
-    <disclaimer lang="ja_JP">一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください</disclaimer>
+    <disclaimer lang="ja_JP">一部の国では、このアドオンを使用するのが不法でありますので、設置する前に必ず関連法律を確認してください</disclaimer>
     <summary lang="ko_KR">Netflix</summary>
     <description lang="ko_KR">Netflix VOD 서비스애드온</description>
-    <disclaimer lang="ko_KR">일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다.</disclaimer>
+    <disclaimer lang="ko_KR">일부 국가에서는 이 애드온을 사용하는 것이 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다.</disclaimer>
     <description lang="it_IT">Netflix Add-on servizi VOD</description>
     <disclaimer lang="it_IT">L'utilizzo di questo add-on potrebbe non essere legale nel vostro paese di residenza - si prega di verificare le leggi in vigore prima dell'installazione.</disclaimer>
     <summary lang="es_ES">Netflix</summary>
@@ -43,7 +43,7 @@
     <disclaimer lang="es_ES">El uso de este complemento puede no ser legal en su país de residencia - Por favor, consulte las leyes locales antes de instalarlo.</disclaimer>
     <summary lang="hu_HU">Netflix</summary>
     <description lang="hu_HU">Netflix VOD kiegészítő a Kodihoz</description>
-    <disclaimer lang="hu_HU">Előfordulhat, hogy a kiegészítő néhány része nem törvényes az Ön országában - telepítés előtt tájékozódjon a helyi törvényekről.</disclaimer>
+    <disclaimer lang="hu_HU">Előfordulhat, hogy a kiegészítő használata nem törvényes az Ön országában - telepítés előtt tájékozódjon a helyi törvényekről</disclaimer>
     <summary lang="pt_BR">Netflix</summary>
     <description lang="pt_BR">Add-on para os serviços VOD do Netflix</description>
     <disclaimer lang="pt_BR">O uso deste addon pode não ser legal no seu país de residência - por favor, verifique as suas leis locais antes de instalar.</disclaimer>
@@ -52,13 +52,19 @@
     <disclaimer lang="tr_TR">Bu eklentinin bazı bölümleri ikamet ettiğiniz ülkede yasal olmayabilir - lütfen yüklemeden önce yerel yasalarınıza bakın.</disclaimer>
     <summary lang="ro_RO">Netflix</summary>
     <description lang="ro_RO">Add-on pentru servicii video la cerere Netflix</description>
-    <disclaimer lang="ro_RO">Unele porțiuni ale acestui add-on ar putea fi ilegale în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare.</disclaimer>
+    <disclaimer lang="ro_RO">Utilizarea acestui add-on ar putea fi ilegală în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare.</disclaimer>
     <summary lang="sv_SE">Netflix</summary>
     <description lang="sv_SE">Netflix VOD Service-tillägg</description>
     <disclaimer lang="sv_SE">Användandet av detta tillägg kanske inte är lagligt i ditt hemland - kontrollera med dina lokala lagar innan du installerar.</disclaimer>
     <summary lang="zh_CN">Netflix</summary>
     <description lang="zh_CN">Netflix VOD服务附加组件</description>
     <disclaimer lang="zh_CN">此附加组件在您的居住国可能不合法-请在安装前与您当地的法律核对。</disclaimer>
+    <summary lang="fr_FR">Netflix</summary>
+    <description lang="fr_FR">Extension Netflix SVoD</description>
+    <disclaimer lang="fr_FR">L'utilisation de cette extension n'est peut-être pas légale dans votre pays de résidence - renseignez-vous avant de l'installer</disclaimer>
+    <summary lang="pl_PL">Netflix</summary>
+    <description lang="pl_PL">Wtyczka dla usług VOD serwisu Netflix</description>
+    <disclaimer lang="pl_PL">Korzystanie z tego dodatku może być niezgodne z prawem w twoim kraju zamieszkania - przed zainstalowaniem zapoznaj się z lokalnymi przepisami.</disclaimer>
     <assets>
       <icon>resources/media/icon.png</icon>
       <fanart>resources/media/fanart.jpg</fanart>
@@ -68,7 +74,7 @@
       <screenshot>resources/media/screenshot-04.jpg</screenshot>
       <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
-    <language>en cs de es hr hu it ja ko nl pl pt ro sv tr zh</language>
+    <language>en cs de es fr hr hu it ja ko nl pl pt ro sv tr zh</language>
     <platform>all</platform>
     <license>MIT</license>
     <website>https://www.netflix.com</website>
