@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-05-28 17:40+0000\n"
+"PO-Revision-Date: 2020-07-28 19:05+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Add-on pentru servicii video la cerere Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Unele porțiuni ale acestui add-on ar putea fi ilegale în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare."
+msgstr "Utilizarea acestui add-on ar putea fi ilegală în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Actualizare bibliotecă în curs"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -238,7 +238,7 @@ msgstr "Profilul {} a fost ales pentru auto-selectare"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Atenție, urmează să actualizați multe titluri {}.[CR]Aceasta poate cauza probleme cu serviciul sau banare temporară a contului.[CR]Doriți să continuați?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +254,7 @@ msgstr "Control parental"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "O actualizare este deja în desfășurare"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +494,7 @@ msgstr "Sincronizează 'Lista mea' cu librăria Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Doriți să continuați?[CR]Sincronizarea completă va șterge toate titlurile exportate anterior.[CR]Dacă sunt multe tituri operațiunea ar putea dura considerabil."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -562,7 +562,7 @@ msgstr "Activează IPC prin HTTP (folosiți-l atunci când apar mesaje legate de
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importă librăria existentă"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +720,7 @@ msgstr "Arată trailere și altele"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "A apărut o problemă cu login, este posibil ca contul să nu fost confirmat sau reactivat"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +908,7 @@ msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Alege un profil pentru sincronizare"
 
 # Unused 30229
 
@@ -974,11 +974,11 @@ msgstr "Forțează nivel securitate L3 pentru Widevine"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Se șterg fișiere exportate în librărie"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Există {} titluri care nu au putut fi importate.[CR]Doriți să ștergeți aceste fișiere?"
 
 # Unused 30247 to 30299
 
