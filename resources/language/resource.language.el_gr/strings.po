@@ -26,7 +26,7 @@ msgstr "Πρόσθετο υπηρεσιών κατά παραγγελία του
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Ορισμένα μέρη αυτού του προσθέτου μπορεί να μην είναι νόμιμα στην χώρα που κατοικείτε - παρακαλώ ελέγξτε τους τοπικούς νόμους πριν την εγκατάσταση."
+msgstr "Η χρήση αυτού του προσθέτου μπορεί να μην είναι νόμιμη στην χώρα που κατοικείτε - παρακαλώ ελέγξτε τους τοπικούς νόμους πριν την εγκατάσταση."
 
 msgctxt "#30001"
 msgid "Recommendations"
