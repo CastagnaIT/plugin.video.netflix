@@ -196,7 +196,7 @@ msgstr "Υπάρχει πρόβλημα με το πρόσθετο InputStream �
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Ενημέρωση βιβλιοθήκης σε εξέλιξη"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -236,7 +236,7 @@ msgstr "Αφαίρεση προφίλ από αυτόματη επιλογή"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Να είστε προσεκτικοί, πρόκειτε να ενημερώσετε αρκετούς τιτλους. {}.[CR]Αυτό μπορεί να προκαλέσει προβλήματα υπηρεσίας ή προσωρινή φραγή του λογαριασμού.[CR]Θέλετε να συνεχίσετε;"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -252,7 +252,7 @@ msgstr "Γονικός έλεγχος"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Μία ενημέρωση βρίσκεται ήδη σε εξέλιξη"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -492,7 +492,7 @@ msgstr "Συγχρονισμός της Λίστας μου στην βιβλι�
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Θέλετε να συνεχίσετε;[CR]Ο πλήρης συγχρονισμός θα διαγραψει όλα τα προηγούμενα εξηγμένους τίτλους.[CR]Εάν υπάρχουν πολλοί τίτλοι αυτή η διεργασία μπορεί να πάρει αρκετό χρόνο."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -556,7 +556,7 @@ msgstr "Ενεργοποίηση του IPC πάνω απο HTTP (κάνε χρ�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Εισαγωγή υπάρχουσας βιβλιοθήκης"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -714,7 +714,7 @@ msgstr "Δείξε τα τρέιλερ & περισσότερα"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Υπάρχει πρόβλημα με την είσοδο σας, ενδεχομένωςς ο λογαριασμός σας να μην έχει (επάν)ενεργοποιηθεί"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -902,7 +902,7 @@ msgstr "Συγχρονισμός της βιβλιοθήκης του Kodi με 
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Εφαρμογή προφίλ για συγχρονισμό"
 
 # Unused 30229
 
@@ -968,11 +968,11 @@ msgstr "Επιβολή ασφαλείας Widevine επιπέδου L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Διαγραφή αρχείων εξηγμένων στην βιβλιοθήκη"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Υπάρχουν {} τίτλοι με αδυναμία εισαγωγής.[CR]Θέλετε να διαγράψετε τα αρχεία τους;"
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
