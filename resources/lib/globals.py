@@ -217,30 +217,49 @@ class GlobalVariables(object):
         self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
 
-    def init_globals(self, argv, reinitialize_database=False):
-        """Initialized globally used module variables.
-        Needs to be called at start of each plugin instance!
-        This is an ugly hack because Kodi doesn't execute statements defined on
-        module level if reusing a language invoker."""
-        # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuselanguageinvoker is not yet used)
+    def init_globals(self, argv, reinitialize_database=False, reload_settings=False):
+        """
+        Initialized globally used module variables. Needs to be called at start of each plugin instance!
+        This is an ugly hack because Kodi does not execute statements
+        defined on module level if reusing a language invoker.
+        """
+        # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuse language invoker is not yet used)
         self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
         self.IS_ADDON_EXTERNAL_CALL = False
         self.PY_IS_VER2 = sys.version_info.major == 2
         self.ADDON = xbmcaddon.Addon()
-        self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
-        self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
-        self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
-        self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
-        self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
-        self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
-        self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Addon folder
-        self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Addon user data folder
-
+        self.URL = urlparse(argv[0])
+        self.REQUEST_PATH = g.py2_decode(unquote(self.URL[2][1:]))
+        try:
+            self.PARAM_STRING = argv[2][1:]
+        except IndexError:
+            self.PARAM_STRING = ''
+        self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
+        if self.IS_ADDON_FIRSTRUN:
+            self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
+            self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
+            self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
+            self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
+            self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
+            self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
+            self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Add-on folder
+            self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Add-on user data folder
+            self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
+            self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
+            try:
+                self.PLUGIN_HANDLE = int(argv[1])
+                self.IS_SERVICE = False
+                self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
+                                                             netloc=self.URL[1])
+            except IndexError:
+                self.PLUGIN_HANDLE = 0
+                self.IS_SERVICE = True
+                self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
+                                                             netloc=self.ADDON_ID)
         # Add absolute paths of embedded py modules to python system directory
         module_paths = [
             os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
         ]
-
         # On PY2 sys.path list can contains values as unicode type and string type at same time,
         #   here we will add only unicode type so filter values by unicode.
         #   This fix comparing issues with use of "if path not in sys.path:"
@@ -249,40 +268,18 @@ class GlobalVariables(object):
         for path in module_paths:  # module_paths has unicode type values
             path = g.py2_decode(xbmc.translatePath(path))
             if path not in sys_path_filtered:
-                sys.path.insert(0, path)  # This add an unicode string type
+                sys.path.insert(0, path)  # This add an unicode type
 
-        self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
-        self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
-        self.URL = urlparse(argv[0])
-        try:
-            self.PLUGIN_HANDLE = int(argv[1])
-            self.IS_SERVICE = False
-            self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
-                                                         netloc=self.URL[1])
-        except IndexError:
-            self.PLUGIN_HANDLE = 0
-            self.IS_SERVICE = True
-            self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
-                                                         netloc=self.ADDON_ID)
-        self.PATH = g.py2_decode(unquote(self.URL[2][1:]))
-        try:
-            self.PARAM_STRING = argv[2][1:]
-        except IndexError:
-            self.PARAM_STRING = ''
-        self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
         self.reset_time_trace()
-        self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
-        self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
-
         self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
-        self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
-
-        # Initialize the cache
-        self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
-        self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
-        self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
-        if self.IS_ADDON_FIRSTRUN:
+        if self.IS_ADDON_FIRSTRUN or reload_settings:
+            self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
+            self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
+            # Initialize the cache
+            self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
+            self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
+            self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
             if self.IS_SERVICE:
                 from resources.lib.services.cache.cache_management import CacheManagement
                 self.CACHE_MANAGEMENT = CacheManagement()
@@ -290,6 +287,7 @@ class GlobalVariables(object):
             self.CACHE = Cache()
             from resources.lib.common.kodi_ops import GetKodiVersion
             self.KODI_VERSION = GetKodiVersion()
+        self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
 
     def _init_database(self, initialize):
         # Initialize local database

@@ -194,7 +194,7 @@ def run(argv):
     if success:
         try:
             cancel_playback = False
-            pathitems = [part for part in g.PATH.split('/') if part]
+            pathitems = [part for part in g.REQUEST_PATH.split('/') if part]
             if g.IS_ADDON_FIRSTRUN:
                 is_first_run_install, cancel_playback = check_addon_upgrade()
                 if is_first_run_install:
