@@ -34,7 +34,6 @@ def save(account_hash, cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
     if log_output:
         log_cookie(cookie_jar)
-    g.COOKIES[account_hash] = cookie_jar
     cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
     try:
         # pickle.dump(cookie_jar, cookie_file)
@@ -46,9 +45,7 @@ def save(account_hash, cookie_jar, log_output=True):
 
 
 def delete(account_hash):
-    """Delete cookies for an account from in-memory storage and the disk"""
-    if g.COOKIES.get(account_hash):
-        del g.COOKIES[account_hash]
+    """Delete cookies for an account from the disk"""
     try:
         xbmcvfs.delete(cookie_filename(account_hash))
     except Exception as exc:  # pylint: disable=broad-except

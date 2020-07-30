@@ -226,7 +226,6 @@ class GlobalVariables(object):
         self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
         self.IS_ADDON_EXTERNAL_CALL = False
         self.PY_IS_VER2 = sys.version_info.major == 2
-        self.COOKIES = {}
         self.ADDON = xbmcaddon.Addon()
         self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
         self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
