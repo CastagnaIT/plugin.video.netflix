@@ -94,43 +94,6 @@ def extract_session_data(content, validate=False, update_profiles=False):
     loco_root = falcor_cache['loco']['value'][1]
     g.LOCAL_DB.set_value('loco_root_id', loco_root, TABLE_SESSION)
 
-    # Check if the profile session is still active
-    #  (when a session expire in the website, the screen return automatically to the profiles page)
-    is_profile_session_active = 'componentSummary' in falcor_cache['locos'][loco_root]
-
-    # Extract loco root request id
-    if is_profile_session_active:
-        component_summary = falcor_cache['locos'][loco_root]['componentSummary']['value']
-        # Note: 18/06/2020 now the request id is the equal to reactContext models/serverDefs/data/requestId
-        g.LOCAL_DB.set_value('loco_root_requestid', component_summary['requestId'], TABLE_SESSION)
-    else:
-        g.LOCAL_DB.set_value('loco_root_requestid', '', TABLE_SESSION)
-
-    # Extract loco continueWatching id and index
-    #   The following commented code was needed for update_loco_context in api_requests.py, but currently
-    #   seem not more required to update the continueWatching list then we keep this in case of future nf changes
-    # -- INIT --
-    # cw_list_data = jgraph_get('continueWatching', falcor_cache['locos'][loco_root], falcor_cache)
-    # if cw_list_data:
-    #     context_index = falcor_cache['locos'][loco_root]['continueWatching']['value'][2]
-    #     g.LOCAL_DB.set_value('loco_continuewatching_index', context_index, TABLE_SESSION)
-    #     g.LOCAL_DB.set_value('loco_continuewatching_id',
-    #                          jgraph_get('componentSummary', cw_list_data)['id'], TABLE_SESSION)
-    # elif is_profile_session_active:
-    #     # Todo: In the new profiles, there is no 'continueWatching' context
-    #     #  How get or generate the continueWatching context?
-    #     #  NOTE: it was needed for update_loco_context in api_requests.py
-    #     cur_profile = jgraph_get_path(['profilesList', 'current'], falcor_cache)
-    #     common.warn('Context continueWatching not found in locos for profile guid {}.',
-    #                 jgraph_get('summary', cur_profile)['guid'])
-    #     g.LOCAL_DB.set_value('loco_continuewatching_index', '', TABLE_SESSION)
-    #     g.LOCAL_DB.set_value('loco_continuewatching_id', '', TABLE_SESSION)
-    # else:
-    #     common.warn('Is not possible to find the context continueWatching, the profile session is no more active')
-    #     g.LOCAL_DB.set_value('loco_continuewatching_index', '', TABLE_SESSION)
-    #     g.LOCAL_DB.set_value('loco_continuewatching_id', '', TABLE_SESSION)
-    # -- END --
-
     # Save only some info of the current profile from user data
     g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
@@ -146,8 +109,6 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # Save api urls
     for key, path in list(api_data.items()):
         g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
-
-    api_data['is_profile_session_active'] = is_profile_session_active
     return api_data
 
 

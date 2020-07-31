@@ -39,7 +39,6 @@ class NFSessionOperations(SessionPathRequests):
             self.parental_control_data,
             self.get_metadata
         ]
-        self.is_profile_session_active = False
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
 
@@ -51,16 +50,14 @@ class NFSessionOperations(SessionPathRequests):
         # Update the session data, the profiles data to the database, and update the authURL
         api_data = self.website_extract_session_data(response, update_profiles=True)
         self.auth_url = api_data['auth_url']
-        # Check if the profile session is still active, used only to activate_profile
-        self.is_profile_session_active = api_data['is_profile_session_active']
 
     @common.time_execution(immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
         current_active_guid = g.LOCAL_DB.get_active_profile_guid()
-        if self.is_profile_session_active and guid == current_active_guid:
-            common.info('The profile session of guid {} is still active, activation not needed.', guid)
+        if guid == current_active_guid:
+            common.info('The profile guid {} is already set, activation not needed.', guid)
             return
         timestamp = time.time()
         common.info('Activating profile {}', guid)
@@ -79,7 +76,6 @@ class NFSessionOperations(SessionPathRequests):
         self.auth_url = website.extract_session_data(response)['auth_url']
         # END Method 2
 
-        self.is_profile_session_active = True
         g.LOCAL_DB.switch_active_profile(guid)
         g.CACHE_MANAGEMENT.identifier_prefix = guid
         cookies.save(self.account_hash, self.session.cookies)

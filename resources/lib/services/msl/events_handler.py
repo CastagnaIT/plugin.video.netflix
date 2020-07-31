@@ -237,8 +237,7 @@ class EventsHandler(threading.Thread):
                     'lolomo_id': g.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION),
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
-                    # request_id: use requestId of loco root
-                    'request_id': g.LOCAL_DB.get_value('loco_root_requestid', '', TABLE_SESSION),
+                    'request_id': event_data['request_id'],
                     'row': 0,  # Purpose not known
                     'track_id': event_data['track_id'],
                     'video_id': videoid.value
