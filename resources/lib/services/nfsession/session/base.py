@@ -41,6 +41,7 @@ class SessionBase(object):
             pass
         from requests import session
         self.session = session()
+        self.session.max_redirects = 10  # Too much redirects should means some problem
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
             'Accept-Encoding': 'gzip, deflate, br'

@@ -10,11 +10,13 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import time
+from datetime import datetime, timedelta
 
 import resources.lib.api.website as website
 import resources.lib.common as common
 from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                          MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError)
+                                          MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
+                                          HttpError401, InvalidProfilesError)
 from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import g
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
@@ -41,15 +43,43 @@ class NFSessionOperations(SessionPathRequests):
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
+        self.dt_initial_page_prefetch = None
+        # Try prefetch login
+        if self.prefetch_login():
+            try:
+                # Try prefetch initial page
+                response = self.get_safe('browse')
+                api_data = website.extract_session_data(response, update_profiles=True)
+                self.auth_url = api_data['auth_url']
+                self.dt_initial_page_prefetch = datetime.now()
+            except Exception as exc:  # pylint: disable=broad-except
+                common.warn('Prefetch initial page failed: {}', exc)
 
     @common.time_execution(immediate=True)
     def fetch_initial_page(self):
         """Fetch initial page"""
+        # It is mandatory fetch initial page data at every add-on startup to prevent/check possible side effects:
+        # - Check if the account subscription is regular
+        # - Avoid TooManyRedirects error, can happen when the profile used in nf session actually no longer exists
+        # - Refresh the session data
+        # - Update the profiles (and sanitize related features) without submitting another request
+        if self.dt_initial_page_prefetch and datetime.now() <= self.dt_initial_page_prefetch + timedelta(minutes=30):
+            # We do not know if/when the user will open the add-on, some users leave the device turned on more than 24h
+            # then we limit the prefetch validity to 30 minutes
+            self.dt_initial_page_prefetch = None
+            return
         common.debug('Fetch initial page')
-        response = self.get_safe('browse')
-        # Update the session data, the profiles data to the database, and update the authURL
-        api_data = self.website_extract_session_data(response, update_profiles=True)
-        self.auth_url = api_data['auth_url']
+        from requests import exceptions
+        try:
+            response = self.get_safe('browse')
+            api_data = self.website_extract_session_data(response, update_profiles=True)
+            self.auth_url = api_data['auth_url']
+        except exceptions.TooManyRedirects:
+            # This error can happen when the profile used in nf session actually no longer exists,
+            # something wrong happen in the session then the server try redirect to the login page without success.
+            # (CastagnaIT: i don't know the best way to handle this borderline case, but login again works)
+            self.session.cookies.clear()
+            self.login()
 
     @common.time_execution(immediate=True)
     def activate_profile(self, guid):
@@ -67,10 +97,14 @@ class NFSessionOperations(SessionPathRequests):
         # self.nfsession.auth_url = self.website_extract_session_data(response)['auth_url']
         # END Method 1
         # INIT Method 2 - API mode
-        self.get_safe(endpoint='activate_profile',
-                      params={'switchProfileGuid': guid,
-                              '_': int(timestamp * 1000),
-                              'authURL': self.auth_url})
+        try:
+            self.get_safe(endpoint='activate_profile',
+                          params={'switchProfileGuid': guid,
+                                  '_': int(timestamp * 1000),
+                                  'authURL': self.auth_url})
+        except HttpError401:
+            # Profile guid not more valid
+            raise InvalidProfilesError('Unable to access to the selected profile.')
         # Retrieve browse page to update authURL
         response = self.get_safe('browse')
         self.auth_url = website.extract_session_data(response)['auth_url']

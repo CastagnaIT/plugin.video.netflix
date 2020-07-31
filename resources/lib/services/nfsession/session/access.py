@@ -44,6 +44,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             common.get_credentials()
             if not self.is_logged_in():
                 self.login(modal_error_message=False)
+            return True
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
@@ -51,6 +52,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
         except Exception as exc:  # pylint: disable=broad-except
             common.warn('Login prefetch: failed {}', exc)
+        return False
 
     def assert_logged_in(self):
         """Raise an exception when login cannot be established or maintained"""

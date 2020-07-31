@@ -219,10 +219,11 @@ def run(argv):
                             'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
                             'Please report it to InputStream Helper github.'.format(exc)))
             success = False
-        except HttpError401:
-            # The service has raised http error 401 Client Error: Unauthorized for url ...
-            # Can happen when the http request for some reason has failed
-            # for example for possible change of data format or malformed data in the http request
+        except HttpError401:  # HTTP error 401 Client Error: Unauthorized for url ...
+            # This is a generic error, can happen when the http request for some reason has failed.
+            # Known causes:
+            # - Possible change of data format or wrong data in the http request (also in headers/params)
+            # - Some current nf session data are not more valid (authURL/cookies/...)
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog(get_local_string(30105),
                            ('There was a communication problem with Netflix.\r\n'

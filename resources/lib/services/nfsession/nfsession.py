@@ -34,8 +34,6 @@ class NetflixSession(object):
             self.http_ipc_slots[func_name] = enveloped_func
             # For AddonSignals IPC
             common.register_slot(enveloped_func, func_name)
-        # Silent login
-        self.nfsession.prefetch_login()
 
     def library_auto_update(self):
         """Run the library auto update"""
