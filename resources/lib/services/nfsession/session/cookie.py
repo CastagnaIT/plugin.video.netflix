@@ -47,11 +47,9 @@ class SessionCookie(SessionBase):
             return False
         for cookie_name in LOGIN_COOKIES:
             if cookie_name not in list(self.session.cookies.keys()):
-                common.error(
-                    'The cookie "{}" do not exist. It is not possible to check expiration. '
-                    'Fallback to old validate method.',
-                    cookie_name)
-                break
+                common.error('The cookie "{}" do not exist, it is not possible to check the expiration',
+                             cookie_name)
+                return False
             for cookie in list(self.session.cookies):
                 if cookie.name != cookie_name:
                     continue
