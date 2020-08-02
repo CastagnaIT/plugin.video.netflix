@@ -291,8 +291,8 @@ class MSLHandler(object):
     def release_license(self, data=None):  # pylint: disable=unused-argument
         """Release the server license"""
         try:
-            # When UpNext is used a new video is loaded while another one is running and not yet released,
-            # so you need to take the right data of first added license
+            # When you try to play a video while another one is currently in playing,
+            # a new license to be released will be queued, so the oldest license must be released
             url = self.licenses_release_url.pop()
             sid = self.licenses_session_id.pop()
             xid = self.licenses_xid.pop()
