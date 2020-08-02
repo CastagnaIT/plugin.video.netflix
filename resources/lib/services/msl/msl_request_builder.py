@@ -12,25 +12,10 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import base64
 import random
-import subprocess
 import time
 
 from resources.lib.globals import G
 import resources.lib.common as common
-
-# check if we are on Android
-try:
-    SDKVERSION = int(subprocess.check_output(
-        ['/system/bin/getprop', 'ro.build.version.sdk']))
-except (OSError, subprocess.CalledProcessError, AttributeError):
-    # Due to OS restrictions on 'ios' and 'tvos' this give AttributeError
-    # See python limits in the wiki development page
-    SDKVERSION = 0
-
-if SDKVERSION >= 18:
-    from .android_crypto import AndroidMSLCrypto as MSLCrypto
-else:
-    from .default_crypto import DefaultMSLCrypto as MSLCrypto
 
 
 class MSLRequestBuilder(object):
@@ -39,6 +24,11 @@ class MSLRequestBuilder(object):
     def __init__(self):
         self.current_message_id = None
         self.rndm = random.SystemRandom()
+        # Set the Crypto handler
+        if common.get_system_platform() == 'android':
+            from .android_crypto import AndroidMSLCrypto as MSLCrypto
+        else:
+            from .default_crypto import DefaultMSLCrypto as MSLCrypto
         self.crypto = MSLCrypto()
 
     @staticmethod
