@@ -988,7 +988,7 @@ msgstr "Deseja remover o status de assistido de '{}'?[CR][CR]A operação pode l
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Incluir na coleção do Kodi (apenas enviando dados)"
 
 # Unused 30302 to 30399
 
