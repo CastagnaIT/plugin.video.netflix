@@ -74,10 +74,8 @@ def load(account_hash):
     finally:
         cookie_file.close()
     # Clear flwssn cookie if present, as it is trouble with early expiration
-    try:
+    if 'flwssn' in cookie_jar:
         cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
-    except KeyError:
-        pass
     log_cookie(cookie_jar)
     return cookie_jar
 
