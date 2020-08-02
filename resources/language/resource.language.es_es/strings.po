@@ -986,7 +986,7 @@ msgstr "¿Desea eliminar el estado visto de '{}'?[CR][CR]La operación puede tar
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Incluir biblioteca Kodi (solo enviando datos)"
 
 # Unused 30302 to 30399
 
