@@ -55,7 +55,7 @@ def delete(account_hash):
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
     filename = cookie_filename(account_hash)
-    if not xbmcvfs.exists(xbmc.translatePath(filename)):
+    if not xbmcvfs.exists(filename):
         common.debug('Cookies file does not exist')
         raise MissingCookiesError()
     common.debug('Loading cookies from {}', G.py2_decode(filename))
