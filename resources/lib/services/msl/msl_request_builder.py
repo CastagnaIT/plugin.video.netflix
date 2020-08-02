@@ -15,7 +15,7 @@ import random
 import subprocess
 import time
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 
 # check if we are on Android
@@ -49,7 +49,7 @@ class MSLRequestBuilder(object):
             'version': 2,
             'url': url,
             'id': timestamp,
-            'languages': [g.LOCAL_DB.get_profile_config('language')],
+            'languages': [G.LOCAL_DB.get_profile_config('language')],
             'params': params,
             'echo': echo
         }
@@ -96,7 +96,7 @@ class MSLRequestBuilder(object):
             'messageid': self.current_message_id,
             'renewable': True,
             'capabilities': {
-                'languages': [g.LOCAL_DB.get_value('locale_id')],
+                'languages': [G.LOCAL_DB.get_value('locale_id')],
                 'compressionalgos': [compression] if compression else []  # GZIP, LZW, Empty
             }
         }
@@ -149,7 +149,7 @@ class MSLRequestBuilder(object):
                     'scheme': 'SWITCH_PROFILE',
                     'authdata': {
                         'useridtoken': auth_data['user_id_token'],
-                        'profileguid': g.LOCAL_DB.get_active_profile_guid()
+                        'profileguid': G.LOCAL_DB.get_active_profile_guid()
                     }
                 }
             else:

@@ -10,7 +10,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.api.exceptions import MissingCredentialsError
 
 from .logging import error
@@ -73,8 +73,8 @@ def get_credentials():
     Retrieve stored account credentials.
     :return: The stored account credentials or an empty dict if none exist.
     """
-    email = g.LOCAL_DB.get_value('account_email')
-    password = g.LOCAL_DB.get_value('account_password')
+    email = G.LOCAL_DB.get_value('account_email')
+    password = G.LOCAL_DB.get_value('account_password')
     verify_credentials(email and password)
     try:
         return {
@@ -83,7 +83,7 @@ def get_credentials():
         }
     except Exception:
         import traceback
-        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
 
@@ -92,8 +92,8 @@ def check_credentials():
     """
     Check if account credentials exists and can be decrypted.
     """
-    email = g.LOCAL_DB.get_value('account_email')
-    password = g.LOCAL_DB.get_value('account_password')
+    email = G.LOCAL_DB.get_value('account_email')
+    password = G.LOCAL_DB.get_value('account_password')
     try:
         verify_credentials(email and password)
         decrypt_credential(email)
@@ -110,14 +110,14 @@ def set_credentials(email, password):
     Does nothing if either email or password are not supplied.
     """
     if email and password:
-        g.LOCAL_DB.set_value('account_email', encrypt_credential(email.strip()))
-        g.LOCAL_DB.set_value('account_password', encrypt_credential(password.strip()))
+        G.LOCAL_DB.set_value('account_email', encrypt_credential(email.strip()))
+        G.LOCAL_DB.set_value('account_password', encrypt_credential(password.strip()))
 
 
 def purge_credentials():
     """Delete the stored credentials"""
-    g.LOCAL_DB.set_value('account_email', None)
-    g.LOCAL_DB.set_value('account_password', None)
+    G.LOCAL_DB.set_value('account_email', None)
+    G.LOCAL_DB.set_value('account_password', None)
 
 
 def verify_credentials(credential):

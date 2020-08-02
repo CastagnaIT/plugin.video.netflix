@@ -13,7 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 import xbmcgui
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 
 try:  # Python 2
@@ -24,15 +24,15 @@ except NameError:  # Python 3
 
 def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
-    xbmc.executebuiltin(g.py2_encode('Notification({}, {}, {}, {})'
-                                     .format(title, msg, time, g.ICON)))
+    xbmc.executebuiltin(G.py2_encode('Notification({}, {}, {}, {})'
+                                     .format(title, msg, time, G.ICON)))
 
 
 def ask_credentials():
     """
     Show some dialogs and ask the user for account credentials
     """
-    email = g.py2_decode(xbmcgui.Dialog().input(
+    email = G.py2_decode(xbmcgui.Dialog().input(
         heading=common.get_local_string(30005),
         type=xbmcgui.INPUT_ALPHANUM)) or None
     common.verify_credentials(email)
@@ -43,7 +43,7 @@ def ask_credentials():
 
 def ask_for_password():
     """Ask the user for the password"""
-    return g.py2_decode(xbmcgui.Dialog().input(
+    return G.py2_decode(xbmcgui.Dialog().input(
         heading=common.get_local_string(30004),
         type=xbmcgui.INPUT_ALPHANUM,
         option=xbmcgui.ALPHANUM_HIDE_INPUT)) or None
@@ -65,7 +65,7 @@ def show_dlg_input_numeric(message, mask_input=True):
     args = {'heading': message,
             'type': 0,
             'defaultt': ''}
-    if not g.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
+    if not G.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
         args['bHiddenInput'] = mask_input
     return xbmcgui.Dialog().numeric(**args) or None
 
@@ -76,7 +76,7 @@ def ask_for_search_term(default_text=None):
 
 
 def _ask_for_input(heading, default_text=None):
-    return g.py2_decode(xbmcgui.Dialog().input(
+    return G.py2_decode(xbmcgui.Dialog().input(
         defaultt=default_text,
         heading=heading,
         type=xbmcgui.INPUT_ALPHANUM)) or None
@@ -92,7 +92,7 @@ def ask_for_resume(resume_position):
     return xbmcgui.Dialog().contextmenu(
         [
             common.get_local_string(12022).format(common.convert_seconds_to_hms_str(resume_position)),
-            common.get_local_string(12023 if g.KODI_VERSION.is_major_ver('18') else 12021)
+            common.get_local_string(12023 if G.KODI_VERSION.is_major_ver('18') else 12021)
         ])
 
 
@@ -121,7 +121,7 @@ def show_error_info(title, message, unknown_error=False, netflix_error=False):
 
 def show_addon_error_info(exc):
     """Show a dialog to notify of an addon internal error"""
-    if g.ADDON.getSettingBool('disable_modal_error_display'):
+    if G.ADDON.getSettingBool('disable_modal_error_display'):
         show_notification(title=common.get_local_string(30105),
                           msg=common.get_local_string(30131))
     else:

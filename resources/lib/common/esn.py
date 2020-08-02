@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 from re import sub
 
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .device_utils import get_system_platform
 from .logging import debug
 
@@ -44,12 +44,12 @@ def generate_android_esn():
                     ['/system/bin/getprop',
                      'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r').upper()
 
-                drm_security_level = g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
-                system_id = g.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+                drm_security_level = G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
+                system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
 
                 # Some device with false Widevine certification can be specified as Widevine L1
                 # but we do not know how NF original app force the fallback to L3, so we add a manual setting
-                is_l3_forced = bool(g.ADDON.getSettingBool('force_widevine_l3'))
+                is_l3_forced = bool(G.ADDON.getSettingBool('force_widevine_l3'))
                 if is_l3_forced:
                     drm_security_level = 'L3'
                     # We do not know if override the DRM System ID to 4445 is a good behaviour for all devices,
@@ -81,7 +81,7 @@ def generate_android_esn():
                 #   DEV_TYPE_PHONE          "PRV-P"
 
                 # if has_product_characteristics_tv and \
-                #         g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
+                #         G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1':
                 if drm_security_level == 'L1':
                     esn = 'NFANDROID2-PRV-'
                     if nrdp_modelgroup:

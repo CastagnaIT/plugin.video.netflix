@@ -17,7 +17,7 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .exceptions import APIError, MissingCredentialsError, CacheMiss
 from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 
@@ -58,10 +58,10 @@ def login(ask_credentials=True):
 def update_loco_context(context_name):
     """Update a loco list by context"""
     # This api seem no more needed to update the continueWatching loco list
-    loco_root = g.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION)
+    loco_root = G.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION)
 
-    context_index = g.LOCAL_DB.get_value('loco_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
-    context_id = g.LOCAL_DB.get_value('loco_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
+    context_index = G.LOCAL_DB.get_value('loco_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
+    context_id = G.LOCAL_DB.get_value('loco_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
 
     if not context_index:
         common.warn('Update loco context {} skipped due to missing loco index', context_name)
@@ -69,7 +69,7 @@ def update_loco_context(context_name):
     path = [['locos', loco_root, 'refreshListByContext']]
     # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
     #   The fourth parameter is like a request-id, but it doesn't seem to match to
-    #   serverDefs/date/requestId of reactContext (g.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
+    #   serverDefs/date/requestId of reactContext (G.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
     #   nor to request_id of the video event request,
     #   has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed
     #   and i am no longer able to trace the source.
@@ -195,15 +195,15 @@ def _update_mylist_cache(videoid, operation, params):
         mylist_identifier += '_' + perpetual_range_start
     if operation == 'remove':
         try:
-            video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_MYLIST, mylist_identifier)
+            video_list_sorted_data = G.CACHE.get(cache_utils.CACHE_MYLIST, mylist_identifier)
             del video_list_sorted_data.videos[videoid.value]
-            g.CACHE.add(cache_utils.CACHE_MYLIST, mylist_identifier, video_list_sorted_data)
+            G.CACHE.add(cache_utils.CACHE_MYLIST, mylist_identifier, video_list_sorted_data)
         except CacheMiss:
             pass
         try:
-            my_list_videoids = g.CACHE.get(cache_utils.CACHE_MYLIST, 'my_list_items')
+            my_list_videoids = G.CACHE.get(cache_utils.CACHE_MYLIST, 'my_list_items')
             my_list_videoids.remove(videoid)
-            g.CACHE.add(cache_utils.CACHE_MYLIST, 'my_list_items', my_list_videoids)
+            G.CACHE.add(cache_utils.CACHE_MYLIST, 'my_list_items', my_list_videoids)
         except CacheMiss:
             pass
     else:
@@ -211,9 +211,9 @@ def _update_mylist_cache(videoid, operation, params):
                                                               'cache_identifier': mylist_identifier,
                                                               'video_ids': [videoid.value]})
         try:
-            my_list_videoids = g.CACHE.get(cache_utils.CACHE_MYLIST, 'my_list_items')
+            my_list_videoids = G.CACHE.get(cache_utils.CACHE_MYLIST, 'my_list_items')
             my_list_videoids.append(videoid)
-            g.CACHE.add(cache_utils.CACHE_MYLIST, 'my_list_items', my_list_videoids)
+            G.CACHE.add(cache_utils.CACHE_MYLIST, 'my_list_items', my_list_videoids)
         except CacheMiss:
             pass
 
@@ -304,7 +304,7 @@ def remove_watched_status(videoid):
             {'endpoint': 'viewing_activity',
              'data': {'movieID': videoid.value,
                       'seriesAll': videoid.mediatype == common.VideoId.SHOW,
-                      'guid': g.LOCAL_DB.get_active_profile_guid()}}
+                      'guid': G.LOCAL_DB.get_active_profile_guid()}}
         )
         return data.get('status', False)
     except Exception as exc:  # pylint: disable=broad-except

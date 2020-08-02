@@ -18,7 +18,7 @@ except ImportError:
 import xbmc
 import xbmcvfs
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 
 
@@ -58,10 +58,10 @@ def load(account_hash):
     if not xbmcvfs.exists(xbmc.translatePath(filename)):
         common.debug('Cookies file does not exist')
         raise MissingCookiesError()
-    common.debug('Loading cookies from {}', g.py2_decode(filename))
+    common.debug('Loading cookies from {}', G.py2_decode(filename))
     cookie_file = xbmcvfs.File(filename, 'rb')
     try:
-        if g.PY_IS_VER2:
+        if G.PY_IS_VER2:
             # pickle.loads on py2 wants string
             cookie_jar = pickle.loads(cookie_file.read())
         else:
@@ -69,7 +69,7 @@ def load(account_hash):
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         common.error('Failed to load cookies from file: {exc}', exc=exc)
-        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise MissingCookiesError()
     finally:
         cookie_file.close()
@@ -97,4 +97,4 @@ def log_cookie(cookie_jar):
 
 def cookie_filename(account_hash):
     """Return a filename to store cookies for a given account"""
-    return xbmc.translatePath('{}_{}'.format(g.COOKIE_PATH, account_hash))
+    return xbmc.translatePath('{}_{}'.format(G.COOKIE_PATH, account_hash))

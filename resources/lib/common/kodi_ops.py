@@ -13,7 +13,7 @@ import json
 
 import xbmc
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .misc_utils import is_less_version
 from .logging import debug
 
@@ -82,7 +82,7 @@ def container_update(url, reset_history=False):
 
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
-    src = xbmc if string_id < 30000 else g.ADDON
+    src = xbmc if string_id < 30000 else G.ADDON
     return src.getLocalizedString(string_id)
 
 
@@ -106,7 +106,7 @@ def schedule_builtin(time, command, name='NetflixTask'):
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin(g.py2_encode('PlayMedia({})'.format(media)))
+    xbmc.executebuiltin(G.py2_encode('PlayMedia({})'.format(media)))
 
 
 def stop_playback():
@@ -157,7 +157,7 @@ def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1, use_fallback=Tru
     :param iso_format: specify the iso format (ISO_639_1 or ISO_639_2)
     :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
     """
-    converted_lang = xbmc.convertLanguage(g.py2_encode(from_value), iso_format)
+    converted_lang = xbmc.convertLanguage(G.py2_encode(from_value), iso_format)
     if not use_fallback:
         return converted_lang
     converted_lang = converted_lang if converted_lang else xbmc.getLanguage(iso_format, False)  # Get lang. active
@@ -167,7 +167,7 @@ def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1, use_fallback=Tru
 def fix_locale_languages(data_list):
     """Replace locale code, Kodi does not understand the country code"""
     # Get all the ISO 639-1 codes (without country)
-    verify_unofficial_lang = g.KODI_VERSION.is_major_ver('19') or not g.KODI_VERSION.is_less_version('18.7')
+    verify_unofficial_lang = G.KODI_VERSION.is_major_ver('19') or not G.KODI_VERSION.is_less_version('18.7')
     locale_list_nocountry = []
     for item in data_list:
         if item.get('isNoneTrack', False):

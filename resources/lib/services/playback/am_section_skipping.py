@@ -13,7 +13,7 @@ import xbmc
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .action_manager import ActionManager
 from .markers import SKIPPABLE_SECTIONS, get_timeline_markers
 
@@ -38,8 +38,8 @@ class AMSectionSkipper(ActionManager):
 
     def initialize(self, data):
         self.markers = get_timeline_markers(data['metadata'][0])
-        self.auto_skip = g.ADDON.getSettingBool('auto_skip_credits')
-        self.pause_on_skip = g.ADDON.getSettingBool('pause_on_skip')
+        self.auto_skip = G.ADDON.getSettingBool('auto_skip_credits')
+        self.pause_on_skip = G.ADDON.getSettingBool('pause_on_skip')
 
     def on_tick(self, player_state):
         for section in SKIPPABLE_SECTIONS:
@@ -78,7 +78,7 @@ class AMSectionSkipper(ActionManager):
         ui.show_modal_dialog(True,
                              ui.xmldialogs.Skip,
                              "plugin-video-netflix-Skip.xml",
-                             g.ADDON.getAddonInfo('path'),
+                             G.ADDON.getAddonInfo('path'),
                              seconds=dialog_duration,
                              skip_to=self.markers[section]['end'],
                              label=common.get_local_string(SKIPPABLE_SECTIONS[section]))

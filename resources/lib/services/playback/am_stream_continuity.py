@@ -13,7 +13,7 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi import ui
 from .action_manager import ActionManager
 
@@ -52,7 +52,7 @@ class AMStreamContinuity(ActionManager):
         self.player = xbmc.Player()
         self.player_state = {}
         self.resume = {}
-        self.legacy_kodi_version = g.KODI_VERSION.is_major_ver('18')
+        self.legacy_kodi_version = G.KODI_VERSION.is_major_ver('18')
         self.kodi_only_forced_subtitles = None
 
     def __str__(self):
@@ -65,7 +65,7 @@ class AMStreamContinuity(ActionManager):
             self.enabled = False
             return
         self.current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
-        self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+        self.sc_settings = G.SHARED_DB.get_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
                                                              self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
@@ -83,7 +83,7 @@ class AMStreamContinuity(ActionManager):
             return
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
-        if self.kodi_only_forced_subtitles and g.ADDON.getSettingBool('forced_subtitle_workaround')\
+        if self.kodi_only_forced_subtitles and G.ADDON.getSettingBool('forced_subtitle_workaround')\
            and self.sc_settings.get('subtitleenabled') is None:
             # Use the forced subtitle workaround if enabled
             # and if user did not change the subtitle setting
@@ -183,7 +183,7 @@ class AMStreamContinuity(ActionManager):
     def _save_changed_stream(self, stype, stream):
         common.debug('Save changed stream {} for {}', stream, stype)
         self.sc_settings[stype] = stream
-        g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+        G.SHARED_DB.set_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
                                           self.current_videoid.value,
                                           self.sc_settings)
 
@@ -236,7 +236,7 @@ class AMStreamContinuity(ActionManager):
             # So can cause a wrong subtitle language or in a permanent display of subtitles!
             # This does not reflect the setting chosen in the Kodi player and is very annoying!
             # There is no other solution than to disable the subtitles manually.
-            if g.ADDON.getSettingBool('forced_subtitle_workaround') and \
+            if G.ADDON.getSettingBool('forced_subtitle_workaround') and \
                self.kodi_only_forced_subtitles:
                 # Note: this change is temporary so not stored to db by sc_settings setter
                 self.sc_settings.update({'subtitleenabled': False})
@@ -264,8 +264,8 @@ class AMStreamContinuity(ActionManager):
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
             audio_language = common.get_kodi_audio_language()
-            cache_identifier = g.get_esn() + '_' + self.videoid.value
-            manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
+            cache_identifier = G.get_esn() + '_' + self.videoid.value
+            manifest_data = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
                        text_track['language'] == audio_language

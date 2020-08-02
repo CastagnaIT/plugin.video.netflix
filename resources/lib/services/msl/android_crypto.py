@@ -16,7 +16,7 @@ import xbmcdrm
 
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .base_crypto import MSLBaseCrypto
 from .exceptions import MSLError
 
@@ -35,7 +35,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             common.debug('Widevine CryptoSession successful constructed')
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             raise MSLError('Failed to construct Widevine CryptoSession')
 
         drm_info = {
@@ -54,9 +54,9 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             raise MSLError('It was not possible to get the data from Widevine CryptoSession.\r\n'
                            'Your system is not Widevine certified or you have a wrong Kodi version installed.')
 
-        g.LOCAL_DB.set_value('drm_system_id', drm_info['system_id'], TABLE_SESSION)
-        g.LOCAL_DB.set_value('drm_security_level', drm_info['security_level'], TABLE_SESSION)
-        g.LOCAL_DB.set_value('drm_hdcp_level', drm_info['hdcp_level'], TABLE_SESSION)
+        G.LOCAL_DB.set_value('drm_system_id', drm_info['system_id'], TABLE_SESSION)
+        G.LOCAL_DB.set_value('drm_security_level', drm_info['security_level'], TABLE_SESSION)
+        G.LOCAL_DB.set_value('drm_hdcp_level', drm_info['hdcp_level'], TABLE_SESSION)
 
         common.debug('Widevine version: {}', drm_info['version'])
         if drm_info['system_id']:
@@ -64,7 +64,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             common.warn('Widevine CryptoSession system id not obtained!')
         common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
-        if g.ADDON.getSettingBool('force_widevine_l3'):
+        if G.ADDON.getSettingBool('force_widevine_l3'):
             common.warn('Widevine security level is forced to L3 by user settings!')
         common.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
         common.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
@@ -96,7 +96,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         # Save the key request (challenge data) required for manifest requests
         # Todo: to be implemented if/when it becomes mandatory
         key_request = base64.standard_b64encode(key_request).decode('utf-8')
-        # g.LOCAL_DB.set_value('drm_session_challenge', key_request, TABLE_SESSION)
+        # G.LOCAL_DB.set_value('drm_session_challenge', key_request, TABLE_SESSION)
 
         return [{
             'scheme': 'WIDEVINE',

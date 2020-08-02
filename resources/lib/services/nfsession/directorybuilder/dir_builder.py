@@ -15,7 +15,7 @@ from resources.lib import common
 from resources.lib.api.data_types import merge_data_type
 from resources.lib.api.exceptions import CacheMiss
 from resources.lib.common import VideoId
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder_items \
     import (build_video_listing, build_subgenres_listing, build_season_listing, build_episode_listing,
             build_loco_listing, build_mainmenu_listing, build_profiles_listing)
@@ -162,9 +162,9 @@ class DirectoryBuilder(DirectoryPathRequests):
     def add_videoids_to_video_list_cache(self, cache_bucket, cache_identifier, video_ids):
         """Add the specified video ids to a video list datatype in the cache (only if the cache item exists)"""
         try:
-            video_list_sorted_data = g.CACHE.get(cache_bucket, cache_identifier)
+            video_list_sorted_data = G.CACHE.get(cache_bucket, cache_identifier)
             merge_data_type(video_list_sorted_data, self.req_datatype_video_list_byid(video_ids))
-            g.CACHE.add(cache_bucket, cache_identifier, video_list_sorted_data)
+            G.CACHE.add(cache_bucket, cache_identifier, video_list_sorted_data)
         except CacheMiss:
             pass
 

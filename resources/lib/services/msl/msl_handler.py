@@ -18,7 +18,7 @@ import resources.lib.common as common
 from resources.lib.api.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
 from .exceptions import MSLError
@@ -112,7 +112,7 @@ class MSLHandler(object):
         if self._events_handler_thread:
             self._events_handler_thread.stop_join()
             self._events_handler_thread = None
-        if g.ADDON.getSettingBool('ProgressManager_enabled') or data:
+        if G.ADDON.getSettingBool('ProgressManager_enabled') or data:
             self._events_handler_thread = EventsHandler(self.msl_requests.chunked_request)
             self._events_handler_thread.start()
 
@@ -126,9 +126,9 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         try:
-            manifest = self._load_manifest(viewable_id, g.get_esn())
+            manifest = self._load_manifest(viewable_id, G.get_esn())
         except MSLError as exc:
-            if 'Email or password is incorrect' in g.py2_decode(str(exc)):
+            if 'Email or password is incorrect' in G.py2_decode(str(exc)):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
                 # - If user change the password when the nf session was still active
                 # - Netflix has reset the password for suspicious activity when the nf session was still active
@@ -137,8 +137,8 @@ class MSLHandler(object):
                 self.msl_requests.crypto.clear_user_id_tokens()
             raise
         # Disable 1080p Unlock for now, as it is broken due to Netflix changes
-        # if (g.ADDON.getSettingBool('enable_1080p_unlock') and
-        #         not g.ADDON.getSettingBool('enable_vp9_profiles') and
+        # if (G.ADDON.getSettingBool('enable_1080p_unlock') and
+        #         not G.ADDON.getSettingBool('enable_vp9_profiles') and
         #         not has_1080p(manifest)):
         #     common.debug('Manifest has no 1080p viewables, trying unlock')
         #     manifest = self.get_edge_manifest(viewable_id, manifest)
@@ -148,7 +148,7 @@ class MSLHandler(object):
     # def get_edge_manifest(self, viewable_id, chrome_manifest):
     #     """Load a manifest with an EDGE ESN and replace playback_context and drm_context"""
     #     common.debug('Loading EDGE manifest')
-    #     esn = g.get_edge_esn()
+    #     esn = G.get_edge_esn()
     #     common.debug('Switching MSL data to EDGE')
     #     self.msl_requests.perform_key_handshake(esn)
     #     manifest = self._load_manifest(viewable_id, esn)
@@ -164,7 +164,7 @@ class MSLHandler(object):
         cache_identifier = esn + '_' + unicode(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
-            manifest = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
+            manifest = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             expiration = int(manifest['expiration'] / 1000)
             if (expiration - time.time()) < 14400:
                 # Some devices remain active even longer than 48 hours, if the manifest is at the limit of the deadline
@@ -181,7 +181,7 @@ class MSLHandler(object):
 
         isa_addon = xbmcaddon.Addon('inputstream.adaptive')
         hdcp_override = isa_addon.getSettingBool('HDCPOVERRIDE')
-        hdcp_4k_capable = common.is_device_4k_capable() or g.ADDON.getSettingBool('enable_force_hdcp')
+        hdcp_4k_capable = common.is_device_4k_capable() or G.ADDON.getSettingBool('enable_force_hdcp')
 
         hdcp_version = []
         if not hdcp_4k_capable and hdcp_override:
@@ -191,7 +191,7 @@ class MSLHandler(object):
 
         common.info('Requesting manifest for {} with ESN {} and HDCP {}',
                     viewable_id,
-                    common.censure(esn) if g.ADDON.getSetting('esn') else esn,
+                    common.censure(esn) if G.ADDON.getSetting('esn') else esn,
                     hdcp_version)
 
         profiles = enabled_profiles()
@@ -211,9 +211,9 @@ class MSLHandler(object):
             'isUIAutoPlay': False,
             'useHttpsStreams': True,
             'imageSubtitleHeight': 1080,
-            'uiVersion': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
+            'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
-            'clientVersion': g.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+            'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
             'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
@@ -253,7 +253,7 @@ class MSLHandler(object):
             common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity
         expiration = int(manifest['expiration'] / 1000)
-        g.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
+        G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
         return manifest
 
     @display_error_info
@@ -282,9 +282,9 @@ class MSLHandler(object):
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
                                                                                           'drmSessionId'),
-                                                     g.get_esn())
+                                                     G.get_esn())
         # This xid must be used also for each future Event request, until playback stops
-        g.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
+        G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 
         self.licenses_xid.insert(0, xid)
         self.licenses_session_id.insert(0, sid)
@@ -303,7 +303,7 @@ class MSLHandler(object):
         common.debug('Requesting bind events')
         response = self.msl_requests.chunked_request(ENDPOINTS['events'],
                                                      self.msl_requests.build_request_data('/bind', {}),
-                                                     g.get_esn(),
+                                                     G.get_esn(),
                                                      disable_msl_switch=False)
         common.debug('Bind events response: {}', response)
 
@@ -330,7 +330,7 @@ class MSLHandler(object):
 
             response = self.msl_requests.chunked_request(ENDPOINTS['license'],
                                                          self.msl_requests.build_request_data('/bundle', params),
-                                                         g.get_esn())
+                                                         G.get_esn())
             common.debug('License release response: {}', response)
         except IndexError:
             # Example the supplemental media type have no license

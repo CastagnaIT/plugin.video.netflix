@@ -18,7 +18,7 @@ from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsEr
                                           MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
                                           HttpError401, InvalidProfilesError)
 from resources.lib.common import cookies, cache_utils
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
 
 
@@ -85,7 +85,7 @@ class NFSessionOperations(SessionPathRequests):
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         common.debug('Switching to profile {}', guid)
-        current_active_guid = g.LOCAL_DB.get_active_profile_guid()
+        current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
             common.info('The profile guid {} is already set, activation not needed.', guid)
             return
@@ -110,14 +110,14 @@ class NFSessionOperations(SessionPathRequests):
         self.auth_url = website.extract_session_data(response)['auth_url']
         # END Method 2
 
-        g.LOCAL_DB.switch_active_profile(guid)
-        g.CACHE_MANAGEMENT.identifier_prefix = guid
+        G.LOCAL_DB.switch_active_profile(guid)
+        G.CACHE_MANAGEMENT.identifier_prefix = guid
         cookies.save(self.account_hash, self.session.cookies)
 
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status
         from requests import exceptions
-        profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        profile_guid = G.LOCAL_DB.get_active_profile_guid()
         try:
             response = self.post_safe('profile_hub',
                                       data={'destination': 'contentRestrictions',
@@ -165,7 +165,7 @@ class NFSessionOperations(SessionPathRequests):
         parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
         # Delete the cache if we need to refresh the all metadata
         if refresh:
-            g.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
+            G.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
         if videoid.mediatype == common.VideoId.EPISODE:
             try:
                 metadata_data = self._episode_metadata(videoid, parent_videoid)
@@ -185,7 +185,7 @@ class NFSessionOperations(SessionPathRequests):
 
     def _episode_metadata(self, episode_videoid, tvshow_videoid, refresh_cache=False):
         if refresh_cache:
-            g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
+            G.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
         show_metadata = self._metadata(video_id=tvshow_videoid)
         episode_metadata, season_metadata = common.find_episode_metadata(episode_videoid, show_metadata)
         return episode_metadata, season_metadata, show_metadata

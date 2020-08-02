@@ -15,7 +15,7 @@ from future.utils import iteritems
 
 import xbmc
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 __LOG_LEVEL__ = None
 
@@ -38,12 +38,12 @@ def get_log_level():
     global __LOG_LEVEL__
     if __LOG_LEVEL__ is None:
         try:
-            __LOG_LEVEL__ = g.ADDON.getSettingString('debug_log_level')
+            __LOG_LEVEL__ = G.ADDON.getSettingString('debug_log_level')
             if __LOG_LEVEL__ != 'Disabled':
                 _log('Debug logging level is {}'.format(__LOG_LEVEL__), xbmc.LOGINFO)
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
-            # g.ADDON.getSettingString('debug_log_level') will thrown a TypeError
+            # G.ADDON.getSettingString('debug_log_level') will thrown a TypeError
             # If any other error appears, we don't want the service to crash,
             # let's return 'Disabled' in all case
             __LOG_LEVEL__ = 'Disabled'
@@ -65,9 +65,9 @@ def _log(msg, level, *args, **kwargs):
     """Log a message to the Kodi logfile."""
     if args or kwargs:
         msg = msg.format(*args, **kwargs)
-    xbmc.log(g.py2_encode(
-        '[{identifier} ({handle})] {msg}'.format(identifier=g.ADDON_ID,
-                                                 handle=g.PLUGIN_HANDLE,
+    xbmc.log(G.py2_encode(
+        '[{identifier} ({handle})] {msg}'.format(identifier=G.ADDON_ID,
+                                                 handle=G.PLUGIN_HANDLE,
                                                  msg=msg)),
              level)
 
@@ -139,10 +139,10 @@ def time_execution(immediate):
     def time_execution_decorator(func):
         @wraps(func)
         def timing_wrapper(*args, **kwargs):
-            if not g.TIME_TRACE_ENABLED and not is_debug_verbose():
+            if not G.TIME_TRACE_ENABLED and not is_debug_verbose():
                 return func(*args, **kwargs)
 
-            g.add_time_trace_level()
+            G.add_time_trace_level()
             start = perf_clock()
             try:
                 return func(*args, **kwargs)
@@ -152,23 +152,23 @@ def time_execution(immediate):
                     debug('Call to {} took {}ms'
                           .format(func.__name__, execution_time))
                 else:
-                    g.TIME_TRACE.append([func.__name__, execution_time,
-                                         g.time_trace_level])
-                g.remove_time_trace_level()
+                    G.TIME_TRACE.append([func.__name__, execution_time,
+                                         G.time_trace_level])
+                G.remove_time_trace_level()
         return timing_wrapper
     return time_execution_decorator
 
 
 def log_time_trace():
     """Write the time tracing info to the debug log"""
-    if not is_debug_verbose() and not g.TIME_TRACE_ENABLED:
+    if not is_debug_verbose() and not G.TIME_TRACE_ENABLED:
         return
 
     time_trace = ['Execution time info for this run:\n']
-    g.TIME_TRACE.reverse()
-    for trace in g.TIME_TRACE:
+    G.TIME_TRACE.reverse()
+    for trace in G.TIME_TRACE:
         time_trace.append(' ' * trace[2])
         time_trace.append(format(trace[0], '<30'))
         time_trace.append('{:>5} ms\n'.format(trace[1]))
     debug(''.join(time_trace))
-    g.reset_time_trace()
+    G.reset_time_trace()

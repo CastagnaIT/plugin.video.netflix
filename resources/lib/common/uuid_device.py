@@ -9,7 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .device_utils import get_system_platform
 from .logging import debug, error
 
@@ -103,7 +103,7 @@ def _get_linux_uuid():
     except Exception as exc:
         import traceback
         error('_get_linux_uuid first attempt returned: {}', exc)
-        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
     if not uuid_value:
         try:
             # Fedora linux

@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library_utils as lib_utils
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
 
 
@@ -67,13 +67,13 @@ class LibraryActionExecutor(object):
         """
         Select a profile for the synchronization of Kodi library with Netflix "My List"
         """
-        preselect_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                               g.LOCAL_DB.get_guid_owner_profile())
+        preselect_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                               G.LOCAL_DB.get_guid_owner_profile())
         selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30228),
                                                 preselect_guid=preselect_guid)
         if not selected_guid:
             return
-        g.SHARED_DB.set_value('sync_mylist_profile_guid', selected_guid)
+        G.SHARED_DB.set_value('sync_mylist_profile_guid', selected_guid)
 
     def purge(self, pathitems):  # pylint: disable=unused-argument
         """Delete all previously exported items from the Kodi library"""
@@ -113,16 +113,16 @@ class LibraryActionExecutor(object):
     def set_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Set the current device to manage auto-update of the shared-library (MySQL)"""
         random_uuid = common.get_random_uuid()
-        g.LOCAL_DB.set_value('client_uuid', random_uuid)
-        g.SHARED_DB.set_value('auto_update_device_uuid', random_uuid)
+        G.LOCAL_DB.set_value('client_uuid', random_uuid)
+        G.SHARED_DB.set_value('auto_update_device_uuid', random_uuid)
         ui.show_notification(common.get_local_string(30209), time=8000)
 
     def check_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Check if the current device manage the auto-updates of the shared-library (MySQL)"""
-        uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+        uuid = G.SHARED_DB.get_value('auto_update_device_uuid')
         if uuid is None:
             msg = common.get_local_string(30212)
         else:
-            client_uuid = g.LOCAL_DB.get_value('client_uuid')
+            client_uuid = G.LOCAL_DB.get_value('client_uuid')
             msg = common.get_local_string(30210 if client_uuid == uuid else 30211)
         ui.show_notification(msg, time=8000)

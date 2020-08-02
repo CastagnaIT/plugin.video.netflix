@@ -22,7 +22,7 @@ import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import VidLibProp
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi.library_tasks import LibraryTasks
 from resources.lib.kodi.library_utils import (request_kodi_library_update, get_library_path,
                                               FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS,
@@ -158,7 +158,7 @@ class Library(LibraryTasks):
         with ui.ProgressDialog(show_prg_dialog, common.get_local_string(30245), max_value=3) as progress_dlg:
             progress_dlg.perform_step()
             progress_dlg.set_wait_message()
-            g.SHARED_DB.purge_library()
+            G.SHARED_DB.purge_library()
             for folder_name in [FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS]:
                 progress_dlg.perform_step()
                 progress_dlg.set_wait_message()
@@ -182,23 +182,23 @@ class Library(LibraryTasks):
         if is_auto_update_library_running(show_prg_dialog):
             return
         common.info('Start auto-updating of Kodi library {}', '(with sync of My List)' if sync_with_mylist else '')
-        g.SHARED_DB.set_value('library_auto_update_is_running', True)
-        g.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
+        G.SHARED_DB.set_value('library_auto_update_is_running', True)
+        G.SHARED_DB.set_value('library_auto_update_start_time', datetime.now())
         try:
             # Get the full list of the exported tvshows/movies as id (VideoId.value)
-            exp_tvshows_videoids_values = g.SHARED_DB.get_tvshows_id_list()
-            exp_movies_videoids_values = g.SHARED_DB.get_movies_id_list()
+            exp_tvshows_videoids_values = G.SHARED_DB.get_tvshows_id_list()
+            exp_movies_videoids_values = G.SHARED_DB.get_movies_id_list()
 
             # Get the exported tv shows (to be updated) as dict (key=videoid, value=type of task)
             videoids_tasks = {
                 common.VideoId.from_path([common.VideoId.SHOW, videoid_value]): self.export_new_item
-                for videoid_value in g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], False)
+                for videoid_value in G.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], False)
             }
             if sync_with_mylist and update_profiles:
                 # Before do the sync with My list try to update the profiles in the database,
                 # to do a sanity check of the features that are linked to the profiles
                 self.ext_func_req_profiles_info(update_database=True)  # pylint: disable=not-callable
-                sync_with_mylist = g.ADDON.getSettingBool('lib_sync_mylist')
+                sync_with_mylist = G.ADDON.getSettingBool('lib_sync_mylist')
             # If enabled sync the Kodi library with Netflix My List
             if sync_with_mylist:
                 self._sync_my_list_ops(videoids_tasks, exp_tvshows_videoids_values, exp_movies_videoids_values)
@@ -218,16 +218,16 @@ class Library(LibraryTasks):
                 return
             request_kodi_library_update(scan=True, clean=True)
             # Save date for completed operation to compute next update schedule (used in library_updater.py)
-            g.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
+            G.SHARED_DB.set_value('library_auto_update_last_start', datetime.now())
             common.info('Auto update of the Kodi library completed')
-            if not g.ADDON.getSettingBool('lib_auto_upd_disable_notification'):
+            if not G.ADDON.getSettingBool('lib_auto_upd_disable_notification'):
                 ui.show_notification(common.get_local_string(30220), time=5000)
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             common.error('An error has occurred in the library auto update: {}', exc)
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         finally:
-            g.SHARED_DB.set_value('library_auto_update_is_running', False)
+            G.SHARED_DB.set_value('library_auto_update_is_running', False)
 
     def _sync_my_list_ops(self, videoids_tasks, exp_tvshows_videoids_values, exp_movies_videoids_values):
         # Get videoids from the My list (of the chosen profile)
@@ -266,7 +266,7 @@ class Library(LibraryTasks):
             nfo_settings_override = nfo.NFOSettings()
             nfo_settings_override.show_export_dialog()
         # Get the exported tvshows, but to be excluded from the updates
-        excluded_videoids_values = g.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
+        excluded_videoids_values = G.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
         # Start the update operations
         with ui.ProgressDialog(show_prg_dialog, max_value=len(videoids_tasks)) as progress_bar:
             for videoid, task_handler in iteritems(videoids_tasks):
@@ -277,7 +277,7 @@ class Library(LibraryTasks):
                 if not nfo_settings_override and int(videoid.value) in exp_tvshows_videoids_values:
                     # User custom NFO setting
                     # it is possible that the user has chosen not to export NFO files for a specific tv show
-                    nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value,
+                    nfo_export = G.SHARED_DB.get_tvshow_property(videoid.value,
                                                                  VidLibProp['nfo_export'], False)
                     nfo_settings = nfo.NFOSettings(nfo_export)
                 else:
@@ -320,7 +320,7 @@ class Library(LibraryTasks):
         folders = get_library_subfolders(FOLDER_NAME_MOVIES) + get_library_subfolders(FOLDER_NAME_SHOWS)
         with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
             for folder_path in folders:
-                folder_name = os.path.basename(g.py2_decode(xbmc.translatePath(folder_path)))
+                folder_name = os.path.basename(G.py2_decode(xbmc.translatePath(folder_path)))
                 progress_bar.set_message(folder_name)
                 try:
                     videoid = self.import_videoid_from_existing_strm(folder_path, folder_name)

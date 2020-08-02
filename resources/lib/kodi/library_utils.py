@@ -19,7 +19,7 @@ import xbmc
 from resources.lib import common
 from resources.lib.api.paths import PATH_REQUEST_SIZE_STD
 from resources.lib.database.db_utils import VidLibProp
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi import nfo, ui
 
 LIBRARY_HOME = 'library'
@@ -30,15 +30,15 @@ ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
 
 def get_library_path():
     """Return the full path to the library"""
-    return (g.ADDON.getSetting('customlibraryfolder')
-            if g.ADDON.getSettingBool('enablelibraryfolder')
-            else g.DATA_PATH)
+    return (G.ADDON.getSetting('customlibraryfolder')
+            if G.ADDON.getSettingBool('enablelibraryfolder')
+            else G.DATA_PATH)
 
 
 def get_library_subfolders(folder_name):
     """Returns all the subfolders contained in a folder of library path"""
     section_path = common.join_folders_paths(get_library_path(), folder_name)
-    return [common.join_folders_paths(section_path, g.py2_decode(folder))
+    return [common.join_folders_paths(section_path, G.py2_decode(folder))
             for folder
             in common.list_dir(section_path)[0]]
 
@@ -46,33 +46,33 @@ def get_library_subfolders(folder_name):
 def insert_videoid_to_db(videoid, export_filename, nfo_export, exclude_update=False):
     """Add records to the database in relation to a videoid"""
     if videoid.mediatype == common.VideoId.EPISODE:
-        g.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
-        g.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
-        g.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid,
+        G.SHARED_DB.set_tvshow(videoid.tvshowid, nfo_export, exclude_update)
+        G.SHARED_DB.insert_season(videoid.tvshowid, videoid.seasonid)
+        G.SHARED_DB.insert_episode(videoid.tvshowid, videoid.seasonid,
                                    videoid.value, export_filename)
     elif videoid.mediatype == common.VideoId.MOVIE:
-        g.SHARED_DB.set_movie(videoid.value, export_filename, nfo_export)
+        G.SHARED_DB.set_movie(videoid.value, export_filename, nfo_export)
 
 
 def remove_videoid_from_db(videoid):
     """Removes records from database in relation to a videoid"""
     if videoid.mediatype == common.VideoId.MOVIE:
-        g.SHARED_DB.delete_movie(videoid.value)
+        G.SHARED_DB.delete_movie(videoid.value)
     elif videoid.mediatype == common.VideoId.EPISODE:
-        g.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
+        G.SHARED_DB.delete_episode(videoid.tvshowid, videoid.seasonid, videoid.episodeid)
 
 
 def is_videoid_in_db(videoid):
     """Return True if the video is in the database, else False"""
     if videoid.mediatype == common.VideoId.MOVIE:
-        return g.SHARED_DB.movie_id_exists(videoid.value)
+        return G.SHARED_DB.movie_id_exists(videoid.value)
     if videoid.mediatype == common.VideoId.SHOW:
-        return g.SHARED_DB.tvshow_id_exists(videoid.value)
+        return G.SHARED_DB.tvshow_id_exists(videoid.value)
     if videoid.mediatype == common.VideoId.SEASON:
-        return g.SHARED_DB.season_id_exists(videoid.tvshowid,
+        return G.SHARED_DB.season_id_exists(videoid.tvshowid,
                                             videoid.seasonid)
     if videoid.mediatype == common.VideoId.EPISODE:
-        return g.SHARED_DB.episode_id_exists(videoid.tvshowid,
+        return G.SHARED_DB.episode_id_exists(videoid.tvshowid,
                                              videoid.seasonid,
                                              videoid.episodeid)
     raise common.InvalidVideoId('videoid {} type not implemented'.format(videoid))
@@ -90,11 +90,11 @@ def get_nfo_settings():
 
 
 def is_auto_update_library_running(show_prg_dialog):
-    if g.SHARED_DB.get_value('library_auto_update_is_running', False):
-        start_time = g.SHARED_DB.get_value('library_auto_update_start_time',
+    if G.SHARED_DB.get_value('library_auto_update_is_running', False):
+        start_time = G.SHARED_DB.get_value('library_auto_update_start_time',
                                            datetime.utcfromtimestamp(0))
         if datetime.now() >= start_time + timedelta(hours=6):
-            g.SHARED_DB.set_value('library_auto_update_is_running', False)
+            G.SHARED_DB.set_value('library_auto_update_is_running', False)
             common.warn('Canceling previous library update: duration >6 hours')
         else:
             if show_prg_dialog:
@@ -127,19 +127,19 @@ def request_kodi_library_scan_decorator(func):
 
 def is_show_excluded_from_auto_update(videoid):
     """Return true if the videoid is excluded from auto-update"""
-    return g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
+    return G.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['exclude_update'], False)
 
 
 def set_show_excluded_from_auto_update(videoid, is_excluded):
     """Set if a tvshow is excluded from auto-update"""
-    g.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], is_excluded)
+    G.SHARED_DB.set_tvshow_property(videoid.value, VidLibProp['exclude_update'], is_excluded)
 
 
 def list_contents(perpetual_range_start):
     """Return a chunked list of all video IDs (movies, shows) contained in the add-on library database"""
     perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
     number_of_requests = 2
-    video_id_list = g.SHARED_DB.get_all_video_id_list()
+    video_id_list = G.SHARED_DB.get_all_video_id_list()
     count = 0
     chunked_video_list = []
     perpetual_range_selector = {}

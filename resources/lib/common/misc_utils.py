@@ -26,7 +26,7 @@ except ImportError:  # Python 2
     from urllib import urlencode
     from urllib2 import quote
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 def find(value_to_find, attribute, search_space):
@@ -63,7 +63,7 @@ def build_url(pathitems=None, videoid=None, params=None, mode=None):
     if not (pathitems or videoid):
         raise ValueError('Either pathitems or videoid must be set.')
     path = '{netloc}/{path}/{qs}'.format(
-        netloc=g.BASE_URL,
+        netloc=G.BASE_URL,
         path=_encode_path(mode, pathitems, videoid),
         qs=_encode_params(params))
     return path

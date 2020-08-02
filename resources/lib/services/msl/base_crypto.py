@@ -14,7 +14,7 @@ import base64
 import time
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import MSL_DATA_FILENAME
 
 
@@ -37,7 +37,7 @@ class MSLBaseCrypto(object):
         self._msl_data = msl_data if msl_data else {}
         if msl_data:
             self.set_mastertoken(msl_data['tokens']['mastertoken'])
-            self.bound_esn = msl_data.get('bound_esn', g.get_esn())
+            self.bound_esn = msl_data.get('bound_esn', G.get_esn())
 
     def compare_mastertoken(self, mastertoken):
         """Check if the new MasterToken is different from current due to renew"""

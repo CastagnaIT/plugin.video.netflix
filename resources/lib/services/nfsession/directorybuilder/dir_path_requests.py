@@ -20,7 +20,7 @@ from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER
                                      GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
                                      PATH_REQUEST_SIZE_MAX)
 from resources.lib.common import cache_utils
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 class DirectoryPathRequests(object):
@@ -34,7 +34,7 @@ class DirectoryPathRequests(object):
         common.debug('Requesting "my list" video list as videoid items')
         try:
             items = []
-            video_list = self.req_datatype_video_list_full(g.MAIN_MENU_ITEMS['myList']['request_context_name'])
+            video_list = self.req_datatype_video_list_full(G.MAIN_MENU_ITEMS['myList']['request_context_name'])
             if video_list:
                 # pylint: disable=unused-variable
                 items = [common.VideoId.from_videolist_item(video)
@@ -210,7 +210,7 @@ class DirectoryPathRequests(object):
         # sort order the "mylist" is supported only in US country, the only way to query is use 'az'
         sort_order_types = ['az', 'za', 'su', 'yr'] if not context_name == 'mylist' else ['az', 'az']
         req_sort_order_type = sort_order_types[
-            int(g.ADDON.getSettingInt('menu_sortorder_' + menu_data.get('initial_menu_id', menu_data['path'][1])))
+            int(G.ADDON.getSettingInt('menu_sortorder_' + menu_data.get('initial_menu_id', menu_data['path'][1])))
         ]
         base_path.append(req_sort_order_type)
         paths = build_paths(base_path + [RANGE_PLACEHOLDER], VIDEO_LIST_PARTIAL_PATHS)

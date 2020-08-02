@@ -17,7 +17,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
 
 
@@ -34,31 +34,31 @@ class AddonActionExecutor(object):
 
     def autoselect_profile_set(self, pathitems):  # pylint: disable=unused-argument
         """Save the GUID for profile auto-selection"""
-        g.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
-        g.settings_monitor_suspend(True)
-        g.ADDON.setSetting('autoselect_profile_name', self.params['profile_name'])
-        g.ADDON.setSettingBool('autoselect_profile_enabled', True)
-        g.settings_monitor_suspend(False)
-        ui.show_notification(common.get_local_string(30058).format(g.py2_decode(self.params['profile_name'])))
+        G.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
+        G.settings_monitor_suspend(True)
+        G.ADDON.setSetting('autoselect_profile_name', self.params['profile_name'])
+        G.ADDON.setSettingBool('autoselect_profile_enabled', True)
+        G.settings_monitor_suspend(False)
+        ui.show_notification(common.get_local_string(30058).format(G.py2_decode(self.params['profile_name'])))
 
     def autoselect_profile_remove(self, pathitems):  # pylint: disable=unused-argument
         """Remove the auto-selection set"""
-        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        g.settings_monitor_suspend(True)
-        g.ADDON.setSetting('autoselect_profile_name', '')
-        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
-        g.settings_monitor_suspend(False)
+        G.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        G.settings_monitor_suspend(True)
+        G.ADDON.setSetting('autoselect_profile_name', '')
+        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
+        G.settings_monitor_suspend(False)
 
     def library_playback_profile(self, pathitems=None):  # pylint: disable=unused-argument
-        preselect_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
+        preselect_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
         selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30050),
                                                 preselect_guid=preselect_guid)
         if not selected_guid:
             return
         # Save the selected profile guid
-        g.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
+        G.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
         # Save the selected profile name
-        g.ADDON.setSetting('library_playback_profile', g.LOCAL_DB.get_profile_config('profileName', '???',
+        G.ADDON.setSetting('library_playback_profile', G.LOCAL_DB.get_profile_config('profileName', '???',
                                                                                      guid=selected_guid))
 
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
@@ -71,7 +71,7 @@ class AddonActionExecutor(object):
             ui.show_modal_dialog(False,
                                  ui.xmldialogs.ParentalControl,
                                  'plugin-video-netflix-ParentalControl.xml',
-                                 g.ADDON.getAddonInfo('path'),
+                                 G.ADDON.getAddonInfo('path'),
                                  **parental_control_data)
         except MissingCredentialsError:
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
@@ -91,7 +91,7 @@ class AddonActionExecutor(object):
             ui.show_modal_dialog(False,
                                  ui.xmldialogs.RatingThumb,
                                  'plugin-video-netflix-RatingThumb.xml',
-                                 g.ADDON.getAddonInfo('path'),
+                                 G.ADDON.getAddonInfo('path'),
                                  videoid=videoid,
                                  title=title,
                                  track_id_jaw=track_id_jaw,
@@ -136,7 +136,7 @@ class AddonActionExecutor(object):
             url = common.build_url(['supplemental'],
                                    params={'video_id_dict': dumps(video_id_dict),
                                            'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
-                                   mode=g.MODE_DIRECTORY)
+                                   mode=G.MODE_DIRECTORY)
             common.container_update(url)
         else:
             ui.show_notification(common.get_local_string(30111))
@@ -144,26 +144,26 @@ class AddonActionExecutor(object):
     @common.time_execution(immediate=False)
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
-        g.CACHE.clear(clear_database=self.params.get('on_disk', False))
+        G.CACHE.clear(clear_database=self.params.get('on_disk', False))
         ui.show_notification(common.get_local_string(30135))
 
     def force_update_list(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache of my list to force the update"""
         if self.params['menu_id'] == 'myList':
-            g.CACHE.clear([cache_utils.CACHE_MYLIST], clear_database=False)
+            G.CACHE.clear([cache_utils.CACHE_MYLIST], clear_database=False)
         if self.params['menu_id'] == 'continueWatching':
             # Delete the cache of continueWatching list
             # pylint: disable=unused-variable
             is_exists, list_id = common.make_call('get_continuewatching_videoid_exists', {'video_id': ''})
             if list_id:
-                g.CACHE.delete(cache_utils.CACHE_COMMON, list_id, including_suffixes=True)
+                G.CACHE.delete(cache_utils.CACHE_COMMON, list_id, including_suffixes=True)
             # When the continueWatching context is invalidated from a refreshListByContext call
             # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
-            g.CACHE.delete(cache_utils.CACHE_COMMON, 'loco_list')
+            G.CACHE.delete(cache_utils.CACHE_COMMON, 'loco_list')
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
-        ui.show_ok_dialog(common.get_local_string(30016), g.get_esn())
+        ui.show_ok_dialog(common.get_local_string(30016), G.get_esn())
 
     def reset_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Reset the ESN stored (retrieved from website and manual)"""
@@ -172,34 +172,34 @@ class AddonActionExecutor(object):
                                        common.get_local_string(30218)):
             return
         # Reset the ESN obtained from website/generated
-        g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
         # Reset the custom ESN (manual ESN from settings)
-        g.settings_monitor_suspend(at_first_change=True)
-        g.ADDON.setSetting('esn', '')
+        G.settings_monitor_suspend(at_first_change=True)
+        G.ADDON.setSetting('esn', '')
         # Reset the custom ESN (backup of manual ESN from settings, used in settings_monitor.py)
-        g.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
+        G.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
         # Perform a new login to get/generate a new ESN
         api.login(ask_credentials=False)
         # Warning after login netflix switch to the main profile! so return to the main screen
         # Open root page
-        common.container_update(g.BASE_URL, True)
+        common.container_update(G.BASE_URL, True)
 
     @common.inject_video_id(path_offset=1)
     def change_watched_status(self, videoid):
         """Change the watched status locally"""
         # Todo: how get resumetime/playcount of selected item for calculate current watched status?
 
-        profile_guid = g.LOCAL_DB.get_active_profile_guid()
-        current_value = g.SHARED_DB.get_watched_status(profile_guid, videoid.value, None, bool)
+        profile_guid = G.LOCAL_DB.get_active_profile_guid()
+        current_value = G.SHARED_DB.get_watched_status(profile_guid, videoid.value, None, bool)
         if current_value:
             txt_index = 1
-            g.SHARED_DB.set_watched_status(profile_guid, videoid.value, False)
+            G.SHARED_DB.set_watched_status(profile_guid, videoid.value, False)
         elif current_value is not None and not current_value:
             txt_index = 2
-            g.SHARED_DB.delete_watched_status(profile_guid, videoid.value)
+            G.SHARED_DB.delete_watched_status(profile_guid, videoid.value)
         else:
             txt_index = 0
-            g.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
+            G.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
         ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
         common.container_refresh()
 
@@ -223,9 +223,9 @@ class AddonActionExecutor(object):
         if videoid_exists:
             # Try to remove the videoid from the list in the cache
             try:
-                video_list_sorted_data = g.CACHE.get(cache_utils.CACHE_COMMON, list_id)
+                video_list_sorted_data = G.CACHE.get(cache_utils.CACHE_COMMON, list_id)
                 del video_list_sorted_data.videos[videoid.value]
-                g.CACHE.add(cache_utils.CACHE_COMMON, list_id, video_list_sorted_data)
+                G.CACHE.add(cache_utils.CACHE_COMMON, list_id, video_list_sorted_data)
                 common.json_rpc('Input.Down')  # Avoids selection back to the top
             except CacheMiss:
                 pass
@@ -233,11 +233,11 @@ class AddonActionExecutor(object):
 
 
 def _sync_library(videoid, operation):
-    if operation and g.ADDON.getSettingBool('lib_sync_mylist') and g.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
-        sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                                         g.LOCAL_DB.get_guid_owner_profile())
+    if operation and G.ADDON.getSettingBool('lib_sync_mylist') and G.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
+        sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                         G.LOCAL_DB.get_guid_owner_profile())
         # Allow to sync library with My List only by chosen profile
-        if sync_mylist_profile_guid != g.LOCAL_DB.get_active_profile_guid():
+        if sync_mylist_profile_guid != G.LOCAL_DB.get_active_profile_guid():
             return
         common.debug('Syncing library due to change of My list')
         if operation == 'add':

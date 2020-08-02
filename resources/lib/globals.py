@@ -227,7 +227,7 @@ class GlobalVariables(object):
         # xbmcaddon.Addon must be created at every instance otherwise it does not read any new changes to the settings
         self.ADDON = xbmcaddon.Addon()
         self.URL = urlparse(argv[0])
-        self.REQUEST_PATH = g.py2_decode(unquote(self.URL[2][1:]))
+        self.REQUEST_PATH = G.py2_decode(unquote(self.URL[2][1:]))
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -264,7 +264,7 @@ class GlobalVariables(object):
         #   This fixes comparison errors between str/unicode
         sys_path_filtered = [value for value in sys.path if isinstance(value, unicode)]
         for path in packages_paths:  # packages_paths has unicode type values
-            path = g.py2_decode(xbmc.translatePath(path))
+            path = G.py2_decode(xbmc.translatePath(path))
             if path not in sys_path_filtered:
                 # Add embedded package path to python system directory
                 # The "path" will add an unicode type to avoids problems with OS using symbolic characters
@@ -296,7 +296,7 @@ class GlobalVariables(object):
             import resources.lib.database.db_local as db_local
             self.LOCAL_DB = db_local.NFLocalDatabase()
         # Initialize shared database
-        use_mysql = g.ADDON.getSettingBool('use_mysql')
+        use_mysql = G.ADDON.getSettingBool('use_mysql')
         if initialize or use_mysql:
             import resources.lib.database.db_shared as db_shared
             from resources.lib.database.db_exceptions import MySQLConnectionError, MySQLError
@@ -332,22 +332,22 @@ class GlobalVariables(object):
         else:
             new_value = str(is_suspended)
         # Accepted values in string: First, True, False
-        current_value = g.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
+        current_value = G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
         if new_value == current_value:
             return
-        g.LOCAL_DB.set_value('suspend_settings_monitor', new_value)
+        G.LOCAL_DB.set_value('suspend_settings_monitor', new_value)
 
     def settings_monitor_suspend_status(self):
         """
         Returns the suspend status of settings monitor
         """
-        return g.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
+        return G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
 
     def get_esn(self):
         """Get the generated esn or if set get the custom esn"""
         from resources.lib.database.db_utils import TABLE_SESSION
-        custom_esn = g.ADDON.getSetting('esn')
-        return custom_esn if custom_esn else g.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
+        custom_esn = G.ADDON.getSetting('esn')
+        return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
@@ -392,7 +392,6 @@ class GlobalVariables(object):
         return re.sub(pattern, '', version)
 
 
-# pylint: disable=invalid-name
 # We initialize an instance importable of GlobalVariables from run_addon.py and run_service.py,
-# where g.init_globals() MUST be called before you do anything else.
-g = GlobalVariables()
+# where G.init_globals() MUST be called before you do anything else.
+G = GlobalVariables()

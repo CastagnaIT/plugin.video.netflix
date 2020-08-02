@@ -14,7 +14,7 @@ import json
 
 import resources.lib.api.paths as apipaths
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.session.access import SessionAccess
 
 
@@ -96,10 +96,10 @@ class SessionPathRequests(SessionAccess):
         Used exclusively to get My List of a profile other than the current one
         """
         # Profile chosen by the user for the synchronization from which to get My List videos
-        mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                                    g.LOCAL_DB.get_guid_owner_profile())
+        mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                    G.LOCAL_DB.get_guid_owner_profile())
         # Current profile active
-        current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        current_profile_guid = G.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
         self.external_func_activate_profile(mylist_profile_guid)  # pylint: disable=not-callable
         # Get the My List data

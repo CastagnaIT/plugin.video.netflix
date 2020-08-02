@@ -13,7 +13,7 @@ import json
 
 import resources.lib.common as common
 from resources.lib.api.exceptions import InvalidPathError
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 try:  # Python 3
     from http.server import BaseHTTPRequestHandler
@@ -43,7 +43,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
                 # If argument 'data' exists, inject the data
                 length = int(self.headers.get('content-length', 0))
                 params['data'] = self.rfile.read(length) or None
-            result = _call(g.CACHE_MANAGEMENT, self.path[1:], params)
+            result = _call(G.CACHE_MANAGEMENT, self.path[1:], params)
             self.send_response(200)
             self.end_headers()
             if result is not None:
@@ -54,7 +54,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+                common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
@@ -63,7 +63,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         params = json.loads(self.headers['Params'])
         # common.debug('Handling Cache HTTP GET IPC call to {} ({})', self.path[1:], params.get('identifier'))
         try:
-            result = _call(g.CACHE_MANAGEMENT, self.path[1:], params)
+            result = _call(G.CACHE_MANAGEMENT, self.path[1:], params)
             self.send_response(200)
             self.end_headers()
             if result is not None:
@@ -74,7 +74,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+                common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 

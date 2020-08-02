@@ -18,7 +18,7 @@ import xbmcvfs
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import MetadataNotAvailable
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi.library_utils import remove_videoid_from_db, insert_videoid_to_db
 
 
@@ -63,10 +63,10 @@ class LibraryJobs(object):
         common.debug('Removing {} ({}) from add-on library', videoid, job_data['title'])
         try:
             # Remove the STRM file exported
-            exported_file_path = g.py2_decode(xbmc.translatePath(job_data['file_path']))
+            exported_file_path = G.py2_decode(xbmc.translatePath(job_data['file_path']))
             common.delete_file_safe(exported_file_path)
 
-            parent_folder = g.py2_decode(xbmc.translatePath(os.path.dirname(exported_file_path)))
+            parent_folder = G.py2_decode(xbmc.translatePath(os.path.dirname(exported_file_path)))
 
             # Remove the NFO file of the related STRM file
             nfo_file = os.path.splitext(exported_file_path)[0] + '.nfo'
@@ -93,7 +93,7 @@ class LibraryJobs(object):
             common.warn('The videoid {} not exists in the add-on library database', videoid)
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             ui.show_addon_error_info(exc)
 
     # -------------------------- The follow functions not concern jobs for tasks
@@ -103,7 +103,7 @@ class LibraryJobs(object):
         Get a VideoId from an existing STRM file that was exported
         """
         for filename in common.list_dir(folder_path)[1]:
-            filename = g.py2_decode(filename)
+            filename = G.py2_decode(filename)
             if not filename.endswith('.strm'):
                 continue
             file_path = common.join_folders_paths(folder_path, filename)
@@ -146,15 +146,15 @@ class LibraryJobs(object):
 
     def _import_videoid(self, file_content, folder_name):
         file_content = file_content.strip('\t\n\r')
-        if g.BASE_URL not in file_content:
+        if G.BASE_URL not in file_content:
             common.warn('Import error: folder "{}" skipped, unrecognized plugin name in STRM file', folder_name)
             raise ImportWarning
-        file_content = file_content.replace(g.BASE_URL, '')
+        file_content = file_content.replace(G.BASE_URL, '')
         # file_content should result as, example:
         # - Old STRM path: '/play/show/xxxxxxxx/season/xxxxxxxx/episode/xxxxxxxx/' (used before ver 1.7.0)
         # - New STRM path: '/play_strm/show/xxxxxxxx/season/xxxxxxxx/episode/xxxxxxxx/' (used from ver 1.7.0)
         pathitems = file_content.strip('/').split('/')
-        if g.MODE_PLAY not in pathitems and g.MODE_PLAY_STRM not in pathitems:
+        if G.MODE_PLAY not in pathitems and G.MODE_PLAY_STRM not in pathitems:
             common.warn('Import error: folder "{}" skipped, unsupported play path in STRM file', folder_name)
             raise ImportWarning
         pathitems = pathitems[1:]

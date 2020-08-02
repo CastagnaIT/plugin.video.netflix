@@ -18,7 +18,7 @@ import resources.lib.database.db_base as db_base
 import resources.lib.database.db_utils as db_utils
 import resources.lib.database.db_create_mysql as db_create_mysql
 from resources.lib.database.db_exceptions import (MySQLConnectionError, MySQLError)
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 def handle_connection(func):
@@ -55,10 +55,10 @@ class MySQLDatabase(db_base.BaseDatabase):
         else:
             self.is_connection_test = False
             self.config = {
-                'user': g.ADDON.getSetting('mysql_username'),
-                'password': g.ADDON.getSetting('mysql_password'),
-                'host': g.ADDON.getSetting('mysql_host'),
-                'port': g.ADDON.getSettingInt('mysql_port'),
+                'user': G.ADDON.getSetting('mysql_username'),
+                'password': G.ADDON.getSetting('mysql_password'),
+                'host': G.ADDON.getSetting('mysql_host'),
+                'port': G.ADDON.getSettingInt('mysql_port'),
                 'database': 'netflix_addon',
                 'autocommit': True,
                 'charset': 'utf8',

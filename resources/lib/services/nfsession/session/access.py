@@ -17,7 +17,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.api.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
                                           MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
 
@@ -49,7 +49,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             common.error('Login prefetch: request exception {}', exc)
-            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
         except Exception as exc:  # pylint: disable=broad-except
             common.warn('Login prefetch: failed {}', exc)
         return False
@@ -68,7 +68,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
     @staticmethod
     def _verify_esn_existence():
-        return bool(g.get_esn())
+        return bool(G.get_esn())
 
     def get_safe(self, endpoint, **kwargs):
         """
@@ -117,7 +117,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                                    False, True)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             raise
         return False
@@ -130,23 +130,23 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         # Perform the website logout
         self.get('logout')
 
-        g.settings_monitor_suspend(True)
+        G.settings_monitor_suspend(True)
 
         # Disable and reset auto-update / auto-sync features
-        g.ADDON.setSettingInt('lib_auto_upd_mode', 1)
-        g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.SHARED_DB.delete_key('sync_mylist_profile_guid')
+        G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
+        G.ADDON.setSettingBool('lib_sync_mylist', False)
+        G.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
         # Disable and reset the auto-select profile
-        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        g.ADDON.setSetting('autoselect_profile_name', '')
-        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+        G.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        G.ADDON.setSetting('autoselect_profile_name', '')
+        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
 
         # Reset of selected profile guid for library playback
-        g.LOCAL_DB.set_value('library_playback_profile_guid', '')
-        g.ADDON.setSetting('library_playback_profile', '')
+        G.LOCAL_DB.set_value('library_playback_profile_guid', '')
+        G.ADDON.setSetting('library_playback_profile', '')
 
-        g.settings_monitor_suspend(False)
+        G.settings_monitor_suspend(False)
 
         # Delete cookie and credentials
         self.session.cookies.clear()
@@ -154,19 +154,19 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         common.purge_credentials()
 
         # Reset the ESN obtained from website/generated
-        g.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
 
         # Reinitialize the MSL handler (delete msl data file, then reset everything)
         common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
 
-        g.CACHE.clear(clear_database=True)
+        G.CACHE.clear(clear_database=True)
 
         common.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
         common.container_update('path', True)  # Go to a fake page to clear screen
         # Open root page
-        common.container_update(g.BASE_URL, True)
+        common.container_update(G.BASE_URL, True)
 
 
 def _login_payload(credentials, auth_url):

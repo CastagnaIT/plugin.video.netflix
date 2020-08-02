@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 import xbmc
 import xbmcvfs
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .misc_utils import build_url
 
 try:  # Kodi >= 19
@@ -55,7 +55,7 @@ def create_folder(path):
         xbmcvfs.mkdirs(path)
 
 
-def file_exists(filename, data_path=g.DATA_PATH):
+def file_exists(filename, data_path=G.DATA_PATH):
     """
     Checks if a given file exists
     :param filename: The filename
@@ -85,7 +85,7 @@ def save_file_def(filename, content, mode='wb'):
     :param content: The content of the file
     :param mode: optional mode options
     """
-    save_file(os.path.join(g.DATA_PATH, filename), content, mode)
+    save_file(os.path.join(G.DATA_PATH, filename), content, mode)
 
 
 def save_file(file_path, content, mode='wb'):
@@ -109,7 +109,7 @@ def load_file_def(filename, mode='rb'):
     :param mode: optional mode options
     :return: The content of the file
     """
-    return load_file(os.path.join(g.DATA_PATH, filename), mode)
+    return load_file(os.path.join(G.DATA_PATH, filename), mode)
 
 
 def load_file(file_path, mode='rb'):
@@ -135,14 +135,14 @@ def delete_file_safe(file_path):
 
 
 def delete_file(filename):
-    file_path = xbmc.translatePath(os.path.join(g.DATA_PATH, filename))
+    file_path = xbmc.translatePath(os.path.join(G.DATA_PATH, filename))
     try:
         xbmcvfs.delete(file_path)
     finally:
         pass
 
 
-def list_dir(path=g.DATA_PATH):
+def list_dir(path=G.DATA_PATH):
     """
     List the contents of a folder
     :return: The contents of the folder as tuple (directories, files)
@@ -158,14 +158,14 @@ def delete_folder_contents(path, delete_subfolders=False):
     """
     directories, files = list_dir(xbmc.translatePath(path))
     for filename in files:
-        xbmcvfs.delete(os.path.join(path, g.py2_decode(filename)))
+        xbmcvfs.delete(os.path.join(path, G.py2_decode(filename)))
     if not delete_subfolders:
         return
     for directory in directories:
-        delete_folder_contents(os.path.join(path, g.py2_decode(directory)), True)
+        delete_folder_contents(os.path.join(path, G.py2_decode(directory)), True)
         # Give time because the system performs previous op. otherwise it can't delete the folder
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(path, g.py2_decode(directory)))
+        xbmcvfs.rmdir(os.path.join(path, G.py2_decode(directory)))
 
 
 def delete_folder(path):
@@ -181,7 +181,7 @@ def write_strm_file(videoid, file_path):
     filehandle = xbmcvfs.File(xbmc.translatePath(file_path), 'wb')
     try:
         filehandle.write(bytearray(build_url(videoid=videoid,
-                                             mode=g.MODE_PLAY_STRM).encode('utf-8')))
+                                             mode=G.MODE_PLAY_STRM).encode('utf-8')))
     finally:
         filehandle.close()
 
@@ -199,4 +199,4 @@ def write_nfo_file(nfo_data, file_path):
 def join_folders_paths(*args):
     """Join multiple folder paths in a safe way"""
     # Avoid the use of os.path.join, in some cases with special chars like % break the path
-    return g.py2_decode(makeLegalFilename('/'.join(args)))
+    return G.py2_decode(makeLegalFilename('/'.join(args)))

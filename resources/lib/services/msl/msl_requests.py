@@ -16,7 +16,7 @@ import re
 import zlib
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
@@ -49,19 +49,19 @@ class MSLRequests(MSLRequestBuilder):
             self.crypto.load_crypto_session(msl_data)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
 
     @display_error_info
     @common.time_execution(immediate=True)
     def perform_key_handshake(self, data=None):  # pylint: disable=unused-argument
         """Perform a key handshake and initialize crypto keys"""
-        esn = g.get_esn()
+        esn = G.get_esn()
         if not esn:
             common.warn('Cannot perform key handshake, missing ESN')
             return False
 
         common.info('Performing key handshake with ESN: {}',
-                    common.censure(esn) if g.ADDON.getSetting('esn') else esn)
+                    common.censure(esn) if G.ADDON.getSetting('esn') else esn)
         response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
         header_data = self.decrypt_header_data(response['headerdata'], False)
         self.crypto.parse_key_response(header_data, esn, True)
@@ -86,7 +86,7 @@ class MSLRequests(MSLRequestBuilder):
         url = ENDPOINTS['logblobs'] + '?' + urlencode(params).replace('%2F', '/')
         response = self.chunked_request(url,
                                         self.build_request_data('/logblob', generate_logblobs_params()),
-                                        g.get_esn(),
+                                        G.get_esn(),
                                         force_auth_credential=True)
         common.debug('Response of logblob request: {}', response)
 
@@ -99,7 +99,7 @@ class MSLRequests(MSLRequestBuilder):
                 is_handshake_required = True
             else:
                 # Check if the current ESN is same of ESN bound to MasterToken
-                if g.get_esn() != self.crypto.bound_esn:
+                if G.get_esn() != self.crypto.bound_esn:
                     common.debug('Stored MSL MasterToken is bound to a different ESN, '
                                  'a new key handshake will be performed')
                     is_handshake_required = True
@@ -123,8 +123,8 @@ class MSLRequests(MSLRequestBuilder):
         """
         # Warning: the user id token contains also contains the identity of the netflix profile
         # therefore it is necessary to use the right user id token for the request
-        current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
-        owner_profile_guid = g.LOCAL_DB.get_guid_owner_profile()
+        current_profile_guid = G.LOCAL_DB.get_active_profile_guid()
+        owner_profile_guid = G.LOCAL_DB.get_guid_owner_profile()
         use_switch_profile = False
         user_id_token = None
 
@@ -195,8 +195,8 @@ class MSLRequests(MSLRequestBuilder):
 
             if 'useridtoken' in header_data:
                 # Save the user id token for the future msl requests
-                profile_guid = g.LOCAL_DB.get_guid_owner_profile() if save_uid_token_to_owner else\
-                    g.LOCAL_DB.get_active_profile_guid()
+                profile_guid = G.LOCAL_DB.get_guid_owner_profile() if save_uid_token_to_owner else\
+                    G.LOCAL_DB.get_active_profile_guid()
                 self.crypto.save_user_id_token(profile_guid, header_data['useridtoken'])
             # if 'keyresponsedata' in header_data:
             #     common.debug('Found key handshake in response data')
@@ -234,17 +234,17 @@ def _raise_if_error(decoded_response):
 def _get_error_details(decoded_response):
     # Catch a chunk error
     if 'errordata' in decoded_response:
-        return g.py2_encode(json.loads(base64.standard_b64decode(decoded_response['errordata']))['errormsg'])
+        return G.py2_encode(json.loads(base64.standard_b64decode(decoded_response['errordata']))['errormsg'])
     # Catch a manifest error
     if 'error' in decoded_response:
         if decoded_response['error'].get('errorDisplayMessage'):
-            return g.py2_encode(decoded_response['error']['errorDisplayMessage'])
+            return G.py2_encode(decoded_response['error']['errorDisplayMessage'])
     # Catch a license error
     if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
         if 'error' in decoded_response['result'][0]:
             if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
-                return g.py2_encode(decoded_response['result'][0]['error']['errorDisplayMessage'])
-    return g.py2_encode('Unhandled error check log.')
+                return G.py2_encode(decoded_response['result'][0]['error']['errorDisplayMessage'])
+    return G.py2_encode('Unhandled error check log.')
 
 
 @common.time_execution(immediate=True)

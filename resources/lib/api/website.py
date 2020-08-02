@@ -19,7 +19,7 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
                          WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
@@ -92,13 +92,13 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # 21/05/2020 - Netflix has introduced a new paging type called "loco" similar to the old "lolomo"
     # Extract loco root id
     loco_root = falcor_cache['loco']['value'][1]
-    g.LOCAL_DB.set_value('loco_root_id', loco_root, TABLE_SESSION)
+    G.LOCAL_DB.set_value('loco_root_id', loco_root, TABLE_SESSION)
 
     # Save only some info of the current profile from user data
-    g.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
-    if not g.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
-        g.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
-    g.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
+    G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
+    if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
+        G.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
+    G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
     result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
     if not result:
@@ -108,7 +108,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
         api_data['client_version'] = result.groups()[0]
     # Save api urls
     for key, path in list(api_data.items()):
-        g.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+        G.LOCAL_DB.set_value(key, path, TABLE_SESSION)
     return api_data
 
 
@@ -148,62 +148,62 @@ def parse_profiles(data):
             common.debug('Parsing profile {}', summary['guid'])
             avatar_url = _get_avatar(profile_data, data, guid)
             is_active = summary.pop('isActive')
-            g.LOCAL_DB.set_profile(guid, is_active, sort_order)
-            g.SHARED_DB.set_profile(guid, sort_order)
+            G.LOCAL_DB.set_profile(guid, is_active, sort_order)
+            G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
-            summary['language_desc'] = g.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
+            summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
             for key, value in iteritems(summary):
                 if common.is_debug_verbose() and key in PROFILE_DEBUG_INFO:
                     common.debug('Profile info {}', {key: value})
                 if key == 'profileName':  # The profile name is coded as HTML
                     value = parse_html(value)
-                g.LOCAL_DB.set_profile_config(key, value, guid)
-            g.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
+                G.LOCAL_DB.set_profile_config(key, value, guid)
+            G.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
         _delete_non_existing_profiles(current_guids)
     except Exception:
         import traceback
-        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         common.error('Profile list data: {}', profiles_list)
         raise InvalidProfilesError
 
 
 def _delete_non_existing_profiles(current_guids):
-    list_guid = g.LOCAL_DB.get_guid_profiles()
+    list_guid = G.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
         if guid not in current_guids:
             common.debug('Deleting non-existing profile {}', guid)
-            g.LOCAL_DB.delete_profile(guid)
-            g.SHARED_DB.delete_profile(guid)
+            G.LOCAL_DB.delete_profile(guid)
+            G.SHARED_DB.delete_profile(guid)
     # Ensures at least one active profile
     try:
-        g.LOCAL_DB.get_active_profile_guid()
+        G.LOCAL_DB.get_active_profile_guid()
     except ProfilesMissing:
-        g.LOCAL_DB.switch_active_profile(g.LOCAL_DB.get_guid_owner_profile())
-    g.settings_monitor_suspend(True)
+        G.LOCAL_DB.switch_active_profile(G.LOCAL_DB.get_guid_owner_profile())
+    G.settings_monitor_suspend(True)
     # Verify if auto select profile exists
-    autoselect_profile_guid = g.LOCAL_DB.get_value('autoselect_profile_guid', '')
+    autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
     if autoselect_profile_guid and autoselect_profile_guid not in current_guids:
         common.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
-        g.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        g.ADDON.setSetting('autoselect_profile_name', '')
-        g.ADDON.setSettingBool('autoselect_profile_enabled', False)
+        G.LOCAL_DB.set_value('autoselect_profile_guid', '')
+        G.ADDON.setSetting('autoselect_profile_name', '')
+        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
     # Verify if profile for library auto-sync exists
-    sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid')
+    sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid')
     if sync_mylist_profile_guid and sync_mylist_profile_guid not in current_guids:
         common.warn('Library auto-sync disabled, the GUID {} not more exists', sync_mylist_profile_guid)
-        g.ADDON.setSettingBool('lib_sync_mylist', False)
-        g.SHARED_DB.delete_key('sync_mylist_profile_guid')
+        G.ADDON.setSettingBool('lib_sync_mylist', False)
+        G.SHARED_DB.delete_key('sync_mylist_profile_guid')
     # Verify if profile for library playback exists
-    library_playback_profile_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
+    library_playback_profile_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
     if library_playback_profile_guid and library_playback_profile_guid not in current_guids:
         common.warn('Profile set for playback from library cleared, the GUID {} not more exists',
                     library_playback_profile_guid)
         # Save the selected profile guid
-        g.LOCAL_DB.set_value('library_playback_profile_guid', '')
+        G.LOCAL_DB.set_value('library_playback_profile_guid', '')
         # Save the selected profile name
-        g.ADDON.setSetting('library_playback_profile', '')
-    g.settings_monitor_suspend(False)
+        G.ADDON.setSetting('library_playback_profile', '')
+    G.settings_monitor_suspend(False)
 
 
 def _get_avatar(profile_data, data, guid):
@@ -213,7 +213,7 @@ def _get_avatar(profile_data, data, guid):
     except (KeyError, TypeError):
         common.warn('Cannot find avatar for profile {}', guid)
         common.debug('Profile list data: {}', profile_data)
-        return g.ICON
+        return G.ICON
 
 
 @common.time_execution(immediate=True)
@@ -275,7 +275,7 @@ def validate_login(react_context):
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
@@ -302,7 +302,7 @@ def extract_json(content, name):
         if json_str:
             common.error('JSON string trying to load: {}', json_str)
         import traceback
-        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise WebsiteParsingError('Unable to extract {}'.format(name))
 
 

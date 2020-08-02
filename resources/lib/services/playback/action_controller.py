@@ -14,7 +14,7 @@ import time
 import xbmc
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi import ui
 from .action_manager import ActionManager
 from .am_video_events import AMVideoEvents
@@ -110,7 +110,7 @@ class ActionController(xbmc.Monitor):
                     self._on_playback_stopped()
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
 
     def on_service_tick(self):
         """
@@ -124,7 +124,7 @@ class ActionController(xbmc.Monitor):
     def _on_playback_started(self):
         player_id = _get_player_id()
         self._notify_all(ActionManager.call_on_playback_started, self._get_player_state(player_id))
-        if common.is_debug_verbose() and g.ADDON.getSettingBool('show_codec_info'):
+        if common.is_debug_verbose() and G.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
         self.active_player_id = player_id
 
@@ -213,7 +213,7 @@ def _notify_managers(manager, notification, data):
         manager.enabled = False
         msg = '{} disabled due to exception: {}'.format(manager.name, exc)
         import traceback
-        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_notification(title=common.get_local_string(30105), msg=msg)
 
 

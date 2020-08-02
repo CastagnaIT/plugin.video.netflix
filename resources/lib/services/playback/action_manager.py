@@ -9,7 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 
 
@@ -36,7 +36,7 @@ class ActionManager(object):
         """
         if self._enabled is None:
             common.debug('Loading enabled setting from store')
-            self._enabled = g.ADDON.getSettingBool(self.SETTING_ID)
+            self._enabled = G.ADDON.getSettingBool(self.SETTING_ID)
 
         return self._enabled
 

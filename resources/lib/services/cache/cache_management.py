@@ -17,7 +17,7 @@ from time import time
 
 from resources.lib import common
 from resources.lib.api.exceptions import UnknownCacheBucketError, CacheMiss
-from resources.lib.common import g
+from resources.lib.common import G
 from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError, ProfilesMissing
 from resources.lib.common.cache_utils import BUCKET_NAMES, BUCKETS
 
@@ -72,7 +72,7 @@ class CacheManagement(object):
         # Hundreds of cache accesses are made when loading video lists, then get the active profile guid
         # for each cache requests slows down the total time it takes to load e.g. the video list,
         # then we load the value on first access, and update it only at profile switch
-        self._identifier_prefix = g.LOCAL_DB.get_active_profile_guid() + '_'
+        self._identifier_prefix = G.LOCAL_DB.get_active_profile_guid() + '_'
         return self._identifier_prefix
 
     def _add_prefix(self, identifier):
@@ -109,7 +109,7 @@ class CacheManagement(object):
         if self.next_schedule <= datetime.now():
             common.debug('Triggering expired cache cleaning')
             self.delete_expired()
-            g.LOCAL_DB.set_value('clean_cache_last_start', datetime.now())
+            G.LOCAL_DB.set_value('clean_cache_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
 
     def _get_cache_bucket(self, bucket_name):
@@ -168,7 +168,7 @@ class CacheManagement(object):
             identifier = self._add_prefix(identifier)
             if not expires:
                 if not ttl and bucket['default_ttl']:
-                    ttl = getattr(g, bucket['default_ttl'])
+                    ttl = getattr(G, bucket['default_ttl'])
                 expires = int(time() + ttl)
             cache_entry = {'expires': expires, 'data': data}
             # Save the item data to memory-cache
@@ -298,9 +298,9 @@ class CacheManagement(object):
 
 
 def _compute_next_schedule():
-    last_run = g.LOCAL_DB.get_value('clean_cache_last_start', data_type=datetime)
+    last_run = G.LOCAL_DB.get_value('clean_cache_last_start', data_type=datetime)
     if last_run is None:
         last_run = datetime.now()
-        g.LOCAL_DB.set_value('clean_cache_last_start', last_run)
+        G.LOCAL_DB.set_value('clean_cache_last_start', last_run)
     next_run = last_run + timedelta(days=15)
     return next_run
