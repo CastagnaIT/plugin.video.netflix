@@ -9,8 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from xbmcgui import Window
-
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.globals import g
@@ -33,7 +31,6 @@ class AMVideoEvents(ActionManager):
         self.is_player_in_pause = False
         self.lock_events = False
         self.allow_request_update_loco = False
-        self.window_cls = Window(10000)  # Kodi home window
 
     def __str__(self):
         return 'enabled={}'.format(self.enabled)
