@@ -91,8 +91,7 @@ def check_credentials():
         decrypt_credential(password)
         return True
     except Exception:  # pylint: disable=broad-except
-        pass
-    return False
+        return False
 
 
 def set_credentials(email, password):
