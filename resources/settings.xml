@@ -103,7 +103,8 @@
   </category>
   <category label="30078"><!--Playback-->
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
-    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="sync_watched_status_library" type="bool" label="30301" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
     <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>

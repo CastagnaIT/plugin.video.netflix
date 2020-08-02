@@ -986,7 +986,11 @@ msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Θέλετε να αφαιρέσετε την κατάσταση παρακολούθησης για το '{}';[CR][CR]Η ενέργεια μπορεί να πάρει μέχρι και 24 ώρες για την εκτέλεσή της, με αποτέλεσμα ο τίτλος να βρίσκεται ακόμα στην λίστα."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr ""
+
+# Unused 30302 to 30399
 
 msgctxt "#30400"
 msgid "Search"

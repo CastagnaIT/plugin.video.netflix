@@ -111,19 +111,12 @@ def _play(videoid, is_played_from_strm=False):
         list_item.setArt(arts)
 
     # Get event data for videoid to be played (needed for sync of watched status with Netflix)
-    if (g.ADDON.getSettingBool('ProgressManager_enabled') and
-            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE] and
-            not is_played_from_strm):
-        # Enable the progress manager only when:
-        # - It is not an add-on external call
-        # - It is an external call, but the played item is not a STRM file
-        # Todo:
-        #  in theory to enable in Kodi library need implement the update watched status code for items of Kodi library
-        #  by using JSON RPC Files.SetFileDetails https://github.com/xbmc/xbmc/pull/17202
-        #  that can be used only on Kodi 19.x
-        event_data = _get_event_data(videoid)
-        event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = is_played_from_strm
+    if (g.ADDON.getSettingBool('ProgressManager_enabled')
+            and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]):
+        if not is_played_from_strm or is_played_from_strm and g.ADDON.getSettingBool('sync_watched_status_library'):
+            event_data = _get_event_data(videoid)
+            event_data['videoid'] = videoid.to_dict()
+            event_data['is_played_by_library'] = is_played_from_strm
 
     if 'raspberrypi' in common.get_system_platform():
         _raspberry_disable_omxplayer()
