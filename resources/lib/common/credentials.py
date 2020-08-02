@@ -10,11 +10,22 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import base64
+
 from resources.lib.globals import G
 from resources.lib.api.exceptions import MissingCredentialsError
 
 from .logging import error
 from .uuid_device import get_crypt_key
+
+try:  # The crypto package depends on the library installed (see Wiki)
+    from Crypto import Random
+    from Crypto.Cipher import AES
+    from Crypto.Util import Padding
+except ImportError:
+    from Cryptodome import Random
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Util import Padding
 
 __BLOCK_SIZE__ = 32
 
@@ -22,46 +33,26 @@ __BLOCK_SIZE__ = 32
 def encrypt_credential(raw):
     """
     Encodes data
-
-    :param data: Data to be encoded
-    :type data: str
+    :param raw: Data to be encoded
+    :type raw: str
     :returns:  string -- Encoded data
     """
-    # pylint: disable=invalid-name,import-error
-    import base64
-    try:  # The crypto package depends on the library installed (see Wiki)
-        from Crypto import Random
-        from Crypto.Cipher import AES
-        from Crypto.Util import Padding
-    except ImportError:
-        from Cryptodome import Random
-        from Cryptodome.Cipher import AES
-        from Cryptodome.Util import Padding
     raw = bytes(Padding.pad(data_to_pad=raw.encode('utf-8'), block_size=__BLOCK_SIZE__))
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(get_crypt_key(), AES.MODE_CBC, iv)
     return base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
 
 
-def decrypt_credential(enc, secret=None):
+def decrypt_credential(enc):
     """
     Decodes data
-
-    :param data: Data to be decoded
-    :type data: str
+    :param enc: Data to be decoded
+    :type enc: str
     :returns:  string -- Decoded data
     """
-    # pylint: disable=invalid-name,import-error
-    import base64
-    try:  # The crypto package depends on the library installed (see Wiki)
-        from Crypto.Cipher import AES
-        from Crypto.Util import Padding
-    except ImportError:
-        from Cryptodome.Cipher import AES
-        from Cryptodome.Util import Padding
     enc = base64.b64decode(enc)
     iv = enc[:AES.block_size]
-    cipher = AES.new(secret or get_crypt_key(), AES.MODE_CBC, iv)
+    cipher = AES.new(get_crypt_key(), AES.MODE_CBC, iv)
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
         block_size=__BLOCK_SIZE__)
