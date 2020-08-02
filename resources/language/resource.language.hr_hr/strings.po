@@ -545,9 +545,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cache je očišćen"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Omogući 1080p otključavanje (ne preporučuje se za Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"

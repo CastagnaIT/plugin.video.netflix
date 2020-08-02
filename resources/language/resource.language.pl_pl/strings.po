@@ -544,9 +544,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Pamięć podręczna wyczyszczona"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Włącz odblokowywanie 1080p (niezalecane dla Androida)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"

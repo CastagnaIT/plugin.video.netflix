@@ -136,28 +136,7 @@ class MSLHandler(object):
                 common.purge_credentials()
                 self.msl_requests.crypto.clear_user_id_tokens()
             raise
-        # Disable 1080p Unlock for now, as it is broken due to Netflix changes
-        # if (G.ADDON.getSettingBool('enable_1080p_unlock') and
-        #         not G.ADDON.getSettingBool('enable_vp9_profiles') and
-        #         not has_1080p(manifest)):
-        #     common.debug('Manifest has no 1080p viewables, trying unlock')
-        #     manifest = self.get_edge_manifest(viewable_id, manifest)
         return self.__tranform_to_dash(manifest)
-
-    # Old EDGE ESN no longer exists, keep for future possible workarounds
-    # def get_edge_manifest(self, viewable_id, chrome_manifest):
-    #     """Load a manifest with an EDGE ESN and replace playback_context and drm_context"""
-    #     common.debug('Loading EDGE manifest')
-    #     esn = G.get_edge_esn()
-    #     common.debug('Switching MSL data to EDGE')
-    #     self.msl_requests.perform_key_handshake(esn)
-    #     manifest = self._load_manifest(viewable_id, esn)
-    #     manifest['playbackContextId'] = chrome_manifest['playbackContextId']
-    #     manifest['drmContextId'] = chrome_manifest['drmContextId']
-    #     common.debug('Successfully loaded EDGE manifest')
-    #     common.debug('Resetting MSL data to Chrome')
-    #     self.msl_requests.perform_key_handshake()
-    #     return manifest
 
     @common.time_execution(immediate=True)
     def _load_manifest(self, viewable_id, esn):
@@ -344,9 +323,3 @@ class MSLHandler(object):
     def __tranform_to_dash(self, manifest):
         self.last_license_url = manifest['links']['license']['href']
         return convert_to_dash(manifest)
-
-
-def has_1080p(manifest):
-    """Return True if any of the video tracks in manifest have a 1080p profile available, else False"""
-    return any(video['width'] >= 1920
-               for video in manifest['videoTracks'][0]['downloadables'])

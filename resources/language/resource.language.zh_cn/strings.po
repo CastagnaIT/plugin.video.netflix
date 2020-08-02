@@ -544,9 +544,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "缓存已清除"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "启用1080p解锁（不建议用于Android）"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
