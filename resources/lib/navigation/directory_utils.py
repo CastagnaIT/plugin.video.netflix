@@ -169,7 +169,11 @@ def auto_scroll(list_data):
     if total_items:
         # Delay a bit to wait for the completion of the screen update
         xbmc.sleep(100)
-        if not g.KODI_VERSION.is_major_ver('18'):  # These infoLabel not works on Kodi 18.x
+        if g.KODI_VERSION.is_major_ver('18'):
+            # Check if a selection is already done
+            if xbmc.getInfoLabel('ListItem.Label') != '..':
+                return
+        else:  # These infoLabel not works on Kodi 18.x
             # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
             is_sort_method_episode = xbmc.getCondVisibility('Container.SortMethod(23)')
             if not is_sort_method_episode:
