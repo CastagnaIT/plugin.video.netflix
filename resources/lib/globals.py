@@ -7,12 +7,10 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-# Everything that is to be globally accessible must be defined in this module
-# and initialized in GlobalVariables.init_globals.
-# When reusing Kodi languageInvokers, only the code in the main module
-# (addon.py or service.py) will be run every time the addon is called.
-# All other code executed on module level will only be executed once, when
-# the module is first imported on the first addon invocation.
+# Everything that is to be globally accessible must be defined in this module.
+# Using the Kodi reuseLanguageInvoker feature, only the code in the addon.py or service.py module
+# will be run every time the addon is called.
+# All other modules (imports) are initialized only on the first invocation of the add-on.
 from __future__ import absolute_import, division, unicode_literals
 
 import collections
@@ -206,7 +204,10 @@ class GlobalVariables(object):
 
     def __init__(self):
         """Do nothing on constructing the object"""
-        # Define here any variables necessary for the correct loading of the modules
+        # The class initialization (GlobalVariables) will only take place at the first initialization of this module
+        # on subsequent add-on invocations (invoked by reuseLanguageInvoker) will have no effect.
+        # Define here also any other variables necessary for the correct loading of the other project modules
+        self.PY_IS_VER2 = sys.version_info.major == 2
         self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
         self.ADDON_DATA_PATH = None
@@ -218,15 +219,12 @@ class GlobalVariables(object):
         self.CACHE_METADATA_TTL = None
 
     def init_globals(self, argv, reinitialize_database=False, reload_settings=False):
-        """
-        Initialized globally used module variables. Needs to be called at start of each plugin instance!
-        This is an ugly hack because Kodi does not execute statements
-        defined on module level if reusing a language invoker.
-        """
-        # IS_ADDON_FIRSTRUN specifies when the addon is at its first run (reuse language invoker is not yet used)
+        """Initialized globally used module variables. Needs to be called at start of each plugin instance!"""
+        # IS_ADDON_FIRSTRUN: specifies if the add-on has been initialized for the first time
+        #                    (reuseLanguageInvoker not used yet)
         self.IS_ADDON_FIRSTRUN = self.IS_ADDON_FIRSTRUN is None
         self.IS_ADDON_EXTERNAL_CALL = False
-        self.PY_IS_VER2 = sys.version_info.major == 2
+        # xbmcaddon.Addon must be created at every instance otherwise it does not read any new changes to the settings
         self.ADDON = xbmcaddon.Addon()
         self.URL = urlparse(argv[0])
         self.REQUEST_PATH = g.py2_decode(unquote(self.URL[2][1:]))
@@ -236,6 +234,7 @@ class GlobalVariables(object):
             self.PARAM_STRING = ''
         self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
         if self.IS_ADDON_FIRSTRUN:
+            # Global variables that do not need to be generated at every instance
             self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
             self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
             self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
@@ -256,24 +255,26 @@ class GlobalVariables(object):
                 self.IS_SERVICE = True
                 self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
                                                              netloc=self.ADDON_ID)
-        # Add absolute paths of embedded py modules to python system directory
-        module_paths = [
-            os.path.join(self.ADDON_DATA_PATH, 'modules', 'mysql-connector-python')
+        # Add absolute paths of embedded py packages (packages not supplied by Kodi)
+        packages_paths = [
+            os.path.join(self.ADDON_DATA_PATH, 'packages', 'mysql-connector-python')
         ]
         # On PY2 sys.path list can contains values as unicode type and string type at same time,
         #   here we will add only unicode type so filter values by unicode.
-        #   This fix comparing issues with use of "if path not in sys.path:"
+        #   This fixes comparison errors between str/unicode
         sys_path_filtered = [value for value in sys.path if isinstance(value, unicode)]
-
-        for path in module_paths:  # module_paths has unicode type values
+        for path in packages_paths:  # packages_paths has unicode type values
             path = g.py2_decode(xbmc.translatePath(path))
             if path not in sys_path_filtered:
-                sys.path.insert(0, path)  # This add an unicode type
+                # Add embedded package path to python system directory
+                # The "path" will add an unicode type to avoids problems with OS using symbolic characters
+                sys.path.insert(0, path)
 
         self.reset_time_trace()
         self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
         if self.IS_ADDON_FIRSTRUN or reload_settings:
+            # Put here all the global variables that need to be updated when the user changes the add-on settings
             self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
             self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
             # Initialize the cache
@@ -285,9 +286,9 @@ class GlobalVariables(object):
                 self.CACHE_MANAGEMENT = CacheManagement()
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
-            from resources.lib.common.kodi_ops import GetKodiVersion
-            self.KODI_VERSION = GetKodiVersion()
         self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
+        from resources.lib.common.kodi_ops import GetKodiVersion
+        self.KODI_VERSION = GetKodiVersion()
 
     def _init_database(self, initialize):
         # Initialize local database
@@ -350,16 +351,11 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
-        for menu_id, data in iteritems(self.MAIN_MENU_ITEMS):  # pylint: disable=unused-variable
+        for _, data in iteritems(self.MAIN_MENU_ITEMS):
             if data['loco_known']:
                 if data['loco_contexts'][0] == context:
                     return True
         return False
-
-    def flush_settings(self):
-        """Reload the ADDON"""
-        # pylint: disable=attribute-defined-outside-init
-        self.ADDON = xbmcaddon.Addon()
 
     def reset_time_trace(self):
         """Reset current time trace info"""
@@ -397,9 +393,6 @@ class GlobalVariables(object):
 
 
 # pylint: disable=invalid-name
-# This will have no effect most of the time, as it doesn't seem to be executed
-# on subsequent addon invocations when reuseLanguageInvoker is being used.
-# We initialize an empty instance so the instance is importable from run_addon.py
-# and run_service.py, where g.init_globals(sys.argv) MUST be called before doing
-# anything else (even BEFORE OTHER IMPORTS from this addon)
+# We initialize an instance importable of GlobalVariables from run_addon.py and run_service.py,
+# where g.init_globals() MUST be called before you do anything else.
 g = GlobalVariables()
