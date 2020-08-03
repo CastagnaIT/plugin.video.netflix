@@ -15,10 +15,11 @@ import resources.lib.common as common
 from resources.lib.globals import G
 from .exceptions import InvalidReferenceError
 
-# Limit size for the path request
+# Limit size for the path request (with zero base)
 # The requests to sorted lists can get more then 48 results,
 # but the nf server blocks request if the response will result in too much data
-PATH_REQUEST_SIZE_STD = 47  # Standard limit defined by netflix (48 results)
+PATH_REQUEST_SIZE_STD = 47  # Standard size defined by netflix, limit imposed to some fixed lists
+PATH_REQUEST_SIZE_PAGINATED = 44  # Used to paginated results (value rounded for easy settings)
 PATH_REQUEST_SIZE_MAX = 199
 
 RANGE_PLACEHOLDER = 'RANGE_PLACEHOLDER'
