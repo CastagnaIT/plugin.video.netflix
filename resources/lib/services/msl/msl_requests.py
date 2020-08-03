@@ -130,23 +130,25 @@ class MSLRequests(MSLRequestBuilder):
 
         if not force_auth_credential:
             if current_profile_guid == owner_profile_guid:
-                # It is not necessary to get a token id because by default MSL it is associated to the main profile
-                # So you do not even need to run the MSL profile switch
+                # The request will be executed from the owner profile
+                # By default MSL is associated to the owner profile, then is not necessary get the owner token id
+                # and it is not necessary use the MSL profile switch
                 user_id_token = self.crypto.get_user_id_token(current_profile_guid)
-                # user_id_token can return None when the add-on is installed from scratch, in this case will be used
-                # the authentication with the user credentials
+                # The user_id_token can return None when the add-on is installed from scratch,
+                # in this case will be used the authentication with the user credentials
             else:
-                # The request must be executed from a non-owner profile
-                # Check if the token for the profile exist and valid
+                # The request will be executed from a non-owner profile
+                # Get the non-owner profile token id, by checking that exists and it is valid
                 user_id_token = self.crypto.get_user_id_token(current_profile_guid)
                 if not user_id_token and not disable_msl_switch:
-                    # If it is not there, first check if the main profile token exist and valid
+                    # The token does not exist/valid, you must set the MSL profile switch
                     use_switch_profile = True
+                    # First check if the owner profile token exist and it is valid
                     user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
-                    # If it is not there, you must obtain it before making the MSL switch
                     if not user_id_token:
+                        # The owner profile token id does not exist/valid, then get it
                         self._get_owner_user_id_token()
-                    user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
+                        user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
                     # Mark msl_switch_requested as True in order to make a bind event request
                     self.msl_switch_requested = True
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
