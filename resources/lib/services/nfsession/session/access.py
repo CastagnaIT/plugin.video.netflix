@@ -14,6 +14,7 @@ import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.kodi.ui as ui
+from resources.lib.utils.esn import get_esn
 from resources.lib.utils.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
@@ -68,7 +69,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
     @staticmethod
     def _verify_esn_existence():
-        return bool(G.get_esn())
+        return bool(get_esn())
 
     def get_safe(self, endpoint, **kwargs):
         """

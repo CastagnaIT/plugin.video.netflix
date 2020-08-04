@@ -14,6 +14,7 @@ import xbmc
 import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+from resources.lib.utils.esn import get_esn
 from resources.lib.utils.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.utils.api_paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
@@ -163,7 +164,7 @@ class AddonActionExecutor(object):
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
-        ui.show_ok_dialog(common.get_local_string(30016), G.get_esn())
+        ui.show_ok_dialog(common.get_local_string(30016), get_esn())
 
     def reset_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Reset the ESN stored (retrieved from website and manual)"""

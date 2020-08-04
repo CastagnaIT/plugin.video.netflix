@@ -21,6 +21,7 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.msl import msl_utils
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
+from resources.lib.utils.esn import get_esn
 
 try:  # Python 2
     from urllib import urlencode
@@ -124,7 +125,7 @@ class EventsHandler(threading.Thread):
                       'reqName': 'events/{}'.format(event)}
             url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
             try:
-                response = self.chunked_request(url, event.request_data, G.get_esn(), disable_msl_switch=False)
+                response = self.chunked_request(url, event.request_data, get_esn(), disable_msl_switch=False)
                 event.set_response(response)
                 break
             except Exception as exc:  # pylint: disable=broad-except
@@ -252,5 +253,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = G.get_esn() + '_' + videoid.value
+    cache_identifier = get_esn() + '_' + videoid.value
     return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

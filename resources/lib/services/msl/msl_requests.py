@@ -21,6 +21,7 @@ from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
                                                   MSL_DATA_FILENAME)
+from resources.lib.utils.esn import get_esn
 
 try:  # Python 2
     from urllib import urlencode
@@ -55,7 +56,7 @@ class MSLRequests(MSLRequestBuilder):
     @common.time_execution(immediate=True)
     def perform_key_handshake(self, data=None):  # pylint: disable=unused-argument
         """Perform a key handshake and initialize crypto keys"""
-        esn = G.get_esn()
+        esn = get_esn()
         if not esn:
             common.warn('Cannot perform key handshake, missing ESN')
             return False
@@ -86,7 +87,7 @@ class MSLRequests(MSLRequestBuilder):
         url = ENDPOINTS['logblobs'] + '?' + urlencode(params).replace('%2F', '/')
         response = self.chunked_request(url,
                                         self.build_request_data('/logblob', generate_logblobs_params()),
-                                        G.get_esn(),
+                                        get_esn(),
                                         force_auth_credential=True)
         common.debug('Response of logblob request: {}', response)
 
@@ -99,7 +100,7 @@ class MSLRequests(MSLRequestBuilder):
                 is_handshake_required = True
             else:
                 # Check if the current ESN is same of ESN bound to MasterToken
-                if G.get_esn() != self.crypto.bound_esn:
+                if get_esn() != self.crypto.bound_esn:
                     common.debug('Stored MSL MasterToken is bound to a different ESN, '
                                  'a new key handshake will be performed')
                     is_handshake_required = True

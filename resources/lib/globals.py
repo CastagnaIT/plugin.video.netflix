@@ -343,12 +343,6 @@ class GlobalVariables(object):
         """
         return G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
 
-    def get_esn(self):
-        """Get the generated esn or if set get the custom esn"""
-        from resources.lib.database.db_utils import TABLE_SESSION
-        custom_esn = G.ADDON.getSetting('esn')
-        return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
-
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
         for _, data in iteritems(self.MAIN_MENU_ITEMS):

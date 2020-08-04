@@ -17,6 +17,13 @@ from resources.lib.common.device_utils import get_system_platform
 from resources.lib.common.logging import debug
 
 
+def get_esn():
+    """Get the generated esn or if set get the custom esn"""
+    from resources.lib.database.db_utils import TABLE_SESSION
+    custom_esn = G.ADDON.getSetting('esn')
+    return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
+
+
 def generate_android_esn():
     """Generate an ESN if on android or return the one from user_data"""
     if get_system_platform() == 'android':

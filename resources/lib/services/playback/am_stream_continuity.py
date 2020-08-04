@@ -15,6 +15,7 @@ import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.globals import G
 from resources.lib.kodi import ui
+from resources.lib.utils.esn import get_esn
 from .action_manager import ActionManager
 
 STREAMS = {
@@ -264,7 +265,7 @@ class AMStreamContinuity(ActionManager):
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
             audio_language = common.get_kodi_audio_language()
-            cache_identifier = G.get_esn() + '_' + self.videoid.value
+            cache_identifier = get_esn() + '_' + self.videoid.value
             manifest_data = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and

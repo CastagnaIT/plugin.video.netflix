@@ -15,10 +15,11 @@ import time
 import xbmcaddon
 
 import resources.lib.common as common
-from resources.lib.utils.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.exceptions import CacheMiss
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
 from .exceptions import MSLError
@@ -126,7 +127,7 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         try:
-            manifest = self._load_manifest(viewable_id, G.get_esn())
+            manifest = self._load_manifest(viewable_id, get_esn())
         except MSLError as exc:
             if 'Email or password is incorrect' in G.py2_decode(str(exc)):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -261,7 +262,7 @@ class MSLHandler(object):
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
                                                                                           'drmSessionId'),
-                                                     G.get_esn())
+                                                     get_esn())
         # This xid must be used also for each future Event request, until playback stops
         G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 
@@ -282,7 +283,7 @@ class MSLHandler(object):
         common.debug('Requesting bind events')
         response = self.msl_requests.chunked_request(ENDPOINTS['events'],
                                                      self.msl_requests.build_request_data('/bind', {}),
-                                                     G.get_esn(),
+                                                     get_esn(),
                                                      disable_msl_switch=False)
         common.debug('Bind events response: {}', response)
 
@@ -309,7 +310,7 @@ class MSLHandler(object):
 
             response = self.msl_requests.chunked_request(ENDPOINTS['license'],
                                                          self.msl_requests.build_request_data('/bundle', params),
-                                                         G.get_esn())
+                                                         get_esn())
             common.debug('License release response: {}', response)
         except IndexError:
             # Example the supplemental media type have no license
