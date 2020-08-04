@@ -13,8 +13,8 @@ from re import sub
 
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from .device_utils import get_system_platform
-from .logging import debug
+from resources.lib.common.device_utils import get_system_platform
+from resources.lib.common.logging import debug
 
 
 def generate_android_esn():

@@ -20,6 +20,7 @@ import resources.lib.common as common
 from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from .esn import generate_android_esn
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
                          WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
@@ -97,7 +98,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # Save only some info of the current profile from user data
     G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
-        G.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn', generate_android_esn() or user_data['esn'], TABLE_SESSION)
     G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
     result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
