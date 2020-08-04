@@ -38,22 +38,35 @@ class SessionPathRequests(SessionAccess):
 
     @common.time_execution(immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
-                               request_size=apipaths.PATH_REQUEST_SIZE_STD, no_limit_req=False):
-        """Perform a perpetual path request against the Shakti API to retrieve a possibly large video list.
-        If the requested video list's size is larger than 'request_size', multiple path requests will be
-        executed with forward shifting range selectors and the results will be combined into one path response."""
+                               request_size=apipaths.PATH_REQUEST_SIZE_PAGINATED, no_limit_req=False):
+        """
+        Perform a perpetual path request against the Shakti API to retrieve a possibly large video list.
+        :param paths: The paths that compose the request
+        :param length_params: A list of two values, e.g. ['stdlist', [...]]:
+                              1: A key of LENGTH_ATTRIBUTES that define where read the total number of objects
+                              2: A list of keys used to get the list of objects in the JSON data of received response
+        :param perpetual_range_start: defines the starting point of the range of objects to be requested
+        :param request_size: defines the size of the range, the total number of objects that will be received
+        :param no_limit_req: if True, the perpetual cycle of requests will be 'unlimited'
+        :return: Union of all JSON raw data received
+        """
+        # When the requested video list's size is larger than 'request_size',
+        # multiple path requests will be executed with forward shifting range selectors
+        # and the results will be combined into one path response.
         response_type, length_args = length_params
         context_name = length_args[0]
         response_length = apipaths.LENGTH_ATTRIBUTES[response_type]
 
-        response_size = request_size + 1
         # Note: when the request is made with 'genres' or 'seasons' context,
-        # the response strangely does not respect the number of objects
-        # requested, returning 1 more item, i couldn't understand why
+        #   the response strangely does not respect the number of objects
+        #   requested, returning 1 more item, i couldn't understand why
+        if context_name in ['genres', 'seasons']:
+            request_size -= 1
+        response_size = request_size + 1
         if context_name in ['genres', 'seasons']:
             response_size += 1
 
-        number_of_requests = 100 if no_limit_req else 2
+        number_of_requests = 100 if no_limit_req else int(G.ADDON.getSettingInt('page_results') / 45)
         perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
         range_start = perpetual_range_start
         range_end = range_start + request_size
