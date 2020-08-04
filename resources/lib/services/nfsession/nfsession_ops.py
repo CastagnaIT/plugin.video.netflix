@@ -19,6 +19,7 @@ from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsEr
                                           HttpError401, InvalidProfilesError)
 from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import G
+from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
 
 
@@ -39,7 +40,9 @@ class NFSessionOperations(SessionPathRequests):
             self.fetch_initial_page,
             self.activate_profile,
             self.parental_control_data,
-            self.get_metadata
+            self.get_metadata,
+            self.update_loco_context,
+            self.update_videoid_bookmark
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -206,3 +209,60 @@ class NFSessionOperations(SessionPathRequests):
             #   available using profiles with other languages
             raise MetadataNotAvailable
         return metadata_data['video']
+
+    def update_loco_context(self, context_name):
+        """Update a loco list by context"""
+        # Call this api seem no more needed to update the continueWatching loco list
+        # Get current loco root data
+        loco_data = self.path_request([['loco', [context_name], ['context', 'id', 'index']]])
+        loco_root = loco_data['loco'][1]
+        if 'continueWatching' in loco_data['locos'][loco_root]:
+            context_index = loco_data['locos'][loco_root]['continueWatching'][2]
+            context_id = loco_data['locos'][loco_root][context_index][1]
+        else:
+            # In the new profiles, there is no 'continueWatching' list and no list is returned
+            common.warn('update_loco_context: Update skipped due to missing context {}', context_name)
+            return
+
+        path = [['locos', loco_root, 'refreshListByContext']]
+        # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
+        #   The fourth parameter is like a request-id, but it does not seem to match to
+        #   serverDefs/date/requestId of reactContext nor to request_id of the video event request,
+        #   seem to have some kind of relationship with renoMessageId suspect with the logblob but i am not sure.
+        #   I noticed also that this request can also be made with the fourth parameter empty.
+        params = [common.enclose_quotes(context_id),
+                  context_index,
+                  common.enclose_quotes(context_name),
+                  '']
+        # path_suffixs = [
+        #    [{'from': 0, 'to': 100}, 'itemSummary'],
+        #    [['componentSummary']]
+        # ]
+        try:
+            response = self.callpath_request(path, params)
+            common.debug('refreshListByContext response: {}', response)
+            # The call response return the new context id of the previous invalidated loco context_id
+            # and if path_suffixs is added return also the new video list data
+        except Exception as exc:  # pylint: disable=broad-except
+            common.warn('refreshListByContext failed: {}', exc)
+            if not common.is_debug_verbose():
+                return
+            ui.show_notification(title=common.get_local_string(30105),
+                                 msg='An error prevented the update the loco context on Netflix',
+                                 time=10000)
+
+    def update_videoid_bookmark(self, video_id):
+        """Update the videoid bookmark position"""
+        # You can check if this function works through the official android app
+        # by checking if the red status bar of watched time position appears and will be updated, or also
+        # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
+        call_paths = [['refreshVideoCurrentPositions']]
+        params = ['[' + video_id + ']', '[]']
+        try:
+            response = self.callpath_request(call_paths, params)
+            common.debug('refreshVideoCurrentPositions response: {}', response)
+        except Exception as exc:  # pylint: disable=broad-except
+            common.warn('refreshVideoCurrentPositions failed: {}', exc)
+            ui.show_notification(title=common.get_local_string(30105),
+                                 msg='An error prevented the update the status watched on Netflix',
+                                 time=10000)

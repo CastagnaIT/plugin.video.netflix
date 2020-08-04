@@ -16,7 +16,6 @@ from future.utils import itervalues
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from .exceptions import APIError, MissingCredentialsError, CacheMiss
 from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
@@ -53,69 +52,6 @@ def login(ask_credentials=True):
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
         raise
-
-
-def update_loco_context(context_name):
-    """Update a loco list by context"""
-    # This api seem no more needed to update the continueWatching loco list
-    loco_root = G.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION)
-
-    context_index = G.LOCAL_DB.get_value('loco_{}_index'.format(context_name.lower()), '', TABLE_SESSION)
-    context_id = G.LOCAL_DB.get_value('loco_{}_id'.format(context_name.lower()), '', TABLE_SESSION)
-
-    if not context_index:
-        common.warn('Update loco context {} skipped due to missing loco index', context_name)
-        return
-    path = [['locos', loco_root, 'refreshListByContext']]
-    # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
-    #   The fourth parameter is like a request-id, but it doesn't seem to match to
-    #   serverDefs/date/requestId of reactContext (G.LOCAL_DB.get_value('request_id', table=TABLE_SESSION))
-    #   nor to request_id of the video event request,
-    #   has a kind of relationship with renoMessageId suspect with the logblob but i'm not sure because my debug crashed
-    #   and i am no longer able to trace the source.
-    #   I noticed also that this request can also be made with the fourth parameter empty.
-    params = [common.enclose_quotes(context_id),
-              context_index,
-              common.enclose_quotes(context_name),
-              '']
-    # path_suffixs = [
-    #    [{'from': 0, 'to': 100}, 'itemSummary'],
-    #    [['componentSummary']]
-    # ]
-    callargs = {
-        'callpaths': path,
-        'params': params,
-        # 'path_suffixs': path_suffixs
-    }
-    try:
-        response = common.make_http_call('callpath_request', callargs)
-        common.debug('refreshListByContext response: {}', response)
-        # The call response return the new context id of the previous invalidated loco context_id
-        # and if path_suffixs is added return also the new video list data
-    except Exception:  # pylint: disable=broad-except
-        if not common.is_debug_verbose():
-            return
-        ui.show_notification(title=common.get_local_string(30105),
-                             msg='An error prevented the update the loco context on netflix',
-                             time=10000)
-
-
-def update_videoid_bookmark(video_id):
-    """Update the videoid bookmark position"""
-    # You can check if this function works through the official android app
-    # by checking if the red status bar of watched time position appears and will be updated,
-    # or also if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
-    callargs = {
-        'callpaths': [['refreshVideoCurrentPositions']],
-        'params': ['[' + video_id + ']', '[]'],
-    }
-    try:
-        response = common.make_http_call('callpath_request', callargs)
-        common.debug('refreshVideoCurrentPositions response: {}', response)
-    except Exception:  # pylint: disable=broad-except
-        ui.show_notification(title=common.get_local_string(30105),
-                             msg='An error prevented the update the status watched on netflix',
-                             time=10000)
 
 
 @common.time_execution(immediate=False)

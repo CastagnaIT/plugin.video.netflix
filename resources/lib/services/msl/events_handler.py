@@ -15,7 +15,6 @@ import time
 
 import xbmc
 
-import resources.lib.api.api_requests as api
 from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
@@ -133,10 +132,9 @@ class EventsHandler(threading.Thread):
         if event.event_type == EVENT_STOP:
             self.clear_queue()
             if event.event_data['allow_request_update_loco']:
-                # if event.event_data['is_in_mylist']:
-                #     # If video is in my list, invalidate the continueWatching list (update loco context data)
-                #     api.update_loco_context('continueWatching')
-                api.update_videoid_bookmark(event.get_video_id())
+                # Calls to nfsession
+                common.make_http_call('update_loco_context', {'context_name': 'continueWatching'})
+                common.make_http_call('update_videoid_bookmark', {'video_id': event.get_video_id()})
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
             # The event request is unsuccessful then there is some problem,
