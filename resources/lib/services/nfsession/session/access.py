@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
-import resources.lib.common.cookies as cookies
+import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,

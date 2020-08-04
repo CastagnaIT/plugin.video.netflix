@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import time
 
-import resources.lib.common.cookies as cookies
+import resources.lib.utils.cookies as cookies
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.utils.logging import LOG

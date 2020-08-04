@@ -17,7 +17,8 @@ import resources.lib.common as common
 from resources.lib.utils.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
                                             MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
                                             HttpError401, InvalidProfilesError)
-from resources.lib.common import cookies, cache_utils
+from resources.lib.common import cache_utils
+from resources.lib.utils import cookies
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
