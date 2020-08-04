@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 from functools import wraps
 
 import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
+from resources.lib.utils.exceptions import CacheMiss
 from resources.lib.globals import G
 
 try:

@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmcplugin
 
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_requests as api
 from resources.lib import common
 from resources.lib.globals import G
 from resources.lib.kodi import ui

@@ -11,11 +11,11 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import MissingCredentialsError, CacheMiss
-from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
+from resources.lib.utils.exceptions import MissingCredentialsError, CacheMiss
+from resources.lib.utils.api_paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls

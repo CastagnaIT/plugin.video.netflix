@@ -16,7 +16,7 @@ from functools import wraps
 from time import time
 
 from resources.lib import common
-from resources.lib.api.exceptions import UnknownCacheBucketError, CacheMiss
+from resources.lib.utils.exceptions import UnknownCacheBucketError, CacheMiss
 from resources.lib.common import G
 from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError, ProfilesMissing
 from resources.lib.common.cache_utils import BUCKET_NAMES, BUCKETS

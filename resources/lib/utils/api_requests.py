@@ -18,7 +18,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from .exceptions import APIError, MissingCredentialsError, CacheMiss
-from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
+from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 
 
 def catch_api_errors(func):

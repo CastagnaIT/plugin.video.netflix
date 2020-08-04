@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-import resources.lib.api.paths as apipaths
+import resources.lib.utils.api_paths as apipaths
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.access import SessionAccess

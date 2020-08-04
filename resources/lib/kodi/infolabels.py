@@ -13,10 +13,10 @@ import copy
 
 from future.utils import iteritems, itervalues
 
-import resources.lib.api.paths as paths
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_paths as paths
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
+from resources.lib.utils.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
 from resources.lib.globals import G
 

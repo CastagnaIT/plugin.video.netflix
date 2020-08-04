@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 
 import resources.lib.common as common
-from resources.lib.api.exceptions import InvalidPathError
+from resources.lib.utils.exceptions import InvalidPathError
 from resources.lib.globals import G
 
 try:  # Python 3

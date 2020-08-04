@@ -17,7 +17,7 @@ import xbmcvfs
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.utils.exceptions import MetadataNotAvailable
 from resources.lib.globals import G
 from resources.lib.kodi.library_utils import remove_videoid_from_db, insert_videoid_to_db
 

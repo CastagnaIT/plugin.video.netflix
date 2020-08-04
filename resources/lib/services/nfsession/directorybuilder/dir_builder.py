@@ -12,8 +12,8 @@ from __future__ import absolute_import, division, unicode_literals
 from future.utils import iteritems
 
 from resources.lib import common
-from resources.lib.api.data_types import merge_data_type
-from resources.lib.api.exceptions import CacheMiss
+from resources.lib.utils.data_types import merge_data_type
+from resources.lib.utils.exceptions import CacheMiss
 from resources.lib.common import VideoId
 from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder_items \

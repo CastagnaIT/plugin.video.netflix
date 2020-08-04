@@ -14,7 +14,7 @@ from future.utils import iteritems, itervalues, listvalues
 
 import resources.lib.common as common
 
-from .paths import resolve_refs
+from .api_paths import resolve_refs
 
 
 class LoLoMo(object):

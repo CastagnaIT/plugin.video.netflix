@@ -14,7 +14,7 @@ from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
-from resources.lib.api.exceptions import InputStreamHelperError
+from resources.lib.utils.exceptions import InputStreamHelperError
 from resources.lib.common import debug, error, get_system_platform, is_device_4k_capable, get_local_string, json_rpc
 from resources.lib.globals import G
 from resources.lib.kodi.ui import show_ok_dialog

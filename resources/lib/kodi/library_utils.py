@@ -17,7 +17,7 @@ from functools import wraps
 import xbmc
 
 from resources.lib import common
-from resources.lib.api.paths import PATH_REQUEST_SIZE_STD
+from resources.lib.utils.api_paths import PATH_REQUEST_SIZE_STD
 from resources.lib.database.db_utils import VidLibProp
 from resources.lib.globals import G
 from resources.lib.kodi import nfo, ui

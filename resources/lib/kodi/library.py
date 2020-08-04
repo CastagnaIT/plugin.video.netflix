@@ -17,7 +17,7 @@ from future.utils import iteritems
 
 import xbmc
 
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
 import resources.lib.kodi.ui as ui

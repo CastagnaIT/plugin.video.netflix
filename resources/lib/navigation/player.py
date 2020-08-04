@@ -12,11 +12,11 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmcplugin
 import xbmcgui
 
-from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
-from resources.lib.api.paths import EVENT_PATHS
+from resources.lib.utils.exceptions import MetadataNotAvailable, InputStreamHelperError
+from resources.lib.utils.api_paths import EVENT_PATHS
 from resources.lib.globals import G
 import resources.lib.common as common
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 

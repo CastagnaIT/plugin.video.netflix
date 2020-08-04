@@ -13,9 +13,9 @@ from functools import wraps
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
-from resources.lib.api.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
-                                          MbrStatusFormerMemberError, MissingCredentialsError, NotLoggedInError,
-                                          InvalidPathError, LoginValidateError)
+from resources.lib.utils.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
+                                            MbrStatusFormerMemberError, MissingCredentialsError, NotLoggedInError,
+                                            InvalidPathError, LoginValidateError)
 from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
                                   log_time_trace, reset_log_level_global_var,
                                   get_current_kodi_profile_name, get_local_string)
@@ -27,7 +27,7 @@ def _check_valid_credentials():
     """Check that credentials are valid otherwise request user credentials"""
     if not check_credentials():
         try:
-            from resources.lib.api.api_requests import login
+            from resources.lib.utils.api_requests import login
             if not login():
                 # Wrong login try again
                 return _check_valid_credentials()
@@ -52,7 +52,7 @@ def lazy_login(func):
             # Exceptions raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
             debug('Tried to perform an action without being logged in')
             try:
-                from resources.lib.api.api_requests import login
+                from resources.lib.utils.api_requests import login
                 if not login(ask_credentials=not check_credentials()):
                     return False
                 debug('Account logged in, try executing again {}', func.__name__)

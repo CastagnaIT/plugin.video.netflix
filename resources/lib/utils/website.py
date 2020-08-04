@@ -23,7 +23,7 @@ from resources.lib.globals import G
 from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
                          WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
-from .paths import jgraph_get, jgraph_get_list, jgraph_get_path
+from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
 
 try:  # Python 2
     unicode

@@ -12,11 +12,11 @@ from __future__ import absolute_import, division, unicode_literals
 import time
 from datetime import datetime, timedelta
 
-import resources.lib.api.website as website
+import resources.lib.utils.website as website
 import resources.lib.common as common
-from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                          MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
-                                          HttpError401, InvalidProfilesError)
+from resources.lib.utils.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
+                                            MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
+                                            HttpError401, InvalidProfilesError)
 from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import G
 from resources.lib.kodi import ui

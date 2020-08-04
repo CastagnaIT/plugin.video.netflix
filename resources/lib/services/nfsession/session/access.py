@@ -10,12 +10,12 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import resources.lib.api.website as website
+import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.common.cookies as cookies
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+from resources.lib.utils.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
+                                            MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie

@@ -12,7 +12,7 @@ from functools import wraps
 import AddonSignals
 
 from resources.lib.globals import G
-import resources.lib.api.exceptions as apierrors
+import resources.lib.utils.exceptions as apierrors
 
 from .logging import debug, error, time_execution
 from .misc_utils import run_threaded

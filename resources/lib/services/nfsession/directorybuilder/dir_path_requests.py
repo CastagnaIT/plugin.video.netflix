@@ -12,13 +12,13 @@ from __future__ import absolute_import, division, unicode_literals
 from future.utils import iteritems
 
 from resources.lib import common
-from resources.lib.api.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
-                                          VideoList, SearchVideoList, CustomVideoList)
-from resources.lib.api.exceptions import InvalidVideoListTypeError
-from resources.lib.api.paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
-                                     SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                                     GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
-                                     PATH_REQUEST_SIZE_MAX)
+from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
+                                            VideoList, SearchVideoList, CustomVideoList)
+from resources.lib.utils.exceptions import InvalidVideoListTypeError
+from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
+                                           SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
+                                           GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
+                                           PATH_REQUEST_SIZE_MAX)
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
 
@@ -140,7 +140,7 @@ class DirectoryPathRequests(object):
                   ['profilesList', {'to': 5}, 'avatar', 'images', 'byWidth', 320]])
         path_response = self.nfsession.path_request(paths, use_jsongraph=True)
         if update_database:
-            from resources.lib.api.website import parse_profiles
+            from resources.lib.utils.website import parse_profiles
             parse_profiles(path_response)
         return path_response
 
