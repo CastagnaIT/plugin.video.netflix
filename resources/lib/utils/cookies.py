@@ -28,7 +28,7 @@ def save(account_hash, cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
     if log_output:
         log_cookie(cookie_jar)
-    cookie_file = xbmcvfs.File(cookie_filename(account_hash), 'wb')
+    cookie_file = xbmcvfs.File(cookie_file_path(account_hash), 'wb')
     try:
         # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
@@ -41,19 +41,19 @@ def save(account_hash, cookie_jar, log_output=True):
 def delete(account_hash):
     """Delete cookies for an account from the disk"""
     try:
-        xbmcvfs.delete(cookie_filename(account_hash))
+        xbmcvfs.delete(cookie_file_path(account_hash))
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
 def load(account_hash):
     """Load cookies for a given account and check them for validity"""
-    filename = cookie_filename(account_hash)
-    if not xbmcvfs.exists(filename):
+    file_path = cookie_file_path(account_hash)
+    if not xbmcvfs.exists(file_path):
         LOG.debug('Cookies file does not exist')
         raise MissingCookiesError
-    LOG.debug('Loading cookies from {}', G.py2_decode(filename))
-    cookie_file = xbmcvfs.File(filename, 'rb')
+    LOG.debug('Loading cookies from {}', G.py2_decode(file_path))
+    cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
         if G.PY_IS_VER2:
             # pickle.loads on py2 wants string
@@ -87,6 +87,6 @@ def log_cookie(cookie_jar):
     LOG.debug(debug_output)
 
 
-def cookie_filename(account_hash):
-    """Return a filename to store cookies for a given account"""
+def cookie_file_path(account_hash):
+    """Return the file path to store cookies for a given account"""
     return xbmc.translatePath('{}_{}'.format(G.COOKIE_PATH, account_hash))
