@@ -62,15 +62,17 @@ class SessionHTTPRequests(SessionBase):
             data=data)
         LOG.debug('Request took {}s', perf_clock() - start)
         LOG.debug('Request returned status code {}', response.status_code)
-        if response.status_code in [404, 401] and not session_refreshed:
-            # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
-            # 401 - It may happen when authURL is not more valid (Unauthorized for url)
-            # So let's try refreshing the session data (just once)
-            LOG.warn('Try refresh session data due to {} http error', response.status_code)
-            if self.try_refresh_session_data():
-                return self._request(method, endpoint, True, **kwargs)
+        if not session_refreshed:
+            # We refresh the session when happen:
+            # Error 404: It happen when Netflix update the build_identifier version and causes the api address to change
+            # Error 401: This is a generic error, can happen when the http request for some reason has failed,
+            #   we allow the refresh only for shakti endpoint, sometimes for unknown reasons it is necessary to update
+            #   the session for the request to be successful
+            if response.status_code == 404 or (response.status_code == 401 and endpoint == 'shakti'):
+                LOG.warn('Attempt to refresh the session due to HTTP error {}', response.status_code)
+                if self.try_refresh_session_data():
+                    return self._request(method, endpoint, True, **kwargs)
         if response.status_code == 401:
-            LOG.error('Raise error due to too many http error 401')
             raise HttpError401
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
