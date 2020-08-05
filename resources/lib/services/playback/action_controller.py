@@ -16,12 +16,13 @@ import xbmc
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.kodi import ui
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
-from .am_video_events import AMVideoEvents
 from .am_playback import AMPlayback
 from .am_section_skipping import AMSectionSkipper
 from .am_stream_continuity import AMStreamContinuity
 from .am_upnext_notifier import AMUpNextNotifier
+from .am_video_events import AMVideoEvents
 
 
 class ActionController(xbmc.Monitor):
@@ -92,15 +93,15 @@ class ActionController(xbmc.Monitor):
                 self._on_playback_pause()
             elif method == 'Player.OnResume':
                 if self.events_workaround:
-                    common.debug('ActionController: Player.OnResume event has been ignored')
+                    LOG.debug('ActionController: Player.OnResume event has been ignored')
                     return
                 self._on_playback_resume()
             elif method == 'Player.OnStop':
                 # When an error occurs before the video can be played,
                 # Kodi send a Stop event and here the active_player_id is None, then ignore this event
                 if self.active_player_id is None:
-                    common.debug('ActionController: Player.OnStop event has been ignored')
-                    common.warn('ActionController: Possible problem with video playback, action managers disabled.')
+                    LOG.debug('ActionController: Player.OnStop event has been ignored')
+                    LOG.warn('ActionController: Possible problem with video playback, action managers disabled.')
                     self.tracking = False
                     self.action_managers = None
                     self.events_workaround = False
@@ -110,7 +111,7 @@ class ActionController(xbmc.Monitor):
                     self._on_playback_stopped()
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
 
     def on_service_tick(self):
         """
@@ -124,7 +125,7 @@ class ActionController(xbmc.Monitor):
     def _on_playback_started(self):
         player_id = _get_player_id()
         self._notify_all(ActionManager.call_on_playback_started, self._get_player_state(player_id))
-        if common.is_debug_verbose() and G.ADDON.getSettingBool('show_codec_info'):
+        if LOG.level == LOG.LEVEL_VERBOSE and G.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
         self.active_player_id = player_id
 
@@ -160,7 +161,7 @@ class ActionController(xbmc.Monitor):
         self.events_workaround = False
 
     def _notify_all(self, notification, data=None):
-        common.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
+        LOG.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
@@ -179,7 +180,7 @@ class ActionController(xbmc.Monitor):
                     'time']
             })
         except IOError as exc:
-            common.warn('_get_player_state: {}', exc)
+            LOG.warn('_get_player_state: {}', exc)
             return {}
 
         # convert time dict to elapsed seconds
@@ -213,7 +214,7 @@ def _notify_managers(manager, notification, data):
         manager.enabled = False
         msg = '{} disabled due to exception: {}'.format(manager.name, exc)
         import traceback
-        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_notification(title=common.get_local_string(30105), msg=msg)
 
 
@@ -226,7 +227,7 @@ def _get_player_id():
                 return result[0]['playerid']
             time.sleep(0.1)
             retry -= 1
-        common.warn('Player ID not obtained, fallback to ID 1')
+        LOG.warn('Player ID not obtained, fallback to ID 1')
     except IOError:
-        common.error('Player ID not obtained, fallback to ID 1')
+        LOG.error('Player ID not obtained, fallback to ID 1')
     return 1

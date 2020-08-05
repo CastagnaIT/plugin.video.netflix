@@ -14,9 +14,9 @@ import json
 
 import xbmcdrm
 
-import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .base_crypto import MSLBaseCrypto
 from .exceptions import MSLError
 
@@ -32,10 +32,10 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         try:
             self.crypto_session = xbmcdrm.CryptoSession(
                 'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed', 'AES/CBC/NoPadding', 'HmacSHA256')
-            common.debug('Widevine CryptoSession successful constructed')
+            LOG.debug('Widevine CryptoSession successful constructed')
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             raise MSLError('Failed to construct Widevine CryptoSession')
 
         drm_info = {
@@ -58,17 +58,17 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         G.LOCAL_DB.set_value('drm_security_level', drm_info['security_level'], TABLE_SESSION)
         G.LOCAL_DB.set_value('drm_hdcp_level', drm_info['hdcp_level'], TABLE_SESSION)
 
-        common.debug('Widevine version: {}', drm_info['version'])
+        LOG.debug('Widevine version: {}', drm_info['version'])
         if drm_info['system_id']:
-            common.debug('Widevine CryptoSession system id: {}', drm_info['system_id'])
+            LOG.debug('Widevine CryptoSession system id: {}', drm_info['system_id'])
         else:
-            common.warn('Widevine CryptoSession system id not obtained!')
-        common.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
+            LOG.warn('Widevine CryptoSession system id not obtained!')
+        LOG.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
         if G.ADDON.getSettingBool('force_widevine_l3'):
-            common.warn('Widevine security level is forced to L3 by user settings!')
-        common.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
-        common.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
-        common.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
+            LOG.warn('Widevine security level is forced to L3 by user settings!')
+        LOG.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
+        LOG.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
+        LOG.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))
 
     def load_crypto_session(self, msl_data=None):
         if not msl_data:
@@ -91,7 +91,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         if not key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
 
-        common.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
+        LOG.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
 
         # Save the key request (challenge data) required for manifest requests
         # Todo: to be implemented if/when it becomes mandatory
@@ -111,8 +111,8 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         self.keyset_id = self.crypto_session.ProvideKeyResponse(bytearray(data))  # pylint: disable=assignment-from-none
         if not self.keyset_id:
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
-        common.debug('Widevine CryptoSession provideKeyResponse successful')
-        common.debug('keySetId: {}', self.keyset_id)
+        LOG.debug('Widevine CryptoSession provideKeyResponse successful')
+        LOG.debug('keySetId: {}', self.keyset_id)
         self.keyset_id = self.keyset_id.encode('utf-8')
 
     def encrypt(self, plaintext, esn):  # pylint: disable=unused-argument

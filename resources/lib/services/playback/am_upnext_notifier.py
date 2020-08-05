@@ -13,6 +13,7 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 
@@ -40,7 +41,7 @@ class AMUpNextNotifier(ActionManager):
                                            data['is_played_from_strm'])
 
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
-        common.debug('Sending initialization signal to Up Next Add-on')
+        LOG.debug('Sending initialization signal to Up Next Add-on')
         common.send_signal(common.Signals.UPNEXT_ADDON_INIT, self.upnext_info, non_blocking=True)
 
     def on_tick(self, player_state):

@@ -15,10 +15,10 @@ import xbmc
 import xbmcvfs
 
 from resources.lib.common.fileops import delete_folder_contents, list_dir, join_folders_paths, load_file, save_file
-from resources.lib.common.logging import debug, error, warn
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.kodi.library_utils import get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS
+from resources.lib.utils.logging import LOG
 
 
 def delete_cache_folder():
@@ -26,14 +26,14 @@ def delete_cache_folder():
     cache_path = os.path.join(G.DATA_PATH, 'cache')
     if not os.path.exists(G.py2_decode(xbmc.translatePath(cache_path))):
         return
-    debug('Deleting the cache folder from add-on userdata folder')
+    LOG.debug('Deleting the cache folder from add-on userdata folder')
     try:
         delete_folder_contents(cache_path, True)
         xbmc.sleep(80)
         xbmcvfs.rmdir(cache_path)
     except Exception:  # pylint: disable=broad-except
         import traceback
-        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
 
 
 def migrate_library():
@@ -43,7 +43,7 @@ def migrate_library():
     folders = get_library_subfolders(FOLDER_NAME_MOVIES) + get_library_subfolders(FOLDER_NAME_SHOWS)
     if not folders:
         return
-    debug('Start migrating STRM files')
+    LOG.debug('Start migrating STRM files')
     try:
         with ui.ProgressDialog(True,
                                title='Migrating library to new format',
@@ -53,9 +53,9 @@ def migrate_library():
                 progress_bar.set_message('PLEASE WAIT - Migrating: ' + folder_name)
                 _migrate_strm_files(folder_path)
     except Exception as exc:  # pylint: disable=broad-except
-        error('Migrating failed: {}', exc)
+        LOG.error('Migrating failed: {}', exc)
         import traceback
-        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         ui.show_ok_dialog('Migrating library to new format',
                           ('Library migration has failed.[CR]'
                            'Before try play a Netflix video from library, you must run manually the library migration, '
@@ -72,10 +72,10 @@ def _migrate_strm_files(folder_path):
         file_path = join_folders_paths(folder_path, filename)
         file_content = load_file(file_path)
         if not file_content:
-            warn('Migrate error: "{}" skipped, STRM file empty or corrupted', file_path)
+            LOG.warn('Migrate error: "{}" skipped, STRM file empty or corrupted', file_path)
             continue
         if 'action=play_video' in file_content:
-            warn('Migrate error: "{}" skipped, STRM file type of v0.13.x', file_path)
+            LOG.warn('Migrate error: "{}" skipped, STRM file type of v0.13.x', file_path)
             continue
         file_content = file_content.strip('\t\n\r').replace('/play/', '/play_strm/')
         save_file(file_path, file_content.encode('utf-8'))

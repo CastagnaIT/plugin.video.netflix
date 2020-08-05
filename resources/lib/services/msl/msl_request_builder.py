@@ -16,6 +16,7 @@ import time
 
 from resources.lib.globals import G
 import resources.lib.common as common
+from resources.lib.utils.logging import measure_exec_time_decorator
 
 
 class MSLRequestBuilder(object):
@@ -45,13 +46,13 @@ class MSLRequestBuilder(object):
         }
         return request_data
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def msl_request(self, data, esn, auth_data):
         """Create an encrypted MSL request"""
         return (json.dumps(self._signed_header(esn, auth_data)) +
                 json.dumps(self._encrypted_chunk(data, esn)))
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def handshake_request(self, esn):
         """Create a key handshake request"""
         header = json.dumps({
@@ -66,7 +67,6 @@ class MSLRequestBuilder(object):
         payload = json.dumps(self._encrypted_chunk(envelope_payload=False))
         return header + payload
 
-    @common.time_execution(immediate=True)
     def _signed_header(self, esn, auth_data):
         encryption_envelope = self.crypto.encrypt(self._headerdata(auth_data=auth_data, esn=esn), esn)
         return {
@@ -99,7 +99,6 @@ class MSLRequestBuilder(object):
 
         return json.dumps(header_data)
 
-    @common.time_execution(immediate=True)
     def _encrypted_chunk(self, data='', esn=None, envelope_payload=True):
         if data:
             data = base64.standard_b64encode(json.dumps(data).encode('utf-8')).decode('utf-8')

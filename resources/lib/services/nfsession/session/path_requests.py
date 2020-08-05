@@ -16,15 +16,16 @@ import resources.lib.utils.api_paths as apipaths
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.access import SessionAccess
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class SessionPathRequests(SessionAccess):
     """Manages the PATH requests"""
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def path_request(self, paths, use_jsongraph=False):
         """Perform a path request against the Shakti API"""
-        common.debug('Executing path request: {}', json.dumps(paths))
+        LOG.debug('Executing path request: {}', json.dumps(paths))
         custom_params = {}
         if use_jsongraph:
             custom_params['falcor_server'] = '0.1.0'
@@ -36,7 +37,7 @@ class SessionPathRequests(SessionAccess):
             data=data)
         return response['jsonGraph'] if use_jsongraph else response['value']
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
                                request_size=apipaths.PATH_REQUEST_SIZE_PAGINATED, no_limit_req=False):
         """
@@ -90,7 +91,7 @@ class SessionPathRequests(SessionAccess):
             range_start += response_size
             if n_req == (number_of_requests - 1):
                 merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                common.debug('{} has other elements, added _perpetual_range_selector item', response_type)
+                LOG.debug('{} has other elements, added _perpetual_range_selector item', response_type)
             else:
                 range_end = range_start + request_size
 
@@ -123,13 +124,13 @@ class SessionPathRequests(SessionAccess):
             self.external_func_activate_profile(current_profile_guid)  # pylint: disable=not-callable
         return path_response
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def callpath_request(self, callpaths, params=None, path_suffixs=None):
         """Perform a callPath request against the Shakti API"""
-        common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
-                     json.dumps(callpaths),
-                     params,
-                     json.dumps(path_suffixs))
+        LOG.debug('Executing callPath request: {} params: {} path_suffixs: {}',
+                  json.dumps(callpaths),
+                  params,
+                  json.dumps(path_suffixs))
         custom_params = {
             'falcor_server': '0.1.0',
             'method': 'call',
@@ -147,7 +148,7 @@ class SessionPathRequests(SessionAccess):
         if path_suffixs:
             data += '&pathSuffix=' + '&pathSuffix='.join(
                 json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)
-        # common.debug('callPath request data: {}', data)
+        # LOG.debug('callPath request data: {}', data)
         response_data = self.post_safe(
             endpoint='shakti',
             params=custom_params,

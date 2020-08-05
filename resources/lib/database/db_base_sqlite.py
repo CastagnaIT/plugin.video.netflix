@@ -18,6 +18,7 @@ import resources.lib.database.db_base as db_base
 import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     from itertools import izip as zip  # pylint: disable=redefined-builtin
@@ -55,7 +56,7 @@ def handle_connection(func):
 
             return func(*args, **kwargs)
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
+            LOG.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
             if conn:
@@ -84,12 +85,12 @@ class SQLiteDatabase(db_base.BaseDatabase):
 
     def _initialize_connection(self):
         try:
-            common.debug('Trying connection to the database {}', self.db_filename)
+            LOG.debug('Trying connection to the database {}', self.db_filename)
             self.conn = sql.connect(self.db_file_path, check_same_thread=False)
             cur = self.conn.cursor()
             cur.execute(str('SELECT SQLITE_VERSION()'))
-            common.debug('Database connection {} was successful (SQLite ver. {})',
-                         self.db_filename, cur.fetchone()[0])
+            LOG.debug('Database connection {} was successful (SQLite ver. {})',
+                      self.db_filename, cur.fetchone()[0])
             cur.row_factory = lambda cursor, row: row[0]
             cur.execute(str('SELECT name FROM sqlite_master WHERE type=\'table\' '
                             'AND name NOT LIKE \'sqlite_%\''))
@@ -99,7 +100,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 self.conn.close()
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
+            LOG.error('SQLite error {}:', exc.args[0])
             raise SQLiteConnectionError
         finally:
             if self.conn:
@@ -114,11 +115,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
             else:
                 cursor.execute(query)
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
+            LOG.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:
-            common.error('Value {}', str(params))
-            common.error('Value type {}', type(params))
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
             raise exc_ve
 
     def _execute_query(self, query, params=None, cursor=None):
@@ -131,11 +132,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
             return cursor
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
+            LOG.error('SQLite error {}:', exc.args[0])
             raise SQLiteError
         except ValueError as exc_ve:
-            common.error('Value {}', str(params))
-            common.error('Value type {}', type(params))
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
             raise exc_ve
 
     def get_cursor(self):

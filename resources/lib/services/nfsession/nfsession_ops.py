@@ -21,6 +21,7 @@ from resources.lib.common import cookies, cache_utils
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class NFSessionOperations(SessionPathRequests):
@@ -56,9 +57,9 @@ class NFSessionOperations(SessionPathRequests):
                 self.auth_url = api_data['auth_url']
                 self.dt_initial_page_prefetch = datetime.now()
             except Exception as exc:  # pylint: disable=broad-except
-                common.warn('Prefetch initial page failed: {}', exc)
+                LOG.warn('Prefetch initial page failed: {}', exc)
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def fetch_initial_page(self):
         """Fetch initial page"""
         # It is mandatory fetch initial page data at every add-on startup to prevent/check possible side effects:
@@ -71,7 +72,7 @@ class NFSessionOperations(SessionPathRequests):
             # then we limit the prefetch validity to 30 minutes
             self.dt_initial_page_prefetch = None
             return
-        common.debug('Fetch initial page')
+        LOG.debug('Fetch initial page')
         from requests import exceptions
         try:
             response = self.get_safe('browse')
@@ -84,16 +85,16 @@ class NFSessionOperations(SessionPathRequests):
             self.session.cookies.clear()
             self.login()
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
-        common.debug('Switching to profile {}', guid)
+        LOG.debug('Switching to profile {}', guid)
         current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
-            common.info('The profile guid {} is already set, activation not needed.', guid)
+            LOG.info('The profile guid {} is already set, activation not needed.', guid)
             return
         timestamp = time.time()
-        common.info('Activating profile {}', guid)
+        LOG.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
         # INIT Method 1 - HTTP mode
         # response = self._get('switch_profile', params={'tkn': guid})
@@ -128,7 +129,7 @@ class NFSessionOperations(SessionPathRequests):
                                             'password': password,
                                             'task': 'auth'})
             if response.get('status') != 'ok':
-                common.warn('Parental control status issue: {}', response)
+                LOG.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
         except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
@@ -150,16 +151,16 @@ class NFSessionOperations(SessionPathRequests):
         try:
             return website.extract_session_data(content, **kwargs)
         except WebsiteParsingError as exc:
-            common.error('An error occurs in extract session data: {}', exc)
+            LOG.error('An error occurs in extract session data: {}', exc)
             raise
         except (LoginValidateError, MbrStatusAnonymousError) as exc:
-            common.warn('The session data is not more valid ({})', type(exc).__name__)
+            LOG.warn('The session data is not more valid ({})', type(exc).__name__)
             common.purge_credentials()
             self.session.cookies.clear()
             common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             raise NotLoggedInError
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def get_metadata(self, videoid, refresh=False):
         """Retrieve additional metadata for the given VideoId"""
         if isinstance(videoid, list):  # IPC call send the videoid as "path" list
@@ -175,12 +176,12 @@ class NFSessionOperations(SessionPathRequests):
             except KeyError as exc:
                 # The episode metadata not exist (case of new episode and cached data outdated)
                 # In this case, delete the cache entry and try again safely
-                common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
+                LOG.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
                 try:
                     metadata_data = self._episode_metadata(videoid, parent_videoid, refresh_cache=True)
                 except KeyError as exc:
                     # The new metadata does not contain the episode
-                    common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
+                    LOG.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
                     raise MetadataNotAvailable
         else:
             metadata_data = self._metadata(video_id=parent_videoid), None
@@ -198,7 +199,7 @@ class NFSessionOperations(SessionPathRequests):
         """Retrieve additional metadata for a video.
         This is a separate method from get_metadata() to work around caching issues
         when new episodes are added to a tv show by Netflix."""
-        common.debug('Requesting metadata for {}', video_id)
+        LOG.debug('Requesting metadata for {}', video_id)
         metadata_data = self.get_safe(endpoint='metadata',
                                       params={'movieid': video_id.value,
                                               '_': int(time.time() * 1000)})
@@ -221,7 +222,7 @@ class NFSessionOperations(SessionPathRequests):
             context_id = loco_data['locos'][loco_root][context_index][1]
         else:
             # In the new profiles, there is no 'continueWatching' list and no list is returned
-            common.warn('update_loco_context: Update skipped due to missing context {}', context_name)
+            LOG.warn('update_loco_context: Update skipped due to missing context {}', context_name)
             return
 
         path = [['locos', loco_root, 'refreshListByContext']]
@@ -240,12 +241,12 @@ class NFSessionOperations(SessionPathRequests):
         # ]
         try:
             response = self.callpath_request(path, params)
-            common.debug('refreshListByContext response: {}', response)
+            LOG.debug('refreshListByContext response: {}', response)
             # The call response return the new context id of the previous invalidated loco context_id
             # and if path_suffixs is added return also the new video list data
         except Exception as exc:  # pylint: disable=broad-except
-            common.warn('refreshListByContext failed: {}', exc)
-            if not common.is_debug_verbose():
+            LOG.warn('refreshListByContext failed: {}', exc)
+            if not LOG.level == LOG.LEVEL_VERBOSE:
                 return
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='An error prevented the update the loco context on Netflix',
@@ -260,9 +261,9 @@ class NFSessionOperations(SessionPathRequests):
         params = ['[' + video_id + ']', '[]']
         try:
             response = self.callpath_request(call_paths, params)
-            common.debug('refreshVideoCurrentPositions response: {}', response)
+            LOG.debug('refreshVideoCurrentPositions response: {}', response)
         except Exception as exc:  # pylint: disable=broad-except
-            common.warn('refreshVideoCurrentPositions failed: {}', exc)
+            LOG.warn('refreshVideoCurrentPositions failed: {}', exc)
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='An error prevented the update the status watched on Netflix',
                                  time=10000)

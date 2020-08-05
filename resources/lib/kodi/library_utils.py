@@ -21,6 +21,7 @@ from resources.lib.utils.api_paths import PATH_REQUEST_SIZE_STD
 from resources.lib.database.db_utils import VidLibProp
 from resources.lib.globals import G
 from resources.lib.kodi import nfo, ui
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 LIBRARY_HOME = 'library'
 FOLDER_NAME_MOVIES = 'movies'
@@ -95,16 +96,16 @@ def is_auto_update_library_running(show_prg_dialog):
                                            datetime.utcfromtimestamp(0))
         if datetime.now() >= start_time + timedelta(hours=6):
             G.SHARED_DB.set_value('library_auto_update_is_running', False)
-            common.warn('Canceling previous library update: duration >6 hours')
+            LOG.warn('Canceling previous library update: duration >6 hours')
         else:
             if show_prg_dialog:
                 ui.show_notification(common.get_local_string(30063))
-            common.debug('Library auto update is already running')
+            LOG.debug('Library auto update is already running')
             return True
     return False
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def request_kodi_library_update(**kwargs):
     """Request to scan and/or clean the Kodi library database"""
     # Particular way to start Kodi library scan/clean (details on request_kodi_library_update in library_updater.py)

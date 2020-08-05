@@ -21,6 +21,7 @@ from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACE
                                            PATH_REQUEST_SIZE_MAX)
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 class DirectoryPathRequests(object):
@@ -31,7 +32,7 @@ class DirectoryPathRequests(object):
     @cache_utils.cache_output(cache_utils.CACHE_MYLIST, fixed_identifier='my_list_items', ignore_self_class=True)
     def req_mylist_items(self):
         """Return the 'my list' video list as videoid items"""
-        common.debug('Requesting "my list" video list as videoid items')
+        LOG.debug('Requesting "my list" video list as videoid items')
         try:
             items = []
             video_list = self.req_datatype_video_list_full(G.MAIN_MENU_ITEMS['myList']['request_context_name'])
@@ -48,7 +49,7 @@ class DirectoryPathRequests(object):
     def req_lolomo_list_root(self):
         """Retrieve root LoLoMo list"""
         # It is used to display main menu and the menus with 'lolomo_contexts' specified, like 'recommendations' menu
-        common.debug('Requesting root LoLoMo lists')
+        LOG.debug('Requesting root LoLoMo lists')
         paths = ([['lolomo', {'from': 0, 'to': 40}, ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
                  # Titles of first 4 videos in each video list
                  [['lolomo', {'from': 0, 'to': 40}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
@@ -65,7 +66,7 @@ class DirectoryPathRequests(object):
         # - To get items for the main menu
         #      (when 'loco_known'==True and loco_contexts is set, see MAIN_MENU_ITEMS in globals.py)
         # - To get list items for menus that have multiple contexts set to 'loco_contexts' like 'recommendations' menu
-        common.debug('Requesting LoCo root lists')
+        LOG.debug('Requesting LoCo root lists')
         paths = ([['loco', {'from': 0, 'to': 50}, "componentSummary"]] +
                  # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
                  [['loco', {'from': 0, 'to': 50}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
@@ -78,7 +79,7 @@ class DirectoryPathRequests(object):
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
     def req_loco_list_genre(self, genre_id):
         """Retrieve LoCo for the given genre"""
-        common.debug('Requesting LoCo for genre {}', genre_id)
+        LOG.debug('Requesting LoCo for genre {}', genre_id)
         # Todo: 20/06/2020 Currently make requests for genres raise this exception from netflix server
         #       (errors visible only with jsonGraph enabled on path request):
         # Msg: No signature of method: api.Lolomo.getLolomoRequest() is applicable for argument types:
@@ -103,7 +104,7 @@ class DirectoryPathRequests(object):
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
     def req_lolomo_list_genre(self, genre_id):
         """Retrieve LoLoMos for the given genre"""
-        common.debug('Requesting LoLoMo for genre {}', genre_id)
+        LOG.debug('Requesting LoLoMo for genre {}', genre_id)
         paths = (build_paths(['genres', genre_id, 'rw'], GENRE_PARTIAL_PATHS) +
                  # Titles and art of standard lists' items
                  build_paths(['genres', genre_id, 'rw', {"from": 0, "to": 48}, {"from": 0, "to": 3}, "reference"],
@@ -150,7 +151,7 @@ class DirectoryPathRequests(object):
         """Retrieve the seasons of a tv show"""
         if videoid.mediatype != common.VideoId.SHOW:
             raise common.InvalidVideoId('Cannot request season list for {}'.format(videoid))
-        common.debug('Requesting the seasons list for show {}', videoid)
+        LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
             'paths': build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS),
             'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']],
@@ -165,7 +166,7 @@ class DirectoryPathRequests(object):
         """Retrieve the episodes of a season"""
         if videoid.mediatype != common.VideoId.SEASON:
             raise common.InvalidVideoId('Cannot request episode list for {}'.format(videoid))
-        common.debug('Requesting episode list for {}', videoid)
+        LOG.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
                  build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
@@ -183,7 +184,7 @@ class DirectoryPathRequests(object):
         """Retrieve a video list"""
         # Some of this type of request have results fixed at ~40 from netflix
         # The 'length' tag never return to the actual total count of the elements
-        common.debug('Requesting video list {}', list_id)
+        LOG.debug('Requesting video list {}', list_id)
         paths = build_paths(['lists', list_id, RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS)
         call_args = {
             'paths': paths,
@@ -198,8 +199,8 @@ class DirectoryPathRequests(object):
     def req_video_list_sorted(self, context_name, context_id=None, perpetual_range_start=None, menu_data=None):
         """Retrieve a video list sorted"""
         # This type of request allows to obtain more than ~40 results
-        common.debug('Requesting video list sorted for context name: "{}", context id: "{}"',
-                     context_name, context_id)
+        LOG.debug('Requesting video list sorted for context name: "{}", context id: "{}"',
+                  context_name, context_id)
         base_path = [context_name]
         response_type = 'stdlist'
         if context_id:
@@ -224,7 +225,7 @@ class DirectoryPathRequests(object):
         """Retrieve a video list of supplemental type videos"""
         if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
             raise common.InvalidVideoId('Cannot request video list supplemental for {}'.format(videoid))
-        common.debug('Requesting video list supplemental of type "{}" for {}', supplemental_type, videoid)
+        LOG.debug('Requesting video list supplemental of type "{}" for {}', supplemental_type, videoid)
         path = build_paths(
             ['videos', videoid.value, supplemental_type, {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS
         )
@@ -251,7 +252,7 @@ class DirectoryPathRequests(object):
                               identify_append_from_kwarg_name='perpetual_range_start', ttl=900, ignore_self_class=True)
     def req_video_list_search(self, search_term, perpetual_range_start=None):
         """Retrieve a video list by search term"""
-        common.debug('Requesting video list by search term "{}"', search_term)
+        LOG.debug('Requesting video list by search term "{}"', search_term)
         base_path = ['search', 'byTerm', '|' + search_term, 'titles', PATH_REQUEST_SIZE_STD]
         paths = ([base_path + [['id', 'name', 'requestId']]] +
                  build_paths(base_path + [RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
@@ -265,7 +266,7 @@ class DirectoryPathRequests(object):
 
     def req_subgenres(self, genre_id):
         """Retrieve sub-genres for the given genre"""
-        common.debug('Requesting sub-genres of the genre {}', genre_id)
+        LOG.debug('Requesting sub-genres of the genre {}', genre_id)
         path = [['genres', genre_id, 'subgenres', {'from': 0, 'to': 47}, ['id', 'name']]]
         path_response = self.nfsession.path_request(path)
         return SubgenreList(path_response)
@@ -275,7 +276,7 @@ class DirectoryPathRequests(object):
         Retrieve the FULL video list for a context name (no limits to the number of path requests)
         contains only minimal video info
         """
-        common.debug('Requesting the full video list for {}', context_name)
+        LOG.debug('Requesting the full video list for {}', context_name)
         paths = build_paths([context_name, 'az', RANGE_PLACEHOLDER], VIDEO_LIST_BASIC_PARTIAL_PATHS)
         call_args = {
             'paths': paths,
@@ -297,7 +298,7 @@ class DirectoryPathRequests(object):
 
     def req_datatype_video_list_byid(self, video_ids, custom_partial_paths=None):
         """Retrieve a video list which contains the specified by video ids and return a CustomVideoList object"""
-        common.debug('Requesting a video list for {} videos', video_ids)
+        LOG.debug('Requesting a video list for {} videos', video_ids)
         paths = build_paths(['videos', video_ids],
                             custom_partial_paths if custom_partial_paths else VIDEO_LIST_PARTIAL_PATHS)
         path_response = self.nfsession.path_request(paths)

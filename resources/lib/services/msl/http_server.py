@@ -8,9 +8,11 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 import base64
 
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 try:  # Python 3
     from urllib.parse import parse_qs, urlparse
@@ -27,8 +29,6 @@ try:  # Python 3
 except ImportError:
     from SocketServer import TCPServer
 
-import resources.lib.common as common
-
 from .msl_handler import MSLHandler
 from .exceptions import MSLError
 
@@ -44,7 +44,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
         """Loads the licence for the requested resource"""
         try:
             url_parse = urlparse(self.path)
-            common.debug('Handling HTTP POST IPC call to {}', url_parse.path)
+            LOG.debug('Handling HTTP POST IPC call to {}', url_parse.path)
             if '/license' not in url_parse:
                 self.send_response(404)
                 self.end_headers()
@@ -58,7 +58,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(base64.standard_b64decode(b64license))
         except Exception as exc:
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -66,7 +66,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
         """Loads the XML manifest for the requested resource"""
         try:
             url_parse = urlparse(self.path)
-            common.debug('Handling HTTP GET IPC call to {}', url_parse.path)
+            LOG.debug('Handling HTTP GET IPC call to {}', url_parse.path)
             if '/manifest' not in url_parse:
                 self.send_response(404)
                 self.end_headers()
@@ -79,7 +79,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
         except Exception as exc:
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -91,6 +91,6 @@ class MSLTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
     def __init__(self, server_address):
         """Initialization of MSLTCPServer"""
-        common.info('Constructing MSLTCPServer')
+        LOG.info('Constructing MSLTCPServer')
         self.msl_handler = MSLHandler()
         TCPServer.__init__(self, server_address, MSLHttpRequestHandler)

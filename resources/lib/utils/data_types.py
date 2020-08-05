@@ -15,13 +15,14 @@ from future.utils import iteritems, itervalues, listvalues
 import resources.lib.common as common
 
 from .api_paths import resolve_refs
+from .logging import LOG
 
 
 class LoLoMo(object):
     """List of list of movies (LoLoMo)"""
     def __init__(self, path_response, lolomoid=None):
         self.data = path_response
-        common.debug('LoLoMo data: {}', self.data)
+        LOG.debug('LoLoMo data: {}', self.data)
         _filterout_contexts(self.data, ['billboard', 'showAsARow'])
         self.id = (lolomoid
                    if lolomoid
@@ -75,7 +76,7 @@ class LoCo(object):
     """List of components (LoCo)"""
     def __init__(self, path_response):
         self.data = path_response
-        common.debug('LoCo data: {}', self.data)
+        LOG.debug('LoCo data: {}', self.data)
         _filterout_loco_contexts(self.data, ['billboard'])
         self.id = next(iter(self.data['locos']))  # Get loco root id
 
@@ -114,7 +115,7 @@ class LoCo(object):
 class VideoListLoCo:
     """A video list, for LoCo data"""
     def __init__(self, path_response, list_id):
-        # common.debug('VideoListLoCo data: {}', path_response)
+        # LOG.debug('VideoListLoCo data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.list_id = list_id
@@ -150,7 +151,7 @@ class VideoListLoCo:
 class VideoList:
     """A video list"""
     def __init__(self, path_response, list_id=None):
-        # common.debug('VideoList data: {}', path_response)
+        # LOG.debug('VideoList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         has_data = bool(path_response.get('lists'))
@@ -185,7 +186,7 @@ class VideoList:
 class VideoListSorted:
     """A video list"""
     def __init__(self, path_response, context_name, context_id, req_sort_order_type):
-        # common.debug('VideoListSorted data: {}', path_response)
+        # LOG.debug('VideoListSorted data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
@@ -266,7 +267,7 @@ class CustomVideoList:
 class SeasonList:
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
-        # common.debug('SeasonList data: {}', path_response)
+        # LOG.debug('SeasonList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
@@ -278,7 +279,7 @@ class SeasonList:
 class EpisodeList:
     """A list of episodes. Includes tvshow art."""
     def __init__(self, videoid, path_response):
-        # common.debug('EpisodeList data: {}', path_response)
+        # LOG.debug('EpisodeList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
@@ -291,7 +292,7 @@ class EpisodeList:
 class SubgenreList:
     """A list of subgenre."""
     def __init__(self, path_response):
-        # common.debug('Subgenre data: {}', path_response)
+        # LOG.debug('Subgenre data: {}', path_response)
         self.lists = []
         if path_response:
             self.perpetual_range_selector = path_response.get('_perpetual_range_selector')

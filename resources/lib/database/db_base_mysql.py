@@ -19,6 +19,7 @@ import resources.lib.database.db_utils as db_utils
 import resources.lib.database.db_create_mysql as db_create_mysql
 from resources.lib.database.db_exceptions import (MySQLConnectionError, MySQLError)
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 def handle_connection(func):
@@ -37,7 +38,7 @@ def handle_connection(func):
                 conn = args[0].conn
             return func(*args, **kwargs)
         except mysql.connector.Error as exc:
-            common.error('MySQL error {}:', exc)
+            LOG.error('MySQL error {}:', exc)
             raise MySQLConnectionError
         finally:
             if conn and conn.is_connected():
@@ -68,12 +69,12 @@ class MySQLDatabase(db_base.BaseDatabase):
 
     def _initialize_connection(self):
         try:
-            common.debug('Trying connection to the MySQL database {}', self.database)
+            LOG.debug('Trying connection to the MySQL database {}', self.database)
             self.conn = mysql.connector.connect(**self.config)
             if self.conn.is_connected():
                 db_info = self.conn.get_server_info()
-                common.debug('MySQL database connection was successful (MySQL server ver. {})',
-                             db_info)
+                LOG.debug('MySQL database connection was successful (MySQL server ver. {})',
+                          db_info)
         except mysql.connector.Error as exc:
             if exc.errno == 1049 and not self.is_connection_test:
                 # Database does not exist, create a new one
@@ -82,12 +83,12 @@ class MySQLDatabase(db_base.BaseDatabase):
                     self._initialize_connection()
                     return
                 except mysql.connector.Error as e:
-                    common.error('MySql error {}:', e)
+                    LOG.error('MySql error {}:', e)
                     if e.errno == 1115:  # Unknown character set: 'utf8mb4'
                         # Means an outdated MySQL/MariaDB version in use, needed MySQL => 5.5.3 or MariaDB => 5.5
                         raise MySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade')
                     raise MySQLError(str(e))
-            common.error('MySql error {}:', exc)
+            LOG.error('MySql error {}:', exc)
             raise MySQLConnectionError
         finally:
             if self.conn and self.conn.is_connected():
@@ -107,11 +108,11 @@ class MySQLDatabase(db_base.BaseDatabase):
                 for result in results:  # pylint: disable=unused-variable
                     pass
         except mysql.connector.Error as exc:
-            common.error('MySQL error {}:', exc)
+            LOG.error('MySQL error {}:', exc)
             raise MySQLError
         except ValueError as exc_ve:
-            common.error('Value {}', str(params))
-            common.error('Value type {}', type(params))
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
             raise exc_ve
 
     def _execute_query(self, query, params=None, cursor=None):
@@ -125,11 +126,11 @@ class MySQLDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
             return cursor
         except mysql.connector.Error as exc:
-            common.error('MySQL error {}:', exc.args[0])
+            LOG.error('MySQL error {}:', exc.args[0])
             raise MySQLError
         except ValueError as exc_ve:
-            common.error('Value {}', str(params))
-            common.error('Value type {}', type(params))
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
             raise exc_ve
 
     def get_cursor(self):

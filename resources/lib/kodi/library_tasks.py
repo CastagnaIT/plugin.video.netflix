@@ -23,6 +23,7 @@ from resources.lib.kodi.library_jobs import LibraryJobs
 from resources.lib.kodi.library_utils import (get_episode_title_from_path, get_library_path,
                                               ILLEGAL_CHARACTERS, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS)
 from resources.lib.kodi.ui import show_library_task_errors
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class LibraryTasks(LibraryJobs):
@@ -71,10 +72,10 @@ class LibraryTasks(LibraryJobs):
                                                              progress_bar.value,
                                                              progress_bar.max_value))
                 if progress_bar.is_cancelled():
-                    common.warn('Library operations interrupted by User')
+                    LOG.warn('Library operations interrupted by User')
                     break
                 if self.monitor.abortRequested():
-                    common.warn('Library operations interrupted by Kodi')
+                    LOG.warn('Library operations interrupted by Kodi')
                     break
         show_library_task_errors(show_prg_dialog, list_errors)
 
@@ -85,16 +86,16 @@ class LibraryTasks(LibraryJobs):
             job_handler(job_data, get_library_path())
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            common.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
             list_errors.append({'title': job_data['title'],
                                 'error': '{}: {}'.format(type(exc).__name__, exc)})
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def compile_jobs_data(self, videoid, task_type, nfo_settings=None):
         """Compile a list of jobs data based on the videoid"""
-        common.debug('Compiling list of jobs data for task handler "{}" and videoid "{}"',
-                     task_type.__name__, videoid)
+        LOG.debug('Compiling list of jobs data for task handler "{}" and videoid "{}"',
+                  task_type.__name__, videoid)
         jobs_data = None
         try:
             if task_type == self.export_item:
@@ -118,11 +119,11 @@ class LibraryTasks(LibraryJobs):
                 if videoid.mediatype == common.VideoId.EPISODE:
                     jobs_data = [self._create_remove_episode_job(videoid)]
         except MetadataNotAvailable:
-            common.warn('Unavailable metadata for videoid "{}", list of jobs not compiled', videoid)
+            LOG.warn('Unavailable metadata for videoid "{}", list of jobs not compiled', videoid)
             return None
         if jobs_data is None:
-            common.error('Unexpected job compile case for task type "{}" and videoid "{}", list of jobs not compiled',
-                         task_type.__name__, videoid)
+            LOG.error('Unexpected job compile case for task type "{}" and videoid "{}", list of jobs not compiled',
+                      task_type.__name__, videoid)
         return jobs_data
 
     def _create_export_movie_job(self, videoid, movie, nfo_settings):
@@ -236,7 +237,7 @@ class LibraryTasks(LibraryJobs):
                         show=metadata[0],
                         nfo_settings=nfo_settings
                     ))
-                    common.debug('Exporting missing new episode {}', episode['id'])
+                    LOG.debug('Exporting missing new episode {}', episode['id'])
         else:
             # The season does not exist, build task for the season
             tasks += self._get_export_season_jobs(
@@ -245,7 +246,7 @@ class LibraryTasks(LibraryJobs):
                 season=season,
                 nfo_settings=nfo_settings
             )
-            common.debug('Exporting missing new season {}', season['id'])
+            LOG.debug('Exporting missing new season {}', season['id'])
 
     def _create_remove_movie_job(self, videoid):
         """Create a job data to remove a movie"""

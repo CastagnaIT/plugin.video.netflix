@@ -10,7 +10,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from .logging import *
 from .ipc import *  # pylint: disable=redefined-builtin
 from .videoid import *  # pylint: disable=redefined-builtin
 from .credentials import *

@@ -18,10 +18,13 @@ from resources.lib.kodi import ui
 from resources.lib.kodi.context_menu import generate_context_menu_searchitem
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, end_of_directory,
                                                       custom_viewmode, get_title)
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 # The search types allows you to provide a modular structure to the search feature,
 # in this way you can add new/remove types of search in a simple way.
 # To add a new type: add the new type name to SEARCH_TYPES, then implement the new type to search_add/search_query.
+
+
 SEARCH_TYPES = ['text', 'audio_lang', 'subtitles_lang']  # , 'genreid']
 SEARCH_TYPES_DESC = {
     'text': common.get_local_string(30410),
@@ -32,7 +35,7 @@ SEARCH_TYPES_DESC = {
 
 def route_search_nav(pathitems, perpetual_range_start, dir_update_listing, params):
     path = pathitems[2] if len(pathitems) > 2 else 'list'
-    common.debug('Routing "search" navigation to: {}', path)
+    LOG.debug('Routing "search" navigation to: {}', path)
     ret = True
     if path == 'list':
         search_list()
@@ -124,7 +127,7 @@ def search_edit(row_id):
 
 def search_remove(row_id):
     """Remove a search item"""
-    common.debug('Removing search item with ID {}', row_id)
+    LOG.debug('Removing search item with ID {}', row_id)
     G.LOCAL_DB.delete_search_item(row_id)
     common.json_rpc('Input.Down')  # Avoids selection back to the top
     common.container_refresh()
@@ -139,7 +142,7 @@ def search_clear():
     return True
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def search_query(row_id, perpetual_range_start, dir_update_listing):
     """Perform the research"""
     # Get item from database

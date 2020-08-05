@@ -14,8 +14,7 @@ import base64
 
 from resources.lib.globals import G
 from resources.lib.utils.exceptions import MissingCredentialsError
-
-from .logging import error
+from resources.lib.utils.logging import LOG
 from .uuid_device import get_crypt_key
 
 try:  # The crypto package depends on the library installed (see Wiki)
@@ -74,7 +73,7 @@ def get_credentials():
         }
     except Exception:
         import traceback
-        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise MissingCredentialsError(
             'Existing credentials could not be decrypted')
 

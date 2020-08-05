@@ -18,6 +18,8 @@ import resources.lib.kodi.ui as ui
 from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR, TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.esn import generate_android_esn
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -32,17 +34,16 @@ class SettingsMonitor(xbmc.Monitor):
     def onSettingsChanged(self):
         status = G.settings_monitor_suspend_status()
         if status == 'First':
-            common.warn('SettingsMonitor: triggered but in suspend status (at first change)')
+            LOG.warn('SettingsMonitor: triggered but in suspend status (at first change)')
             G.settings_monitor_suspend(False)
             return
         if status == 'True':
-            common.warn('SettingsMonitor: triggered but in suspend status (permanent)')
+            LOG.warn('SettingsMonitor: triggered but in suspend status (permanent)')
             return
         self._on_change()
 
     def _on_change(self):
-        common.reset_log_level_global_var()
-        common.debug('SettingsMonitor: settings have been changed, started checks')
+        LOG.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
         clean_cache = False
 
@@ -50,7 +51,7 @@ class SettingsMonitor(xbmc.Monitor):
         use_mysql_old = G.LOCAL_DB.get_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
         use_mysql_turned_on = use_mysql and not use_mysql_old
 
-        common.debug('SettingsMonitor: Reloading global settings')
+        LOG.debug('SettingsMonitor: Reloading global settings')
         G.init_globals(sys.argv, reinitialize_database=use_mysql != use_mysql_old, reload_settings=True)
 
         # Check the MySQL connection status after reinitialization of service global settings
@@ -116,7 +117,7 @@ class SettingsMonitor(xbmc.Monitor):
             reboot_addon = False
 
         if reboot_addon:
-            common.debug('SettingsMonitor: addon will be rebooted')
+            LOG.debug('SettingsMonitor: addon will be rebooted')
             # Open root page
             common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
 
@@ -136,5 +137,5 @@ def _esn_checks():
         if is_l3_forced != is_l3_forced_old:
             G.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
             # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
-            G.LOCAL_DB.set_value('esn', common.generate_android_esn() or '', TABLE_SESSION)
+            G.LOCAL_DB.set_value('esn', generate_android_esn() or '', TABLE_SESSION)
             common.send_signal(signal=common.Signals.ESN_CHANGED)

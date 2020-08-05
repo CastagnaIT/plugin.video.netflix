@@ -22,6 +22,7 @@ from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
                                                   MSL_DATA_FILENAME)
 from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
 
 try:  # Python 2
     from urllib import urlencode
@@ -50,26 +51,26 @@ class MSLRequests(MSLRequestBuilder):
             self.crypto.load_crypto_session(msl_data)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
 
     @display_error_info
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def perform_key_handshake(self, data=None):  # pylint: disable=unused-argument
         """Perform a key handshake and initialize crypto keys"""
         esn = get_esn()
         if not esn:
-            common.warn('Cannot perform key handshake, missing ESN')
+            LOG.warn('Cannot perform key handshake, missing ESN')
             return False
 
-        common.info('Performing key handshake with ESN: {}',
-                    common.censure(esn) if G.ADDON.getSetting('esn') else esn)
+        LOG.info('Performing key handshake with ESN: {}',
+                 common.censure(esn) if G.ADDON.getSetting('esn') else esn)
         response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
         header_data = self.decrypt_header_data(response['headerdata'], False)
         self.crypto.parse_key_response(header_data, esn, True)
 
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()
-        common.debug('Key handshake successful')
+        LOG.debug('Key handshake successful')
         return True
 
     def _get_owner_user_id_token(self):
@@ -80,7 +81,7 @@ class MSLRequests(MSLRequestBuilder):
         # But in order to execute this switch profile, you need to have the user id token of the main (owner) profile.
         # The only way (found to now) to get it immediately, is send a logblob event request, and save the
         # user id token obtained in the response.
-        common.debug('Requesting logblog')
+        LOG.debug('Requesting logblog')
         params = {'reqAttempt': 1,
                   'reqPriority': 0,
                   'reqName': EVENT_BIND}
@@ -89,23 +90,23 @@ class MSLRequests(MSLRequestBuilder):
                                         self.build_request_data('/logblob', generate_logblobs_params()),
                                         get_esn(),
                                         force_auth_credential=True)
-        common.debug('Response of logblob request: {}', response)
+        LOG.debug('Response of logblob request: {}', response)
 
     def _mastertoken_checks(self):
         """Perform checks to the MasterToken and executes a new key handshake when necessary"""
         is_handshake_required = False
         if self.crypto.mastertoken:
             if self.crypto.is_current_mastertoken_expired():
-                common.debug('Stored MSL MasterToken is expired, a new key handshake will be performed')
+                LOG.debug('Stored MSL MasterToken is expired, a new key handshake will be performed')
                 is_handshake_required = True
             else:
                 # Check if the current ESN is same of ESN bound to MasterToken
                 if get_esn() != self.crypto.bound_esn:
-                    common.debug('Stored MSL MasterToken is bound to a different ESN, '
-                                 'a new key handshake will be performed')
+                    LOG.debug('Stored MSL MasterToken is bound to a different ESN, '
+                              'a new key handshake will be performed')
                     is_handshake_required = True
         else:
-            common.debug('MSL MasterToken is not available, a new key handshake will be performed')
+            LOG.debug('MSL MasterToken is not available, a new key handshake will be performed')
             is_handshake_required = True
         if is_handshake_required:
             if self.perform_key_handshake():
@@ -154,12 +155,12 @@ class MSLRequests(MSLRequestBuilder):
                     self.msl_switch_requested = True
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
         auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
-        common.debug('Chunked request will be executed with auth data: {}', auth_data)
+        LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
@@ -168,16 +169,16 @@ class MSLRequests(MSLRequestBuilder):
 
     def _post(self, endpoint, request_data):
         """Execute a post request"""
-        common.debug('Executing POST request to {}', endpoint)
-        start = common.perf_clock()
+        LOG.debug('Executing POST request to {}', endpoint)
+        start = perf_clock()
         response = self.session.post(endpoint, request_data)
-        common.debug('Request took {}s', common.perf_clock() - start)
-        common.debug('Request returned response with status {}', response.status_code)
+        LOG.debug('Request took {}s', perf_clock() - start)
+        LOG.debug('Request returned response with status {}', response.status_code)
         response.raise_for_status()
         return response
 
     # pylint: disable=unused-argument
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def _process_chunked_response(self, response, save_uid_token_to_owner=False):
         """Parse and decrypt an encrypted chunked response. Raise an error
         if the response is plaintext json"""
@@ -187,7 +188,7 @@ class MSLRequests(MSLRequestBuilder):
             return _raise_if_error(response.json())
         except ValueError:
             # json() failed so parse and decrypt the chunked response
-            common.debug('Received encrypted chunked response')
+            LOG.debug('Received encrypted chunked response')
             response = _parse_chunks(response.text)
             # TODO: sending for the renewal request is not yet implemented
             # if self.crypto.get_current_mastertoken_validity()['is_renewable']:
@@ -202,14 +203,14 @@ class MSLRequests(MSLRequestBuilder):
                     G.LOCAL_DB.get_active_profile_guid()
                 self.crypto.save_user_id_token(profile_guid, header_data['useridtoken'])
             # if 'keyresponsedata' in header_data:
-            #     common.debug('Found key handshake in response data')
+            #     LOG.debug('Found key handshake in response data')
             #     # Update current mastertoken
             #     self.request_builder.crypto.parse_key_response(header_data, True)
             decrypted_response = _decrypt_chunks(response['payloads'], self.crypto)
             return _raise_if_error(decrypted_response)
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def _process_json_response(response):
     """Execute a post request and expect a JSON response"""
     try:
@@ -228,8 +229,8 @@ def _raise_if_error(decoded_response):
         if 'error' in decoded_response['result'][0]:
             raise_error = True
     if raise_error:
-        common.error('Full MSL error information:')
-        common.error(json.dumps(decoded_response))
+        LOG.error('Full MSL error information:')
+        LOG.error(json.dumps(decoded_response))
         raise MSLError(_get_error_details(decoded_response))
     return decoded_response
 
@@ -250,7 +251,7 @@ def _get_error_details(decoded_response):
     return G.py2_encode('Unhandled error check log.')
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def _parse_chunks(message):
     header = json.loads(message.split('}}')[0] + '}}')
     payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}', message.split('}}')[1])
@@ -258,7 +259,7 @@ def _parse_chunks(message):
     return {'header': header, 'payloads': payloads}
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:

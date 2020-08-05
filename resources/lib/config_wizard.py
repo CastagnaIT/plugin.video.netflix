@@ -15,9 +15,10 @@ from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
 from resources.lib.utils.exceptions import InputStreamHelperError
-from resources.lib.common import debug, error, get_system_platform, is_device_4k_capable, get_local_string, json_rpc
+from resources.lib.common import get_system_platform, is_device_4k_capable, get_local_string, json_rpc
 from resources.lib.globals import G
 from resources.lib.kodi.ui import show_ok_dialog
+from resources.lib.utils.logging import LOG
 
 
 def run_addon_configuration(show_end_msg=False):
@@ -26,7 +27,7 @@ def run_addon_configuration(show_end_msg=False):
     automatically configures profiles and add-ons dependencies, based on user-supplied data and device characteristics
     """
     system = get_system_platform()
-    debug('Running add-on configuration wizard ({})', system)
+    LOG.debug('Running add-on configuration wizard ({})', system)
     G.settings_monitor_suspend(True, False)
     is_4k_capable = is_device_4k_capable()
 
@@ -56,7 +57,7 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise InputStreamHelperError(str(exc))
 
     isa_addon = Addon('inputstream.adaptive')
@@ -108,4 +109,4 @@ def _set_kodi_settings(system):
             json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.usemediacodecsurface', 'value': True})
             json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.usemediacodec', 'value': True})
         except IOError as exc:
-            error('Changing Kodi settings caused the following error: {}', exc)
+            LOG.error('Changing Kodi settings caused the following error: {}', exc)

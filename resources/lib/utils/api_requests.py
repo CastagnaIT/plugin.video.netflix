@@ -19,6 +19,7 @@ from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from .exceptions import APIError, MissingCredentialsError, CacheMiss
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
+from .logging import LOG, measure_exec_time_decorator
 
 
 def catch_api_errors(func):
@@ -54,11 +55,11 @@ def login(ask_credentials=True):
         raise
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cache to this method
     """Retrieve raw data for specified video id's"""
     video_ids = [int(videoid.value) for videoid in videoids]
-    common.debug('Requesting video raw data for {}', video_ids)
+    LOG.debug('Requesting video raw data for {}', video_ids)
     if not custom_partial_path:
         paths = build_paths(['videos', video_ids], EPISODES_PARTIAL_PATHS)
         if videoids[0].mediatype == common.VideoId.EPISODE:
@@ -69,10 +70,10 @@ def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cach
 
 
 @catch_api_errors
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def rate(videoid, rating):
     """Rate a video on Netflix"""
-    common.debug('Rating {} as {}', videoid.value, rating)
+    LOG.debug('Rating {} as {}', videoid.value, rating)
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
@@ -85,10 +86,10 @@ def rate(videoid, rating):
 
 
 @catch_api_errors
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def rate_thumb(videoid, rating, track_id_jaw):
     """Rate a video on Netflix"""
-    common.debug('Thumb rating {} as {}', videoid.value, rating)
+    LOG.debug('Thumb rating {} as {}', videoid.value, rating)
     event_uuid = common.get_random_uuid()
     response = common.make_call(
         'post_safe',
@@ -102,16 +103,16 @@ def rate_thumb(videoid, rating, track_id_jaw):
     if response.get('status', '') == 'success':
         ui.show_notification(common.get_local_string(30045).split('|')[rating])
     else:
-        common.error('Rating thumb error, response detail: {}', response)
+        LOG.error('Rating thumb error, response detail: {}', response)
         ui.show_error_info('Rating error', 'Error type: {}' + response.get('status', '--'),
                            True, True)
 
 
 @catch_api_errors
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""
-    common.debug('My List: {} {}', operation, videoid)
+    LOG.debug('My List: {} {}', operation, videoid)
     common.make_call(
         'post_safe',
         {'endpoint': 'update_my_list',
@@ -154,13 +155,13 @@ def _update_mylist_cache(videoid, operation, params):
             pass
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def get_parental_control_data(password):
     """Get the parental control data"""
     return common.make_call('parental_control_data', {'password': password})
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def set_parental_control_data(data):
     """Set the parental control data"""
     try:
@@ -175,11 +176,11 @@ def set_parental_control_data(data):
         )
         return True
     except Exception as exc:  # pylint: disable=broad-except
-        common.error('Api call profile_hub raised an error: {}', exc)
+        LOG.error('Api call profile_hub raised an error: {}', exc)
     return False
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def verify_pin(pin):
     """Send adult PIN to Netflix and verify it."""
     try:
@@ -192,7 +193,7 @@ def verify_pin(pin):
         return False
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
     try:
@@ -244,7 +245,7 @@ def remove_watched_status(videoid):
         )
         return data.get('status', False)
     except Exception as exc:  # pylint: disable=broad-except
-        common.error('remove_watched_status raised this error: {}', exc)
+        LOG.error('remove_watched_status raised this error: {}', exc)
         return False
 
 

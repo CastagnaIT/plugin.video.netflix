@@ -8,13 +8,14 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 from functools import wraps
+
 import AddonSignals
 
-from resources.lib.globals import G
 import resources.lib.utils.exceptions as apierrors
-
-from .logging import debug, error, time_execution
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .misc_utils import run_threaded
 
 try:  # Python 2
@@ -51,7 +52,7 @@ def register_slot(callback, signal=None, source_id=None):
         signaler_id=source_id or G.ADDON_ID,
         signal=name,
         callback=callback)
-    debug('Registered AddonSignals slot {} to {}'.format(name, callback))
+    LOG.debug('Registered AddonSignals slot {} to {}'.format(name, callback))
 
 
 def unregister_slot(callback, signal=None):
@@ -60,7 +61,7 @@ def unregister_slot(callback, signal=None):
     AddonSignals.unRegisterSlot(
         signaler_id=G.ADDON_ID,
         signal=name)
-    debug('Unregistered AddonSignals slot {}'.format(name))
+    LOG.debug('Unregistered AddonSignals slot {}'.format(name))
 
 
 def send_signal(signal, data=None, non_blocking=False):
@@ -82,7 +83,7 @@ def _send_signal(signal, data):
         data=data)
 
 
-@time_execution(immediate=False)
+@measure_exec_time_decorator()
 def make_call(callname, data=None):
     # Note: IPC over HTTP handle FULL objects serialization, AddonSignals NOT HANDLE the serialization of objects
     if G.IPC_OVER_HTTP:
@@ -99,7 +100,7 @@ def make_http_call(callname, data):
     except ImportError:  # Python 2
         from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     import json
-    debug('Handling HTTP IPC call to {}'.format(callname))
+    LOG.debug('Handling HTTP IPC call to {}'.format(callname))
     # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}/{}'.format(G.LOCAL_DB.get_value('ns_service_port', 8001), callname)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
@@ -114,7 +115,7 @@ def make_http_call(callname, data):
         err_msg = G.py2_decode(str(exc), 'latin-1')
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
-        error(err_msg)
+        LOG.error(err_msg)
         raise BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
     _raise_for_error(result)
     return result
@@ -145,7 +146,7 @@ def make_http_call_cache(callname, params, data):
         err_msg = G.py2_decode(str(exc), 'latin-1')
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
-        error(err_msg)
+        LOG.error(err_msg)
         raise BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
     return result
 
@@ -154,7 +155,7 @@ def make_addonsignals_call(callname, data):
     """Make an IPC call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target
     function."""
-    debug('Handling AddonSignals IPC call to {}'.format(callname))
+    LOG.debug('Handling AddonSignals IPC call to {}'.format(callname))
     result = AddonSignals.makeCall(
         source_id=G.ADDON_ID,
         signal=callname,
@@ -203,9 +204,9 @@ def _perform_ipc_return_call_instance(instance, func, data):
         result = _call_with_instance(instance, func, data)
     except Exception as exc:  # pylint: disable=broad-except
         if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
-            error('IPC callback raised exception: {exc}', exc=exc)
+            LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
-            error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         result = ipc_convert_exc_to_json(exc)
     return _execute_addonsignals_return_call(result, func.__name__)
 
@@ -215,9 +216,9 @@ def _perform_ipc_return_call(func, data, func_name=None):
         result = _call(func, data)
     except Exception as exc:  # pylint: disable=broad-except
         if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
-            error('IPC callback raised exception: {exc}', exc=exc)
+            LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
-            error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         result = ipc_convert_exc_to_json(exc)
     return _execute_addonsignals_return_call(result, func_name)
 
