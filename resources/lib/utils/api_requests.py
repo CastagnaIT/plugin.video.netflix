@@ -17,7 +17,7 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from .exceptions import APIError, MissingCredentialsError, CacheMiss
+from resources.lib.common.exceptions import APIError, MissingCredentialsError, CacheMiss
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
 

@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-from resources.lib.utils.exceptions import InvalidPathError
+from resources.lib.common.exceptions import InvalidPathError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 

@@ -15,7 +15,7 @@ import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
-from resources.lib.utils.exceptions import MissingCredentialsError, CacheMiss
+from resources.lib.common.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.utils.api_paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
 from resources.lib.globals import G

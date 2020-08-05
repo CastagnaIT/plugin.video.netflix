@@ -17,7 +17,7 @@ import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_utils as db_utils
 import resources.lib.database.db_create_mysql as db_create_mysql
-from resources.lib.database.db_exceptions import (MySQLConnectionError, MySQLError)
+from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
@@ -39,7 +39,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc)
-            raise MySQLConnectionError
+            raise DBMySQLConnectionError
         finally:
             if conn and conn.is_connected():
                 conn.close()
@@ -86,10 +86,10 @@ class MySQLDatabase(db_base.BaseDatabase):
                     LOG.error('MySql error {}:', e)
                     if e.errno == 1115:  # Unknown character set: 'utf8mb4'
                         # Means an outdated MySQL/MariaDB version in use, needed MySQL => 5.5.3 or MariaDB => 5.5
-                        raise MySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade')
-                    raise MySQLError(str(e))
+                        raise DBMySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade')
+                    raise DBMySQLError(str(e))
             LOG.error('MySql error {}:', exc)
-            raise MySQLConnectionError
+            raise DBMySQLConnectionError
         finally:
             if self.conn and self.conn.is_connected():
                 self.conn.close()
@@ -109,7 +109,7 @@ class MySQLDatabase(db_base.BaseDatabase):
                     pass
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc)
-            raise MySQLError
+            raise DBMySQLError
         except ValueError as exc_ve:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -127,7 +127,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             return cursor
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc.args[0])
-            raise MySQLError
+            raise DBMySQLError
         except ValueError as exc_ve:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))

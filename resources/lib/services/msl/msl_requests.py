@@ -16,8 +16,8 @@ import re
 import zlib
 
 import resources.lib.common as common
+from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
-from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
                                                   MSL_DATA_FILENAME)

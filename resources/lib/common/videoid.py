@@ -11,14 +11,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
+from .exceptions import InvalidVideoId
+
 try:  # Python 2
     unicode
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
-
-
-class InvalidVideoId(Exception):
-    """The provided video id is not valid"""
 
 
 class VideoId(object):

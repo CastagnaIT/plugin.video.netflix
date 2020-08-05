@@ -15,8 +15,8 @@ import resources.lib.common as common
 import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
-from resources.lib.utils.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                            MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie

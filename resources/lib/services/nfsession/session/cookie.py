@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import time
 
 import resources.lib.utils.cookies as cookies
+from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.utils.logging import LOG
@@ -29,7 +30,7 @@ class SessionCookie(SessionBase):
         if not self.session.cookies:
             try:
                 self.session.cookies = cookies.load(self.account_hash)
-            except cookies.MissingCookiesError:
+            except MissingCookiesError:
                 return False
             except Exception as exc:
                 import traceback

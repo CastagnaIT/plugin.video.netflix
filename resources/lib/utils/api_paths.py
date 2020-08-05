@@ -13,7 +13,7 @@ from future.utils import iteritems
 import resources.lib.common as common
 
 from resources.lib.globals import G
-from .exceptions import InvalidReferenceError
+from resources.lib.common.exceptions import InvalidReferenceError
 
 # Limit size for the path request (with zero base)
 # The requests to sorted lists can get more then 48 results,

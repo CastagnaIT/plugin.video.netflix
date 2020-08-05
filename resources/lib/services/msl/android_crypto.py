@@ -14,11 +14,11 @@ import json
 
 import xbmcdrm
 
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .base_crypto import MSLBaseCrypto
-from .exceptions import MSLError
 
 
 class AndroidMSLCrypto(MSLBaseCrypto):

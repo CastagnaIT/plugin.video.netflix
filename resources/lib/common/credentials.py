@@ -13,7 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 
 from resources.lib.globals import G
-from resources.lib.utils.exceptions import MissingCredentialsError
+from resources.lib.common.exceptions import MissingCredentialsError
 from resources.lib.utils.logging import LOG
 from .uuid_device import get_crypt_key
 

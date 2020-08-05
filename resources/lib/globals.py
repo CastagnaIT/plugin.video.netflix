@@ -303,13 +303,13 @@ class GlobalVariables(object):
         use_mysql = G.ADDON.getSettingBool('use_mysql')
         if initialize or use_mysql:
             import resources.lib.database.db_shared as db_shared
-            from resources.lib.database.db_exceptions import MySQLConnectionError, MySQLError
+            from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
             try:
                 shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
                 self.SHARED_DB = shared_db_class()
-            except (MySQLConnectionError, MySQLError) as exc:
+            except (DBMySQLConnectionError, DBMySQLError) as exc:
                 import resources.lib.kodi.ui as ui
-                if isinstance(exc, MySQLError):
+                if isinstance(exc, DBMySQLError):
                     # There is a problem with the database
                     ui.show_addon_error_info(exc)
                 # The MySQL database cannot be reached, fallback to local SQLite database

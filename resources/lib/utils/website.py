@@ -17,14 +17,13 @@ from future.utils import iteritems
 import xbmc
 
 import resources.lib.common as common
-from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from .esn import generate_android_esn
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
-                         WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
-                         MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+from resources.lib.common.exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
+                                             WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, DBProfilesMissing)
 from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
+from .esn import generate_android_esn
 from .logging import LOG, measure_exec_time_decorator
 
 try:  # Python 2
@@ -180,7 +179,7 @@ def _delete_non_existing_profiles(current_guids):
     # Ensures at least one active profile
     try:
         G.LOCAL_DB.get_active_profile_guid()
-    except ProfilesMissing:
+    except DBProfilesMissing:
         G.LOCAL_DB.switch_active_profile(G.LOCAL_DB.get_guid_owner_profile())
     G.settings_monitor_suspend(True)
     # Verify if auto select profile exists

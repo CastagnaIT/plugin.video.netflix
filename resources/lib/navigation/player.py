@@ -18,7 +18,7 @@ import resources.lib.kodi.ui as ui
 import resources.lib.utils.api_requests as api
 from resources.lib.globals import G
 from resources.lib.utils.api_paths import EVENT_PATHS
-from resources.lib.utils.exceptions import MetadataNotAvailable, InputStreamHelperError
+from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 # Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),

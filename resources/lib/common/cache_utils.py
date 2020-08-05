@@ -11,9 +11,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-from resources.lib.utils.exceptions import CacheMiss
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
+from .exceptions import CacheMiss
 
 try:
     import cPickle as pickle

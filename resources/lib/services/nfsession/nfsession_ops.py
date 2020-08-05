@@ -14,9 +14,9 @@ from datetime import datetime, timedelta
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
-from resources.lib.utils.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                            MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
-                                            HttpError401, InvalidProfilesError)
+from resources.lib.common.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
+                                             MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
+                                             HttpError401, InvalidProfilesError)
 from resources.lib.common import cache_utils
 from resources.lib.utils import cookies
 from resources.lib.globals import G

@@ -13,7 +13,7 @@ from functools import wraps
 
 import AddonSignals
 
-import resources.lib.utils.exceptions as apierrors
+from resources.lib.common import exceptions
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .misc_utils import run_threaded
@@ -25,10 +25,6 @@ except NameError:  # Python 3
 
 IPC_TIMEOUT_SECS = 20
 IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
-
-
-class BackendNotReady(Exception):
-    """The background services are not started yet"""
 
 
 class Signals(object):  # pylint: disable=no-init
@@ -116,7 +112,7 @@ def make_http_call(callname, data):
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
+        raise exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
     _raise_for_error(result)
     return result
 
@@ -138,7 +134,7 @@ def make_http_call_cache(callname, params, data):
         result = urlopen(r, timeout=IPC_TIMEOUT_SECS).read()
     except HTTPError as exc:
         try:
-            raise apierrors.__dict__[exc.reason]()
+            raise exceptions.__dict__[exc.reason]()
         except KeyError:
             raise Exception('The service has returned: {}'.format(exc.reason))
     except URLError as exc:
@@ -147,7 +143,7 @@ def make_http_call_cache(callname, params, data):
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
+        raise exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
     return result
 
 
@@ -172,7 +168,7 @@ def _raise_for_error(result):
     if isinstance(result, dict) and IPC_EXCEPTION_PLACEHOLDER in result:
         result = result[IPC_EXCEPTION_PLACEHOLDER]
         try:
-            raise apierrors.__dict__[result['class']](result['message'])
+            raise exceptions.__dict__[result['class']](result['message'])
         except KeyError:
             raise Exception(result['class'] + '\r\nError details:\r\n' + result.get('message', '--'))
 

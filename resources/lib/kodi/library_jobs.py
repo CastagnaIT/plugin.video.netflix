@@ -17,7 +17,7 @@ import xbmcvfs
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.utils.exceptions import MetadataNotAvailable
+from resources.lib.common.exceptions import MetadataNotAvailable, ItemNotFound
 from resources.lib.globals import G
 from resources.lib.kodi.library_utils import remove_videoid_from_db, insert_videoid_to_db
 from resources.lib.utils.logging import LOG
@@ -90,7 +90,7 @@ class LibraryJobs(object):
 
             # Remove videoid records from add-on database
             remove_videoid_from_db(videoid)
-        except common.ItemNotFound:
+        except ItemNotFound:
             LOG.warn('The videoid {} not exists in the add-on library database', videoid)
         except Exception as exc:  # pylint: disable=broad-except
             import traceback

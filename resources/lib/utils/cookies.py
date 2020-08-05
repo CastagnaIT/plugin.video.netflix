@@ -14,6 +14,7 @@ from time import time
 import xbmc
 import xbmcvfs
 
+from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
@@ -21,14 +22,6 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
-
-
-class MissingCookiesError(Exception):
-    """No session cookies have been stored"""
-
-
-class CookiesExpiredError(Exception):
-    """Stored cookies are expired"""
 
 
 def save(account_hash, cookie_jar, log_output=True):
@@ -58,7 +51,7 @@ def load(account_hash):
     filename = cookie_filename(account_hash)
     if not xbmcvfs.exists(filename):
         LOG.debug('Cookies file does not exist')
-        raise MissingCookiesError()
+        raise MissingCookiesError
     LOG.debug('Loading cookies from {}', G.py2_decode(filename))
     cookie_file = xbmcvfs.File(filename, 'rb')
     try:
@@ -71,7 +64,7 @@ def load(account_hash):
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise MissingCookiesError()
+        raise MissingCookiesError
     finally:
         cookie_file.close()
     # Clear flwssn cookie if present, as it is trouble with early expiration

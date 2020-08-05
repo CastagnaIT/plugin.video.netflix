@@ -15,6 +15,7 @@ import xbmc
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
+from .exceptions import ItemNotFound
 from .kodi_ops import json_rpc, get_local_string, json_rpc_multi
 from .videoid import VideoId
 
@@ -35,10 +36,6 @@ LIBRARY_PROPS = {
               'top250', 'file', 'sorttitle', 'resume', 'setid', 'dateadded',
               'tag', 'art', 'userrating']
 }
-
-
-class ItemNotFound(Exception):
-    """The requested item could not be found in the Kodi library"""
 
 
 def update_library_item_details(dbtype, dbid, details):

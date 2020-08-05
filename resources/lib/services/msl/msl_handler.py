@@ -19,11 +19,10 @@ from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
-from resources.lib.utils.exceptions import CacheMiss
+from resources.lib.common.exceptions import CacheMiss, MSLError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
-from .exceptions import MSLError
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles

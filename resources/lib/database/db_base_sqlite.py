@@ -17,7 +17,7 @@ import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
-from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError
+from resources.lib.common.exceptions import DBSQLiteConnectionError, DBSQLiteError
 from resources.lib.utils.logging import LOG
 
 try:  # Python 2
@@ -57,7 +57,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise SQLiteConnectionError
+            raise DBSQLiteConnectionError
         finally:
             if conn:
                 args[0].is_connected = False
@@ -101,7 +101,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise SQLiteConnectionError
+            raise DBSQLiteConnectionError
         finally:
             if self.conn:
                 self.conn.close()
@@ -116,7 +116,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            raise DBSQLiteError
         except ValueError as exc_ve:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -133,7 +133,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             return cursor
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            raise DBSQLiteError
         except ValueError as exc_ve:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))

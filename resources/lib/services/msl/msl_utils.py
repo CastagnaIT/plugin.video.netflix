@@ -18,9 +18,9 @@ import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.services.msl.exceptions import MSLError
 from resources.lib.utils.esn import get_esn
 
 try:  # Python 2

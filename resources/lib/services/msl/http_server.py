@@ -13,6 +13,7 @@ import base64
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
+from ...common.exceptions import MSLError
 
 try:  # Python 3
     from urllib.parse import parse_qs, urlparse
@@ -30,7 +31,6 @@ except ImportError:
     from SocketServer import TCPServer
 
 from .msl_handler import MSLHandler
-from .exceptions import MSLError
 
 
 class MSLHttpRequestHandler(BaseHTTPRequestHandler):

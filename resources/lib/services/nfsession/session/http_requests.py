@@ -14,8 +14,8 @@ import json
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
-from resources.lib.utils.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                            HttpError401)
+from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
+                                             HttpError401)
 from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G

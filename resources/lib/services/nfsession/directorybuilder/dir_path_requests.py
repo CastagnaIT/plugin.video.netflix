@@ -14,7 +14,7 @@ from future.utils import iteritems
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
                                             VideoList, SearchVideoList, CustomVideoList)
-from resources.lib.utils.exceptions import InvalidVideoListTypeError
+from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                                            GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
@@ -150,7 +150,7 @@ class DirectoryPathRequests(object):
     def req_seasons(self, videoid, perpetual_range_start):
         """Retrieve the seasons of a tv show"""
         if videoid.mediatype != common.VideoId.SHOW:
-            raise common.InvalidVideoId('Cannot request season list for {}'.format(videoid))
+            raise InvalidVideoId('Cannot request season list for {}'.format(videoid))
         LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
             'paths': build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS),
@@ -165,7 +165,7 @@ class DirectoryPathRequests(object):
     def req_episodes(self, videoid, perpetual_range_start=None):
         """Retrieve the episodes of a season"""
         if videoid.mediatype != common.VideoId.SEASON:
-            raise common.InvalidVideoId('Cannot request episode list for {}'.format(videoid))
+            raise InvalidVideoId('Cannot request episode list for {}'.format(videoid))
         LOG.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
@@ -224,7 +224,7 @@ class DirectoryPathRequests(object):
     def req_video_list_supplemental(self, videoid, supplemental_type):
         """Retrieve a video list of supplemental type videos"""
         if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
-            raise common.InvalidVideoId('Cannot request video list supplemental for {}'.format(videoid))
+            raise InvalidVideoId('Cannot request video list supplemental for {}'.format(videoid))
         LOG.debug('Requesting video list supplemental of type "{}" for {}', supplemental_type, videoid)
         path = build_paths(
             ['videos', videoid.value, supplemental_type, {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS

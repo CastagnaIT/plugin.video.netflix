@@ -15,7 +15,7 @@ import re
 
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
-from resources.lib.utils.exceptions import MetadataNotAvailable
+from resources.lib.common.exceptions import MetadataNotAvailable
 from resources.lib.database.db_utils import VidLibProp
 from resources.lib.globals import G
 from resources.lib.kodi import ui
