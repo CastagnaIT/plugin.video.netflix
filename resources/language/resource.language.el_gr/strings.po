@@ -520,9 +520,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Ενεργοποίηση ενσωμάτωσης επομένου"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Δείξε ειδοποίηση αντί βοηθητικού διαλόγου για σφάλματα"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"

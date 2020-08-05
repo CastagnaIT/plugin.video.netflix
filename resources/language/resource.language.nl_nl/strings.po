@@ -520,9 +520,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Activeer Up Next integratie"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Toon een melding in plaats van een venster bij fouten"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
