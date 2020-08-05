@@ -55,13 +55,13 @@ def create_folder(path):
         xbmcvfs.mkdirs(path)
 
 
-def file_exists(filename, data_path=G.DATA_PATH):
+def file_exists(file_path):
     """
     Checks if a given file exists
-    :param filename: The filename
+    :param file_path: File path to check
     :return: True if exists
     """
-    return xbmcvfs.exists(xbmc.translatePath(os.path.join(data_path, filename)))
+    return xbmcvfs.exists(xbmc.translatePath(file_path))
 
 
 def copy_file(from_path, to_path):
