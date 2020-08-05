@@ -12,12 +12,12 @@ from __future__ import absolute_import, division, unicode_literals
 from future.utils import iteritems
 
 from resources.lib import common
-from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoLoMo, LoCo,
-                                            VideoList, SearchVideoList, CustomVideoList)
+from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
+                                            SearchVideoList, CustomVideoList)
 from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
-                                           GENRE_PARTIAL_PATHS, TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
+                                           TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
                                            PATH_REQUEST_SIZE_MAX)
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
@@ -44,20 +44,6 @@ class DirectoryPathRequests(object):
             return items
         except InvalidVideoListTypeError:
             return []
-
-    @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='lolomo_list', ignore_self_class=True)
-    def req_lolomo_list_root(self):
-        """Retrieve root LoLoMo list"""
-        # It is used to display main menu and the menus with 'lolomo_contexts' specified, like 'recommendations' menu
-        LOG.debug('Requesting root LoLoMo lists')
-        paths = ([['lolomo', {'from': 0, 'to': 40}, ['displayName', 'context', 'id', 'index', 'length', 'genreId']]] +
-                 # Titles of first 4 videos in each video list
-                 [['lolomo', {'from': 0, 'to': 40}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
-                 # Art for first video in each video list (will be displayed as video list art)
-                 build_paths(['lolomo', {'from': 0, 'to': 40}, {'from': 0, 'to': 0}, 'reference'], ART_PARTIAL_PATHS))
-        call_args = {'paths': paths}
-        path_response = self.nfsession.path_request(**call_args)
-        return LoLoMo(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='loco_list', ignore_self_class=True)
     def req_loco_list_root(self):
@@ -100,28 +86,6 @@ class DirectoryPathRequests(object):
         call_args = {'paths': paths}
         path_response = self.nfsession.path_request(**call_args)
         return LoCo(path_response)
-
-    @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
-    def req_lolomo_list_genre(self, genre_id):
-        """Retrieve LoLoMos for the given genre"""
-        LOG.debug('Requesting LoLoMo for genre {}', genre_id)
-        paths = (build_paths(['genres', genre_id, 'rw'], GENRE_PARTIAL_PATHS) +
-                 # Titles and art of standard lists' items
-                 build_paths(['genres', genre_id, 'rw', {"from": 0, "to": 48}, {"from": 0, "to": 3}, "reference"],
-                             [['title', 'summary']] + ART_PARTIAL_PATHS) +
-                 # IDs and names of sub-genres
-                 [['genres', genre_id, 'subgenres', {'from': 0, 'to': 48}, ['id', 'name']]])
-        call_args = {'paths': paths}
-        path_response = self.nfsession.path_request(**call_args)
-        return LoLoMo(path_response)
-
-    def get_lolomo_list_id_by_context(self, context):
-        """Return the dynamic video list ID for a LoLoMo context"""
-        try:
-            list_id = next(iter(self.req_lolomo_list_root().lists_by_context(context, True)))[0]
-        except StopIteration:
-            raise InvalidVideoListTypeError('No lists with context {} available'.format(context))
-        return list_id
 
     def get_loco_list_id_by_context(self, context):
         """Return the dynamic video list ID for a LoCo context"""
