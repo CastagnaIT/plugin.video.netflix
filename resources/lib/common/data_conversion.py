@@ -14,8 +14,7 @@ import json
 from ast import literal_eval
 from collections import OrderedDict
 
-
-from .logging import error
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -44,7 +43,7 @@ def convert_to_string(value):
     if data_type in (list, dict, OrderedDict):
         converter = _conv_json_to_string
     if not converter:
-        error('convert_to_string: Data type {} not mapped'.format(data_type))
+        LOG.error('convert_to_string: Data type {} not mapped'.format(data_type))
         raise DataTypeNotMapped
     return converter(value)
 
@@ -62,7 +61,7 @@ def convert_from_string(value, to_data_type):
     if to_data_type == datetime.datetime:
         converter = _conv_string_to_datetime
     if not converter:
-        error('convert_from_string: Data type {} not mapped'.format(to_data_type))
+        LOG.error('convert_from_string: Data type {} not mapped'.format(to_data_type))
         raise DataTypeNotMapped
     return converter(value)
 

@@ -11,14 +11,14 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 
 from resources.lib.globals import G
-from .logging import info
+from resources.lib.utils.logging import LOG
 
 
 def select_port(service):
     """Select an unused port on the host machine for a server and store it in the settings"""
     port = select_unused_port()
     G.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
-    info('[{}] Picked Port: {}'.format(service, port))
+    LOG.info('[{}] Picked Port: {}'.format(service, port))
     return port
 
 

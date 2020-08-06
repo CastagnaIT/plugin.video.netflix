@@ -10,16 +10,18 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import resources.lib.api.website as website
+import resources.lib.utils.website as website
 import resources.lib.common as common
-import resources.lib.common.cookies as cookies
+import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                          MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+from resources.lib.utils.esn import get_esn
+from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 try:  # Python 2
     unicode
@@ -35,7 +37,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         # Share the login function to SessionBase class
         self.external_func_login = self.login
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def prefetch_login(self):
         """Check if we have stored credentials.
         If so, do the login before the user requests it"""
@@ -48,10 +50,10 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
-            common.error('Login prefetch: request exception {}', exc)
-            common.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error('Login prefetch: request exception {}', exc)
+            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
         except Exception as exc:  # pylint: disable=broad-except
-            common.warn('Login prefetch: failed {}', exc)
+            LOG.warn('Login prefetch: failed {}', exc)
         return False
 
     def assert_logged_in(self):
@@ -68,7 +70,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
     @staticmethod
     def _verify_esn_existence():
-        return bool(G.get_esn())
+        return bool(get_esn())
 
     def get_safe(self, endpoint, **kwargs):
         """
@@ -86,20 +88,20 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         self.assert_logged_in()
         return self.post(endpoint, **kwargs)
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def login(self, modal_error_message=True):
         """Perform account login"""
         try:
             # First we get the authentication url without logging in, required for login API call
             react_context = website.extract_json(self.get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
-            common.debug('Logging in...')
+            LOG.debug('Logging in...')
             login_response = self.post(
                 'login',
                 data=_login_payload(common.get_credentials(), auth_url))
             try:
                 website.extract_session_data(login_response, validate=True, update_profiles=True)
-                common.info('Login successful')
+                LOG.info('Login successful')
                 ui.show_notification(common.get_local_string(30109))
                 cookies.save(self.account_hash, self.session.cookies)
                 return True
@@ -117,15 +119,15 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                                    False, True)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             raise
         return False
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def logout(self):
         """Logout of the current account and reset the session"""
-        common.debug('Logging out of current account')
+        LOG.debug('Logging out of current account')
 
         # Perform the website logout
         self.get('logout')
@@ -161,7 +163,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
         G.CACHE.clear(clear_database=True)
 
-        common.info('Logout successful')
+        LOG.info('Logout successful')
         ui.show_notification(common.get_local_string(30113))
         self._init_session()
         common.container_update('path', True)  # Go to a fake page to clear screen

@@ -15,13 +15,14 @@ import time
 import xbmcaddon
 
 import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.esn import get_esn
+from resources.lib.common.exceptions import CacheMiss, MSLError
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
-from .exceptions import MSLError
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
 from .profiles import enabled_profiles
@@ -91,7 +92,7 @@ class MSLHandler(object):
         self.msl_requests = None
         try:
             msl_data = json.loads(common.load_file_def(MSL_DATA_FILENAME))
-            common.info('Loaded MSL data from disk')
+            LOG.info('Loaded MSL data from disk')
         except Exception:  # pylint: disable=broad-except
             msl_data = None
         self.msl_requests = MSLRequests(msl_data)
@@ -102,7 +103,7 @@ class MSLHandler(object):
         Reinitialize the MSL handler
         :param data: set True for delete the msl file data, and then reset all
         """
-        common.debug('Reinitializing MSL handler')
+        LOG.debug('Reinitializing MSL handler')
         if data is True:
             common.delete_file(MSL_DATA_FILENAME)
         self._init_msl_handler()
@@ -117,7 +118,7 @@ class MSLHandler(object):
             self._events_handler_thread.start()
 
     @display_error_info
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def load_manifest(self, viewable_id):
         """
         Loads the manifests for the given viewable_id and returns a mpd-XML-Manifest
@@ -126,7 +127,7 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         try:
-            manifest = self._load_manifest(viewable_id, G.get_esn())
+            manifest = self._load_manifest(viewable_id, get_esn())
         except MSLError as exc:
             if 'Email or password is incorrect' in G.py2_decode(str(exc)):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -138,7 +139,7 @@ class MSLHandler(object):
             raise
         return self.__tranform_to_dash(manifest)
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def _load_manifest(self, viewable_id, esn):
         cache_identifier = esn + '_' + unicode(viewable_id)
         try:
@@ -150,8 +151,8 @@ class MSLHandler(object):
                 # when requested by am_stream_continuity.py / events_handler.py will cause problems
                 # if it is already expired, so we guarantee a minimum of safety ttl of 4h (14400s = 4 hours)
                 raise CacheMiss()
-            if common.is_debug_verbose():
-                common.debug('Manifest for {} obtained from the cache', viewable_id)
+            if LOG.level == LOG.LEVEL_VERBOSE:
+                LOG.debug('Manifest for {} obtained from the cache', viewable_id)
                 # Save the manifest to disk as reference
                 common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
             return manifest
@@ -168,14 +169,14 @@ class MSLHandler(object):
         if hdcp_4k_capable and hdcp_override:
             hdcp_version = ['2.2']
 
-        common.info('Requesting manifest for {} with ESN {} and HDCP {}',
-                    viewable_id,
-                    common.censure(esn) if G.ADDON.getSetting('esn') else esn,
-                    hdcp_version)
+        LOG.info('Requesting manifest for {} with ESN {} and HDCP {}',
+                 viewable_id,
+                 common.censure(esn) if G.ADDON.getSetting('esn') else esn,
+                 hdcp_version)
 
         profiles = enabled_profiles()
         from pprint import pformat
-        common.info('Requested profiles:\n{}', pformat(profiles, indent=2))
+        LOG.info('Requested profiles:\n{}', pformat(profiles, indent=2))
 
         params = {
             'type': 'standard',
@@ -227,7 +228,7 @@ class MSLHandler(object):
                                                      self.msl_requests.build_request_data('/manifest', params),
                                                      esn,
                                                      disable_msl_switch=False)
-        if common.is_debug_verbose():
+        if LOG.level == LOG.LEVEL_VERBOSE:
             # Save the manifest to disk as reference
             common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity
@@ -236,7 +237,7 @@ class MSLHandler(object):
         return manifest
 
     @display_error_info
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def get_license(self, challenge, sid):
         """
         Requests and returns a license for the given challenge and sid
@@ -245,7 +246,7 @@ class MSLHandler(object):
         :param sid: The sid paired to the challenge
         :return: Base64 representation of the license key or False unsuccessful
         """
-        common.debug('Requesting license')
+        LOG.debug('Requesting license')
 
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
@@ -261,7 +262,7 @@ class MSLHandler(object):
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
                                                                                           'drmSessionId'),
-                                                     G.get_esn())
+                                                     get_esn())
         # This xid must be used also for each future Event request, until playback stops
         G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 
@@ -279,15 +280,15 @@ class MSLHandler(object):
         # I don't know the real purpose of its use, it seems to be requested after the license and before starting
         # playback, and only the first time after a switch,
         # in the response you can also understand if the msl switch has worked
-        common.debug('Requesting bind events')
+        LOG.debug('Requesting bind events')
         response = self.msl_requests.chunked_request(ENDPOINTS['events'],
                                                      self.msl_requests.build_request_data('/bind', {}),
-                                                     G.get_esn(),
+                                                     get_esn(),
                                                      disable_msl_switch=False)
-        common.debug('Bind events response: {}', response)
+        LOG.debug('Bind events response: {}', response)
 
     @display_error_info
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def release_license(self, data=None):  # pylint: disable=unused-argument
         """Release the server license"""
         try:
@@ -297,7 +298,7 @@ class MSLHandler(object):
             sid = self.licenses_session_id.pop()
             xid = self.licenses_xid.pop()
 
-            common.debug('Requesting releasing license')
+            LOG.debug('Requesting releasing license')
             params = [{
                 'url': url,
                 'params': {
@@ -309,17 +310,17 @@ class MSLHandler(object):
 
             response = self.msl_requests.chunked_request(ENDPOINTS['license'],
                                                          self.msl_requests.build_request_data('/bundle', params),
-                                                         G.get_esn())
-            common.debug('License release response: {}', response)
+                                                         get_esn())
+            LOG.debug('License release response: {}', response)
         except IndexError:
             # Example the supplemental media type have no license
-            common.debug('No license to release')
+            LOG.debug('No license to release')
 
     def clear_user_id_tokens(self, data=None):  # pylint: disable=unused-argument
         """Clear all user id tokens"""
         self.msl_requests.crypto.clear_user_id_tokens()
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def __tranform_to_dash(self, manifest):
         self.last_license_url = manifest['links']['license']['href']
         return convert_to_dash(manifest)

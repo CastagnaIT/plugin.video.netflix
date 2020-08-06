@@ -13,21 +13,20 @@ from functools import wraps
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
-from resources.lib.api.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
-                                          MbrStatusFormerMemberError, MissingCredentialsError, NotLoggedInError,
-                                          InvalidPathError, LoginValidateError)
-from resources.lib.common import (info, debug, warn, error, check_credentials, BackendNotReady,
-                                  log_time_trace, reset_log_level_global_var,
-                                  get_current_kodi_profile_name, get_local_string)
+from resources.lib.common.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
+                                             MbrStatusFormerMemberError, MissingCredentialsError, NotLoggedInError,
+                                             InvalidPathError, LoginValidateError, BackendNotReady)
+from resources.lib.common import check_credentials, get_current_kodi_profile_name, get_local_string
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_addon_upgrade
+from resources.lib.utils.logging import LOG
 
 
 def _check_valid_credentials():
     """Check that credentials are valid otherwise request user credentials"""
     if not check_credentials():
         try:
-            from resources.lib.api.api_requests import login
+            from resources.lib.utils.api_requests import login
             if not login():
                 # Wrong login try again
                 return _check_valid_credentials()
@@ -50,12 +49,12 @@ def lazy_login(func):
             return func(*args, **kwargs)
         except (NotLoggedInError, LoginValidateError):
             # Exceptions raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
-            debug('Tried to perform an action without being logged in')
+            LOG.debug('Tried to perform an action without being logged in')
             try:
-                from resources.lib.api.api_requests import login
+                from resources.lib.utils.api_requests import login
                 if not login(ask_credentials=not check_credentials()):
                     return False
-                debug('Account logged in, try executing again {}', func.__name__)
+                LOG.debug('Account logged in, try executing again {}', func.__name__)
                 return func(*args, **kwargs)
             except MissingCredentialsError:
                 # Cancelled from user or left an empty field
@@ -66,7 +65,7 @@ def lazy_login(func):
 @lazy_login
 def route(pathitems):
     """Route to the appropriate handler"""
-    debug('Routing navigation request')
+    LOG.debug('Routing navigation request')
     root_handler = pathitems[0] if pathitems else G.MODE_DIRECTORY
     if root_handler == G.MODE_PLAY:
         from resources.lib.navigation.player import play
@@ -75,7 +74,7 @@ def route(pathitems):
         from resources.lib.navigation.player import play_strm
         play_strm(videoid=pathitems[1:])
     elif root_handler == 'extrafanart':
-        warn('Route: ignoring extrafanart invocation')
+        LOG.warn('Route: ignoring extrafanart invocation')
         return False
     else:
         nav_handler = _get_nav_handler(root_handler)
@@ -108,7 +107,7 @@ def _execute(executor_type, pathitems, params):
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
     except AttributeError:
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
-    debug('Invoking action: {}', executor.__name__)
+    LOG.debug('Invoking action: {}', executor.__name__)
     executor(pathitems=pathitems)
 
 
@@ -154,7 +153,7 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5
-        debug('Add-on was initiated by an external call - workaround enabled time elapsed {}s', sec_elapsed)
+        LOG.debug('Add-on was initiated by an external call - workaround enabled time elapsed {}s', sec_elapsed)
         G.IS_ADDON_EXTERNAL_CALL = True
         return True
     return False
@@ -167,9 +166,8 @@ def run(argv):
     # PR: https://github.com/xbmc/xbmc/pull/13814
     G.init_globals(argv)
 
-    reset_log_level_global_var()
-    info('Started (Version {})'.format(G.VERSION_RAW))
-    info('URL is {}'.format(G.URL))
+    LOG.info('Started (Version {})'.format(G.VERSION_RAW))
+    LOG.info('URL is {}'.format(G.URL))
     success = True
 
     window_cls = Window(10000)  # Kodi home window
@@ -236,11 +234,11 @@ def run(argv):
         except Exception as exc:
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             success = False
 
     if not success:
         from xbmcplugin import endOfDirectory
         endOfDirectory(handle=G.PLUGIN_HANDLE, succeeded=False)
-    log_time_trace()
+    LOG.log_time_trace()

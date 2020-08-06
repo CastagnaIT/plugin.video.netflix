@@ -14,6 +14,7 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 from .markers import SKIPPABLE_SECTIONS, get_timeline_markers
 
@@ -51,14 +52,14 @@ class AMSectionSkipper(ActionManager):
             del self.markers[section]
 
     def _skip_section(self, section):
-        common.debug('Entered section {}', section)
+        LOG.debug('Entered section {}', section)
         if self.auto_skip:
             self._auto_skip(section)
         else:
             self._ask_to_skip(section)
 
     def _auto_skip(self, section):
-        common.info('Auto-skipping {}', section)
+        LOG.info('Auto-skipping {}', section)
         player = xbmc.Player()
         ui.show_notification(
             common.get_local_string(SKIPPABLE_SECTIONS[section]))
@@ -72,7 +73,7 @@ class AMSectionSkipper(ActionManager):
             player.seekTime(self.markers[section]['end'])
 
     def _ask_to_skip(self, section):
-        common.debug('Asking to skip {}', section)
+        LOG.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         ui.show_modal_dialog(True,

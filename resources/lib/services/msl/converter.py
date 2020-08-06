@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 import resources.lib.common as common
+from resources.lib.utils.logging import LOG
 
 
 def convert_to_dash(manifest):
@@ -56,7 +57,7 @@ def convert_to_dash(manifest):
         _convert_text_track(text_track, period, (index == default_subtitle_language_index), cdn_index, isa_version)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
-    if common.is_debug_verbose():
+    if LOG.level == LOG.LEVEL_VERBOSE:
         common.save_file_def('manifest.mpd', xml)
     return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
 

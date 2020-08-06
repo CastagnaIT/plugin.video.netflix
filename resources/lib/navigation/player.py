@@ -9,20 +9,22 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmcplugin
 import xbmcgui
+import xbmcplugin
 
-from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
-from resources.lib.api.paths import EVENT_PATHS
-from resources.lib.globals import G
 import resources.lib.common as common
-import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
+import resources.lib.utils.api_requests as api
+from resources.lib.globals import G
+from resources.lib.utils.api_paths import EVENT_PATHS
+from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 # Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),
 # so the time that Kodi takes to start a video increases, (due to requests exchange between ISA and the add-on)
 # not sure if it is an urllib issue
+
 SERVICE_URL_FORMAT = 'http://127.0.0.1:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
 LICENSE_PATH_FORMAT = '/license?id={videoid}'
@@ -54,14 +56,14 @@ def play(videoid):
     _play(videoid, False)
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def _play(videoid, is_played_from_strm=False):
     """Play an episode or movie as specified by the path"""
     is_upnext_enabled = G.ADDON.getSettingBool('UpNextNotifier_enabled')
-    common.info('Playing {}{}{}',
-                videoid,
-                ' [STRM file]' if is_played_from_strm else '',
-                ' [external call]' if G.IS_ADDON_EXTERNAL_CALL else '')
+    LOG.info('Playing {}{}{}',
+             videoid,
+             ' [STRM file]' if is_played_from_strm else '',
+             ' [external call]' if G.IS_ADDON_EXTERNAL_CALL else '')
 
     # Profile switch when playing from a STRM file (library)
     if is_played_from_strm:
@@ -72,9 +74,9 @@ def _play(videoid, is_played_from_strm=False):
     # Get metadata of videoid
     try:
         metadata = api.get_metadata(videoid)
-        common.debug('Metadata is {}', metadata)
+        LOG.debug('Metadata is {}', metadata)
     except MetadataNotAvailable:
-        common.warn('Metadata not available for {}', videoid)
+        LOG.warn('Metadata not available for {}', videoid)
         metadata = [{}, {}]
 
     # Check parental control PIN
@@ -122,7 +124,7 @@ def _play(videoid, is_played_from_strm=False):
         _raspberry_disable_omxplayer()
 
     # Start and initialize the action controller (see action_controller.py)
-    common.debug('Sending initialization signal')
+    LOG.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
@@ -154,7 +156,7 @@ def get_inputstream_listitem(videoid):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise InputStreamHelperError(str(exc))
 
     if not inputstream_ready:
@@ -246,7 +248,7 @@ def _get_event_data(videoid):
     raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
     if not raw_data:
         return {}
-    common.debug('Event data: {}', raw_data)
+    LOG.debug('Event data: {}', raw_data)
     videoid_data = raw_data['videos'][videoid.value]
 
     if is_episode:
@@ -272,12 +274,12 @@ def _upnext_get_next_episode_videoid(videoid, metadata):
     """Determine the next episode and get the videoid"""
     try:
         videoid_next_episode = _find_next_episode(videoid, metadata)
-        common.debug('Next episode is {}', videoid_next_episode)
+        LOG.debug('Next episode is {}', videoid_next_episode)
         return videoid_next_episode
     except (TypeError, KeyError):
         # import traceback
-        # common.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        common.debug('There is no next episode, not setting up Up Next')
+        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.debug('There is no next episode, not setting up Up Next')
         return None
 
 

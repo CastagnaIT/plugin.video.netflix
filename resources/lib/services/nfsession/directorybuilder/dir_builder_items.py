@@ -18,6 +18,7 @@ from resources.lib.kodi.context_menu import generate_context_menu_items
 from resources.lib.kodi.infolabels import get_art, get_color_name, add_info_dict_item, set_watched_status
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page)
+from resources.lib.utils.logging import measure_exec_time_decorator
 
 try:  # Python 2
     unicode
@@ -33,7 +34,7 @@ except NameError:  # Python 3
 # common_data dict is used to avoid cpu overload in consecutive accesses to other resources improve a lot the execution
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_mainmenu_listing(loco_list):
     """Builds the main menu listing (my list, continue watching, etc.)"""
     from resources.lib.kodi.context_menu import generate_context_menu_mainmenu
@@ -111,7 +112,7 @@ def _create_profile_item(profile_guid, is_selected):
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_season_listing(season_list, tvshowid, pathitems=None):
     """Build a season listing"""
     common_data = {
@@ -141,7 +142,7 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_episode_listing(episodes_list, seasonid, pathitems=None):
     """Build a episodes listing of a season"""
     common_data = {
@@ -172,7 +173,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclude_loco_known=False):
     """Build a listing of video lists (LoCo)"""
     # If contexts are specified (loco_contexts in the menu_data), then the loco_list data will be filtered by
@@ -233,7 +234,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
                         mylist_items=None):
     """Build a video listing"""
@@ -296,7 +297,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_subgenres_listing(subgenre_list, menu_data):
     """Build a listing of sub-genres list"""
     directory_items = []

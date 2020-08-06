@@ -13,6 +13,7 @@ import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 
@@ -37,13 +38,12 @@ class AMVideoEvents(ActionManager):
 
     def initialize(self, data):
         if not data['event_data']:
-            common.warn('AMVideoEvents: disabled due to no event data')
+            LOG.warn('AMVideoEvents: disabled due to no event data')
             self.enabled = False
             return
         self.event_data = data['event_data']
         self.videoid = common.VideoId.from_dict(data['videoid'])
 
-    @common.time_execution(immediate=True)
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
@@ -132,7 +132,7 @@ class AMVideoEvents(ActionManager):
 
     def _send_event(self, event_type, event_data, player_state):
         if not player_state:
-            common.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
+            LOG.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
             return
         event_data['allow_request_update_loco'] = self.allow_request_update_loco
         common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {

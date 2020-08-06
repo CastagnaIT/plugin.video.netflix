@@ -11,10 +11,16 @@ from __future__ import absolute_import, division, unicode_literals
 
 from re import sub
 
+from resources.lib.common.device_utils import get_system_platform
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from .device_utils import get_system_platform
-from .logging import debug
+from .logging import LOG
+
+
+def get_esn():
+    """Get the generated esn or if set get the custom esn"""
+    custom_esn = G.ADDON.getSetting('esn')
+    return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
 
 def generate_android_esn():
@@ -97,7 +103,7 @@ def generate_android_esn():
                 esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
                 if system_id:
                     esn += '-' + system_id + '-'
-                debug('Generated Android ESN: {} is L3 forced: {}', esn, is_l3_forced)
+                LOG.debug('Generated Android ESN: {} is L3 forced: {}', esn, is_l3_forced)
                 return esn
         except OSError:
             pass
@@ -112,5 +118,5 @@ def generate_esn(prefix=''):
     possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     for _ in range(0, 30):
         esn += random.choice(possible)
-    debug('Generated random ESN: {}', esn)
+    LOG.debug('Generated random ESN: {}', esn)
     return esn

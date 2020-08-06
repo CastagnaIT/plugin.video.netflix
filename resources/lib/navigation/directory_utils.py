@@ -18,7 +18,7 @@ import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
-from resources.lib.api.api_requests import verify_profile_lock
+from resources.lib.utils.api_requests import verify_profile_lock
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import G
 from resources.lib.kodi import ui

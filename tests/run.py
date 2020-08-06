@@ -29,8 +29,8 @@ sys.argv = [uri, '0', '']
 
 from resources.lib import run_addon  # pylint: disable=wrong-import-position
 run_addon.G.init_globals(sys.argv)
-run_addon.info('Started (Version {})'.format(run_addon.G.VERSION))
-run_addon.info('URL is {}'.format(run_addon.G.URL))
+run_addon.LOG.info('Started (Version {})'.format(run_addon.G.VERSION))
+run_addon.LOG.info('URL is {}'.format(run_addon.G.URL))
 if run_addon._check_valid_credentials():  # pylint: disable=protected-access
     if run_addon.check_addon_upgrade():
         from resources.lib.config_wizard import run_addon_configuration  # pylint: disable=wrong-import-position

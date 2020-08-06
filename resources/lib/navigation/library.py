@@ -14,6 +14,7 @@ import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library_utils as lib_utils
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
+from resources.lib.utils.logging import LOG
 
 
 # pylint: disable=no-self-use
@@ -21,7 +22,7 @@ class LibraryActionExecutor(object):
     """Executes actions"""
 
     def __init__(self, params):
-        common.debug('Initializing "LibraryActionExecutor" with params: {}', params)
+        LOG.debug('Initializing "LibraryActionExecutor" with params: {}', params)
         self.params = params
 
     @common.inject_video_id(path_offset=1)

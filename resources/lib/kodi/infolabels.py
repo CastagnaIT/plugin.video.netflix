@@ -13,12 +13,13 @@ import copy
 
 from future.utils import iteritems, itervalues
 
-import resources.lib.api.paths as paths
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_paths as paths
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
+from resources.lib.common.exceptions import CacheMiss, ItemNotFound
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -122,8 +123,8 @@ def get_resume_info_from_library(videoid):
     """Retrieve the resume value from the Kodi library"""
     try:
         return get_info_from_library(videoid)[0].get('resume', {})
-    except common.ItemNotFound:
-        common.warn('Can not get resume value from the library')
+    except ItemNotFound:
+        LOG.warn('Can not get resume value from the library')
     return {}
 
 
@@ -259,13 +260,13 @@ def get_info_from_netflix(videoids):
             infos = get_info(videoid, None, None, profile_language_code)[0]
             art = _get_art(videoid, None, profile_language_code)
             info_data[videoid.value] = infos, art
-            common.debug('Got infolabels and art from cache for videoid {}', videoid)
+            LOG.debug('Got infolabels and art from cache for videoid {}', videoid)
         except (AttributeError, TypeError):
             videoids_to_request.append(videoid)
 
     if videoids_to_request:
         # Retrieve missing data from API
-        common.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
+        LOG.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
             infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
@@ -277,7 +278,7 @@ def get_info_from_netflix(videoids):
 def get_info_from_library(videoid):
     """Get infolabels with info from Kodi library"""
     details = common.get_library_item_by_videoid(videoid)
-    common.debug('Got file info from library: {}'.format(details))
+    LOG.debug('Got file info from library: {}'.format(details))
     art = details.pop('art', {})
     infos = {
         'DBID': details.pop('{}id'.format(videoid.mediatype)),

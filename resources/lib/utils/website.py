@@ -17,13 +17,14 @@ from future.utils import iteritems
 import xbmc
 
 import resources.lib.common as common
-from resources.lib.database.db_exceptions import ProfilesMissing
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from .exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
-                         WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
-                         MbrStatusNeverMemberError, MbrStatusFormerMemberError)
-from .paths import jgraph_get, jgraph_get_list, jgraph_get_path
+from resources.lib.common.exceptions import (InvalidProfilesError, InvalidAuthURLError, MbrStatusError,
+                                             WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, DBProfilesMissing)
+from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
+from .esn import generate_android_esn
+from .logging import LOG, measure_exec_time_decorator
 
 try:  # Python 2
     unicode
@@ -68,13 +69,13 @@ AVATAR_SUBPATH = ['images', 'byWidth', '320']
 PROFILE_DEBUG_INFO = ['isAccountOwner', 'isActive', 'isKids', 'maturityLevel', 'language']
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def extract_session_data(content, validate=False, update_profiles=False):
     """
     Call all the parsers we need to extract all
     the session relevant data from the HTML page
     """
-    common.debug('Extracting session data...')
+    LOG.debug('Extracting session data...')
     react_context = extract_json(content, 'reactContext')
     if validate:
         validate_login(react_context)
@@ -97,12 +98,12 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # Save only some info of the current profile from user data
     G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
-        G.LOCAL_DB.set_value('esn', common.generate_android_esn() or user_data['esn'], TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn', generate_android_esn() or user_data['esn'], TABLE_SESSION)
     G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
     result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
     if not result:
-        common.error('It was not possible to extract the client version!')
+        LOG.error('It was not possible to extract the client version!')
         api_data['client_version'] = '6.0023.976.011'
     else:
         api_data['client_version'] = result.groups()[0]
@@ -128,11 +129,11 @@ def _check_membership_status(status):
     if status == 'FORMER_MEMBER':
         # The account has not been reactivated
         raise MbrStatusFormerMemberError
-    common.error('Can not login, the Membership status is {}', status)
+    LOG.error('Can not login, the Membership status is {}', status)
     raise MbrStatusError(status)
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def parse_profiles(data):
     """Parse profile information from Netflix response"""
     profiles_list = jgraph_get_list('profilesList', data)
@@ -145,7 +146,7 @@ def parse_profiles(data):
             summary = jgraph_get('summary', profile_data)
             guid = summary['guid']
             current_guids.append(guid)
-            common.debug('Parsing profile {}', summary['guid'])
+            LOG.debug('Parsing profile {}', summary['guid'])
             avatar_url = _get_avatar(profile_data, data, guid)
             is_active = summary.pop('isActive')
             G.LOCAL_DB.set_profile(guid, is_active, sort_order)
@@ -153,8 +154,8 @@ def parse_profiles(data):
             # Add profile language description translated from locale
             summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
             for key, value in iteritems(summary):
-                if common.is_debug_verbose() and key in PROFILE_DEBUG_INFO:
-                    common.debug('Profile info {}', {key: value})
+                if LOG.level == LOG.LEVEL_VERBOSE and key in PROFILE_DEBUG_INFO:
+                    LOG.debug('Profile info {}', {key: value})
                 if key == 'profileName':  # The profile name is coded as HTML
                     value = parse_html(value)
                 G.LOCAL_DB.set_profile_config(key, value, guid)
@@ -163,8 +164,8 @@ def parse_profiles(data):
         _delete_non_existing_profiles(current_guids)
     except Exception:
         import traceback
-        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        common.error('Profile list data: {}', profiles_list)
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error('Profile list data: {}', profiles_list)
         raise InvalidProfilesError
 
 
@@ -172,33 +173,33 @@ def _delete_non_existing_profiles(current_guids):
     list_guid = G.LOCAL_DB.get_guid_profiles()
     for guid in list_guid:
         if guid not in current_guids:
-            common.debug('Deleting non-existing profile {}', guid)
+            LOG.debug('Deleting non-existing profile {}', guid)
             G.LOCAL_DB.delete_profile(guid)
             G.SHARED_DB.delete_profile(guid)
     # Ensures at least one active profile
     try:
         G.LOCAL_DB.get_active_profile_guid()
-    except ProfilesMissing:
+    except DBProfilesMissing:
         G.LOCAL_DB.switch_active_profile(G.LOCAL_DB.get_guid_owner_profile())
     G.settings_monitor_suspend(True)
     # Verify if auto select profile exists
     autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
     if autoselect_profile_guid and autoselect_profile_guid not in current_guids:
-        common.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
+        LOG.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
         G.LOCAL_DB.set_value('autoselect_profile_guid', '')
         G.ADDON.setSetting('autoselect_profile_name', '')
         G.ADDON.setSettingBool('autoselect_profile_enabled', False)
     # Verify if profile for library auto-sync exists
     sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid')
     if sync_mylist_profile_guid and sync_mylist_profile_guid not in current_guids:
-        common.warn('Library auto-sync disabled, the GUID {} not more exists', sync_mylist_profile_guid)
+        LOG.warn('Library auto-sync disabled, the GUID {} not more exists', sync_mylist_profile_guid)
         G.ADDON.setSettingBool('lib_sync_mylist', False)
         G.SHARED_DB.delete_key('sync_mylist_profile_guid')
     # Verify if profile for library playback exists
     library_playback_profile_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
     if library_playback_profile_guid and library_playback_profile_guid not in current_guids:
-        common.warn('Profile set for playback from library cleared, the GUID {} not more exists',
-                    library_playback_profile_guid)
+        LOG.warn('Profile set for playback from library cleared, the GUID {} not more exists',
+                 library_playback_profile_guid)
         # Save the selected profile guid
         G.LOCAL_DB.set_value('library_playback_profile_guid', '')
         # Save the selected profile name
@@ -211,15 +212,15 @@ def _get_avatar(profile_data, data, guid):
         avatar = jgraph_get('avatar', profile_data, data)
         return jgraph_get_path(AVATAR_SUBPATH, avatar)
     except (KeyError, TypeError):
-        common.warn('Cannot find avatar for profile {}', guid)
-        common.debug('Profile list data: {}', profile_data)
+        LOG.warn('Cannot find avatar for profile {}', guid)
+        LOG.debug('Profile list data: {}', profile_data)
         return G.ICON
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def extract_userdata(react_context, debug_log=True):
     """Extract essential userdata from the reactContext of the webpage"""
-    common.debug('Extracting userdata from webpage')
+    LOG.debug('Extracting userdata from webpage')
     user_data = {}
 
     for path in (path.split('/') for path in PAGE_ITEMS_INFO):
@@ -227,15 +228,15 @@ def extract_userdata(react_context, debug_log=True):
             extracted_value = {path[-1]: common.get_path(path, react_context)}
             user_data.update(extracted_value)
             if 'esn' not in path and debug_log:
-                common.debug('Extracted {}', extracted_value)
+                LOG.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            common.error('Could not extract {}', path)
+            LOG.error('Could not extract {}', path)
     return user_data
 
 
 def extract_api_data(react_context, debug_log=True):
     """Extract api urls from the reactContext of the webpage"""
-    common.debug('Extracting api urls from webpage')
+    LOG.debug('Extracting api urls from webpage')
     api_data = {}
     for key, value in list(PAGE_ITEMS_API_URL.items()):
         path = value.split('/')
@@ -243,9 +244,9 @@ def extract_api_data(react_context, debug_log=True):
             extracted_value = {key: common.get_path(path, react_context)}
             api_data.update(extracted_value)
             if debug_log:
-                common.debug('Extracted {}', extracted_value)
+                LOG.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            common.error('Could not extract {}', path)
+            LOG.error('Could not extract {}', path)
     return assert_valid_auth_url(api_data)
 
 
@@ -264,7 +265,7 @@ def validate_login(react_context):
         try:
             error_code_list = common.get_path(path_code_list, react_context)
             error_code = common.get_path(path_error_code, react_context)
-            common.error('Login not valid, error code {}', error_code)
+            LOG.error('Login not valid, error code {}', error_code)
             error_description = common.get_local_string(30102) + error_code
             if error_code in error_code_list:
                 error_description = error_code_list[error_code]
@@ -275,18 +276,18 @@ def validate_login(react_context):
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError):
             import traceback
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
-            common.error(error_msg)
+            LOG.error(error_msg)
             raise WebsiteParsingError(error_msg)
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def extract_json(content, name):
     """Extract json from netflix content page"""
-    common.debug('Extracting {} JSON', name)
+    LOG.debug('Extracting {} JSON', name)
     json_str = None
     try:
         json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
@@ -300,9 +301,9 @@ def extract_json(content, name):
         return json.loads(json_str_replace)
     except Exception:
         if json_str:
-            common.error('JSON string trying to load: {}', json_str)
+            LOG.error('JSON string trying to load: {}', json_str)
         import traceback
-        common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise WebsiteParsingError('Unable to extract {}'.format(name))
 
 

@@ -10,14 +10,16 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
+from resources.lib.utils.logging import LOG
 
 
 # Needs skin support!
+
 class HubBrowser(object):
     """Fills window properties for browsing the Netflix style Hub"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing "HubBrowser" with params: {}', params)
+        LOG.debug('Initializing "HubBrowser" with params: {}', params)
         self.params = params
         if 'switch_profile_guid' in params:
             common.make_call('activate_profile', params['switch_profile_guid'])

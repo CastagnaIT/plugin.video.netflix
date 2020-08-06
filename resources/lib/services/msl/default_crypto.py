@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import json
 
+
 try:  # The crypto package depends on the library installed (see Wiki)
     from Crypto.Random import get_random_bytes
     from Crypto.Hash import HMAC, SHA256
@@ -28,10 +29,9 @@ except ImportError:
     from Cryptodome.Util import Padding
     from Cryptodome.Cipher import AES
 
-import resources.lib.common as common
-
+from resources.lib.common.exceptions import MSLError
+from resources.lib.utils.logging import LOG
 from .base_crypto import MSLBaseCrypto
-from .exceptions import MSLError
 
 
 class DefaultMSLCrypto(MSLBaseCrypto):
@@ -54,7 +54,7 @@ class DefaultMSLCrypto(MSLBaseCrypto):
             self.rsa_key = RSA.importKey(
                 base64.standard_b64decode(msl_data['rsa_key']))
         except Exception:  # pylint: disable=broad-except
-            common.debug('Generating new RSA keys')
+            LOG.debug('Generating new RSA keys')
             self.rsa_key = RSA.generate(2048)
             self.encryption_key = None
             self.sign_key = None

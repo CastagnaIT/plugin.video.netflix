@@ -14,8 +14,9 @@ import os
 import xbmc
 
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
+from .exceptions import ItemNotFound
 from .kodi_ops import json_rpc, get_local_string, json_rpc_multi
-from .logging import debug, warn, error
 from .videoid import VideoId
 
 try:  # Kodi >= 19
@@ -35,10 +36,6 @@ LIBRARY_PROPS = {
               'top250', 'file', 'sorttitle', 'resume', 'setid', 'dateadded',
               'tag', 'art', 'userrating']
 }
-
-
-class ItemNotFound(Exception):
-    """The requested item could not be found in the Kodi library"""
 
 
 def update_library_item_details(dbtype, dbid, details):
@@ -147,9 +144,9 @@ def remove_videoid_from_kodi_library(videoid):
     try:
         # Get a single file result by searching by videoid
         kodi_library_items = [get_library_item_by_videoid(videoid)]
-        debug('Removing {} ({}) from Kodi library',
-              videoid,
-              kodi_library_items[0].get('showtitle', kodi_library_items[0]['title']))
+        LOG.debug('Removing {} ({}) from Kodi library',
+                  videoid,
+                  kodi_library_items[0].get('showtitle', kodi_library_items[0]['title']))
         media_type = videoid.mediatype
         if videoid.mediatype in [VideoId.SHOW, VideoId.SEASON]:
             # Retrieve the all episodes in the export folder
@@ -184,8 +181,8 @@ def remove_videoid_from_kodi_library(videoid):
         # Execute all the json-rpc commands in one call
         json_rpc_multi(rpc_method, list_rpc_params)
     except ItemNotFound:
-        warn('Cannot remove {} from Kodi library, item not present', videoid)
+        LOG.warn('Cannot remove {} from Kodi library, item not present', videoid)
     except KeyError as exc:
         from resources.lib.kodi import ui
         ui.show_notification(get_local_string(30120), time=7500)
-        error('Cannot remove {} from Kodi library, mediatype not supported', exc)
+        LOG.error('Cannot remove {} from Kodi library, mediatype not supported', exc)

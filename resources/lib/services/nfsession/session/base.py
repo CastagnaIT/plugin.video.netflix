@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 class SessionBase(object):
@@ -36,7 +37,7 @@ class SessionBase(object):
         """Initialize the session to use for all future connections"""
         try:
             self.session.close()
-            common.info('Session closed')
+            LOG.info('Session closed')
         except AttributeError:
             pass
         from requests import session
@@ -46,7 +47,7 @@ class SessionBase(object):
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
             'Accept-Encoding': 'gzip, deflate, br'
         })
-        common.info('Initialized new session')
+        LOG.info('Initialized new session')
 
     @property
     def account_hash(self):

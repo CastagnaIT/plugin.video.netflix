@@ -121,13 +121,9 @@ def show_error_info(title, message, unknown_error=False, netflix_error=False):
 
 def show_addon_error_info(exc):
     """Show a dialog to notify of an addon internal error"""
-    if G.ADDON.getSettingBool('disable_modal_error_display'):
-        show_notification(title=common.get_local_string(30105),
-                          msg=common.get_local_string(30131))
-    else:
-        show_error_info(title=common.get_local_string(30105),
-                        message=': '.join((exc.__class__.__name__, unicode(exc))),
-                        netflix_error=False)
+    show_error_info(title=common.get_local_string(30105),
+                    message=': '.join((exc.__class__.__name__, unicode(exc))),
+                    netflix_error=False)
 
 
 def show_library_task_errors(notify_errors, errors):

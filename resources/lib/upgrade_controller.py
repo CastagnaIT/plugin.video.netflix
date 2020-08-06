@@ -9,10 +9,10 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.common.logging import debug
 from resources.lib.common.misc_utils import is_less_version, is_minimum_version
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 def check_addon_upgrade():
@@ -57,7 +57,7 @@ def check_service_upgrade():
 def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     cancel_playback = False
-    debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
+    LOG.debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
     if previous_ver and is_less_version(previous_ver, '0.15.9'):
         import resources.lib.kodi.ui as ui
         msg = ('This update resets the settings to auto-update library.\r\n'
@@ -74,7 +74,7 @@ def _perform_addon_changes(previous_ver, current_ver):
 
 def _perform_service_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
-    debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
+    LOG.debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
     # Clear cache (prevents problems when netflix change data structures)
     G.CACHE.clear()
     if previous_ver and is_less_version(previous_ver, '1.2.0'):
@@ -95,7 +95,8 @@ def _perform_service_changes(previous_ver, current_ver):
 def _perform_local_db_changes(current_version, upgrade_to_version):
     """Perform database actions for a db version change"""
     if current_version is not None:
-        debug('Initialization of local database updates from version {} to {})', current_version, upgrade_to_version)
+        LOG.debug('Initialization of local database updates from version {} to {})',
+                  current_version, upgrade_to_version)
         run_local_db_updates(current_version, upgrade_to_version)
     G.LOCAL_DB.set_value('local_db_version', upgrade_to_version)
 
@@ -113,6 +114,7 @@ def _perform_shared_db_changes(current_version, upgrade_to_version):
     # End fix
 
     if current_version is not None:
-        debug('Initialization of shared databases updates from version {} to {})', current_version, upgrade_to_version)
+        LOG.debug('Initialization of shared databases updates from version {} to {})',
+                  current_version, upgrade_to_version)
         run_shared_db_updates(current_version, upgrade_to_version)
     G.LOCAL_DB.set_value('shared_db_version', upgrade_to_version)

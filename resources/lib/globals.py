@@ -270,12 +270,16 @@ class GlobalVariables(object):
                 # The "path" will add an unicode type to avoids problems with OS using symbolic characters
                 sys.path.insert(0, path)
 
-        self.reset_time_trace()
+        # Initialize the log
+        from resources.lib.utils.logging import LOG
+        LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
+                       self.ADDON.getSettingString('debug_log_level'),
+                       self.ADDON.getSettingBool('enable_timing'))
+
         self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
         if self.IS_ADDON_FIRSTRUN or reload_settings:
             # Put here all the global variables that need to be updated when the user changes the add-on settings
-            self.TIME_TRACE_ENABLED = self.ADDON.getSettingBool('enable_timing')
             self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
             # Initialize the cache
             self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
@@ -299,13 +303,13 @@ class GlobalVariables(object):
         use_mysql = G.ADDON.getSettingBool('use_mysql')
         if initialize or use_mysql:
             import resources.lib.database.db_shared as db_shared
-            from resources.lib.database.db_exceptions import MySQLConnectionError, MySQLError
+            from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
             try:
                 shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
                 self.SHARED_DB = shared_db_class()
-            except (MySQLConnectionError, MySQLError) as exc:
+            except (DBMySQLConnectionError, DBMySQLError) as exc:
                 import resources.lib.kodi.ui as ui
-                if isinstance(exc, MySQLError):
+                if isinstance(exc, DBMySQLError):
                     # There is a problem with the database
                     ui.show_addon_error_info(exc)
                 # The MySQL database cannot be reached, fallback to local SQLite database
@@ -343,12 +347,6 @@ class GlobalVariables(object):
         """
         return G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
 
-    def get_esn(self):
-        """Get the generated esn or if set get the custom esn"""
-        from resources.lib.database.db_utils import TABLE_SESSION
-        custom_esn = G.ADDON.getSetting('esn')
-        return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
-
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
         for _, data in iteritems(self.MAIN_MENU_ITEMS):
@@ -356,19 +354,6 @@ class GlobalVariables(object):
                 if data['loco_contexts'][0] == context:
                     return True
         return False
-
-    def reset_time_trace(self):
-        """Reset current time trace info"""
-        self.TIME_TRACE = []
-        self.time_trace_level = -2
-
-    def add_time_trace_level(self):
-        """Add a level to the time trace"""
-        self.time_trace_level += 2
-
-    def remove_time_trace_level(self):
-        """Remove a level from the time trace"""
-        self.time_trace_level -= 2
 
     def py2_decode(self, value, encoding='utf-8'):
         """Decode text only on python 2"""

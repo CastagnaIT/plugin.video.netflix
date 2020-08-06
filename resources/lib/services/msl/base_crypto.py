@@ -14,8 +14,9 @@ import base64
 import time
 
 import resources.lib.common as common
-from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import MSL_DATA_FILENAME
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG
 
 
 class MSLBaseCrypto(object):
@@ -37,12 +38,12 @@ class MSLBaseCrypto(object):
         self._msl_data = msl_data if msl_data else {}
         if msl_data:
             self.set_mastertoken(msl_data['tokens']['mastertoken'])
-            self.bound_esn = msl_data.get('bound_esn', G.get_esn())
+            self.bound_esn = msl_data.get('bound_esn', get_esn())
 
     def compare_mastertoken(self, mastertoken):
         """Check if the new MasterToken is different from current due to renew"""
         if not self._mastertoken_is_newer_that(mastertoken):
-            common.debug('MSL mastertoken is changed due to renew')
+            LOG.debug('MSL mastertoken is changed due to renew')
             self.set_mastertoken(mastertoken)
             self._save_msl_data()
 
@@ -84,7 +85,7 @@ class MSLBaseCrypto(object):
         self._msl_data.update(self._export_keys())
         self._msl_data['bound_esn'] = self.bound_esn
         common.save_file_def(MSL_DATA_FILENAME, json.dumps(self._msl_data).encode('utf-8'))
-        common.debug('Successfully saved MSL data to disk')
+        LOG.debug('Successfully saved MSL data to disk')
 
     def _init_keys(self, key_response_data):
         """Initialize crypto keys from key_response_data"""

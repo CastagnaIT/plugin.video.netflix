@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 from resources.lib.globals import G
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -29,7 +30,7 @@ class NFOSettings(object):
             self._enabled = G.ADDON.getSettingBool('enable_nfo_export')
             self._export_tvshow_id = G.ADDON.getSettingInt('export_tvshow_nfo')
         else:
-            common.debug('Export NFO enforced to {}', enforce)
+            LOG.debug('Export NFO enforced to {}', enforce)
             self._enabled = enforce
             self._export_tvshow_id = enforce
 

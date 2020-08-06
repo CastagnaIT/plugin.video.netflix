@@ -17,7 +17,6 @@ import xbmcgui
 
 from resources.lib.common import run_threaded, get_machine, make_call
 from resources.lib.globals import G
-from resources.lib.kodi.ui.dialogs import show_error_info
 
 ACTION_PREVIOUS_MENU = 10
 ACTION_PLAYER_STOP = 13
@@ -149,19 +148,13 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
             # # Validate pin length
             # if not self._validate_pin(pin):
             #     return
-            import resources.lib.api.api_requests as api
+            import resources.lib.utils.api_requests as api
             data = {'guid': self.data['profileInfo']['guid'],
                     'experience': self.data['experience'],
                     'maturity': self.rating_levels[self.current_level_index]['value'],
                     'token': self.data['token']}
             # Send changes to the service
-            if not api.set_parental_control_data(data):
-                show_error_info('Parental controls', 'An error has occurred when saving data',
-                                False, True)
-            # I make sure that the metadata are removed,
-            # otherwise you get inconsistencies with the request of the pin
-            # from resources.lib.common.cache_utils import CACHE_METADATA
-            # G.CACHE.clear([CACHE_METADATA])
+            api.set_parental_control_data(data)
 
             # The selection of the maturity level affects the lists data as a filter,
             # so you need to clear the lists in the cache in order not to create inconsistencies
@@ -268,7 +261,7 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         if controlID in [10010, 10020, 10012, 10022]:  # Rating and close
             rating_map = {10010: 2, 10020: 1, 10012: 0, 10022: 0}
             rating_value = rating_map[controlID]
-            from resources.lib.api.api_requests import rate_thumb
+            from resources.lib.utils.api_requests import rate_thumb
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
         if controlID in [10040, 100]:  # Close

@@ -11,9 +11,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-import resources.lib.common as common
-from resources.lib.api.exceptions import InvalidPathError
+from resources.lib.common.exceptions import InvalidPathError
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 try:  # Python 3
     from http.server import BaseHTTPRequestHandler
@@ -37,7 +37,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         """Handle cache POST requests"""
         # The arguments of the method to call are stored in the 'Params' header
         params = json.loads(self.headers['Params'])
-        # common.debug('Handling Cache HTTP POST IPC call to {} {}', self.path[1:], params.get('identifier'))
+        # LOG.debug('Handling Cache HTTP POST IPC call to {} {}', self.path[1:], params.get('identifier'))
         try:
             if 'data' in params:
                 # If argument 'data' exists, inject the data
@@ -54,14 +54,14 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
     def do_GET(self):
         """Handle cache GET requests"""
         params = json.loads(self.headers['Params'])
-        # common.debug('Handling Cache HTTP GET IPC call to {} ({})', self.path[1:], params.get('identifier'))
+        # LOG.debug('Handling Cache HTTP GET IPC call to {} ({})', self.path[1:], params.get('identifier'))
         try:
             result = _call(G.CACHE_MANAGEMENT, self.path[1:], params)
             self.send_response(200)
@@ -74,7 +74,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
@@ -98,5 +98,5 @@ class CacheTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
     def __init__(self, server_address):
         """Initialization of CacheTCPServer"""
-        common.info('Constructing CacheTCPServer')
+        LOG.info('Constructing CacheTCPServer')
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)

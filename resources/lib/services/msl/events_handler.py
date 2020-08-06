@@ -21,6 +21,8 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.msl import msl_utils
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     from urllib import urlencode
@@ -48,14 +50,14 @@ class Event(object):
         self.request_data = request_data
         self.response_data = None
         self.req_attempt = 0
-        common.debug('EVENT [{}] - Added to queue', self.event_type)
+        LOG.debug('EVENT [{}] - Added to queue', self.event_type)
 
     def get_event_id(self):
         return self.request_data['xid']
 
     def set_response(self, response):
         self.response_data = response
-        common.debug('EVENT [{}] - Request response: {}', self.event_type, response)
+        LOG.debug('EVENT [{}] - Request response: {}', self.event_type, response)
         # Seem that malformed requests are ignored without returning errors
         # self.status = self.STATUS_ERROR
         self.status = self.STATUS_SUCCESS
@@ -92,7 +94,7 @@ class EventsHandler(threading.Thread):
 
     def run(self):
         """Monitor and process the event queue"""
-        common.debug('[Event queue monitor] Thread started')
+        LOG.debug('[Event queue monitor] Thread started')
         monitor = xbmc.Monitor()
 
         while not monitor.abortRequested() and not self._stop_requested:
@@ -107,9 +109,9 @@ class EventsHandler(threading.Thread):
             except queue.Empty:
                 pass
             except Exception as exc:  # pylint: disable=broad-except
-                common.error('[Event queue monitor] An error has occurred: {}', exc)
+                LOG.error('[Event queue monitor] An error has occurred: {}', exc)
                 import traceback
-                common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
                 self.clear_queue()
             monitor.waitForAbort(1)
 
@@ -118,17 +120,17 @@ class EventsHandler(threading.Thread):
         event.status = Event.STATUS_REQUESTED
         # Request attempts can be made up to a maximum of 3 times per event
         while event.is_attempts_granted():
-            common.info('EVENT [{}] - Executing request (attempt {})', event, event.req_attempt)
+            LOG.info('EVENT [{}] - Executing request (attempt {})', event, event.req_attempt)
             params = {'reqAttempt': event.req_attempt,
                       'reqPriority': 20 if event.event_type == EVENT_START else 0,
                       'reqName': 'events/{}'.format(event)}
             url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
             try:
-                response = self.chunked_request(url, event.request_data, G.get_esn(), disable_msl_switch=False)
+                response = self.chunked_request(url, event.request_data, get_esn(), disable_msl_switch=False)
                 event.set_response(response)
                 break
             except Exception as exc:  # pylint: disable=broad-except
-                common.error('EVENT [{}] - The request has failed: {}', event, exc)
+                LOG.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
             if event.event_data['allow_request_update_loco']:
@@ -153,7 +155,7 @@ class EventsHandler(threading.Thread):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            common.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
 
     def add_event_to_queue(self, event_type, event_data, player_state):
@@ -165,8 +167,8 @@ class EventsHandler(threading.Thread):
         url = manifest['links']['events']['href']
 
         if previous_data.get('xid') in self.banned_events_ids:
-            common.warn('EVENT [{}] - Not added to the queue. The xid {} is banned due to a previous failed request',
-                        event_type, previous_data.get('xid'))
+            LOG.warn('EVENT [{}] - Not added to the queue. The xid {} is banned due to a previous failed request',
+                     event_type, previous_data.get('xid'))
             return
 
         from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
@@ -178,7 +180,7 @@ class EventsHandler(threading.Thread):
         try:
             self.queue_events.put_nowait(Event(request_data, event_data))
         except queue.Full:
-            common.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
+            LOG.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
 
     def clear_queue(self):
         """Clear all queued events"""
@@ -252,5 +254,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = G.get_esn() + '_' + videoid.value
+    cache_identifier = get_esn() + '_' + videoid.value
     return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

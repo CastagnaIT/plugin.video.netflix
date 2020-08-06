@@ -14,8 +14,8 @@ import json
 import xbmc
 
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .misc_utils import is_less_version
-from .logging import debug
 
 __CURRENT_KODI_PROFILE_NAME__ = None
 
@@ -33,7 +33,7 @@ def json_rpc(method, params=None):
     request_data = {'jsonrpc': '2.0', 'method': method, 'id': 1,
                     'params': params or {}}
     request = json.dumps(request_data)
-    debug('Executing JSON-RPC: {}', request)
+    LOG.debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
@@ -56,7 +56,7 @@ def json_rpc_multi(method, list_params=None):
     """
     request_data = [{'jsonrpc': '2.0', 'method': method, 'id': 1, 'params': params or {}} for params in list_params]
     request = json.dumps(request_data)
-    debug('Executing JSON-RPC: {}', request)
+    LOG.debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     if 'error' in raw_response:
         raise IOError('JSONRPC-Error {}'.format(raw_response))
@@ -210,7 +210,7 @@ def _adjust_locale(locale_code, lang_code_without_country_exists):
     if locale_code in locale_conversion_table:
         return locale_conversion_table[locale_code]
 
-    debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+    LOG.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
     return locale_code
 
 

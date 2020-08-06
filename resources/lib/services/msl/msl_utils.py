@@ -18,9 +18,10 @@ import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.services.msl.exceptions import MSLError
+from resources.lib.utils.esn import get_esn
 
 try:  # Python 2
     unicode
@@ -194,7 +195,7 @@ def generate_logblobs_params():
         'appLogSeqNum': 0,
         'uniqueLogId': common.get_random_uuid(),
         'appId': app_id,
-        'esn': G.get_esn(),
+        'esn': get_esn(),
         'lver': '',
         # 'jssid': '15822792997793',  # Same value of appId
         # 'jsoffms': 1261,

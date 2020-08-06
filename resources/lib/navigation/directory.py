@@ -19,6 +19,8 @@ from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import G
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
                                                       end_of_directory, get_title, activate_profile, auto_scroll)
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
+
 
 # What means dynamic menus (and dynamic id):
 #  Are considered dynamic menus all menus which context name do not exists in the 'loco_contexts' of
@@ -39,7 +41,7 @@ class Directory(object):
     """Directory listings"""
 
     def __init__(self, params):
-        common.debug('Initializing "Directory" with params: {}', params)
+        LOG.debug('Initializing "Directory" with params: {}', params)
         self.params = params
         # After build url the param value is converted as string
         self.perpetual_range_start = (None if self.params.get('perpetual_range_start') == 'None'
@@ -62,7 +64,7 @@ class Directory(object):
         autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
         if autoselect_profile_guid:
             if is_parent_root_path:
-                common.info('Performing auto-selection of profile {}', autoselect_profile_guid)
+                LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
             # Do not perform the profile switch if navigation come from a page that is not the root url,
             # prevents profile switching when returning to the main menu from one of the sub-menus
             if not is_parent_root_path or activate_profile(autoselect_profile_guid):
@@ -74,7 +76,7 @@ class Directory(object):
     @custom_viewmode(G.VIEW_PROFILES)
     def profiles(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles listing"""
-        common.debug('Showing profiles listing')
+        LOG.debug('Showing profiles listing')
         list_data, extra_data = common.make_call('get_profiles', {'request_update': True})
         self._profiles(list_data, extra_data)
 
@@ -84,7 +86,7 @@ class Directory(object):
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_IMAGES)
         end_of_directory(False, False)
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_MAINMENU)
     def home(self, pathitems=None, cache_to_disc=True, is_autoselect_profile=False):  # pylint: disable=unused-argument
         """Show home listing"""
@@ -93,14 +95,14 @@ class Directory(object):
             if not activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
                 return
-        common.debug('Showing home listing')
+        LOG.debug('Showing home listing')
         list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
                            title=(G.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
         end_of_directory(False, cache_to_disc)
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)
     def show(self, videoid, pathitems):
         if videoid.mediatype == common.VideoId.SEASON:
@@ -137,7 +139,7 @@ class Directory(object):
         end_of_directory(self.dir_update_listing)
         auto_scroll(list_data)
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_SHOW)
     def video_list(self, pathitems):
         """Show a video list of a list ID"""
@@ -156,7 +158,7 @@ class Directory(object):
         end_of_directory(False)
         return menu_data.get('view')
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_SHOW)
     def video_list_sorted(self, pathitems):
         """Show a video list sorted of a 'context' name"""
@@ -183,7 +185,7 @@ class Directory(object):
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_FOLDER)
     def recommendations(self, pathitems):
         """Show video lists for a genre"""
@@ -200,7 +202,7 @@ class Directory(object):
         end_of_directory(False)
         return menu_data.get('view')
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_SHOW)
     def supplemental(self, pathitems):  # pylint: disable=unused-argument
         """Show supplemental video list (eg. trailers) of a tv show / movie"""
@@ -219,7 +221,7 @@ class Directory(object):
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_FOLDER)
     def genres(self, pathitems):
         """Show loco list of a genre or from loco root the list of contexts specified in the menu data"""
@@ -259,7 +261,7 @@ class Directory(object):
         from resources.lib.navigation.directory_search import route_search_nav
         route_search_nav(pathitems, self.perpetual_range_start, self.dir_update_listing, self.params)
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     def exported(self, pathitems=None):
         """List all items that are exported to the Kodi library"""
         chunked_video_list, perpetual_range_selector = lib_utils.list_contents(self.perpetual_range_start)

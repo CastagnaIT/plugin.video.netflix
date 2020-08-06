@@ -17,18 +17,22 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from .exceptions import APIError, MissingCredentialsError, CacheMiss
-from .paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
+from resources.lib.common.exceptions import APIError, MissingCredentialsError, CacheMiss, HttpError401
+from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
+from .logging import LOG, measure_exec_time_decorator
 
 
-def catch_api_errors(func):
-    """Decorator that catches API errors and displays a notification"""
+def catch_api_errors_decorator(func):
+    """Decorator that catch APIError exception and displays a notification"""
     # pylint: disable=missing-docstring
     @wraps(func)
     def api_error_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except APIError as exc:
+            # This error is raised only when in the API response data the key 'status' has 'error' value
+            # (see _raise_api_error in session/http_requests.py)
+            LOG.error('{} the API call has returned an error: {}', func.__name__, exc)
             ui.show_notification(common.get_local_string(30118).format(exc))
     return api_error_wrapper
 
@@ -54,11 +58,11 @@ def login(ask_credentials=True):
         raise
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cache to this method
     """Retrieve raw data for specified video id's"""
     video_ids = [int(videoid.value) for videoid in videoids]
-    common.debug('Requesting video raw data for {}', video_ids)
+    LOG.debug('Requesting video raw data for {}', video_ids)
     if not custom_partial_path:
         paths = build_paths(['videos', video_ids], EPISODES_PARTIAL_PATHS)
         if videoids[0].mediatype == common.VideoId.EPISODE:
@@ -68,11 +72,11 @@ def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cach
     return common.make_call('path_request', paths)
 
 
-@catch_api_errors
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def rate(videoid, rating):
     """Rate a video on Netflix"""
-    common.debug('Rating {} as {}', videoid.value, rating)
+    LOG.debug('Rating {} as {}', videoid.value, rating)
     # In opposition to Kodi, Netflix uses a rating from 0 to in 0.5 steps
     rating = min(10, max(0, rating)) / 2
     common.make_call(
@@ -84,13 +88,13 @@ def rate(videoid, rating):
     ui.show_notification(common.get_local_string(30127).format(rating * 2))
 
 
-@catch_api_errors
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def rate_thumb(videoid, rating, track_id_jaw):
     """Rate a video on Netflix"""
-    common.debug('Thumb rating {} as {}', videoid.value, rating)
+    LOG.debug('Thumb rating {} as {}', videoid.value, rating)
     event_uuid = common.get_random_uuid()
-    response = common.make_call(
+    common.make_call(
         'post_safe',
         {'endpoint': 'set_thumb_rating',
          'data': {
@@ -99,19 +103,14 @@ def rate_thumb(videoid, rating, track_id_jaw):
              'trackId': track_id_jaw,
              'rating': rating,
          }})
-    if response.get('status', '') == 'success':
-        ui.show_notification(common.get_local_string(30045).split('|')[rating])
-    else:
-        common.error('Rating thumb error, response detail: {}', response)
-        ui.show_error_info('Rating error', 'Error type: {}' + response.get('status', '--'),
-                           True, True)
+    ui.show_notification(common.get_local_string(30045).split('|')[rating])
 
 
-@catch_api_errors
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""
-    common.debug('My List: {} {}', operation, videoid)
+    LOG.debug('My List: {} {}', operation, videoid)
     common.make_call(
         'post_safe',
         {'endpoint': 'update_my_list',
@@ -154,56 +153,56 @@ def _update_mylist_cache(videoid, operation, params):
             pass
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def get_parental_control_data(password):
     """Get the parental control data"""
     return common.make_call('parental_control_data', {'password': password})
 
 
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def set_parental_control_data(data):
     """Set the parental control data"""
-    try:
-        common.make_call(
-            'post_safe',
-            {'endpoint': 'content_restrictions',
-             'data': {'action': 'update',
-                      'authURL': data['token'],
-                      'experience': data['experience'],
-                      'guid': data['guid'],
-                      'maturity': data['maturity']}}
-        )
-        return True
-    except Exception as exc:  # pylint: disable=broad-except
-        common.error('Api call profile_hub raised an error: {}', exc)
-    return False
+    common.make_call(
+        'post_safe',
+        {'endpoint': 'content_restrictions',
+         'data': {'action': 'update',
+                  'authURL': data['token'],
+                  'experience': data['experience'],
+                  'guid': data['guid'],
+                  'maturity': data['maturity']}}
+    )
 
 
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def verify_pin(pin):
     """Send adult PIN to Netflix and verify it."""
     try:
-        return common.make_call(
+        common.make_call(
             'post_safe',
             {'endpoint': 'pin_service',
              'data': {'pin': pin}}
-        ).get('success', False)
-    except Exception:  # pylint: disable=broad-except
+        )
+        return True
+    except HttpError401:  # Wrong PIN
         return False
 
 
-@common.time_execution(immediate=False)
+@catch_api_errors_decorator
+@measure_exec_time_decorator()
 def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
     try:
-        return common.make_call(
+        common.make_call(
             'post_safe',
             {'endpoint': 'profile_lock',
              'data': {'pin': pin,
                       'action': 'verify',
                       'guid': guid}}
-        ).get('success', False)
-    except Exception:  # pylint: disable=broad-except
+        )
+        return True
+    except HttpError401:  # Wrong PIN
         return False
 
 
@@ -244,7 +243,7 @@ def remove_watched_status(videoid):
         )
         return data.get('status', False)
     except Exception as exc:  # pylint: disable=broad-except
-        common.error('remove_watched_status raised this error: {}', exc)
+        LOG.error('remove_watched_status raised this error: {}', exc)
         return False
 
 

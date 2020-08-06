@@ -11,21 +11,23 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.api.exceptions import MissingCredentialsError, CacheMiss
-from resources.lib.api.paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
+from resources.lib.utils.esn import get_esn
+from resources.lib.common.exceptions import MissingCredentialsError, CacheMiss
+from resources.lib.utils.api_paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class AddonActionExecutor(object):
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):
-        common.debug('Initializing "AddonActionExecutor" with params: {}', params)
+        LOG.debug('Initializing "AddonActionExecutor" with params: {}', params)
         self.params = params
 
     def logout(self, pathitems=None):  # pylint: disable=unused-argument
@@ -77,7 +79,7 @@ class AddonActionExecutor(object):
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
 
     @common.inject_video_id(path_offset=1)
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     def rate_thumb(self, videoid):
         """Rate an item on Netflix. Ask for a thumb rating"""
         # Get updated user rating info for this videoid
@@ -97,7 +99,7 @@ class AddonActionExecutor(object):
                                  track_id_jaw=track_id_jaw,
                                  user_rating=user_rating)
         else:
-            common.warn('Rating thumb video list api request no got results for {}', videoid)
+            LOG.warn('Rating thumb video list api request no got results for {}', videoid)
 
     # Old rating system
     # @common.inject_video_id(path_offset=1)
@@ -110,7 +112,7 @@ class AddonActionExecutor(object):
     #         api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]
@@ -119,7 +121,7 @@ class AddonActionExecutor(object):
         common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     def trailer(self, videoid):
         """Get the trailer list"""
         from json import dumps
@@ -141,7 +143,7 @@ class AddonActionExecutor(object):
         else:
             ui.show_notification(common.get_local_string(30111))
 
-    @common.time_execution(immediate=False)
+    @measure_exec_time_decorator()
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
         G.CACHE.clear(clear_database=self.params.get('on_disk', False))
@@ -163,7 +165,7 @@ class AddonActionExecutor(object):
 
     def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Show the ESN in use"""
-        ui.show_ok_dialog(common.get_local_string(30016), G.get_esn())
+        ui.show_ok_dialog(common.get_local_string(30016), get_esn())
 
     def reset_esn(self, pathitems=None):  # pylint: disable=unused-argument
         """Reset the ESN stored (retrieved from website and manual)"""
@@ -239,7 +241,7 @@ def _sync_library(videoid, operation):
         # Allow to sync library with My List only by chosen profile
         if sync_mylist_profile_guid != G.LOCAL_DB.get_active_profile_guid():
             return
-        common.debug('Syncing library due to change of My list')
+        LOG.debug('Syncing library due to change of My list')
         if operation == 'add':
             get_library_cls().export_to_library(videoid, False)
         elif operation == 'remove':

@@ -15,6 +15,8 @@ import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.globals import G
 from resources.lib.kodi import ui
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 STREAMS = {
@@ -76,8 +78,8 @@ class AMStreamContinuity(ActionManager):
             # Kodi 19 BUG JSON RPC: "Player.GetProperties" is broken: https://github.com/xbmc/xbmc/issues/17915
             # The first call return wrong data the following calls return OSError, and then _notify_all will be blocked
             self.enabled = False
-            common.error('Due of Kodi 19 bug has been disabled: '
-                         'Ask to skip dialog, remember audio/subtitles preferences and other features')
+            LOG.error('Due of Kodi 19 bug has been disabled: '
+                      'Ask to skip dialog, remember audio/subtitles preferences and other features')
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='Due to Kodi bug has been disabled all Netflix features')
             return
@@ -107,7 +109,7 @@ class AMStreamContinuity(ActionManager):
         if player_stream['language'] != 'unk' and not self._is_stream_value_equal(current_stream, player_stream):
             self._set_current_stream('audio', player_state)
             self._save_changed_stream('audio', player_stream)
-            common.debug('audio has changed from {} to {}', current_stream, player_stream)
+            LOG.debug('audio has changed from {} to {}', current_stream, player_stream)
 
         # Check if subtitle stream or subtitleenabled options are changed
         # Note: Check both at same time, if only one change, is required to save both values,
@@ -133,10 +135,9 @@ class AMStreamContinuity(ActionManager):
             self._set_current_stream('subtitleenabled', player_state)
             self._save_changed_stream('subtitleenabled', player_sub_enabled)
             if not is_sub_stream_equal:
-                common.debug('subtitle has changed from {} to {}', current_stream, player_stream)
+                LOG.debug('subtitle has changed from {} to {}', current_stream, player_stream)
             if not is_sub_enabled_equal:
-                common.debug('subtitleenabled has changed from {} to {}', current_stream,
-                             player_stream)
+                LOG.debug('subtitleenabled has changed from {} to {}', current_stream, player_stream)
 
     def _set_current_stream(self, stype, player_state):
         self.current_streams.update({
@@ -148,7 +149,7 @@ class AMStreamContinuity(ActionManager):
         stored_stream = self.sc_settings.get(stype)
         if stored_stream is None or (isinstance(stored_stream, dict) and not stored_stream):
             return
-        common.debug('Trying to restore {} with stored data {}', stype, stored_stream)
+        LOG.debug('Trying to restore {} with stored data {}', stype, stored_stream)
         data_type_dict = isinstance(stored_stream, dict)
         if self.legacy_kodi_version:
             # Kodi version 18, this is the old method that have a unresolvable bug:
@@ -169,8 +170,8 @@ class AMStreamContinuity(ActionManager):
                     index = self._find_stream_index(self.player_state[STREAMS[stype]['list']],
                                                     stored_stream)
                     if index is None:
-                        common.debug('No stream match found for {} and {} for videoid {}',
-                                     stype, stored_stream, self.current_videoid)
+                        LOG.debug('No stream match found for {} and {} for videoid {}',
+                                  stype, stored_stream, self.current_videoid)
                         return
                     value = index
                 else:
@@ -178,10 +179,10 @@ class AMStreamContinuity(ActionManager):
                     value = stored_stream
                 set_stream(self.player, value)
         self.current_streams[stype] = stored_stream
-        common.debug('Restored {} to {}', stype, stored_stream)
+        LOG.debug('Restored {} to {}', stype, stored_stream)
 
     def _save_changed_stream(self, stype, stream):
-        common.debug('Save changed stream {} for {}', stream, stype)
+        LOG.debug('Save changed stream {} for {}', stream, stype)
         self.sc_settings[stype] = stream
         G.SHARED_DB.set_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
                                           self.current_videoid.value,
@@ -264,7 +265,7 @@ class AMStreamContinuity(ActionManager):
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
             audio_language = common.get_kodi_audio_language()
-            cache_identifier = G.get_esn() + '_' + self.videoid.value
+            cache_identifier = get_esn() + '_' + self.videoid.value
             manifest_data = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
