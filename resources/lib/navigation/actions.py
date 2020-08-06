@@ -79,7 +79,7 @@ class AddonActionExecutor(object):
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
 
     @common.inject_video_id(path_offset=1)
-    @measure_exec_time_decorator(is_immediate=False)
+    @measure_exec_time_decorator()
     def rate_thumb(self, videoid):
         """Rate an item on Netflix. Ask for a thumb rating"""
         # Get updated user rating info for this videoid
@@ -112,7 +112,7 @@ class AddonActionExecutor(object):
     #         api.rate(videoid, rating)
 
     @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
-    @measure_exec_time_decorator(is_immediate=False)
+    @measure_exec_time_decorator()
     def my_list(self, videoid, pathitems):
         """Add or remove an item from my list"""
         operation = pathitems[1]
@@ -121,7 +121,7 @@ class AddonActionExecutor(object):
         common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
-    @measure_exec_time_decorator(is_immediate=False)
+    @measure_exec_time_decorator()
     def trailer(self, videoid):
         """Get the trailer list"""
         from json import dumps
@@ -143,7 +143,7 @@ class AddonActionExecutor(object):
         else:
             ui.show_notification(common.get_local_string(30111))
 
-    @measure_exec_time_decorator(is_immediate=False)
+    @measure_exec_time_decorator()
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
         G.CACHE.clear(clear_database=self.params.get('on_disk', False))

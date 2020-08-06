@@ -17,7 +17,6 @@ import xbmcgui
 
 from resources.lib.common import run_threaded, get_machine, make_call
 from resources.lib.globals import G
-from resources.lib.kodi.ui.dialogs import show_error_info
 
 ACTION_PREVIOUS_MENU = 10
 ACTION_PLAYER_STOP = 13
@@ -155,13 +154,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
                     'maturity': self.rating_levels[self.current_level_index]['value'],
                     'token': self.data['token']}
             # Send changes to the service
-            if not api.set_parental_control_data(data):
-                show_error_info('Parental controls', 'An error has occurred when saving data',
-                                False, True)
-            # I make sure that the metadata are removed,
-            # otherwise you get inconsistencies with the request of the pin
-            # from resources.lib.common.cache_utils import CACHE_METADATA
-            # G.CACHE.clear([CACHE_METADATA])
+            api.set_parental_control_data(data)
 
             # The selection of the maturity level affects the lists data as a filter,
             # so you need to clear the lists in the cache in order not to create inconsistencies
