@@ -1,7 +1,7 @@
 ### Check if this PR fulfills these requirements:
 * [ ] My changes respect the [Kodi add-on development rules](https://kodi.wiki/view/Add-on_rules)
-* [ ] I have read the [**CONTRIBUTING**](Contributing.md) document.
-* [ ] I made sure there wasn't another one [Pull Requests](../../pulls) opened for the same update/change
+* [ ] I have read the [**CONTRIBUTING**](../../master/Contributing.md) document.
+* [ ] I made sure there wasn't another [Pull Request](../../../pulls) opened for the same update/change
 * [ ] I have successfully tested my changes locally
 
 #### Types of changes
