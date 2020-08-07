@@ -13,11 +13,12 @@ from future.utils import iteritems
 
 import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi.context_menu import generate_context_menu_items
 from resources.lib.kodi.infolabels import get_art, get_color_name, add_info_dict_item, set_watched_status
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page)
+from resources.lib.utils.logging import measure_exec_time_decorator
 
 try:  # Python 2
     unicode
@@ -33,17 +34,17 @@ except NameError:  # Python 3
 # common_data dict is used to avoid cpu overload in consecutive accesses to other resources improve a lot the execution
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_mainmenu_listing(loco_list):
     """Builds the main menu listing (my list, continue watching, etc.)"""
     from resources.lib.kodi.context_menu import generate_context_menu_mainmenu
     directory_items = []
     common_data = {
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', ''),
-        'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color'))
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
     }
-    for menu_id, data in iteritems(g.MAIN_MENU_ITEMS):
-        if data.get('has_show_setting', True) and not g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
+    for menu_id, data in iteritems(G.MAIN_MENU_ITEMS):
+        if data.get('has_show_setting', True) and not G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
             continue
         if data['loco_known']:
             list_id, video_list = loco_list.find_by_context(data['loco_contexts'][0])
@@ -57,7 +58,7 @@ def build_mainmenu_listing(loco_list):
                                 if data['description_id'] is not None
                                 else '')
             dict_item = {
-                'url': common.build_url(data['path'], mode=g.MODE_DIRECTORY),
+                'url': common.build_url(data['path'], mode=G.MODE_DIRECTORY),
                 'label': menu_title,
                 'art': {'icon': data['icon']},
                 'info': {'plot': menu_description},  # The description
@@ -66,57 +67,57 @@ def build_mainmenu_listing(loco_list):
         dict_item['menu_items'] = generate_context_menu_mainmenu(menu_id)
         directory_items.append(dict_item)
         # Save the menu titles, to reuse it when will be open the content of menus
-        g.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
+        G.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
     return directory_items, {}
 
 
 def build_profiles_listing(preselect_guid=None):
     """Builds the profiles listing"""
     directory_items = []
-    preselect_profile_guid = preselect_guid or g.LOCAL_DB.get_active_profile_guid()
-    for guid in g.LOCAL_DB.get_guid_profiles():
+    preselect_profile_guid = preselect_guid or G.LOCAL_DB.get_active_profile_guid()
+    for guid in G.LOCAL_DB.get_guid_profiles():
         directory_items.append(_create_profile_item(guid, (guid == preselect_profile_guid)))
     return directory_items, {}
 
 
 def _create_profile_item(profile_guid, is_selected):
-    profile_name = g.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
+    profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
 
     profile_attributes = []
-    if g.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
+    if G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
         profile_attributes.append('[COLOR red]' + common.get_local_string(20068) + '[/COLOR]')
-    if g.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid):
+    if G.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30221))
-    if g.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
+    if G.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30222))
     attributes_desc = '[CR]'.join(profile_attributes) + '[CR]' if profile_attributes else ''
-    description = attributes_desc + '[' + g.LOCAL_DB.get_profile_config('language_desc', '', guid=profile_guid) + ']'
+    description = attributes_desc + '[' + G.LOCAL_DB.get_profile_config('language_desc', '', guid=profile_guid) + ']'
 
     menu_action = common.run_plugin_action(common.build_url(pathitems=['autoselect_profile_set'],
                                                             params={'profile_name': profile_name.encode('utf-8'),
                                                                     'profile_guid': profile_guid},
-                                                            mode=g.MODE_ACTION))
+                                                            mode=G.MODE_ACTION))
     dict_item = {
         'label': profile_name,
         'properties': {'nf_guid': profile_guid, 'nf_description': description.replace('[CR]', ' - ')},
-        'art': {'icon': g.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
+        'art': {'icon': G.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
         'info': {'plot': description},  # The description
         'is_selected': is_selected,
         'menu_items': [(common.get_local_string(30056), menu_action)],
         'url': common.build_url(pathitems=['home'],
                                 params={'switch_profile_guid': profile_guid},
-                                mode=g.MODE_DIRECTORY),
+                                mode=G.MODE_DIRECTORY),
         'is_folder': True
     }
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_season_listing(season_list, tvshowid, pathitems=None):
     """Build a season listing"""
     common_data = {
-        'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', '')
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
     }
     directory_items = [_create_season_item(tvshowid, seasonid_value, season, season_list, common_data)
                        for seasonid_value, season
@@ -136,19 +137,19 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
     }
     add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data)
     dict_item['art'] = get_art(tvshowid, season, common_data['profile_language_code'])
-    dict_item['url'] = common.build_url(videoid=seasonid, mode=g.MODE_DIRECTORY)
+    dict_item['url'] = common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY)
     dict_item['menu_items'] = generate_context_menu_items(seasonid, False, None)
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_episode_listing(episodes_list, seasonid, pathitems=None):
     """Build a episodes listing of a season"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
-        'set_watched_status': g.ADDON.getSettingBool('ProgressManager_enabled'),
-        'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', '')
+        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
     }
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data)
                        for episodeid_value, episode
@@ -167,20 +168,20 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
     add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
     set_watched_status(dict_item, episode, common_data)
     dict_item['art'] = get_art(episodeid, episode, common_data['profile_language_code'])
-    dict_item['url'] = common.build_url(videoid=episodeid, mode=g.MODE_PLAY, params=common_data['params'])
+    dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
     dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclude_loco_known=False):
     """Build a listing of video lists (LoCo)"""
     # If contexts are specified (loco_contexts in the menu_data), then the loco_list data will be filtered by
     # the specified contexts, otherwise all LoCo items will be added
     common_data = {
         'menu_data': menu_data,
-        'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', '')
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
     }
     contexts = menu_data.get('loco_contexts')
     items_list = loco_list.lists_by_context(contexts) if contexts else iteritems(loco_list.lists)
@@ -200,18 +201,18 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
         sub_menu_data['loco_known'] = False
         sub_menu_data['loco_contexts'] = None
-        sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
+        sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        g.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
+        G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
 
         directory_items.append(_create_videolist_item(list_id, video_list, sub_menu_data, common_data))
     return directory_items, {}
 
 
 def _create_videolist_item(list_id, video_list, menu_data, common_data, static_lists=False):
-    if static_lists and g.is_known_menu_context(video_list['context']):
+    if static_lists and G.is_known_menu_context(video_list['context']):
         pathitems = list(menu_data['path'])  # Make a copy
         pathitems.append(video_list['context'])
     else:
@@ -229,23 +230,23 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
                                         # genre_id add possibility to browse the sub-genres (see build_video_listing)
                                         # Todo: Disabled sub-genre menu due to website changes
                                         # params={'genre_id': unicode(video_list.get('genreId'))},
-                                        mode=g.MODE_DIRECTORY)
+                                        mode=G.MODE_DIRECTORY)
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
                         mylist_items=None):
     """Build a video listing"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
         'mylist_items': mylist_items,
-        'set_watched_status': g.ADDON.getSettingBool('ProgressManager_enabled'),
-        'supplemental_info_color': get_color_name(g.ADDON.getSettingInt('supplemental_info_color')),
-        'mylist_titles_color': (get_color_name(g.ADDON.getSettingInt('mylist_titles_color'))
+        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
+        'mylist_titles_color': (get_color_name(G.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'
                                 else None),
-        'profile_language_code': g.LOCAL_DB.get_profile_config('language', ''),
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching'
     }
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
@@ -259,13 +260,13 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, sub_genre_id]
         sub_menu_data['loco_known'] = False
         sub_menu_data['loco_contexts'] = None
-        sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
+        sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data.update({'title': common.get_local_string(30089)})
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        g.LOCAL_DB.set_value(menu_id, sub_menu_data, TABLE_MENU_DATA)
+        G.LOCAL_DB.set_value(menu_id, sub_menu_data, TABLE_MENU_DATA)
         # Create the folder for the access to sub-genre
         folder_dict_item = {
-            'url': common.build_url(['genres', menu_id, sub_genre_id], mode=g.MODE_DIRECTORY),
+            'url': common.build_url(['genres', menu_id, sub_genre_id], mode=G.MODE_DIRECTORY),
             'label': common.get_local_string(30089),
             'art': {'icon': 'DefaultVideoPlaylists.png'},
             'info': {'plot': common.get_local_string(30088)},  # The description
@@ -289,14 +290,14 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     set_watched_status(dict_item, video, common_data)
     dict_item['art'] = get_art(videoid, video, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(videoid=videoid,
-                                        mode=g.MODE_DIRECTORY if is_folder else g.MODE_PLAY,
+                                        mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                         params=None if is_folder else common_data['params'])
     dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
                                                           common_data['ctxmenu_remove_watched_status'])
     return dict_item
 
 
-@common.time_execution(immediate=True)
+@measure_exec_time_decorator(is_immediate=True)
 def build_subgenres_listing(subgenre_list, menu_data):
     """Build a listing of sub-genres list"""
     directory_items = []
@@ -307,10 +308,10 @@ def build_subgenres_listing(subgenre_list, menu_data):
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['loco_known'] = False
         sub_menu_data['loco_contexts'] = None
-        sub_menu_data['content_type'] = menu_data.get('content_type', g.CONTENT_SHOW)
+        sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['title'] = subgenre_data['name']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        g.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
+        G.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
         directory_items.append(_create_subgenre_item(sel_video_list_id,
                                                      subgenre_data,
                                                      sub_menu_data))
@@ -320,7 +321,7 @@ def build_subgenres_listing(subgenre_list, menu_data):
 def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
     dict_item = {
-        'url': common.build_url(pathitems, mode=g.MODE_DIRECTORY),
+        'url': common.build_url(pathitems, mode=G.MODE_DIRECTORY),
         'is_folder': True,
         'label': subgenre_data['name']
     }

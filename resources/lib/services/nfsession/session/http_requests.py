@@ -12,15 +12,16 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-import resources.lib.api.website as website
+import resources.lib.utils.website as website
 import resources.lib.common as common
-from resources.lib.api.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                          HttpError401)
-from resources.lib.common import cookies
+from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
+                                             HttpError401)
+from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.services.nfsession.session.endpoints import ENDPOINTS, BASE_URL
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
 
 
 class SessionHTTPRequests(SessionBase):
@@ -40,7 +41,7 @@ class SessionHTTPRequests(SessionBase):
             endpoint=endpoint,
             **kwargs)
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def _request_call(self, method, endpoint, **kwargs):
         return self._request(method, endpoint, None, **kwargs)
 
@@ -49,27 +50,29 @@ class SessionHTTPRequests(SessionBase):
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
                else _document_url(endpoint_conf['address'], kwargs))
-        common.debug('Executing {verb} request to {url}',
-                     verb='GET' if method == self.session.get else 'POST', url=url)
+        LOG.debug('Executing {verb} request to {url}',
+                  verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
-        start = common.perf_clock()
+        start = perf_clock()
         response = method(
             url=url,
             verify=self.verify_ssl,
             headers=headers,
             params=params,
             data=data)
-        common.debug('Request took {}s', common.perf_clock() - start)
-        common.debug('Request returned status code {}', response.status_code)
-        if response.status_code in [404, 401] and not session_refreshed:
-            # 404 - It may happen when Netflix update the build_identifier version and causes the api address to change
-            # 401 - It may happen when authURL is not more valid (Unauthorized for url)
-            # So let's try refreshing the session data (just once)
-            common.warn('Try refresh session data due to {} http error', response.status_code)
-            if self.try_refresh_session_data():
-                return self._request(method, endpoint, True, **kwargs)
+        LOG.debug('Request took {}s', perf_clock() - start)
+        LOG.debug('Request returned status code {}', response.status_code)
+        if not session_refreshed:
+            # We refresh the session when happen:
+            # Error 404: It happen when Netflix update the build_identifier version and causes the api address to change
+            # Error 401: This is a generic error, can happen when the http request for some reason has failed,
+            #   we allow the refresh only for shakti endpoint, sometimes for unknown reasons it is necessary to update
+            #   the session for the request to be successful
+            if response.status_code == 404 or (response.status_code == 401 and endpoint == 'shakti'):
+                LOG.warn('Attempt to refresh the session due to HTTP error {}', response.status_code)
+                if self.try_refresh_session_data():
+                    return self._request(method, endpoint, True, **kwargs)
         if response.status_code == 401:
-            common.error('Raise error due to too many http error 401')
             raise HttpError401
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
@@ -82,15 +85,15 @@ class SessionHTTPRequests(SessionBase):
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
             cookies.save(self.account_hash, self.session.cookies)
-            common.debug('Successfully refreshed session data')
+            LOG.debug('Successfully refreshed session data')
             return True
         except MbrStatusError:
             raise
         except (WebsiteParsingError, MbrStatusAnonymousError) as exc:
             import traceback
-            common.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
-                        type(exc).__name__)
-            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
+                     type(exc).__name__)
+            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
@@ -98,14 +101,14 @@ class SessionHTTPRequests(SessionBase):
             return self.external_func_login(modal_error_message=False)  # pylint: disable=not-callable
         except exceptions.RequestException:
             import traceback
-            common.warn('Failed to refresh session data, request error (RequestException)')
-            common.warn(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.warn('Failed to refresh session data, request error (RequestException)')
+            LOG.warn(G.py2_decode(traceback.format_exc(), 'latin-1'))
             if raise_exception:
                 raise
         except Exception:  # pylint: disable=broad-except
             import traceback
-            common.warn('Failed to refresh session data, login expired (Exception)')
-            common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.warn('Failed to refresh session data, login expired (Exception)')
+            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             if raise_exception:
                 raise
@@ -120,7 +123,7 @@ class SessionHTTPRequests(SessionBase):
         headers = {'Accept': endpoint_conf.get('accept', '*/*')}
         if endpoint_conf['address'] not in ['/login', '/browse', '/SignOut']:
             headers['x-netflix.nq.stack'] = 'prod'
-            headers['x-netflix.request.client.user.guid'] = g.LOCAL_DB.get_active_profile_guid()
+            headers['x-netflix.request.client.user.guid'] = G.LOCAL_DB.get_active_profile_guid()
         if endpoint_conf.get('content_type'):
             headers['Content-Type'] = endpoint_conf['content_type']
         headers.update(custom_headers)  # If needed override headers
@@ -140,7 +143,7 @@ class SessionHTTPRequests(SessionBase):
                 'isTop10Supported': 'true',
                 'categoryCraversEnabled': 'false',
                 'original_path': '/shakti/{}/pathEvaluator'.format(
-                    g.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+                    G.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
             params['authURL'] = self.auth_url
@@ -169,7 +172,7 @@ def _document_url(endpoint_address, kwargs):
 
 def _api_url(endpoint_address):
     return '{baseurl}{endpoint_adr}'.format(
-        baseurl=g.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
+        baseurl=G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
         endpoint_adr=endpoint_address)
 
 

@@ -12,14 +12,17 @@ from __future__ import absolute_import, division, unicode_literals
 import time
 from datetime import datetime, timedelta
 
-import resources.lib.api.website as website
+import resources.lib.utils.website as website
 import resources.lib.common as common
-from resources.lib.api.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
-                                          MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
-                                          HttpError401, InvalidProfilesError)
-from resources.lib.common import cookies, cache_utils
-from resources.lib.globals import g
+from resources.lib.common.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
+                                             MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
+                                             HttpError401, InvalidProfilesError)
+from resources.lib.common import cache_utils
+from resources.lib.utils import cookies
+from resources.lib.globals import G
+from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class NFSessionOperations(SessionPathRequests):
@@ -39,7 +42,9 @@ class NFSessionOperations(SessionPathRequests):
             self.fetch_initial_page,
             self.activate_profile,
             self.parental_control_data,
-            self.get_metadata
+            self.get_metadata,
+            self.update_loco_context,
+            self.update_videoid_bookmark
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -53,9 +58,9 @@ class NFSessionOperations(SessionPathRequests):
                 self.auth_url = api_data['auth_url']
                 self.dt_initial_page_prefetch = datetime.now()
             except Exception as exc:  # pylint: disable=broad-except
-                common.warn('Prefetch initial page failed: {}', exc)
+                LOG.warn('Prefetch initial page failed: {}', exc)
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def fetch_initial_page(self):
         """Fetch initial page"""
         # It is mandatory fetch initial page data at every add-on startup to prevent/check possible side effects:
@@ -68,7 +73,7 @@ class NFSessionOperations(SessionPathRequests):
             # then we limit the prefetch validity to 30 minutes
             self.dt_initial_page_prefetch = None
             return
-        common.debug('Fetch initial page')
+        LOG.debug('Fetch initial page')
         from requests import exceptions
         try:
             response = self.get_safe('browse')
@@ -81,16 +86,16 @@ class NFSessionOperations(SessionPathRequests):
             self.session.cookies.clear()
             self.login()
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
-        common.debug('Switching to profile {}', guid)
-        current_active_guid = g.LOCAL_DB.get_active_profile_guid()
+        LOG.debug('Switching to profile {}', guid)
+        current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
-            common.info('The profile guid {} is already set, activation not needed.', guid)
+            LOG.info('The profile guid {} is already set, activation not needed.', guid)
             return
         timestamp = time.time()
-        common.info('Activating profile {}', guid)
+        LOG.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
         # INIT Method 1 - HTTP mode
         # response = self._get('switch_profile', params={'tkn': guid})
@@ -110,14 +115,14 @@ class NFSessionOperations(SessionPathRequests):
         self.auth_url = website.extract_session_data(response)['auth_url']
         # END Method 2
 
-        g.LOCAL_DB.switch_active_profile(guid)
-        g.CACHE_MANAGEMENT.identifier_prefix = guid
+        G.LOCAL_DB.switch_active_profile(guid)
+        G.CACHE_MANAGEMENT.identifier_prefix = guid
         cookies.save(self.account_hash, self.session.cookies)
 
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status
         from requests import exceptions
-        profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        profile_guid = G.LOCAL_DB.get_active_profile_guid()
         try:
             response = self.post_safe('profile_hub',
                                       data={'destination': 'contentRestrictions',
@@ -125,7 +130,7 @@ class NFSessionOperations(SessionPathRequests):
                                             'password': password,
                                             'task': 'auth'})
             if response.get('status') != 'ok':
-                common.warn('Parental control status issue: {}', response)
+                LOG.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
         except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
@@ -147,16 +152,16 @@ class NFSessionOperations(SessionPathRequests):
         try:
             return website.extract_session_data(content, **kwargs)
         except WebsiteParsingError as exc:
-            common.error('An error occurs in extract session data: {}', exc)
+            LOG.error('An error occurs in extract session data: {}', exc)
             raise
         except (LoginValidateError, MbrStatusAnonymousError) as exc:
-            common.warn('The session data is not more valid ({})', type(exc).__name__)
+            LOG.warn('The session data is not more valid ({})', type(exc).__name__)
             common.purge_credentials()
             self.session.cookies.clear()
             common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
             raise NotLoggedInError
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def get_metadata(self, videoid, refresh=False):
         """Retrieve additional metadata for the given VideoId"""
         if isinstance(videoid, list):  # IPC call send the videoid as "path" list
@@ -165,19 +170,19 @@ class NFSessionOperations(SessionPathRequests):
         parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
         # Delete the cache if we need to refresh the all metadata
         if refresh:
-            g.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
+            G.CACHE.delete(cache_utils.CACHE_METADATA, str(parent_videoid))
         if videoid.mediatype == common.VideoId.EPISODE:
             try:
                 metadata_data = self._episode_metadata(videoid, parent_videoid)
             except KeyError as exc:
                 # The episode metadata not exist (case of new episode and cached data outdated)
                 # In this case, delete the cache entry and try again safely
-                common.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
+                LOG.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
                 try:
                     metadata_data = self._episode_metadata(videoid, parent_videoid, refresh_cache=True)
                 except KeyError as exc:
                     # The new metadata does not contain the episode
-                    common.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
+                    LOG.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
                     raise MetadataNotAvailable
         else:
             metadata_data = self._metadata(video_id=parent_videoid), None
@@ -185,7 +190,7 @@ class NFSessionOperations(SessionPathRequests):
 
     def _episode_metadata(self, episode_videoid, tvshow_videoid, refresh_cache=False):
         if refresh_cache:
-            g.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
+            G.CACHE.delete(cache_utils.CACHE_METADATA, str(tvshow_videoid))
         show_metadata = self._metadata(video_id=tvshow_videoid)
         episode_metadata, season_metadata = common.find_episode_metadata(episode_videoid, show_metadata)
         return episode_metadata, season_metadata, show_metadata
@@ -195,7 +200,7 @@ class NFSessionOperations(SessionPathRequests):
         """Retrieve additional metadata for a video.
         This is a separate method from get_metadata() to work around caching issues
         when new episodes are added to a tv show by Netflix."""
-        common.debug('Requesting metadata for {}', video_id)
+        LOG.debug('Requesting metadata for {}', video_id)
         metadata_data = self.get_safe(endpoint='metadata',
                                       params={'movieid': video_id.value,
                                               '_': int(time.time() * 1000)})
@@ -206,3 +211,60 @@ class NFSessionOperations(SessionPathRequests):
             #   available using profiles with other languages
             raise MetadataNotAvailable
         return metadata_data['video']
+
+    def update_loco_context(self, context_name):
+        """Update a loco list by context"""
+        # Call this api seem no more needed to update the continueWatching loco list
+        # Get current loco root data
+        loco_data = self.path_request([['loco', [context_name], ['context', 'id', 'index']]])
+        loco_root = loco_data['loco'][1]
+        if 'continueWatching' in loco_data['locos'][loco_root]:
+            context_index = loco_data['locos'][loco_root]['continueWatching'][2]
+            context_id = loco_data['locos'][loco_root][context_index][1]
+        else:
+            # In the new profiles, there is no 'continueWatching' list and no list is returned
+            LOG.warn('update_loco_context: Update skipped due to missing context {}', context_name)
+            return
+
+        path = [['locos', loco_root, 'refreshListByContext']]
+        # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
+        #   The fourth parameter is like a request-id, but it does not seem to match to
+        #   serverDefs/date/requestId of reactContext nor to request_id of the video event request,
+        #   seem to have some kind of relationship with renoMessageId suspect with the logblob but i am not sure.
+        #   I noticed also that this request can also be made with the fourth parameter empty.
+        params = [common.enclose_quotes(context_id),
+                  context_index,
+                  common.enclose_quotes(context_name),
+                  '']
+        # path_suffixs = [
+        #    [{'from': 0, 'to': 100}, 'itemSummary'],
+        #    [['componentSummary']]
+        # ]
+        try:
+            response = self.callpath_request(path, params)
+            LOG.debug('refreshListByContext response: {}', response)
+            # The call response return the new context id of the previous invalidated loco context_id
+            # and if path_suffixs is added return also the new video list data
+        except Exception as exc:  # pylint: disable=broad-except
+            LOG.warn('refreshListByContext failed: {}', exc)
+            if not LOG.level == LOG.LEVEL_VERBOSE:
+                return
+            ui.show_notification(title=common.get_local_string(30105),
+                                 msg='An error prevented the update the loco context on Netflix',
+                                 time=10000)
+
+    def update_videoid_bookmark(self, video_id):
+        """Update the videoid bookmark position"""
+        # You can check if this function works through the official android app
+        # by checking if the red status bar of watched time position appears and will be updated, or also
+        # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
+        call_paths = [['refreshVideoCurrentPositions']]
+        params = ['[' + video_id + ']', '[]']
+        try:
+            response = self.callpath_request(call_paths, params)
+            LOG.debug('refreshVideoCurrentPositions response: {}', response)
+        except Exception as exc:  # pylint: disable=broad-except
+            LOG.warn('refreshVideoCurrentPositions failed: {}', exc)
+            ui.show_notification(title=common.get_local_string(30105),
+                                 msg='An error prevented the update the status watched on Netflix',
+                                 time=10000)

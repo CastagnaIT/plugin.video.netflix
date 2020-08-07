@@ -17,7 +17,9 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR, TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.esn import generate_android_esn
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -30,65 +32,64 @@ class SettingsMonitor(xbmc.Monitor):
         xbmc.Monitor.__init__(self)
 
     def onSettingsChanged(self):
-        status = g.settings_monitor_suspend_status()
+        status = G.settings_monitor_suspend_status()
         if status == 'First':
-            common.warn('SettingsMonitor: triggered but in suspend status (at first change)')
-            g.settings_monitor_suspend(False)
+            LOG.warn('SettingsMonitor: triggered but in suspend status (at first change)')
+            G.settings_monitor_suspend(False)
             return
         if status == 'True':
-            common.warn('SettingsMonitor: triggered but in suspend status (permanent)')
+            LOG.warn('SettingsMonitor: triggered but in suspend status (permanent)')
             return
         self._on_change()
 
     def _on_change(self):
-        common.reset_log_level_global_var()
-        common.debug('SettingsMonitor: settings have been changed, started checks')
+        LOG.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False
         clean_cache = False
 
-        use_mysql = g.ADDON.getSettingBool('use_mysql')
-        use_mysql_old = g.LOCAL_DB.get_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
+        use_mysql = G.ADDON.getSettingBool('use_mysql')
+        use_mysql_old = G.LOCAL_DB.get_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
         use_mysql_turned_on = use_mysql and not use_mysql_old
 
-        common.debug('SettingsMonitor: Reloading global settings')
-        g.init_globals(sys.argv, reinitialize_database=use_mysql != use_mysql_old, reload_settings=True)
+        LOG.debug('SettingsMonitor: Reloading global settings')
+        G.init_globals(sys.argv, reinitialize_database=use_mysql != use_mysql_old, reload_settings=True)
 
         # Check the MySQL connection status after reinitialization of service global settings
-        use_mysql_after = g.ADDON.getSettingBool('use_mysql')
+        use_mysql_after = G.ADDON.getSettingBool('use_mysql')
         if use_mysql_turned_on and use_mysql_after:
-            g.LOCAL_DB.set_value('use_mysql', True, TABLE_SETTINGS_MONITOR)
-            ui.show_notification(g.ADDON.getLocalizedString(30202))
+            G.LOCAL_DB.set_value('use_mysql', True, TABLE_SETTINGS_MONITOR)
+            ui.show_notification(G.ADDON.getLocalizedString(30202))
         if not use_mysql_after and use_mysql_old:
-            g.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
+            G.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
 
         _esn_checks()
 
         # Check menu settings changes
-        for menu_id, menu_data in iteritems(g.MAIN_MENU_ITEMS):
+        for menu_id, menu_data in iteritems(G.MAIN_MENU_ITEMS):
             # Check settings changes in show/hide menu
             if menu_data.get('has_show_setting', True):
-                show_menu_new_setting = bool(g.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
-                show_menu_old_setting = g.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
+                show_menu_new_setting = bool(G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
+                show_menu_old_setting = G.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
                                                              True,
                                                              TABLE_SETTINGS_MONITOR)
                 if show_menu_new_setting != show_menu_old_setting:
-                    g.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
+                    G.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
                                          show_menu_new_setting,
                                          TABLE_SETTINGS_MONITOR)
                     reboot_addon = True
 
             # Check settings changes in sort order of menu
             if menu_data.get('has_sort_setting'):
-                menu_sortorder_new_setting = int(g.ADDON.getSettingInt('menu_sortorder_' + menu_data['path'][1]))
-                menu_sortorder_old_setting = g.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
+                menu_sortorder_new_setting = int(G.ADDON.getSettingInt('menu_sortorder_' + menu_data['path'][1]))
+                menu_sortorder_old_setting = G.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
                                                                   0,
                                                                   TABLE_SETTINGS_MONITOR)
                 if menu_sortorder_new_setting != menu_sortorder_old_setting:
-                    g.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
+                    G.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
                                          menu_sortorder_new_setting,
                                          TABLE_SETTINGS_MONITOR)
                     # We remove the cache to allow get the new results in the chosen order
-                    g.CACHE.clear([CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH])
+                    G.CACHE.clear([CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH])
 
         # Check changes on content profiles
         # This is necessary because it is possible that some manifests
@@ -98,17 +99,17 @@ class SettingsMonitor(xbmc.Monitor):
                      'disable_webvtt_subtitle']
         collect_int = ''
         for menu_key in menu_keys:
-            collect_int += unicode(int(g.ADDON.getSettingBool(menu_key)))
-        collect_int_old = g.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
+            collect_int += unicode(int(G.ADDON.getSettingBool(menu_key)))
+        collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
         if collect_int != collect_int_old:
-            g.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
-            g.CACHE.clear([CACHE_MANIFESTS])
+            G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
+            G.CACHE.clear([CACHE_MANIFESTS])
 
         # Check if Progress Manager settings is changed
-        progress_manager_enabled = g.ADDON.getSettingBool('ProgressManager_enabled')
-        progress_manager_enabled_old = g.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
+        progress_manager_enabled = G.ADDON.getSettingBool('ProgressManager_enabled')
+        progress_manager_enabled_old = G.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
         if progress_manager_enabled != progress_manager_enabled_old:
-            g.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
+            G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
             common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
 
         # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
@@ -116,25 +117,25 @@ class SettingsMonitor(xbmc.Monitor):
             reboot_addon = False
 
         if reboot_addon:
-            common.debug('SettingsMonitor: addon will be rebooted')
+            LOG.debug('SettingsMonitor: addon will be rebooted')
             # Open root page
-            common.container_update(common.build_url(['root'], mode=g.MODE_DIRECTORY))
+            common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
 
 
 def _esn_checks():
     # Check if the custom esn is changed
-    custom_esn = g.ADDON.getSetting('esn')
-    custom_esn_old = g.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
+    custom_esn = G.ADDON.getSetting('esn')
+    custom_esn_old = G.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
     if custom_esn != custom_esn_old:
-        g.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
+        G.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
         common.send_signal(signal=common.Signals.ESN_CHANGED)
 
     if not custom_esn:
         # Check if "Force identification as L3 Widevine device" is changed (ANDROID ONLY)
-        is_l3_forced = bool(g.ADDON.getSettingBool('force_widevine_l3'))
-        is_l3_forced_old = g.LOCAL_DB.get_value('force_widevine_l3', False, TABLE_SETTINGS_MONITOR)
+        is_l3_forced = bool(G.ADDON.getSettingBool('force_widevine_l3'))
+        is_l3_forced_old = G.LOCAL_DB.get_value('force_widevine_l3', False, TABLE_SETTINGS_MONITOR)
         if is_l3_forced != is_l3_forced_old:
-            g.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
+            G.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
             # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
-            g.LOCAL_DB.set_value('esn', common.generate_android_esn() or '', TABLE_SESSION)
+            G.LOCAL_DB.set_value('esn', generate_android_esn() or '', TABLE_SESSION)
             common.send_signal(signal=common.Signals.ESN_CHANGED)

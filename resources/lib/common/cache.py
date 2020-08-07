@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 from resources.lib.common import make_http_call_cache
 from resources.lib.common.cache_utils import deserialize_data, serialize_data
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 class Cache(object):
@@ -28,7 +28,7 @@ class Cache(object):
     # by set 'is_persistent' to True in the bucket variable (see cache_utils.py)
 
     def __init__(self):
-        self._make_call = _make_call_service if g.IS_SERVICE else _make_call_client
+        self._make_call = _make_call_service if G.IS_SERVICE else _make_call_client
 
     def get(self, bucket, identifier):
         """Get a item from cache bucket"""
@@ -94,4 +94,4 @@ def _make_call_service(callname, params=None, data=None):
     if 'data' in params:
         params['data'] = data
     # In the service instance direct call to cache management
-    return getattr(g.CACHE_MANAGEMENT, callname)(**params)
+    return getattr(G.CACHE_MANAGEMENT, callname)(**params)

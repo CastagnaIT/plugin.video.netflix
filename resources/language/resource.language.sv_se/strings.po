@@ -520,9 +520,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Aktivera Up Next-integration"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Visa meddelande istället för modal-dialog för fel"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +542,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cachen rensad"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Aktivera upplåsning av 1080p (rekommenderas inte för Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -980,7 +976,11 @@ msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
 msgstr "Det finns {} titlar som inte kan importeras.[CR]Vill du ta bort dessa filer?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr ""
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."

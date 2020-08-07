@@ -9,7 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 
 HEVC = 'hevc-main-'
@@ -89,9 +89,9 @@ def enabled_profiles():
 
 def _subtitle_profiles():
     from xbmcaddon import Addon
-    isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
+    isa_version = G.remove_ver_suffix(G.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
     subtitle_profile = ['webvtt-lssdh-ios8']
-    if g.ADDON.getSettingBool('disable_webvtt_subtitle') \
+    if G.ADDON.getSettingBool('disable_webvtt_subtitle') \
        or not common.is_minimum_version(isa_version, '2.3.8'):
         subtitle_profile = ['simplesdh']
     return subtitle_profile
@@ -99,6 +99,6 @@ def _subtitle_profiles():
 
 def _additional_profiles(profiles, req_settings=None, forb_settings=None):
     return (PROFILES[profiles]
-            if (all(g.ADDON.getSettingBool(setting) for setting in common.make_list(req_settings)) and
-                not any(g.ADDON.getSettingBool(setting) for setting in common.make_list(forb_settings)))
+            if (all(G.ADDON.getSettingBool(setting) for setting in common.make_list(req_settings)) and
+                not any(G.ADDON.getSettingBool(setting) for setting in common.make_list(forb_settings)))
             else [])

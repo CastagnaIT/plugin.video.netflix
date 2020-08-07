@@ -11,8 +11,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 
@@ -37,13 +38,12 @@ class AMVideoEvents(ActionManager):
 
     def initialize(self, data):
         if not data['event_data']:
-            common.warn('AMVideoEvents: disabled due to no event data')
+            LOG.warn('AMVideoEvents: disabled due to no event data')
             self.enabled = False
             return
         self.event_data = data['event_data']
         self.videoid = common.VideoId.from_dict(data['videoid'])
 
-    @common.time_execution(immediate=True)
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
@@ -52,10 +52,10 @@ class AMVideoEvents(ActionManager):
                                                         {'video_id': str(current_videoid.value)})
         if not videoid_exists:
             # Delete the cache of continueWatching list
-            g.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+            G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
             # When the continueWatching context is invalidated from a refreshListByContext call
             # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
-            g.CACHE.delete(CACHE_COMMON, 'loco_list')
+            G.CACHE.delete(CACHE_COMMON, 'loco_list')
 
     def on_tick(self, player_state):
         if self.lock_events:
@@ -124,7 +124,7 @@ class AMVideoEvents(ActionManager):
         # To avoid slowing down the GUI by invalidating the cache to get new data from website service, one solution is
         # save the values in memory and override the bookmark value of the infolabel.
         # The callback _on_playback_stopped can not be used, because the loading of frontend happen before.
-        g.CACHE.add(CACHE_BOOKMARKS, self.videoid.value, resume_time)
+        G.CACHE.add(CACHE_BOOKMARKS, self.videoid.value, resume_time)
 
     def _reset_tick_count(self):
         self.tick_elapsed = 0
@@ -132,7 +132,7 @@ class AMVideoEvents(ActionManager):
 
     def _send_event(self, event_type, event_data, player_state):
         if not player_state:
-            common.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
+            LOG.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
             return
         event_data['allow_request_update_loco'] = self.allow_request_update_loco
         common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {

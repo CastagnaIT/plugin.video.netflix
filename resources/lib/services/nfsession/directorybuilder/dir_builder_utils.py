@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import os
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 try:  # Python 2
     unicode
@@ -21,7 +21,7 @@ except NameError:  # Python 3
 
 
 def _get_custom_thumb_path(thumb_file_name):
-    return os.path.join(g.ADDON_DATA_PATH, 'resources', 'media', thumb_file_name)
+    return os.path.join(G.ADDON_DATA_PATH, 'resources', 'media', thumb_file_name)
 
 
 def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, sub_genre_id=None):
@@ -31,7 +31,7 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                       'genre_id': sub_genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
             # todo: change params to sub_genre_id
             previous_page_item = {
-                'url': common.build_url(pathitems=pathitems, params=params, mode=g.MODE_DIRECTORY),
+                'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
                 'label': common.get_local_string(30148),
                 'art': {'thumb': _get_custom_thumb_path('FolderPagePrevious.png')},
                 'is_folder': True
@@ -40,7 +40,7 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
         if 'next_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
             next_page_item = {
-                'url': common.build_url(pathitems=pathitems, params=params, mode=g.MODE_DIRECTORY),
+                'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
                 'label': common.get_local_string(30147),
                 'art': {'thumb': _get_custom_thumb_path('FolderPageNext.png')},
                 'is_folder': True
@@ -54,4 +54,4 @@ def get_param_watched_status_by_profile():
     so that Kodi database can distinguish the data (like watched status) according to each Netflix profile
     :return: a dictionary to be add to 'build_url' params
     """
-    return {'profile_guid': g.LOCAL_DB.get_active_profile_guid()}
+    return {'profile_guid': G.LOCAL_DB.get_active_profile_guid()}

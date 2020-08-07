@@ -13,7 +13,8 @@ import xbmc
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 from .markers import SKIPPABLE_SECTIONS, get_timeline_markers
 
@@ -38,8 +39,8 @@ class AMSectionSkipper(ActionManager):
 
     def initialize(self, data):
         self.markers = get_timeline_markers(data['metadata'][0])
-        self.auto_skip = g.ADDON.getSettingBool('auto_skip_credits')
-        self.pause_on_skip = g.ADDON.getSettingBool('pause_on_skip')
+        self.auto_skip = G.ADDON.getSettingBool('auto_skip_credits')
+        self.pause_on_skip = G.ADDON.getSettingBool('pause_on_skip')
 
     def on_tick(self, player_state):
         for section in SKIPPABLE_SECTIONS:
@@ -51,14 +52,14 @@ class AMSectionSkipper(ActionManager):
             del self.markers[section]
 
     def _skip_section(self, section):
-        common.debug('Entered section {}', section)
+        LOG.debug('Entered section {}', section)
         if self.auto_skip:
             self._auto_skip(section)
         else:
             self._ask_to_skip(section)
 
     def _auto_skip(self, section):
-        common.info('Auto-skipping {}', section)
+        LOG.info('Auto-skipping {}', section)
         player = xbmc.Player()
         ui.show_notification(
             common.get_local_string(SKIPPABLE_SECTIONS[section]))
@@ -72,13 +73,13 @@ class AMSectionSkipper(ActionManager):
             player.seekTime(self.markers[section]['end'])
 
     def _ask_to_skip(self, section):
-        common.debug('Asking to skip {}', section)
+        LOG.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         ui.show_modal_dialog(True,
                              ui.xmldialogs.Skip,
                              "plugin-video-netflix-Skip.xml",
-                             g.ADDON.getAddonInfo('path'),
+                             G.ADDON.getAddonInfo('path'),
                              seconds=dialog_duration,
                              skip_to=self.markers[section]['end'],
                              label=common.get_local_string(SKIPPABLE_SECTIONS[section]))

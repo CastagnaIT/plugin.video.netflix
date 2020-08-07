@@ -12,7 +12,8 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 class SessionBase(object):
@@ -29,14 +30,14 @@ class SessionBase(object):
     external_func_activate_profile = None  # (set by nfsession_op.py)
 
     def __init__(self):
-        self.verify_ssl = bool(g.ADDON.getSettingBool('ssl_verification'))
+        self.verify_ssl = bool(G.ADDON.getSettingBool('ssl_verification'))
         self._init_session()
 
     def _init_session(self):
         """Initialize the session to use for all future connections"""
         try:
             self.session.close()
-            common.info('Session closed')
+            LOG.info('Session closed')
         except AttributeError:
             pass
         from requests import session
@@ -46,7 +47,7 @@ class SessionBase(object):
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
             'Accept-Encoding': 'gzip, deflate, br'
         })
-        common.info('Initialized new session')
+        LOG.info('Initialized new session')
 
     @property
     def account_hash(self):
@@ -58,8 +59,8 @@ class SessionBase(object):
     @property
     def auth_url(self):
         """Access rights to make HTTP requests on an endpoint"""
-        return g.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
+        return G.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)
 
     @auth_url.setter
     def auth_url(self, value):
-        g.LOCAL_DB.set_value('auth_url', value, TABLE_SESSION)
+        G.LOCAL_DB.set_value('auth_url', value, TABLE_SESSION)

@@ -13,9 +13,10 @@ import os
 
 import xbmc
 
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
+from .exceptions import ItemNotFound
 from .kodi_ops import json_rpc, get_local_string, json_rpc_multi
-from .logging import debug, warn, error
 from .videoid import VideoId
 
 try:  # Kodi >= 19
@@ -35,10 +36,6 @@ LIBRARY_PROPS = {
               'top250', 'file', 'sorttitle', 'resume', 'setid', 'dateadded',
               'tag', 'art', 'userrating']
 }
-
-
-class ItemNotFound(Exception):
-    """The requested item could not be found in the Kodi library"""
 
 
 def update_library_item_details(dbtype, dbid, details):
@@ -96,18 +93,18 @@ def get_library_item_by_videoid(videoid):
 def _get_videoid_file_path(videoid):
     """Get a file path of a file referred to the videoid (to tvshow/season will be taken a random file episode)"""
     if videoid.mediatype == VideoId.MOVIE:
-        file_path = g.SHARED_DB.get_movie_filepath(videoid.value)
+        file_path = G.SHARED_DB.get_movie_filepath(videoid.value)
         media_type = videoid.mediatype
     elif videoid.mediatype == VideoId.EPISODE:
-        file_path = g.SHARED_DB.get_episode_filepath(videoid.tvshowid,
+        file_path = G.SHARED_DB.get_episode_filepath(videoid.tvshowid,
                                                      videoid.seasonid,
                                                      videoid.episodeid)
         media_type = videoid.mediatype
     elif videoid.mediatype == VideoId.SHOW:
-        file_path = g.SHARED_DB.get_random_episode_filepath_from_tvshow(videoid.value)
+        file_path = G.SHARED_DB.get_random_episode_filepath_from_tvshow(videoid.value)
         media_type = VideoId.EPISODE
     elif videoid.mediatype == VideoId.SEASON:
-        file_path = g.SHARED_DB.get_random_episode_filepath_from_season(videoid.tvshowid,
+        file_path = G.SHARED_DB.get_random_episode_filepath_from_season(videoid.tvshowid,
                                                                         videoid.seasonid)
         media_type = VideoId.EPISODE
     else:
@@ -122,12 +119,12 @@ def _get_item_details_from_kodi(mediatype, file_path):
     """Get a Kodi library item with details (from Kodi database) by searching with the file path"""
     # To ensure compatibility with previously exported items, make the filename legal
     file_path = makeLegalFilename(file_path)
-    dir_path = os.path.dirname(g.py2_decode(xbmc.translatePath(file_path)))
-    filename = os.path.basename(g.py2_decode(xbmc.translatePath(file_path)))
+    dir_path = os.path.dirname(G.py2_decode(xbmc.translatePath(file_path)))
+    filename = os.path.basename(G.py2_decode(xbmc.translatePath(file_path)))
     # We get the data from Kodi library using filters, this is much faster than loading all episodes in memory.
     if file_path[:10] == 'special://':
         # If the path is special, search with real directory path and also special path
-        special_dir_path = os.path.dirname(g.py2_decode(file_path))
+        special_dir_path = os.path.dirname(G.py2_decode(file_path))
         path_filter = {'or': [{'field': 'path', 'operator': 'startswith', 'value': dir_path},
                               {'field': 'path', 'operator': 'startswith', 'value': special_dir_path}]}
     else:
@@ -147,9 +144,9 @@ def remove_videoid_from_kodi_library(videoid):
     try:
         # Get a single file result by searching by videoid
         kodi_library_items = [get_library_item_by_videoid(videoid)]
-        debug('Removing {} ({}) from Kodi library',
-              videoid,
-              kodi_library_items[0].get('showtitle', kodi_library_items[0]['title']))
+        LOG.debug('Removing {} ({}) from Kodi library',
+                  videoid,
+                  kodi_library_items[0].get('showtitle', kodi_library_items[0]['title']))
         media_type = videoid.mediatype
         if videoid.mediatype in [VideoId.SHOW, VideoId.SEASON]:
             # Retrieve the all episodes in the export folder
@@ -184,8 +181,8 @@ def remove_videoid_from_kodi_library(videoid):
         # Execute all the json-rpc commands in one call
         json_rpc_multi(rpc_method, list_rpc_params)
     except ItemNotFound:
-        warn('Cannot remove {} from Kodi library, item not present', videoid)
+        LOG.warn('Cannot remove {} from Kodi library, item not present', videoid)
     except KeyError as exc:
         from resources.lib.kodi import ui
         ui.show_notification(get_local_string(30120), time=7500)
-        error('Cannot remove {} from Kodi library, mediatype not supported', exc)
+        LOG.error('Cannot remove {} from Kodi library, mediatype not supported', exc)

@@ -16,8 +16,7 @@ import xbmc
 import xbmcgui
 
 from resources.lib.common import run_threaded, get_machine, make_call
-from resources.lib.globals import g
-from resources.lib.kodi.ui.dialogs import show_error_info
+from resources.lib.globals import G
 
 ACTION_PREVIOUS_MENU = 10
 ACTION_PLAYER_STOP = 13
@@ -116,7 +115,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.current_level_index = kwargs['current_level_index']
         self.profile_info = self.data['profileInfo']
         self.levels_count = len(self.rating_levels)
-        self.status_base_desc = g.ADDON.getLocalizedString(30233)
+        self.status_base_desc = G.ADDON.getLocalizedString(30233)
         self.action_exitkeys_id = [ACTION_PREVIOUS_MENU,
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
@@ -133,10 +132,10 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         # Set maturity level status description
         self._update_status_desc(self.current_level_index)
         # Set profile name to label description
-        self.getControl(10003).setLabel(g.ADDON.getLocalizedString(30232).format(self.profile_info['profileName']))
+        self.getControl(10003).setLabel(G.ADDON.getLocalizedString(30232).format(self.profile_info['profileName']))
         # PIN input
         # edit_control = self.getControl(10002)
-        # edit_control.setType(xbmcgui.INPUT_TYPE_NUMBER, g.ADDON.getLocalizedString(30002))
+        # edit_control.setType(xbmcgui.INPUT_TYPE_NUMBER, G.ADDON.getLocalizedString(30002))
         # edit_control.setText(self.current_pin)
         # Maturity level slider
         slider_control = self.getControl(10004)
@@ -149,24 +148,18 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
             # # Validate pin length
             # if not self._validate_pin(pin):
             #     return
-            import resources.lib.api.api_requests as api
+            import resources.lib.utils.api_requests as api
             data = {'guid': self.data['profileInfo']['guid'],
                     'experience': self.data['experience'],
                     'maturity': self.rating_levels[self.current_level_index]['value'],
                     'token': self.data['token']}
             # Send changes to the service
-            if not api.set_parental_control_data(data):
-                show_error_info('Parental controls', 'An error has occurred when saving data',
-                                False, True)
-            # I make sure that the metadata are removed,
-            # otherwise you get inconsistencies with the request of the pin
-            # from resources.lib.common.cache_utils import CACHE_METADATA
-            # g.CACHE.clear([CACHE_METADATA])
+            api.set_parental_control_data(data)
 
             # The selection of the maturity level affects the lists data as a filter,
             # so you need to clear the lists in the cache in order not to create inconsistencies
             from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_GENRES, CACHE_MYLIST, CACHE_SEARCH
-            g.CACHE.clear([CACHE_COMMON, CACHE_GENRES, CACHE_MYLIST, CACHE_SEARCH])
+            G.CACHE.clear([CACHE_COMMON, CACHE_GENRES, CACHE_MYLIST, CACHE_SEARCH])
             self.close()
         if controlID in [10029, 100]:  # Close dialog
             self.close()
@@ -195,7 +188,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
 
     # def _validate_pin(self, pin_value):
     #     if len(pin_value or '') != 4:
-    #         show_ok_dialog('PIN', g.ADDON.getLocalizedString(30106))
+    #         show_ok_dialog('PIN', G.ADDON.getLocalizedString(30106))
     #         return False
     #     return True
 
@@ -268,7 +261,7 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
         if controlID in [10010, 10020, 10012, 10022]:  # Rating and close
             rating_map = {10010: 2, 10020: 1, 10012: 0, 10022: 0}
             rating_value = rating_map[controlID]
-            from resources.lib.api.api_requests import rate_thumb
+            from resources.lib.utils.api_requests import rate_thumb
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
         if controlID in [10040, 100]:  # Close
@@ -286,7 +279,7 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
     :return guid of selected profile or None
     """
     if not title:
-        title = g.ADDON.getLocalizedString(30128)
+        title = G.ADDON.getLocalizedString(30128)
     if title_prefix:
         title = title_prefix + ' - ' + title
     # Get profiles data
@@ -296,7 +289,7 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
     return show_modal_dialog(False,
                              Profiles,
                              'plugin-video-netflix-Profiles.xml',
-                             g.ADDON.getAddonInfo('path'),
+                             G.ADDON.getAddonInfo('path'),
                              title=title,
                              list_data=list_data,
                              preselect_guid=preselect_guid)

@@ -15,7 +15,7 @@ import xbmc
 import xbmcvfs
 
 from resources.lib.common import folder_exists
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 LOCAL_DB_FILENAME = 'nf_local.sqlite3'
@@ -39,7 +39,7 @@ VidLibProp = {
 
 def get_local_db_path(db_filename):
     # First ensure database folder exists
-    db_folder = g.py2_decode(xbmc.translatePath(os.path.join(g.DATA_PATH, 'database')))
+    db_folder = G.py2_decode(xbmc.translatePath(os.path.join(G.DATA_PATH, 'database')))
     if not folder_exists(db_folder):
         xbmcvfs.mkdirs(db_folder)
     return os.path.join(db_folder, db_filename)

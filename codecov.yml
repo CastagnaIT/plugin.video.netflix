@@ -9,5 +9,5 @@ coverage:
     patch: false
 comment: false
 ignore:
-- modules/
+- packages/
 - tests/

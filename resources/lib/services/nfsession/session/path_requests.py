@@ -12,19 +12,20 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-import resources.lib.api.paths as apipaths
+import resources.lib.utils.api_paths as apipaths
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.session.access import SessionAccess
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class SessionPathRequests(SessionAccess):
     """Manages the PATH requests"""
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def path_request(self, paths, use_jsongraph=False):
         """Perform a path request against the Shakti API"""
-        common.debug('Executing path request: {}', json.dumps(paths))
+        LOG.debug('Executing path request: {}', json.dumps(paths))
         custom_params = {}
         if use_jsongraph:
             custom_params['falcor_server'] = '0.1.0'
@@ -36,24 +37,37 @@ class SessionPathRequests(SessionAccess):
             data=data)
         return response['jsonGraph'] if use_jsongraph else response['value']
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
-                               request_size=apipaths.PATH_REQUEST_SIZE_STD, no_limit_req=False):
-        """Perform a perpetual path request against the Shakti API to retrieve a possibly large video list.
-        If the requested video list's size is larger than 'request_size', multiple path requests will be
-        executed with forward shifting range selectors and the results will be combined into one path response."""
+                               request_size=apipaths.PATH_REQUEST_SIZE_PAGINATED, no_limit_req=False):
+        """
+        Perform a perpetual path request against the Shakti API to retrieve a possibly large video list.
+        :param paths: The paths that compose the request
+        :param length_params: A list of two values, e.g. ['stdlist', [...]]:
+                              1: A key of LENGTH_ATTRIBUTES that define where read the total number of objects
+                              2: A list of keys used to get the list of objects in the JSON data of received response
+        :param perpetual_range_start: defines the starting point of the range of objects to be requested
+        :param request_size: defines the size of the range, the total number of objects that will be received
+        :param no_limit_req: if True, the perpetual cycle of requests will be 'unlimited'
+        :return: Union of all JSON raw data received
+        """
+        # When the requested video list's size is larger than 'request_size',
+        # multiple path requests will be executed with forward shifting range selectors
+        # and the results will be combined into one path response.
         response_type, length_args = length_params
         context_name = length_args[0]
         response_length = apipaths.LENGTH_ATTRIBUTES[response_type]
 
-        response_size = request_size + 1
         # Note: when the request is made with 'genres' or 'seasons' context,
-        # the response strangely does not respect the number of objects
-        # requested, returning 1 more item, i couldn't understand why
+        #   the response strangely does not respect the number of objects
+        #   requested, returning 1 more item, i couldn't understand why
+        if context_name in ['genres', 'seasons']:
+            request_size -= 1
+        response_size = request_size + 1
         if context_name in ['genres', 'seasons']:
             response_size += 1
 
-        number_of_requests = 100 if no_limit_req else 2
+        number_of_requests = 100 if no_limit_req else int(G.ADDON.getSettingInt('page_results') / 45)
         perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
         range_start = perpetual_range_start
         range_end = range_start + request_size
@@ -77,7 +91,7 @@ class SessionPathRequests(SessionAccess):
             range_start += response_size
             if n_req == (number_of_requests - 1):
                 merged_response['_perpetual_range_selector'] = {'next_start': range_start}
-                common.debug('{} has other elements, added _perpetual_range_selector item', response_type)
+                LOG.debug('{} has other elements, added _perpetual_range_selector item', response_type)
             else:
                 range_end = range_start + request_size
 
@@ -96,10 +110,10 @@ class SessionPathRequests(SessionAccess):
         Used exclusively to get My List of a profile other than the current one
         """
         # Profile chosen by the user for the synchronization from which to get My List videos
-        mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                                    g.LOCAL_DB.get_guid_owner_profile())
+        mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                    G.LOCAL_DB.get_guid_owner_profile())
         # Current profile active
-        current_profile_guid = g.LOCAL_DB.get_active_profile_guid()
+        current_profile_guid = G.LOCAL_DB.get_active_profile_guid()
         # Switch profile (only if necessary) in order to get My List videos
         self.external_func_activate_profile(mylist_profile_guid)  # pylint: disable=not-callable
         # Get the My List data
@@ -110,13 +124,13 @@ class SessionPathRequests(SessionAccess):
             self.external_func_activate_profile(current_profile_guid)  # pylint: disable=not-callable
         return path_response
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def callpath_request(self, callpaths, params=None, path_suffixs=None):
         """Perform a callPath request against the Shakti API"""
-        common.debug('Executing callPath request: {} params: {} path_suffixs: {}',
-                     json.dumps(callpaths),
-                     params,
-                     json.dumps(path_suffixs))
+        LOG.debug('Executing callPath request: {} params: {} path_suffixs: {}',
+                  json.dumps(callpaths),
+                  params,
+                  json.dumps(path_suffixs))
         custom_params = {
             'falcor_server': '0.1.0',
             'method': 'call',
@@ -134,7 +148,7 @@ class SessionPathRequests(SessionAccess):
         if path_suffixs:
             data += '&pathSuffix=' + '&pathSuffix='.join(
                 json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)
-        # common.debug('callPath request data: {}', data)
+        # LOG.debug('callPath request data: {}', data)
         response_data = self.post_safe(
             endpoint='shakti',
             params=custom_params,
