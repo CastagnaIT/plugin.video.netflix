@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-07 00:00+0000\n"
 "PO-Revision-Date: 2020-07-26 00:00+0000\n"
-"Last-Translator: Tomas Andersson\n"
+"Last-Translator: Sopor\n"
 "Language-Team: Swedish (Sweden)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,7 +52,7 @@ msgstr "Ange PIN-kod för att få tillgång till den här profilen"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "PIN-kod för Föräldrakontroll(4 siffror)"
+msgstr "PIN-kod för föräldrakontroll (4 siffror)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -164,27 +164,27 @@ msgstr "Aktivera anpassade vyer"
 
 msgctxt "#30039"
 msgid "View for folders"
-msgstr "Vy för Mappar"
+msgstr "Vy för mappar"
 
 msgctxt "#30040"
 msgid "View for movies"
-msgstr "Vy för Filmer"
+msgstr "Vy för filmer"
 
 msgctxt "#30041"
 msgid "View for shows"
-msgstr "Vy för Serier"
+msgstr "Vy för serier"
 
 msgctxt "#30042"
 msgid "View for seasons"
-msgstr "Vy för Säsonger"
+msgstr "Vy för säsonger"
 
 msgctxt "#30043"
 msgid "View for episodes"
-msgstr "Vy för Avsnitt"
+msgstr "Vy för avsnitt"
 
 msgctxt "#30044"
 msgid "View for profiles"
-msgstr "Vy för Profiler"
+msgstr "Vy för profiler"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -262,7 +262,7 @@ msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
-msgstr "Automatisk uppdatering för Serier, säsonger och avsnitt"
+msgstr "Automatisk uppdatering för serier, säsonger och avsnitt"
 
 msgctxt "#30066"
 msgid "Debug logging level"
@@ -274,15 +274,15 @@ msgstr "Dagligen"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "Varannan dag"
+msgstr "varannan dag"
 
 msgctxt "#30069"
 msgid "every 5 days"
-msgstr "Var 5:e dag"
+msgstr "var 5:e dag"
 
 msgctxt "#30070"
 msgid "weekly"
-msgstr "Veckovis"
+msgstr "veckovis"
 
 msgctxt "#30071"
 msgid "Time of Day"
@@ -298,7 +298,7 @@ msgstr "Visa alltid Codec-informationen under videouppspelningen"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "Vy för Exporterad"
+msgstr "Vy för exporterad"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
@@ -334,7 +334,7 @@ msgstr "Kom ihåg inställningarna för ljud och undertext"
 
 msgctxt "#30083"
 msgid "Save bookmarks for library items / mark as watched"
-msgstr "Spara bokmärken för biblioteksposter / Markera som sedd"
+msgstr "Spara bokmärken för biblioteksposter / markera som sedd"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -346,7 +346,7 @@ msgstr "Cache metadata TTL (dagar)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Cache objekt 'Min Lista' TTL (minuter)"
+msgstr "Cache objekt 'Min lista' TTL (minuter)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -438,7 +438,7 @@ msgstr "Allt innehåll är skyddat med PIN-kod."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Inloggningen lyckades"
+msgstr "Inloggad"
 
 msgctxt "#30110"
 msgid "Background services started"
@@ -454,7 +454,7 @@ msgstr "Du måste vara inloggad för att kunna använda Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr "Utloggningen lyckades"
+msgstr "Utloggad"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
@@ -494,7 +494,7 @@ msgstr "Synkronisera Min lista till Kodi-biblioteket"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr "Vill du fortsätta?[CR]Fullständig synkronisering raderar alla tidigare exporterade titlar.[CR]Om det finns många titlar kan denna operation ta lite tid."
+msgstr "Vill du fortsätta?[CR]Fullständig synkronisering tar bort alla tidigare exporterade titlar.[CR]Om det finns många titlar kan denna operation ta lite tid."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -502,11 +502,11 @@ msgstr "Vill du ta bort det här objektet från biblioteket?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Rensa biblioteksinnehållet"
+msgstr "Ta bort biblioteksinnehållet"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Vill du verkligen rensa ditt bibliotek?\nAlla exporterade objekt kommer att raderas."
+msgstr "Vill du verkligen rensa ditt bibliotek?\nAlla exporterade objekt kommer att tas bort."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -574,7 +574,7 @@ msgstr "Anpassad vy-ID"
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "Inaktivera WebVTT undertextsupport"
+msgstr "Inaktivera stöd för WebVTT-undertexter"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -632,15 +632,15 @@ msgstr "Kör tilläggskonfigurationsguiden"
 
 msgctxt "#30159"
 msgid "View for main menu"
-msgstr "Vy för Huvudmenyn"
+msgstr "Vy för huvudmenyn"
 
 msgctxt "#30160"
 msgid "View for search"
-msgstr "Vy för Sök"
+msgstr "Vy för sök"
 
 msgctxt "#30161"
 msgid "View for exported"
-msgstr "Vy för Exporterad"
+msgstr "Vy för exporterad"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -656,7 +656,7 @@ msgstr "Bläddra bland innehåll med ljudbeskrivning."
 
 msgctxt "#30165"
 msgid "View for my list"
-msgstr "Vy för Min Lista"
+msgstr "Vy för min Lista"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -664,7 +664,7 @@ msgstr "Huvudmenyobjekt"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "Min Lista"
+msgstr "Min lista"
 
 msgctxt "#30168"
 msgid "Continue watching"
@@ -692,11 +692,11 @@ msgstr "Netflix Originals"
 
 msgctxt "#30174"
 msgid "Tv Show genres"
-msgstr "Serier genrer"
+msgstr "Serie-genrer"
 
 msgctxt "#30175"
 msgid "Movie genres"
-msgstr "Film genrer"
+msgstr "Film-genrer"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround"
@@ -762,7 +762,7 @@ msgstr "Serier"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att integrera information om filmer och Serier, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
+msgstr "\r\nDessa filer används av leverantörens informationsskrapa för att integrera information om filmer och serier, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -806,7 +806,7 @@ msgstr "Anslutningen till MySQL-databasen fungerade"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "Värd IP"
+msgstr "Värd-IP"
 
 msgctxt "#30204"
 msgid "Port"
@@ -854,7 +854,7 @@ msgstr "Tvinga uppdatering"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
-msgstr "Färg på titlarna som ingår i Min Lista"
+msgstr "Färg på titlarna som ingår i Min lista"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -958,7 +958,7 @@ msgstr "Open Connect CDN (lägre siffra är bättre)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr "Top 10"
+msgstr "Topp 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
@@ -978,7 +978,7 @@ msgstr "Det finns {} titlar som inte kan importeras.[CR]Vill du ta bort dessa fi
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Resultat per sida (mindska antalet vid timeout-fel)"
 
 # Unused 30248 to 30299
 
@@ -988,7 +988,7 @@ msgstr "Vill du ta bort statusen sedd för '{}'?[CR][CR]Operationen kan ta upp t
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Inkludera Kodi-biblioteket (skicka endast data)"
 
 # Unused 30302 to 30399
 
@@ -1006,7 +1006,7 @@ msgstr "Sök titlar, personer, genrer"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr "Ny sökning"
+msgstr "Ny sökning..."
 
 msgctxt "#30404"
 msgid "Clear search history"
@@ -1018,7 +1018,7 @@ msgstr "Välj språk"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr "Vill du radera hela innehållet?"
+msgstr "Vill du ta bort hela innehållet?"
 
 msgctxt "#30407"
 msgid "No matches found"
