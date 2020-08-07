@@ -978,7 +978,7 @@ msgstr "Existem {} títulos que não puderam ser importados.[CR]Deseha deletar e
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Resultados por página (em caso de erro de tempo limite, diminua-o)"
 
 # Unused 30248 to 30299
 
@@ -988,7 +988,7 @@ msgstr "Deseja remover o status de assistido de '{}'?[CR][CR]A operação pode l
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Incluir na coleção do Kodi (apenas enviando dados)"
 
 # Unused 30302 to 30399
 
