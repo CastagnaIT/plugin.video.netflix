@@ -34,34 +34,37 @@ class AddonActionExecutor(object):
         """Perform account logout"""
         api.logout()
 
-    def autoselect_profile_set(self, pathitems):  # pylint: disable=unused-argument
+    def autoselect_set_profile(self, pathitems):  # pylint: disable=unused-argument
         """Save the GUID for profile auto-selection"""
         G.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
-        G.settings_monitor_suspend(True)
-        G.ADDON.setSetting('autoselect_profile_name', self.params['profile_name'])
-        G.ADDON.setSettingBool('autoselect_profile_enabled', True)
-        G.settings_monitor_suspend(False)
-        ui.show_notification(common.get_local_string(30058).format(G.py2_decode(self.params['profile_name'])))
+        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+        G.IS_CONTAINER_REFRESHED = True
+        common.container_refresh()
+        ui.show_notification(profile_name, title=common.get_local_string(30055))
 
-    def autoselect_profile_remove(self, pathitems):  # pylint: disable=unused-argument
-        """Remove the auto-selection set"""
+    def autoselect_remove_profile(self, pathitems):  # pylint: disable=unused-argument
+        """Remove the GUID from auto-selection"""
         G.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        G.settings_monitor_suspend(True)
-        G.ADDON.setSetting('autoselect_profile_name', '')
-        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
-        G.settings_monitor_suspend(False)
+        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+        G.IS_CONTAINER_REFRESHED = True
+        common.container_refresh()
+        ui.show_notification(profile_name, title=common.get_local_string(30056))
 
-    def library_playback_profile(self, pathitems=None):  # pylint: disable=unused-argument
-        preselect_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
-        selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30050),
-                                                preselect_guid=preselect_guid)
-        if not selected_guid:
-            return
-        # Save the selected profile guid
-        G.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
-        # Save the selected profile name
-        G.ADDON.setSetting('library_playback_profile', G.LOCAL_DB.get_profile_config('profileName', '???',
-                                                                                     guid=selected_guid))
+    def library_playback_set_profile(self, pathitems=None):  # pylint: disable=unused-argument
+        """Save the GUID for the playback from Kodi library"""
+        G.LOCAL_DB.set_value('library_playback_profile_guid', self.params['profile_guid'])
+        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+        G.IS_CONTAINER_REFRESHED = True
+        common.container_refresh()
+        ui.show_notification(profile_name, title=common.get_local_string(30052))
+
+    def library_playback_remove_profile(self, pathitems):  # pylint: disable=unused-argument
+        """Remove the GUID for the playback from Kodi library"""
+        G.LOCAL_DB.set_value('library_playback_profile_guid', '')
+        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+        G.IS_CONTAINER_REFRESHED = True
+        common.container_refresh()
+        ui.show_notification(profile_name, title=common.get_local_string(30053))
 
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""

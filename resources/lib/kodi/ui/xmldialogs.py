@@ -285,7 +285,9 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
     # Get profiles data
     # pylint: disable=unused-variable
     list_data, extra_data = make_call('get_profiles',
-                                      {'request_update': True, 'preselect_guid': preselect_guid})
+                                      {'request_update': True,
+                                       'preselect_guid': preselect_guid,
+                                       'detailed_info': False})
     return show_modal_dialog(False,
                              Profiles,
                              'plugin-video-netflix-Profiles.xml',

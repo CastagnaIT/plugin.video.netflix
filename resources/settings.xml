@@ -4,10 +4,6 @@
     <setting label="30014" type="lsep"/><!--Account-->
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://plugin.video.netflix/action/logout/)" option="close"/>
     <setting id="parental_control" type="action" label="30062" action="RunPlugin(plugin://plugin.video.netflix/action/parental_control/)" option="close"/>
-    <setting label="30054" type="lsep"/><!--Profile auto-selection-->
-    <setting id="info" type="text" label="30057" default="" enable="false"/>
-    <setting id="autoselect_profile_enabled" type="bool" label="30052" visible="false" default="false"/><!-- Used only as variable purpose for menu settings -->
-    <setting id="autoselect_profile_name" type="action" label="30055" default="" action="RunPlugin(plugin://plugin.video.netflix/action/autoselect_profile_remove/)" option="close" visible="eq(-1,true)"/>
     <setting label="30015" type="lsep"/><!--Other options-->
     <setting id="mylist_titles_color" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
     <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
@@ -112,8 +108,6 @@
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
     <setting label="30049" type="lsep"/><!--Library-->
-    <setting id="library_playback_ask_profile" type="bool" label="30051" default="true"/>
-    <setting id="library_playback_profile" type="action" label="30050" default="" action="RunPlugin(plugin://plugin.video.netflix/action/library_playback_profile/)" visible="eq(-1,false)" subsetting="true" option="close"/>
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
     <setting label="30238" type="lsep"/><!--Up Next-->

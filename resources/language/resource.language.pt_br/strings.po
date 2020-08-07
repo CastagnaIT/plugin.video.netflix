@@ -206,35 +206,33 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Coleção"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Selecione um perfil para reproduzir os vídeos"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Perguntar pela seleção de um perfil antes da reprodução"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Perfil seleção automática"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Remover seleção automática de perfil"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Definir para seleção automática"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Para definir o perfil, na lista de perfis, abra o menu de contexto"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Remover seleção automática de perfil"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "O Perfil {} foi definido para seleção automática"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"

@@ -22,6 +22,19 @@ def generate_context_menu_mainmenu(menu_id):
     return items
 
 
+def generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback):
+    """Generate context menu items for a listitem of the profile"""
+    items = [
+        _ctx_item('autoselect_remove_profile' if is_autoselect else 'autoselect_set_profile',
+                  None,
+                  {'profile_guid': profile_guid}),
+        _ctx_item('library_playback_remove_profile' if is_library_playback else 'library_playback_set_profile',
+                  None,
+                  {'profile_guid': profile_guid})
+    ]
+    return items
+
+
 def generate_context_menu_searchitem(row_id, search_type):
     """Generate context menu items for a listitem of the search menu"""
     items = []

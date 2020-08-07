@@ -57,12 +57,12 @@ class Directory(object):
         #   it can be found in Kodi log as "ParentPath = [xyz]" but not always return the exact value
         is_parent_root_path = xbmc.getInfoLabel('Container.FolderPath') == G.BASE_URL + '/'
         # Fetch initial page to refresh all session data
-        if is_parent_root_path:
+        if is_parent_root_path and not G.IS_CONTAINER_REFRESHED:
             common.make_call('fetch_initial_page')
         # Note when the profiles are updated to the database (by fetch_initial_page call),
         #   the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
         autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
-        if autoselect_profile_guid:
+        if autoselect_profile_guid and not G.IS_CONTAINER_REFRESHED:
             if is_parent_root_path:
                 LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
             # Do not perform the profile switch if navigation come from a page that is not the root url,
@@ -70,21 +70,24 @@ class Directory(object):
             if not is_parent_root_path or activate_profile(autoselect_profile_guid):
                 self.home(None, False, True)
                 return
+        # IS_CONTAINER_REFRESHED is temporary set from the profiles context menu actions
+        #   to avoid perform the fetch_initial_page/auto-selection every time when the container will be refreshed
+        G.IS_CONTAINER_REFRESHED = False
         list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
         self._profiles(list_data, extra_data)
 
-    @custom_viewmode(G.VIEW_PROFILES)
     def profiles(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles listing"""
         LOG.debug('Showing profiles listing')
         list_data, extra_data = common.make_call('get_profiles', {'request_update': True})
         self._profiles(list_data, extra_data)
 
+    @custom_viewmode(G.VIEW_PROFILES)
     def _profiles(self, list_data, extra_data):  # pylint: disable=unused-argument
         # The standard kodi theme does not allow to change view type if the content is "files" type,
         # so here we use "images" type, visually better to see
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_IMAGES)
-        end_of_directory(False, False)
+        end_of_directory(True, False)
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_MAINMENU)
@@ -100,7 +103,7 @@ class Directory(object):
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
                            title=(G.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
-        end_of_directory(False, cache_to_disc)
+        end_of_directory(True, cache_to_disc)
 
     @measure_exec_time_decorator()
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)

@@ -53,7 +53,7 @@ class DirectoryBuilder(DirectoryPathRequests):
         return build_mainmenu_listing(loco_list)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def get_profiles(self, request_update, preselect_guid=None):
+    def get_profiles(self, request_update, preselect_guid=None, detailed_info=True):
         """
         Get the list of profiles stored to the database
         :param request_update: when true, perform a request to the shakti API to fetch new profile data
@@ -64,7 +64,7 @@ class DirectoryBuilder(DirectoryPathRequests):
         # -When navigation accesses to the root path, see 'root' in directory.py (ref. to 'fetch_initial_page' call)
         if request_update:
             self.req_profiles_info()
-        return build_profiles_listing(preselect_guid)
+        return build_profiles_listing(preselect_guid, detailed_info)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_seasons(self, pathitems, tvshowid_dict, perpetual_range_start):
