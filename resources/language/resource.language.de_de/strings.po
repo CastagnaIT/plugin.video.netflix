@@ -210,27 +210,27 @@ msgstr "Bibliothek"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profil hat Wiedergabe aus Bibliothek gesetzt"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Wiedergabe aus Bibliothek setzen"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Wiedergabe aus Bibliothek entfernen"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil hat automatische Auswahl gesetzt"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
-msgstr "Automatisch auswählen"
+msgstr "Automatische Auswahl setzen"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "Automatische Auswahl des Profils entfernen"
+msgstr "Automatische Auswahl entfernen"
 
 # Unused 30057, 30058
 
@@ -976,7 +976,7 @@ msgstr "Es gibt {} Titel, die nicht importiert werden können.[CR]Möchten Sie d
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Ergebnisse pro Seite (bei Zeitüberschreitungen reduzieren)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Möchten Sie den Gesehen-Status von '{}' entfernen?[CR][CR]Dieser Vorgan
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Inklusive Kodi-Bibliothek (nur ausgehend)"
 
 # Unused 30302 to 30399
 
