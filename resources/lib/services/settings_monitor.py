@@ -62,7 +62,7 @@ class SettingsMonitor(xbmc.Monitor):
         if not use_mysql_after and use_mysql_old:
             G.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
 
-        _esn_checks()
+        _check_esn()
 
         # Check menu settings changes
         for menu_id, menu_data in iteritems(G.MAIN_MENU_ITEMS):
@@ -98,26 +98,8 @@ class SettingsMonitor(xbmc.Monitor):
                 G.LOCAL_DB.set_value('page_results', page_results, TABLE_SETTINGS_MONITOR)
                 clean_cache = True
 
-        # Check changes on content profiles
-        # This is necessary because it is possible that some manifests
-        # could be cached using the previous settings (see msl_handler - load_manifest)
-        menu_keys = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
-                     'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
-                     'disable_webvtt_subtitle']
-        collect_int = ''
-        for menu_key in menu_keys:
-            collect_int += unicode(int(G.ADDON.getSettingBool(menu_key)))
-        collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
-        if collect_int != collect_int_old:
-            G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
-            G.CACHE.clear([CACHE_MANIFESTS])
-
-        # Check if Progress Manager settings is changed
-        progress_manager_enabled = G.ADDON.getSettingBool('ProgressManager_enabled')
-        progress_manager_enabled_old = G.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
-        if progress_manager_enabled != progress_manager_enabled_old:
-            G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
-            common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
+        _check_msl_profiles()
+        _check_watched_status_sync()
 
         if clean_cache:
             # We remove the cache to allow get the new results with the new settings
@@ -133,8 +115,8 @@ class SettingsMonitor(xbmc.Monitor):
             common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
 
 
-def _esn_checks():
-    # Check if the custom esn is changed
+def _check_esn():
+    """Check if the custom esn is changed"""
     custom_esn = G.ADDON.getSetting('esn')
     custom_esn_old = G.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
     if custom_esn != custom_esn_old:
@@ -150,3 +132,28 @@ def _esn_checks():
             # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
             G.LOCAL_DB.set_value('esn', generate_android_esn() or '', TABLE_SESSION)
             common.send_signal(signal=common.Signals.ESN_CHANGED)
+
+
+def _check_msl_profiles():
+    """Check for changes on content profiles settings"""
+    # This is necessary because it is possible that some manifests
+    # could be cached using the previous settings (see load_manifest on msl_handler.py)
+    menu_keys = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
+                 'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
+                 'disable_webvtt_subtitle']
+    collect_int = ''
+    for menu_key in menu_keys:
+        collect_int += unicode(int(G.ADDON.getSettingBool(menu_key)))
+    collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
+    if collect_int != collect_int_old:
+        G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
+        G.CACHE.clear([CACHE_MANIFESTS])
+
+
+def _check_watched_status_sync():
+    """Check if NF watched status sync setting is changed"""
+    progress_manager_enabled = G.ADDON.getSettingBool('ProgressManager_enabled')
+    progress_manager_enabled_old = G.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
+    if progress_manager_enabled != progress_manager_enabled_old:
+        G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
+        common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
