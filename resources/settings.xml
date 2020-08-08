@@ -5,6 +5,9 @@
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://$ID/action/logout/)" option="close"/>
     <setting id="parental_control" type="action" label="30062" action="RunPlugin(plugin://$ID/action/parental_control/)" option="close"/>
     <setting label="30015" type="lsep"/><!--Other options-->
+    <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
+    <setting id="sync_watched_status_library" type="bool" label="30301" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="mylist_titles_color" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
     <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
     <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
@@ -98,9 +101,6 @@
     <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,1) + eq(-20,true)" enable="eq(-20,true)" subsetting="true"/>
   </category>
   <category label="30078"><!--Playback-->
-    <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
-    <setting id="sync_watched_status_library" type="bool" label="30301" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
     <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
