@@ -286,7 +286,7 @@ class GlobalVariables(object):
             self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
             self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
             self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
-            if self.IS_SERVICE:
+            if self.IS_SERVICE and not reload_settings:
                 from resources.lib.services.cache.cache_management import CacheManagement
                 self.CACHE_MANAGEMENT = CacheManagement()
             from resources.lib.common.cache import Cache
