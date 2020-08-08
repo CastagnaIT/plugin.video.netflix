@@ -163,47 +163,51 @@ def auto_scroll(list_data):
     works only with Sync of watched status with netflix
     """
     # A sad implementation to a Kodi feature available only for the Kodi library
-    if not G.ADDON.getSettingBool('ProgressManager_enabled') or not G.ADDON.getSettingBool('select_first_unwatched'):
-        return
-    total_items = len(list_data)
-    if total_items:
-        # Delay a bit to wait for the completion of the screen update
-        xbmc.sleep(100)
-        if G.KODI_VERSION.is_major_ver('18'):
-            # Check if a selection is already done
-            if xbmc.getInfoLabel('ListItem.Label') != '..':
+    if G.ADDON.getSettingBool('ProgressManager_enabled') and G.ADDON.getSettingBool('select_first_unwatched'):
+        total_items = len(list_data)
+        if total_items:
+            # Delay a bit to wait for the completion of the screen update
+            xbmc.sleep(100)
+            if not _auto_scroll_init_checks():
                 return
-        else:  # These infoLabel not works on Kodi 18.x
-            # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
-            is_sort_method_episode = xbmc.getCondVisibility('Container.SortMethod(23)')
-            if not is_sort_method_episode:
+            # Check if all items are already watched
+            watched_items = sum(dict_item['info'].get('PlayCount', '0') != '0' for dict_item in list_data)
+            to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
+            if total_items == watched_items or (watched_items + to_resume_items) == 0:
                 return
-            # Check if a selection is already done (CurrentItem return the index)
-            if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
-                return
-        # Check if all items are already watched
-        watched_items = sum(dict_item['info'].get('PlayCount', '0') != '0' for dict_item in list_data)
-        to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
-        if total_items == watched_items or (watched_items + to_resume_items) == 0:
-            return
-        steps = _find_index_last_watched(total_items, list_data)
-        # Get the sort order of the view
-        is_sort_descending = xbmc.getCondVisibility('Container.SortDirection(descending)')
-        if is_sort_descending:
-            steps = (total_items - 1) - steps
-        gui_sound_mode = common.json_rpc('Settings.GetSettingValue',
-                                         {'setting': 'audiooutput.guisoundmode'})['value']
-        if gui_sound_mode != 0:
-            # Disable GUI sounds to avoid squirting sound with item selections
-            common.json_rpc('Settings.SetSettingValue',
-                            {'setting': 'audiooutput.guisoundmode', 'value': 0})
-        # Auto scroll the list
-        for _ in range(0, steps + 1):
-            common.json_rpc('Input.Down')
-        if gui_sound_mode != 0:
-            # Restore GUI sounds
-            common.json_rpc('Settings.SetSettingValue',
-                            {'setting': 'audiooutput.guisoundmode', 'value': gui_sound_mode})
+            steps = _find_index_last_watched(total_items, list_data)
+            # Get the sort order of the view
+            is_sort_descending = xbmc.getCondVisibility('Container.SortDirection(descending)')
+            if is_sort_descending:
+                steps = (total_items - 1) - steps
+            gui_sound_mode = common.json_rpc('Settings.GetSettingValue',
+                                             {'setting': 'audiooutput.guisoundmode'})['value']
+            if gui_sound_mode != 0:
+                # Disable GUI sounds to avoid squirting sound with item selections
+                common.json_rpc('Settings.SetSettingValue',
+                                {'setting': 'audiooutput.guisoundmode', 'value': 0})
+            # Auto scroll the list
+            for _ in range(0, steps + 1):
+                common.json_rpc('Input.Down')
+            if gui_sound_mode != 0:
+                # Restore GUI sounds
+                common.json_rpc('Settings.SetSettingValue',
+                                {'setting': 'audiooutput.guisoundmode', 'value': gui_sound_mode})
+
+
+def _auto_scroll_init_checks():
+    if G.KODI_VERSION.is_major_ver('18'):
+        # Check if a selection is already done
+        if xbmc.getInfoLabel('ListItem.Label') != '..':
+            return False
+    else:  # These infoLabel not works on Kodi 18.x
+        # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
+        if not xbmc.getCondVisibility('Container.SortMethod(23)'):
+            return False
+        # Check if a selection is already done (CurrentItem return the index)
+        if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
+            return False
+    return True
 
 
 def _find_index_last_watched(total_items, list_data):

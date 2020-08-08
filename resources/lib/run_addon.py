@@ -22,6 +22,48 @@ from resources.lib.upgrade_controller import check_addon_upgrade
 from resources.lib.utils.logging import LOG
 
 
+def catch_exceptions_decorator(func):
+    """Decorator that catch exceptions"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # pylint: disable=broad-except, ungrouped-imports
+        success = False
+        try:
+            func(*args, **kwargs)
+            success = True
+        except BackendNotReady as exc_bnr:
+            from resources.lib.kodi.ui import show_backend_not_ready
+            show_backend_not_ready(G.py2_decode(str(exc_bnr), 'latin-1'))
+        except InputStreamHelperError as exc:
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog('InputStream Helper Add-on error',
+                           ('The operation has been cancelled.\r\n'
+                            'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
+                            'Please report it to InputStream Helper github.'.format(exc)))
+        except HttpError401:  # HTTP error 401 Client Error: Unauthorized for url ...
+            # This is a generic error, can happen when the http request for some reason has failed.
+            # Known causes:
+            # - Possible change of data format or wrong data in the http request (also in headers/params)
+            # - Some current nf session data are not more valid (authURL/cookies/...)
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog(get_local_string(30105),
+                           ('There was a communication problem with Netflix.\r\n'
+                            'You can try the operation again or exit.'))
+        except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
+            from resources.lib.kodi.ui import show_error_info
+            show_error_info(get_local_string(30008), get_local_string(30180), False, True)
+        except Exception as exc:
+            import traceback
+            from resources.lib.kodi.ui import show_addon_error_info
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            show_addon_error_info(exc)
+        finally:
+            if not success:
+                from xbmcplugin import endOfDirectory
+                endOfDirectory(handle=G.PLUGIN_HANDLE, succeeded=False)
+    return wrapper
+
+
 def _check_valid_credentials():
     """Check that credentials are valid otherwise request user credentials"""
     if not check_credentials():
@@ -42,23 +84,21 @@ def lazy_login(func):
     """
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
-        try:
-            # Before call a method, check if the credentials exists
-            if not _check_valid_credentials():
-                return False
-            return func(*args, **kwargs)
-        except (NotLoggedInError, LoginValidateError):
-            # Exceptions raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
-            LOG.debug('Tried to perform an action without being logged in')
+        if _check_valid_credentials():
             try:
-                from resources.lib.utils.api_requests import login
-                if not login(ask_credentials=not check_credentials()):
-                    return False
-                LOG.debug('Account logged in, try executing again {}', func.__name__)
                 return func(*args, **kwargs)
-            except MissingCredentialsError:
-                # Cancelled from user or left an empty field
-                return False
+            except (NotLoggedInError, LoginValidateError):
+                # Exceptions raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
+                LOG.debug('Tried to perform an action without being logged in')
+                try:
+                    from resources.lib.utils.api_requests import login
+                    if login(ask_credentials=not check_credentials()):
+                        LOG.debug('Account logged in, try executing again {}', func.__name__)
+                        return func(*args, **kwargs)
+                except MissingCredentialsError:
+                    # Cancelled from user or left an empty field
+                    pass
+        return False
     return lazy_login_wrapper
 
 
@@ -77,14 +117,12 @@ def route(pathitems):
         LOG.warn('Route: ignoring extrafanart invocation')
         return False
     else:
-        nav_handler = _get_nav_handler(root_handler)
-        if not nav_handler:
-            raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
+        nav_handler = _get_nav_handler(root_handler, pathitems)
         _execute(nav_handler, pathitems[1:], G.REQUEST_PARAMS)
     return True
 
 
-def _get_nav_handler(root_handler):
+def _get_nav_handler(root_handler, pathitems):
     nav_handler = None
     if root_handler == G.MODE_DIRECTORY:
         from resources.lib.navigation.directory import Directory
@@ -98,6 +136,8 @@ def _get_nav_handler(root_handler):
     if root_handler == G.MODE_HUB:
         from resources.lib.navigation.hub import HubBrowser
         nav_handler = HubBrowser
+    if not nav_handler:
+        raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
     return nav_handler
 
 
@@ -159,8 +199,8 @@ def _check_addon_external_call(window_cls, prop_nf_service_status):
     return False
 
 
+@catch_exceptions_decorator
 def run(argv):
-    # pylint: disable=broad-except,ungrouped-imports,too-many-branches
     # Initialize globals right away to avoid stale values from the last addon invocation.
     # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
     # PR: https://github.com/xbmc/xbmc/pull/13814
@@ -190,54 +230,21 @@ def run(argv):
                 show_backend_not_ready()
         success = False
     if success:
-        try:
-            cancel_playback = False
-            pathitems = [part for part in G.REQUEST_PATH.split('/') if part]
-            if G.IS_ADDON_FIRSTRUN:
-                is_first_run_install, cancel_playback = check_addon_upgrade()
-                if is_first_run_install:
-                    from resources.lib.config_wizard import run_addon_configuration
-                    run_addon_configuration()
-            if cancel_playback and G.MODE_PLAY in pathitems[:1]:
-                # Temporary for migration library STRM to new format. todo: to be removed in future releases
-                # When a user do the add-on upgrade, the first time that the add-on will be opened will be executed
-                # the library migration. But if a user instead to open the add-on, try to play a video from Kodi
-                # library, Kodi will open the old STRM file because the migration is executed after.
-                success = False
-            else:
-                success = route(pathitems)
-        except BackendNotReady as exc_bnr:
-            from resources.lib.kodi.ui import show_backend_not_ready
-            show_backend_not_ready(G.py2_decode(str(exc_bnr), 'latin-1'))
+        cancel_playback = False
+        pathitems = [part for part in G.REQUEST_PATH.split('/') if part]
+        if G.IS_ADDON_FIRSTRUN:
+            is_first_run_install, cancel_playback = check_addon_upgrade()
+            if is_first_run_install:
+                from resources.lib.config_wizard import run_addon_configuration
+                run_addon_configuration()
+        if cancel_playback and G.MODE_PLAY in pathitems[:1]:
+            # Temporary for migration library STRM to new format. todo: to be removed in future releases
+            # When a user do the add-on upgrade, the first time that the add-on will be opened will be executed
+            # the library migration. But if a user instead to open the add-on, try to play a video from Kodi
+            # library, Kodi will open the old STRM file because the migration is executed after.
             success = False
-        except InputStreamHelperError as exc:
-            from resources.lib.kodi.ui import show_ok_dialog
-            show_ok_dialog('InputStream Helper Add-on error',
-                           ('The operation has been cancelled.\r\n'
-                            'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
-                            'Please report it to InputStream Helper github.'.format(exc)))
-            success = False
-        except HttpError401:  # HTTP error 401 Client Error: Unauthorized for url ...
-            # This is a generic error, can happen when the http request for some reason has failed.
-            # Known causes:
-            # - Possible change of data format or wrong data in the http request (also in headers/params)
-            # - Some current nf session data are not more valid (authURL/cookies/...)
-            from resources.lib.kodi.ui import show_ok_dialog
-            show_ok_dialog(get_local_string(30105),
-                           ('There was a communication problem with Netflix.\r\n'
-                            'You can try the operation again or exit.'))
-            success = False
-        except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
-            from resources.lib.kodi.ui import show_error_info
-            show_error_info(get_local_string(30008), get_local_string(30180), False, True)
-            success = False
-        except Exception as exc:
-            import traceback
-            from resources.lib.kodi.ui import show_addon_error_info
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            show_addon_error_info(exc)
-            success = False
-
+        else:
+            success = route(pathitems)
     if not success:
         from xbmcplugin import endOfDirectory
         endOfDirectory(handle=G.PLUGIN_HANDLE, succeeded=False)
