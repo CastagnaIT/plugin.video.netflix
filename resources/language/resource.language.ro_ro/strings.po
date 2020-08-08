@@ -206,35 +206,33 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Librărie"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Selectați un profil pentru a reda video"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Cere selectarea unui profil înainte de redare"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Auto-selectare profil"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Șterge auto-selectarea profilului"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Ales pentru auto-selectare"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Pentru a alege profilul, deschideți meniul de context în lista de profile"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Șterge auto-selectarea profilului"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Profilul {} a fost ales pentru auto-selectare"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"

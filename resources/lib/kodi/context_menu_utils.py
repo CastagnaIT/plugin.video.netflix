@@ -76,4 +76,16 @@ CONTEXT_MENU_ACTIONS = {
     'remove_watched_status': {
         'label': common.get_local_string(15015),
         'url': ctx_item_url(['remove_watched_status'])},
+    'autoselect_set_profile': {
+        'label': common.get_local_string(30055),
+        'url': ctx_item_url(['autoselect_set_profile'])},
+    'autoselect_remove_profile': {
+        'label': common.get_local_string(30056),
+        'url': ctx_item_url(['autoselect_remove_profile'])},
+    'library_playback_set_profile': {
+        'label': common.get_local_string(30052),
+        'url': ctx_item_url(['library_playback_set_profile'])},
+    'library_playback_remove_profile': {
+        'label': common.get_local_string(30053),
+        'url': ctx_item_url(['library_playback_remove_profile'])}
 }

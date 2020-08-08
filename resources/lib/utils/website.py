@@ -187,8 +187,6 @@ def _delete_non_existing_profiles(current_guids):
     if autoselect_profile_guid and autoselect_profile_guid not in current_guids:
         LOG.warn('Auto-selection disabled, the GUID {} not more exists', autoselect_profile_guid)
         G.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        G.ADDON.setSetting('autoselect_profile_name', '')
-        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
     # Verify if profile for library auto-sync exists
     sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid')
     if sync_mylist_profile_guid and sync_mylist_profile_guid not in current_guids:
@@ -200,10 +198,7 @@ def _delete_non_existing_profiles(current_guids):
     if library_playback_profile_guid and library_playback_profile_guid not in current_guids:
         LOG.warn('Profile set for playback from library cleared, the GUID {} not more exists',
                  library_playback_profile_guid)
-        # Save the selected profile guid
         G.LOCAL_DB.set_value('library_playback_profile_guid', '')
-        # Save the selected profile name
-        G.ADDON.setSetting('library_playback_profile', '')
     G.settings_monitor_suspend(False)
 
 

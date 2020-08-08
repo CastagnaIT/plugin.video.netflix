@@ -14,7 +14,7 @@ from future.utils import iteritems
 import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
-from resources.lib.kodi.context_menu import generate_context_menu_items
+from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
 from resources.lib.kodi.infolabels import get_art, get_color_name, add_info_dict_item, set_watched_status
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page)
@@ -68,19 +68,32 @@ def build_mainmenu_listing(loco_list):
         directory_items.append(dict_item)
         # Save the menu titles, to reuse it when will be open the content of menus
         G.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
+    # Add profiles menu
+    directory_items.append({
+        'url': common.build_url(['profiles'], mode=G.MODE_DIRECTORY),
+        'label': common.get_local_string(13200),  # "Profiles"
+        'art': {'icon': 'DefaultUser.png'},
+        'is_folder': True
+    })
     return directory_items, {}
 
 
-def build_profiles_listing(preselect_guid=None):
+def build_profiles_listing(preselect_guid=None, detailed_info=True):
     """Builds the profiles listing"""
     directory_items = []
-    preselect_profile_guid = preselect_guid or G.LOCAL_DB.get_active_profile_guid()
+    preselect_guid = preselect_guid or G.LOCAL_DB.get_active_profile_guid()
+    autoselect_guid = G.LOCAL_DB.get_value('autoselect_profile_guid')
+    library_playback_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
     for guid in G.LOCAL_DB.get_guid_profiles():
-        directory_items.append(_create_profile_item(guid, (guid == preselect_profile_guid)))
+        directory_items.append(_create_profile_item(guid,
+                                                    (guid == preselect_guid),
+                                                    (guid == autoselect_guid),
+                                                    (guid == library_playback_guid),
+                                                    detailed_info))
     return directory_items, {}
 
 
-def _create_profile_item(profile_guid, is_selected):
+def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_playback, detailed_info):
     profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
 
     profile_attributes = []
@@ -90,20 +103,24 @@ def _create_profile_item(profile_guid, is_selected):
         profile_attributes.append(common.get_local_string(30221))
     if G.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30222))
+    if is_autoselect and detailed_info:
+        profile_attributes.append(common.get_local_string(30054))
+    if is_library_playback and detailed_info:
+        profile_attributes.append(common.get_local_string(30051))
     attributes_desc = '[CR]'.join(profile_attributes) + '[CR]' if profile_attributes else ''
     description = attributes_desc + '[' + G.LOCAL_DB.get_profile_config('language_desc', '', guid=profile_guid) + ']'
 
-    menu_action = common.run_plugin_action(common.build_url(pathitems=['autoselect_profile_set'],
-                                                            params={'profile_name': profile_name.encode('utf-8'),
-                                                                    'profile_guid': profile_guid},
-                                                            mode=G.MODE_ACTION))
+    if detailed_info:
+        menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback)
+    else:
+        menu_items = []
     dict_item = {
         'label': profile_name,
         'properties': {'nf_guid': profile_guid, 'nf_description': description.replace('[CR]', ' - ')},
         'art': {'icon': G.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
         'info': {'plot': description},  # The description
         'is_selected': is_selected,
-        'menu_items': [(common.get_local_string(30056), menu_action)],
+        'menu_items': menu_items,
         'url': common.build_url(pathitems=['home'],
                                 params={'switch_profile_guid': profile_guid},
                                 mode=G.MODE_DIRECTORY),

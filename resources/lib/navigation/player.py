@@ -191,25 +191,18 @@ def _profile_switch():
     #   Video content not available; Sync with netflix watched status to wrong profile
     # Of course if the user still selects the wrong profile the problems remains,
     # but now will be caused only by the user for inappropriate use.
-    is_playback_ask_profile = G.ADDON.getSettingBool('library_playback_ask_profile')
-    if is_playback_ask_profile or not G.LOCAL_DB.get_value('library_playback_profile_guid'):
+    library_playback_profile_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
+    if library_playback_profile_guid:
+        selected_guid = library_playback_profile_guid
+    else:
         selected_guid = ui.show_profiles_dialog(title_prefix=common.get_local_string(15213),
                                                 preselect_guid=G.LOCAL_DB.get_active_profile_guid())
-    else:
-        selected_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
-    if selected_guid:
-        if not is_playback_ask_profile:
-            # Save the selected profile guid
-            G.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
-            # Save the selected profile name
-            G.ADDON.setSetting('library_playback_profile', G.LOCAL_DB.get_profile_config('profileName', '???',
-                                                                                         guid=selected_guid))
-        # Perform the profile switch
-        # The profile switch is done to NFSession, the MSL part will be switched automatically
-        from resources.lib.navigation.directory_utils import activate_profile
-        if not activate_profile(selected_guid):
-            return False
-    else:
+    if not selected_guid:
+        return False
+    # Perform the profile switch
+    # The profile switch is done to NFSession, the MSL part will be switched automatically
+    from resources.lib.navigation.directory_utils import activate_profile
+    if not activate_profile(selected_guid):
         return False
     return True
 
