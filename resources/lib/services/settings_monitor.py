@@ -88,8 +88,15 @@ class SettingsMonitor(xbmc.Monitor):
                     G.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
                                          menu_sortorder_new_setting,
                                          TABLE_SETTINGS_MONITOR)
-                    # We remove the cache to allow get the new results in the chosen order
-                    G.CACHE.clear([CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH])
+                    clean_cache = True
+
+        # Checks for settings changes that require cache invalidation
+        if not clean_cache:
+            page_results = G.ADDON.getSettingInt('page_results')
+            page_results_old = G.LOCAL_DB.get_value('page_results', 90, TABLE_SETTINGS_MONITOR)
+            if page_results != page_results_old:
+                G.LOCAL_DB.set_value('page_results', page_results, TABLE_SETTINGS_MONITOR)
+                clean_cache = True
 
         # Check changes on content profiles
         # This is necessary because it is possible that some manifests
@@ -112,8 +119,12 @@ class SettingsMonitor(xbmc.Monitor):
             G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
             common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
 
+        if clean_cache:
+            # We remove the cache to allow get the new results with the new settings
+            G.CACHE.clear([CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH])
+
         # Avoid perform these operations when the add-on is installed from scratch and there are no credentials
-        if (clean_cache or reboot_addon) and not common.check_credentials():
+        if reboot_addon and not common.check_credentials():
             reboot_addon = False
 
         if reboot_addon:
