@@ -210,19 +210,19 @@ msgstr "Coleção"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Definir perfil para reprodução na coleção"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Definir para reprodução na coleção"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Remover para reprodução na coleção"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Definir perfil para autoseleção"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "Existem {} títulos que não puderam ser importados.[CR]Deseha deletar e
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Resultados por página (em caso de erro de tempo limite, diminua-o)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Deseja remover o status de assistido de '{}'?[CR][CR]A operação pode l
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Incluir na coleção do Kodi (somente enviando dado)"
 
 # Unused 30302 to 30399
 
