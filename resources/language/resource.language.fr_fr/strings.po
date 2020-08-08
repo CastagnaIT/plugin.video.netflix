@@ -210,19 +210,19 @@ msgstr "Médiathèque"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profil utilisé lors de la lecture depuis la médiathèque"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Utiliser ce profil lors de la lecture depuis la médiathèque"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Ne plus utiliser ce profil lors de la lecture depuis la médiathèque"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil sélectionné automatiquement"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -230,7 +230,7 @@ msgstr "Sélectioner ce profil automatiquement"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "Supprimer la sélection automatique du profil"
+msgstr "Ne plus sélectionner automatiquement ce profil"
 
 # Unused 30057, 30058
 
@@ -977,7 +977,7 @@ msgstr "{} titres n'ont pas pu être importés.[CR]Voulez-vous supprimer ces fic
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Nombre de résultats par page (en cas d'erreur réduisez cette valeur)"
 
 # Unused 30248 to 30299
 
@@ -987,7 +987,7 @@ msgstr "Voulez-vous supprimer l'état 'vu' de '{}' ?[CR][CR]L'opération peut pr
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Inclure la médiathèque Kodi (envoi de données seulement)"
 
 # Unused 30302 to 30399
 
