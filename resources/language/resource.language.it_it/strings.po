@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-07-25 10:30+0000\n"
+"PO-Revision-Date: 2020-08-08 10:30+0000\n"
 "Last-Translator: Stefano Gottardo\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -210,27 +210,27 @@ msgstr "Libreria"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profilo impostato per la riproduzione dalla libreria"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Imposta per la riproduzione dalla libreria"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Rimuovi per la riproduzione dalla libreria"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profilo impostato per la selezione automatica"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
-msgstr "Imposta per l'auto-selezione"
+msgstr "Imposta per la selezione automatica"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "Rimuovi l'auto-selezione del profilo"
+msgstr "Rimuovi la selezione automatica"
 
 # Unused 30057, 30058
 
@@ -976,7 +976,7 @@ msgstr "Ci sono {} titoli che non possono essere importati.[CR]Vuoi eliminare qu
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Risultati per pagina (in caso di errore timeout ridurre)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Vuoi rimuovere lo stato guardato di '{}'?[CR][CR]L'operazione potrà imp
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Includi libreria Kodi (solo per invio dati)"
 
 # Unused 30302 to 30399
 
