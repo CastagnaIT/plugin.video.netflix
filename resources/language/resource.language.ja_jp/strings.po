@@ -210,19 +210,19 @@ msgstr "ライブラリ"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "ライブラリから再生するプロフィール"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "ライブラリから再生を設定"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "ライブラリから再生を解除"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "自動選択プロフィール"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "{}個のタイトルはインポート出来ません。[CR]削除しま
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "1頁の検索結果(タイムアウトの場合は減らしましょ)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "{}の視聴状態を削除しますか。[CR][CR]反映されるのに�
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Kodiライブラリに追加(送ったデータのみ)"
 
 # Unused 30302 to 30399
 
