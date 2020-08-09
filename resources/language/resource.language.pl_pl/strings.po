@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-07-26 15:54+0000\n"
+"PO-Revision-Date: 2020-08-09 10:31+0000\n"
 "Last-Translator: Marcin W. + notoco\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -210,19 +210,19 @@ msgstr "Bibilioteka"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profil ustawiony do odtwarzania z biblioteki"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Ustaw do odtwarzania z biblioteki"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Usuń z odtwarzania z biblioteki"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil do automatycznego wyboru"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "Istnieje {} tytułów, których nie można zaimportować.[CR]Czy chcesz 
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Wyników na stronę (w przypadku przekroczenia limitu czasu zmniejsz go)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Czy chcesz usunąć status oglądania '{}'?[CR][CR]Operacja może zają�
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Uwzględnij bibliotekę Kodi (tylko wysyłanie danych)"
 
 # Unused 30302 to 30399
 
