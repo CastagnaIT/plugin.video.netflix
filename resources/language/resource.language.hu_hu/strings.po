@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-07-26 7:40+0000\n"
+"PO-Revision-Date: 2020-08-09 9:40+0000\n"
 "Last-Translator: frodo19"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -210,19 +210,19 @@ msgstr "Médiatár"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "A médiatárból történő lejátszáshoz beállított profil"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Beállítva a médiatár lejátszásához"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Eltávolítás lejátszás céljából a médiatárból"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "A profil automatikus kiválasztásra van beállítva"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "Vannak még {} címek amiket nem lehet importálni.[CR]Akarod törölni 
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Eredmények oldalanként (időtúllépés esetén csökkenti azt)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Törlöd a nézett állapotot '{}'?[CR][CR]A változás 24 órán belül
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Tartalmazza a Kodi médiatárat (csak adatok küldése)"
 
 # Unused 30302 to 30399
 
