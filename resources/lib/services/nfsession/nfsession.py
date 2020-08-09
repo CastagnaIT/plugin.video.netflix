@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
@@ -34,8 +34,6 @@ class NetflixSession(object):
             self.http_ipc_slots[func_name] = enveloped_func
             # For AddonSignals IPC
             common.register_slot(enveloped_func, func_name)
-        # Silent login
-        self.nfsession.prefetch_login()
 
     def library_auto_update(self):
         """Run the library auto update"""
@@ -47,6 +45,6 @@ class NetflixSession(object):
         library_cls = Library(self.nfsession.get_metadata,
                               self.directory_builder.get_mylist_videoids_profile_switch,
                               self.directory_builder.req_profiles_info)
-        library_cls.auto_update_library(g.ADDON.getSettingBool('lib_sync_mylist'),
+        library_cls.auto_update_library(G.ADDON.getSettingBool('lib_sync_mylist'),
                                         show_prg_dialog=False,
                                         update_profiles=True)

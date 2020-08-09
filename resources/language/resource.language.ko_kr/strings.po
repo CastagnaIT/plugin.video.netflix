@@ -26,7 +26,7 @@ msgstr "Netflix VOD 애드온"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "일부 국가에서는 이 애드온의 일부가 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
+msgstr "일부 국가에서는 이 애드온을 사용하는 것이 불법일 수도 있으니, 설치하기전 관련 법을 확인하기 바랍니다."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "InputStream Adaptive 혹은 Widevine에 문제가 있습니다. 설치�
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "라이브러를 새로 고치는 중"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "라이브러리"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "비디오 재생에 사용할 프로파일 선택"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "재생하기 전에 프로파일을 선택합니다."
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "자동선택"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "프로파일 자동 선택을 해제합니다."
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "자동선택 설정"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "컨텍스트 메뉴에서 프로파일을 고르십시오."
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "프로파일 자동 선택을 해제합니다."
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "프로파일 {}을 자동선택으로 설정했습니다."
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "상당히 많은 수({})를 새로 고치려고하는 군요.[CR]심각한 문제를 일으키거나 잠시 계정을 사용하지 못할 수도 있으니 주의하십시오.[CR]계속 하시렵니까?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "부모의 통제"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "새로 고치고 있는 중입니다."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -414,7 +412,7 @@ msgstr "Netflix로부터의 오류내용:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오."
+msgstr "자세한 내용은 Kodi 로그파일을 참고하십시오. 로그에 해결 방법이 나와 았지 않거나 계속 이 내용을 보게 되면, Github의 Readme에 나온 대로 우리에게 알려 주십시오."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -494,7 +492,7 @@ msgstr "찜한 것들과 Kodi 라이브러리를 동기화"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "전체 동기를 하면 전에 내보냈던 것들이 모두 지워집니다.[CR]타이틀이 많은 경우에는 시간이 걸립니다.[CR]계속 하시렵니까?"
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Up Next 기능 사용"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "오류를 창 대신 '알림'으로 보여줍니다."
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "캐쉬를 지웠습니다."
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "1080p언록 사용(안드로이드에는 바람직하지 않습니다)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "HTTP경유의 IPC사용(애드온 타임아웃이 생기는 경우 사�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "라이브러리에서 가져오기"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "예고편 및 다른 영상"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "로그인에 문제가 있습니다. 계정이 아직 처리 중이거나 활성화 되지 않았을 수 있습니다."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "Kodi라이브러리와 내가 찜한 것들을 동기화"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "동기화할 프로파일을 설정합니다."
 
 # Unused 30229
 
@@ -974,19 +968,27 @@ msgstr "Wideivine보안레벨을 L3로 설정"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "라이브러리로 내보낸 것들을 삭제 중"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
+msgstr "{}개의 타이틀을 가져올 수 없습니다.[CR]삭제하시렵니까?"
+
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
 msgstr ""
 
-# Unused 30247 to 30299
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "{}의 시청상태를 지울까요?[CR][CR]24시간 정도 걸리기 때문에 리스트에 보일 수도 있습니다."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr ""
+
+# Unused 30302 to 30399
 
 msgctxt "#30400"
 msgid "Search"

@@ -18,9 +18,10 @@ import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
-from resources.lib.services.msl.exceptions import MSLError
+from resources.lib.globals import G
+from resources.lib.utils.esn import get_esn
 
 try:  # Python 2
     unicode
@@ -58,7 +59,7 @@ def display_error_info(func):
             return func(*args, **kwargs)
         except Exception as exc:
             if isinstance(exc, MSLError):
-                message = exc.__class__.__name__ + ': ' + g.py2_decode(str(exc))
+                message = exc.__class__.__name__ + ': ' + G.py2_decode(str(exc))
             else:
                 message = exc.__class__.__name__ + ': ' + str(exc)
             ui.show_error_info(common.get_local_string(30028), message,
@@ -186,21 +187,21 @@ def generate_logblobs_params():
         'type': 'startup',
         'sev': 'info',
         'devmod': 'chrome-cadmium',
-        'clver': g.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),  # e.g. '6.0021.220.051'
-        'osplatform': g.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
-        'osver': g.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
+        'clver': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),  # e.g. '6.0021.220.051'
+        'osplatform': G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
+        'osver': G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
         'browsername': 'Chrome',
-        'browserver': g.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
+        'browserver': G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
         'appLogSeqNum': 0,
         'uniqueLogId': common.get_random_uuid(),
         'appId': app_id,
-        'esn': g.get_esn(),
+        'esn': get_esn(),
         'lver': '',
         # 'jssid': '15822792997793',  # Same value of appId
         # 'jsoffms': 1261,
         'clienttime': timestamp,
         'client_utc': int(timestamp_utc),
-        'uiver': g.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION)
+        'uiver': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION)
     }
 
     blobs_container = {

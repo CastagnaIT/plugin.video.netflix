@@ -11,9 +11,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
+from .exceptions import CacheMiss
 
 try:
     import cPickle as pickle
@@ -77,10 +77,10 @@ def cache_output(bucket, fixed_identifier=None,
                 return func(*args, **kwargs)
             _bucket = CACHE_MYLIST if arg_value == 'mylist' else bucket
             try:
-                return g.CACHE.get(_bucket, identifier)
+                return G.CACHE.get(_bucket, identifier)
             except CacheMiss:
                 output = func(*args, **kwargs)
-                g.CACHE.add(_bucket, identifier, output, ttl=ttl)
+                G.CACHE.add(_bucket, identifier, output, ttl=ttl)
                 return output
         return wrapper
     return caching_decorator
@@ -89,8 +89,8 @@ def cache_output(bucket, fixed_identifier=None,
 def _get_identifier(fixed_identifier, identify_from_kwarg_name,
                     identify_append_from_kwarg_name, identify_fallback_arg_index, args, kwargs):
     """Return the identifier to use with the caching_decorator"""
-    # common.debug('Get_identifier args: {}', args)
-    # common.debug('Get_identifier kwargs: {}', kwargs)
+    # LOG.debug('Get_identifier args: {}', args)
+    # LOG.debug('Get_identifier kwargs: {}', kwargs)
     arg_value = None
     if fixed_identifier:
         identifier = fixed_identifier
@@ -101,12 +101,12 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
             identifier = arg_value
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
             identifier += '_' + unicode(kwargs.get(identify_append_from_kwarg_name))
-    # common.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
+    # LOG.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier
 
 
 def serialize_data(value):
-    if g.PY_IS_VER2:
+    if G.PY_IS_VER2:
         # On python 2 pickle.dumps produces str
         # Pickle on python 2 use non-standard byte-string seem not possible convert it in to byte in a easy way
         # then serialize it with base64
@@ -118,7 +118,7 @@ def serialize_data(value):
 
 def deserialize_data(value):
     try:
-        if g.PY_IS_VER2:
+        if G.PY_IS_VER2:
             # On python 2 pickle.loads wants str
             from base64 import standard_b64decode
             return pickle.loads(standard_b64decode(value))
@@ -127,5 +127,5 @@ def deserialize_data(value):
     except (pickle.UnpicklingError, TypeError, EOFError):
         # TypeError/EOFError happen when standard_b64decode fails
         # This should happen only if manually mixing the database data
-        common.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
+        LOG.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
         raise CacheMiss()

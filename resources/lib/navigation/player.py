@@ -9,20 +9,22 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmcplugin
 import xbmcgui
+import xbmcplugin
 
-from resources.lib.api.exceptions import MetadataNotAvailable, InputStreamHelperError
-from resources.lib.api.paths import EVENT_PATHS
-from resources.lib.globals import g
 import resources.lib.common as common
-import resources.lib.api.api_requests as api
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
+import resources.lib.utils.api_requests as api
+from resources.lib.globals import G
+from resources.lib.utils.api_paths import EVENT_PATHS
+from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 # Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),
 # so the time that Kodi takes to start a video increases, (due to requests exchange between ISA and the add-on)
 # not sure if it is an urllib issue
+
 SERVICE_URL_FORMAT = 'http://127.0.0.1:{port}'
 MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
 LICENSE_PATH_FORMAT = '/license?id={videoid}'
@@ -54,27 +56,27 @@ def play(videoid):
     _play(videoid, False)
 
 
-@common.time_execution(immediate=False)
+@measure_exec_time_decorator()
 def _play(videoid, is_played_from_strm=False):
     """Play an episode or movie as specified by the path"""
-    is_upnext_enabled = g.ADDON.getSettingBool('UpNextNotifier_enabled')
-    common.info('Playing {}{}{}',
-                videoid,
-                ' [STRM file]' if is_played_from_strm else '',
-                ' [external call]' if g.IS_ADDON_EXTERNAL_CALL else '')
+    is_upnext_enabled = G.ADDON.getSettingBool('UpNextNotifier_enabled')
+    LOG.info('Playing {}{}{}',
+             videoid,
+             ' [STRM file]' if is_played_from_strm else '',
+             ' [external call]' if G.IS_ADDON_EXTERNAL_CALL else '')
 
     # Profile switch when playing from a STRM file (library)
     if is_played_from_strm:
         if not _profile_switch():
-            xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+            xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
             return
 
     # Get metadata of videoid
     try:
         metadata = api.get_metadata(videoid)
-        common.debug('Metadata is {}', metadata)
+        LOG.debug('Metadata is {}', metadata)
     except MetadataNotAvailable:
-        common.warn('Metadata not available for {}', videoid)
+        LOG.warn('Metadata not available for {}', videoid)
         metadata = [{}, {}]
 
     # Check parental control PIN
@@ -82,7 +84,7 @@ def _play(videoid, is_played_from_strm=False):
     if not pin_result:
         if pin_result is not None:
             ui.show_notification(common.get_local_string(30106), time=8000)
-        xbmcplugin.endOfDirectory(g.PLUGIN_HANDLE, succeeded=False)
+        xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
         return
 
     # Generate the xbmcgui.ListItem to be played
@@ -91,7 +93,7 @@ def _play(videoid, is_played_from_strm=False):
     # STRM file resume workaround (Kodi library)
     resume_position = _strm_resume_workaroud(is_played_from_strm, videoid)
     if resume_position == '':
-        xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
+        xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
         return
 
     info_data = None
@@ -99,7 +101,7 @@ def _play(videoid, is_played_from_strm=False):
     videoid_next_episode = None
 
     # Get Infolabels and Arts for the videoid to be played, and for the next video if it is an episode (for UpNext)
-    if is_played_from_strm or is_upnext_enabled or g.IS_ADDON_EXTERNAL_CALL:
+    if is_played_from_strm or is_upnext_enabled or G.IS_ADDON_EXTERNAL_CALL:
         if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
             # When UpNext is enabled, get the next episode to play
             videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
@@ -111,25 +113,18 @@ def _play(videoid, is_played_from_strm=False):
         list_item.setArt(arts)
 
     # Get event data for videoid to be played (needed for sync of watched status with Netflix)
-    if (g.ADDON.getSettingBool('ProgressManager_enabled') and
-            videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE] and
-            not is_played_from_strm):
-        # Enable the progress manager only when:
-        # - It is not an add-on external call
-        # - It is an external call, but the played item is not a STRM file
-        # Todo:
-        #  in theory to enable in Kodi library need implement the update watched status code for items of Kodi library
-        #  by using JSON RPC Files.SetFileDetails https://github.com/xbmc/xbmc/pull/17202
-        #  that can be used only on Kodi 19.x
-        event_data = _get_event_data(videoid)
-        event_data['videoid'] = videoid.to_dict()
-        event_data['is_played_by_library'] = is_played_from_strm
+    if (G.ADDON.getSettingBool('ProgressManager_enabled')
+            and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]):
+        if not is_played_from_strm or is_played_from_strm and G.ADDON.getSettingBool('sync_watched_status_library'):
+            event_data = _get_event_data(videoid)
+            event_data['videoid'] = videoid.to_dict()
+            event_data['is_played_by_library'] = is_played_from_strm
 
     if 'raspberrypi' in common.get_system_platform():
         _raspberry_disable_omxplayer()
 
     # Start and initialize the action controller (see action_controller.py)
-    common.debug('Sending initialization signal')
+    LOG.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
@@ -140,13 +135,13 @@ def _play(videoid, is_played_from_strm=False):
         'event_data': event_data}, non_blocking=True)
     # Send callback after send the initialization signal
     # to give a bit of more time to the action controller (see note in initialize_playback of action_controller.py)
-    xbmcplugin.setResolvedUrl(handle=g.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
+    xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
 
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set for playback of the given video_id"""
     service_url = SERVICE_URL_FORMAT.format(
-        port=g.LOCAL_DB.get_value('msl_service_port', 8000))
+        port=G.LOCAL_DB.get_value('msl_service_port', 8000))
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
@@ -161,7 +156,7 @@ def get_inputstream_listitem(videoid):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         raise InputStreamHelperError(str(exc))
 
     if not inputstream_ready:
@@ -184,7 +179,7 @@ def get_inputstream_listitem(videoid):
         key=is_helper.inputstream_addon + '.server_certificate',
         value=INPUTSTREAM_SERVER_CERTIFICATE)
     list_item.setProperty(
-        key='inputstreamaddon' if g.KODI_VERSION.is_major_ver('18') else 'inputstream',
+        key='inputstreamaddon' if G.KODI_VERSION.is_major_ver('18') else 'inputstream',
         value=is_helper.inputstream_addon)
     return list_item
 
@@ -196,25 +191,18 @@ def _profile_switch():
     #   Video content not available; Sync with netflix watched status to wrong profile
     # Of course if the user still selects the wrong profile the problems remains,
     # but now will be caused only by the user for inappropriate use.
-    is_playback_ask_profile = g.ADDON.getSettingBool('library_playback_ask_profile')
-    if is_playback_ask_profile or not g.LOCAL_DB.get_value('library_playback_profile_guid'):
+    library_playback_profile_guid = G.LOCAL_DB.get_value('library_playback_profile_guid')
+    if library_playback_profile_guid:
+        selected_guid = library_playback_profile_guid
+    else:
         selected_guid = ui.show_profiles_dialog(title_prefix=common.get_local_string(15213),
-                                                preselect_guid=g.LOCAL_DB.get_active_profile_guid())
-    else:
-        selected_guid = g.LOCAL_DB.get_value('library_playback_profile_guid')
-    if selected_guid:
-        if not is_playback_ask_profile:
-            # Save the selected profile guid
-            g.LOCAL_DB.set_value('library_playback_profile_guid', selected_guid)
-            # Save the selected profile name
-            g.ADDON.setSetting('library_playback_profile', g.LOCAL_DB.get_profile_config('profileName', '???',
-                                                                                         guid=selected_guid))
-        # Perform the profile switch
-        # The profile switch is done to NFSession, the MSL part will be switched automatically
-        from resources.lib.navigation.directory_utils import activate_profile
-        if not activate_profile(selected_guid):
-            return False
-    else:
+                                                preselect_guid=G.LOCAL_DB.get_active_profile_guid())
+    if not selected_guid:
+        return False
+    # Perform the profile switch
+    # The profile switch is done to NFSession, the MSL part will be switched automatically
+    from resources.lib.navigation.directory_utils import activate_profile
+    if not activate_profile(selected_guid):
         return False
     return True
 
@@ -228,12 +216,12 @@ def _verify_pin(pin_required):
 
 def _strm_resume_workaroud(is_played_from_strm, videoid):
     """Workaround for resuming STRM files from library"""
-    if not is_played_from_strm or not g.ADDON.getSettingBool('ResumeManager_enabled'):
+    if not is_played_from_strm or not G.ADDON.getSettingBool('ResumeManager_enabled'):
         return None
     resume_position = infolabels.get_resume_info_from_library(videoid).get('position')
     if resume_position:
         index_selected = (ui.ask_for_resume(resume_position)
-                          if g.ADDON.getSettingBool('ResumeManager_dialog') else None)
+                          if G.ADDON.getSettingBool('ResumeManager_dialog') else None)
         if index_selected == -1:
             # Cancel playback
             return ''
@@ -253,7 +241,7 @@ def _get_event_data(videoid):
     raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
     if not raw_data:
         return {}
-    common.debug('Event data: {}', raw_data)
+    LOG.debug('Event data: {}', raw_data)
     videoid_data = raw_data['videos'][videoid.value]
 
     if is_episode:
@@ -279,12 +267,12 @@ def _upnext_get_next_episode_videoid(videoid, metadata):
     """Determine the next episode and get the videoid"""
     try:
         videoid_next_episode = _find_next_episode(videoid, metadata)
-        common.debug('Next episode is {}', videoid_next_episode)
+        LOG.debug('Next episode is {}', videoid_next_episode)
         return videoid_next_episode
     except (TypeError, KeyError):
         # import traceback
-        # common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
-        common.debug('There is no next episode, not setting up Up Next')
+        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.debug('There is no next episode, not setting up Up Next')
         return None
 
 
@@ -309,7 +297,7 @@ def _find_next_episode(videoid, metadata):
 def _raspberry_disable_omxplayer():
     """Check and disable OMXPlayer (not compatible with Netflix video streams)"""
     # Only Kodi 18 has this property, from Kodi 19 OMXPlayer has been removed
-    if not g.KODI_VERSION.is_major_ver('18'):
+    if not G.KODI_VERSION.is_major_ver('18'):
         return
     value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})
     if value.get('value'):

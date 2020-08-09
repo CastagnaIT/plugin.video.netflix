@@ -12,19 +12,20 @@ import uuid
 import xml.etree.ElementTree as ET
 
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
+from resources.lib.utils.logging import LOG
 
 
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEG-DASH manifest"""
     from xbmcaddon import Addon
-    isa_version = g.remove_ver_suffix(g.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
+    isa_version = G.remove_ver_suffix(G.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
 
     # If a CDN server has stability problems it may cause errors with streaming,
     # we allow users to select a different CDN server
     # (should be managed by ISA but is currently is not implemented)
-    cdn_index = int(g.ADDON.getSettingString('cdn_server')[-1]) - 1
+    cdn_index = int(G.ADDON.getSettingString('cdn_server')[-1]) - 1
 
     seconds = manifest['duration'] / 1000
     init_length = int(seconds / 2 * 12 + 20 * 1000)
@@ -56,7 +57,7 @@ def convert_to_dash(manifest):
         _convert_text_track(text_track, period, (index == default_subtitle_language_index), cdn_index, isa_version)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
-    if common.is_debug_verbose():
+    if LOG.level == LOG.LEVEL_VERBOSE:
         common.save_file_def('manifest.mpd', xml)
     return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
 
@@ -108,8 +109,8 @@ def _add_protection_info(adaptation_set, pssh, keyid):
             'value': 'widevine'
         })
     # Add child tags to the DRM system configuration ('widevine:license' is an ISA custom tag)
-    if (g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
-            and not g.ADDON.getSettingBool('force_widevine_l3')):
+    if (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+            and not G.ADDON.getSettingBool('force_widevine_l3')):
         # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices,
         # if it is set on L3 devices ISA already remove it automatically.
         # But some L1 devices with non regular Widevine library cause issues then need to be handled
@@ -146,7 +147,7 @@ def _convert_video_track(video_track, period, init_length, protection, has_drm_s
 
 def _limit_video_resolution(video_tracks, has_drm_streams):
     """Limit max video resolution to user choice"""
-    max_resolution = g.ADDON.getSettingString('stream_max_resolution')
+    max_resolution = G.ADDON.getSettingString('stream_max_resolution')
     if max_resolution != '--':
         if max_resolution == 'SD 480p':
             res_limit = 480
@@ -296,7 +297,7 @@ def _get_default_audio_language(manifest):
     audio_language = common.get_kodi_audio_language()
     index = 0
     # Try to find the preferred language with the right channels
-    if g.ADDON.getSettingBool('enable_dolby_sound'):
+    if G.ADDON.getSettingBool('enable_dolby_sound'):
         index = _find_audio_track_index(manifest, 'language', audio_language, channel_list_dolby)
 
     # If dolby audio track not exists check other channels list
@@ -306,7 +307,7 @@ def _get_default_audio_language(manifest):
     # If there is no matches to preferred language,
     # try to sets the original language track as default
     # Check if the dolby audio track in selected language exists
-    if index is None and g.ADDON.getSettingBool('enable_dolby_sound'):
+    if index is None and G.ADDON.getSettingBool('enable_dolby_sound'):
         index = _find_audio_track_index(manifest, 'isNative', True, channel_list_dolby)
 
     # If dolby audio track not exists check other channels list

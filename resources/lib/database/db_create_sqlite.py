@@ -11,12 +11,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 import sqlite3 as sql
 
-import resources.lib.common as common
 import resources.lib.database.db_utils as db_utils
+from resources.lib.utils.logging import LOG
 
 
 def create_database(db_file_path, db_filename):
-    common.debug('The SQLite database {} is empty, creating tables', db_filename)
+    LOG.debug('The SQLite database {} is empty, creating tables', db_filename)
     if db_utils.LOCAL_DB_FILENAME == db_filename:
         _create_local_database(db_file_path)
     if db_utils.SHARED_DB_FILENAME == db_filename:

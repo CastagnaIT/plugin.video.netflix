@@ -26,7 +26,7 @@ msgstr "Netflixアドオン"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "一部の国では、このアドオンが不法でありますので、設置する前に必ず関連法律を確認してください"
+msgstr "一部の国では、このアドオンを使用するのが不法でありますので、設置する前に必ず関連法律を確認してください"
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "InputStream Adaptive又はWidevineに問題があるようです。イ�
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "ライブラリ更新中"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "ライブラリ"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "ビデオを観るプロファイル"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "再生する前にプロフィールを選択"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "プロファイル自動選択"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "自動選択を解除する"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "自動選択に設定する"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "自動選択をするのには、プロファイルのリストから。。。"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "自動選択を解除する"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "{}のプロファイルを自動選択にしました。"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "警告！多め({}個)ののタイトルを更新しようとします。[CR]これは大変な問題を起こすか、アカウントが一時的にブロックされる可能性があります。[CR]宜しいですか。"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "ペアレンタルコントロール"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "更新中です。"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -414,7 +412,7 @@ msgstr "Netflixからのエラーメッセージ:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "エラーの詳細はログファイルに書いてあります。"
+msgstr "エラーの詳細はログファイルに書いてあります。解決方法が見つからなかったり同じエラー続くと、GithubのReadmeの指示通り報告してください。"
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -494,7 +492,7 @@ msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "全ての同期化を実行することによって以前エクスポートしたタイトルが削除されます。[CR]タイトルが多い場合は時間が掛かります。[CR]宜しいですか。"
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Up Next 機能を使う"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "エラーをウィンドウの代わり通知を使って表示"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "キャッシュを削除しました。"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "1080pアンロック(アンドロイドは無理かも)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "HTTP経由IPCを使う(アドオンタイムアウトが発生したら�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "既存のライブラリをインポート"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "予告編など"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "ログイン失敗、アカウント確認がまだ取れてないか再入会が出来なかった可能性があります。"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "同期化用プロフィール設定"
 
 # Unused 30229
 
@@ -974,19 +968,27 @@ msgstr "WidevineセキュリティレベルをL3にする"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "ライブラリにエクスポートしたファイルを削除中"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
+msgstr "{}個のタイトルはインポート出来ません。[CR]削除しましょうか。"
+
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
 msgstr ""
 
-# Unused 30247 to 30299
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "{}の視聴状態を削除しますか。[CR][CR]反映されるのに２４時間ぐらい掛かるので、リストからまだ見える可能性があります。"
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr ""
+
+# Unused 30302 to 30399
 
 msgctxt "#30400"
 msgid "Search"

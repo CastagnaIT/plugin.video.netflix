@@ -21,7 +21,7 @@ except ImportError:
     from SocketServer import TCPServer
 
 import resources.lib.common as common
-
+from resources.lib.utils.logging import LOG
 from resources.lib.services.nfsession.nfsession import NetflixSession
 
 
@@ -35,7 +35,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         """Loads the data for the requested resource"""
         func_name = self.path[1:]
-        common.debug('Handling HTTP POST IPC call to {}', func_name)
+        LOG.debug('Handling HTTP POST IPC call to {}', func_name)
         length = int(self.headers.get('content-length', 0))
         data = json.loads(self.rfile.read(length)) or None
         try:
@@ -62,6 +62,6 @@ class NetflixTCPServer(TCPServer):
     """Override TCPServer to allow usage of shared members"""
     def __init__(self, server_address):
         """Initialization of NetflixTCPServer"""
-        common.info('Constructing NetflixTCPServer')
+        LOG.info('Constructing NetflixTCPServer')
         self.netflix_session = NetflixSession()
         TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)

@@ -14,7 +14,7 @@ from datetime import datetime
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
 import resources.lib.database.db_utils as db_utils
-from resources.lib.database.db_exceptions import (ProfilesMissing)
+from resources.lib.common.exceptions import DBProfilesMissing
 
 
 class NFLocalDatabase(db_sqlite.SQLiteDatabase):
@@ -26,7 +26,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         cur = self._execute_query(query)
         result = cur.fetchone()
         if result is None:
-            raise ProfilesMissing
+            raise DBProfilesMissing
         return result[0]
 
     @db_sqlite.handle_connection
@@ -37,7 +37,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         cur = self._execute_query(query)
         result = cur.fetchone()
         if result is None:
-            raise ProfilesMissing
+            raise DBProfilesMissing
         return result[0]
 
     @db_sqlite.handle_connection

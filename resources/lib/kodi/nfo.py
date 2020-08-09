@@ -10,9 +10,10 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import xml.etree.ElementTree as ET
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -26,15 +27,15 @@ class NFOSettings(object):
         :param enforce: Used for export new episode, to force the nfo export status
         """
         if enforce is None:
-            self._enabled = g.ADDON.getSettingBool('enable_nfo_export')
-            self._export_tvshow_id = g.ADDON.getSettingInt('export_tvshow_nfo')
+            self._enabled = G.ADDON.getSettingBool('enable_nfo_export')
+            self._export_tvshow_id = G.ADDON.getSettingInt('export_tvshow_nfo')
         else:
-            common.debug('Export NFO enforced to {}', enforce)
+            LOG.debug('Export NFO enforced to {}', enforce)
             self._enabled = enforce
             self._export_tvshow_id = enforce
 
-        self._export_movie_id = g.ADDON.getSettingInt('export_movie_nfo')
-        self._export_full_tvshow = g.ADDON.getSettingBool('export_full_tvshow_nfo')
+        self._export_movie_id = G.ADDON.getSettingInt('export_movie_nfo')
+        self._export_full_tvshow = G.ADDON.getSettingBool('export_full_tvshow_nfo')
 
     @property
     def export_enabled(self):

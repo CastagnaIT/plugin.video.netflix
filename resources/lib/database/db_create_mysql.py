@@ -11,13 +11,13 @@ from __future__ import absolute_import, division, unicode_literals
 
 import mysql.connector
 
-import resources.lib.common as common
+from resources.lib.utils.logging import LOG
 
 
 def create_database(config):
     """Create a new database"""
     db_name = config.pop('database', None)
-    common.debug('The MySQL database {} does not exist, creating a new one', db_name)
+    LOG.debug('The MySQL database {} does not exist, creating a new one', db_name)
     conn = mysql.connector.connect(**config)
     cur = conn.cursor()
 

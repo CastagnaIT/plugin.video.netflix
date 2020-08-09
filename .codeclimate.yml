@@ -22,7 +22,7 @@ ratings:
 exclude_paths:
   - "docs/"
   - "LICENSES/"
-  - "modules/"
+  - "packages/"
   - "resources/language/"
   - "resources/media/"
   - "resources/skins/"

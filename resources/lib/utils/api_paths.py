@@ -12,13 +12,14 @@ from future.utils import iteritems
 
 import resources.lib.common as common
 
-from resources.lib.globals import g
-from .exceptions import InvalidReferenceError
+from resources.lib.globals import G
+from resources.lib.common.exceptions import InvalidReferenceError
 
-# Limit size for the path request
+# Limit size for the path request (with zero base)
 # The requests to sorted lists can get more then 48 results,
 # but the nf server blocks request if the response will result in too much data
-PATH_REQUEST_SIZE_STD = 47  # Standard limit defined by netflix (48 results)
+PATH_REQUEST_SIZE_STD = 47  # Standard size defined by netflix, limit imposed to some fixed lists
+PATH_REQUEST_SIZE_PAGINATED = 44  # Used to paginated results (value rounded for easy settings)
 PATH_REQUEST_SIZE_MAX = 199
 
 RANGE_PLACEHOLDER = 'RANGE_PLACEHOLDER'
@@ -127,7 +128,7 @@ INFO_TRANSFORMATIONS = {
     'Rating': lambda r: r / 10,
     'PlayCount': lambda w: int(w),
     'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
-                                                 mode=g.MODE_PLAY),
+                                                 mode=G.MODE_PLAY),
     'DateAdded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
 }
 
@@ -143,7 +144,7 @@ def _convert_season(value):
     if isinstance(value, int):
         return str(value)
     # isdigit is needed to filter out non numeric characters from 'shortName' key
-    return ''.join([n for n in g.py2_encode(value) if n.isdigit()])
+    return ''.join([n for n in G.py2_encode(value) if n.isdigit()])
 
 
 def build_paths(base_path, partial_paths):

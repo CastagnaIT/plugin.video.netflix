@@ -9,8 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
-import resources.lib.common as common
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 class ActionManager(object):
@@ -35,8 +35,8 @@ class ActionManager(object):
         Loads the value from Kodi settings if it has not been set.
         """
         if self._enabled is None:
-            common.debug('Loading enabled setting from store')
-            self._enabled = g.ADDON.getSettingBool(self.SETTING_ID)
+            LOG.debug('Loading enabled setting from store')
+            self._enabled = G.ADDON.getSettingBool(self.SETTING_ID)
 
         return self._enabled
 
@@ -49,7 +49,7 @@ class ActionManager(object):
         Initialize the manager with data when the addon initiates a playback.
         """
         self._call_if_enabled(self.initialize, data=data)
-        common.debug('Initialized {}: {}', self.name, self)
+        LOG.debug('Initialized {}: {}', self.name, self)
 
     def call_on_playback_started(self, player_state):
         """

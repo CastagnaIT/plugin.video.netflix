@@ -15,14 +15,15 @@ import re
 
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
-from resources.lib.api.exceptions import MetadataNotAvailable
+from resources.lib.common.exceptions import MetadataNotAvailable
 from resources.lib.database.db_utils import VidLibProp
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.kodi.library_jobs import LibraryJobs
 from resources.lib.kodi.library_utils import (get_episode_title_from_path, get_library_path,
                                               ILLEGAL_CHARACTERS, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS)
 from resources.lib.kodi.ui import show_library_task_errors
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class LibraryTasks(LibraryJobs):
@@ -71,10 +72,10 @@ class LibraryTasks(LibraryJobs):
                                                              progress_bar.value,
                                                              progress_bar.max_value))
                 if progress_bar.is_cancelled():
-                    common.warn('Library operations interrupted by User')
+                    LOG.warn('Library operations interrupted by User')
                     break
                 if self.monitor.abortRequested():
-                    common.warn('Library operations interrupted by Kodi')
+                    LOG.warn('Library operations interrupted by Kodi')
                     break
         show_library_task_errors(show_prg_dialog, list_errors)
 
@@ -85,16 +86,16 @@ class LibraryTasks(LibraryJobs):
             job_handler(job_data, get_library_path())
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
-            common.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
             list_errors.append({'title': job_data['title'],
                                 'error': '{}: {}'.format(type(exc).__name__, exc)})
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def compile_jobs_data(self, videoid, task_type, nfo_settings=None):
         """Compile a list of jobs data based on the videoid"""
-        common.debug('Compiling list of jobs data for task handler "{}" and videoid "{}"',
-                     task_type.__name__, videoid)
+        LOG.debug('Compiling list of jobs data for task handler "{}" and videoid "{}"',
+                  task_type.__name__, videoid)
         jobs_data = None
         try:
             if task_type == self.export_item:
@@ -118,11 +119,11 @@ class LibraryTasks(LibraryJobs):
                 if videoid.mediatype == common.VideoId.EPISODE:
                     jobs_data = [self._create_remove_episode_job(videoid)]
         except MetadataNotAvailable:
-            common.warn('Unavailable metadata for videoid "{}", list of jobs not compiled', videoid)
+            LOG.warn('Unavailable metadata for videoid "{}", list of jobs not compiled', videoid)
             return None
         if jobs_data is None:
-            common.error('Unexpected job compile case for task type "{}" and videoid "{}", list of jobs not compiled',
-                         task_type.__name__, videoid)
+            LOG.error('Unexpected job compile case for task type "{}" and videoid "{}", list of jobs not compiled',
+                      task_type.__name__, videoid)
         return jobs_data
 
     def _create_export_movie_job(self, videoid, movie, nfo_settings):
@@ -218,17 +219,17 @@ class LibraryTasks(LibraryJobs):
         if metadata and 'seasons' in metadata[0]:
             for season in metadata[0]['seasons']:
                 if not nfo_settings:
-                    nfo_export = g.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['nfo_export'], False)
+                    nfo_export = G.SHARED_DB.get_tvshow_property(videoid.value, VidLibProp['nfo_export'], False)
                     nfo_settings = nfo.NFOSettings(nfo_export)
                 # Check and add missing seasons and episodes
                 self._add_missing_items(tasks, season, videoid, metadata, nfo_settings)
         return tasks
 
     def _add_missing_items(self, tasks, season, videoid, metadata, nfo_settings):
-        if g.SHARED_DB.season_id_exists(videoid.value, season['id']):
+        if G.SHARED_DB.season_id_exists(videoid.value, season['id']):
             # The season exists, try to find any missing episode
             for episode in season['episodes']:
-                if not g.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
+                if not G.SHARED_DB.episode_id_exists(videoid.value, season['id'], episode['id']):
                     tasks.append(self._create_export_episode_job(
                         videoid=videoid.derive_season(season['id']).derive_episode(episode['id']),
                         episode=episode,
@@ -236,7 +237,7 @@ class LibraryTasks(LibraryJobs):
                         show=metadata[0],
                         nfo_settings=nfo_settings
                     ))
-                    common.debug('Exporting missing new episode {}', episode['id'])
+                    LOG.debug('Exporting missing new episode {}', episode['id'])
         else:
             # The season does not exist, build task for the season
             tasks += self._get_export_season_jobs(
@@ -245,28 +246,28 @@ class LibraryTasks(LibraryJobs):
                 season=season,
                 nfo_settings=nfo_settings
             )
-            common.debug('Exporting missing new season {}', season['id'])
+            LOG.debug('Exporting missing new season {}', season['id'])
 
     def _create_remove_movie_job(self, videoid):
         """Create a job data to remove a movie"""
-        file_path = g.SHARED_DB.get_movie_filepath(videoid.value)
+        file_path = G.SHARED_DB.get_movie_filepath(videoid.value)
         title = os.path.splitext(os.path.basename(file_path))[0]
         return self._build_remove_job_data(title, file_path, videoid)
 
     def _create_remove_tvshow_jobs(self, videoid):
         """Create jobs data to remove a tv show (will result jobs data of all the episodes)"""
-        row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_tvshow(videoid.value)
+        row_results = G.SHARED_DB.get_all_episodes_ids_and_filepath_from_tvshow(videoid.value)
         return self._create_remove_jobs_from_rows(row_results)
 
     def _create_remove_season_jobs(self, videoid):
         """Create jobs data to remove a season (will result jobs data of all the episodes)"""
-        row_results = g.SHARED_DB.get_all_episodes_ids_and_filepath_from_season(
+        row_results = G.SHARED_DB.get_all_episodes_ids_and_filepath_from_season(
             videoid.tvshowid, videoid.seasonid)
         return self._create_remove_jobs_from_rows(row_results)
 
     def _create_remove_episode_job(self, videoid):
         """Create a job data to remove an episode"""
-        file_path = g.SHARED_DB.get_episode_filepath(
+        file_path = G.SHARED_DB.get_episode_filepath(
             videoid.tvshowid, videoid.seasonid, videoid.episodeid)
         return self._build_remove_job_data(get_episode_title_from_path(file_path),
                                            file_path, videoid)

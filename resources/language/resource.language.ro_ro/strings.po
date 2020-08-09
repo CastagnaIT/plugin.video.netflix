@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-05-28 17:40+0000\n"
+"PO-Revision-Date: 2020-07-28 19:05+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Add-on pentru servicii video la cerere Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Unele porțiuni ale acestui add-on ar putea fi ilegale în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare."
+msgstr "Utilizarea acestui add-on ar putea fi ilegală în țara în care locuiți - vă rugăm să verificați legile locale înainte de instalare."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Actualizare bibliotecă în curs"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Librărie"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Selectați un profil pentru a reda video"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Cere selectarea unui profil înainte de redare"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Auto-selectare profil"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Șterge auto-selectarea profilului"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Ales pentru auto-selectare"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Pentru a alege profilul, deschideți meniul de context în lista de profile"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Șterge auto-selectarea profilului"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Profilul {} a fost ales pentru auto-selectare"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Atenție, urmează să actualizați multe titluri {}.[CR]Aceasta poate cauza probleme cu serviciul sau banare temporară a contului.[CR]Doriți să continuați?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "Control parental"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "O actualizare este deja în desfășurare"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +492,7 @@ msgstr "Sincronizează 'Lista mea' cu librăria Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Doriți să continuați?[CR]Sincronizarea completă va șterge toate titlurile exportate anterior.[CR]Dacă sunt multe tituri operațiunea ar putea dura considerabil."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Activează integrarea cu 'Up Next'"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Arătă notificare în locul unui dialog pentru erori"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Memoria cache golită"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Activează deblocarea 1080p (nu e recomandată pe Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "Activează IPC prin HTTP (folosiți-l atunci când apar mesaje legate de
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importă librăria existentă"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "Arată trailere și altele"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "A apărut o problemă cu login, este posibil ca contul să nu fost confirmat sau reactivat"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Alege un profil pentru sincronizare"
 
 # Unused 30229
 
@@ -974,19 +968,27 @@ msgstr "Forțează nivel securitate L3 pentru Widevine"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Se șterg fișiere exportate în librărie"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
+msgstr "Există {} titluri care nu au putut fi importate.[CR]Doriți să ștergeți aceste fișiere?"
+
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
 msgstr ""
 
-# Unused 30247 to 30299
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Doriți să ștergeți '{}' din lista de vizualizare?[CR][CR]Operațiunea poate lua până la 24 de ore, timp în care titul ar putea să mai apară în listă."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr ""
+
+# Unused 30302 to 30399
 
 msgctxt "#30400"
 msgid "Search"

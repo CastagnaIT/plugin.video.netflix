@@ -12,25 +12,11 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import base64
 import random
-import subprocess
 import time
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
-
-# check if we are on Android
-try:
-    SDKVERSION = int(subprocess.check_output(
-        ['/system/bin/getprop', 'ro.build.version.sdk']))
-except (OSError, subprocess.CalledProcessError, AttributeError):
-    # Due to OS restrictions on 'ios' and 'tvos' this give AttributeError
-    # See python limits in the wiki development page
-    SDKVERSION = 0
-
-if SDKVERSION >= 18:
-    from .android_crypto import AndroidMSLCrypto as MSLCrypto
-else:
-    from .default_crypto import DefaultMSLCrypto as MSLCrypto
+from resources.lib.utils.logging import measure_exec_time_decorator
 
 
 class MSLRequestBuilder(object):
@@ -39,6 +25,11 @@ class MSLRequestBuilder(object):
     def __init__(self):
         self.current_message_id = None
         self.rndm = random.SystemRandom()
+        # Set the Crypto handler
+        if common.get_system_platform() == 'android':
+            from .android_crypto import AndroidMSLCrypto as MSLCrypto
+        else:
+            from .default_crypto import DefaultMSLCrypto as MSLCrypto
         self.crypto = MSLCrypto()
 
     @staticmethod
@@ -49,19 +40,19 @@ class MSLRequestBuilder(object):
             'version': 2,
             'url': url,
             'id': timestamp,
-            'languages': [g.LOCAL_DB.get_profile_config('language')],
+            'languages': [G.LOCAL_DB.get_profile_config('language')],
             'params': params,
             'echo': echo
         }
         return request_data
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def msl_request(self, data, esn, auth_data):
         """Create an encrypted MSL request"""
         return (json.dumps(self._signed_header(esn, auth_data)) +
                 json.dumps(self._encrypted_chunk(data, esn)))
 
-    @common.time_execution(immediate=True)
+    @measure_exec_time_decorator(is_immediate=True)
     def handshake_request(self, esn):
         """Create a key handshake request"""
         header = json.dumps({
@@ -76,7 +67,6 @@ class MSLRequestBuilder(object):
         payload = json.dumps(self._encrypted_chunk(envelope_payload=False))
         return header + payload
 
-    @common.time_execution(immediate=True)
     def _signed_header(self, esn, auth_data):
         encryption_envelope = self.crypto.encrypt(self._headerdata(auth_data=auth_data, esn=esn), esn)
         return {
@@ -96,7 +86,7 @@ class MSLRequestBuilder(object):
             'messageid': self.current_message_id,
             'renewable': True,
             'capabilities': {
-                'languages': [g.LOCAL_DB.get_value('locale_id')],
+                'languages': [G.LOCAL_DB.get_value('locale_id')],
                 'compressionalgos': [compression] if compression else []  # GZIP, LZW, Empty
             }
         }
@@ -109,7 +99,6 @@ class MSLRequestBuilder(object):
 
         return json.dumps(header_data)
 
-    @common.time_execution(immediate=True)
     def _encrypted_chunk(self, data='', esn=None, envelope_payload=True):
         if data:
             data = base64.standard_b64encode(json.dumps(data).encode('utf-8')).decode('utf-8')
@@ -149,7 +138,7 @@ class MSLRequestBuilder(object):
                     'scheme': 'SWITCH_PROFILE',
                     'authdata': {
                         'useridtoken': auth_data['user_id_token'],
-                        'profileguid': g.LOCAL_DB.get_active_profile_guid()
+                        'profileguid': G.LOCAL_DB.get_active_profile_guid()
                     }
                 }
             else:
