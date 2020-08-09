@@ -210,19 +210,19 @@ msgstr "라이브러리"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "라이브러리로부터 재생하는 프로파일"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "라이브러리로부터 재생 설정"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "라이브러리로부터 재생 해제"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "자동선택 프로파일"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "{}개의 타이틀을 가져올 수 없습니다.[CR]삭제하시렵니�
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "한페이지에 보여줄 검색결과(타임아웃이 생기면 줄이시오)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "{}의 시청상태를 지울까요?[CR][CR]24시간 정도 걸리기 때
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Kodi라이브러리에 포함시킵니다(보낸 데이터만)"
 
 # Unused 30302 to 30399
 
