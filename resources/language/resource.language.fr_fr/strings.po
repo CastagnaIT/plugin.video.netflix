@@ -214,11 +214,11 @@ msgstr "Profil utilisé lors de la lecture depuis la médiathèque"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr "Utiliser ce profil lors de la lecture depuis la médiathèque"
+msgstr "Utiliser lors de la lecture depuis la médiathèque"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr "Ne plus utiliser ce profil lors de la lecture depuis la médiathèque"
+msgstr "Ne plus utiliser lors de la lecture depuis la médiathèque"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
