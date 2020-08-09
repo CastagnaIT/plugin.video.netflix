@@ -43,22 +43,29 @@ https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file
 
 ## Reference table of high resolutions
 
-This table explains compatibility of high resolutions between devices and operating systems. This may change over time based on updates made by netflix.
+This table explains in brief the availability of high resolutions between devices and operating systems. This may change over time based on changes made by Netflix itself.
 
-| System                 | 1080P    | 4K    | Video Decoding             |
-| ---------------------- | -------- | ----- | -------------------------- |
-| Windows                | ✔\*1     | ✖\*2  | Software                   |
-| Linux (Android) \*5    | ✔\*1, \*3| ✔\*4  | Software \\ Hardware \*4   |
-| Linux (OSMC-LibreELEC) | ✔\*1     | ✖\*2  | Software                   |
-| Linux (Distros)        | ✔\*1     | ✖\*2  | Software                   |
-| MacOS                  | ✔\*1     | ✖\*2  | Software                   |
-| iOS / tvOS             | ✖        | ✖     | Not supported              |
+Unlike official apps (on Smart TV or certified TV Boxes) in some cases using this add-on there are some limitations.
+Here Netflix could provide the same TV shows/movies with lower resolutions, this mostly depends on the type of system/device in use.
+Devices with more limited resolutions are all those that use Linux operating system (certified Android excluded). Even between different Linux machines there may be differences.
+
+| System                              | 1080P    | 4K    | Video Decoding             |
+| ----------------------------------- | -------- | ----- | -------------------------- |
+| Windows                             | ✔\*1     | ✖\*2  | Software                   |
+| Linux (Android) \*5                 | ✔\*1, \*3| ✔\*4  | Software \\ Hardware \*4   |
+| Linux (Distributions)               | ✔\*1     | ✖\*2  | Software                   |
+| Linux (OSMC-CoreElec-LibreELEC-...) | ✔\*1     | ✖\*2  | Software                   |
+| MacOS                               | ✔\*1     | ✖\*2  | Software                   |
+| iOS / tvOS                          | ✖        | ✖     | Not supported              |
 
 \*1 ***With Software decoding 1080P is not guaranteed***.<br/>
 \*2 Currently not available due to widevine limitations.<br/>
 \*3 To to have a chance to have all the videos at 1080P you must meet \*4 requirements.<br/>
 \*4 Hardware decoding and 4k are supported only to devices with Netflix certification, Widevine Security Level L1 and HDCP 2.2 hardware.<br/>
 \*5 Some android devices do not work properly, this is due to restrictions implemented by netflix with devices with false certifications (often with some Chinese boxes) in rare cases even happened to not being able to play the videos.
+
+In order to have a better chance to have high resolutions, we suggest to use the following operating systems:<br/>
+Windows (x86/x64), MacOS, Certified Android (better with Netflix certification)
 
 [List of known and tested android devices for 1080P and 4K playback](https://github.com/CastagnaIT/plugin.video.netflix/wiki/List-of-1080P-4k-Android-tested-devices)
 
