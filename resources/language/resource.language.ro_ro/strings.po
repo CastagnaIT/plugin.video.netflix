@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-07-28 19:05+0000\n"
+"PO-Revision-Date: 2020-08-09 16:00+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
@@ -210,19 +210,19 @@ msgstr "Librărie"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profil ales pentru redare din librărie"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Ales pentru redarea librăriei"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Elimină pentru redarea din librăriei"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil ales pentru auto-selectare"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "Există {} titluri care nu au putut fi importate.[CR]Doriți să șterge
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Rezultate pe pagină (în caz de eroare micșorați numărul de rezultate)"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "Doriți să ștergeți '{}' din lista de vizualizare?[CR][CR]Operațiune
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Include librăria Kodi (doar trimite date)"
 
 # Unused 30302 to 30399
 
