@@ -68,6 +68,8 @@ class LibraryActionExecutor(object):
         """
         Select a profile for the synchronization of Kodi library with Netflix "My List"
         """
+        if _check_auto_update_running():
+            return
         preselect_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
                                                G.LOCAL_DB.get_guid_owner_profile())
         selected_guid = ui.show_profiles_dialog(title=common.get_local_string(30228),
@@ -78,6 +80,8 @@ class LibraryActionExecutor(object):
 
     def purge(self, pathitems):  # pylint: disable=unused-argument
         """Delete all previously exported items from the Kodi library"""
+        if _check_auto_update_running():
+            return
         if not ui.ask_for_confirmation(common.get_local_string(30125),
                                        common.get_local_string(30126)):
             return
@@ -85,6 +89,8 @@ class LibraryActionExecutor(object):
 
     def import_library(self, pathitems):  # pylint: disable=unused-argument
         """Import previous exported STRM files to add-on and/or convert them to the current STRM format type"""
+        if _check_auto_update_running():
+            return
         if not ui.ask_for_confirmation(common.get_local_string(30140),
                                        common.get_local_string(20135)):
             return
@@ -113,6 +119,8 @@ class LibraryActionExecutor(object):
 
     def set_autoupdate_device(self, pathitems):  # pylint: disable=unused-argument
         """Set the current device to manage auto-update of the shared-library (MySQL)"""
+        if _check_auto_update_running():
+            return
         random_uuid = common.get_random_uuid()
         G.LOCAL_DB.set_value('client_uuid', random_uuid)
         G.SHARED_DB.set_value('auto_update_device_uuid', random_uuid)
@@ -127,3 +135,7 @@ class LibraryActionExecutor(object):
             client_uuid = G.LOCAL_DB.get_value('client_uuid')
             msg = common.get_local_string(30210 if client_uuid == uuid else 30211)
         ui.show_notification(msg, time=8000)
+
+
+def _check_auto_update_running():
+    return lib_utils.is_auto_update_library_running(True)
