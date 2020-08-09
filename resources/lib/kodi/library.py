@@ -301,7 +301,6 @@ class Library(LibraryTasks):
                 progress_bar.perform_step()
                 progress_bar.set_wait_message()
                 delay_anti_ban()
-        common.clean_library(show_prg_dialog)
         return True
 
     def import_library(self):
