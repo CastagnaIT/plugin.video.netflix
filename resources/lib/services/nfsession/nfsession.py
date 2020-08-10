@@ -13,6 +13,7 @@ import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
 from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
+from resources.lib.utils.logging import LOG
 
 
 class NetflixSession(object):
@@ -37,8 +38,11 @@ class NetflixSession(object):
 
     def library_auto_update(self):
         """Run the library auto update"""
-        # Call the function in a thread to return immediately without blocking the service
-        common.run_threaded(True, self._run_library_auto_update)
+        try:
+            # Call the function in a thread to return immediately without blocking the service
+            common.run_threaded(True, self._run_library_auto_update)
+        except Exception as exc:  # pylint: disable=broad-except
+            LOG.error('library_auto_update raised an error: {}', exc)
 
     def _run_library_auto_update(self):
         from resources.lib.kodi.library import Library
