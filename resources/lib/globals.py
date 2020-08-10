@@ -196,7 +196,6 @@ class GlobalVariables(object):
     ])
 
     MODE_DIRECTORY = 'directory'
-    MODE_HUB = 'hub'
     MODE_ACTION = 'action'
     MODE_PLAY = 'play'
     MODE_PLAY_STRM = 'play_strm'

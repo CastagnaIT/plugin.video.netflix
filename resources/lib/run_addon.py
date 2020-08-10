@@ -133,9 +133,6 @@ def _get_nav_handler(root_handler, pathitems):
     if root_handler == G.MODE_LIBRARY:
         from resources.lib.navigation.library import LibraryActionExecutor
         nav_handler = LibraryActionExecutor
-    if root_handler == G.MODE_HUB:
-        from resources.lib.navigation.hub import HubBrowser
-        nav_handler = HubBrowser
     if not nav_handler:
         raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
     return nav_handler
