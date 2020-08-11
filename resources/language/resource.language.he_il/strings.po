@@ -106,7 +106,7 @@ msgstr "בין 0 ל-10"
 
 msgctxt "#30023"
 msgid "Expert"
-msgstr "ייצא"
+msgstr "הגדרות מתקדמות"
 
 msgctxt "#30024"
 msgid "SSL verification"
