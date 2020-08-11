@@ -504,7 +504,7 @@ msgstr "למחוק את תכולת הספרייה"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "האם באמת למחוק את הספרייה שלך?\nכל התכנים המייוצאים מהספרייה ימחקו"
+msgstr "האם באמת למחוק את הספרייה שלך?[CR]כל התכנים המייוצאים מהספרייה ימחקו"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -760,7 +760,7 @@ msgstr "תוכניות טלויזיה"
 
 msgctxt "#30192"
 msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nקבצים אלו בשימוש על ידי ספקי מידע כדי לחבר מידע על סרטים ותוכניות טלויזיה, והם שימושיים בפרקי בונוס או בסרטים ב'גרסת הבמאי'"
+msgstr "[CR]קבצים אלו בשימוש על ידי ספקי מידע כדי לחבר מידע על סרטים ותוכניות טלויזיה, והם שימושיים בפרקי בונוס או בסרטים ב'גרסת הבמאי'"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -864,7 +864,7 @@ msgstr "איפוס קוד ESN"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "האם לאפס את קוד הESN בוודאות?\r\nבמידה וכן, יש ללחוץ על הכפתור ולהמתין עד לקבלת מסך ההתחברות"
+msgstr "האם לאפס את קוד הESN בוודאות?[CR]במידה וכן, יש ללחוץ על הכפתור ולהמתין עד לקבלת מסך ההתחברות"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -948,7 +948,7 @@ msgstr "צבע אזור ה'מידע עלילתי נוסף'"
 
 msgctxt "#30240"
 msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "שירותי הרקע לא יכולים להתחיל בגלל הבעיה הבאה: {}\r\n"
+msgstr "שירותי הרקע לא יכולים להתחיל בגלל הבעיה הבאה: {}[CR]"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
