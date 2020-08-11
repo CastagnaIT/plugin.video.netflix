@@ -864,7 +864,7 @@ msgstr "איפוס קוד ESN"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "האם לאפס את קוד הESN בוודאות?[CR]במידה וכן, יש ללחוץ על הכפתור ולהמתין עד לקבלת מסך ההתחברות"
+msgstr "האם לאפס את קוד הESN בוודאות?[CR]במידה וכן, יש להסכים ולהמתין עד לחזרה למסך ההתחברות"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
