@@ -210,19 +210,19 @@ msgstr "图书馆"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "从库中播放的配置文件集"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "为库播放设置"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "移除库中的媒体"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "配置文件设置为自动选择"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -976,7 +976,7 @@ msgstr "有{}标题无法导入，您是否要删除这些内容"
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "每页结果（如果超时错误，请减少）"
 
 # Unused 30248 to 30299
 
@@ -986,7 +986,7 @@ msgstr "您是否要删除已监视的'{}'状态？[CR][CR]此操作最多可能
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "包括Kodi库（仅发送数据）"
 
 # Unused 30302 to 30399
 
