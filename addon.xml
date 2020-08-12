@@ -65,7 +65,10 @@
     <summary lang="pl_PL">Netflix</summary>
     <description lang="pl_PL">Wtyczka dla usług VOD serwisu Netflix</description>
     <disclaimer lang="pl_PL">Korzystanie z tego dodatku może być niezgodne z prawem w twoim kraju zamieszkania - przed zainstalowaniem zapoznaj się z lokalnymi przepisami.</disclaimer>
-    <assets>
+    <summary lang="he_IL">Netflix</summary>
+    <description lang="he_IL">תוסף VOD לשירות של Netflix</description>
+    <disclaimer lang="he_IL">השימוש בתוסף זה עלול להיות לא חוקי במדינת מגוריך - אנא בדוק את החוק ברשות המקומית לפני ההתקנה</disclaimer>
+	<assets>
       <icon>resources/media/icon.png</icon>
       <fanart>resources/media/fanart.jpg</fanart>
       <screenshot>resources/media/screenshot-01.jpg</screenshot>
@@ -74,7 +77,7 @@
       <screenshot>resources/media/screenshot-04.jpg</screenshot>
       <screenshot>resources/media/screenshot-05.jpg</screenshot>
     </assets>
-    <language>en cs de es fr hr hu it ja ko nl pl pt ro sv tr zh</language>
+    <language>en cs de es fr he hr hu it ja ko nl pl pt ro sv tr zh</language>
     <platform>all</platform>
     <license>MIT</license>
     <website>https://www.netflix.com</website>
