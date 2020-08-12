@@ -44,7 +44,7 @@ msgstr "סיסמא"
 
 msgctxt "#30005"
 msgid "E-mail"
-msgstr "אימייל"
+msgstr "אי-מייל"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
@@ -86,19 +86,19 @@ msgstr "התנתקות"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "ייצא לספרייה"
+msgstr "יצוא לספרייה"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
-msgstr "דרג דרך Netflix"
+msgstr "דירוג דרך Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "הסר מ'הרשימה שלי'"
+msgstr "להסיר מ'הרשימה שלי'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "הוסף ל'רשימה שלי'"
+msgstr "להוסיף ל'רשימה שלי'"
 
 msgctxt "#30022"
 msgid "(between 0 & 10)"
@@ -118,7 +118,7 @@ msgstr "ספרייה"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "אפשר ספרייה מותאמת אישית"
+msgstr "הפעלת ספרייה מותאמת אישית"
 
 msgctxt "#30027"
 msgid "Custom library path"
@@ -132,7 +132,7 @@ msgstr "שגיאת ניגון"
 
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "הסר מהספרייה"
+msgstr "להסיר מהספרייה"
 
 msgctxt "#30031"
 msgid "General"
@@ -142,7 +142,7 @@ msgstr "כללי"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "אפשר דולבי דיגיטל פלוס (DDPlus HQ וכן Atmos במנויי פרימיום)"
+msgstr "הפעלת דולבי דיגיטל פלוס (DDPlus HQ וכן Atmos במנויי פרימיום)"
 
 msgctxt "#30034"
 msgid "Manual ESN"
@@ -160,7 +160,7 @@ msgstr "צפיות"
 
 msgctxt "#30038"
 msgid "Enable custom views"
-msgstr "אפשר תצוגות מותאמות אישית"
+msgstr "לאפשר תצוגות מותאמות אישית"
 
 msgctxt "#30039"
 msgid "View for folders"
@@ -196,7 +196,7 @@ msgstr "ישנה בעיה עם הגדרות הInputStream או יתכן שספר
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr "מעדכן ספרייה"
+msgstr "עדכון ספרייה החל"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -226,11 +226,11 @@ msgstr "מעתה פרופיל יבחר בצורה אוטומטית"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
-msgstr "בחר פרופיל בצורה אוטומטית"
+msgstr "בחירת פרופיל בצורה אוטומטית"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "הסר בחירת פרופיל אוטומטית"
+msgstr "הסרת בחירת פרופיל אוטומטית"
 
 # Unused 30057, 30058
 
@@ -240,11 +240,11 @@ msgstr "יש להיזהר, העדכון כולל מספר רב של כותרים
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "אפשר פרופיל HEVC (מאפשר רזולוציית 4k עבור מכשירים תומכי Android/HDR/DolbyVision"
+msgstr "הפעלת פרופיל HEVC (מאפשר רזולוציית 4k עבור מכשירים תומכי Android/HDR/DolbyVision"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "עדכן בתוך הספרייה"
+msgstr "עדכון בתוך הספרייה"
 
 msgctxt "#30062"
 msgid "Parental controls"
@@ -256,7 +256,7 @@ msgstr "עדכון כבר מתבצע כעת"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "בצע עדכון אוטומטי"
+msgstr "ביצוע עדכון אוטומטי"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -288,11 +288,11 @@ msgstr "שעה"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "התחל אחרי 5 דקות של חוסר פעילות"
+msgstr "התחלה רק אחרי 5 דקות של חוסר פעילות"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "תמיד תאפשר מידע על קידוד תוך כדי ניגון"
+msgstr "תמיד להציג מידע על קידוד תוך כדי ניגון"
 
 msgctxt "#30074"
 msgid "View for exported"
@@ -300,7 +300,7 @@ msgstr "צפייה בתכנים שיוצאו"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "שאל האם לדלג על הפתיח וסקירת הפרקים הקודמים"
+msgstr "לשאול האם לדלג על הפתיח וסקירת הפרקים הקודמים"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -484,11 +484,11 @@ msgstr "לא ניתן להסיר אוטומטית עונה מספריית Kodi, 
 
 msgctxt "#30121"
 msgid "Perform full sync now"
-msgstr "לבצע סנכרון מלא כעת"
+msgstr "ביצוע סנכרון מלא כעת"
 
 msgctxt "#30122"
 msgid "Sync My List to Kodi library"
-msgstr "לסנכרן את 'הרשימה שלי' עם Kodi"
+msgstr "סנכרון את 'הרשימה שלי' עם Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
@@ -534,7 +534,7 @@ msgstr "ריקון זיכרון מטמון נדיף ועל הדיסק"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
-msgstr "לאפשר תזמון ביצועים"
+msgstr "הפעלת תזמון ביצועים"
 
 msgctxt "#30135"
 msgid "Cache cleared"
@@ -698,7 +698,7 @@ msgstr "ז'אנרי סרטים"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround"
-msgstr "לאפשר מעקף STRM עבור המשך"
+msgstr "הפעלת מעקף STRM עבור המשך"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
@@ -750,11 +750,11 @@ msgstr "לשאול"
 
 msgctxt "#30189"
 msgid "movie"
-msgstr ""
+msgstr "סרט"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "תוכניות טלויזיה"
+msgstr "תוכנית טלויזיה"
 
 # Unused 30191
 
