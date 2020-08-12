@@ -1,3 +1,20 @@
+v1.7.1 (2020-08-12)
+-Added Profiles menu with new profiles context menus:
+   * Set for auto-selection
+   * Set for library playback
+   These two options now are managed only from the Profiles list
+-Added setting to enable nf watched status sync with library (one way)
+-Added expert setting to customize results per page
+-Fixed add-on inaccessibility when the current used profile no more exists
+-Fixed feature "Select first unwatched" on Kodi 18.x
+-Fixed failure to update nf watched status (seem works better now)
+-Little speed improvement on add-on sequential executions
+-Better handled types of exceptions with IPC
+-Removed disable_modal_error_display expert setting
+-Some code cleaning with other improvements
+-Add Hebrew translation
+-Updated translations it, el, fr, pr_br, jp, kr, hu, po, de, ro, cz, zh_cn
+
 v1.7.0 (2020-07-28)
 -Big improvement in loading lists when you have many titles to My list
 -Refactor of nfsession
