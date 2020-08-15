@@ -34,7 +34,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                 'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
                 'label': common.get_local_string(30148),
                 'art': {'thumb': _get_custom_thumb_path('FolderPagePrevious.png')},
-                'is_folder': True
+                'is_folder': True,
+                'properties': {'specialsort': 'top'}  # Force an item to stay on top (not documented in Kodi)
             }
             directory_items.insert(0, previous_page_item)
         if 'next_start' in perpetual_range_selector:
@@ -43,7 +44,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                 'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
                 'label': common.get_local_string(30147),
                 'art': {'thumb': _get_custom_thumb_path('FolderPageNext.png')},
-                'is_folder': True
+                'is_folder': True,
+                'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
             }
             directory_items.append(next_page_item)
 
