@@ -276,11 +276,11 @@ class GlobalVariables(object):
                        self.ADDON.getSettingString('debug_log_level'),
                        self.ADDON.getSettingBool('enable_timing'))
 
+        self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
         self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
         if self.IS_ADDON_FIRSTRUN or reload_settings:
             # Put here all the global variables that need to be updated when the user changes the add-on settings
-            self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
             # Initialize the cache
             self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
             self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
