@@ -139,14 +139,11 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         G.ADDON.setSettingBool('lib_sync_mylist', False)
         G.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
-        # Disable and reset the auto-select profile
+        # Disable and reset the profile guid of profile auto-selection
         G.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        G.ADDON.setSetting('autoselect_profile_name', '')
-        G.ADDON.setSettingBool('autoselect_profile_enabled', False)
 
-        # Reset of selected profile guid for library playback
+        # Disable and reset the selected profile guid for library playback
         G.LOCAL_DB.set_value('library_playback_profile_guid', '')
-        G.ADDON.setSetting('library_playback_profile', '')
 
         G.settings_monitor_suspend(False)
 
