@@ -59,6 +59,16 @@ class CacheManagement(object):
         self.memory_cache = {}
         self._initialize()
         self.next_schedule = _compute_next_schedule()
+        self.ttl_values = {}
+        self.load_ttl_values()
+
+    def load_ttl_values(self):
+        """Load the ttl values from add-on settings"""
+        self.ttl_values = {
+            'CACHE_TTL': G.ADDON.getSettingInt('cache_ttl') * 60,
+            'CACHE_MYLIST_TTL': G.ADDON.getSettingInt('cache_mylist_ttl') * 60,
+            'CACHE_METADATA_TTL': G.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
+        }
 
     @property
     def identifier_prefix(self):
@@ -168,7 +178,7 @@ class CacheManagement(object):
             identifier = self._add_prefix(identifier)
             if not expires:
                 if not ttl and bucket['default_ttl']:
-                    ttl = getattr(G, bucket['default_ttl'])
+                    ttl = self.ttl_values[bucket['default_ttl']]
                 expires = int(time() + ttl)
             cache_entry = {'expires': expires, 'data': data}
             # Save the item data to memory-cache

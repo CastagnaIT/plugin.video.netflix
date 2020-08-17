@@ -255,6 +255,8 @@ class GlobalVariables(object):
                 self.IS_SERVICE = True
                 self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
                                                              netloc=self.ADDON_ID)
+            from resources.lib.common.kodi_ops import GetKodiVersion
+            self.KODI_VERSION = GetKodiVersion()
         # Add absolute paths of embedded py packages (packages not supplied by Kodi)
         packages_paths = [
             os.path.join(self.ADDON_DATA_PATH, 'packages', 'mysql-connector-python')
@@ -280,19 +282,19 @@ class GlobalVariables(object):
         self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
         if self.IS_ADDON_FIRSTRUN or reload_settings:
-            # Put here all the global variables that need to be updated when the user changes the add-on settings
-            # Initialize the cache
-            self.CACHE_TTL = self.ADDON.getSettingInt('cache_ttl') * 60
-            self.CACHE_MYLIST_TTL = self.ADDON.getSettingInt('cache_mylist_ttl') * 60
-            self.CACHE_METADATA_TTL = self.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
-            if self.IS_SERVICE and not reload_settings:
-                from resources.lib.services.cache.cache_management import CacheManagement
-                self.CACHE_MANAGEMENT = CacheManagement()
+            # Put here all the global variables that need to be updated on service side
+            # when the user changes the add-on settings
+            if self.IS_SERVICE:
+                # Initialize the cache
+                if reload_settings:
+                    self.CACHE_MANAGEMENT.load_ttl_values()
+                else:
+                    from resources.lib.services.cache.cache_management import CacheManagement
+                    self.CACHE_MANAGEMENT = CacheManagement()
+                    # Reset the "settings monitor" of the service in case of add-on crash
+                    self.settings_monitor_suspend(False)
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
-        self.settings_monitor_suspend(False)  # Reset the value in case of addon crash
-        from resources.lib.common.kodi_ops import GetKodiVersion
-        self.KODI_VERSION = GetKodiVersion()
 
     def _init_database(self, initialize):
         # Initialize local database
