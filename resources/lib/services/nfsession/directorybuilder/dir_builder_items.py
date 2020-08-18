@@ -245,8 +245,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
     dict_item['art'] = get_art(video_list.videoid, video_list.artitem, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(pathitems,
                                         # genre_id add possibility to browse the sub-genres (see build_video_listing)
-                                        # Todo: Disabled sub-genre menu due to website changes
-                                        # params={'genre_id': unicode(video_list.get('genreId'))},
+                                        params={'genre_id': unicode(video_list.get('genreId'))},
                                         mode=G.MODE_DIRECTORY)
     return dict_item
 
