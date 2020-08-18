@@ -23,8 +23,8 @@ class LoCo(object):
     def __init__(self, path_response):
         self.data = path_response
         LOG.debug('LoCo data: {}', self.data)
-        _filterout_loco_contexts(self.data, ['billboard'])
         self.id = next(iter(self.data['locos']))  # Get loco root id
+        _filterout_loco_contexts(self.id, self.data, ['billboard'])
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['locos'][self.id][key])
@@ -32,6 +32,15 @@ class LoCo(object):
     def get(self, key, default=None):
         """Pass call on to the backing dict of this LoLoMo."""
         return self.data['locos'][self.id].get(key, default)
+
+    @property
+    def lists(self):
+        """Get all video lists"""
+        # It is as property to avoid slow down the loading of main menu
+        lists = {}
+        for list_id, list_data in iteritems(self.data['lists']):  # pylint: disable=unused-variable
+            lists.update({list_id: VideoListLoCo(self.data, list_id)})
+        return lists
 
     def lists_by_context(self, contexts, break_on_first=False):
         """
@@ -278,10 +287,10 @@ def _get_videoids(videos):
             for video in itervalues(videos)]
 
 
-def _filterout_loco_contexts(data, contexts):
+def _filterout_loco_contexts(root_id, data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    root_id = next(iter(data['locos']))
-    for index in range(len(data['locos'][root_id]) - 1, -1, -1):
+    total_items = data['locos'][root_id]['componentSummary']['length']
+    for index in range(total_items - 1, -1, -1):
         list_id = data['locos'][root_id][str(index)][1]
         if not data['lists'][list_id]['componentSummary'].get('context') in contexts:
             continue

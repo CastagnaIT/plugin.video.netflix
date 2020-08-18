@@ -243,9 +243,11 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
                  'is_folder': True}
     add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data)
     dict_item['art'] = get_art(video_list.videoid, video_list.artitem, common_data['profile_language_code'])
+    # Add possibility to browse the sub-genres (see build_video_listing)
+    sub_genre_id = video_list.get('genreId')
+    params = {'sub_genre_id': unicode(sub_genre_id)} if sub_genre_id else None
     dict_item['url'] = common.build_url(pathitems,
-                                        # genre_id add possibility to browse the sub-genres (see build_video_listing)
-                                        params={'genre_id': unicode(video_list.get('genreId'))},
+                                        params=params,
                                         mode=G.MODE_DIRECTORY)
     return dict_item
 
