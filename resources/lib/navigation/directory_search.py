@@ -25,11 +25,12 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 # To add a new type: add the new type name to SEARCH_TYPES, then implement the new type to search_add/search_query.
 
 
-SEARCH_TYPES = ['text', 'audio_lang', 'subtitles_lang']  # , 'genreid']
+SEARCH_TYPES = ['text', 'audio_lang', 'subtitles_lang', 'genre_id']
 SEARCH_TYPES_DESC = {
     'text': common.get_local_string(30410),
     'audio_lang': common.get_local_string(30411),
-    'subtitles_lang': common.get_local_string(30412)
+    'subtitles_lang': common.get_local_string(30412),
+    'genre_id': common.get_local_string(30413)
 }
 
 
@@ -58,8 +59,11 @@ def search_list(dir_update_listing=False):
     list_data = [_create_dictitem_from_row(row) for row in G.LOCAL_DB.get_search_list()]
     list_data.insert(0, _get_dictitem_add())
     list_data.append(_get_dictitem_clear())
-    finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
-                       title=common.get_local_string(30400))
+    sort_type = 'sort_nothing'
+    if G.ADDON.getSettingInt('menu_sortorder_search_history') == 1:
+        sort_type = 'sort_label_ignore_folders'
+    finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER, sort_type,
+                       common.get_local_string(30400))
     end_of_directory(dir_update_listing, cache_to_disc=False)
 
 
@@ -81,13 +85,10 @@ def search_add():
         row_id = _search_add_bylang(SEARCH_TYPES[type_index], api.get_available_audio_languages())
     elif search_type == 'subtitles_lang':
         row_id = _search_add_bylang(SEARCH_TYPES[type_index], api.get_available_subtitles_languages())
-    elif search_type == 'genreid':
+    elif search_type == 'genre_id':
         genre_id = ui.show_dlg_input_numeric(search_types_desc[type_index], mask_input=False)
         if genre_id:
-            # Todo: at this moment can not implemented due to a NF error,
-            #       see req_loco_list_genre in dir_builder_requests.py
-            pass
-        raise NotImplementedError('Search type Genre ID not implemented yet')
+            row_id = _search_add_bygenreid(SEARCH_TYPES[type_index], genre_id)
     else:
         raise NotImplementedError('Search type index {} not implemented'.format(type_index))
     # Execute the research
@@ -107,6 +108,18 @@ def _search_add_bylang(search_type, dict_languages):
     # In this case the 'value' is used only as title for the ListItem and not for the query
     value = search_type_desc + ': ' + lang_desc
     row_id = G.LOCAL_DB.insert_search_item(search_type, value, {'lang_code': lang_code})
+    return row_id
+
+
+def _search_add_bygenreid(search_type, genre_id):
+    # If the genre ID exists, the title of the list will be returned
+    title = api.get_genre_title(genre_id)
+    if not title:
+        ui.show_notification(common.get_local_string(30407))
+        return None
+    # In this case the 'value' is used only as title for the ListItem and not for the query
+    title += ' [{}]'.format(genre_id)
+    row_id = G.LOCAL_DB.insert_search_item(search_type, title, {'genre_id': genre_id})
     return row_id
 
 
@@ -182,6 +195,15 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'context_id': common.convert_from_string(search_item['Parameters'], dict)['lang_code']
         }
         list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
+    elif search_type == 'genre_id':
+        call_args = {
+            'menu_data': menu_data,
+            'pathitems': ['search', 'search', row_id],
+            'perpetual_range_start': perpetual_range_start,
+            'context_name': 'genres',
+            'context_id': common.convert_from_string(search_item['Parameters'], dict)['genre_id']
+        }
+        list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     else:
         raise NotImplementedError('Search type {} not implemented'.format(search_type))
     # Show the results
@@ -207,7 +229,8 @@ def _get_dictitem_add():
         'url': common.build_url(['search', 'search', 'add'], mode=G.MODE_DIRECTORY),
         'label': common.get_local_string(30403),
         'art': {'icon': 'DefaultAddSource.png'},
-        'is_folder': True
+        'is_folder': True,
+        'properties': {'specialsort': 'top'}  # Force an item to stay on top (not documented in Kodi)
     }
 
 
@@ -217,7 +240,8 @@ def _get_dictitem_clear():
         'url': common.build_url(['search', 'search', 'clear'], mode=G.MODE_DIRECTORY),
         'label': common.get_local_string(30404),
         'art': {'icon': 'icons\\infodialogs\\uninstall.png'},
-        'is_folder': True
+        'is_folder': True,
+        'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
     }
 
 

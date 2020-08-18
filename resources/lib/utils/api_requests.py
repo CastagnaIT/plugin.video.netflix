@@ -230,6 +230,18 @@ def get_available_subtitles_languages():
     return lang_list
 
 
+def get_genre_title(genre_id):
+    """
+    Get the title of a genre list of given ID
+    :return None if the ID not exists
+    """
+    call_args = {
+        'paths': [['genres', int(genre_id), ['name']]]
+    }
+    response = common.make_call('path_request', call_args)
+    return response['genres'].get(genre_id, {}).get('name')
+
+
 def remove_watched_status(videoid):
     """Request to Netflix service to delete the watched status (delete also the item from "continue watching" list)"""
     # WARNING: THE NF SERVICE MAY TAKE UNTIL TO 24 HOURS TO REMOVE IT

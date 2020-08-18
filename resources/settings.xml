@@ -65,16 +65,15 @@
     <setting id="menu_sortorder_tvshowsgenres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_moviesgenres" type="bool" label="30175" default="true"/>
     <setting id="menu_sortorder_moviesgenres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <!--
     <setting id="show_menu_tvshows" type="bool" label="30095" default="true"/>
     <setting id="menu_sortorder_tvshows" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_movies" type="bool" label="30096" default="true"/>
     <setting id="menu_sortorder_movies" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    -->
     <setting id="show_menu_genres" type="bool" label="30010" default="true"/>
     <setting id="menu_sortorder_genres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
     <setting id="show_menu_search" type="bool" label="30400" default="true"/>
     <setting id="menu_sortorder_search" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="2"/>
+    <setting id="menu_sortorder_search_history" type="select" label="30399" lvalues="30162|30150" visible="eq(-2,true)" subsetting="true" default="0"/>
     <setting id="show_menu_exported" type="bool" label="30048" default="true"/>
   </category>
   <category label="30037"><!--Views-->

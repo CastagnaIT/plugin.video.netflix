@@ -988,7 +988,11 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Συμπεριέλαβε στην βιβλιοθήκη του Kodi (μόνο αποστολή δεδομένων)"
 
-# Unused 30302 to 30399
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1035,3 +1039,7 @@ msgstr "Μέσω γλώσσας ήχου"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Μέσω γλώσσας υποτίτλων"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

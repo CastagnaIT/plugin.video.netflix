@@ -171,7 +171,7 @@ class Directory(object):
         call_args = {
             'pathitems': pathitems,
             'menu_data': menu_data,
-            'sub_genre_id': self.params.get('genre_id'),  # Used to show the sub-genre folder (when sub-genre exists)
+            'sub_genre_id': self.params.get('sub_genre_id'),  # Used to show the sub-genre folder when sub-genres exists
             'perpetual_range_start': self.perpetual_range_start,
             'is_dynamic_id': not G.is_known_menu_context(pathitems[2])
         }

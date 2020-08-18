@@ -989,7 +989,11 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Inclure la médiathèque Kodi (envoi de données seulement)"
 
-# Unused 30302 to 30399
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1036,3 +1040,7 @@ msgstr "Par langue audio"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Par langue de sous-titres"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""
