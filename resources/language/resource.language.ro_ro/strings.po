@@ -1035,3 +1035,7 @@ msgstr "După limba vorbită"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "După limba subtitrării"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

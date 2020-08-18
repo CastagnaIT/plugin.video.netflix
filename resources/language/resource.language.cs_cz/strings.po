@@ -1035,3 +1035,7 @@ msgstr "Podle jazyka zvuku"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Podle jazyka titulků"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

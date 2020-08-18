@@ -1035,3 +1035,7 @@ msgstr "Szinkronhang nyelv szerint"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Feliratnyelv szerint"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

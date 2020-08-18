@@ -1035,3 +1035,7 @@ msgstr "Ses diline göre"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Altyazı diline göre"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

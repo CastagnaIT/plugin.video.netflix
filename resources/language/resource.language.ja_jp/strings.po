@@ -1035,3 +1035,7 @@ msgstr "音声"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "字幕"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

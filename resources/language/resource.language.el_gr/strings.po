@@ -1035,3 +1035,7 @@ msgstr "Μέσω γλώσσας ήχου"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Μέσω γλώσσας υποτίτλων"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""
