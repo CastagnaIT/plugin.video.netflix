@@ -59,8 +59,11 @@ def search_list(dir_update_listing=False):
     list_data = [_create_dictitem_from_row(row) for row in G.LOCAL_DB.get_search_list()]
     list_data.insert(0, _get_dictitem_add())
     list_data.append(_get_dictitem_clear())
-    finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
-                       title=common.get_local_string(30400))
+    sort_type = 'sort_nothing'
+    if G.ADDON.getSettingInt('menu_sortorder_search_history') == 1:
+        sort_type = 'sort_label_ignore_folders'
+    finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER, sort_type,
+                       common.get_local_string(30400))
     end_of_directory(dir_update_listing, cache_to_disc=False)
 
 
@@ -226,7 +229,8 @@ def _get_dictitem_add():
         'url': common.build_url(['search', 'search', 'add'], mode=G.MODE_DIRECTORY),
         'label': common.get_local_string(30403),
         'art': {'icon': 'DefaultAddSource.png'},
-        'is_folder': True
+        'is_folder': True,
+        'properties': {'specialsort': 'top'}  # Force an item to stay on top (not documented in Kodi)
     }
 
 
@@ -236,7 +240,8 @@ def _get_dictitem_clear():
         'url': common.build_url(['search', 'search', 'clear'], mode=G.MODE_DIRECTORY),
         'label': common.get_local_string(30404),
         'art': {'icon': 'icons\\infodialogs\\uninstall.png'},
-        'is_folder': True
+        'is_folder': True,
+        'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
     }
 
 
