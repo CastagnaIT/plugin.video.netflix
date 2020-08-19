@@ -992,7 +992,7 @@ msgstr "Inklusive Kodi-Bibliothek (nur ausgehend)"
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Verlauf sortieren nach"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "Nach Untertitelsprache"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Nach Genre/Subgenre ID"
