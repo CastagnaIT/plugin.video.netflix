@@ -992,7 +992,7 @@ msgstr "Incluir na coleção do Kodi (somente enviando dado)"
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Classificar histórico por"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "Pelo idioma da legenda"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Pelo ID do gênero/subgênero"
