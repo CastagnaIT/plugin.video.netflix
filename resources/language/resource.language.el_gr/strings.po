@@ -992,7 +992,7 @@ msgstr "Συμπεριέλαβε στην βιβλιοθήκη του Kodi (μό
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Ταξινόμιση ιστορικού από"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "Μέσω γλώσσας υποτίτλων"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Μέσω είδους/ID υπόειδους"
