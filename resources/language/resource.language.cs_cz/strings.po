@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-06-03 15:40+0000\n"
+"PO-Revision-Date: 2020-08-10 00:40+0000\n"
 "Last-Translator: otava5\n"
 "Language-Team: Czech (Czech Republic)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Doplněk Netflix VOD"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Některé části tohoto doplňku nemusí být ve vaší zemi pobytu legální - před instalací se prosím obraťte na místní zákony."
+msgstr "Použití tohoto doplňku nemusí být ve vaší zemi pobytu legální - před instalací se prosím obraťte na místní zákony."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Došlo k potížím s doplňkem InputStream Adaptive nebo s knihovnou Wi
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Probíhá aktualizace knihovny"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Knihovna"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Vyberte profil pro přehrávání videí"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Před přehráváním vyberte profil"
+msgid "Profile set for playback from the library"
+msgstr "Profil je nastaven pro přehrávání z knihovny"
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr "Nastavit pro přehrávání z knihovny"
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr "Odebrat pro přehrávání z knihovny"
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Automatický výběr profilu"
+msgid "Profile set to auto-selection"
+msgstr "Profil je nastaven na automatický výběr"
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Odebrat automatický výběr profilu"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Nastavení  automatického výběru"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Chcete-li nastavit profil, otevřete v seznamu profilů kontextovou nabídku"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Odebrat automatický výběr profilu"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Profil {} byl nastaven pro automatický výběr"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Buďte opatrní, chystáte se aktualizovat mnoho titulů {}.[CR]To může způsobit problémy se službami nebo dočasný zákaz účtu.[CR]Chcete pokračovat?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "Rodičovská kontrola"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Aktualizace již probíhá"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -470,7 +468,7 @@ msgstr "Pokročilá konfigurace doplňku"
 
 msgctxt "#30117"
 msgid "Cache"
-msgstr "Mezipaměť"
+msgstr "Cache"
 
 msgctxt "#30118"
 msgid "API operation failed: {}"
@@ -494,7 +492,7 @@ msgstr "Synchronizovat Můj seznam s knihovnou Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Chcete pokračovat?[CR]Plná synchronizace odstraní všechny dříve exportované tituly.[CR]Pokud existuje mnoho titulů, může tato operace chvíli trvat."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Povolit další integraci"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Zobrazit notifikaci místo chybového dialogu"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -530,11 +526,11 @@ msgstr "Zkontrolujte podrobné informace v souboru protokolu"
 
 msgctxt "#30132"
 msgid "Clear in-memory cache"
-msgstr "Vymazat mezipaměť z RAM"
+msgstr "Vymazat cache z RAM"
 
 msgctxt "#30133"
 msgid "Clear in-memory and on-disk cache"
-msgstr "Vymazat RAM a mezipaměť z disku"
+msgstr "Vymazat RAM a cache z disku"
 
 msgctxt "#30134"
 msgid "Enable execution timing"
@@ -542,11 +538,9 @@ msgstr "Povolit časování provedení"
 
 msgctxt "#30135"
 msgid "Cache cleared"
-msgstr "Mezipaměť vymazána"
+msgstr "Cache vymazána"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Povolit odemknutí 1080p (nedoporučuje se pro Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "Povolit IPC přes HTTP (použijte, když se objeví zprávy o vypršení
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importovat existující knihovnu"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "Zobrazit thrailery a další"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Došlo k potížím s přihlášením. Je možné, že váš účet nebyl potvrzen ani reaktivován."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "Synchronizovat knihovnu Kodi s mým seznamem"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Nastavte profil pro synchronizaci"
 
 # Unused 30229
 
@@ -974,19 +968,31 @@ msgstr "Vynutit úroveň zabezpečení Widevine L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Mazání souborů exportovaných do knihovny"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Existují {} tituly, které nelze importovat.[CR]Chcete tyto soubory odstranit?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr "Výsledky na stránku (v případě timeout chyby ji snižte)"
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Chcete odebrat zhlédnuté z '{}'?[CR][CR]Operace může trvat až 24 hodin, proto se název může v seznamu stále zobrazovat."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr "Zahrnout knihovnu Kodi (pouze odesílání dat)"
+
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1033,3 +1039,7 @@ msgstr "Podle jazyka zvuku"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Podle jazyka titulků"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

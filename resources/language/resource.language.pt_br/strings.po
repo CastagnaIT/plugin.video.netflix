@@ -26,7 +26,7 @@ msgstr "Addon da Netflix, um serviço de Video Sob Demanda"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Algumas partes deste addon poderão não ser legais no seu país de residência. Por favor, verifique as suas leis locais antes de instalar."
+msgstr "O uso deste addon pode não ser legal no seu país de residência - por favor, verifique as suas leis locais antes de instalar."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Há um problema com o complemento InputStream Adaptive ou a biblioteca W
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Atualização da coleção em progresso"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Coleção"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Selecione um perfil para reproduzir os vídeos"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Perguntar pela seleção de um perfil antes da reprodução"
+msgid "Profile set for playback from the library"
+msgstr "Definir perfil para reprodução na coleção"
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr "Definir para reprodução na coleção"
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr "Remover para reprodução na coleção"
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Perfil seleção automática"
+msgid "Profile set to auto-selection"
+msgstr "Definir perfil para autoseleção"
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Remover seleção automática de perfil"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Definir para seleção automática"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Para definir o perfil, na lista de perfis, abra o menu de contexto"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Remover seleção automática de perfil"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "O Perfil {} foi definido para seleção automática"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Cuidado, você está prestes a atualizar muitos títulos {}.[CR]Isso pode causar problemas de serviço ou banir temporariamente a conta.[CR]Deseja continuar?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "Controles Parentais"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Uma atualização já está em andamento"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +492,7 @@ msgstr "Sincronizar Minha Lista para a coleção do Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Deseja continuar?[CR]A sincronização completa excluirá todos os títulos exportados anteriormente.[CR]Se houver muitos títulos, esta operação poderá demorar algum tempo."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Ativar integração Up Next"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Mostrar notificação ao invés de uma caixa de diálogo para erros"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cache limpo"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Ativar desbloqueio 1080p (não recomendado para Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "Ativar IPC sobre HTTP (usar quando tiver problemas de tempo expirado no 
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importar coleção existente"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "Mostrar trailers & mais"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Houve um problema com o login, é possível que sua conta não tenha sido confirmada ou reativada."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "Sincroniza coleção do Kodi com minha lista"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Definir um perfil para sincronização"
 
 # Unused 30229
 
@@ -974,19 +968,31 @@ msgstr "Forçar nível de segurança Widevine L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Deletando arquivos exportados para a coleção"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "Existem {} títulos que não puderam ser importados.[CR]Deseha deletar estes arquivos?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr "Resultados por página (em caso de erro de tempo limite, diminua-o)"
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Deseja remover o status de assistido de '{}'?[CR][CR]A operação pode levar até 24h, portanto, o título ainda pode aparecer na lista."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr "Incluir na coleção do Kodi (somente enviando dado)"
+
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr "Classificar histórico por"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1033,3 +1039,7 @@ msgstr "Pelo idioma de áudio"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Pelo idioma da legenda"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr "Pelo ID do gênero/subgênero"

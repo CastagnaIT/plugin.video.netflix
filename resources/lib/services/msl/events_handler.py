@@ -15,13 +15,14 @@ import time
 
 import xbmc
 
-import resources.lib.api.api_requests as api
 from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.services.msl import msl_utils
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     from urllib import urlencode
@@ -49,14 +50,14 @@ class Event(object):
         self.request_data = request_data
         self.response_data = None
         self.req_attempt = 0
-        common.debug('EVENT [{}] - Added to queue', self.event_type)
+        LOG.debug('EVENT [{}] - Added to queue', self.event_type)
 
     def get_event_id(self):
         return self.request_data['xid']
 
     def set_response(self, response):
         self.response_data = response
-        common.debug('EVENT [{}] - Request response: {}', self.event_type, response)
+        LOG.debug('EVENT [{}] - Request response: {}', self.event_type, response)
         # Seem that malformed requests are ignored without returning errors
         # self.status = self.STATUS_ERROR
         self.status = self.STATUS_SUCCESS
@@ -93,7 +94,7 @@ class EventsHandler(threading.Thread):
 
     def run(self):
         """Monitor and process the event queue"""
-        common.debug('[Event queue monitor] Thread started')
+        LOG.debug('[Event queue monitor] Thread started')
         monitor = xbmc.Monitor()
 
         while not monitor.abortRequested() and not self._stop_requested:
@@ -108,9 +109,9 @@ class EventsHandler(threading.Thread):
             except queue.Empty:
                 pass
             except Exception as exc:  # pylint: disable=broad-except
-                common.error('[Event queue monitor] An error has occurred: {}', exc)
+                LOG.error('[Event queue monitor] An error has occurred: {}', exc)
                 import traceback
-                common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
                 self.clear_queue()
             monitor.waitForAbort(1)
 
@@ -119,24 +120,23 @@ class EventsHandler(threading.Thread):
         event.status = Event.STATUS_REQUESTED
         # Request attempts can be made up to a maximum of 3 times per event
         while event.is_attempts_granted():
-            common.info('EVENT [{}] - Executing request (attempt {})', event, event.req_attempt)
+            LOG.info('EVENT [{}] - Executing request (attempt {})', event, event.req_attempt)
             params = {'reqAttempt': event.req_attempt,
                       'reqPriority': 20 if event.event_type == EVENT_START else 0,
                       'reqName': 'events/{}'.format(event)}
             url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
             try:
-                response = self.chunked_request(url, event.request_data, g.get_esn(), disable_msl_switch=False)
+                response = self.chunked_request(url, event.request_data, get_esn(), disable_msl_switch=False)
                 event.set_response(response)
                 break
             except Exception as exc:  # pylint: disable=broad-except
-                common.error('EVENT [{}] - The request has failed: {}', event, exc)
+                LOG.error('EVENT [{}] - The request has failed: {}', event, exc)
         if event.event_type == EVENT_STOP:
             self.clear_queue()
             if event.event_data['allow_request_update_loco']:
-                # if event.event_data['is_in_mylist']:
-                #     # If video is in my list, invalidate the continueWatching list (update loco context data)
-                #     api.update_loco_context('continueWatching')
-                api.update_videoid_bookmark(event.get_video_id())
+                # Calls to nfsession
+                common.make_http_call('update_loco_context', {'context_name': 'continueWatching'})
+                common.make_http_call('update_videoid_bookmark', {'video_id': event.get_video_id()})
         # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
         # if not event.is_response_success():
             # The event request is unsuccessful then there is some problem,
@@ -155,7 +155,7 @@ class EventsHandler(threading.Thread):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            common.error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
 
     def add_event_to_queue(self, event_type, event_data, player_state):
@@ -167,8 +167,8 @@ class EventsHandler(threading.Thread):
         url = manifest['links']['events']['href']
 
         if previous_data.get('xid') in self.banned_events_ids:
-            common.warn('EVENT [{}] - Not added to the queue. The xid {} is banned due to a previous failed request',
-                        event_type, previous_data.get('xid'))
+            LOG.warn('EVENT [{}] - Not added to the queue. The xid {} is banned due to a previous failed request',
+                     event_type, previous_data.get('xid'))
             return
 
         from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
@@ -180,7 +180,7 @@ class EventsHandler(threading.Thread):
         try:
             self.queue_events.put_nowait(Event(request_data, event_data))
         except queue.Full:
-            common.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
+            LOG.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
 
     def clear_queue(self):
         """Clear all queued events"""
@@ -206,7 +206,7 @@ class EventsHandler(threading.Thread):
         # if event_data['is_played_by_library']:
         #     list_id = 'unknown'
         # else:
-        #     list_id = g.LOCAL_DB.get_value('last_menu_id', 'unknown')
+        #     list_id = G.LOCAL_DB.get_value('last_menu_id', 'unknown')
 
         if msl_utils.is_media_changed(previous_player_state, player_state):
             play_times, media_id = msl_utils.build_media_tag(player_state, manifest)
@@ -217,7 +217,7 @@ class EventsHandler(threading.Thread):
 
         params = {
             'event': event_type,
-            'xid': previous_data.get('xid', g.LOCAL_DB.get_value('xid', table=TABLE_SESSION)),
+            'xid': previous_data.get('xid', G.LOCAL_DB.get_value('xid', table=TABLE_SESSION)),
             'position': player_state['elapsed_seconds'] * 1000,  # Video time elapsed
             'clientTime': timestamp,
             'sessionStartTime': previous_data.get('sessionStartTime', timestamp),
@@ -234,11 +234,10 @@ class EventsHandler(threading.Thread):
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
                     # lolomo_id: use loco root id value
-                    'lolomo_id': g.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION),
+                    'lolomo_id': G.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION),
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
-                    # request_id: use requestId of loco root
-                    'request_id': g.LOCAL_DB.get_value('loco_root_requestid', '', TABLE_SESSION),
+                    'request_id': event_data['request_id'],
                     'row': 0,  # Purpose not known
                     'track_id': event_data['track_id'],
                     'video_id': videoid.value
@@ -255,5 +254,5 @@ class EventsHandler(threading.Thread):
 
 def get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = g.get_esn() + '_' + videoid.value
-    return g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
+    cache_identifier = get_esn() + '_' + videoid.value
+    return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

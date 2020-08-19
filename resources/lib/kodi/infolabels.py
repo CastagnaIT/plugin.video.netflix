@@ -13,12 +13,13 @@ import copy
 
 from future.utils import iteritems, itervalues
 
-import resources.lib.api.paths as paths
-import resources.lib.api.api_requests as api
+import resources.lib.utils.api_paths as paths
+import resources.lib.utils.api_requests as api
 import resources.lib.common as common
-from resources.lib.api.exceptions import CacheMiss
+from resources.lib.common.exceptions import CacheMiss, ItemNotFound
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -51,12 +52,12 @@ def get_info(videoid, item, raw_data, profile_language_code=''):
     """Get the infolabels data"""
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
-        cache_entry = g.CACHE.get(CACHE_INFOLABELS, cache_identifier)
+        cache_entry = G.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        g.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
+        G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
     return infos, quality_infos
 
 
@@ -111,10 +112,10 @@ def _get_art(videoid, item, profile_language_code):
     # If item is None this method raise TypeError
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
-        art = g.CACHE.get(CACHE_ARTINFO, cache_identifier)
+        art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
     except CacheMiss:
         art = parse_art(videoid, item)
-        g.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
+        G.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
     return art
 
 
@@ -122,8 +123,8 @@ def get_resume_info_from_library(videoid):
     """Retrieve the resume value from the Kodi library"""
     try:
         return get_info_from_library(videoid)[0].get('resume', {})
-    except common.ItemNotFound:
-        common.warn('Can not get resume value from the library')
+    except ItemNotFound:
+        LOG.warn('Can not get resume value from the library')
     return {}
 
 
@@ -198,7 +199,7 @@ def get_quality_infos(item):
             min((delivery.get('hasUltraHD', False) << 1 |
                  delivery.get('hasHD')), 2)]
         quality_infos['audio'] = {'channels': 2 + 4 * delivery.get('has51Audio', False)}
-        if g.ADDON.getSettingBool('enable_dolby_sound'):
+        if G.ADDON.getSettingBool('enable_dolby_sound'):
             if delivery.get('hasDolbyAtmos', False):
                 quality_infos['audio']['codec'] = 'truehd'
             else:
@@ -251,7 +252,7 @@ def _best_art(arts):
 
 def get_info_from_netflix(videoids):
     """Get infolabels and arts from cache (if exist) or Netflix API, for multiple videoid"""
-    profile_language_code = g.LOCAL_DB.get_profile_config('language', '')
+    profile_language_code = G.LOCAL_DB.get_profile_config('language', '')
     videoids_to_request = []
     info_data = {}
     for videoid in videoids:
@@ -259,13 +260,13 @@ def get_info_from_netflix(videoids):
             infos = get_info(videoid, None, None, profile_language_code)[0]
             art = _get_art(videoid, None, profile_language_code)
             info_data[videoid.value] = infos, art
-            common.debug('Got infolabels and art from cache for videoid {}', videoid)
+            LOG.debug('Got infolabels and art from cache for videoid {}', videoid)
         except (AttributeError, TypeError):
             videoids_to_request.append(videoid)
 
     if videoids_to_request:
         # Retrieve missing data from API
-        common.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
+        LOG.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
             infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
@@ -277,7 +278,7 @@ def get_info_from_netflix(videoids):
 def get_info_from_library(videoid):
     """Get infolabels with info from Kodi library"""
     details = common.get_library_item_by_videoid(videoid)
-    common.debug('Got file info from library: {}'.format(details))
+    LOG.debug('Got file info from library: {}'.format(details))
     art = details.pop('art', {})
     infos = {
         'DBID': details.pop('{}id'.format(videoid.mediatype)),
@@ -304,8 +305,8 @@ def set_watched_status(dict_item, video_data, common_data):
 
     video_id = str(video_data['summary']['id'])
     # Check from db if user has manually changed the watched status
-    profile_guid = g.LOCAL_DB.get_active_profile_guid()
-    override_is_watched = g.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
+    profile_guid = G.LOCAL_DB.get_active_profile_guid()
+    override_is_watched = G.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
     resume_time = 0
 
     if override_is_watched is None:
@@ -322,7 +323,7 @@ def set_watched_status(dict_item, video_data, common_data):
         # To avoid asking to the server again the entire list of titles (after watched a video)
         # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
         try:
-            bookmark_position = g.CACHE.get(CACHE_BOOKMARKS, video_id)
+            bookmark_position = G.CACHE.get(CACHE_BOOKMARKS, video_id)
         except CacheMiss:
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
             bookmark_position = video_data['bookmarkPosition']

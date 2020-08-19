@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
-"PO-Revision-Date: 2020-06-20 18:40+0000\n"
+"PO-Revision-Date: 2020-07-26 18:40+0000\n"
 "Last-Translator: thombet\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Extension Netflix SVoD"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Certaines parties de cette extension peuvent ne pas être légales dans votre pays de résidence - renseignez-vous avant de l'installer"
+msgstr "L'utilisation de cette extension n'est peut-être pas légale dans votre pays de résidence - renseignez-vous avant de l'installer"
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -196,7 +196,7 @@ msgstr "Il y a un problème avec l'extension InputStrean Adaptive ou avec la bib
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Mise à jour de la médiathèque en cours"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Médiathèque"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Choisir le profil à utiliser pour lire les vidéos"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Demander le profil à utiliser avant la lecture"
+msgid "Profile set for playback from the library"
+msgstr "Profil utilisé lors de la lecture depuis la médiathèque"
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr "Utiliser lors de la lecture depuis la médiathèque"
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr "Ne plus utiliser lors de la lecture depuis la médiathèque"
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Sélection automatique du profil"
+msgid "Profile set to auto-selection"
+msgstr "Profil sélectionné automatiquement"
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Supprimer la sélection automatique du profil"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Sélectioner ce profil automatiquement"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Pour choisir le profil, ouvrez le menu contextuel sur la page des profils"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Ne plus sélectionner automatiquement ce profil"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Le profil {} a été choisi pour la sélection automatique"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Attention, vous allez mettre à jour plusieurs titres {}.[CR]Cela pourrait entrainer des problèmes d'utilisation ou le blocage temporaire du compte.[CR]Voulez-vous continuer ?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "Contrôle parental"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Une mise à jour est déjà en cours"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -494,7 +492,7 @@ msgstr "Synchroniser 'Ma Liste' vers la médiathèque Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Voulez-vous continuer ?[CR]La synchronisation complète va supprimer tous les titres précédemment exportés.[CR]S'il y a beaucoup de titres cette opération peut prendre du temps."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Activer l'intégration avec l'extension 'Up Next'"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Afficher des notifications d'erreur au lieu des boîtes de dialogue"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cache purgé"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Activer le déblocage 1080p (non recommandé sous Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "Activer IPC via HTTP (à activer si l'extension 'Addon Signals' retourne
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importer la médiathèque existante"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "Bandes annonces et plus"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Il y a eu un problème de connexion, peut-être que votre compte n'a pas été confirmé ou réactivé."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -909,7 +903,7 @@ msgstr "Synchronisation de la médiathèque Kodi avec 'Ma Liste'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Choisir le profil pour la synchronisation"
 
 # Unused 30229
 
@@ -975,19 +969,31 @@ msgstr "Forcer le niveau de sécurité L3 de Widevine"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Suppression des fichers exportés dans la médiathèque"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "{} titres n'ont pas pu être importés.[CR]Voulez-vous supprimer ces fichiers ?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr "Nombre de résultats par page (en cas d'erreur réduisez cette valeur)"
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Voulez-vous supprimer l'état 'vu' de '{}' ?[CR][CR]L'opération peut prendre jusqu'à 24h, donc il se peut que le titre apparaisse toujours dans la liste."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr "Inclure la médiathèque Kodi (envoi de données seulement)"
+
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1034,3 +1040,7 @@ msgstr "Par langue audio"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Par langue de sous-titres"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

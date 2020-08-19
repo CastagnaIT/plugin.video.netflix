@@ -13,8 +13,10 @@ import xbmc
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.globals import g
+from resources.lib.globals import G
 from resources.lib.kodi import ui
+from resources.lib.utils.esn import get_esn
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 STREAMS = {
@@ -52,7 +54,7 @@ class AMStreamContinuity(ActionManager):
         self.player = xbmc.Player()
         self.player_state = {}
         self.resume = {}
-        self.legacy_kodi_version = g.KODI_VERSION.is_major_ver('18')
+        self.legacy_kodi_version = G.KODI_VERSION.is_major_ver('18')
         self.kodi_only_forced_subtitles = None
 
     def __str__(self):
@@ -65,7 +67,7 @@ class AMStreamContinuity(ActionManager):
             self.enabled = False
             return
         self.current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
-        self.sc_settings = g.SHARED_DB.get_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+        self.sc_settings = G.SHARED_DB.get_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
                                                              self.current_videoid.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
@@ -76,14 +78,14 @@ class AMStreamContinuity(ActionManager):
             # Kodi 19 BUG JSON RPC: "Player.GetProperties" is broken: https://github.com/xbmc/xbmc/issues/17915
             # The first call return wrong data the following calls return OSError, and then _notify_all will be blocked
             self.enabled = False
-            common.error('Due of Kodi 19 bug has been disabled: '
-                         'Ask to skip dialog, remember audio/subtitles preferences and other features')
+            LOG.error('Due of Kodi 19 bug has been disabled: '
+                      'Ask to skip dialog, remember audio/subtitles preferences and other features')
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='Due to Kodi bug has been disabled all Netflix features')
             return
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
-        if self.kodi_only_forced_subtitles and g.ADDON.getSettingBool('forced_subtitle_workaround')\
+        if self.kodi_only_forced_subtitles and G.ADDON.getSettingBool('forced_subtitle_workaround')\
            and self.sc_settings.get('subtitleenabled') is None:
             # Use the forced subtitle workaround if enabled
             # and if user did not change the subtitle setting
@@ -107,7 +109,7 @@ class AMStreamContinuity(ActionManager):
         if player_stream['language'] != 'unk' and not self._is_stream_value_equal(current_stream, player_stream):
             self._set_current_stream('audio', player_state)
             self._save_changed_stream('audio', player_stream)
-            common.debug('audio has changed from {} to {}', current_stream, player_stream)
+            LOG.debug('audio has changed from {} to {}', current_stream, player_stream)
 
         # Check if subtitle stream or subtitleenabled options are changed
         # Note: Check both at same time, if only one change, is required to save both values,
@@ -133,10 +135,9 @@ class AMStreamContinuity(ActionManager):
             self._set_current_stream('subtitleenabled', player_state)
             self._save_changed_stream('subtitleenabled', player_sub_enabled)
             if not is_sub_stream_equal:
-                common.debug('subtitle has changed from {} to {}', current_stream, player_stream)
+                LOG.debug('subtitle has changed from {} to {}', current_stream, player_stream)
             if not is_sub_enabled_equal:
-                common.debug('subtitleenabled has changed from {} to {}', current_stream,
-                             player_stream)
+                LOG.debug('subtitleenabled has changed from {} to {}', current_stream, player_stream)
 
     def _set_current_stream(self, stype, player_state):
         self.current_streams.update({
@@ -148,7 +149,7 @@ class AMStreamContinuity(ActionManager):
         stored_stream = self.sc_settings.get(stype)
         if stored_stream is None or (isinstance(stored_stream, dict) and not stored_stream):
             return
-        common.debug('Trying to restore {} with stored data {}', stype, stored_stream)
+        LOG.debug('Trying to restore {} with stored data {}', stype, stored_stream)
         data_type_dict = isinstance(stored_stream, dict)
         if self.legacy_kodi_version:
             # Kodi version 18, this is the old method that have a unresolvable bug:
@@ -169,8 +170,8 @@ class AMStreamContinuity(ActionManager):
                     index = self._find_stream_index(self.player_state[STREAMS[stype]['list']],
                                                     stored_stream)
                     if index is None:
-                        common.debug('No stream match found for {} and {} for videoid {}',
-                                     stype, stored_stream, self.current_videoid)
+                        LOG.debug('No stream match found for {} and {} for videoid {}',
+                                  stype, stored_stream, self.current_videoid)
                         return
                     value = index
                 else:
@@ -178,12 +179,12 @@ class AMStreamContinuity(ActionManager):
                     value = stored_stream
                 set_stream(self.player, value)
         self.current_streams[stype] = stored_stream
-        common.debug('Restored {} to {}', stype, stored_stream)
+        LOG.debug('Restored {} to {}', stype, stored_stream)
 
     def _save_changed_stream(self, stype, stream):
-        common.debug('Save changed stream {} for {}', stream, stype)
+        LOG.debug('Save changed stream {} for {}', stream, stype)
         self.sc_settings[stype] = stream
-        g.SHARED_DB.set_stream_continuity(g.LOCAL_DB.get_active_profile_guid(),
+        G.SHARED_DB.set_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
                                           self.current_videoid.value,
                                           self.sc_settings)
 
@@ -236,7 +237,7 @@ class AMStreamContinuity(ActionManager):
             # So can cause a wrong subtitle language or in a permanent display of subtitles!
             # This does not reflect the setting chosen in the Kodi player and is very annoying!
             # There is no other solution than to disable the subtitles manually.
-            if g.ADDON.getSettingBool('forced_subtitle_workaround') and \
+            if G.ADDON.getSettingBool('forced_subtitle_workaround') and \
                self.kodi_only_forced_subtitles:
                 # Note: this change is temporary so not stored to db by sc_settings setter
                 self.sc_settings.update({'subtitleenabled': False})
@@ -264,8 +265,8 @@ class AMStreamContinuity(ActionManager):
             # NOTE: With Kodi 18 it is not possible to read the properties of the streams
             # so the only possible way is to read the data from the manifest file
             audio_language = common.get_kodi_audio_language()
-            cache_identifier = g.get_esn() + '_' + self.videoid.value
-            manifest_data = g.CACHE.get(CACHE_MANIFESTS, cache_identifier)
+            cache_identifier = get_esn() + '_' + self.videoid.value
+            manifest_data = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
             common.fix_locale_languages(manifest_data['timedtexttracks'])
             if not any(text_track.get('isForcedNarrative', False) is True and
                        text_track['language'] == audio_language

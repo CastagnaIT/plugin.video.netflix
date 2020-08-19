@@ -14,9 +14,10 @@ from datetime import datetime, timedelta
 import AddonSignals
 import xbmc
 
-from resources.lib.globals import g
+from resources.lib.globals import G
 import resources.lib.common as common
 from resources.lib.kodi.library_utils import get_library_path
+from resources.lib.utils.logging import LOG
 
 try:  # Kodi >= 19
     from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
@@ -31,10 +32,10 @@ class LibraryUpdateService(xbmc.Monitor):
     def __init__(self):
         xbmc.Monitor.__init__(self)
         try:
-            self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 2
+            self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
-            # g.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
+            # G.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
             self.enabled = False
         self.startidle = 0
         self.next_schedule = _compute_next_schedule()
@@ -43,7 +44,7 @@ class LibraryUpdateService(xbmc.Monitor):
         self.scan_awaiting = False
         self.clean_in_progress = False
         self.clean_awaiting = False
-        AddonSignals.registerSlot(g.ADDON.getAddonInfo('id'),
+        AddonSignals.registerSlot(G.ADDON.getAddonInfo('id'),
                                   common.Signals.REQUEST_KODI_LIBRARY_UPDATE,
                                   self.request_kodi_library_update)
 
@@ -57,7 +58,7 @@ class LibraryUpdateService(xbmc.Monitor):
             self.next_schedule = _compute_next_schedule()
             if self.next_schedule >= datetime.now():
                 return
-            common.debug('Triggering auto update library')
+            LOG.debug('Triggering auto update library')
             # Send signal to nfsession to run the library auto update
             common.send_signal('library_auto_update')
             # Compute the next schedule
@@ -68,7 +69,7 @@ class LibraryUpdateService(xbmc.Monitor):
         Check if Kodi has been idle for 5 minutes
         """
         try:
-            if not g.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
+            if not G.ADDON.getSettingBool('lib_auto_upd_wait_idle'):
                 return True
         except TypeError:
             # Could happen when the service tick is executed at the same time when the settings are written
@@ -88,7 +89,7 @@ class LibraryUpdateService(xbmc.Monitor):
         # Wait for slow system (like Raspberry Pi) to write the settings
         xbmc.sleep(500)
         # Check if the status is changed
-        self.enabled = g.ADDON.getSettingInt('lib_auto_upd_mode') == 2
+        self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         # Then compute the next schedule
         if self.enabled:
             self.next_schedule = _compute_next_schedule()
@@ -129,15 +130,15 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def check_awaiting_operations(self):
         if self.clean_awaiting:
-            common.debug('Kodi library clean requested (from awaiting)')
+            LOG.debug('Kodi library clean requested (from awaiting)')
             self.start_clean_kodi_library()
         if self.scan_awaiting:
-            common.debug('Kodi library scan requested (from awaiting)')
+            LOG.debug('Kodi library scan requested (from awaiting)')
             self.start_update_kodi_library()
 
     def start_update_kodi_library(self):
         if not self.scan_in_progress and not self.clean_in_progress:
-            common.debug('Start Kodi library scan')
+            LOG.debug('Start Kodi library scan')
             self.scan_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
             self.scan_awaiting = False
             # Update only the library elements in the add-on export folder
@@ -148,7 +149,7 @@ class LibraryUpdateService(xbmc.Monitor):
 
     def start_clean_kodi_library(self):
         if not self.scan_in_progress and not self.clean_in_progress:
-            common.debug('Start Kodi library clean')
+            LOG.debug('Start Kodi library clean')
             self.clean_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
             self.clean_awaiting = False
             common.clean_library(False)
@@ -158,30 +159,30 @@ class LibraryUpdateService(xbmc.Monitor):
 
 def _compute_next_schedule(date_last_start=None):
     try:
-        if g.ADDON.getSettingBool('use_mysql'):
-            client_uuid = g.LOCAL_DB.get_value('client_uuid')
-            uuid = g.SHARED_DB.get_value('auto_update_device_uuid')
+        if G.ADDON.getSettingBool('use_mysql'):
+            client_uuid = G.LOCAL_DB.get_value('client_uuid')
+            uuid = G.SHARED_DB.get_value('auto_update_device_uuid')
             if client_uuid != uuid:
-                common.debug('The auto update has been disabled because another device '
-                             'has been set as the main update manager')
+                LOG.debug('The auto update has been disabled because another device '
+                          'has been set as the main update manager')
                 return None
 
-        time = g.ADDON.getSetting('lib_auto_upd_start') or '00:00'
-        last_run = date_last_start or g.SHARED_DB.get_value('library_auto_update_last_start',
+        time = G.ADDON.getSetting('lib_auto_upd_start') or '00:00'
+        last_run = date_last_start or G.SHARED_DB.get_value('library_auto_update_last_start',
                                                             datetime.utcfromtimestamp(0))
-        update_frequency = g.ADDON.getSettingInt('lib_auto_upd_freq')
+        update_frequency = G.ADDON.getSettingInt('lib_auto_upd_freq')
 
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
         next_run = last_run + timedelta(days=[1, 2, 5, 7][update_frequency])
         if next_run >= datetime.now():
-            common.info('Next library auto update is scheduled for {}', next_run)
+            LOG.info('Next library auto update is scheduled for {}', next_run)
         return next_run
     except Exception:  # pylint: disable=broad-except
         # If settings.xml was not created yet, as at first service run
-        # g.ADDON.getSettingBool('use_mysql') will thrown a TypeError
+        # G.ADDON.getSettingBool('use_mysql') will thrown a TypeError
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
         # import traceback
-        # common.debug(g.py2_decode(traceback.format_exc(), 'latin-1'))
-        common.warn('Managed error at _compute_next_schedule')
+        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.warn('Managed error at _compute_next_schedule')
         return None

@@ -10,7 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
@@ -67,7 +67,7 @@ def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disab
         shared_db_conn.close()
 
         # MySQL
-        if g.ADDON.getSettingBool('use_mysql'):
+        if G.ADDON.getSettingBool('use_mysql'):
             import mysql.connector
             from resources.lib.database.db_base_mysql import MySQLDatabase
 

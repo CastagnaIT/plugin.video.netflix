@@ -206,35 +206,33 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Bibliotek"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Välj en profil för att spela upp videor"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Fråga efter en profil innan uppspelningen"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Profil för automatiskt val"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Ta bort automatiskt val av profil"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Ställ in för automatiskt val"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "För att ställa in profilen i listan över profiler, öppna snabbmenyn"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Ta bort automatiskt val av profil"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Profilen {} har ställts in för automatisk val"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Aktivera Up Next-integration"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Visa meddelande istället för modal-dialog för fel"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cachen rensad"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Aktivera upplåsning av 1080p (rekommenderas inte för Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -980,13 +974,25 @@ msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
 msgstr "Det finns {} titlar som inte kan importeras.[CR]Vill du ta bort dessa filer?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr ""
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Vill du ta bort statusen sedd för '{}'?[CR][CR]Operationen kan ta upp till 24 timmar, därför kan titeln fortfarande visas i listan."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr ""
+
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1033,3 +1039,7 @@ msgstr "Efter ljudspråk"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Efter undertextspråk"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

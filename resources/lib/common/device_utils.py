@@ -10,15 +10,15 @@
 from __future__ import absolute_import, division, unicode_literals
 import xbmc
 
-from resources.lib.globals import g
-from .logging import info
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 def select_port(service):
     """Select an unused port on the host machine for a server and store it in the settings"""
     port = select_unused_port()
-    g.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
-    info('[{}] Picked Port: {}'.format(service, port))
+    G.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
+    LOG.info('[{}] Picked Port: {}'.format(service, port))
     return port
 
 
@@ -79,8 +79,8 @@ def is_device_4k_capable():
     if get_system_platform() == 'android':
         from resources.lib.database.db_utils import TABLE_SESSION
         # Check if the drm has security level L1
-        is_l3_forced = g.ADDON.getSettingBool('force_widevine_l3')
-        is_drm_l1_security_level = (g.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
+        is_l3_forced = G.ADDON.getSettingBool('force_widevine_l3')
+        is_drm_l1_security_level = (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
                                     and not is_l3_forced)
         # Check if HDCP level is 2.2 or up
         hdcp_level = get_hdcp_level()
@@ -93,7 +93,7 @@ def get_hdcp_level():
     """Get the HDCP level when exist else None"""
     from re import findall
     from resources.lib.database.db_utils import TABLE_SESSION
-    drm_hdcp_level = findall('\\d+\\.\\d+', g.LOCAL_DB.get_value('drm_hdcp_level', '', table=TABLE_SESSION))
+    drm_hdcp_level = findall('\\d+\\.\\d+', G.LOCAL_DB.get_value('drm_hdcp_level', '', table=TABLE_SESSION))
     return float(drm_hdcp_level[0]) if drm_hdcp_level else None
 
 

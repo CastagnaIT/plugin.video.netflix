@@ -14,7 +14,7 @@ import time
 import xbmc
 
 import resources.lib.common as common
-
+from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 
@@ -39,7 +39,7 @@ class AMPlayback(ActionManager):
 
     def on_playback_started(self, player_state):
         if self.resume_position:
-            common.info('AMPlayback has forced resume point to {}', self.resume_position)
+            LOG.info('AMPlayback has forced resume point to {}', self.resume_position)
             xbmc.Player().seekTime(int(self.resume_position))
 
     def on_tick(self, player_state):
@@ -48,7 +48,7 @@ class AMPlayback(ActionManager):
         # this complicates things to resume playback, because the manifest data expires and with it also all
         # the streams urls are no longer guaranteed, so we force the stop of the playback.
         if self.is_player_in_pause and (time.time() - self.start_time) > 3600:
-            common.info('The playback has been stopped because it has been exceeded 1 hour of pause')
+            LOG.info('The playback has been stopped because it has been exceeded 1 hour of pause')
             common.stop_playback()
 
     def on_playback_pause(self, player_state):

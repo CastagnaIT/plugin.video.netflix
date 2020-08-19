@@ -14,70 +14,17 @@ from future.utils import iteritems, itervalues, listvalues
 
 import resources.lib.common as common
 
-from .paths import resolve_refs
-
-
-class LoLoMo(object):
-    """List of list of movies (LoLoMo)"""
-    def __init__(self, path_response, lolomoid=None):
-        self.data = path_response
-        common.debug('LoLoMo data: {}', self.data)
-        _filterout_contexts(self.data, ['billboard', 'showAsARow'])
-        self.id = (lolomoid
-                   if lolomoid
-                   else next(iter(self.data['lolomos'])))
-        self.lists = OrderedDict(
-            (key, VideoList(self.data, key))
-            for key, _
-            in resolve_refs(self.data['lolomos'][self.id], self.data))
-
-    def __getitem__(self, key):
-        return _check_sentinel(self.data['lolomos'][self.id][key])
-
-    def get(self, key, default=None):
-        """Pass call on to the backing dict of this LoLoMo."""
-        return self.data['lolomos'][self.id].get(key, default)
-
-    def lists_by_context(self, context, break_on_first=False):
-        """Return a generator expression that iterates over all video
-        lists with the given context.
-        Will match any video lists with type contained in context
-        if context is a list."""
-        # 'context' may contain a list of multiple contexts or a single
-        # 'context' can be passed as a string, convert to simplify code
-        if not isinstance(context, list):
-            context = [context]
-
-        match_context = ((lambda context, contexts: context in contexts)
-                         if isinstance(context, list)
-                         else (lambda context, target: context == target))
-
-        # Keep sort order of context list
-        lists = {}
-        for context_name in context:
-            for list_id, video_list in iteritems(self.lists):
-                if match_context(video_list['context'], context_name):
-                    lists.update({list_id: VideoList(self.data, list_id)})
-                    if break_on_first:
-                        break
-        return iteritems(lists)
-
-    def find_by_context(self, context):
-        """Return the video list of a context"""
-        for list_id, video_list in iteritems(self.lists):
-            if not video_list['context'] == context:
-                continue
-            return list_id, VideoList(self.data, list_id)
-        return None, None
+from .api_paths import resolve_refs
+from .logging import LOG
 
 
 class LoCo(object):
     """List of components (LoCo)"""
     def __init__(self, path_response):
         self.data = path_response
-        common.debug('LoCo data: {}', self.data)
-        _filterout_loco_contexts(self.data, ['billboard'])
+        LOG.debug('LoCo data: {}', self.data)
         self.id = next(iter(self.data['locos']))  # Get loco root id
+        _filterout_loco_contexts(self.id, self.data, ['billboard'])
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['locos'][self.id][key])
@@ -85,6 +32,15 @@ class LoCo(object):
     def get(self, key, default=None):
         """Pass call on to the backing dict of this LoLoMo."""
         return self.data['locos'][self.id].get(key, default)
+
+    @property
+    def lists(self):
+        """Get all video lists"""
+        # It is as property to avoid slow down the loading of main menu
+        lists = {}
+        for list_id, list_data in iteritems(self.data['lists']):  # pylint: disable=unused-variable
+            lists.update({list_id: VideoListLoCo(self.data, list_id)})
+        return lists
 
     def lists_by_context(self, contexts, break_on_first=False):
         """
@@ -114,7 +70,7 @@ class LoCo(object):
 class VideoListLoCo:
     """A video list, for LoCo data"""
     def __init__(self, path_response, list_id):
-        # common.debug('VideoListLoCo data: {}', path_response)
+        # LOG.debug('VideoListLoCo data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.list_id = list_id
@@ -150,7 +106,7 @@ class VideoListLoCo:
 class VideoList:
     """A video list"""
     def __init__(self, path_response, list_id=None):
-        # common.debug('VideoList data: {}', path_response)
+        # LOG.debug('VideoList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         has_data = bool(path_response.get('lists'))
@@ -185,7 +141,7 @@ class VideoList:
 class VideoListSorted:
     """A video list"""
     def __init__(self, path_response, context_name, context_id, req_sort_order_type):
-        # common.debug('VideoListSorted data: {}', path_response)
+        # LOG.debug('VideoListSorted data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.context_name = context_name
@@ -266,7 +222,7 @@ class CustomVideoList:
 class SeasonList:
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
-        # common.debug('SeasonList data: {}', path_response)
+        # LOG.debug('SeasonList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
@@ -278,7 +234,7 @@ class SeasonList:
 class EpisodeList:
     """A list of episodes. Includes tvshow art."""
     def __init__(self, videoid, path_response):
-        # common.debug('EpisodeList data: {}', path_response)
+        # LOG.debug('EpisodeList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
@@ -291,7 +247,7 @@ class EpisodeList:
 class SubgenreList:
     """A list of subgenre."""
     def __init__(self, path_response):
-        # common.debug('Subgenre data: {}', path_response)
+        # LOG.debug('Subgenre data: {}', path_response)
         self.lists = []
         if path_response:
             self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
@@ -331,26 +287,10 @@ def _get_videoids(videos):
             for video in itervalues(videos)]
 
 
-def _filterout_contexts(data, contexts):
+def _filterout_loco_contexts(root_id, data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    _id = next(iter(data['lolomos']))
-    for context in contexts:
-        for listid in list(data.get('lists', {})):
-            if not data['lists'][listid].get('context'):
-                continue
-            if data['lists'][listid]['context'] != context:
-                continue
-            for idkey in list(data['lolomos'][_id]):
-                if listid in data['lolomos'][_id][idkey]:
-                    del data['lolomos'][_id][idkey]
-                    break
-            del data['lists'][listid]
-
-
-def _filterout_loco_contexts(data, contexts):
-    """Deletes from the data all records related to the specified contexts"""
-    root_id = next(iter(data['locos']))
-    for index in range(len(data['locos'][root_id]) - 1, -1, -1):
+    total_items = data['locos'][root_id]['componentSummary']['length']
+    for index in range(total_items - 1, -1, -1):
         list_id = data['locos'][root_id][str(index)][1]
         if not data['lists'][list_id]['componentSummary'].get('context') in contexts:
             continue

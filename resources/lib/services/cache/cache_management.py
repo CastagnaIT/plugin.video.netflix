@@ -15,11 +15,11 @@ from datetime import datetime, timedelta
 from functools import wraps
 from time import time
 
-from resources.lib import common
-from resources.lib.api.exceptions import UnknownCacheBucketError, CacheMiss
-from resources.lib.common import g
-from resources.lib.database.db_exceptions import SQLiteConnectionError, SQLiteError, ProfilesMissing
+from resources.lib.common import G
 from resources.lib.common.cache_utils import BUCKET_NAMES, BUCKETS
+from resources.lib.common.exceptions import (UnknownCacheBucketError, CacheMiss, DBSQLiteConnectionError,
+                                             DBSQLiteError, DBProfilesMissing)
+from resources.lib.utils.logging import LOG
 
 CONN_ISOLATION_LEVEL = None  # Autocommit mode
 
@@ -37,8 +37,8 @@ def handle_connection(func):
                 conn = args[0].conn
             return func(*args, **kwargs)
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteConnectionError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteConnectionError
         finally:
             if conn:
                 args[0].is_connected = False
@@ -59,6 +59,16 @@ class CacheManagement(object):
         self.memory_cache = {}
         self._initialize()
         self.next_schedule = _compute_next_schedule()
+        self.ttl_values = {}
+        self.load_ttl_values()
+
+    def load_ttl_values(self):
+        """Load the ttl values from add-on settings"""
+        self.ttl_values = {
+            'CACHE_TTL': G.ADDON.getSettingInt('cache_ttl') * 60,
+            'CACHE_MYLIST_TTL': G.ADDON.getSettingInt('cache_mylist_ttl') * 60,
+            'CACHE_METADATA_TTL': G.ADDON.getSettingInt('cache_metadata_ttl') * 24 * 60 * 60
+        }
 
     @property
     def identifier_prefix(self):
@@ -72,7 +82,7 @@ class CacheManagement(object):
         # Hundreds of cache accesses are made when loading video lists, then get the active profile guid
         # for each cache requests slows down the total time it takes to load e.g. the video list,
         # then we load the value on first access, and update it only at profile switch
-        self._identifier_prefix = g.LOCAL_DB.get_active_profile_guid() + '_'
+        self._identifier_prefix = G.LOCAL_DB.get_active_profile_guid() + '_'
         return self._identifier_prefix
 
     def _add_prefix(self, identifier):
@@ -107,9 +117,9 @@ class CacheManagement(object):
     def on_service_tick(self):
         """Check if expired cache cleaning is due and trigger it"""
         if self.next_schedule <= datetime.now():
-            common.debug('Triggering expired cache cleaning')
+            LOG.debug('Triggering expired cache cleaning')
             self.delete_expired()
-            g.LOCAL_DB.set_value('clean_cache_last_start', datetime.now())
+            G.LOCAL_DB.set_value('clean_cache_last_start', datetime.now())
             self.next_schedule = _compute_next_schedule()
 
     def _get_cache_bucket(self, bucket_name):
@@ -133,7 +143,7 @@ class CacheManagement(object):
             if bucket['is_persistent']:
                 return self._get_db(bucket['name'], identifier)
             raise CacheMiss()
-        except ProfilesMissing:
+        except DBProfilesMissing:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
             raise CacheMiss()
 
@@ -151,8 +161,8 @@ class CacheManagement(object):
                 raise CacheMiss()
             return result[0]
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteError
 
     def add(self, bucket, identifier, data, ttl=None, expires=None):
         """
@@ -168,7 +178,7 @@ class CacheManagement(object):
             identifier = self._add_prefix(identifier)
             if not expires:
                 if not ttl and bucket['default_ttl']:
-                    ttl = getattr(g, bucket['default_ttl'])
+                    ttl = self.ttl_values[bucket['default_ttl']]
                 expires = int(time() + ttl)
             cache_entry = {'expires': expires, 'data': data}
             # Save the item data to memory-cache
@@ -176,7 +186,7 @@ class CacheManagement(object):
             if bucket['is_persistent']:
                 # Save the item data to the cache database
                 self._add_db(bucket['name'], identifier, data, expires)
-        except ProfilesMissing:
+        except DBProfilesMissing:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
             pass
 
@@ -188,8 +198,8 @@ class CacheManagement(object):
                      'VALUES(?, ?, ?, ?, ?)')
             cursor.execute(query, (bucket_name, identifier, sql.Binary(data), expires, int(time())))
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteError
 
     def delete(self, bucket, identifier, including_suffixes):
         """
@@ -214,7 +224,7 @@ class CacheManagement(object):
             if bucket['is_persistent']:
                 # Delete the item data from cache database
                 self._delete_db(bucket['name'], identifier, including_suffixes)
-        except ProfilesMissing:
+        except DBProfilesMissing:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
             pass
 
@@ -229,8 +239,8 @@ class CacheManagement(object):
                 query = 'DELETE FROM cache_data WHERE bucket = ? AND identifier = ?'
             cursor.execute(query, (bucket_name, identifier))
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteError
 
     def clear(self, buckets=None, clear_database=True):
         """
@@ -239,7 +249,7 @@ class CacheManagement(object):
         :param buckets: list of buckets to clear, if not specified clear all the cache
         :param clear_database: if True clear also the database data
         """
-        common.debug('Performing cache clearing')
+        LOG.debug('Performing cache clearing')
         if buckets is None:
             # Clear all cache
             self.memory_cache = {}
@@ -264,8 +274,8 @@ class CacheManagement(object):
                 query = 'DELETE FROM cache_data WHERE bucket = ?'
                 cursor.execute(query, (bucket['name'], ))
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteError
 
     def delete_expired(self):
         bucket_names_db = []
@@ -293,14 +303,14 @@ class CacheManagement(object):
             cursor = self.conn.cursor()
             cursor.execute(query, bucket_names)
         except sql.Error as exc:
-            common.error('SQLite error {}:', exc.args[0])
-            raise SQLiteError
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise DBSQLiteError
 
 
 def _compute_next_schedule():
-    last_run = g.LOCAL_DB.get_value('clean_cache_last_start', data_type=datetime)
+    last_run = G.LOCAL_DB.get_value('clean_cache_last_start', data_type=datetime)
     if last_run is None:
         last_run = datetime.now()
-        g.LOCAL_DB.set_value('clean_cache_last_start', last_run)
+        G.LOCAL_DB.set_value('clean_cache_last_start', last_run)
     next_run = last_run + timedelta(days=15)
     return next_run

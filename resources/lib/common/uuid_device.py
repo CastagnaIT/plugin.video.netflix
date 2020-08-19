@@ -9,9 +9,9 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from resources.lib.globals import g
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
-from .logging import debug, error
 
 try:  # Python 2
     unicode
@@ -60,7 +60,7 @@ def _get_system_uuid():
         # See python limits in the wiki development page
         uuid_value = _get_macos_uuid()
     if not uuid_value:
-        debug('It is not possible to get a system UUID creating a new UUID')
+        LOG.debug('It is not possible to get a system UUID creating a new UUID')
         uuid_value = _get_fake_uuid(system not in ['android', 'linux', 'linux raspberrypi'])
     return uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_value)).bytes
 
@@ -102,14 +102,14 @@ def _get_linux_uuid():
         uuid_value = subprocess.check_output(['cat', '/var/lib/dbus/machine-id']).decode('utf-8')
     except Exception as exc:
         import traceback
-        error('_get_linux_uuid first attempt returned: {}', exc)
-        error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error('_get_linux_uuid first attempt returned: {}', exc)
+        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
     if not uuid_value:
         try:
             # Fedora linux
             uuid_value = subprocess.check_output(['cat', '/etc/machine-id']).decode('utf-8')
         except Exception as exc:
-            error('_get_linux_uuid second attempt returned: {}', exc)
+            LOG.error('_get_linux_uuid second attempt returned: {}', exc)
     return uuid_value
 
 
@@ -148,7 +148,7 @@ def _get_macos_uuid():
         if output_data:
             sp_dict_values = _parse_osx_xml_plist_data(output_data)
     except Exception as exc:
-        debug('Failed to fetch OSX/IOS system profile {}'.format(exc))
+        LOG.debug('Failed to fetch OSX/IOS system profile {}'.format(exc))
     if sp_dict_values:
         if 'UUID' in list(sp_dict_values.keys()):
             return sp_dict_values['UUID']

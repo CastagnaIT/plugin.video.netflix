@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 import resources.lib.kodi.library_utils as lib_utils
-from resources.lib.globals import g
+from resources.lib.globals import G
 
 
 def generate_context_menu_mainmenu(menu_id):
@@ -19,6 +19,19 @@ def generate_context_menu_mainmenu(menu_id):
     items = []
     if menu_id in ['myList', 'continueWatching']:
         items.append(_ctx_item('force_update_list', None, {'menu_id': menu_id}))
+    return items
+
+
+def generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback):
+    """Generate context menu items for a listitem of the profile"""
+    items = [
+        _ctx_item('autoselect_remove_profile' if is_autoselect else 'autoselect_set_profile',
+                  None,
+                  {'profile_guid': profile_guid}),
+        _ctx_item('library_playback_remove_profile' if is_library_playback else 'library_playback_set_profile',
+                  None,
+                  {'profile_guid': profile_guid})
+    ]
     return items
 
 
@@ -37,7 +50,7 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype not in [common.VideoId.SUPPLEMENTAL, common.VideoId.EPISODE]:
         # Library operations for supplemental (trailers etc) and single episodes are not allowed
-        lib_auto_upd_mode = g.ADDON.getSettingInt('lib_auto_upd_mode')
+        lib_auto_upd_mode = G.ADDON.getSettingInt('lib_auto_upd_mode')
         if lib_auto_upd_mode != 0:
             items = _generate_library_ctx_items(videoid, lib_auto_upd_mode)
 
@@ -61,7 +74,7 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
         # Add menu to allow change manually the watched status when progress manager is enabled
-        if g.ADDON.getSettingBool('ProgressManager_enabled'):
+        if G.ADDON.getSettingBool('ProgressManager_enabled'):
             items.insert(0, _ctx_item('change_watched_status', videoid))
 
     return items
@@ -70,16 +83,16 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 def _generate_library_ctx_items(videoid, lib_auto_upd_mode):
     library_actions = []
     allow_lib_operations = True
-    lib_is_sync_with_mylist = (g.ADDON.getSettingBool('lib_sync_mylist') and
+    lib_is_sync_with_mylist = (G.ADDON.getSettingBool('lib_sync_mylist') and
                                lib_auto_upd_mode == 2)
 
     if lib_is_sync_with_mylist:
         # If the synchronization of Netflix "My List" with the Kodi library is enabled
         # only in the chosen profile allow to do operations in the Kodi library otherwise
         # it creates inconsistency to the exported elements and increases the work for sync
-        sync_mylist_profile_guid = g.SHARED_DB.get_value('sync_mylist_profile_guid',
-                                                         g.LOCAL_DB.get_guid_owner_profile())
-        allow_lib_operations = sync_mylist_profile_guid == g.LOCAL_DB.get_active_profile_guid()
+        sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
+                                                         G.LOCAL_DB.get_guid_owner_profile())
+        allow_lib_operations = sync_mylist_profile_guid == G.LOCAL_DB.get_active_profile_guid()
 
     if allow_lib_operations:
         _is_in_library = lib_utils.is_videoid_in_db(videoid)

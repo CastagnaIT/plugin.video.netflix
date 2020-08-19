@@ -26,7 +26,7 @@ msgstr "Complemento para los Servicios VOD de Netflix"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "Algunas partes de este complemento pueden ser ilegales en tu país de residencia - Por favor, comprueba tu legislación local antes de instalarlo."
+msgstr "El uso de este complemento pueden no ser legal en su país de residencia - Por favor, comprueba tu legislación local antes de instalarlo."
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -34,7 +34,7 @@ msgstr "Recomendaciones"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "Introduce el PIN para ver contenido restringido"
+msgstr "Introduzca el PIN para ver contenido restringido"
 
 # Unused 30003
 
@@ -48,7 +48,7 @@ msgstr "E-mail"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr "Introduce el PIN para acceder a este perfil"
+msgstr "Introduzca el PIN para acceder a este perfil"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
@@ -192,11 +192,11 @@ msgstr "Valoración eliminada|Valoraste con un pulgar abajo|Valoraste con un pul
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Hay un problema con el complemento InputStream Adaptive o el modulo Widevine. Puede faltar o no estar habilitados, la operación se cancelará."
+msgstr "Hay un problema con el complemento InputStream Adaptive o el módulo Widevine. Puede faltar o no estar habilitados, la operación se cancelará."
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Actualización de biblioteca en progreso"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -206,39 +206,37 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Biblioteca"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Seleccione un perfil para reproducir los vídeos"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Solicitar seleccionar un perfil antes de reproducir"
+msgid "Profile set for playback from the library"
+msgstr ""
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr ""
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Autoselección del perfil"
+msgid "Profile set to auto-selection"
+msgstr ""
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Quitar autoselección del perfil"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Establecer para autoselección"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Para establecer el perfil, abra el menú contextual en la lista de perfiles"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Quitar autoselección del perfil"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "El perfil {} ha sido fijado como autoselección"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Cuidado, está a punto de actualizar muchos títulos {}.[CR]Esto puede causar problemas de servicio o prohibición temporal de la cuenta.[CR]¿Quieres continuar?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -254,7 +252,7 @@ msgstr "Controles parentales"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Ya hay una actualización en curso."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -482,7 +480,7 @@ msgstr "Operación Mi lista completada"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "No se puede eliminar automáticamente una temporada de la biblioteca de Kodi, por favor, hazlo manualmente"
+msgstr "No se puede eliminar automáticamente una temporada de la biblioteca de Kodi. Por favor, hágalo manualmente"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -494,7 +492,7 @@ msgstr "Sincronizar Mi lista con la biblioteca de Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "¿Quieres continuar?[CR]La sincronización completa eliminará todos los títulos exportados previamente.[CR]Si hay muchos títulos, esta operación puede llevar algún tiempo."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Habilitar integración con Up Next"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Mostrar notificación en lugar de diálogo modal en los errores"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Caché borrada"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Habilitar desbloqueo de 1080p (no se recomienda para Android)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -562,7 +556,7 @@ msgstr "Habilitar IPC sobre HTTP (usar cuando aparezcan mensajes de interrupcion
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Importar biblioteca existente"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -720,7 +714,7 @@ msgstr "Mostrar tráilers y más"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Ha habido un problema con el inicio de sesión, es posible que su cuenta no haya sido confirmada o reactivada."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -908,7 +902,7 @@ msgstr "Sincronizar la biblioteca de Kodi con Mi Lista"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Establecer un perfil para sincronización"
 
 # Unused 30229
 
@@ -974,19 +968,31 @@ msgstr "Forzar nivel de seguridad Widevine L3"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Eliminando archivos exportados a la biblioteca"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
+msgstr "Hay {} títulos que no se pueden importar.[CR]¿Desea eliminar estos archivos?"
+
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
 msgstr ""
 
-# Unused 30247 to 30299
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
+msgstr "¿Desea eliminar el estado visto de '{}'?[CR][CR]La operación puede tardar hasta 24 horas, por lo tanto, el título aún puede aparecer en la lista."
+
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
 msgstr ""
 
-# Unused 30301 to 30399
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -994,27 +1000,27 @@ msgstr "Buscar"
 
 msgctxt "#30401"
 msgid "Type of search"
-msgstr ""
+msgstr "Tipo de búsqueda"
 
 msgctxt "#30402"
 msgid "Search titles, people, genres"
-msgstr ""
+msgstr "Buscar títulos, personas, géneros"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr ""
+msgstr "Nueva búsqueda..."
 
 msgctxt "#30404"
 msgid "Clear search history"
-msgstr ""
+msgstr "Limpiar historial de búsqueda"
 
 msgctxt "#30405"
 msgid "Select the language"
-msgstr ""
+msgstr "Selecciona el idioma"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr ""
+msgstr "¿Quieres eliminar todo el contenido?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1024,12 +1030,16 @@ msgstr "No se encontraron coincidencias"
 
 msgctxt "#30410"
 msgid "By term"
-msgstr ""
+msgstr "Por término"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr ""
+msgstr "Por idioma de audio"
 
 msgctxt "#30412"
 msgid "By subtitles language"
+msgstr "Por idioma de subtítulos"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
 msgstr ""

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-07-26 15:54+0000\n"
+"PO-Revision-Date: 2020-08-09 10:31+0000\n"
 "Last-Translator: Marcin W. + notoco\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -206,35 +206,33 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Bibilioteka"
 
-msgctxt "#30050"
-msgid "Select a profile to play the videos"
-msgstr "Wybierz profil do odtwarzania"
+# Unused 30050
 
 msgctxt "#30051"
-msgid "Ask to select a profile before the playback"
-msgstr "Pytaj o wybór profilu przed odtwarzaniem"
+msgid "Profile set for playback from the library"
+msgstr "Profil ustawiony do odtwarzania z biblioteki"
 
-# Unused 30052, 30053
+msgctxt "#30052"
+msgid "Set for library playback"
+msgstr "Ustaw do odtwarzania z biblioteki"
+
+msgctxt "#30053"
+msgid "Remove for playback from library"
+msgstr "Usuń z odtwarzania z biblioteki"
 
 msgctxt "#30054"
-msgid "Profile auto-selection"
-msgstr "Automatyczny wybór profilu"
+msgid "Profile set to auto-selection"
+msgstr "Profil do automatycznego wyboru"
 
 msgctxt "#30055"
-msgid "Remove auto-selection of profile"
-msgstr "Usuń automatczyny wybór profilu"
-
-msgctxt "#30056"
 msgid "Set for auto-selection"
 msgstr "Wybierz dla automatycznego wyboru"
 
-msgctxt "#30057"
-msgid "To set the profile, in the list of profiles open the context menu"
-msgstr "Aby ustawić profil, twórz menu kontekstowe na liście profili o"
+msgctxt "#30056"
+msgid "Remove auto-selection"
+msgstr "Usuń automatczyny wybór profilu"
 
-msgctxt "#30058"
-msgid "The profile {} has been set for auto-selection"
-msgstr "Profil {} został ustawiony do automatycznego wyboru"
+# Unused 30057, 30058
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
@@ -520,9 +518,7 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Włącz integrację z Up Next"
 
-msgctxt "#30130"
-msgid "Show notification instead of modal dialog for errors"
-msgstr "Pokaż powiadomienia zamiast okna dialogowego dla błędów"
+# Unused 30130
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -544,9 +540,7 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Pamięć podręczna wyczyszczona"
 
-msgctxt "#30136"
-msgid "Enable 1080p Unlock (not recommended for Android)"
-msgstr "Włącz odblokowywanie 1080p (niezalecane dla Androida)"
+# Unused 30136
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -980,13 +974,25 @@ msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
 msgstr "Istnieje {} tytułów, których nie można zaimportować.[CR]Czy chcesz usunąć te pliki?"
 
-# Unused 30247 to 30299
+msgctxt "#30247"
+msgid "Results per page (in case of timeout error decrease it)"
+msgstr "Wyników na stronę (w przypadku przekroczenia limitu czasu zmniejsz go)"
+
+# Unused 30248 to 30299
 
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Czy chcesz usunąć status oglądania '{}'?[CR][CR]Operacja może zająć do 24 godzin, dlatego tytuł może nadal pojawiać się na liście."
 
-# Unused 30301 to 30399
+msgctxt "#30301"
+msgid "Include Kodi library (only sending data)"
+msgstr "Uwzględnij bibliotekę Kodi (tylko wysyłanie danych)"
+
+# Unused 30302 to 30398
+
+msgctxt "#30399"
+msgid "Sort history by"
+msgstr ""
 
 msgctxt "#30400"
 msgid "Search"
@@ -1033,3 +1039,7 @@ msgstr "Wg. języka audio"
 msgctxt "#30412"
 msgid "By subtitles language"
 msgstr "Wg. języka napisów"
+
+msgctxt "#30413"
+msgid "By genre/subgenre ID"
+msgstr ""

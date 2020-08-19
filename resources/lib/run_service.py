@@ -15,10 +15,10 @@ from xbmcgui import Window
 
 # Global cache must not be used within these modules, because stale values may
 # be used and cause inconsistencies!
-from resources.lib.common import (info, error, select_port, get_local_string,
-                                  get_current_kodi_profile_name)
-from resources.lib.globals import g
+from resources.lib.common import select_port, get_local_string, get_current_kodi_profile_name
+from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade
+from resources.lib.utils.logging import LOG
 
 try:  # Python 2
     unicode
@@ -36,7 +36,7 @@ class NetflixService(object):
     def __init__(self):
         self.window_cls = Window(10000)  # Kodi home window
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        self.prop_nf_service_status = g.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
+        self.prop_nf_service_status = G.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
         self.controller = None
         self.library_updater = None
         self.settings_monitor = None
@@ -73,9 +73,9 @@ class NetflixService(object):
                 self._init_server(server)
             return True
         except Exception as exc:  # pylint: disable=broad-except
-            error('Background services do not start due to the following error')
+            LOG.error('Background services do not start due to the following error')
             import traceback
-            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
                            'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
@@ -106,13 +106,13 @@ class NetflixService(object):
             server['instance'].server_activate()
             server['instance'].timeout = 1
             server['thread'].start()
-            info('[{}] Thread started'.format(server['name']))
+            LOG.info('[{}] Thread started'.format(server['name']))
         self.controller = ActionController()
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
         # Mark the service as active
         self._set_service_status('running')
-        if not g.ADDON.getSettingBool('disable_startup_notification'):
+        if not G.ADDON.getSettingBool('disable_startup_notification'):
             from resources.lib.kodi.ui import show_notification
             show_notification(get_local_string(30110))
 
@@ -127,7 +127,7 @@ class NetflixService(object):
             server['instance'] = None
             server['thread'].join()
             server['thread'] = None
-        info('Stopped MSL Service')
+        LOG.info('Stopped MSL Service')
 
     def run(self):
         """Main loop. Runs until xbmc.Monitor requests abort"""
@@ -137,7 +137,7 @@ class NetflixService(object):
             self._set_service_status('stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             show_addon_error_info(exc)
             return
 
@@ -150,11 +150,11 @@ class NetflixService(object):
         try:
             self.controller.on_service_tick()
             self.library_updater.on_service_tick()
-            g.CACHE_MANAGEMENT.on_service_tick()
+            G.CACHE_MANAGEMENT.on_service_tick()
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification
-            error(g.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 
@@ -169,7 +169,7 @@ def run(argv):
     # Initialize globals right away to avoid stale values from the last addon invocation.
     # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
     # PR: https://github.com/xbmc/xbmc/pull/13814
-    g.init_globals(argv)
+    G.init_globals(argv)
     check_service_upgrade()
     netflix_service = NetflixService()
     if netflix_service.init_servers():
