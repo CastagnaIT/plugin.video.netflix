@@ -992,7 +992,7 @@ msgstr "包括Kodi库（仅发送数据）"
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "历史记录排序依据"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "通过字幕语言"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "按类型/子类型ID"
