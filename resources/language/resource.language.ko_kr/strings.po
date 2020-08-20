@@ -992,7 +992,7 @@ msgstr "Kodi라이브러리에 포함시킵니다(보낸 데이터만)"
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "검색기록 정렬"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "자막"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "장르/서브장르ID"
