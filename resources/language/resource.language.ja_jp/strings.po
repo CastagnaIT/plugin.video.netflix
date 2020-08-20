@@ -992,7 +992,7 @@ msgstr "Kodiライブラリに追加(送ったデータのみ)"
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "履歴の並び順"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1042,4 @@ msgstr "字幕"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "ジャンル／サーブジャンルID"
