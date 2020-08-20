@@ -241,7 +241,7 @@ def extract_api_data(react_context, debug_log=True):
             if debug_log:
                 LOG.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            LOG.error('Could not extract {}', path)
+            LOG.warn('Could not extract {}', path)
     return assert_valid_auth_url(api_data)
 
 
