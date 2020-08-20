@@ -171,13 +171,12 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 def _login_payload(credentials, auth_url):
     return {
         'userLoginId': credentials.get('email'),
-        'email': credentials.get('email'),
         'password': credentials.get('password'),
         'rememberMe': 'true',
         'flow': 'websiteSignUp',
         'mode': 'login',
         'action': 'loginAction',
-        'withFields': 'rememberMe,nextPage,userLoginId,password,email',
+        'withFields': 'rememberMe,nextPage,userLoginId,password',
         'authURL': auth_url,
         'nextPage': '',
         'showPassword': ''

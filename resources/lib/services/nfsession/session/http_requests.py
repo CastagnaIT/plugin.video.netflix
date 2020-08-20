@@ -149,14 +149,16 @@ class SessionHTTPRequests(SessionBase):
             params['authURL'] = self.auth_url
         params.update(custom_params)  # If needed override parameters
 
-        # The 'data' can be passed in two way:
-        # - As string (needs to be correctly formatted)
-        # - As dict (will be converted as string here)
+        # The 'data' can be passed in two types: as string, as dict
         if isinstance(data, dict):
             if endpoint_conf['add_auth_url'] == 'to_data':
                 data['authURL'] = self.auth_url
-            data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
+            if endpoint_conf.get('content_type') == 'application/x-www-form-urlencoded':
+                data_converted = data  # In this case Requests module convert the data automatically
+            else:
+                data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
         else:
+            # Special case used by path_request/callpath_request in path_requests.py
             data_converted = data
             if endpoint_conf['add_auth_url'] == 'to_data':
                 auth_data = 'authURL=' + self.auth_url
