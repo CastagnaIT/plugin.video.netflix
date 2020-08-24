@@ -10,13 +10,15 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from future.utils import raise_from
+
 import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
@@ -45,7 +47,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         try:
             common.get_credentials()
             if not self.is_logged_in():
-                self.login(modal_error_message=False)
+                self.login()
             return True
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
@@ -89,7 +91,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         return self.post(endpoint, **kwargs)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def login(self, modal_error_message=True):
+    def login(self):
         """Perform account login"""
         try:
             # First we get the authentication url without logging in, required for login API call
@@ -108,21 +110,15 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             except LoginValidateError as exc:
                 self.session.cookies.clear()
                 common.purge_credentials()
-                if not modal_error_message:
-                    raise
-                ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
-            except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
-                if not modal_error_message:
-                    raise
-                ui.show_error_info(common.get_local_string(30008),
-                                   common.get_local_string(30180),
-                                   False, True)
+                raise_from(LoginError(unicode(exc)), exc)
+            except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
+                LOG.warn('Membership status {} not valid for login', exc)
+                raise_from(LoginError(common.get_local_string(30180)), exc)
         except Exception:  # pylint: disable=broad-except
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             self.session.cookies.clear()
             raise
-        return False
 
     @measure_exec_time_decorator(is_immediate=True)
     def logout(self):

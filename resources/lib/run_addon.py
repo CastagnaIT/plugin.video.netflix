@@ -15,8 +15,8 @@ from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
 
 from resources.lib.common.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
-                                             MbrStatusFormerMemberError, MissingCredentialsError, NotLoggedInError,
-                                             InvalidPathError, LoginValidateError, BackendNotReady)
+                                             MbrStatusFormerMemberError, MissingCredentialsError, LoginError,
+                                             NotLoggedInError, InvalidPathError, BackendNotReady)
 from resources.lib.common import check_credentials, get_current_kodi_profile_name, get_local_string
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_addon_upgrade
@@ -88,8 +88,8 @@ def lazy_login(func):
         if _check_valid_credentials():
             try:
                 return func(*args, **kwargs)
-            except (NotLoggedInError, LoginValidateError):
-                # Exceptions raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
+            except NotLoggedInError:
+                # Exception raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
                 LOG.debug('Tried to perform an action without being logged in')
                 try:
                     from resources.lib.utils.api_requests import login
@@ -99,6 +99,10 @@ def lazy_login(func):
                 except MissingCredentialsError:
                     # Cancelled from user or left an empty field
                     pass
+                except LoginError as exc:
+                    # Login not valid
+                    from resources.lib.kodi.ui import show_ok_dialog
+                    show_ok_dialog(get_local_string(30008), str(exc))
         return False
     return lazy_login_wrapper
 

@@ -122,13 +122,13 @@ def _check_membership_status(status):
         # -In the login request, 'Content-Type' specified is not compliant with data passed or no more supported
         # -Expired profiles cookies!? (not verified)
         # In these cases it is mandatory to login again
-        raise MbrStatusAnonymousError
+        raise MbrStatusAnonymousError('ANONYMOUS')
     if status == 'NEVER_MEMBER':
         # The account has not been confirmed
-        raise MbrStatusNeverMemberError
+        raise MbrStatusNeverMemberError('NEVER_MEMBER')
     if status == 'FORMER_MEMBER':
         # The account has not been reactivated
-        raise MbrStatusFormerMemberError
+        raise MbrStatusFormerMemberError('FORMER_MEMBER')
     LOG.error('Can not login, the Membership status is {}', status)
     raise MbrStatusError(status)
 

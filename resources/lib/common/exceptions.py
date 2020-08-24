@@ -73,6 +73,10 @@ class MissingCredentialsError(Exception):
     """There are no stored credentials to load"""
 
 
+class LoginError(Exception):
+    """The login has failed"""
+
+
 class LoginValidateError(Exception):
     """The login request has failed for a specified reason"""
 
