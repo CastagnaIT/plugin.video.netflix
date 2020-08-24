@@ -18,7 +18,8 @@ import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError)
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError,
+                                             MissingCredentialsError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
@@ -49,6 +50,8 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             if not self.is_logged_in():
                 self.login()
             return True
+        except MissingCredentialsError:
+            pass
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
