@@ -11,10 +11,10 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import base64
+from future.utils import raise_from
 
 from resources.lib.globals import G
 from resources.lib.common.exceptions import MissingCredentialsError
-from resources.lib.utils.logging import LOG
 from .uuid_device import get_crypt_key
 
 try:  # The crypto package depends on the library installed (see Wiki)
@@ -71,11 +71,8 @@ def get_credentials():
             'email': decrypt_credential(email).decode('utf-8'),
             'password': decrypt_credential(password).decode('utf-8')
         }
-    except Exception:
-        import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise MissingCredentialsError(
-            'Existing credentials could not be decrypted')
+    except Exception as exc:  # pylint: disable=broad-except
+        raise_from(MissingCredentialsError('Existing credentials could not be decrypted'), exc)
 
 
 def check_credentials():

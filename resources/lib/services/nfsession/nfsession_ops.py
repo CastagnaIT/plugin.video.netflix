@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import time
 from datetime import datetime, timedelta
+from future.utils import raise_from
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
@@ -107,9 +108,10 @@ class NFSessionOperations(SessionPathRequests):
                           params={'switchProfileGuid': guid,
                                   '_': int(timestamp * 1000),
                                   'authURL': self.auth_url})
-        except HttpError401:
+        except HttpError401 as exc:
             # Profile guid not more valid
-            raise InvalidProfilesError('Unable to access to the selected profile.')
+            raise_from(InvalidProfilesError('Unable to access to the selected profile.'),
+                       exc)
         # Retrieve browse page to update authURL
         response = self.get_safe('browse')
         self.auth_url = website.extract_session_data(response)['auth_url']
@@ -135,7 +137,7 @@ class NFSessionOperations(SessionPathRequests):
         except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
-                raise MissingCredentialsError
+                raise_from(MissingCredentialsError, exc)
             raise
         # Warning - parental control levels vary by country or region, no fixed values can be used
         # Note: The language of descriptions change in base of the language of selected profile
@@ -159,7 +161,7 @@ class NFSessionOperations(SessionPathRequests):
             common.purge_credentials()
             self.session.cookies.clear()
             common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-            raise NotLoggedInError
+            raise_from(NotLoggedInError, exc)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_metadata(self, videoid, refresh=False):
@@ -183,7 +185,7 @@ class NFSessionOperations(SessionPathRequests):
                 except KeyError as exc:
                     # The new metadata does not contain the episode
                     LOG.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
-                    raise MetadataNotAvailable
+                    raise_from(MetadataNotAvailable, exc)
         else:
             metadata_data = self._metadata(video_id=parent_videoid), None
         return metadata_data

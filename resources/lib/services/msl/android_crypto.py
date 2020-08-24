@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import base64
 import json
+from future.utils import raise_from
 
 import xbmcdrm
 
@@ -33,10 +34,11 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             self.crypto_session = xbmcdrm.CryptoSession(
                 'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed', 'AES/CBC/NoPadding', 'HmacSHA256')
             LOG.debug('Widevine CryptoSession successful constructed')
-        except Exception:  # pylint: disable=broad-except
+        except Exception as exc:  # pylint: disable=broad-except
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            raise MSLError('Failed to construct Widevine CryptoSession')
+            raise_from(MSLError('Failed to construct Widevine CryptoSession'),
+                       exc)
 
         drm_info = {
             'version': self.crypto_session.GetPropertyString('version'),

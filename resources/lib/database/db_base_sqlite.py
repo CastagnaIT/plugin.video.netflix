@@ -12,6 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import sqlite3 as sql
 import threading
 from functools import wraps
+from future.utils import raise_from
 
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
@@ -57,7 +58,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteConnectionError
+            raise_from(DBSQLiteConnectionError, exc)
         finally:
             if conn:
                 args[0].is_connected = False
@@ -101,7 +102,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteConnectionError
+            raise_from(DBSQLiteConnectionError, exc)
         finally:
             if self.conn:
                 self.conn.close()
@@ -116,11 +117,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteError
-        except ValueError as exc_ve:
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
-            raise exc_ve
+            raise
 
     def _execute_query(self, query, params=None, cursor=None):
         try:
@@ -133,11 +134,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
             return cursor
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteError
-        except ValueError as exc_ve:
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
-            raise exc_ve
+            raise
 
     def get_cursor(self):
         return self.conn.cursor()

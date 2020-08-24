@@ -14,6 +14,7 @@ import base64
 import json
 import re
 import zlib
+from future.utils import raise_from
 
 import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
@@ -215,8 +216,9 @@ def _process_json_response(response):
     """Execute a post request and expect a JSON response"""
     try:
         return _raise_if_error(response.json())
-    except ValueError:
-        raise MSLError('Expected JSON response, got {}'.format(response.text))
+    except ValueError as exc:
+        raise_from(MSLError('Expected JSON response, got {}'.format(response.text)),
+                   exc)
 
 
 def _raise_if_error(decoded_response):

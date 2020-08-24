@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from time import time
+from future.utils import raise_from
 
 import xbmc
 import xbmcvfs
@@ -60,18 +61,18 @@ def load(account_hash):
             cookie_jar = pickle.loads(cookie_file.read())
         else:
             cookie_jar = pickle.loads(cookie_file.readBytes())
+        # Clear flwssn cookie if present, as it is trouble with early expiration
+        if 'flwssn' in cookie_jar:
+            cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
+        log_cookie(cookie_jar)
+        return cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise MissingCookiesError
+        raise_from(MissingCookiesError, exc)
     finally:
         cookie_file.close()
-    # Clear flwssn cookie if present, as it is trouble with early expiration
-    if 'flwssn' in cookie_jar:
-        cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
-    log_cookie(cookie_jar)
-    return cookie_jar
 
 
 def log_cookie(cookie_jar):

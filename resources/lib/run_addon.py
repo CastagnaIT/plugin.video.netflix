@@ -9,6 +9,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
+from future.utils import raise_from
 
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 from xbmcgui import Window
@@ -142,8 +143,8 @@ def _execute(executor_type, pathitems, params):
     """Execute an action as specified by the path"""
     try:
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
-    except AttributeError:
-        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems)))
+    except AttributeError as exc:
+        raise_from(InvalidPathError('Unknown action {}'.format('/'.join(pathitems))), exc)
     LOG.debug('Invoking action: {}', executor.__name__)
     executor(pathitems=pathitems)
 

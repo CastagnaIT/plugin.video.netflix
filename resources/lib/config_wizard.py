@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from future.utils import raise_from
+
 import inputstreamhelper
 from xbmc import getCondVisibility
 from xbmcaddon import Addon
@@ -58,7 +60,7 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
         # Captures all types of ISH internal errors
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise InputStreamHelperError(str(exc))
+        raise_from(InputStreamHelperError(str(exc)), exc)
 
     isa_addon = Addon('inputstream.adaptive')
     isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)

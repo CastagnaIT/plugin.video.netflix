@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
+from future.utils import raise_from
 
 import AddonSignals
 
@@ -112,7 +113,8 @@ def make_http_call(callname, data):
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
+        raise_from(exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1')),
+                   exc)
     _raise_for_error(result)
     return result
 
@@ -133,17 +135,16 @@ def make_http_call_cache(callname, params, data):
     try:
         result = urlopen(r, timeout=IPC_TIMEOUT_SECS).read()
     except HTTPError as exc:
-        try:
-            raise exceptions.__dict__[exc.reason]()
-        except KeyError:
-            raise Exception('The service has returned: {}'.format(exc.reason))
+        if exc.reason in exceptions.__dict__:
+            raise_from(exceptions.__dict__[exc.reason], exc)
+        raise_from(Exception('The service has returned: {}'.format(exc.reason)), exc)
     except URLError as exc:
         # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
         err_msg = G.py2_decode(str(exc), 'latin-1')
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1'))
+        raise_from(exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1')), exc)
     return result
 
 
@@ -167,10 +168,9 @@ def _raise_for_error(result):
     # The json exception data format is set by ipc_convert_exc_to_json function
     if isinstance(result, dict) and IPC_EXCEPTION_PLACEHOLDER in result:
         result = result[IPC_EXCEPTION_PLACEHOLDER]
-        try:
+        if result['class'] in exceptions.__dict__:
             raise exceptions.__dict__[result['class']](result['message'])
-        except KeyError:
-            raise Exception(result['class'] + '\r\nError details:\r\n' + result.get('message', '--'))
+        raise Exception(result['class'] + '\r\nError details:\r\n' + result.get('message', '--'))
 
 
 def ipc_return_call(func):

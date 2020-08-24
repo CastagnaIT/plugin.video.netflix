@@ -9,7 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from future.utils import iteritems
+from future.utils import iteritems, raise_from
 
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
@@ -85,8 +85,9 @@ class DirectoryPathRequests(object):
         """Return the dynamic video list ID for a LoCo context"""
         try:
             list_id = next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
-        except StopIteration:
-            raise InvalidVideoListTypeError('No lists with context {} available'.format(context))
+        except StopIteration as exc:
+            raise_from(InvalidVideoListTypeError('No lists with context {} available'.format(context)),
+                       exc)
         return list_id
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='profiles_raw_data',

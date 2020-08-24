@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 from re import search, compile as recompile, DOTALL, sub
 
-from future.utils import iteritems
+from future.utils import iteritems, raise_from
 
 import xbmc
 
@@ -162,11 +162,11 @@ def parse_profiles(data):
             G.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
             sort_order += 1
         _delete_non_existing_profiles(current_guids)
-    except Exception:
+    except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         LOG.error('Profile list data: {}', profiles_list)
-        raise InvalidProfilesError
+        raise_from(InvalidProfilesError, exc)
 
 
 def _delete_non_existing_profiles(current_guids):
@@ -269,14 +269,14 @@ def validate_login(react_context):
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))
-        except (AttributeError, KeyError):
+        except (AttributeError, KeyError) as exc:
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
             LOG.error(error_msg)
-            raise WebsiteParsingError(error_msg)
+            raise_from(WebsiteParsingError(error_msg), exc)
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -294,12 +294,12 @@ def extract_json(content, name):
         json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
-    except Exception:
+    except Exception as exc:  # pylint: disable=broad-except
         if json_str:
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise WebsiteParsingError('Unable to extract {}'.format(name))
+        raise_from(WebsiteParsingError('Unable to extract {}'.format(name)), exc)
 
 
 def extract_parental_control_data(content, current_maturity):
@@ -327,8 +327,8 @@ def extract_parental_control_data(content, current_maturity):
                                   'description': parse_html(rating_level['labels'][0]['description'])})
             if level_value == current_maturity:
                 current_level_index = index
-    except KeyError:
-        raise WebsiteParsingError('Unable to get path in to reactContext data')
+    except KeyError as exc:
+        raise_from(WebsiteParsingError('Unable to get path in to reactContext data'), exc)
     if not rating_levels:
         raise WebsiteParsingError('Unable to get maturity rating levels')
     return {'rating_levels': rating_levels, 'current_level_index': current_level_index}

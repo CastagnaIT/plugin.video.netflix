@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
+from future.utils import raise_from
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
@@ -124,8 +125,8 @@ def deserialize_data(value):
             return pickle.loads(standard_b64decode(value))
         # On python 3 pickle.loads wants byte
         return pickle.loads(value)
-    except (pickle.UnpicklingError, TypeError, EOFError):
+    except (pickle.UnpicklingError, TypeError, EOFError) as exc:
         # TypeError/EOFError happen when standard_b64decode fails
         # This should happen only if manually mixing the database data
         LOG.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
-        raise CacheMiss()
+        raise_from(CacheMiss, exc)
