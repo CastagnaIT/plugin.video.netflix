@@ -17,9 +17,14 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from resources.lib.common.exceptions import APIError, MissingCredentialsError, CacheMiss, HttpError401
+from resources.lib.common.exceptions import APIError, LoginError, MissingCredentialsError, CacheMiss, HttpError401
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 def catch_api_errors_decorator(func):
@@ -48,14 +53,16 @@ def login(ask_credentials=True):
         if ask_credentials:
             ui.ask_credentials()
         if not common.make_call('login'):
-            # Login not validated
-            # ui.show_notification(common.get_local_string(30009))
             return False
         return True
     except MissingCredentialsError:
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
         raise
+    except LoginError as exc:
+        # Login not valid
+        ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
+        return False
 
 
 @measure_exec_time_decorator()

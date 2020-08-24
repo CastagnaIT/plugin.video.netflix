@@ -98,7 +98,7 @@ class SessionHTTPRequests(SessionBase):
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-            return self.external_func_login(modal_error_message=False)  # pylint: disable=not-callable
+            return self.external_func_login()  # pylint: disable=not-callable
         except exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
