@@ -12,6 +12,7 @@ disable=
     missing-docstring,
     no-self-use,
     old-style-class,
+    super-with-arguments,
     too-few-public-methods,
     too-many-arguments,
     too-many-instance-attributes,
