@@ -179,10 +179,12 @@ def _login_payload(credentials, auth_url, react_context):
         country_code = '+' + next(dict_item for dict_item in country_codes if dict_item["id"] == country_id)['code']
     except StopIteration:
         country_code = ''
+    # 25/08/2020 since a few days there are login problems, by returning the "incorrect password" error even
+    #   when it is correct, it seems that setting 'rememberMe' to 'false' increases a bit the probabilities of success
     return {
         'userLoginId': credentials.get('email'),
         'password': credentials.get('password'),
-        'rememberMe': 'true',
+        'rememberMe': 'false',
         'flow': 'websiteSignUp',
         'mode': 'login',
         'action': 'loginAction',
