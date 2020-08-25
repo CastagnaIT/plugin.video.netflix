@@ -62,6 +62,8 @@ class SessionHTTPRequests(SessionBase):
             data=data)
         LOG.debug('Request took {}s', perf_clock() - start)
         LOG.debug('Request returned status code {}', response.status_code)
+        # for redirect in response.history:
+        #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
         if not session_refreshed:
             # We refresh the session when happen:
             # Error 404: It happen when Netflix update the build_identifier version and causes the api address to change

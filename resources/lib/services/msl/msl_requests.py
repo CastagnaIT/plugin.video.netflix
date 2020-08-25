@@ -41,7 +41,8 @@ class MSLRequests(MSLRequestBuilder):
         self.session.headers.update({
             'User-Agent': common.get_user_agent(),
             'Content-Type': 'text/plain',
-            'Accept': '*/*'
+            'Accept': '*/*',
+            'Host': 'www.netflix.com'
         })
         self._load_msl_data(msl_data)
         self.msl_switch_requested = False

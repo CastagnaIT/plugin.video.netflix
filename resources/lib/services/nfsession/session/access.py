@@ -103,7 +103,8 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             LOG.debug('Logging in...')
             login_response = self.post(
                 'login',
-                data=_login_payload(common.get_credentials(), auth_url))
+                headers={'Accept-Language': _get_accept_language_string(react_context)},
+                data=_login_payload(common.get_credentials(), auth_url, react_context))
             try:
                 website.extract_session_data(login_response, validate=True, update_profiles=True)
                 LOG.info('Login successful')
@@ -167,7 +168,13 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         common.container_update(G.BASE_URL, True)
 
 
-def _login_payload(credentials, auth_url):
+def _login_payload(credentials, auth_url, react_context):
+    country_id = react_context['models']['loginContext']['data']['geo']['requestCountry']['id']
+    country_codes = react_context['models']['countryCodes']['data']['codes']
+    try:
+        country_code = '+' + next(dict_item for dict_item in country_codes if dict_item["id"] == country_id)['code']
+    except StopIteration:
+        country_code = ''
     return {
         'userLoginId': credentials.get('email'),
         'password': credentials.get('password'),
@@ -175,8 +182,29 @@ def _login_payload(credentials, auth_url):
         'flow': 'websiteSignUp',
         'mode': 'login',
         'action': 'loginAction',
-        'withFields': 'rememberMe,nextPage,userLoginId,password',
+        'withFields': 'rememberMe,nextPage,userLoginId,password,countryCode,countryIsoCode',
         'authURL': auth_url,
         'nextPage': '',
-        'showPassword': ''
+        'showPassword': '',
+        'countryCode': country_code,
+        'countryIsoCode': country_id
     }
+
+
+def _get_accept_language_string(react_context):
+    # Set the HTTP header 'Accept-Language' allow to get http strings in the right language,
+    # and also influence the reactContext data (locale data and messages strings).
+    # Locale is usually automatically determined by the browser,
+    # we try get the locale code by reading the locale set as default in the reactContext.
+    supported_locales = react_context['models']['loginContext']['data']['geo']['supportedLocales']
+    try:
+        locale = next(dict_item for dict_item in supported_locales if dict_item["default"] is True)['locale']
+    except StopIteration:
+        locale = ''
+    locale_fallback = 'en-US'
+    if locale and locale != locale_fallback:
+        return '{loc},{loc_l};q=0.9,{loc_fb};q=0.8,{loc_fb_l};q=0.7'.format(
+            loc=locale, loc_l=locale[:2],
+            loc_fb=locale_fallback, loc_fb_l=locale_fallback[:2])
+    return '{loc},{loc_l};q=0.9'.format(
+        loc=locale_fallback, loc_l=locale_fallback[:2])

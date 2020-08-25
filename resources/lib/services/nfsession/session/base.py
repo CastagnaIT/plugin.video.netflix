@@ -45,7 +45,8 @@ class SessionBase(object):
         self.session.max_redirects = 10  # Too much redirects should means some problem
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
-            'Accept-Encoding': 'gzip, deflate, br'
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Host': 'www.netflix.com'
         })
         LOG.info('Initialized new session')
 
