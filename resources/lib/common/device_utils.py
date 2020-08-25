@@ -115,20 +115,20 @@ def get_user_agent(enable_android_mediaflag_fix=False):
         # the Windows UA is not limited, so we can use it to get the right video media flags.
         system = 'windows'
 
-    chrome_version = 'Chrome/83.0.4103.112'
+    chrome_version = 'Chrome/84.0.4147.136'
     base = 'Mozilla/5.0 '
     base += '%PL% '
     base += 'AppleWebKit/537.36 (KHTML, like Gecko) '
     base += '%CH_VER% Safari/537.36'.replace('%CH_VER%', chrome_version)
 
     if system in ['osx', 'ios', 'tvos']:
-        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_14_6)')
+        return base.replace('%PL%', '(Macintosh; Intel Mac OS X 10_15_5)')
     if system in ['windows', 'uwp']:
-        return base.replace('%PL%', '(Windows NT 10; Win64; x64)')
+        return base.replace('%PL%', '(Windows NT 10.0; Win64; x64)')
     # ARM based Linux
     if get_machine().startswith('arm'):
         # Last number is the platform version of Chrome OS
-        return base.replace('%PL%', '(X11; CrOS armv7l 13020.82.0)')
+        return base.replace('%PL%', '(X11; CrOS armv7l 13099.110.0)')
     # x86 Linux
     return base.replace('%PL%', '(X11; Linux x86_64)')
 
