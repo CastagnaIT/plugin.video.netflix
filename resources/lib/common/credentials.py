@@ -90,14 +90,12 @@ def check_credentials():
         return False
 
 
-def set_credentials(email, password):
+def set_credentials(credentials):
     """
-    Encrypt account credentials and save them to the settings.
-    Does nothing if either email or password are not supplied.
+    Encrypt account credentials and save them.
     """
-    if email and password:
-        G.LOCAL_DB.set_value('account_email', encrypt_credential(email.strip()))
-        G.LOCAL_DB.set_value('account_password', encrypt_credential(password.strip()))
+    G.LOCAL_DB.set_value('account_email', encrypt_credential(credentials['email']))
+    G.LOCAL_DB.set_value('account_password', encrypt_credential(credentials['password']))
 
 
 def purge_credentials():

@@ -50,9 +50,8 @@ def logout():
 def login(ask_credentials=True):
     """Perform a login"""
     try:
-        if ask_credentials:
-            ui.ask_credentials()
-        if not common.make_call('login'):
+        credentials = {'credentials': ui.ask_credentials()} if ask_credentials else None
+        if not common.make_call('login', credentials):
             return False
         return True
     except MissingCredentialsError:

@@ -94,7 +94,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         return self.post(endpoint, **kwargs)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def login(self):
+    def login(self, credentials=None):
         """Perform account login"""
         try:
             # First we get the authentication url without logging in, required for login API call
@@ -104,24 +104,28 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             login_response = self.post(
                 'login',
                 headers={'Accept-Language': _get_accept_language_string(react_context)},
-                data=_login_payload(common.get_credentials(), auth_url, react_context))
-            try:
-                website.extract_session_data(login_response, validate=True, update_profiles=True)
-                LOG.info('Login successful')
-                ui.show_notification(common.get_local_string(30109))
-                cookies.save(self.account_hash, self.session.cookies)
-                return True
-            except LoginValidateError as exc:
-                self.session.cookies.clear()
-                common.purge_credentials()
-                raise_from(LoginError(unicode(exc)), exc)
-            except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
-                LOG.warn('Membership status {} not valid for login', exc)
-                raise_from(LoginError(common.get_local_string(30180)), exc)
+                data=_login_payload(credentials or common.get_credentials(), auth_url, react_context))
+
+            website.extract_session_data(login_response, validate=True, update_profiles=True)
+            if credentials:
+                # Save credentials only when login has succeeded
+                common.set_credentials(credentials)
+            LOG.info('Login successful')
+            ui.show_notification(common.get_local_string(30109))
+            cookies.save(self.account_hash, self.session.cookies)
+            return True
+        except LoginValidateError as exc:
+            self.session.cookies.clear()
+            common.purge_credentials()
+            raise_from(LoginError(unicode(exc)), exc)
+        except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
+            self.session.cookies.clear()
+            LOG.warn('Membership status {} not valid for login', exc)
+            raise_from(LoginError(common.get_local_string(30180)), exc)
         except Exception:  # pylint: disable=broad-except
+            self.session.cookies.clear()
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            self.session.cookies.clear()
             raise
 
     @measure_exec_time_decorator(is_immediate=True)
