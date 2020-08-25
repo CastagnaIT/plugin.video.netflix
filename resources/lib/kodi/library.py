@@ -303,7 +303,7 @@ class Library(LibraryTasks):
                 delay_anti_ban()
         return True
 
-    def import_library(self):
+    def import_library(self, path):
         """
         Imports an already existing exported STRM library into the add-on library database,
         allows you to restore an existing library, by avoiding to recreate it from scratch.
@@ -317,7 +317,7 @@ class Library(LibraryTasks):
         remove_folders = []  # List of failed imports paths to be optionally removed
         remove_titles = []  # List of failed imports titles to be optionally removed
         # Start importing STRM files
-        folders = get_library_subfolders(FOLDER_NAME_MOVIES) + get_library_subfolders(FOLDER_NAME_SHOWS)
+        folders = get_library_subfolders(FOLDER_NAME_MOVIES, path) + get_library_subfolders(FOLDER_NAME_SHOWS, path)
         with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
             for folder_path in folders:
                 folder_name = os.path.basename(G.py2_decode(xbmc.translatePath(folder_path)))
