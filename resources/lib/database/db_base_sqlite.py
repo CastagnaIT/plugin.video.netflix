@@ -107,6 +107,19 @@ class SQLiteDatabase(db_base.BaseDatabase):
             if self.conn:
                 self.conn.close()
 
+    def _executemany_non_query(self, query, params, cursor=None):
+        try:
+            if cursor is None:
+                cursor = self.get_cursor()
+            cursor.executemany(query, params)
+        except sql.Error as exc:
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
+            raise
+
     def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
         try:
             if cursor is None:
