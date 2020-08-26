@@ -108,8 +108,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
     else:
         api_data['client_version'] = result.groups()[0]
     # Save api urls
-    for key, path in list(api_data.items()):
-        G.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+    G.LOCAL_DB.set_values(api_data, TABLE_SESSION)
     return api_data
 
 
@@ -153,13 +152,14 @@ def parse_profiles(data):
             G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
             summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
-            for key, value in iteritems(summary):
-                if LOG.level == LOG.LEVEL_VERBOSE and key in PROFILE_DEBUG_INFO:
-                    LOG.debug('Profile info {}', {key: value})
-                if key == 'profileName':  # The profile name is coded as HTML
-                    value = parse_html(value)
-                G.LOCAL_DB.set_profile_config(key, value, guid)
-            G.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
+            if LOG.level == LOG.LEVEL_VERBOSE:
+                for key, value in iteritems(summary):
+                    if key in PROFILE_DEBUG_INFO:
+                        LOG.debug('Profile info {}', {key: value})
+            # Translate the profile name, is coded as HTML
+            summary['profileName'] = parse_html(summary['profileName'])
+            summary['avatar'] = avatar_url
+            G.LOCAL_DB.insert_profile_configs(summary, guid)
             sort_order += 1
         _delete_non_existing_profiles(current_guids)
     except Exception as exc:  # pylint: disable=broad-except
