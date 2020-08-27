@@ -64,7 +64,7 @@ def search_list(dir_update_listing=False):
         sort_type = 'sort_label_ignore_folders'
     finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER, sort_type,
                        common.get_local_string(30400))
-    end_of_directory(dir_update_listing, cache_to_disc=False)
+    end_of_directory(dir_update_listing)
 
 
 def search_add():

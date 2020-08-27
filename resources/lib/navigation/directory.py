@@ -68,7 +68,7 @@ class Directory(object):
             # Do not perform the profile switch if navigation come from a page that is not the root url,
             # prevents profile switching when returning to the main menu from one of the sub-menus
             if not is_parent_root_path or activate_profile(autoselect_profile_guid):
-                self.home(None, False, True)
+                self.home(None, True)
                 return
         # IS_CONTAINER_REFRESHED is temporary set from the profiles context menu actions
         #   to avoid perform the fetch_initial_page/auto-selection every time when the container will be refreshed
@@ -87,11 +87,11 @@ class Directory(object):
         # The standard kodi theme does not allow to change view type if the content is "files" type,
         # so here we use "images" type, visually better to see
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_IMAGES)
-        end_of_directory(True, False)
+        end_of_directory(True)
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_MAINMENU)
-    def home(self, pathitems=None, cache_to_disc=True, is_autoselect_profile=False):  # pylint: disable=unused-argument
+    def home(self, pathitems=None, is_autoselect_profile=False):  # pylint: disable=unused-argument
         """Show home listing"""
         if not is_autoselect_profile and 'switch_profile_guid' in self.params:
             # This is executed only when you have selected a profile from the profile list
@@ -103,7 +103,7 @@ class Directory(object):
         finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
                            title=(G.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
-        end_of_directory(True, cache_to_disc)
+        end_of_directory(True)
 
     @measure_exec_time_decorator()
     @common.inject_video_id(path_offset=0, inject_full_pathitems=True)
