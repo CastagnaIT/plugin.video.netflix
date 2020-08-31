@@ -51,13 +51,6 @@ class SessionBase(object):
         LOG.info('Initialized new session')
 
     @property
-    def account_hash(self):
-        """The unique hash of the current account"""
-        from base64 import urlsafe_b64encode
-        return urlsafe_b64encode(
-            common.get_credentials().get('email', 'NoMail').encode('utf-8')).decode('utf-8')
-
-    @property
     def auth_url(self):
         """Access rights to make HTTP requests on an endpoint"""
         return G.LOCAL_DB.get_value('auth_url', table=TABLE_SESSION)

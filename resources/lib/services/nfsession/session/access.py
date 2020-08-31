@@ -112,7 +112,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                 common.set_credentials(credentials)
             LOG.info('Login successful')
             ui.show_notification(common.get_local_string(30109))
-            cookies.save(self.account_hash, self.session.cookies)
+            cookies.save(self.session.cookies)
             return True
         except LoginValidateError as exc:
             self.session.cookies.clear()
@@ -153,7 +153,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
         # Delete cookie and credentials
         self.session.cookies.clear()
-        cookies.delete(self.account_hash)
+        cookies.delete()
         common.purge_credentials()
 
         # Reset the ESN obtained from website/generated

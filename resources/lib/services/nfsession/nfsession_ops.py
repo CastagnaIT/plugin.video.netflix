@@ -119,7 +119,7 @@ class NFSessionOperations(SessionPathRequests):
 
         G.LOCAL_DB.switch_active_profile(guid)
         G.CACHE_MANAGEMENT.identifier_prefix = guid
-        cookies.save(self.account_hash, self.session.cookies)
+        cookies.save(self.session.cookies)
 
     def parental_control_data(self, password):
         # Ask to the service if password is right and get the PIN status

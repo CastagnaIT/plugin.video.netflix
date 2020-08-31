@@ -86,7 +86,7 @@ class SessionHTTPRequests(SessionBase):
         from requests import exceptions
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
-            cookies.save(self.account_hash, self.session.cookies)
+            cookies.save(self.session.cookies)
             LOG.debug('Successfully refreshed session data')
             return True
         except MbrStatusError:
