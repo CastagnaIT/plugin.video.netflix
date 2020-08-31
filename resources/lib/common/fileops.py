@@ -142,7 +142,7 @@ def delete_file(filename):
         pass
 
 
-def list_dir(path=G.DATA_PATH):
+def list_dir(path):
     """
     List the contents of a folder
     :return: The contents of the folder as tuple (directories, files)
