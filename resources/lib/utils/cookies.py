@@ -90,4 +90,4 @@ def log_cookie(cookie_jar):
 
 def cookie_file_path():
     """Return the file path to store cookies"""
-    return xbmc.translatePath(G.COOKIE_PATH)
+    return xbmc.translatePath(G.COOKIES_PATH)
