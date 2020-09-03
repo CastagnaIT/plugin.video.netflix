@@ -91,3 +91,15 @@ def log_cookie(cookie_jar):
 def cookie_file_path():
     """Return the file path to store cookies"""
     return xbmc.translatePath(G.COOKIES_PATH)
+
+
+def convert_chrome_cookie(cookie):
+    """Convert a cookie from Chrome to a CookieJar format type"""
+    kwargs = {'domain': cookie['domain']}
+    if cookie['expires'] != -1:
+        kwargs['expires'] = int(cookie['expires'])
+    kwargs['path'] = cookie['path']
+    kwargs['secure'] = cookie['secure']
+    if cookie['httpOnly']:
+        kwargs['rest'] = {'HttpOnly': True}
+    return cookie['name'], cookie['value'], kwargs

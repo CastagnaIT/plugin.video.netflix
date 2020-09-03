@@ -36,6 +36,7 @@ class NFSessionOperations(SessionPathRequests):
             self.get_safe,
             self.post_safe,
             self.login,
+            self.login_auth_data,
             self.logout,
             self.path_request,
             self.perpetual_path_request,
