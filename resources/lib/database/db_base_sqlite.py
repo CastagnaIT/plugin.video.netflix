@@ -245,13 +245,13 @@ class SQLiteDatabase(db_base.BaseDatabase):
         table_columns = table[1]
         # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
         # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
-        if G.PY_IS_VER2:
+        if common.is_less_version(sql.sqlite_version, '3.24.0'):
             query = 'INSERT OR REPLACE INTO {} ({}, {}) VALUES (?, ?)'.format(table_name,
                                                                               table_columns[0],
                                                                               table_columns[1])
             records_values = [(key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
         else:
-            # sqlite UPSERT clause exists only on sqlite >= 3.24.0 (not available on Kodi 18)
+            # sqlite UPSERT clause exists only on sqlite >= 3.24.0
             query = ('INSERT INTO {tbl_name} ({tbl_col1}, {tbl_col2}) VALUES (?, ?) '
                      'ON CONFLICT({tbl_col1}) DO UPDATE SET {tbl_col2} = ? '
                      'WHERE {tbl_col1} = ?').format(tbl_name=table_name,
