@@ -41,6 +41,11 @@ Install add-on manually - updates should always be installed manually:
 * As Kodi file source, only for Kodi 18:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
+## Login with Authentication key
+
+An alternative login method to avoid "incorrect password" error
+* [How to login with Authentication key - wiki](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Login-with-Authentication-key)
+
 ## Reference table of high resolutions
 
 This table explains in brief the availability of high resolutions between devices and operating systems. This may change over time based on changes made by Netflix itself.
