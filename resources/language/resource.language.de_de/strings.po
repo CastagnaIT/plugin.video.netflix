@@ -991,7 +991,7 @@ msgstr "Inklusive Kodi-Bibliothek (nur ausgehend)"
 # Unused 30302 to 30339
 
 msgctxt "#30340"
-msgid "Choose the login method[CR](if the login with E-Mail/Password always returns "incorrect password", then use Authentication key, instructions in the GitHub ReadMe)"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Wählen Sie Ihre Anmeldemethode aus[CR](falls die Anmeldung mit E-Mail/Passwort immer \"falsches Passwort\" zurückgibt, verwenden Sie einen Authentifizierungsschlüssel gemäß der Anweisungen im GitHub-ReadMe)"
 
 msgctxt "#30341"

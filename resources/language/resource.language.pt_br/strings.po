@@ -991,7 +991,7 @@ msgstr "Incluir na coleção do Kodi (somente enviando dado)"
 # Unused 30302 to 30339
 
 msgctxt "#30340"
-msgid "Choose the login method[CR](if the login with E-Mail/Password always returns "incorrect password", then use Authentication key, instructions in the GitHub ReadMe)"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr ""
 
 msgctxt "#30341"
