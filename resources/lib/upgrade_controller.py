@@ -88,6 +88,10 @@ def _perform_service_changes(previous_ver, current_ver):
         except TypeError:
             # In case of a previous rollback this could fails
             G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
+    if previous_ver and is_less_version(previous_ver, '1.9.0'):
+        # In the version 1.9.0 has been changed the COOKIE_ filename with a static filename
+        from resources.lib.upgrade_actions import rename_cookie_file
+        rename_cookie_file()
     # Always leave this to last - After the operations set current version
     G.LOCAL_DB.set_value('service_previous_version', current_ver)
 

@@ -988,7 +988,33 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Uwzględnij bibliotekę Kodi (tylko wysyłanie danych)"
 
-# Unused 30302 to 30398
+# Unused 30302 to 30339
+
+msgctxt "#30340"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns "incorrect password", then use Authentication key, instructions in the GitHub ReadMe)"
+msgstr ""
+
+msgctxt "#30341"
+msgid "E-Mail/Password"
+msgstr ""
+
+msgctxt "#30342"
+msgid "Authentication key"
+msgstr ""
+
+msgctxt "#30343"
+msgid "The selected file is not compatible or corrupted"
+msgstr ""
+
+msgctxt "#30344"
+msgid "The authentication key file is expired"
+msgstr ""
+
+msgctxt "#30345"
+msgid "Enter PIN"
+msgstr ""
+
+# Unused 30346 to 30398
 
 msgctxt "#30399"
 msgid "Sort history by"

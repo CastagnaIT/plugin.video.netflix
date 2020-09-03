@@ -41,12 +41,20 @@ def get_random_uuid():
     return unicode(uuid.uuid4())
 
 
+def get_namespace_uuid(name):
+    """
+    Generate a namespace uuid
+    :return: uuid object
+    """
+    import uuid
+    return uuid.uuid5(uuid.NAMESPACE_DNS, name)
+
+
 def _get_system_uuid():
     """
     Try to get an uuid from the system, if it's not possible generates a fake uuid
     :return: an uuid converted to MD5
     """
-    import uuid
     uuid_value = None
     system = get_system_platform()
     if system in ['windows', 'uwp']:
@@ -62,7 +70,7 @@ def _get_system_uuid():
     if not uuid_value:
         LOG.debug('It is not possible to get a system UUID creating a new UUID')
         uuid_value = _get_fake_uuid(system not in ['android', 'linux', 'linux raspberrypi'])
-    return uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_value)).bytes
+    return get_namespace_uuid(str(uuid_value)).bytes
 
 
 def _get_windows_uuid():

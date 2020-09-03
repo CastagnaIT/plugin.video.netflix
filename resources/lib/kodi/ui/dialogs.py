@@ -136,17 +136,18 @@ def show_library_task_errors(notify_errors, errors):
                                        for err in errors]))
 
 
-def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=False):
+def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=False, extensions=None):
     """
     Show a browse dialog to select files or folders
     :param title: The window title
     :param browse_type: Type of dialog as int value (0 = ShowAndGetDirectory, 1 = ShowAndGetFile, ..see doc)
     :param default_path: The initial path
     :param multi_selection: Allow multi selection
+    :param extensions: extensions allowed e.g. '.jpg|.png'
     :return: The selected path as string (or tuple of selected items) if user pressed 'Ok', else None
     """
     ret = G.py2_decode(xbmcgui.Dialog().browse(browse_type, title, shares='local', useThumbs=False, treatAsFolder=False,
-                                               defaultt=default_path, enableMultiple=multi_selection))
+                                               defaultt=default_path, enableMultiple=multi_selection, mask=extensions))
     # Note: when defaultt is set and the user cancel the action (when enableMultiple is False),
     #       will be returned the defaultt value again, so we avoid this strange behavior...
     return None if not ret or ret == default_path else ret

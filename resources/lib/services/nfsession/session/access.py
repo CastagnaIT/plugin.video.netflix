@@ -10,6 +10,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import re
+
 from future.utils import raise_from
 
 import resources.lib.utils.website as website
@@ -19,7 +21,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
                                              MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError,
-                                             MissingCredentialsError)
+                                             MissingCredentialsError, MbrStatusAnonymousError, WebsiteParsingError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
@@ -34,11 +36,6 @@ except NameError:  # Python 3
 
 class SessionAccess(SessionCookie, SessionHTTPRequests):
     """Handle the authentication access"""
-
-    def __init__(self):
-        super(SessionAccess, self).__init__()
-        # Share the login function to SessionBase class
-        self.external_func_login = self.login
 
     @measure_exec_time_decorator(is_immediate=True)
     def prefetch_login(self):
@@ -94,13 +91,49 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         return self.post(endpoint, **kwargs)
 
     @measure_exec_time_decorator(is_immediate=True)
+    def login_auth_data(self, data=None, password=None):
+        """Perform account login with authentication data"""
+        LOG.debug('Logging in with authentication data')
+        # Add the cookies to the session
+        self.session.cookies.clear()
+        for cookie in data['cookies']:
+            self.session.cookies.set(cookie[0], cookie[1], **cookie[2])
+        cookies.log_cookie(self.session.cookies)
+        # Try access to website
+        try:
+            website.extract_session_data(self.get('browse'), validate=True, update_profiles=True)
+        except MbrStatusAnonymousError:
+            # Access not valid
+            return False
+        # Get the account e-mail
+        page_response = self.get('your_account').decode('utf-8')
+        email_match = re.search(r'account-email[^<]+>([^<]+@[^</]+)</', page_response)
+        email = email_match.group(1).strip() if email_match else None
+        if not email:
+            raise WebsiteParsingError('E-mail field not found')
+        # Verify the password (with parental control api)
+        response = self.post_safe('profile_hub',
+                                  data={'destination': 'contentRestrictions',
+                                        'guid': G.LOCAL_DB.get_active_profile_guid(),
+                                        'password': password,
+                                        'task': 'auth'})
+        if response.get('status') != 'ok':
+            raise LoginError(common.get_local_string(12344))  # 12344=Passwords entered did not match.
+        common.set_credentials({'email': email, 'password': password})
+        LOG.info('Login successful')
+        ui.show_notification(common.get_local_string(30109))
+        cookies.save(self.session.cookies)
+        return True
+
+    @measure_exec_time_decorator(is_immediate=True)
     def login(self, credentials=None):
-        """Perform account login"""
+        """Perform account login with credentials"""
         try:
             # First we get the authentication url without logging in, required for login API call
+            self.session.cookies.clear()
             react_context = website.extract_json(self.get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
-            LOG.debug('Logging in...')
+            LOG.debug('Logging in with credentials')
             login_response = self.post(
                 'login',
                 headers={'Accept-Language': _get_accept_language_string(react_context)},
@@ -112,7 +145,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                 common.set_credentials(credentials)
             LOG.info('Login successful')
             ui.show_notification(common.get_local_string(30109))
-            cookies.save(self.account_hash, self.session.cookies)
+            cookies.save(self.session.cookies)
             return True
         except LoginValidateError as exc:
             self.session.cookies.clear()
@@ -153,7 +186,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
         # Delete cookie and credentials
         self.session.cookies.clear()
-        cookies.delete(self.account_hash)
+        cookies.delete()
         common.purge_credentials()
 
         # Reset the ESN obtained from website/generated

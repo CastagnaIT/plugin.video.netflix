@@ -154,3 +154,13 @@ class MSLRequestBuilder(object):
                     'password': credentials['password']
                 }
             }
+            # Authentication with user Netflix ID cookies
+            # This not works on android,
+            #   will raise: User authentication data does not match entity identity
+            # header_data['userauthdata'] = {
+            #     'scheme': 'NETFLIXID',
+            #     'authdata': {
+            #         'netflixid': cookies['NetflixId'],
+            #         'securenetflixid': cookies['SecureNetflixId']
+            #     }
+            # }

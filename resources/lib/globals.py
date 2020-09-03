@@ -243,7 +243,7 @@ class GlobalVariables(object):
             self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Add-on folder
             self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Add-on user data folder
             self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
-            self.COOKIE_PATH = os.path.join(self.DATA_PATH, 'COOKIE')
+            self.COOKIES_PATH = os.path.join(self.DATA_PATH, 'COOKIES')
             try:
                 self.PLUGIN_HANDLE = int(argv[1])
                 self.IS_SERVICE = False

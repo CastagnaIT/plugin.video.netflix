@@ -50,10 +50,24 @@ def logout():
 def login(ask_credentials=True):
     """Perform a login"""
     try:
-        credentials = {'credentials': ui.ask_credentials()} if ask_credentials else None
-        if not common.make_call('login', credentials):
-            return False
-        return True
+        credentials = None
+        is_login_with_credentials = True
+        if ask_credentials:
+            is_login_with_credentials = ui.show_yesno_dialog('Login', common.get_local_string(30340),
+                                                             yeslabel=common.get_local_string(30341),
+                                                             nolabel=common.get_local_string(30342))
+            if is_login_with_credentials:
+                credentials = {'credentials': ui.ask_credentials()}
+        if is_login_with_credentials:
+            if common.make_call('login', credentials):
+                return True
+        else:
+            data = common.run_nf_authentication_key()
+            if not data:
+                raise MissingCredentialsError
+            password = ui.ask_for_password()
+            if password and common.make_call('login_auth_data', {'data': data, 'password': password}):
+                return True
     except MissingCredentialsError:
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
@@ -61,7 +75,7 @@ def login(ask_credentials=True):
     except LoginError as exc:
         # Login not valid
         ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
-        return False
+    return False
 
 
 @measure_exec_time_decorator()

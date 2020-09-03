@@ -26,7 +26,6 @@ class SessionBase(object):
     """Use SSL verification when performing requests"""
 
     # Functions from derived classes to allow perform particular operations in parent classes
-    external_func_login = None  # (set by access.py)
     external_func_activate_profile = None  # (set by nfsession_op.py)
 
     def __init__(self):
@@ -49,13 +48,6 @@ class SessionBase(object):
             'Host': 'www.netflix.com'
         })
         LOG.info('Initialized new session')
-
-    @property
-    def account_hash(self):
-        """The unique hash of the current account"""
-        from base64 import urlsafe_b64encode
-        return urlsafe_b64encode(
-            common.get_credentials().get('email', 'NoMail').encode('utf-8')).decode('utf-8')
 
     @property
     def auth_url(self):

@@ -14,11 +14,23 @@ import os
 import xbmc
 import xbmcvfs
 
-from resources.lib.common.fileops import delete_folder_contents, list_dir, join_folders_paths, load_file, save_file
+from resources.lib.common.fileops import (delete_folder_contents, list_dir, join_folders_paths, load_file, save_file,
+                                          copy_file, delete_file)
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.kodi.library_utils import get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS
 from resources.lib.utils.logging import LOG
+
+
+def rename_cookie_file():
+    # The file "COOKIE_xxxxxx..." will be renamed to "COOKIES"
+    list_files = list_dir(G.DATA_PATH)[1]
+    for filename in list_files:
+        if 'COOKIE_' in G.py2_decode(filename):
+            copy_file(join_folders_paths(G.DATA_PATH, G.py2_decode(filename)),
+                      join_folders_paths(G.DATA_PATH, 'COOKIES'))
+            xbmc.sleep(80)
+            delete_file(G.py2_decode(filename))
 
 
 def delete_cache_folder():
