@@ -26,7 +26,6 @@ class SessionBase(object):
     """Use SSL verification when performing requests"""
 
     # Functions from derived classes to allow perform particular operations in parent classes
-    external_func_login = None  # (set by access.py)
     external_func_activate_profile = None  # (set by nfsession_op.py)
 
     def __init__(self):

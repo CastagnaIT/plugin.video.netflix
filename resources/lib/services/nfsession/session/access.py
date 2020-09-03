@@ -37,11 +37,6 @@ except NameError:  # Python 3
 class SessionAccess(SessionCookie, SessionHTTPRequests):
     """Handle the authentication access"""
 
-    def __init__(self):
-        super(SessionAccess, self).__init__()
-        # Share the login function to SessionBase class
-        self.external_func_login = self.login
-
     @measure_exec_time_decorator(is_immediate=True)
     def prefetch_login(self):
         """Check if we have stored credentials.

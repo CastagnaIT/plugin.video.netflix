@@ -12,10 +12,13 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
+from future.utils import raise_from
+
 import resources.lib.utils.website as website
 import resources.lib.common as common
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401)
+                                             HttpError401, NotLoggedInError)
+from resources.lib.kodi import ui
 from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
@@ -100,7 +103,10 @@ class SessionHTTPRequests(SessionBase):
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-            return self.external_func_login()  # pylint: disable=not-callable
+            # Needed to do a new login
+            common.purge_credentials()
+            ui.show_notification(common.get_local_string(30008))
+            raise_from(NotLoggedInError, exc)
         except exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
