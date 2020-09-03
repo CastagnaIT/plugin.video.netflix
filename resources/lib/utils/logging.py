@@ -130,7 +130,7 @@ class Logging(object):
 
 def logdetails_decorator(func):
     """Log decorator that is used to annotate methods & output everything to the Kodi debug log"""
-    name = func.func_name
+    name = func.__name__
 
     @wraps(func)
     def wrapped(*args, **kwargs):

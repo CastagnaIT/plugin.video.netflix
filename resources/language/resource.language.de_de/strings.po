@@ -256,7 +256,7 @@ msgstr "Es wird bereits eine Aktualisierung durchgeführt."
 
 msgctxt "#30064"
 msgid "Perform auto-update"
-msgstr "Aktiviere Automatische Aktualisierung"
+msgstr "Automatische Aktualisierung durchführen"
 
 msgctxt "#30065"
 msgid "Auto-update for tv shows seasons and episodes"
@@ -592,7 +592,7 @@ msgstr "<< Vorherige Seite"
 
 msgctxt "#30149"
 msgid "Sort results by"
-msgstr "Sortiere Ergebnisse nach"
+msgstr "Ergebnisse sortieren nach"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
@@ -824,7 +824,7 @@ msgstr "Definiere dieses Gerät als Haupt-Autoupdate-Manager"
 
 msgctxt "#30208"
 msgid "Check if this device is the main auto-update manager"
-msgstr "Pürfe ob dieses Gerät der Haupt-Autoupdate-Manager ist"
+msgstr "Prüfe ob dieses Gerät der Haupt-Autoupdate-Manager ist"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of shared-library"
@@ -988,7 +988,33 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Inklusive Kodi-Bibliothek (nur ausgehend)"
 
-# Unused 30302 to 30398
+# Unused 30302 to 30339
+
+msgctxt "#30340"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
+msgstr "Wählen Sie Ihre Anmeldemethode aus[CR](falls die Anmeldung mit E-Mail/Passwort immer \"falsches Passwort\" zurückgibt, verwenden Sie einen Authentifizierungsschlüssel gemäß der Anweisungen im GitHub-ReadMe)"
+
+msgctxt "#30341"
+msgid "E-Mail/Password"
+msgstr "E-Mail/Passwort"
+
+msgctxt "#30342"
+msgid "Authentication key"
+msgstr "Authentifizierungsschlüssel"
+
+msgctxt "#30343"
+msgid "The selected file is not compatible or corrupted"
+msgstr "Die ausgewählte Datei ist inkompatibel oder beschädigt"
+
+msgctxt "#30344"
+msgid "The authentication key file is expired"
+msgstr "Der Authentifizierungsschlüssel ist abgelaufen"
+
+msgctxt "#30345"
+msgid "Enter PIN"
+msgstr "PIN eingeben"
+
+# Unused 30346 to 30398
 
 msgctxt "#30399"
 msgid "Sort history by"

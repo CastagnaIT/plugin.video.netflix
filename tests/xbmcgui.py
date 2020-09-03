@@ -139,6 +139,10 @@ class Dialog:
         """A stub implementation for the xbmcgui Dialog class select() method"""
         return -1
 
+    def browse(self, type, heading, shares, mask=None, useThumbs=False, treatAsFolder=False, defaultt=None, enableMultiple=False):  # pylint: disable=redefined-builtin
+        """A stub implementation for the xbmcgui Dialog class browse() method"""
+        return ''
+
     @staticmethod
     # def numeric(type, heading, defaultt=''):  # Kodi 18
     def numeric(type, heading, defaultt='', bHiddenInput=False):  # pylint: disable=redefined-builtin

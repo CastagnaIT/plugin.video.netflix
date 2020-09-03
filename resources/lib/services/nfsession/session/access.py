@@ -10,13 +10,18 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import re
+
+from future.utils import raise_from
+
 import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.esn import get_esn
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
-                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError)
+                                             MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError,
+                                             MissingCredentialsError, MbrStatusAnonymousError, WebsiteParsingError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
@@ -32,11 +37,6 @@ except NameError:  # Python 3
 class SessionAccess(SessionCookie, SessionHTTPRequests):
     """Handle the authentication access"""
 
-    def __init__(self):
-        super(SessionAccess, self).__init__()
-        # Share the login function to SessionBase class
-        self.external_func_login = self.login
-
     @measure_exec_time_decorator(is_immediate=True)
     def prefetch_login(self):
         """Check if we have stored credentials.
@@ -45,8 +45,10 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         try:
             common.get_credentials()
             if not self.is_logged_in():
-                self.login(modal_error_message=False)
+                self.login()
             return True
+        except MissingCredentialsError:
+            pass
         except exceptions.RequestException as exc:
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
@@ -89,40 +91,75 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         return self.post(endpoint, **kwargs)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def login(self, modal_error_message=True):
-        """Perform account login"""
+    def login_auth_data(self, data=None, password=None):
+        """Perform account login with authentication data"""
+        LOG.debug('Logging in with authentication data')
+        # Add the cookies to the session
+        self.session.cookies.clear()
+        for cookie in data['cookies']:
+            self.session.cookies.set(cookie[0], cookie[1], **cookie[2])
+        cookies.log_cookie(self.session.cookies)
+        # Try access to website
+        try:
+            website.extract_session_data(self.get('browse'), validate=True, update_profiles=True)
+        except MbrStatusAnonymousError:
+            # Access not valid
+            return False
+        # Get the account e-mail
+        page_response = self.get('your_account').decode('utf-8')
+        email_match = re.search(r'account-email[^<]+>([^<]+@[^</]+)</', page_response)
+        email = email_match.group(1).strip() if email_match else None
+        if not email:
+            raise WebsiteParsingError('E-mail field not found')
+        # Verify the password (with parental control api)
+        response = self.post_safe('profile_hub',
+                                  data={'destination': 'contentRestrictions',
+                                        'guid': G.LOCAL_DB.get_active_profile_guid(),
+                                        'password': password,
+                                        'task': 'auth'})
+        if response.get('status') != 'ok':
+            raise LoginError(common.get_local_string(12344))  # 12344=Passwords entered did not match.
+        common.set_credentials({'email': email, 'password': password})
+        LOG.info('Login successful')
+        ui.show_notification(common.get_local_string(30109))
+        cookies.save(self.session.cookies)
+        return True
+
+    @measure_exec_time_decorator(is_immediate=True)
+    def login(self, credentials=None):
+        """Perform account login with credentials"""
         try:
             # First we get the authentication url without logging in, required for login API call
+            self.session.cookies.clear()
             react_context = website.extract_json(self.get('login'), 'reactContext')
             auth_url = website.extract_api_data(react_context)['auth_url']
-            LOG.debug('Logging in...')
+            LOG.debug('Logging in with credentials')
             login_response = self.post(
                 'login',
-                data=_login_payload(common.get_credentials(), auth_url))
-            try:
-                website.extract_session_data(login_response, validate=True, update_profiles=True)
-                LOG.info('Login successful')
-                ui.show_notification(common.get_local_string(30109))
-                cookies.save(self.account_hash, self.session.cookies)
-                return True
-            except LoginValidateError as exc:
-                self.session.cookies.clear()
-                common.purge_credentials()
-                if not modal_error_message:
-                    raise
-                ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
-            except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
-                if not modal_error_message:
-                    raise
-                ui.show_error_info(common.get_local_string(30008),
-                                   common.get_local_string(30180),
-                                   False, True)
+                headers={'Accept-Language': _get_accept_language_string(react_context)},
+                data=_login_payload(credentials or common.get_credentials(), auth_url, react_context))
+
+            website.extract_session_data(login_response, validate=True, update_profiles=True)
+            if credentials:
+                # Save credentials only when login has succeeded
+                common.set_credentials(credentials)
+            LOG.info('Login successful')
+            ui.show_notification(common.get_local_string(30109))
+            cookies.save(self.session.cookies)
+            return True
+        except LoginValidateError as exc:
+            self.session.cookies.clear()
+            common.purge_credentials()
+            raise_from(LoginError(unicode(exc)), exc)
+        except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
+            self.session.cookies.clear()
+            LOG.warn('Membership status {} not valid for login', exc)
+            raise_from(LoginError(common.get_local_string(30180)), exc)
         except Exception:  # pylint: disable=broad-except
+            self.session.cookies.clear()
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            self.session.cookies.clear()
             raise
-        return False
 
     @measure_exec_time_decorator(is_immediate=True)
     def logout(self):
@@ -149,7 +186,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
         # Delete cookie and credentials
         self.session.cookies.clear()
-        cookies.delete(self.account_hash)
+        cookies.delete()
         common.purge_credentials()
 
         # Reset the ESN obtained from website/generated
@@ -168,17 +205,45 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         common.container_update(G.BASE_URL, True)
 
 
-def _login_payload(credentials, auth_url):
+def _login_payload(credentials, auth_url, react_context):
+    country_id = react_context['models']['loginContext']['data']['geo']['requestCountry']['id']
+    country_codes = react_context['models']['countryCodes']['data']['codes']
+    try:
+        country_code = '+' + next(dict_item for dict_item in country_codes if dict_item["id"] == country_id)['code']
+    except StopIteration:
+        country_code = ''
+    # 25/08/2020 since a few days there are login problems, by returning the "incorrect password" error even
+    #   when it is correct, it seems that setting 'rememberMe' to 'false' increases a bit the probabilities of success
     return {
         'userLoginId': credentials.get('email'),
-        'email': credentials.get('email'),
         'password': credentials.get('password'),
-        'rememberMe': 'true',
+        'rememberMe': 'false',
         'flow': 'websiteSignUp',
         'mode': 'login',
         'action': 'loginAction',
-        'withFields': 'rememberMe,nextPage,userLoginId,password,email',
+        'withFields': 'rememberMe,nextPage,userLoginId,password,countryCode,countryIsoCode',
         'authURL': auth_url,
         'nextPage': '',
-        'showPassword': ''
+        'showPassword': '',
+        'countryCode': country_code,
+        'countryIsoCode': country_id
     }
+
+
+def _get_accept_language_string(react_context):
+    # Set the HTTP header 'Accept-Language' allow to get http strings in the right language,
+    # and also influence the reactContext data (locale data and messages strings).
+    # Locale is usually automatically determined by the browser,
+    # we try get the locale code by reading the locale set as default in the reactContext.
+    supported_locales = react_context['models']['loginContext']['data']['geo']['supportedLocales']
+    try:
+        locale = next(dict_item for dict_item in supported_locales if dict_item["default"] is True)['locale']
+    except StopIteration:
+        locale = ''
+    locale_fallback = 'en-US'
+    if locale and locale != locale_fallback:
+        return '{loc},{loc_l};q=0.9,{loc_fb};q=0.8,{loc_fb_l};q=0.7'.format(
+            loc=locale, loc_l=locale[:2],
+            loc_fb=locale_fallback, loc_fb_l=locale_fallback[:2])
+    return '{loc},{loc_l};q=0.9'.format(
+        loc=locale_fallback, loc_l=locale_fallback[:2])

@@ -236,7 +236,7 @@ msgstr "自動選択を解除する"
 
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr "警告！多め({}個)ののタイトルを更新しようとします。[CR]これは大変な問題を起こすか、アカウントが一時的にブロックされる可能性があります。[CR]宜しいですか。"
+msgstr "警告！多め({}個)のタイトルを更新しようとします。[CR]これは大変な問題を起こすか、アカウントが一時的にブロックされる可能性があります。[CR]宜しいですか。"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -988,11 +988,37 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Kodiライブラリに追加(送ったデータのみ)"
 
-# Unused 30302 to 30398
+# Unused 30302 to 30339
+
+msgctxt "#30340"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
+msgstr ""
+
+msgctxt "#30341"
+msgid "E-Mail/Password"
+msgstr ""
+
+msgctxt "#30342"
+msgid "Authentication key"
+msgstr ""
+
+msgctxt "#30343"
+msgid "The selected file is not compatible or corrupted"
+msgstr ""
+
+msgctxt "#30344"
+msgid "The authentication key file is expired"
+msgstr ""
+
+msgctxt "#30345"
+msgid "Enter PIN"
+msgstr ""
+
+# Unused 30346 to 30398
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "履歴の並び順"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1042,4 +1068,4 @@ msgstr "字幕"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "ジャンル／サーブジャンルID"

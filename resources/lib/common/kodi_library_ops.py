@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import os
+from future.utils import raise_from
 
 import xbmc
 
@@ -86,8 +87,9 @@ def get_library_item_by_videoid(videoid):
         file_path, media_type = _get_videoid_file_path(videoid)
         # Ask to Kodi to find this file path in Kodi library database, and get all item details
         return _get_item_details_from_kodi(media_type, file_path)
-    except (KeyError, IndexError, ItemNotFound):
-        raise ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid))
+    except (KeyError, IndexError, ItemNotFound) as exc:
+        raise_from(ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid)),
+                   exc)
 
 
 def _get_videoid_file_path(videoid):

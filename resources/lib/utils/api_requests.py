@@ -17,9 +17,14 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from resources.lib.common.exceptions import APIError, MissingCredentialsError, CacheMiss, HttpError401
+from resources.lib.common.exceptions import APIError, LoginError, MissingCredentialsError, CacheMiss, HttpError401
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
+
+try:  # Python 2
+    unicode
+except NameError:  # Python 3
+    unicode = str  # pylint: disable=redefined-builtin
 
 
 def catch_api_errors_decorator(func):
@@ -45,17 +50,32 @@ def logout():
 def login(ask_credentials=True):
     """Perform a login"""
     try:
+        credentials = None
+        is_login_with_credentials = True
         if ask_credentials:
-            ui.ask_credentials()
-        if not common.make_call('login'):
-            # Login not validated
-            # ui.show_notification(common.get_local_string(30009))
-            return False
-        return True
+            is_login_with_credentials = ui.show_yesno_dialog('Login', common.get_local_string(30340),
+                                                             yeslabel=common.get_local_string(30341),
+                                                             nolabel=common.get_local_string(30342))
+            if is_login_with_credentials:
+                credentials = {'credentials': ui.ask_credentials()}
+        if is_login_with_credentials:
+            if common.make_call('login', credentials):
+                return True
+        else:
+            data = common.run_nf_authentication_key()
+            if not data:
+                raise MissingCredentialsError
+            password = ui.ask_for_password()
+            if password and common.make_call('login_auth_data', {'data': data, 'password': password}):
+                return True
     except MissingCredentialsError:
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
         raise
+    except LoginError as exc:
+        # Login not valid
+        ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
+    return False
 
 
 @measure_exec_time_decorator()

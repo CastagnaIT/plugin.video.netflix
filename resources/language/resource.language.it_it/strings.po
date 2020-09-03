@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-08-18 10:30+0000\n"
+"PO-Revision-Date: 2020-09-03 10:30+0000\n"
 "Last-Translator: Stefano Gottardo\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -436,7 +436,7 @@ msgstr "Tutti i contenuti sono protetti da PIN."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Login riuscito"
+msgstr "Accesso riuscito"
 
 msgctxt "#30110"
 msgid "Background services started"
@@ -714,7 +714,7 @@ msgstr "Mostra trailer e altro"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr "Si è verificato un problema con il login, è possibile che il vostro account non sia stato confermato oppure riattivato."
+msgstr "Si è verificato un problema con l'accesso, è possibile che il vostro account non sia stato confermato oppure riattivato."
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -864,7 +864,7 @@ msgstr "Resetta ESN"
 
 msgctxt "#30218"
 msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Sei sicuro di voler resettare l'ESN?\r\nSe confermi, attendi fino a quando appare il messaggio di log-in"
+msgstr "Sei sicuro di voler resettare l'ESN?\r\nSe confermi, attendi fino a quando appare il messaggio di accesso."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -988,7 +988,33 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Includi libreria Kodi (solo per invio dati)"
 
-# Unused 30302 to 30398
+# Unused 30302 to 30339
+
+msgctxt "#30340"
+msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
+msgstr "Scegli il metodo di accesso[CR](se l'accesso con E-Mail/Password restituisce sempre \"password non corretta\", utilizzare la Chiave di autenticazione, istruzioni nel ReadMe su GitHub)"
+
+msgctxt "#30341"
+msgid "E-Mail/Password"
+msgstr "E-Mail/Password"
+
+msgctxt "#30342"
+msgid "Authentication key"
+msgstr "Chiave di autenticazione"
+
+msgctxt "#30343"
+msgid "The selected file is not compatible or corrupted"
+msgstr "Il file selezionato non è compatibile o è corrotto"
+
+msgctxt "#30344"
+msgid "The authentication key file is expired"
+msgstr "La chiave di autenticazione è scaduta"
+
+msgctxt "#30345"
+msgid "Enter PIN"
+msgstr "Inserire PIN"
+
+# Unused 30346 to 30398
 
 msgctxt "#30399"
 msgid "Sort history by"

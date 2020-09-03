@@ -12,6 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import sqlite3 as sql
 import threading
 from functools import wraps
+from future.utils import iteritems, raise_from
 
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
@@ -57,7 +58,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteConnectionError
+            raise_from(DBSQLiteConnectionError, exc)
         finally:
             if conn:
                 args[0].is_connected = False
@@ -101,10 +102,23 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteConnectionError
+            raise_from(DBSQLiteConnectionError, exc)
         finally:
             if self.conn:
                 self.conn.close()
+
+    def _executemany_non_query(self, query, params, cursor=None):
+        try:
+            if cursor is None:
+                cursor = self.get_cursor()
+            cursor.executemany(query, params)
+        except sql.Error as exc:
+            LOG.error('SQLite error {}:', exc.args[0])
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
+            LOG.error('Value {}', str(params))
+            LOG.error('Value type {}', type(params))
+            raise
 
     def _execute_non_query(self, query, params=None, cursor=None, **kwargs):
         try:
@@ -116,11 +130,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteError
-        except ValueError as exc_ve:
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
-            raise exc_ve
+            raise
 
     def _execute_query(self, query, params=None, cursor=None):
         try:
@@ -133,11 +147,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
             return cursor
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise DBSQLiteError
-        except ValueError as exc_ve:
+            raise_from(DBSQLiteError, exc)
+        except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
-            raise exc_ve
+            raise
 
     def get_cursor(self):
         return self.conn.cursor()
@@ -218,6 +232,38 @@ class SQLiteDatabase(db_base.BaseDatabase):
             insert_query = 'INSERT INTO {} ({}, {}) VALUES (?, ?)'\
                 .format(table_name, table_columns[0], table_columns[1])
             self._execute_non_query(insert_query, (key, value))
+
+    @handle_connection
+    def set_values(self, dict_values, table=db_utils.TABLE_APP_CONF):
+        """
+        Store multiple values to database
+        :param dict_values: The key/value to store
+        :param table: Table map
+        """
+        table_name = table[0]
+        table_columns = table[1]
+        # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
+        # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
+        if common.is_less_version(sql.sqlite_version, '3.24.0'):
+            query = 'INSERT OR REPLACE INTO {} ({}, {}) VALUES (?, ?)'.format(table_name,
+                                                                              table_columns[0],
+                                                                              table_columns[1])
+            records_values = [(key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
+        else:
+            # sqlite UPSERT clause exists only on sqlite >= 3.24.0
+            query = ('INSERT INTO {tbl_name} ({tbl_col1}, {tbl_col2}) VALUES (?, ?) '
+                     'ON CONFLICT({tbl_col1}) DO UPDATE SET {tbl_col2} = ? '
+                     'WHERE {tbl_col1} = ?').format(tbl_name=table_name,
+                                                    tbl_col1=table_columns[0],
+                                                    tbl_col2=table_columns[1])
+            records_values = []
+            for key, value in iteritems(dict_values):
+                value_str = common.convert_to_string(value)
+                records_values.append((key, value_str, value_str, key))
+        cur = self.get_cursor()
+        cur.execute("BEGIN TRANSACTION;")
+        self._executemany_non_query(query, records_values, cur)
+        cur.execute("COMMIT;")
 
     @handle_connection
     def delete_key(self, key, table=db_utils.TABLE_APP_CONF):

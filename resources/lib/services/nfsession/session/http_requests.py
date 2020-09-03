@@ -12,10 +12,13 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
+from future.utils import raise_from
+
 import resources.lib.utils.website as website
 import resources.lib.common as common
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401)
+                                             HttpError401, NotLoggedInError)
+from resources.lib.kodi import ui
 from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
@@ -62,6 +65,8 @@ class SessionHTTPRequests(SessionBase):
             data=data)
         LOG.debug('Request took {}s', perf_clock() - start)
         LOG.debug('Request returned status code {}', response.status_code)
+        # for redirect in response.history:
+        #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
         if not session_refreshed:
             # We refresh the session when happen:
             # Error 404: It happen when Netflix update the build_identifier version and causes the api address to change
@@ -84,7 +89,7 @@ class SessionHTTPRequests(SessionBase):
         from requests import exceptions
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
-            cookies.save(self.account_hash, self.session.cookies)
+            cookies.save(self.session.cookies)
             LOG.debug('Successfully refreshed session data')
             return True
         except MbrStatusError:
@@ -98,7 +103,10 @@ class SessionHTTPRequests(SessionBase):
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
                 common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
-            return self.external_func_login(modal_error_message=False)  # pylint: disable=not-callable
+            # Needed to do a new login
+            common.purge_credentials()
+            ui.show_notification(common.get_local_string(30008))
+            raise_from(NotLoggedInError, exc)
         except exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
@@ -121,7 +129,7 @@ class SessionHTTPRequests(SessionBase):
         params = {}
 
         headers = {'Accept': endpoint_conf.get('accept', '*/*')}
-        if endpoint_conf['address'] not in ['/login', '/browse', '/SignOut']:
+        if endpoint_conf['address'] not in ['/login', '/browse', '/SignOut', '/YourAccount']:
             headers['x-netflix.nq.stack'] = 'prod'
             headers['x-netflix.request.client.user.guid'] = G.LOCAL_DB.get_active_profile_guid()
         if endpoint_conf.get('content_type'):
@@ -149,14 +157,16 @@ class SessionHTTPRequests(SessionBase):
             params['authURL'] = self.auth_url
         params.update(custom_params)  # If needed override parameters
 
-        # The 'data' can be passed in two way:
-        # - As string (needs to be correctly formatted)
-        # - As dict (will be converted as string here)
+        # The 'data' can be passed in two types: as string, as dict
         if isinstance(data, dict):
             if endpoint_conf['add_auth_url'] == 'to_data':
                 data['authURL'] = self.auth_url
-            data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
+            if endpoint_conf.get('content_type') == 'application/x-www-form-urlencoded':
+                data_converted = data  # In this case Requests module convert the data automatically
+            else:
+                data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
         else:
+            # Special case used by path_request/callpath_request in path_requests.py
             data_converted = data
             if endpoint_conf['add_auth_url'] == 'to_data':
                 auth_data = 'authURL=' + self.auth_url

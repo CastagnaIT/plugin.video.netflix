@@ -91,10 +91,12 @@ class LibraryActionExecutor(object):
         """Import previous exported STRM files to add-on and/or convert them to the current STRM format type"""
         if _check_auto_update_running():
             return
-        if not ui.ask_for_confirmation(common.get_local_string(30140),
-                                       common.get_local_string(20135)):
-            return
-        get_library_cls().import_library()
+        path = ui.show_browse_dialog(common.get_local_string(651), default_path=G.DATA_PATH)
+        if path:
+            if not ui.ask_for_confirmation(common.get_local_string(30140),
+                                           common.get_local_string(20135)):
+                return
+            get_library_cls().import_library(path)
 
     @common.inject_video_id(path_offset=1)
     def export_new_episodes(self, videoid):

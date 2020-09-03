@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 from re import search, compile as recompile, DOTALL, sub
 
-from future.utils import iteritems
+from future.utils import iteritems, raise_from
 
 import xbmc
 
@@ -108,8 +108,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
     else:
         api_data['client_version'] = result.groups()[0]
     # Save api urls
-    for key, path in list(api_data.items()):
-        G.LOCAL_DB.set_value(key, path, TABLE_SESSION)
+    G.LOCAL_DB.set_values(api_data, TABLE_SESSION)
     return api_data
 
 
@@ -122,13 +121,13 @@ def _check_membership_status(status):
         # -In the login request, 'Content-Type' specified is not compliant with data passed or no more supported
         # -Expired profiles cookies!? (not verified)
         # In these cases it is mandatory to login again
-        raise MbrStatusAnonymousError
+        raise MbrStatusAnonymousError('ANONYMOUS')
     if status == 'NEVER_MEMBER':
         # The account has not been confirmed
-        raise MbrStatusNeverMemberError
+        raise MbrStatusNeverMemberError('NEVER_MEMBER')
     if status == 'FORMER_MEMBER':
         # The account has not been reactivated
-        raise MbrStatusFormerMemberError
+        raise MbrStatusFormerMemberError('FORMER_MEMBER')
     LOG.error('Can not login, the Membership status is {}', status)
     raise MbrStatusError(status)
 
@@ -153,20 +152,21 @@ def parse_profiles(data):
             G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
             summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
-            for key, value in iteritems(summary):
-                if LOG.level == LOG.LEVEL_VERBOSE and key in PROFILE_DEBUG_INFO:
-                    LOG.debug('Profile info {}', {key: value})
-                if key == 'profileName':  # The profile name is coded as HTML
-                    value = parse_html(value)
-                G.LOCAL_DB.set_profile_config(key, value, guid)
-            G.LOCAL_DB.set_profile_config('avatar', avatar_url, guid)
+            if LOG.level == LOG.LEVEL_VERBOSE:
+                for key, value in iteritems(summary):
+                    if key in PROFILE_DEBUG_INFO:
+                        LOG.debug('Profile info {}', {key: value})
+            # Translate the profile name, is coded as HTML
+            summary['profileName'] = parse_html(summary['profileName'])
+            summary['avatar'] = avatar_url
+            G.LOCAL_DB.insert_profile_configs(summary, guid)
             sort_order += 1
         _delete_non_existing_profiles(current_guids)
-    except Exception:
+    except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
         LOG.error('Profile list data: {}', profiles_list)
-        raise InvalidProfilesError
+        raise_from(InvalidProfilesError, exc)
 
 
 def _delete_non_existing_profiles(current_guids):
@@ -241,7 +241,7 @@ def extract_api_data(react_context, debug_log=True):
             if debug_log:
                 LOG.debug('Extracted {}', extracted_value)
         except (AttributeError, KeyError):
-            LOG.error('Could not extract {}', path)
+            LOG.warn('Could not extract {}', path)
     return assert_valid_auth_url(api_data)
 
 
@@ -269,14 +269,14 @@ def validate_login(react_context):
             if 'login_' + error_code in error_code_list:
                 error_description = error_code_list['login_' + error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))
-        except (AttributeError, KeyError):
+        except (AttributeError, KeyError) as exc:
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
             LOG.error(error_msg)
-            raise WebsiteParsingError(error_msg)
+            raise_from(WebsiteParsingError(error_msg), exc)
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -294,12 +294,12 @@ def extract_json(content, name):
         json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
-    except Exception:
+    except Exception as exc:  # pylint: disable=broad-except
         if json_str:
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise WebsiteParsingError('Unable to extract {}'.format(name))
+        raise_from(WebsiteParsingError('Unable to extract {}'.format(name)), exc)
 
 
 def extract_parental_control_data(content, current_maturity):
@@ -327,8 +327,8 @@ def extract_parental_control_data(content, current_maturity):
                                   'description': parse_html(rating_level['labels'][0]['description'])})
             if level_value == current_maturity:
                 current_level_index = index
-    except KeyError:
-        raise WebsiteParsingError('Unable to get path in to reactContext data')
+    except KeyError as exc:
+        raise_from(WebsiteParsingError('Unable to get path in to reactContext data'), exc)
     if not rating_levels:
         raise WebsiteParsingError('Unable to get maturity rating levels')
     return {'rating_levels': rating_levels, 'current_level_index': current_level_index}

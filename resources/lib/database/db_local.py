@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from datetime import datetime
+from future.utils import iteritems
 
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
@@ -76,6 +77,25 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         if cur.rowcount == 0:
             insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
             self._execute_non_query(insert_query, (guid, key, value))
+
+    @db_sqlite.handle_connection
+    def insert_profile_configs(self, dict_values, guid=None):
+        """
+        Store multiple values to a profile by deleting all existing values,
+        if guid is not specified, is stored to active profile
+        """
+        # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
+        # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
+        if not guid:
+            guid = self._get_active_guid_profile()
+        cur = self.get_cursor()
+        cur.execute("BEGIN TRANSACTION;")
+        query = 'DELETE FROM profiles_config WHERE Guid = ?'
+        self._execute_non_query(query, (guid,), cur)
+        records_values = [(guid, key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
+        insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
+        self._executemany_non_query(insert_query, records_values, cur)
+        cur.execute("COMMIT;")
 
     @db_sqlite.handle_connection
     def set_profile(self, guid, is_active, sort_order):

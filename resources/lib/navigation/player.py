@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from future.utils import raise_from
+
 import xbmcgui
 import xbmcplugin
 
@@ -148,40 +150,37 @@ def get_inputstream_listitem(videoid):
     list_item.setMimeType('application/xml+dash')
     list_item.setProperty('isFolder', 'false')
     list_item.setProperty('IsPlayable', 'true')
-
     try:
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
         inputstream_ready = is_helper.check_inputstream()
+        if not inputstream_ready:
+            raise Exception(common.get_local_string(30046))
+
+        list_item.setProperty(
+            key=is_helper.inputstream_addon + '.stream_headers',
+            value='user-agent=' + common.get_user_agent())
+        list_item.setProperty(
+            key=is_helper.inputstream_addon + '.license_type',
+            value='com.widevine.alpha')
+        list_item.setProperty(
+            key=is_helper.inputstream_addon + '.manifest_type',
+            value='mpd')
+        list_item.setProperty(
+            key=is_helper.inputstream_addon + '.license_key',
+            value=service_url + LICENSE_PATH_FORMAT.format(videoid=videoid.value) + '||b{SSM}!b{SID}|')
+        list_item.setProperty(
+            key=is_helper.inputstream_addon + '.server_certificate',
+            value=INPUTSTREAM_SERVER_CERTIFICATE)
+        list_item.setProperty(
+            key='inputstreamaddon' if G.KODI_VERSION.is_major_ver('18') else 'inputstream',
+            value=is_helper.inputstream_addon)
+        return list_item
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise InputStreamHelperError(str(exc))
-
-    if not inputstream_ready:
-        raise Exception(common.get_local_string(30046))
-
-    list_item.setProperty(
-        key=is_helper.inputstream_addon + '.stream_headers',
-        value='user-agent=' + common.get_user_agent())
-    list_item.setProperty(
-        key=is_helper.inputstream_addon + '.license_type',
-        value='com.widevine.alpha')
-    list_item.setProperty(
-        key=is_helper.inputstream_addon + '.manifest_type',
-        value='mpd')
-    list_item.setProperty(
-        key=is_helper.inputstream_addon + '.license_key',
-        value=service_url + LICENSE_PATH_FORMAT.format(videoid=videoid.value) +
-        '||b{SSM}!b{SID}|')
-    list_item.setProperty(
-        key=is_helper.inputstream_addon + '.server_certificate',
-        value=INPUTSTREAM_SERVER_CERTIFICATE)
-    list_item.setProperty(
-        key='inputstreamaddon' if G.KODI_VERSION.is_major_ver('18') else 'inputstream',
-        value=is_helper.inputstream_addon)
-    return list_item
+        raise_from(InputStreamHelperError(str(exc)), exc)
 
 
 def _profile_switch():

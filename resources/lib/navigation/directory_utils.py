@@ -116,12 +116,12 @@ def finalize_directory(items, content_type=G.CONTENT_FOLDER, sort_type='sort_not
     xbmcplugin.addDirectoryItems(G.PLUGIN_HANDLE, items)
 
 
-def end_of_directory(dir_update_listing, cache_to_disc=True):
+def end_of_directory(dir_update_listing):
     # If dir_update_listing=True overwrite the history list, so we can get back to the main page
     xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE,
                               succeeded=True,
                               updateListing=dir_update_listing,
-                              cacheToDisc=cache_to_disc)
+                              cacheToDisc=False)
 
 
 def get_title(menu_data, extra_data):

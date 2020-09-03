@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from time import time
+from future.utils import raise_from
 
 import xbmc
 import xbmcvfs
@@ -24,11 +25,11 @@ except ImportError:
     import pickle
 
 
-def save(account_hash, cookie_jar, log_output=True):
+def save(cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
     if log_output:
         log_cookie(cookie_jar)
-    cookie_file = xbmcvfs.File(cookie_file_path(account_hash), 'wb')
+    cookie_file = xbmcvfs.File(cookie_file_path(), 'wb')
     try:
         # pickle.dump(cookie_jar, cookie_file)
         cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
@@ -38,17 +39,17 @@ def save(account_hash, cookie_jar, log_output=True):
         cookie_file.close()
 
 
-def delete(account_hash):
+def delete():
     """Delete cookies for an account from the disk"""
     try:
-        xbmcvfs.delete(cookie_file_path(account_hash))
+        xbmcvfs.delete(cookie_file_path())
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Failed to delete cookies on disk: {exc}', exc=exc)
 
 
-def load(account_hash):
+def load():
     """Load cookies for a given account and check them for validity"""
-    file_path = cookie_file_path(account_hash)
+    file_path = cookie_file_path()
     if not xbmcvfs.exists(file_path):
         LOG.debug('Cookies file does not exist')
         raise MissingCookiesError
@@ -60,18 +61,18 @@ def load(account_hash):
             cookie_jar = pickle.loads(cookie_file.read())
         else:
             cookie_jar = pickle.loads(cookie_file.readBytes())
+        # Clear flwssn cookie if present, as it is trouble with early expiration
+        if 'flwssn' in cookie_jar:
+            cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
+        log_cookie(cookie_jar)
+        return cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise MissingCookiesError
+        raise_from(MissingCookiesError, exc)
     finally:
         cookie_file.close()
-    # Clear flwssn cookie if present, as it is trouble with early expiration
-    if 'flwssn' in cookie_jar:
-        cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
-    log_cookie(cookie_jar)
-    return cookie_jar
 
 
 def log_cookie(cookie_jar):
@@ -87,6 +88,18 @@ def log_cookie(cookie_jar):
     LOG.debug(debug_output)
 
 
-def cookie_file_path(account_hash):
-    """Return the file path to store cookies for a given account"""
-    return xbmc.translatePath('{}_{}'.format(G.COOKIE_PATH, account_hash))
+def cookie_file_path():
+    """Return the file path to store cookies"""
+    return xbmc.translatePath(G.COOKIES_PATH)
+
+
+def convert_chrome_cookie(cookie):
+    """Convert a cookie from Chrome to a CookieJar format type"""
+    kwargs = {'domain': cookie['domain']}
+    if cookie['expires'] != -1:
+        kwargs['expires'] = int(cookie['expires'])
+    kwargs['path'] = cookie['path']
+    kwargs['secure'] = cookie['secure']
+    if cookie['httpOnly']:
+        kwargs['rest'] = {'HttpOnly': True}
+    return cookie['name'], cookie['value'], kwargs

@@ -29,7 +29,7 @@ class SessionCookie(SessionBase):
         # pylint: disable=broad-except
         if not self.session.cookies:
             try:
-                self.session.cookies = cookies.load(self.account_hash)
+                self.session.cookies = cookies.load()
             except MissingCookiesError:
                 return False
             except Exception as exc:
