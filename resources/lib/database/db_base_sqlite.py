@@ -19,7 +19,6 @@ import resources.lib.database.db_base as db_base
 import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.common.exceptions import DBSQLiteConnectionError, DBSQLiteError
-from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 try:  # Python 2
