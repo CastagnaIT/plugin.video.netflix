@@ -15,8 +15,6 @@ from datetime import datetime
 
 from future.utils import iteritems
 
-import xbmc
-
 import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 import resources.lib.kodi.nfo as nfo
@@ -29,6 +27,11 @@ from resources.lib.kodi.library_utils import (request_kodi_library_update, get_l
                                               is_auto_update_library_running, request_kodi_library_scan_decorator,
                                               get_library_subfolders, delay_anti_ban)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
+
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 try:  # Python 2
     unicode
@@ -320,7 +323,7 @@ class Library(LibraryTasks):
         folders = get_library_subfolders(FOLDER_NAME_MOVIES, path) + get_library_subfolders(FOLDER_NAME_SHOWS, path)
         with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
             for folder_path in folders:
-                folder_name = os.path.basename(G.py2_decode(xbmc.translatePath(folder_path)))
+                folder_name = os.path.basename(G.py2_decode(translatePath(folder_path)))
                 progress_bar.set_message(folder_name)
                 try:
                     videoid = self.import_videoid_from_existing_strm(folder_path, folder_name)

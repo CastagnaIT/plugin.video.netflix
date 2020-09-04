@@ -25,8 +25,12 @@ except ImportError:  # Python 2
 
 from future.utils import iteritems
 
-import xbmc
 import xbmcaddon
+
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 try:  # Python 2
     unicode
@@ -265,7 +269,7 @@ class GlobalVariables(object):
         #   This fixes comparison errors between str/unicode
         sys_path_filtered = [value for value in sys.path if isinstance(value, unicode)]
         for path in packages_paths:  # packages_paths has unicode type values
-            path = G.py2_decode(xbmc.translatePath(path))
+            path = G.py2_decode(translatePath(path))
             if path not in sys_path_filtered:
                 # Add embedded package path to python system directory
                 # The "path" will add an unicode type to avoids problems with OS using symbolic characters

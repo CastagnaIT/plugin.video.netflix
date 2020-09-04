@@ -21,6 +21,11 @@ from resources.lib.kodi import ui
 from resources.lib.kodi.library_utils import get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS
 from resources.lib.utils.logging import LOG
 
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
+
 
 def rename_cookie_file():
     # The file "COOKIE_xxxxxx..." will be renamed to "COOKIES"
@@ -36,7 +41,7 @@ def rename_cookie_file():
 def delete_cache_folder():
     # Delete cache folder in the add-on userdata (no more needed with the new cache management)
     cache_path = os.path.join(G.DATA_PATH, 'cache')
-    if not os.path.exists(G.py2_decode(xbmc.translatePath(cache_path))):
+    if not os.path.exists(G.py2_decode(translatePath(cache_path))):
         return
     LOG.debug('Deleting the cache folder from add-on userdata folder')
     try:
@@ -61,7 +66,7 @@ def migrate_library():
                                title='Migrating library to new format',
                                max_value=len(folders)) as progress_bar:
             for folder_path in folders:
-                folder_name = os.path.basename(G.py2_decode(xbmc.translatePath(folder_path)))
+                folder_name = os.path.basename(G.py2_decode(translatePath(folder_path)))
                 progress_bar.set_message('PLEASE WAIT - Migrating: ' + folder_name)
                 _migrate_strm_files(folder_path)
     except Exception as exc:  # pylint: disable=broad-except

@@ -24,6 +24,11 @@ try:  # Kodi >= 19
 except ImportError:  # Kodi 18
     from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
 
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
+
 
 class LibraryUpdateService(xbmc.Monitor):
     """
@@ -143,7 +148,7 @@ class LibraryUpdateService(xbmc.Monitor):
             self.scan_awaiting = False
             # Update only the library elements in the add-on export folder
             # for faster processing (on Kodi 18.x) with a large library
-            common.scan_library(makeLegalFilename(xbmc.translatePath(get_library_path())))
+            common.scan_library(makeLegalFilename(translatePath(get_library_path())))
         else:
             self.scan_awaiting = True
 

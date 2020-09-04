@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, unicode_literals
 from time import time
 from future.utils import raise_from
 
-import xbmc
 import xbmcvfs
 
 from resources.lib.common.exceptions import MissingCookiesError
@@ -23,6 +22,11 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 def save(cookie_jar, log_output=True):
@@ -90,7 +94,7 @@ def log_cookie(cookie_jar):
 
 def cookie_file_path():
     """Return the file path to store cookies"""
-    return xbmc.translatePath(G.COOKIES_PATH)
+    return translatePath(G.COOKIES_PATH)
 
 
 def convert_chrome_cookie(cookie):

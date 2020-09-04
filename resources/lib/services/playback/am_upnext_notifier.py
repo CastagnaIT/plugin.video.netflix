@@ -9,12 +9,15 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
+
+try:  # Kodi >= 19
+    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
+except ImportError:  # Kodi 18
+    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 class AMUpNextNotifier(ActionManager):
@@ -61,7 +64,7 @@ def get_upnext_info(videoid, videoid_next_episode, info_data, metadata, is_playe
             videoid_next_episode.tvshowid,
             videoid_next_episode.seasonid,
             videoid_next_episode.episodeid)
-        url = G.py2_decode(xbmc.translatePath(file_path))
+        url = G.py2_decode(translatePath(file_path))
     else:
         url = common.build_url(videoid=videoid_next_episode,
                                mode=G.MODE_PLAY,
