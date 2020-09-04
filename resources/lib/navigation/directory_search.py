@@ -94,7 +94,11 @@ def search_add():
     # Execute the research
     if row_id is None:
         return False
-    return search_query(row_id, None, False)
+    # Redirect to "search" endpoint (otherwise causes problems with Container.Refresh used by context menus)
+    end_of_directory(False)
+    url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY)
+    common.container_update(url, False)
+    return True
 
 
 def _search_add_bylang(search_type, dict_languages):
