@@ -992,27 +992,27 @@ msgstr "Kodiライブラリに追加(送ったデータのみ)"
 
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "ログイン方法を選択してください。[CR](Eメール/パスワードで\"パスワード誤り\"が続出すると、認証キーを試してください。詳細はGitHubのReadMeまで)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "Eメール/パスワード"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "認証キー"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "交換性のないか壊れたファイルを選択しました。"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "認証キーが無効です。"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "PINを入力してください。"
 
 # Unused 30346 to 30398
 
