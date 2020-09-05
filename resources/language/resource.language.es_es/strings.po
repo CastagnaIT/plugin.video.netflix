@@ -976,7 +976,7 @@ msgstr "Hay {} títulos que no se pueden importar.[CR]¿Desea eliminar estos arc
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr "Resultados por página (en caso de error de tiempo de espera, disminuirlo)"
+msgstr "Resultados por página (en caso de error de tiempo de espera, disminuir)"
 
 # Unused 30248 to 30299
 
