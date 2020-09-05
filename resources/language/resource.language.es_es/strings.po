@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
 "PO-Revision-Date: 2020-04-13 18:45+0001\n"
-"Last-Translator: Rafa Oliveros ('roliverosc') <roliverosc@hotmail.com>\n"
+"Last-Translator: roliverosc\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -210,27 +210,27 @@ msgstr "Biblioteca"
 
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Perfil configurado para reproducción desde la biblioteca"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Establecer para reproducción de biblioteca"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Eliminar para reproducir de la biblioteca"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Perfil configurado para selección automática"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
-msgstr "Establecer para autoselección"
+msgstr "Establecer para selección automática"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "Quitar autoselección del perfil"
+msgstr "Eliminar la selección automática"
 
 # Unused 30057, 30058
 
@@ -976,7 +976,7 @@ msgstr "Hay {} títulos que no se pueden importar.[CR]¿Desea eliminar estos arc
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Resultados por página (en caso de error de tiempo de espera, disminuirlo)"
 
 # Unused 30248 to 30299
 
@@ -986,39 +986,39 @@ msgstr "¿Desea eliminar el estado visto de '{}'?[CR][CR]La operación puede tar
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Incluir biblioteca Kodi (solo enviando datos)"
 
 # Unused 30302 to 30339
 
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "Elija el método de inicio de sesión[CR](si el inicio de sesión con correo electrónico/contraseña siempre devuelve \"contraseña incorrecta\", utilice la clave de autenticación, instrucciones en el archivo Léame de GitHub)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "Correo electrónico/contraseña"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "Clave de autenticación"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "El archivo seleccionado no es compatible o está dañado"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "El archivo de clave de autenticación ha caducado"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "Introduzca PIN"
 
 # Unused 30346 to 30398
 
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Ordenar historial por"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1068,4 +1068,4 @@ msgstr "Por idioma de subtítulos"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Por ID de género/subgénero"
