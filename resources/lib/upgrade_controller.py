@@ -44,7 +44,7 @@ def check_service_upgrade():
     # Upgrade the shared databases
     current_shared_db_version = G.LOCAL_DB.get_value('shared_db_version', None)
     upgrade_to_shared_db_version = '0.2'
-    if current_local_db_version != upgrade_to_local_db_version:
+    if current_shared_db_version != upgrade_to_shared_db_version:
         _perform_shared_db_changes(current_shared_db_version, upgrade_to_shared_db_version)
 
     # Perform service changes
