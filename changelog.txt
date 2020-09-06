@@ -1,3 +1,13 @@
+v1.9.0 (2020-09-06)
+-New login method "Authentication key" details on GitHub readme
+-Add possibility to import library from a different folder
+-Add flatted tvshow for single season (depends from kodi setting)
+-Big speedup improvement for Kodi 18 in service loading and opening profiles page
+-Fixed a problem that could cause the addon to not start after login unexpected errors
+-Fixed a wrong behaviour that caused timeout error after credentials login fails
+-Fixed context menus issues after add a new search
+-Updated translations de, it, fr, pl, zh_ch, pt_br, hu, jp, kr, el_gr, es
+
 v1.8.0 (2020-08-20)
 -Attempt to fix the login (not full solved)
 -Reimplemented menus "All movies", "All TV Shows", "Browse subgenres"
