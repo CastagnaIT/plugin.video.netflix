@@ -56,37 +56,42 @@ def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disab
                                      isolation_level=CONN_ISOLATION_LEVEL)
         cur = shared_db_conn.cursor()
 
-        table = str('CREATE TABLE watched_status_override ('
-                    'ProfileGuid      TEXT    NOT NULL,'
-                    'VideoID          INTEGER NOT NULL,'
-                    'Value            TEXT,'
-                    'PRIMARY KEY (ProfileGuid, VideoID ),'
-                    'FOREIGN KEY (ProfileGuid)'
-                    'REFERENCES Profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE);')
-        cur.execute(table)
-        shared_db_conn.close()
-
-        # MySQL
-        if G.ADDON.getSettingBool('use_mysql'):
-            import mysql.connector
-            from resources.lib.database.db_base_mysql import MySQLDatabase
-
-            shared_db_conn = MySQLDatabase()
-            shared_db_conn.conn = mysql.connector.connect(**shared_db_conn.config)
-            cur = shared_db_conn.conn.cursor()
-
-            table = ('CREATE TABLE netflix_addon.watched_status_override ('
-                     'ProfileGuid VARCHAR(50) NOT NULL,'
-                     'VideoID INT(11) NOT NULL,'
-                     'Value TEXT DEFAULT NULL,'
-                     'PRIMARY KEY (ProfileGuid, VideoID))'
-                     'ENGINE = INNODB, CHARACTER SET utf8mb4, COLLATE utf8mb4_unicode_ci;')
-            alter_tbl = ('ALTER TABLE netflix_addon.watched_status_override '
-                         'ADD CONSTRAINT FK_watchedstatusoverride_ProfileGuid FOREIGN KEY (ProfileGuid)'
-                         'REFERENCES netflix_addon.profiles(Guid) ON DELETE CASCADE ON UPDATE CASCADE;')
+        cur.execute('SELECT name FROM sqlite_master WHERE type="table";')
+        tables = cur.fetchall()
+        # Check if watched_status_override exists
+        # (temporary check, usually not needed, applied for previous oversight in the code, can be removed in future)
+        if ('watched_status_override',) not in tables:
+            table = str('CREATE TABLE watched_status_override ('
+                        'ProfileGuid      TEXT    NOT NULL,'
+                        'VideoID          INTEGER NOT NULL,'
+                        'Value            TEXT,'
+                        'PRIMARY KEY (ProfileGuid, VideoID ),'
+                        'FOREIGN KEY (ProfileGuid)'
+                        'REFERENCES Profiles (Guid) ON DELETE CASCADE ON UPDATE CASCADE);')
             cur.execute(table)
-            cur.execute(alter_tbl)
-            shared_db_conn.conn.close()
+            shared_db_conn.close()
+
+            # MySQL
+            if G.ADDON.getSettingBool('use_mysql'):
+                import mysql.connector
+                from resources.lib.database.db_base_mysql import MySQLDatabase
+
+                shared_db_conn = MySQLDatabase()
+                shared_db_conn.conn = mysql.connector.connect(**shared_db_conn.config)
+                cur = shared_db_conn.conn.cursor()
+
+                table = ('CREATE TABLE netflix_addon.watched_status_override ('
+                         'ProfileGuid VARCHAR(50) NOT NULL,'
+                         'VideoID INT(11) NOT NULL,'
+                         'Value TEXT DEFAULT NULL,'
+                         'PRIMARY KEY (ProfileGuid, VideoID))'
+                         'ENGINE = INNODB, CHARACTER SET utf8mb4, COLLATE utf8mb4_unicode_ci;')
+                alter_tbl = ('ALTER TABLE netflix_addon.watched_status_override '
+                             'ADD CONSTRAINT FK_watchedstatusoverride_ProfileGuid FOREIGN KEY (ProfileGuid)'
+                             'REFERENCES netflix_addon.profiles(Guid) ON DELETE CASCADE ON UPDATE CASCADE;')
+                cur.execute(table)
+                cur.execute(alter_tbl)
+                shared_db_conn.conn.close()
 
     if common.is_less_version(current_version, '0.3'):
         pass
