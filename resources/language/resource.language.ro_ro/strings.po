@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-08-19 12:30+0000\n"
+"PO-Revision-Date: 2020-09-07 09:35+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgstr "Conectare eșuată"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Vă rugăm să verificați adresa de email și parola"
+msgstr "Vă rugăm să verificați adresa email și parola"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
@@ -192,7 +192,7 @@ msgstr "Evaluare ștearsă|Evaluare negativă|Evaluare pozitivă"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria Widevine. Ar putea lipsi sau nu este activ, operațiunea va fi anulată"
+msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria Widevine. Ar putea lipsi sau nu este activ, operațiunea va fi anulată."
 
 msgctxt "#30047"
 msgid "Library update in progress"
@@ -226,7 +226,7 @@ msgstr "Profil ales pentru auto-selectare"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
-msgstr "Ales pentru auto-selectare"
+msgstr "Configurat pentru auto-selectare"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
@@ -376,7 +376,7 @@ msgstr "Navighează conținut după gen și descoperiți ușor conținut similar
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr "Navighează recomandări și alegeți ceva nou de urmărit"
+msgstr "Navighează recomandări și alegeți ceva nou de urmărit."
 
 msgctxt "#30095"
 msgid "All TV Shows"
@@ -396,7 +396,7 @@ msgstr "Activează profile HDR"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr "Activează profile Dolby Vision"
+msgstr "Activează profilele Dolby Vision"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -420,7 +420,7 @@ msgstr "Add-on-ul a întâlnit următoarea eroare:"
 
 msgctxt "#30105"
 msgid "Netflix Add-on Error"
-msgstr "Eroare addo-on Netflix"
+msgstr "Eroare add-on Netflix"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
@@ -436,7 +436,7 @@ msgstr "Tot conținutul este protejat cu cod."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Autentificare reușită"
+msgstr "Conectare reușită"
 
 msgctxt "#30110"
 msgid "Background services started"
@@ -456,7 +456,7 @@ msgstr "Deconectare reușită"
 
 msgctxt "#30114"
 msgid "Keep My List and Kodi Library in sync"
-msgstr "Păstrează sincronizare 'Lista mea' și librăria Kodi"
+msgstr "Păstrează sincronizate 'Lista mea' și librăria Kodi"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -548,7 +548,7 @@ msgstr "Activează profilele VP9 (dezactivați-le dacă produc artefacte)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
-msgstr "Serviciile de fundal ar putea să nu fie disponibile dacă tocmai ați pornit Kodi/add-on-ul. În acest caz, încercați din nou mai târziu"
+msgstr "Serviciile de fundal ar putea să nu fie disponibile dacă tocmai ați pornit Kodi/add-on-ul. În acest caz, încercați din nou mai târziu."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
@@ -714,7 +714,7 @@ msgstr "Arată trailere și altele"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr "A apărut o problemă cu login, este posibil ca contul să nu fost confirmat sau reactivat"
+msgstr "A apărut o problemă cu conectarea, este posibil ca contul să nu fi fost confirmat sau reactivat"
 
 msgctxt "#30181"
 msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
@@ -848,7 +848,7 @@ msgstr "Setări add-on InputStream Helper..."
 
 msgctxt "#30214"
 msgid "Force refresh"
-msgstr "Forțează reîmprospătarea"
+msgstr "Forțează actualizarea"
 
 msgctxt "#30215"
 msgid "Color of the titles included in My list"
@@ -920,7 +920,7 @@ msgstr "Clasificarea maturității pentru profilul {}"
 
 msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
-msgstr "Arată doar titluri cu clasificarea [B]{}[/B]"
+msgstr "Arată doar titluri cu clasificarea [B]{}[/B]."
 
 msgctxt "#30234"
 msgid "Install Up Next add-on"
@@ -992,27 +992,27 @@ msgstr "Include librăria Kodi (doar trimite date)"
 
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "Alegeți metoda de conectare[CR](dacă conectarea cu adresă email/parolă returnează mereu \"parolă incorectă\", atunci folosiți cheia de autentificare, instrucțiunile se găsesc în ReadMe pe GitHub)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "Adresă email/parolă"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "Cheie de autentificare"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "Fișierul selectat este incompatibil sau este corupt"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "Fișierul cu cheia de autentificare a expirat"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "Introduceți cod"
 
 # Unused 30346 to 30398
 
@@ -1046,7 +1046,7 @@ msgstr "Alege limba"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr "Doriți să ștergeți întreg conținutul"
+msgstr "Doriți să ștergeți întreg conținutul?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1068,4 +1068,4 @@ msgstr "După limba subtitrării"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "După gen/subgen"
