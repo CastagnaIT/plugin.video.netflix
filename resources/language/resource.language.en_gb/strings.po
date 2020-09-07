@@ -149,7 +149,7 @@ msgid "Manual ESN"
 msgstr ""
 
 msgctxt "#30035"
-msgid "InputStream Adaptive settings..."
+msgid "InputStream Adaptive settings…"
 msgstr ""
 
 # Unused 30036
@@ -347,7 +347,7 @@ msgid "Cache objects 'My list' TTL (minutes)"
 msgstr ""
 
 msgctxt "#30087"
-msgid "Contains {} and more..."
+msgid "Contains {} and more…"
 msgstr ""
 
 msgctxt "#30088"
@@ -455,7 +455,7 @@ msgid "Logout successful"
 msgstr ""
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr ""
 
 msgctxt "#30115"
@@ -475,7 +475,7 @@ msgid "API operation failed: {}"
 msgstr ""
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr ""
 
 msgctxt "#30120"
@@ -487,7 +487,7 @@ msgid "Perform full sync now"
 msgstr ""
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr ""
 
 msgctxt "#30123"
@@ -583,11 +583,11 @@ msgid "Discover the latest content added."
 msgstr ""
 
 msgctxt "#30147"
-msgid "Next page >>"
+msgid "Next page »"
 msgstr ""
 
 msgctxt "#30148"
-msgid "<< Previous page"
+msgid "« Previous page"
 msgstr ""
 
 msgctxt "#30149"
@@ -653,7 +653,7 @@ msgid "Browse contents with audio description."
 msgstr ""
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr ""
 
 msgctxt "#30166"
@@ -791,7 +791,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr ""
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr ""
 
 msgctxt "#30201"
@@ -799,7 +799,7 @@ msgid "Username"
 msgstr ""
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr ""
 
 msgctxt "#30203"
@@ -815,7 +815,7 @@ msgid "Test database connection"
 msgstr ""
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr ""
 
 msgctxt "#30207"
@@ -827,23 +827,23 @@ msgid "Check if this device is the main auto-update manager"
 msgstr ""
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30213"
-msgid "InputStream Helper settings..."
+msgid "InputStream Helper settings…"
 msgstr ""
 
 msgctxt "#30214"
@@ -851,7 +851,7 @@ msgid "Force refresh"
 msgstr ""
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr ""
 
 msgctxt "#30216"
@@ -897,7 +897,7 @@ msgid "Scheduled"
 msgstr ""
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr ""
 
 msgctxt "#30228"
@@ -1033,7 +1033,7 @@ msgid "Search titles, people, genres"
 msgstr ""
 
 msgctxt "#30403"
-msgid "New search..."
+msgid "New search…"
 msgstr ""
 
 msgctxt "#30404"
