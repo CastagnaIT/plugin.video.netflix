@@ -101,7 +101,7 @@ msgid "Add to 'My list'"
 msgstr ""
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr ""
 
 msgctxt "#30023"
@@ -149,7 +149,7 @@ msgid "Manual ESN"
 msgstr ""
 
 msgctxt "#30035"
-msgid "InputStream Adaptive settings…"
+msgid "InputStream Adaptive settings..."
 msgstr ""
 
 # Unused 30036
@@ -347,7 +347,7 @@ msgid "Cache objects 'My list' TTL (minutes)"
 msgstr ""
 
 msgctxt "#30087"
-msgid "Contains {} and more…"
+msgid "Contains {} and more..."
 msgstr ""
 
 msgctxt "#30088"
@@ -709,7 +709,7 @@ msgid "Open Up Next add-on settings"
 msgstr ""
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr ""
 
 msgctxt "#30180"
@@ -843,7 +843,7 @@ msgid "There is no device that handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30213"
-msgid "InputStream Helper settings…"
+msgid "InputStream Helper settings..."
 msgstr ""
 
 msgctxt "#30214"
@@ -1033,7 +1033,7 @@ msgid "Search titles, people, genres"
 msgstr ""
 
 msgctxt "#30403"
-msgid "New search…"
+msgid "New search..."
 msgstr ""
 
 msgctxt "#30404"
