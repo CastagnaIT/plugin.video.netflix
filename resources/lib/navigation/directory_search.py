@@ -91,14 +91,13 @@ def search_add():
             row_id = _search_add_bygenreid(SEARCH_TYPES[type_index], genre_id)
     else:
         raise NotImplementedError('Search type index {} not implemented'.format(type_index))
-    # Execute the research
-    if row_id is None:
-        return False
-    # Redirect to "search" endpoint (otherwise causes problems with Container.Refresh used by context menus)
-    end_of_directory(False)
-    url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY)
-    common.container_update(url, False)
-    return True
+    # Redirect to "search" endpoint (otherwise no results in JSON-RPC)
+    # Rewrite path history using dir_update_listing + container_update (otherwise will retrigger input dialog on Back or Container.Refresh)
+    if row_id is not None and search_query(row_id, 0, False):
+        url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY, params={'dir_update_listing': True})
+        common.container_update(url, False)
+        return True
+    return False
 
 
 def _search_add_bylang(search_type, dict_languages):
@@ -155,7 +154,7 @@ def search_clear():
     if not ui.ask_for_confirmation(common.get_local_string(30404), common.get_local_string(30406)):
         return False
     G.LOCAL_DB.clear_search_items()
-    search_list(dir_update_listing=True)
+    common.container_refresh()
     return True
 
 
@@ -244,7 +243,8 @@ def _get_dictitem_clear():
         'url': common.build_url(['search', 'search', 'clear'], mode=G.MODE_DIRECTORY),
         'label': common.get_local_string(30404),
         'art': {'icon': 'icons\\infodialogs\\uninstall.png'},
-        'is_folder': True,
+        'is_folder': False,  # Set folder to false to run as command so that clear is not in directory history
+        'media_type': None,  # Set media type none to avoid setting isplayable flag for non-folder item
         'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
     }
 
