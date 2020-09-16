@@ -82,7 +82,10 @@ class DirectoryBuilder(DirectoryPathRequests):
     def get_video_list(self, list_id, menu_data, is_dynamic_id):
         if not is_dynamic_id:
             list_id = self.get_loco_list_id_by_context(menu_data['loco_contexts'][0])
-        return build_video_listing(self.req_video_list(list_id), menu_data, mylist_items=self.req_mylist_items())
+        # pylint: disable=unexpected-keyword-arg
+        video_list = self.req_video_list(list_id, no_use_cache=menu_data.get('no_use_cache'))
+        return build_video_listing(video_list, menu_data,
+                                   mylist_items=self.req_mylist_items())
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_video_list_sorted(self, pathitems, menu_data, sub_genre_id, perpetual_range_start, is_dynamic_id):
@@ -94,10 +97,12 @@ class DirectoryBuilder(DirectoryPathRequests):
             # -In the video list: 'sub-genre id'
             # -In the list of genres: 'sub-genre id'
             context_id = pathitems[2]
+        # pylint: disable=unexpected-keyword-arg
         video_list = self.req_video_list_sorted(menu_data['request_context_name'],
                                                 context_id=context_id,
                                                 perpetual_range_start=perpetual_range_start,
-                                                menu_data=menu_data)
+                                                menu_data=menu_data,
+                                                no_use_cache=menu_data.get('no_use_cache'))
         return build_video_listing(video_list, menu_data, sub_genre_id, pathitems, perpetual_range_start,
                                    self.req_mylist_items())
 

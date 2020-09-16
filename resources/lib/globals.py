@@ -77,6 +77,7 @@ class GlobalVariables(object):
     content_type        Override the default content type (CONTENT_SHOW)
     has_show_setting    Means that the menu has the show/hide settings, by default is True
     has_sort_setting    Means that the menu has the sort settings, by default is False
+    no_use_cache        The cache will not be used to store the contents of the menu
 
     Explanation of function names in the 'path' key:
         video_list        Automatically gets the list_id by making a loco request,

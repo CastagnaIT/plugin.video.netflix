@@ -67,6 +67,7 @@ def cache_output(bucket, fixed_identifier=None,
     def caching_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            # To avoid use cache add to the kwargs the value: 'no_use_cache'=True
             arg_value, identifier = _get_identifier(fixed_identifier,
                                                     identify_from_kwarg_name,
                                                     identify_append_from_kwarg_name,
@@ -92,6 +93,8 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     """Return the identifier to use with the caching_decorator"""
     # LOG.debug('Get_identifier args: {}', args)
     # LOG.debug('Get_identifier kwargs: {}', kwargs)
+    if kwargs.pop('no_use_cache', False):
+        return None, None
     arg_value = None
     if fixed_identifier:
         identifier = fixed_identifier
