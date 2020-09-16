@@ -84,11 +84,10 @@ class DirectoryPathRequests(object):
     def get_loco_list_id_by_context(self, context):
         """Return the dynamic video list ID for a LoCo context"""
         try:
-            list_id = next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
+            return next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
         except StopIteration as exc:
             raise_from(InvalidVideoListTypeError('No lists with context {} available'.format(context)),
                        exc)
-        return list_id
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='profiles_raw_data',
                               ttl=300, ignore_self_class=True)
