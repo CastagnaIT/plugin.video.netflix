@@ -327,11 +327,11 @@ def extract_parental_control_data(content, current_maturity):
                                   'description': parse_html(rating_level['labels'][0]['description'])})
             if level_value == current_maturity:
                 current_level_index = index
+        if not rating_levels:
+            raise WebsiteParsingError('Unable to get maturity rating levels')
+        return {'rating_levels': rating_levels, 'current_level_index': current_level_index}
     except KeyError as exc:
         raise_from(WebsiteParsingError('Unable to get path in to reactContext data'), exc)
-    if not rating_levels:
-        raise WebsiteParsingError('Unable to get maturity rating levels')
-    return {'rating_levels': rating_levels, 'current_level_index': current_level_index}
 
 
 def parse_html(html_value):
