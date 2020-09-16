@@ -207,12 +207,16 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
         menu_parameters = common.MenuIdParameters(video_list_id)
         if not menu_parameters.is_menu_id:
             continue
-        if exclude_loco_known and menu_parameters.type_id != '28':
-            # Keep only the menus genre
-            continue
         list_id = (menu_parameters.context_id
                    if menu_parameters.context_id and not force_use_videolist_id
                    else video_list_id)
+        # Keep only some type of menus: 28=genre, 101=top 10
+        if exclude_loco_known:
+            if menu_parameters.type_id not in ['28', '101']:
+                continue
+            if menu_parameters.type_id == '101':
+                # Top 10 list can be obtained only with 'video_list' query
+                force_use_videolist_id = True
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
