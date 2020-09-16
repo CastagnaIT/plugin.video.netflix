@@ -226,6 +226,7 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
+        sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
 
         directory_items.append(_create_videolist_item(list_id, video_list, sub_menu_data, common_data))

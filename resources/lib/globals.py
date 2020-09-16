@@ -116,7 +116,8 @@ class GlobalVariables(object):
                            'loco_known': True}),
         ('mostWatched', {'path': ['video_list', 'mostWatched'],  # Top 10 menu
                          'loco_contexts': ['mostWatched'],
-                         'loco_known': True}),
+                         'loco_known': True,
+                         'no_use_cache': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'loco_contexts': ['popularTitles'],
                         'loco_known': True}),
