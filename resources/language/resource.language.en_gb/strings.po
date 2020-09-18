@@ -259,7 +259,7 @@ msgid "Perform auto-update"
 msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr ""
 
 msgctxt "#30066"
@@ -379,7 +379,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr ""
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr ""
 
 msgctxt "#30096"
@@ -689,7 +689,7 @@ msgid "Netflix Originals"
 msgstr ""
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr ""
 
 msgctxt "#30175"
@@ -741,7 +741,7 @@ msgid "For Movies"
 msgstr ""
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr ""
 
 msgctxt "#30188"
@@ -759,7 +759,7 @@ msgstr ""
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "\r\nThese files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr ""
 
 msgctxt "#30193"
