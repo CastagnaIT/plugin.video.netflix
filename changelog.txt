@@ -1,3 +1,11 @@
+v1.9.1 (2020-09-18)
+-Add TV Shows/Movies Top 10
+-Add support to NFAuthenticationKey for linux
+-Fixed search results via JSON-RPC
+-Fixed an issue that cause to ask to clear search history again when you return to previous menu
+-Fixed possible wrong results on Top 10 menu due to cache TTL
+-Updated translations ro, nl
+
 v1.9.0 (2020-09-06)
 -New login method "Authentication key" details on GitHub readme
 -Add possibility to import library from a different folder
