@@ -92,15 +92,15 @@ msgstr "Auf Netflix bewerten"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Von 'Meiner Liste' entfernen"
+msgstr "Von 'Meine Liste' entfernen"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Zu 'Meiner Liste' hinzufügen"
+msgstr "Zu 'Meine Liste' hinzufügen"
 
 msgctxt "#30022"
 msgid "(between 0 and 10)"
-msgstr "(zwischen 0 & 10)"
+msgstr "(zwischen 0 und 10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -337,7 +337,7 @@ msgstr "Time-to-live für Metadaten Cache-Einträge (Tage)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Time-to-live der Cache-Einträge für meine Liste (Minuten)"
+msgstr "Time-to-live der Cache-Einträge für 'Meine Liste' (Minuten)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -449,7 +449,7 @@ msgstr "Erfolgreich abgemeldet"
 
 msgctxt "#30114"
 msgid "Keep 'My list' and Kodi Library in sync"
-msgstr "Meine Liste und Kodi-Bibliothek synchronisieren"
+msgstr "'Meine Liste' und Kodi-Bibliothek synchronisieren"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -469,7 +469,7 @@ msgstr "API-Aktion fehlgeschlagen: {}"
 
 msgctxt "#30119"
 msgid "'My list' operation successful"
-msgstr "Meine Liste erfolgreich aktualisiert"
+msgstr "'Meine Liste' erfolgreich aktualisiert"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -481,7 +481,7 @@ msgstr "Vollständige Synchronisation jetzt durchführen"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "Meine Liste in Kodi Bilbiothek synchronisieren"
+msgstr "'Meine Liste' mit Kodi Bilbiothek synchronisieren"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
@@ -644,7 +644,7 @@ msgstr "Durchsuche Inhalte mit Audiobeschreibung"
 
 msgctxt "#30165"
 msgid "View for 'My list'"
-msgstr "Ansicht für Meine Liste"
+msgstr "Ansicht für 'Meine Liste'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -700,7 +700,7 @@ msgstr "Up Next Addon-Einstellungen öffnen"
 
 msgctxt "#30179"
 msgid "Show trailers and more"
-msgstr "Zeige Trailer & Mehr"
+msgstr "Zeige Trailer und mehr"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
@@ -777,11 +777,11 @@ msgstr "Exportiere neue Episoden"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "Datenbank (Kodi MySQL-Server wird benötigt)"
+msgstr "Geteilte Bibliothek (Kodi MySQL-Server wird benötigt)"
 
 msgctxt "#30200"
 msgid "Use shared library MySQL-database"
-msgstr "Benutze MySQL-Datenbank"
+msgstr "Benutze MySQL-Datenbank für geteilte Bibliothek"
 
 msgctxt "#30201"
 msgid "Username"
@@ -817,19 +817,19 @@ msgstr "Prüfe ob dieses Gerät der Haupt-Autoupdate-Manager ist"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of the shared library"
-msgstr "Dieses Gerät verwaltet jetzt das Autoupdate der Datenbank"
+msgstr "Dieses Gerät verwaltet jetzt das Autoupdate der geteilten Bibliothek"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of the shared library"
-msgstr "Dieses Gerät verwaltet das Autoupdate der Datenbank"
+msgstr "Dieses Gerät verwaltet das Autoupdate der geteilten Bibliothek"
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of the shared library"
-msgstr "Ein anderes Gerät verwaltet das Autoupdate der Datenbank"
+msgstr "Ein anderes Gerät verwaltet das Autoupdate der geteilten Bibliothek"
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of the shared library"
-msgstr "Es ist kein Gerät definiert für die Verwaltung des Autoupdates der Datenbank"
+msgstr "Kein Gerät verwaltet das Autoupdate der geteilten Bibliothek"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
@@ -841,7 +841,7 @@ msgstr "Aktualisierung erzwingen"
 
 msgctxt "#30215"
 msgid "Color of the titles included in 'My list'"
-msgstr "Farbe der Titel aus meiner Liste"
+msgstr "Farbe der Titel aus 'Meine Liste'"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -886,7 +886,7 @@ msgstr "Geplant"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with 'My list'"
-msgstr "Synchronisiere Kodi-Bibliothek mit Meiner Liste"
+msgstr "Synchronisiere Kodi-Bibliothek mit 'Meine Liste'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
@@ -915,15 +915,15 @@ msgstr "Up Next Addon installieren"
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
-msgstr "'Gesehen'-Status der Videos mit Netflix synchronisieren"
+msgstr "Gesehen-Status der Videos mit Netflix synchronisieren"
 
 msgctxt "#30236"
 msgid "Change watched status (locally)"
-msgstr "'Gesehen'-Status ändern (lokal)"
+msgstr "Gesehen-Status ändern (lokal)"
 
 msgctxt "#30237"
 msgid "Marked as watched|Marked as unwatched|Restored Netflix watched status"
-msgstr "Als gesehen markiert|Als nicht gesehen markiert|'Gesehen'-Status von Netflix wiederherstellen"
+msgstr "Als gesehen markiert|Als nicht gesehen markiert|Gesehen-Status von Netflix wiederherstellen"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
@@ -955,7 +955,7 @@ msgstr "Widevine-Sicherheitslevel L3 erzwingen"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr "Dateien löschen, die in die Bibliothek importiert wurden"
+msgstr "Dateien löschen, die in die Bibliothek exportiert wurden"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
