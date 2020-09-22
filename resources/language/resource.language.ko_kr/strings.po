@@ -575,11 +575,11 @@ msgstr "추가된 새로운 컨텐츠를 찾아봅니다."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "다음 >>"
+msgstr "다음 »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< 이전"
+msgstr "« 이전"
 
 msgctxt "#30149"
 msgid "Sort results by"

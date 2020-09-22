@@ -575,11 +575,11 @@ msgstr "Objevte nejnovější přidaný obsah."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Další stránka >>"
+msgstr "Další stránka »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Předchozí stránka"
+msgstr "« Předchozí stránka"
 
 msgctxt "#30149"
 msgid "Sort results by"

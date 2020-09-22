@@ -576,11 +576,11 @@ msgstr "Otkrijte najnoviji dodani sadržaj."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Sljedeća stranica >>"
+msgstr "Sljedeća stranica »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Prethodna stranica"
+msgstr "« Prethodna stranica"
 
 msgctxt "#30149"
 msgid "Sort results by"

@@ -575,11 +575,11 @@ msgstr "Upptäck det senaste tillagda innehållet."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Nästa sida >>"
+msgstr "Nästa sida »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Föregående sida"
+msgstr "« Föregående sida"
 
 msgctxt "#30149"
 msgid "Sort results by"

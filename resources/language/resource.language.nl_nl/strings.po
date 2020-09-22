@@ -575,11 +575,11 @@ msgstr "Ontdek de laatste toegevoegde inhoud."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Volgende pagina >>"
+msgstr "Volgende pagina »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Vorige pagina"
+msgstr "« Vorige pagina"
 
 msgctxt "#30149"
 msgid "Sort results by"

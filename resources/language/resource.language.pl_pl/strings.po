@@ -575,11 +575,11 @@ msgstr "Odkryj ostatnio dodane materiały."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Następna strona >>"
+msgstr "Następna strona »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Poprzednia strona"
+msgstr "« Poprzednia strona"
 
 msgctxt "#30149"
 msgid "Sort results by"

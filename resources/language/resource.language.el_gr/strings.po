@@ -575,11 +575,11 @@ msgstr "Ανακαλύψτε περιεχόμενο που προστέθηκε 
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Επόμενη σελίδα >>"
+msgstr "Επόμενη σελίδα »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Προηγούμενη σελίδα"
+msgstr "« Προηγούμενη σελίδα"
 
 msgctxt "#30149"
 msgid "Sort results by"

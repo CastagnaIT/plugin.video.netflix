@@ -575,11 +575,11 @@ msgstr "Découvrez les derniers programmes ajoutés."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Page suivante >>"
+msgstr "Page suivante »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Page précédente"
+msgstr "« Page précédente"
 
 msgctxt "#30149"
 msgid "Sort results by"

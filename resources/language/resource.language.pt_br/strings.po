@@ -575,11 +575,11 @@ msgstr "Descubra os conteúdos mais recentes."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Próxima página >>"
+msgstr "Próxima página »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Página anterior"
+msgstr "« Página anterior"
 
 msgctxt "#30149"
 msgid "Sort results by"

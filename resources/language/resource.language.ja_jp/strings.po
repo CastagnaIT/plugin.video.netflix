@@ -575,11 +575,11 @@ msgstr "最近追加された新作を探す。"
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "次へ >>"
+msgstr "次へ »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< 前へ"
+msgstr "« 前へ"
 
 msgctxt "#30149"
 msgid "Sort results by"

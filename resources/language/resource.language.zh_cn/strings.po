@@ -575,11 +575,11 @@ msgstr "发现最新添加的内容"
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "下一页>>"
+msgstr "下一页»"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<<上一页"
+msgstr "«上一页"
 
 msgctxt "#30149"
 msgid "Sort results by"

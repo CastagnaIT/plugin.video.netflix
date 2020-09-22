@@ -575,11 +575,11 @@ msgstr "Son eklenen içeriği keşfedin."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Sonraki sayfa >>"
+msgstr "Sonraki sayfa »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Önceki sayfa"
+msgstr "« Önceki sayfa"
 
 msgctxt "#30149"
 msgid "Sort results by"

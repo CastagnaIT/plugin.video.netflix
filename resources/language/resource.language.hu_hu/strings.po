@@ -570,11 +570,11 @@ msgstr "Fedezze fel a frissen hozzáadott tartalmat."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Következő oldal >>"
+msgstr "Következő oldal »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Előző oldal"
+msgstr "« Előző oldal"
 
 msgctxt "#30149"
 msgid "Sort results by"

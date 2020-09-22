@@ -575,11 +575,11 @@ msgstr "Descoperă conținut adăugat recent."
 
 msgctxt "#30147"
 msgid "Next page »"
-msgstr "Pagina următoare >>"
+msgstr "Pagina următoare »"
 
 msgctxt "#30148"
 msgid "« Previous page"
-msgstr "<< Pagina anterioară"
+msgstr "« Pagina anterioară"
 
 msgctxt "#30149"
 msgid "Sort results by"
