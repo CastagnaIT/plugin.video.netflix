@@ -38,7 +38,6 @@ msgid "Enter PIN to watch restricted content"
 msgstr "Unesite PIN da biste gledali ograničeni sadržaj"
 
 # Unused 30003
-
 msgctxt "#30004"
 msgid "Password"
 msgstr "Lozinka"
@@ -68,7 +67,6 @@ msgid "Lists of all kinds"
 msgstr "Popisi raznih vrsta"
 
 # Unused 30011, 30012, 30013
-
 msgctxt "#30014"
 msgid "Account"
 msgstr "Račun"
@@ -102,7 +100,7 @@ msgid "Add to 'My list'"
 msgstr "Dodaj u 'Moj popis'"
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr "(između 0 i 10)"
 
 msgctxt "#30023"
@@ -130,7 +128,6 @@ msgid "Playback error"
 msgstr "Pogreška prilikom reprodukcije"
 
 # Unused 30029
-
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Ukloni iz zbirke"
@@ -140,7 +137,6 @@ msgid "General"
 msgstr "Opće"
 
 # Unused 30032
-
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "Omogući Dolby Digital Plus (DDPlus HQ i Atmos on Premium)"
@@ -154,7 +150,6 @@ msgid "InputStream Adaptive settings..."
 msgstr "Prilagodi postavke InputStream ..."
 
 # Unused 30036
-
 msgctxt "#30037"
 msgid "Views"
 msgstr "Posjete"
@@ -208,7 +203,6 @@ msgid "Library"
 msgstr ""
 
 # Unused 30050
-
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr ""
@@ -234,7 +228,6 @@ msgid "Remove auto-selection"
 msgstr "Ukloni automatski odabir profila"
 
 # Unused 30057, 30058
-
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr ""
@@ -260,7 +253,7 @@ msgid "Perform auto-update"
 msgstr "Izvršite automatsko ažuriranje"
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatsko ažuriranje televizije prikazuje sezone i epizode"
 
 msgctxt "#30066"
@@ -380,7 +373,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr "Pregledajte preporuke i pronađite nešto novo što bi vam se moglo svidjeti."
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr "Sve TV emisije"
 
 msgctxt "#30096"
@@ -456,7 +449,7 @@ msgid "Logout successful"
 msgstr "Odjava je uspješna"
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "Sinkroniziraj Moj popis i Kodi zbirku"
 
 msgctxt "#30115"
@@ -476,7 +469,7 @@ msgid "API operation failed: {}"
 msgstr "Operacija API-a nije uspjela: {}"
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr "Operacija Mog popisa uspješna"
 
 msgctxt "#30120"
@@ -488,7 +481,7 @@ msgid "Perform full sync now"
 msgstr "Odmah izvedite potpunu sinkronizaciju"
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr "Sinkroniziraj Moju Listu sa Kodi zbirkom"
 
 msgctxt "#30123"
@@ -520,7 +513,6 @@ msgid "Enable Up Next integration"
 msgstr "Omogući Up Next integraciju"
 
 # Unused 30130
-
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Provjerite logfile za detaljne informacije"
@@ -542,7 +534,6 @@ msgid "Cache cleared"
 msgstr "Cache je očišćen"
 
 # Unused 30136
-
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
@@ -584,11 +575,11 @@ msgid "Discover the latest content added."
 msgstr "Otkrijte najnoviji dodani sadržaj."
 
 msgctxt "#30147"
-msgid "Next page >>"
+msgid "Next page »"
 msgstr "Sljedeća stranica >>"
 
 msgctxt "#30148"
-msgid "<< Previous page"
+msgid "« Previous page"
 msgstr "<< Prethodna stranica"
 
 msgctxt "#30149"
@@ -620,7 +611,6 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Imate li Netflix Premium račun?"
 
 # Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Konfiguracija je završena"
@@ -654,7 +644,7 @@ msgid "Browse contents with audio description."
 msgstr "Pregledavajte sadržaj s audio opisom."
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr "Pogledajte moj popis"
 
 msgctxt "#30166"
@@ -690,7 +680,7 @@ msgid "Netflix Originals"
 msgstr "Netflix Originals"
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr "Tv Emisije žanrovi"
 
 msgctxt "#30175"
@@ -710,7 +700,7 @@ msgid "Open Up Next add-on settings"
 msgstr "Otvorite postavke Up Next dodatka"
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr "Pokažite trailere"
 
 msgctxt "#30180"
@@ -742,7 +732,7 @@ msgid "For Movies"
 msgstr "Za filmove"
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr "Za TV emisije"
 
 msgctxt "#30188"
@@ -758,9 +748,8 @@ msgid "TV show"
 msgstr "TV emisija"
 
 # Unused 30191
-
 msgctxt "#30192"
-msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]Ove datoteke dobavljači informacija dobavljača koriste za integraciju filmova i informacija o TV emisijama, korisno za bonus epizode ili director's cut"
 
 msgctxt "#30193"
@@ -792,7 +781,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr "Zajednička zbirka (potreban je Kodi MySQL poslužitelj)"
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr "Koristite MySQL bazu podataka zajedničke zbirke"
 
 msgctxt "#30201"
@@ -800,7 +789,7 @@ msgid "Username"
 msgstr "Korisničko ime"
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr "Povezivanje s MySQL bazom podataka bilo je uspješno"
 
 msgctxt "#30203"
@@ -816,7 +805,7 @@ msgid "Test database connection"
 msgstr "Testiranje baze podataka"
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr "GREŠKA: MySQL baza podataka nije dostupna - koristit će se lokalna baza podataka"
 
 msgctxt "#30207"
@@ -828,19 +817,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "Provjerite je li ovaj uređaj glavni upravitelj automatskog ažuriranja"
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr "Ovaj uređaj sada upravlja automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr "Ovaj uređaj upravlja automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr "Drugi uređaj upravlja automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr "Ne postoji uređaj koji rukuje automatskim ažuriranjima biblioteke za dijeljenje"
 
 msgctxt "#30213"
@@ -852,7 +841,7 @@ msgid "Force refresh"
 msgstr ""
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr "Označite naslove uključene na moj popis bojom"
 
 msgctxt "#30216"
@@ -884,7 +873,6 @@ msgid "Kid account"
 msgstr "Dječji račun"
 
 # Unused 30223
-
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Način automatskog ažuriranja"
@@ -898,7 +886,7 @@ msgid "Scheduled"
 msgstr "Planiran"
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr "Sinkronizirajte Kodi zbirku s Mojim popisom"
 
 msgctxt "#30228"
@@ -906,7 +894,6 @@ msgid "Set a profile for synchronization"
 msgstr ""
 
 # Unused 30229
-
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "Provjerite ažuriranja sada"
@@ -980,7 +967,6 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr ""
 
 # Unused 30248 to 30299
-
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr ""
@@ -990,7 +976,6 @@ msgid "Include Kodi library (only sending data)"
 msgstr ""
 
 # Unused 30302 to 30339
-
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr ""
@@ -1016,7 +1001,6 @@ msgid "Enter PIN"
 msgstr ""
 
 # Unused 30346 to 30398
-
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr ""
@@ -1054,7 +1038,6 @@ msgid "No matches found"
 msgstr "Nema rezultata"
 
 # Unused 30408, 30409
-
 msgctxt "#30410"
 msgid "By term"
 msgstr ""

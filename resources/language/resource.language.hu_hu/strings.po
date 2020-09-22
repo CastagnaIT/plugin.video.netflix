@@ -9,12 +9,7 @@ msgstr ""
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
 "PO-Revision-Date: 2020-09-05 07:40+0000\n"
 "Last-Translator: frodo19\n"
-"Language-Team: Hungarian[CR]"
-"MIME-Version: 1.0[CR]"
-"Content-Type: text/plain; charset=UTF-8[CR]"
-"Content-Transfer-Encoding: 8bit[CR]"
-"Language: hu[CR]"
-"Plural-Forms: nplurals=2; plural=(n != 1);[CR]"
+"Language-Team: Hungarian[CR]MIME-Version: 1.0[CR]Content-Type: text/plain; charset=UTF-8[CR]Content-Transfer-Encoding: 8bit[CR]Language: hu[CR]Plural-Forms: nplurals=2; plural=(n != 1);[CR]\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -37,7 +32,6 @@ msgid "Enter PIN to watch restricted content"
 msgstr "Kód megadás a felnőtt tartalomhoz"
 
 # Unused 30003
-
 msgctxt "#30004"
 msgid "Password"
 msgstr "Jelszó"
@@ -67,7 +61,6 @@ msgid "Lists of all kinds"
 msgstr "Vegyes lista"
 
 # Unused 30011, 30012, 30013
-
 msgctxt "#30014"
 msgid "Account"
 msgstr "Fiók"
@@ -101,7 +94,7 @@ msgid "Add to 'My list'"
 msgstr "Hozzáadás a saját listámhoz"
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr "0 és 10 között"
 
 msgctxt "#30023"
@@ -129,7 +122,6 @@ msgid "Playback error"
 msgstr "Lejátszási hiba"
 
 # Unused 30029
-
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Törlés a médiatárból"
@@ -139,7 +131,6 @@ msgid "General"
 msgstr "Általános"
 
 # Unused 30032
-
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "Dolby Digital Plus (DDPlus HQ és Atmos Prémium) engedélyezése"
@@ -153,7 +144,6 @@ msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive beállítások..."
 
 # Unused 30036
-
 msgctxt "#30037"
 msgid "Views"
 msgstr "Nézetek"
@@ -207,7 +197,6 @@ msgid "Library"
 msgstr "Médiatár"
 
 # Unused 30050
-
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "A médiatárból történő lejátszáshoz beállított profil"
@@ -233,7 +222,6 @@ msgid "Remove auto-selection"
 msgstr "Profil automatikus kiválasztás törlése"
 
 # Unused 30057, 30058
-
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Légy óvatos, amikor sok címet frissítesz egyszerre {}.[CR]Ez okozhat szolgáltatási problémákat vagy ideiglenes fiók tiltást is.[CR]Kívánod folytatni?"
@@ -259,7 +247,7 @@ msgid "Perform auto-update"
 msgstr "Automatikus frissítés teljesítése"
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatikus frissítés a sorozat évadokhoz és epizódokhoz"
 
 msgctxt "#30066"
@@ -379,7 +367,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr "Böngészés ajánlás szerint, találj valami kedvedre valót"
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr "Minden sorozat"
 
 msgctxt "#30096"
@@ -455,7 +443,7 @@ msgid "Logout successful"
 msgstr "Bejelentkezés sikeres"
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "A saját listám és a Kodi médiatár szinkronban tartása"
 
 msgctxt "#30115"
@@ -475,7 +463,7 @@ msgid "API operation failed: {}"
 msgstr "API művelet sikertelen: {}"
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr "Saját lista művelet sikeres"
 
 msgctxt "#30120"
@@ -487,7 +475,7 @@ msgid "Perform full sync now"
 msgstr "Teljes szinkronizálás indítása most"
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr "Saját lista szinkronizálása a Kodi médiatárral"
 
 msgctxt "#30123"
@@ -519,7 +507,6 @@ msgid "Enable Up Next integration"
 msgstr "UP Next kiegészítő használata"
 
 # Unused 30130
-
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "A hibanaplót nézd meg, a részletes infóért"
@@ -541,7 +528,6 @@ msgid "Cache cleared"
 msgstr "Gyorsítótár törölve"
 
 # Unused 30136
-
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)"
@@ -583,11 +569,11 @@ msgid "Discover the latest content added."
 msgstr "Fedezze fel a frissen hozzáadott tartalmat."
 
 msgctxt "#30147"
-msgid "Next page >>"
+msgid "Next page »"
 msgstr "Következő oldal >>"
 
 msgctxt "#30148"
-msgid "<< Previous page"
+msgid "« Previous page"
 msgstr "<< Előző oldal"
 
 msgctxt "#30149"
@@ -619,7 +605,6 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Van Netflix prémium hozzáférésed?"
 
 # Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Beállítás kész"
@@ -653,7 +638,7 @@ msgid "Browse contents with audio description."
 msgstr "Böngészés hang narrátor alaplán "
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr "Saját lista nézet"
 
 msgctxt "#30166"
@@ -689,7 +674,7 @@ msgid "Netflix Originals"
 msgstr "Eredeti Netflix gyártás"
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr "Sorozat műfajok"
 
 msgctxt "#30175"
@@ -709,7 +694,7 @@ msgid "Open Up Next add-on settings"
 msgstr "Up Next kiegészítő beállítások megnyitása"
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr "Bemutatók és egyebek mutatása"
 
 msgctxt "#30180"
@@ -741,7 +726,7 @@ msgid "For Movies"
 msgstr "Filmekhez"
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr "Sorozatokhoz"
 
 msgctxt "#30188"
@@ -757,9 +742,8 @@ msgid "TV show"
 msgstr "sorozat"
 
 # Unused 30191
-
 msgctxt "#30192"
-msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]Ezeket a fájlokat a szolgáltatói információs scrapperek használják a filmek és a sorozatok információinak integrálására, hasznosak a bónusz epizódok vagy a rendezői vágások során."
 
 msgctxt "#30193"
@@ -791,7 +775,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr "Megosztott könyvtár (Kodi MySQL szerver kell hozzá)"
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr "MySQL szerver használata a média adatbázishoz"
 
 msgctxt "#30201"
@@ -799,7 +783,7 @@ msgid "Username"
 msgstr "Felhasználónév"
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr "MySQL adatbázis kapcsolat sikeres"
 
 msgctxt "#30203"
@@ -815,7 +799,7 @@ msgid "Test database connection"
 msgstr "Adatbázis csatlakozási teszt"
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr "HIBA: A MySQL adatbázis nem érhető el - a helyi adatbázist fogjuk használni"
 
 msgctxt "#30207"
@@ -827,19 +811,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "Megnézi hogy ez az eszköz, automatikus frissítéskezelő-e"
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr "Eszköz most automatikus frissítéskezelőként beállítva"
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr "Eszköz beállítása automatikus frissítéskezelőként"
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr "Másik eszköz beállítása automatikus frissítéskezelőként"
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr "Nincs eszköz beállítva automatikus frissítéskezelőként"
 
 msgctxt "#30213"
@@ -851,7 +835,7 @@ msgid "Force refresh"
 msgstr "Kényszerített frissítés"
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr "Saját listám elemeinek színe"
 
 msgctxt "#30216"
@@ -883,7 +867,6 @@ msgid "Kid account"
 msgstr "Gyermek fiók"
 
 # Unused 30223
-
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Automata frissítési mód"
@@ -897,7 +880,7 @@ msgid "Scheduled"
 msgstr "Ütemezett"
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr "Kodi médiatár szinronizálása a Saját listámmal"
 
 msgctxt "#30228"
@@ -905,7 +888,6 @@ msgid "Set a profile for synchronization"
 msgstr "Profil választás a szinkronizáláshoz"
 
 # Unused 30229
-
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "Frissítés keresése most"
@@ -979,7 +961,6 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr "Eredmények oldalanként (időtúllépés esetén csökkenti azt)"
 
 # Unused 30248 to 30299
-
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Törlöd a nézett állapotot '{}'?[CR][CR]A változás 24 órán belül létrejön, ezért addig a cím még látszik a listádban."
@@ -989,7 +970,6 @@ msgid "Include Kodi library (only sending data)"
 msgstr "Tartalmazza a Kodi médiatárat (csak adatok küldése)"
 
 # Unused 30302 to 30339
-
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Válassza ki a bejelentkezési módot[CR](ha a bejelentkezés E-Mail/Jelszóval mindig hibával visszatér \"hibás jelszó\", akkor használja a Hitelesítési kulcsot, a GitHub ReadMe-ben található leírás szerint)"
@@ -1015,7 +995,6 @@ msgid "Enter PIN"
 msgstr "PIN megadása"
 
 # Unused 30346 to 30398
-
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "Rendezés időrend szerint"
@@ -1053,7 +1032,6 @@ msgid "No matches found"
 msgstr "Nincs találat"
 
 # Unused 30408, 30409
-
 msgctxt "#30410"
 msgid "By term"
 msgstr "Kifejezés szerint"

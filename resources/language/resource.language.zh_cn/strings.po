@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-07-09 16:40+0000\n"
 "Last-Translator: shaolin-kongfu <>\n"
 "Language-Team: Chinese\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -37,7 +37,6 @@ msgid "Enter PIN to watch restricted content"
 msgstr "输入PIN来观看受限内容"
 
 # Unused 30003
-
 msgctxt "#30004"
 msgid "Password"
 msgstr "密码"
@@ -67,7 +66,6 @@ msgid "Lists of all kinds"
 msgstr "所有种类的列表"
 
 # Unused 30011, 30012, 30013
-
 msgctxt "#30014"
 msgid "Account"
 msgstr "账户"
@@ -101,7 +99,7 @@ msgid "Add to 'My list'"
 msgstr "添加到'我的列表'"
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr "（介于0和10之间）"
 
 msgctxt "#30023"
@@ -129,7 +127,6 @@ msgid "Playback error"
 msgstr "播放错误"
 
 # Unused 30029
-
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "从库中删除"
@@ -139,7 +136,6 @@ msgid "General"
 msgstr "常规"
 
 # Unused 30032
-
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "启用杜比 Plus（对于netflix高级账户启用DDPlus HQ和Atmos）"
@@ -153,7 +149,6 @@ msgid "InputStream Adaptive settings..."
 msgstr "InputStream自适应设置..."
 
 # Unused 30036
-
 msgctxt "#30037"
 msgid "Views"
 msgstr "视图"
@@ -207,7 +202,6 @@ msgid "Library"
 msgstr "图书馆"
 
 # Unused 30050
-
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "从库中播放的配置文件集"
@@ -233,7 +227,6 @@ msgid "Remove auto-selection"
 msgstr "删除文件的自动选择"
 
 # Unused 30057, 30058
-
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "注意，您将更新许多标题{}。[CR]这可能会导致服务问题或暂时禁止帐户。你想继续吗?"
@@ -259,7 +252,7 @@ msgid "Perform auto-update"
 msgstr "执行自动更新"
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr "电视的自动更新显示了每一季和情节"
 
 msgctxt "#30066"
@@ -379,7 +372,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr "浏览建议并获取您可能喜欢的新内容。"
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr "所有电视节目"
 
 msgctxt "#30096"
@@ -455,7 +448,7 @@ msgid "Logout successful"
 msgstr "注销成功"
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "同步保存我的列表和Kodi库"
 
 msgctxt "#30115"
@@ -475,7 +468,7 @@ msgid "API operation failed: {}"
 msgstr "API操作失败：{}"
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr "我的列表操作成功"
 
 msgctxt "#30120"
@@ -487,7 +480,7 @@ msgid "Perform full sync now"
 msgstr "立即执行完全同步"
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr "将我的列表同步到Kodi库"
 
 msgctxt "#30123"
@@ -519,7 +512,6 @@ msgid "Enable Up Next integration"
 msgstr "启用下一步集成"
 
 # Unused 30130
-
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "检查日志文件以获取详细信息”"
@@ -541,7 +533,6 @@ msgid "Cache cleared"
 msgstr "缓存已清除"
 
 # Unused 30136
-
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "启用VP9配置文件（如果导致伪像则禁用）"
@@ -583,11 +574,11 @@ msgid "Discover the latest content added."
 msgstr "发现最新添加的内容"
 
 msgctxt "#30147"
-msgid "Next page >>"
+msgid "Next page »"
 msgstr "下一页>>"
 
 msgctxt "#30148"
-msgid "<< Previous page"
+msgid "« Previous page"
 msgstr "<<上一页"
 
 msgctxt "#30149"
@@ -619,7 +610,6 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "您有Netflix Premium帐户吗？"
 
 # Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "配置已完成"
@@ -653,7 +643,7 @@ msgid "Browse contents with audio description."
 msgstr "浏览带有音频描述的内容"
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr "查看我的列表"
 
 msgctxt "#30166"
@@ -689,7 +679,7 @@ msgid "Netflix Originals"
 msgstr "Netflix 自制"
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr "电视节目类型"
 
 msgctxt "#30175"
@@ -709,7 +699,7 @@ msgid "Open Up Next add-on settings"
 msgstr "打开下一个加载项设置"
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr "显示预告片及更多内容"
 
 msgctxt "#30180"
@@ -741,7 +731,7 @@ msgid "For Movies"
 msgstr "应用于电影"
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr "应用于电视节目"
 
 msgctxt "#30188"
@@ -757,9 +747,8 @@ msgid "TV show"
 msgstr "电视节目"
 
 # Unused 30191
-
 msgctxt "#30192"
-msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]这些文件由提供商信息收集器用来集成电影和电视节目信息，可用于奖励剧集或导演剪辑。"
 
 msgctxt "#30193"
@@ -791,7 +780,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr "共享库（需要Kodi MySQL服务器）"
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr "使用MySQL共享库数据库"
 
 msgctxt "#30201"
@@ -799,7 +788,7 @@ msgid "Username"
 msgstr "用户名"
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr "到MySQL数据库的连接成功"
 
 msgctxt "#30203"
@@ -815,7 +804,7 @@ msgid "Test database connection"
 msgstr "测试数据库连接"
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr "错误：无法访问MySQL数据库-将使用本地数据库"
 
 msgctxt "#30207"
@@ -827,19 +816,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "检查此设备是否是主要的自动更新管理器"
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr "此设备现在可以处理共享库的自动更新"
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr "此设备处理共享库的自动更新"
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr "另一台设备处理共享库的自动更新"
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr "没有设备可以处理共享库的自动更新"
 
 msgctxt "#30213"
@@ -851,7 +840,7 @@ msgid "Force refresh"
 msgstr "强制刷新"
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr "我的列表中包含的标题的颜色"
 
 msgctxt "#30216"
@@ -883,7 +872,6 @@ msgid "Kid account"
 msgstr "儿童帐户"
 
 # Unused 30223
-
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "自动更新模式"
@@ -897,7 +885,7 @@ msgid "Scheduled"
 msgstr "预定的"
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr "将Kodi库与我的列表同步"
 
 msgctxt "#30228"
@@ -905,7 +893,6 @@ msgid "Set a profile for synchronization"
 msgstr "为同步设置一个配置文件"
 
 # Unused 30229
-
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "立即检查更新"
@@ -979,7 +966,6 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr "每页结果（如果超时错误，请减少）"
 
 # Unused 30248 to 30299
-
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "您是否要删除已监视的'{}'状态？[CR][CR]此操作最多可能需要24小时，因此标题可能仍显示在列表中。"
@@ -989,7 +975,6 @@ msgid "Include Kodi library (only sending data)"
 msgstr "包括Kodi库（仅发送数据）"
 
 # Unused 30302 to 30339
-
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "选择登录方式[CR]（如果使用电子邮件/密码登录总是返回“不正确的密码”，请使用身份验证密钥，查看GitHub自述文件中的说明）"
@@ -1015,7 +1000,6 @@ msgid "Enter PIN"
 msgstr "输入PIN"
 
 # Unused 30346 to 30398
-
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "历史记录排序依据"
@@ -1053,7 +1037,6 @@ msgid "No matches found"
 msgstr "未找到匹配项"
 
 # Unused 30408, 30409
-
 msgctxt "#30410"
 msgid "By term"
 msgstr "按条款"
