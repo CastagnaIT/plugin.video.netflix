@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "删除库内容"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "您是否真的要清除库？\n所有导出的项目将被删除"
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "您是否真的要清除库？[CR]所有导出的项目将被删除"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "电视节目"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\n这些文件由提供商信息收集器用来集成电影和电视节目信息，可用于奖励剧集或导演剪辑。"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]这些文件由提供商信息收集器用来集成电影和电视节目信息，可用于奖励剧集或导演剪辑。"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "重置ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "确定要重置ESN吗？\r\n如果确认，请等待直到收到登录消息。"
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "确定要重置ESN吗？[CR]如果确认，请等待直到收到登录消息。"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "补充地块信息的颜色"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "由于以下问题而无法启动后台服务:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "由于以下问题而无法启动后台服务:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "라이브러리를 지웁니다."
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "라이브러리를 삭제하시렵니까?\n내보낸 것들을 모두 지웁니다."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "라이브러리를 삭제하시렵니까?[CR]내보낸 것들을 모두 지웁니다."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "TV프로그램"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\n영화나 TV프로그램의 정보, 보너스 에피소드 또는 감독판등의 정보를 수집하는 정보제공자가 이 파일을 사용합니다."
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]영화나 TV프로그램의 정보, 보너스 에피소드 또는 감독판등의 정보를 수집하는 정보제공자가 이 파일을 사용합니다."
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "ESN 재설정"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "ESN재설정하시렵니까?\r\n확인후, 로그인화면이 나타날 때까지 기다리십시오."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "ESN재설정하시렵니까?[CR]확인후, 로그인화면이 나타날 때까지 기다리십시오."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "추가정보에 사용할 색"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "백그라운드 서비스를 시작하지 못한 이유는:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "백그라운드 서비스를 시작하지 못한 이유는:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

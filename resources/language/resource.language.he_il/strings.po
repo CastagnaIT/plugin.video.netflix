@@ -503,7 +503,7 @@ msgid "Delete library contents"
 msgstr "למחוק את תכולת הספרייה"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
 msgstr "האם באמת למחוק את הספרייה שלך?[CR]כל התכנים המייוצאים מהספרייה ימחקו"
 
 msgctxt "#30127"
@@ -759,7 +759,7 @@ msgstr "תוכנית טלויזיה"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]קבצים אלו בשימוש על ידי ספקי מידע כדי לחבר מידע על סרטים ותוכניות טלויזיה, והם שימושיים בפרקי בונוס או בסרטים ב'גרסת הבמאי'"
 
 msgctxt "#30193"
@@ -863,7 +863,7 @@ msgid "Reset ESN"
 msgstr "איפוס קוד ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
 msgstr "האם לאפס את קוד הESN בוודאות?[CR]במידה וכן, יש להסכים ולהמתין עד לחזרה למסך ההתחברות"
 
 msgctxt "#30219"
@@ -947,7 +947,7 @@ msgid "Color of supplemental plot info"
 msgstr "צבע אזור ה'מידע עלילתי נוסף'"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
 msgstr "שירותי הרקע לא יכולים להתחיל בגלל הבעיה הבאה: {}[CR]"
 
 msgctxt "#30241"

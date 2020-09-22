@@ -38,6 +38,12 @@ check-translations:
 		msgcmp resources/language/resource.language.$(lang)/strings.po resources/language/resource.language.en_gb/strings.po; \
 	)
 
+update-translations:
+	@echo -e "$(white)=$(blue) Updating languages$(reset)"
+	@-$(foreach lang,$(languages), \
+		tests/update_translations.py resources/language/resource.language.$(lang)/strings.po resources/language/resource.language.en_gb/strings.po; \
+	)
+
 check-addon: clean
 	@echo -e "$(white)=$(blue) Starting sanity addon tests$(reset)"
 	kodi-addon-checker --branch=leia

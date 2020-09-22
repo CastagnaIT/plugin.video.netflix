@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Elimina i contenuti della libreria"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Vuoi realmente svuotare la tua libreria?\nTutte le esportazioni saranno eliminate."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Vuoi realmente svuotare la tua libreria?[CR]Tutte le esportazioni saranno eliminate."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "serie tv"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nQuesti file sono utilizzati dai provider informazioni scrapers per integrare info dei film e serie tv, utili per episodi bonus o director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Questi file sono utilizzati dai provider informazioni scrapers per integrare info dei film e serie tv, utili per episodi bonus o director's cut"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "Resetta ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Sei sicuro di voler resettare l'ESN?\r\nSe confermi, attendi fino a quando appare il messaggio di accesso."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Sei sicuro di voler resettare l'ESN?[CR]Se confermi, attendi fino a quando appare il messaggio di accesso."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "Colore delle info supplementari nella trama"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "I servizi in background non sono stati avviati a causa di questo problema:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "I servizi in background non sono stati avviati a causa di questo problema:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

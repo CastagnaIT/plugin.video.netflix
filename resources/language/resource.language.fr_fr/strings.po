@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Purger la médiathèque"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Voulez-vous vraiment purger la médiathèque ?\n Tous les éléments exportés seront supprimés."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Voulez-vous vraiment purger la médiathèque ?[CR]Tous les éléments exportés seront supprimés."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "la série"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nCes fichiers sont utilisés par les fournisseurs d'informations pour intégrer les infos des films et des séries, ils sont utiles pour les épisodes bonus ou les versions intégrales"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Ces fichiers sont utilisés par les fournisseurs d'informations pour intégrer les infos des films et des séries, ils sont utiles pour les épisodes bonus ou les versions intégrales"
 
 
 msgctxt "#30193"
@@ -864,8 +864,8 @@ msgid "Reset ESN"
 msgstr "Réinitialiser l'ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Etes-vous sûr de vouloir réinitialiser l'ESN ?\r\nSi oui, patientez jusqu'au message de connexion."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Etes-vous sûr de vouloir réinitialiser l'ESN ?[CR]Si oui, patientez jusqu'au message de connexion."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -948,8 +948,8 @@ msgid "Color of supplemental plot info"
 msgstr "Couleur des info supplémentaires dans le résumé"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Les services d'arrière-plan n'ont pas pu être démarrés à cause de ce problème :\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "Les services d'arrière-plan n'ont pas pu être démarrés à cause de ce problème :[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Εκκαθάριση βιβλιοθήκης"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Θέλετε να κάνετε εκκαθάριση της βιβλιοθήκης;\nΌλα τα εξηχθημένα αντικείμενα θα διαγραφτούν."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Θέλετε να κάνετε εκκαθάριση της βιβλιοθήκης;[CR]Όλα τα εξηχθημένα αντικείμενα θα διαγραφτούν."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "Τηλεοπτική σειρά"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nΑυτά τα αρχεία χρησιμοποιούνται από τους φιλτραριστές παρόχων πληροφοριών για την ενσωμάτωση πληροφοριών σε ταινίες και τηλεοπτικές σειρές, χρήσιμο για έξτρα επεισόδια ή τις περικοπές του σκηνοθέτη"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Αυτά τα αρχεία χρησιμοποιούνται από τους φιλτραριστές παρόχων πληροφοριών για την ενσωμάτωση πληροφοριών σε ταινίες και τηλεοπτικές σειρές, χρήσιμο για έξτρα επεισόδια ή τις περικοπές του σκηνοθέτη"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "Επαναφορά ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Είστε σίγουροι ότι θέλετε να επαναφέρετε το ESN;\r\nEάν το επιβεβαιώσετε, περιμένετε μέχρι να λάβετε το μήνυμα εισόδου."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Είστε σίγουροι ότι θέλετε να επαναφέρετε το ESN;[CR]Eάν το επιβεβαιώσετε, περιμένετε μέχρι να λάβετε το μήνυμα εισόδου."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "Χρωματισμός συμπληρωματικών πληροφοριών πλάνου"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Οι υπηρεσίες παρασκηνίου δεν μπορούν να εκτελεστούν λόγω αυτού του προβήματος:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "Οι υπηρεσίες παρασκηνίου δεν μπορούν να εκτελεστούν λόγω αυτού του προβήματος:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

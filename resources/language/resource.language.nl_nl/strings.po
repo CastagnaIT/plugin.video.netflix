@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Inhoud bibliotheek verwijderen"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Wilt u echt alles uit de bibliotheek verwijderen?\nAlle geëxporteerde items worden verwijderd."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Wilt u echt alles uit de bibliotheek verwijderen?[CR]Alle geëxporteerde items worden verwijderd."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "Tv-programma"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nDeze bestanden worden door 'provider information scrapers' gebruikt om informatie over films en tv-programma's toe te voegen, handig voor extra's en director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Deze bestanden worden door 'provider information scrapers' gebruikt om informatie over films en tv-programma's toe te voegen, handig voor extra's en director's cut"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "Reset ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Weet u zeker dat u het ESN wilt resetten?\r\nAls u instemt, wacht dan tot u de bevestiging van het inloggen krijgt."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Weet u zeker dat u het ESN wilt resetten?[CR]Als u instemt, wacht dan tot u de bevestiging van het inloggen krijgt."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "Kleur van bijkomende plot informatie"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "De achtergrondservices kunnen niet worden gestart door het volgende probleem:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "De achtergrondservices kunnen niet worden gestart door het volgende probleem:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

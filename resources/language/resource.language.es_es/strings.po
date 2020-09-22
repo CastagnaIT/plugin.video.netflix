@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Eliminar contenidos de la biblioteca"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "¿Deseas realmente purgar tu biblioteca?\nTodos los elementos exportados se borrarán."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "¿Deseas realmente purgar tu biblioteca?[CR]Todos los elementos exportados se borrarán."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "serie"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nEstos archivos los usan los extractores de información de proveedores para integrar información de películas y series, útil con episodios extra o montajes del director"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Estos archivos los usan los extractores de información de proveedores para integrar información de películas y series, útil con episodios extra o montajes del director"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "Restablecer ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "¿Estás seguro de que deseas restablecer el ESN?\r\nSi continúas, espera hasta que recibas el mensaje de inicio de sesión."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "¿Estás seguro de que deseas restablecer el ESN?[CR]Si continúas, espera hasta que recibas el mensaje de inicio de sesión."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "Color para información extra del argumento"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Los servicios en segundo plano no se pueden iniciar debido a este problema:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "Los servicios en segundo plano no se pueden iniciar debido a este problema:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

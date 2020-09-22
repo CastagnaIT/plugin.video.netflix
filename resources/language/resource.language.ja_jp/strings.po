@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "ライブラリ削除"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "ライブラリを削除しますか。\nエクスポートをされた項目を全て削除します。"
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "ライブラリを削除しますか。[CR]エクスポートをされた項目を全て削除します。"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "TV番組・ドラマ"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nこのファイルは、映画やTV番組の情報、ボーナスエピソードや監督版などの情報を収集する情報提供者により使われます。"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]このファイルは、映画やTV番組の情報、ボーナスエピソードや監督版などの情報を収集する情報提供者により使われます。"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "ESN再設定"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "ESNを再設定しますか。\r\nすると、ログインメッセージをお待ち下さい。"
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "ESNを再設定しますか。[CR]すると、ログインメッセージをお待ち下さい。"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "追加情報の色"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "バッググラウンドサービスが起動しなかった理由は:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "バッググラウンドサービスが起動しなかった理由は:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"

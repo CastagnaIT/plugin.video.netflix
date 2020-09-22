@@ -503,8 +503,8 @@ msgid "Delete library contents"
 msgstr "Golește librăria"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?\nToate elementele exportate vor fi șterse."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?[CR]Toate elementele exportate vor fi șterse."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -759,8 +759,8 @@ msgstr "serial TV"
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nAceste fișiere sunt utilizare de furnizorii de informații pentru a integra informații despre seriale TV și filme, folositoare pentru conținut bonus sau versiunea regizorului"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Aceste fișiere sunt utilizare de furnizorii de informații pentru a integra informații despre seriale TV și filme, folositoare pentru conținut bonus sau versiunea regizorului"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -863,8 +863,8 @@ msgid "Reset ESN"
 msgstr "Resetează ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Sunteți sigur că doriți să resetați ESN?\r\nDacă da, așteptați până când primiți mesajul de autentificare."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Sunteți sigur că doriți să resetați ESN?[CR]Dacă da, așteptați până când primiți mesajul de autentificare."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -947,8 +947,8 @@ msgid "Color of supplemental plot info"
 msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
