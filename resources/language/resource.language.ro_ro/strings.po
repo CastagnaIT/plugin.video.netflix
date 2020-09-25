@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-09-07 09:35+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
+"Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro_RO\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Addon Summary"
@@ -37,7 +37,6 @@ msgid "Enter PIN to watch restricted content"
 msgstr "Introduceți cod pentru a vedea conținutul restricționat"
 
 # Unused 30003
-
 msgctxt "#30004"
 msgid "Password"
 msgstr "Parolă"
@@ -67,7 +66,6 @@ msgid "Lists of all kinds"
 msgstr "Listă cu toate tipurile"
 
 # Unused 30011, 30012, 30013
-
 msgctxt "#30014"
 msgid "Account"
 msgstr "Cont"
@@ -101,7 +99,7 @@ msgid "Add to 'My list'"
 msgstr "Adaugă în 'Lista mea'"
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr "(între 0 și 10)"
 
 msgctxt "#30023"
@@ -129,7 +127,6 @@ msgid "Playback error"
 msgstr "Eroare de redare"
 
 # Unused 30029
-
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Șterge din librărie"
@@ -139,7 +136,6 @@ msgid "General"
 msgstr "General"
 
 # Unused 30032
-
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "Activează Dolby Digital Plus (DDPlus HQ și Atmos la abonament Premium)"
@@ -153,7 +149,6 @@ msgid "InputStream Adaptive settings..."
 msgstr "Setări pentru InputStream Adaptive..."
 
 # Unused 30036
-
 msgctxt "#30037"
 msgid "Views"
 msgstr "Mod vizualizare"
@@ -207,7 +202,6 @@ msgid "Library"
 msgstr "Librărie"
 
 # Unused 30050
-
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "Profil ales pentru redare din librărie"
@@ -233,7 +227,6 @@ msgid "Remove auto-selection"
 msgstr "Șterge auto-selectarea profilului"
 
 # Unused 30057, 30058
-
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Atenție, urmează să actualizați multe titluri {}.[CR]Aceasta poate cauza probleme cu serviciul sau banare temporară a contului.[CR]Doriți să continuați?"
@@ -259,7 +252,7 @@ msgid "Perform auto-update"
 msgstr "Execută auto-actualizare"
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Auto-actualizare pentru sezoanele și episoadele serialelor"
 
 msgctxt "#30066"
@@ -379,7 +372,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr "Navighează recomandări și alegeți ceva nou de urmărit."
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr "Toate serialele TV"
 
 msgctxt "#30096"
@@ -455,7 +448,7 @@ msgid "Logout successful"
 msgstr "Deconectare reușită"
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "Păstrează sincronizate 'Lista mea' și librăria Kodi"
 
 msgctxt "#30115"
@@ -475,7 +468,7 @@ msgid "API operation failed: {}"
 msgstr "Operațiune API eșuată: {}"
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr "Operațiune reușită pe 'Lista mea'"
 
 msgctxt "#30120"
@@ -487,7 +480,7 @@ msgid "Perform full sync now"
 msgstr "Efectuează acum o sincronizare completă"
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr "Sincronizează 'Lista mea' cu librăria Kodi"
 
 msgctxt "#30123"
@@ -503,8 +496,8 @@ msgid "Delete library contents"
 msgstr "Golește librăria"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?\nToate elementele exportate vor fi șterse."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?[CR]Toate elementele exportate vor fi șterse."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -519,7 +512,6 @@ msgid "Enable Up Next integration"
 msgstr "Activează integrarea cu 'Up Next'"
 
 # Unused 30130
-
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Verifică jurnalul de erori pentru informații detaliate"
@@ -541,7 +533,6 @@ msgid "Cache cleared"
 msgstr "Memoria cache golită"
 
 # Unused 30136
-
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Activează profilele VP9 (dezactivați-le dacă produc artefacte)"
@@ -583,12 +574,12 @@ msgid "Discover the latest content added."
 msgstr "Descoperă conținut adăugat recent."
 
 msgctxt "#30147"
-msgid "Next page >>"
-msgstr "Pagina următoare >>"
+msgid "Next page »"
+msgstr "Pagina următoare »"
 
 msgctxt "#30148"
-msgid "<< Previous page"
-msgstr "<< Pagina anterioară"
+msgid "« Previous page"
+msgstr "« Pagina anterioară"
 
 msgctxt "#30149"
 msgid "Sort results by"
@@ -619,7 +610,6 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Aveți un cont premium Netflix?"
 
 # Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Configurarea s-a terminat"
@@ -653,7 +643,7 @@ msgid "Browse contents with audio description."
 msgstr "Navighează conținut cu descriere audio."
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr "Mod vizualizare pentru 'Lista mea'"
 
 msgctxt "#30166"
@@ -689,7 +679,7 @@ msgid "Netflix Originals"
 msgstr "Programe originale Netflix"
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr "Genuri seriale TV"
 
 msgctxt "#30175"
@@ -709,7 +699,7 @@ msgid "Open Up Next add-on settings"
 msgstr "Deschide setările add-on-ului Up Next"
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr "Arată trailere și altele"
 
 msgctxt "#30180"
@@ -741,7 +731,7 @@ msgid "For Movies"
 msgstr "Pentru filme"
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr "Pentru seriale TV"
 
 msgctxt "#30188"
@@ -757,10 +747,9 @@ msgid "TV show"
 msgstr "serial TV"
 
 # Unused 30191
-
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nAceste fișiere sunt utilizare de furnizorii de informații pentru a integra informații despre seriale TV și filme, folositoare pentru conținut bonus sau versiunea regizorului"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]Aceste fișiere sunt utilizare de furnizorii de informații pentru a integra informații despre seriale TV și filme, folositoare pentru conținut bonus sau versiunea regizorului"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -791,7 +780,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr "Librărie partajată (este nevoie de server MySQL Kodi)"
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr "Folosește baza de date MySQL pentru librăria partajată"
 
 msgctxt "#30201"
@@ -799,7 +788,7 @@ msgid "Username"
 msgstr "Nume utilizator"
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr "Conectarea la baza de date MySQL a reușit"
 
 msgctxt "#30203"
@@ -815,7 +804,7 @@ msgid "Test database connection"
 msgstr "Testează conexiunea cu baza de date"
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr "EROARE: Baza de date MySQL n-a putut fi contactată - va fi utilizată baza de date locală"
 
 msgctxt "#30207"
@@ -827,19 +816,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "Verifică dacă acest dispozitiv gestionează actualizările automate"
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr "Acest dispozitiv gestionează acum actualizările automate ale librăriei partajate"
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr "Acest dispozitiv gestionează actualizările automate ale librăriei partajate"
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr "Alt dispozitiv gestionează actualizările automate ale librăriei partajate"
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr "Nu există dispozitiv care să gestioneze actualizările automate ale librăriei partajate"
 
 msgctxt "#30213"
@@ -851,7 +840,7 @@ msgid "Force refresh"
 msgstr "Forțează actualizarea"
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr "Culoarea titlurilor incluse în 'Lista mea'"
 
 msgctxt "#30216"
@@ -863,8 +852,8 @@ msgid "Reset ESN"
 msgstr "Resetează ESN"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "Sunteți sigur că doriți să resetați ESN?\r\nDacă da, așteptați până când primiți mesajul de autentificare."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "Sunteți sigur că doriți să resetați ESN?[CR]Dacă da, așteptați până când primiți mesajul de autentificare."
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -883,7 +872,6 @@ msgid "Kid account"
 msgstr "Cont copil"
 
 # Unused 30223
-
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Mod auto actualizare"
@@ -897,7 +885,7 @@ msgid "Scheduled"
 msgstr "Programat"
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
 
 msgctxt "#30228"
@@ -905,7 +893,6 @@ msgid "Set a profile for synchronization"
 msgstr "Alege un profil pentru sincronizare"
 
 # Unused 30229
-
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "Verifică acum dacă există actualizări"
@@ -947,8 +934,8 @@ msgid "Color of supplemental plot info"
 msgstr "Culoare pentru informațiile suplimentare legate de intrigă"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "Serviciile nu pot fi pornite în fundal din cauza acestei probleme:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
@@ -979,7 +966,6 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr "Rezultate pe pagină (în caz de eroare micșorați numărul de rezultate)"
 
 # Unused 30248 to 30299
-
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Doriți să ștergeți '{}' din lista de vizualizare?[CR][CR]Operațiunea poate lua până la 24 de ore, timp în care titul ar putea să mai apară în listă."
@@ -989,7 +975,6 @@ msgid "Include Kodi library (only sending data)"
 msgstr "Include librăria Kodi (doar trimite date)"
 
 # Unused 30302 to 30339
-
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Alegeți metoda de conectare[CR](dacă conectarea cu adresă email/parolă returnează mereu \"parolă incorectă\", atunci folosiți cheia de autentificare, instrucțiunile se găsesc în ReadMe pe GitHub)"
@@ -1015,7 +1000,6 @@ msgid "Enter PIN"
 msgstr "Introduceți cod"
 
 # Unused 30346 to 30398
-
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "Sortează istoricul după"
@@ -1053,7 +1037,6 @@ msgid "No matches found"
 msgstr "Nu s-a găsit nimic"
 
 # Unused 30408, 30409
-
 msgctxt "#30410"
 msgid "By term"
 msgstr "După termen"

@@ -101,7 +101,7 @@ msgid "Add to 'My list'"
 msgstr ""
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr ""
 
 msgctxt "#30023"
@@ -259,7 +259,7 @@ msgid "Perform auto-update"
 msgstr ""
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr ""
 
 msgctxt "#30066"
@@ -379,7 +379,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr ""
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr ""
 
 msgctxt "#30096"
@@ -455,7 +455,7 @@ msgid "Logout successful"
 msgstr ""
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr ""
 
 msgctxt "#30115"
@@ -475,7 +475,7 @@ msgid "API operation failed: {}"
 msgstr ""
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr ""
 
 msgctxt "#30120"
@@ -487,7 +487,7 @@ msgid "Perform full sync now"
 msgstr ""
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr ""
 
 msgctxt "#30123"
@@ -503,7 +503,7 @@ msgid "Delete library contents"
 msgstr ""
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
 msgstr ""
 
 msgctxt "#30127"
@@ -583,11 +583,11 @@ msgid "Discover the latest content added."
 msgstr ""
 
 msgctxt "#30147"
-msgid "Next page >>"
+msgid "Next page »"
 msgstr ""
 
 msgctxt "#30148"
-msgid "<< Previous page"
+msgid "« Previous page"
 msgstr ""
 
 msgctxt "#30149"
@@ -653,7 +653,7 @@ msgid "Browse contents with audio description."
 msgstr ""
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr ""
 
 msgctxt "#30166"
@@ -689,7 +689,7 @@ msgid "Netflix Originals"
 msgstr ""
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr ""
 
 msgctxt "#30175"
@@ -709,7 +709,7 @@ msgid "Open Up Next add-on settings"
 msgstr ""
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr ""
 
 msgctxt "#30180"
@@ -741,7 +741,7 @@ msgid "For Movies"
 msgstr ""
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr ""
 
 msgctxt "#30188"
@@ -759,7 +759,7 @@ msgstr ""
 # Unused 30191
 
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr ""
 
 msgctxt "#30193"
@@ -791,7 +791,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr ""
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr ""
 
 msgctxt "#30201"
@@ -799,7 +799,7 @@ msgid "Username"
 msgstr ""
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr ""
 
 msgctxt "#30203"
@@ -815,7 +815,7 @@ msgid "Test database connection"
 msgstr ""
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr ""
 
 msgctxt "#30207"
@@ -827,19 +827,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr ""
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr ""
 
 msgctxt "#30213"
@@ -851,7 +851,7 @@ msgid "Force refresh"
 msgstr ""
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr ""
 
 msgctxt "#30216"
@@ -863,7 +863,7 @@ msgid "Reset ESN"
 msgstr ""
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
 msgstr ""
 
 msgctxt "#30219"
@@ -897,7 +897,7 @@ msgid "Scheduled"
 msgstr ""
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr ""
 
 msgctxt "#30228"
@@ -947,7 +947,7 @@ msgid "Color of supplemental plot info"
 msgstr ""
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
 msgstr ""
 
 msgctxt "#30241"

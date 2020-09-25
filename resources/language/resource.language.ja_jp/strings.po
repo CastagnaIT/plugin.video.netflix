@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Japanese\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -37,7 +37,6 @@ msgid "Enter PIN to watch restricted content"
 msgstr "制限コンテンツを見るのにはPINを入力してください。"
 
 # Unused 30003
-
 msgctxt "#30004"
 msgid "Password"
 msgstr "暗証番号"
@@ -67,7 +66,6 @@ msgid "Lists of all kinds"
 msgstr "ジャンル"
 
 # Unused 30011, 30012, 30013
-
 msgctxt "#30014"
 msgid "Account"
 msgstr "アカウント"
@@ -101,7 +99,7 @@ msgid "Add to 'My list'"
 msgstr "マイリストに追加"
 
 msgctxt "#30022"
-msgid "(between 0 & 10)"
+msgid "(between 0 and 10)"
 msgstr "(0-10)"
 
 msgctxt "#30023"
@@ -129,7 +127,6 @@ msgid "Playback error"
 msgstr "再生エラー"
 
 # Unused 30029
-
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "ライブラリから削除"
@@ -139,7 +136,6 @@ msgid "General"
 msgstr "一般設定"
 
 # Unused 30032
-
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "ドルビーサラウンドを使う"
@@ -153,7 +149,6 @@ msgid "InputStream Adaptive settings..."
 msgstr "インプットストリームアドオン設定"
 
 # Unused 30036
-
 msgctxt "#30037"
 msgid "Views"
 msgstr "ホーム設定"
@@ -207,7 +202,6 @@ msgid "Library"
 msgstr "ライブラリ"
 
 # Unused 30050
-
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "ライブラリから再生するプロフィール"
@@ -233,7 +227,6 @@ msgid "Remove auto-selection"
 msgstr "自動選択を解除する"
 
 # Unused 30057, 30058
-
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "警告！多め({}個)のタイトルを更新しようとします。[CR]これは大変な問題を起こすか、アカウントが一時的にブロックされる可能性があります。[CR]宜しいですか。"
@@ -259,7 +252,7 @@ msgid "Perform auto-update"
 msgstr "更新タイミング"
 
 msgctxt "#30065"
-msgid "Auto-update for tv shows seasons and episodes"
+msgid "Auto-update for TV shows seasons and episodes"
 msgstr "新しいシーズンとエピソードの更新方法"
 
 msgctxt "#30066"
@@ -379,7 +372,7 @@ msgid "Browse recommendations and pick up on something new you might like."
 msgstr "オススメを検索し、もしもの作品を選んでみる。"
 
 msgctxt "#30095"
-msgid "All TV Shows"
+msgid "All TV shows"
 msgstr "全てのTV番組・ドラマ"
 
 msgctxt "#30096"
@@ -455,7 +448,7 @@ msgid "Logout successful"
 msgstr "ログアウト成功"
 
 msgctxt "#30114"
-msgid "Keep My List and Kodi Library in sync"
+msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "マイリストとKodiライブラリを同期化"
 
 msgctxt "#30115"
@@ -475,7 +468,7 @@ msgid "API operation failed: {}"
 msgstr "API実行失敗:{}"
 
 msgctxt "#30119"
-msgid "My List operation successful"
+msgid "'My list' operation successful"
 msgstr "マイリスト処理完了"
 
 msgctxt "#30120"
@@ -487,7 +480,7 @@ msgid "Perform full sync now"
 msgstr "これから全ての同期化を実行します。"
 
 msgctxt "#30122"
-msgid "Sync My List to Kodi library"
+msgid "Sync 'My list' to Kodi library"
 msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30123"
@@ -503,8 +496,8 @@ msgid "Delete library contents"
 msgstr "ライブラリ削除"
 
 msgctxt "#30126"
-msgid "Do you really want to purge your library?\nAll exported items will be deleted."
-msgstr "ライブラリを削除しますか。\nエクスポートをされた項目を全て削除します。"
+msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
+msgstr "ライブラリを削除しますか。[CR]エクスポートをされた項目を全て削除します。"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -519,7 +512,6 @@ msgid "Enable Up Next integration"
 msgstr "Up Next 機能を使う"
 
 # Unused 30130
-
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "詳細はログファイルを確認してください。"
@@ -541,7 +533,6 @@ msgid "Cache cleared"
 msgstr "キャッシュを削除しました。"
 
 # Unused 30136
-
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9プロフィール使用(問題があったらオフにしてください)"
@@ -583,12 +574,12 @@ msgid "Discover the latest content added."
 msgstr "最近追加された新作を探す。"
 
 msgctxt "#30147"
-msgid "Next page >>"
-msgstr "次へ >>"
+msgid "Next page »"
+msgstr "次へ »"
 
 msgctxt "#30148"
-msgid "<< Previous page"
-msgstr "<< 前へ"
+msgid "« Previous page"
+msgstr "« 前へ"
 
 msgctxt "#30149"
 msgid "Sort results by"
@@ -619,7 +610,6 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Netflixプレミアムアカウントをお持ちですか。"
 
 # Unused 30156
-
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "設定を完了しました。"
@@ -653,7 +643,7 @@ msgid "Browse contents with audio description."
 msgstr "副音声・音声ガイド付き"
 
 msgctxt "#30165"
-msgid "View for my list"
+msgid "View for 'My list'"
 msgstr "マイリスト"
 
 msgctxt "#30166"
@@ -689,7 +679,7 @@ msgid "Netflix Originals"
 msgstr "Netflixオリジナル作品"
 
 msgctxt "#30174"
-msgid "Tv Show genres"
+msgid "TV show genres"
 msgstr "TV番組・ドラマ"
 
 msgctxt "#30175"
@@ -709,7 +699,7 @@ msgid "Open Up Next add-on settings"
 msgstr "Up Next アドオン設定画面"
 
 msgctxt "#30179"
-msgid "Show trailers & more"
+msgid "Show trailers and more"
 msgstr "予告編など"
 
 msgctxt "#30180"
@@ -741,7 +731,7 @@ msgid "For Movies"
 msgstr "映画"
 
 msgctxt "#30187"
-msgid "For TV Show"
+msgid "For TV show"
 msgstr "TV番組・ドラマ"
 
 msgctxt "#30188"
@@ -757,10 +747,9 @@ msgid "TV show"
 msgstr "TV番組・ドラマ"
 
 # Unused 30191
-
 msgctxt "#30192"
-msgid "\r\nThese files are used by the provider information scrapers to integrate movies and tv shows info, useful with bonus episodes or director's cut"
-msgstr "\r\nこのファイルは、映画やTV番組の情報、ボーナスエピソードや監督版などの情報を収集する情報提供者により使われます。"
+msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
+msgstr "[CR]このファイルは、映画やTV番組の情報、ボーナスエピソードや監督版などの情報を収集する情報提供者により使われます。"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
@@ -791,7 +780,7 @@ msgid "Shared library (Kodi MySQL server is required)"
 msgstr "共有ライブラリ(Kodi MySQLサーバーが必要)"
 
 msgctxt "#30200"
-msgid "Use MySQL shared library database"
+msgid "Use shared library MySQL-database"
 msgstr "MySQL共有ライブラリデータベースを使う。"
 
 msgctxt "#30201"
@@ -799,7 +788,7 @@ msgid "Username"
 msgstr "ユーザー名"
 
 msgctxt "#30202"
-msgid "Connection to the MySQL database was successful"
+msgid "Connection to the MySQL-database was successful"
 msgstr "MySQLデータベースと接続出来ました。"
 
 msgctxt "#30203"
@@ -815,7 +804,7 @@ msgid "Test database connection"
 msgstr "データベース接続テスト"
 
 msgctxt "#30206"
-msgid "ERROR: The MySQL database is not reachable - the local database will be used"
+msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
 msgstr "エラー: MySQLデータベースに繋がらない - ローカルデータベースを使う"
 
 msgctxt "#30207"
@@ -827,19 +816,19 @@ msgid "Check if this device is the main auto-update manager"
 msgstr "このデバイスが自動更新マネージャーかをチェック"
 
 msgctxt "#30209"
-msgid "This device now handles the auto-updates of shared-library"
+msgid "This device now handles the auto-updates of the shared library"
 msgstr "このデバイスは共有ライブラリを自動更新します。"
 
 msgctxt "#30210"
-msgid "This device handles the auto-updates of shared-library"
+msgid "This device handles the auto-updates of the shared library"
 msgstr "このデバイスが共有ライブラリを自動更新します。"
 
 msgctxt "#30211"
-msgid "Another device handles the auto-updates of shared-library"
+msgid "Another device handles the auto-updates of the shared library"
 msgstr "別のデバイスが共有ライブラリを自動更新します。"
 
 msgctxt "#30212"
-msgid "There is no device that handles the auto-updates of shared-library"
+msgid "There is no device that handles the auto-updates of the shared library"
 msgstr "共有ライブラリを自動更新するデバイスがありません。"
 
 msgctxt "#30213"
@@ -851,7 +840,7 @@ msgid "Force refresh"
 msgstr "強制更新する"
 
 msgctxt "#30215"
-msgid "Color of the titles included in My list"
+msgid "Color of the titles included in 'My list'"
 msgstr "マイリストにあるタイトルの色"
 
 msgctxt "#30216"
@@ -863,8 +852,8 @@ msgid "Reset ESN"
 msgstr "ESN再設定"
 
 msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?\r\nIf you confirm, wait until you receive the login message."
-msgstr "ESNを再設定しますか。\r\nすると、ログインメッセージをお待ち下さい。"
+msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
+msgstr "ESNを再設定しますか。[CR]すると、ログインメッセージをお待ち下さい。"
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
@@ -883,7 +872,6 @@ msgid "Kid account"
 msgstr "お子様アカウント"
 
 # Unused 30223
-
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "自動更新"
@@ -897,7 +885,7 @@ msgid "Scheduled"
 msgstr "自動"
 
 msgctxt "#30227"
-msgid "Synchronize Kodi library with My List"
+msgid "Synchronize Kodi library with 'My list'"
 msgstr "マイリストとKodiライブラリの同期化"
 
 msgctxt "#30228"
@@ -905,7 +893,6 @@ msgid "Set a profile for synchronization"
 msgstr "同期化用プロフィール設定"
 
 # Unused 30229
-
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "今、更新内容を確認"
@@ -947,8 +934,8 @@ msgid "Color of supplemental plot info"
 msgstr "追加情報の色"
 
 msgctxt "#30240"
-msgid "The background services cannot be started due to this problem:\r\n{}"
-msgstr "バッググラウンドサービスが起動しなかった理由は:\r\n{}"
+msgid "The background services cannot be started due to this problem:[CR]{}"
+msgstr "バッググラウンドサービスが起動しなかった理由は:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
@@ -979,7 +966,6 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr "1頁の検索結果(タイムアウトの場合は減らしましょ)"
 
 # Unused 30248 to 30299
-
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "{}の視聴状態を削除しますか。[CR][CR]反映されるのに２４時間ぐらい掛かるので、リストからまだ見える可能性があります。"
@@ -989,7 +975,6 @@ msgid "Include Kodi library (only sending data)"
 msgstr "Kodiライブラリに追加(送ったデータのみ)"
 
 # Unused 30302 to 30339
-
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "ログイン方法を選択してください。[CR](Eメール/パスワードで\"パスワード誤り\"が続出すると、認証キーを試してください。詳細はGitHubのReadMeまで)"
@@ -1015,7 +1000,6 @@ msgid "Enter PIN"
 msgstr "PINを入力してください。"
 
 # Unused 30346 to 30398
-
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "履歴の並び順"
@@ -1053,7 +1037,6 @@ msgid "No matches found"
 msgstr "一致する項目はありませんでした。"
 
 # Unused 30408, 30409
-
 msgctxt "#30410"
 msgid "By term"
 msgstr "項目"
