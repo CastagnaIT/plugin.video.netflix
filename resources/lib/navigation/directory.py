@@ -9,7 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
 import xbmcplugin
 
 import resources.lib.common as common
@@ -18,7 +17,8 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import G
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
-                                                      end_of_directory, get_title, activate_profile, auto_scroll)
+                                                      end_of_directory, get_title, activate_profile, auto_scroll,
+                                                      is_parent_root_path)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
@@ -56,21 +56,19 @@ class Directory(object):
 
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
-        # Get the URL parent path of the navigation: xbmc.getInfoLabel('Container.FolderPath')
-        #   it can be found in Kodi log as "ParentPath = [xyz]" but not always return the exact value
-        is_parent_root_path = xbmc.getInfoLabel('Container.FolderPath') == G.BASE_URL + '/'
+        _is_parent_root_path = is_parent_root_path()
         # Fetch initial page to refresh all session data
-        if is_parent_root_path and not G.IS_CONTAINER_REFRESHED:
+        if _is_parent_root_path and not G.IS_CONTAINER_REFRESHED:
             common.make_call('fetch_initial_page')
         # Note when the profiles are updated to the database (by fetch_initial_page call),
         #   the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
         autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
         if autoselect_profile_guid and not G.IS_CONTAINER_REFRESHED:
-            if is_parent_root_path:
+            if _is_parent_root_path:
                 LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
             # Do not perform the profile switch if navigation come from a page that is not the root url,
             # prevents profile switching when returning to the main menu from one of the sub-menus
-            if not is_parent_root_path or activate_profile(autoselect_profile_guid):
+            if not _is_parent_root_path or activate_profile(autoselect_profile_guid):
                 self.home(None, True)
                 return
         # IS_CONTAINER_REFRESHED is temporary set from the profiles context menu actions
