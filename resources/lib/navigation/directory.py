@@ -69,7 +69,7 @@ class Directory(object):
             # Do not perform the profile switch if navigation come from a page that is not the root url,
             # prevents profile switching when returning to the main menu from one of the sub-menus
             if not _is_parent_root_path or activate_profile(autoselect_profile_guid):
-                self.home(None, True)
+                self.home(is_exec_profile_switch=False)
                 return
         # IS_CONTAINER_REFRESHED is temporary set from the profiles context menu actions
         #   to avoid perform the fetch_initial_page/auto-selection every time when the container will be refreshed
@@ -92,10 +92,10 @@ class Directory(object):
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_MAINMENU)
-    def home(self, pathitems=None, is_autoselect_profile=False):  # pylint: disable=unused-argument
+    def home(self, pathitems=None, is_exec_profile_switch=True):  # pylint: disable=unused-argument
         """Show home listing"""
-        if not is_autoselect_profile and 'switch_profile_guid' in self.params:
-            # This is executed only when you have selected a profile from the profile list
+        if is_exec_profile_switch and 'switch_profile_guid' in self.params and is_parent_root_path():
+            # This must be executed only when you have selected a profile from the profile list
             if not activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
                 return
