@@ -85,13 +85,12 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.9.1 (2020-09-18)
--Add TV Shows/Movies Top 10
--Add support to NFAuthenticationKey for linux
--Fixed search results via JSON-RPC
--Fixed an issue that cause to ask to clear search history again when you return to previous menu
--Fixed possible wrong results on Top 10 menu due to cache TTL
--Updated translations ro, nl
+v1.10.0 (2020-09-xx)
+- Add initial support to keymapping (details to Wiki)
+- Fixed regression causing PIN request each time the main menu is loaded
+- Fixed an issue that caused build_media_tag exception while watching video
+- Fixed an issue that caused build_media_tag exception while watching a non-netflix content
+- Improvements to english language and related translations
     </news>
   </extension>
 </addon>
