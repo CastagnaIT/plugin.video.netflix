@@ -1,11 +1,7 @@
 name: CI
 on:
-  pull_request:
-    branch:
-    - master
-  push:
-    branch:
-    - master
+- pull_request
+- push
 jobs:
   tests:
     name: Add-on testing
@@ -31,7 +27,20 @@ jobs:
         pip install -r requirements.txt
     - name: Run tox
       run: python -m tox -q -e flake8,py
+      if: always()
     - name: Run pylint
       run: python -m pylint resources/lib/ tests/
+      if: always()
     - name: Compare translations
       run: make check-translations
+      if: always()
+    - name: Analyze with SonarCloud
+      uses: SonarSource/sonarcloud-github-action@v1.4
+      with:
+        args: >
+          -Dsonar.organization=add-ons
+          -Dsonar.projectKey=add-ons_plugin.video.netflix
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      continue-on-error: true

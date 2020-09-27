@@ -1,418 +1,418 @@
 v1.9.1 (2020-09-18)
--Add TV Shows/Movies Top 10
--Add support to NFAuthenticationKey for linux
--Fixed search results via JSON-RPC
--Fixed an issue that cause to ask to clear search history again when you return to previous menu
--Fixed possible wrong results on Top 10 menu due to cache TTL
--Updated translations ro, nl
+- Add TV Shows/Movies Top 10
+- Add support to NFAuthenticationKey for linux
+- Fixed search results via JSON-RPC
+- Fixed an issue that cause to ask to clear search history again when you return to previous menu
+- Fixed possible wrong results on Top 10 menu due to cache TTL
+- Updated translations ro, nl
 
 v1.9.0 (2020-09-06)
--New login method "Authentication key" details on GitHub readme
--Add possibility to import library from a different folder
--Add flatted tvshow for single season (depends from kodi setting)
--Big speedup improvement for Kodi 18 in service loading and opening profiles page
--Fixed a problem that could cause the addon to not start after login unexpected errors
--Fixed a wrong behaviour that caused timeout error after credentials login fails
--Fixed context menus issues after add a new search
--Updated translations de, it, fr, pl, zh_ch, pt_br, hu, jp, kr, el_gr, es
+- New login method "Authentication key" details on GitHub readme
+- Add possibility to import library from a different folder
+- Add flatted tvshow for single season (depends from kodi setting)
+- Big speedup improvement for Kodi 18 in service loading and opening profiles page
+- Fixed a problem that could cause the addon to not start after login unexpected errors
+- Fixed a wrong behaviour that caused timeout error after credentials login fails
+- Fixed context menus issues after add a new search
+- Updated translations de, it, fr, pl, zh_ch, pt_br, hu, jp, kr, el_gr, es
 
 v1.8.0 (2020-08-20)
--Attempt to fix the login (not full solved)
--Reimplemented menus "All movies", "All TV Shows", "Browse subgenres"
--Added new search option "By genre/subgenre ID"
--Added sort order setting for search history (Last used or A-Z)
--Fixed Previous/Next page buttons on alphabetically sorted lists
--Fixed regression in http IPC switch setting
--Updated translations it, de, pt_br, el_gr, hu, zh_ch, jp, kr, ro, fr, pl
--Minor fixes
+- Attempt to fix the login (not full solved)
+- Reimplemented menus "All movies", "All TV Shows", "Browse subgenres"
+- Added new search option "By genre/subgenre ID"
+- Added sort order setting for search history (Last used or A-Z)
+- Fixed Previous/Next page buttons on alphabetically sorted lists
+- Fixed regression in http IPC switch setting
+- Updated translations it, de, pt_br, el_gr, hu, zh_ch, jp, kr, ro, fr, pl
+- Minor fixes
 
 v1.7.1 (2020-08-12)
--Added Profiles menu with new profiles context menus:
-   * Set for auto-selection
-   * Set for library playback
-   These two options now are managed only from the Profiles list
--Added setting to enable nf watched status sync with library (one way)
--Added expert setting to customize results per page
--Fixed add-on inaccessibility when the current used profile no more exists
--Fixed feature "Select first unwatched" on Kodi 18.x
--Fixed failure to update nf watched status (seem works better now)
--Little speed improvement on add-on sequential executions
--Better handled types of exceptions with IPC
--Removed disable_modal_error_display expert setting
--Some code cleaning with other improvements
--Add Hebrew translation
--Updated translations it, el, fr, pr_br, jp, kr, hu, po, de, ro, cz, zh_cn
+- Added Profiles menu with new profiles context menus:
+  - Set for auto-selection
+  - Set for library playback
+  These two options now are managed only from the Profiles list
+- Added setting to enable nf watched status sync with library (one way)
+- Added expert setting to customize results per page
+- Fixed add-on inaccessibility when the current used profile no more exists
+- Fixed feature "Select first unwatched" on Kodi 18.x
+- Fixed failure to update nf watched status (seem works better now)
+- Little speed improvement on add-on sequential executions
+- Better handled types of exceptions with IPC
+- Removed disable_modal_error_display expert setting
+- Some code cleaning with other improvements
+- Add Hebrew translation
+- Updated translations it, el, fr, pr_br, jp, kr, hu, po, de, ro, cz, zh_cn
 
 v1.7.0 (2020-07-28)
--Big improvement in loading lists when you have many titles to My list
--Refactor of nfsession
--Refactor/improved library code:
-  -Improved speed and cpu use in autoupdate/sync in background
-  -Suppressed continuous appearance of loading screen when autoupdate/sync in background
-  -Widgets/Favourites managed without profile selection
-  -New Import existing library feature
-  -Play From Here context menu is fixed
-  -Reintroduced UpNext fast video playback feature
-  -Very long list of improvements/fixes full list on GitHub PR-756, PR-761
--Managed error to account not reactivacted
--New Chinese (simple) language translation
--Updated translations it, sv-se, fr, de, jp, kr, hu, pl, es, pt-br, ru
--Many other changes
+- Big improvement in loading lists when you have many titles to My list
+- Refactor of nfsession
+- Refactor/improved library code:
+  - Improved speed and cpu use in autoupdate/sync in background
+  - Suppressed continuous appearance of loading screen when autoupdate/sync in background
+  - Widgets/Favourites managed without profile selection
+  - New Import existing library feature
+  - Play From Here context menu is fixed
+  - Reintroduced UpNext fast video playback feature
+  - Very long list of improvements/fixes full list on GitHub PR-756, PR-761
+- Managed error to account not reactivacted
+- New Chinese (simple) language translation
+- Updated translations it, sv-se, fr, de, jp, kr, hu, pl, es, pt-br, ru
+- Many other changes
 
 v1.6.1 (2020-07-08)
--Fixed broken search menu on fresh installations
--Updated el-gr translation
+- Fixed broken search menu on fresh installations
+- Updated el-gr translation
 
 v1.6.0 (2020-07-04)
--New search menu
--New search types (by term, by audio lang, by subtitles lang)
--Implemented option to remove titles from Continue watching list
--Updated translations it, de, hu, tr, ro, jk, kr, pt-br, sv-se, fr, el-gr
+- New search menu
+- New search types (by term, by audio lang, by subtitles lang)
+- Implemented option to remove titles from Continue watching list
+- Updated translations it, de, hu, tr, ro, jk, kr, pt-br, sv-se, fr, el-gr
 
 v1.5.1 (2020-06-27)
--Implemented fix/workaround to get resolutions until to 1080p with ARM devices
--Updated translations tr
+- Implemented fix/workaround to get resolutions until to 1080p with ARM devices
+- Updated translations tr
 
 v1.5.0 (2020-06-21)
--Add support to the new LoCo Netflix pages
--Fixed KeyError 'lolomo' (LoLoMo seem now deprecated)
--Fixed incorrect user/password issue when spaces are inserted unintentionally to credentials
--New attempt to fix http error 401
--Updated translations fr
--Minor changes/fixes
+- Add support to the new LoCo Netflix pages
+- Fixed KeyError 'lolomo' (LoLoMo seem now deprecated)
+- Fixed incorrect user/password issue when spaces are inserted unintentionally to credentials
+- New attempt to fix http error 401
+- Updated translations fr
+- Minor changes/fixes
 
 v1.4.0 (2020-05-30)
--Implemented profile selection to library (preferences in the settings/playback)
-   This also fixes following related issues when play from library:
-   -Missing audio/subtitle languages
-   -Missing metadata
-   -Wrong age restrictions
-   -Video content not available
--Initial adaptions for the new NF changes (cause of KeyError "lolomo")
--Fixed profile switch for PIN protected profiles
--Fixed forced subtitles sel. issues when Kodi audio lang setting is Original/Media default (Kodi 19)
--Fixed regression for missing skin codec media-flag
--Fixed an issue that caused loss of skin view type after switch profile
--Fixed KeyError issue when performed the scheduled clear expired cache
--Fixed unicodedecode error with Kodi 18 and MSL errors
--Updated translations de, es, hu, ro, sv-se, tr, pl
--Other minor fixes
+- Implemented profile selection to library (preferences in the settings/playback)
+  This also fixes following related issues when play from library:
+  - Missing audio/subtitle languages
+  - Missing metadata
+  - Wrong age restrictions
+  - Video content not available
+- Initial adaptions for the new NF changes (cause of KeyError "lolomo")
+- Fixed profile switch for PIN protected profiles
+- Fixed forced subtitles sel. issues when Kodi audio lang setting is Original/Media default (Kodi 19)
+- Fixed regression for missing skin codec media-flag
+- Fixed an issue that caused loss of skin view type after switch profile
+- Fixed KeyError issue when performed the scheduled clear expired cache
+- Fixed unicodedecode error with Kodi 18 and MSL errors
+- Updated translations de, es, hu, ro, sv-se, tr, pl
+- Other minor fixes
 
 v1.3.2 (2020-05-20)
--Fixed some issues on chinese systems
--Fixed errors on loading lists
--Fixed missing plot in some skins
--Fixed ESN generation (lower case issue)
--Fixed UpNext regressions
--Updated translations es, sv-se
+- Fixed some issues on chinese systems
+- Fixed errors on loading lists
+- Fixed missing plot in some skins
+- Fixed ESN generation (lower case issue)
+- Fixed UpNext regressions
+- Updated translations es, sv-se
 
 v1.3.1 (2020-05-17)
 Note to RPI devices: credentials will be asked again a storage problem has been fixed
--Fixed KeyError issue
+- Fixed KeyError issue
 
 v1.3.0 (2020-05-17)
 Note to RPI devices: credentials will be asked again a storage problem has been fixed
--Reimplemented parental control
--Add new "Top 10" menu list
--Add support to promo video trailer for custom skins
--Add metadata Season and Episode value to ListItem's
--Add metadata PlotOutline and Trailer values to ListItem's
--Continue watching is now working with Netflix watched status sync
--Fixed wrong video framerate, caused Dolby Vision signal loss and wrong colors
--Fixed an issue that caused a wrong watched status sync at end of playback
--Fixed an issue that caused missing to export some new seasons
--Fixed an issue that caused the library sync to crash in some situations
--Fixed a possible issue that can cause a wrong audio language selection on the episodes
--Fixed a possible issue that can cause streamcontinuity to crash due to empty subtitle data
--Fixed non visible media-flags to tvshows
--Updated translations en, it, pt-br, de, sv-se, hu, nl, pl
--Minor improvements/fixes
+- Reimplemented parental control
+- Add new "Top 10" menu list
+- Add support to promo video trailer for custom skins
+- Add metadata Season and Episode value to ListItem's
+- Add metadata PlotOutline and Trailer values to ListItem's
+- Continue watching is now working with Netflix watched status sync
+- Fixed wrong video framerate, caused Dolby Vision signal loss and wrong colors
+- Fixed an issue that caused a wrong watched status sync at end of playback
+- Fixed an issue that caused missing to export some new seasons
+- Fixed an issue that caused the library sync to crash in some situations
+- Fixed a possible issue that can cause a wrong audio language selection on the episodes
+- Fixed a possible issue that can cause streamcontinuity to crash due to empty subtitle data
+- Fixed non visible media-flags to tvshows
+- Updated translations en, it, pt-br, de, sv-se, hu, nl, pl
+- Minor improvements/fixes
 
 v1.2.2 (2020-05-07)
--Fixed a issue regression caused problems to 1080P/4K playback
+- Fixed a issue regression caused problems to 1080P/4K playback
 
 v1.2.1 (2020-05-05)
--Reviewed access and profile selection to mitigate http error 401 (not resolved)
--Add Open Connect CDN setting
--Set time limit for paused playback
--Fixed a issue caused wrong date in viewing activity
--Fixed dash content protection data
--Fixed a issue caused UpNext to crash
--Fixed a issue caused KeyError when play videos
--Fixed a issue caused TypeError on more addon rollback
--Fixed a issue caused a double profile switch on selection
--Fixed a issue caused slow playback video starts (on windows)
--Fixed a issue caused missing of h265 media flag
--Fixed broken "force the update of my list" context menu
--Some changes for Kodi 19 due to API changes
--Updated translations de, it
--Other minor improvements/changes
+- Reviewed access and profile selection to mitigate http error 401 (not resolved)
+- Add Open Connect CDN setting
+- Set time limit for paused playback
+- Fixed a issue caused wrong date in viewing activity
+- Fixed dash content protection data
+- Fixed a issue caused UpNext to crash
+- Fixed a issue caused KeyError when play videos
+- Fixed a issue caused TypeError on more addon rollback
+- Fixed a issue caused a double profile switch on selection
+- Fixed a issue caused slow playback video starts (on windows)
+- Fixed a issue caused missing of h265 media flag
+- Fixed broken "force the update of my list" context menu
+- Some changes for Kodi 19 due to API changes
+- Updated translations de, it
+- Other minor improvements/changes
 
 v1.2.0 (2020-04-22)
--Parental control temporary disabled due to Netflix changes
--New cache management
--Add-on now is ready to works also on systems with special chars in the system path
--Implemented profile PIN protection
--Implemented masked PIN input (Kodi 19)
--Implemented auto purge cache of expired items
--Implemented paginated list of seasons
--Implemented cache to search menu
--Implemented Up Next also with "Sync of watched status with Netflix" feature
--Add support to Python 3.8
--Add title to search page
--Add profile name to homepage title
--Add a better handling of lolomo error with sync of watched status enabled
--Add romanian, swedish translation
--Improved watched status threshold
--Improved watched status update in the GUI display
--Improved catch of possible errors in events module
--EventHandler thread now is running only when sync of watched status is enabled
--Fixed an issue caused of disabling the Up Next setting
--Fixed an issue which prevented a correctly add/remove operations to paginated My list
--Fixed an issue caused mixing images with other languages of profiles 
--Fixed an issue caused error when art data was missing
--Fixed an issue caused generic wrong error messages of BackendNotReady with HTTP IPC
--Fixed an issue caused ProfilesMissing with profiles without avatar
--Fixed an issue that show a wrong title in sub genres menus
--Fixed a possible cases of service breakage due to server init fails
--Fixed a possible cases of service controller breakage
--Fixed an issue caused not update of watched status when play video inside the add-on with Up Next
--Fixed a particular issue of wrong file url passed to Up Next
--Fixed a rare case of ImportError error at add-on start
--Fixed cases of CacheMiss error with Remember audio-subtitle or Sync of watched status
--Fixed possible issues with internal upgrade function and version rollback
--Fixed add-on not starts due to possible outdated MySQL or possible MySQL errors
--Updated translations de, es, hu, it, pl, tr, hr, pt-br
--A lot of other improvements and fixes
+- Parental control temporary disabled due to Netflix changes
+- New cache management
+- Add-on now is ready to works also on systems with special chars in the system path
+- Implemented profile PIN protection
+- Implemented masked PIN input (Kodi 19)
+- Implemented auto purge cache of expired items
+- Implemented paginated list of seasons
+- Implemented cache to search menu
+- Implemented Up Next also with "Sync of watched status with Netflix" feature
+- Add support to Python 3.8
+- Add title to search page
+- Add profile name to homepage title
+- Add a better handling of lolomo error with sync of watched status enabled
+- Add romanian, swedish translation
+- Improved watched status threshold
+- Improved watched status update in the GUI display
+- Improved catch of possible errors in events module
+- EventHandler thread now is running only when sync of watched status is enabled
+- Fixed an issue caused of disabling the Up Next setting
+- Fixed an issue which prevented a correctly add/remove operations to paginated My list
+- Fixed an issue caused mixing images with other languages of profiles 
+- Fixed an issue caused error when art data was missing
+- Fixed an issue caused generic wrong error messages of BackendNotReady with HTTP IPC
+- Fixed an issue caused ProfilesMissing with profiles without avatar
+- Fixed an issue that show a wrong title in sub genres menus
+- Fixed a possible cases of service breakage due to server init fails
+- Fixed a possible cases of service controller breakage
+- Fixed an issue caused not update of watched status when play video inside the add-on with Up Next
+- Fixed a particular issue of wrong file url passed to Up Next
+- Fixed a rare case of ImportError error at add-on start
+- Fixed cases of CacheMiss error with Remember audio-subtitle or Sync of watched status
+- Fixed possible issues with internal upgrade function and version rollback
+- Fixed add-on not starts due to possible outdated MySQL or possible MySQL errors
+- Updated translations de, es, hu, it, pl, tr, hr, pt-br
+- A lot of other improvements and fixes
 
 v1.1.1 (2020-03-24)
--Fixed critical bug caused continuous profile switching
--Fixed unicode decode error to profile auto-selection
+- Fixed critical bug caused continuous profile switching
+- Fixed unicode decode error to profile auto-selection
 
 v1.1.0 (2020-03-20)
--Added more supplemental info to plot info
--Added customizable color to suppl. plot info
--Added Greek language
--Added more results to recommendations menu
--Improved auto-login feature (now called "profile auto-selection")
--Improved password request in particular circumstances
--Improvements to recognize external calls to add-on
--Fixed msl issues with login with different account after a logout
--Fixed an issue in the strm resume workaround
--Fixed an issue caused broken configuration wizard on L1 android devices
--Fixed an issue which prevented the loading of profile list with a backslash on the names
--Fixed an issue which prevented the loading of suppl. info to plot info
--Fixed an issue caused interruption of sending video status progress after video pause or seek
--Updated it, de, nl translations
--Other minor fixes
+- Added more supplemental info to plot info
+- Added customizable color to suppl. plot info
+- Added Greek language
+- Added more results to recommendations menu
+- Improved auto-login feature (now called "profile auto-selection")
+- Improved password request in particular circumstances
+- Improvements to recognize external calls to add-on
+- Fixed msl issues with login with different account after a logout
+- Fixed an issue in the strm resume workaround
+- Fixed an issue caused broken configuration wizard on L1 android devices
+- Fixed an issue which prevented the loading of profile list with a backslash on the names
+- Fixed an issue which prevented the loading of suppl. info to plot info
+- Fixed an issue caused interruption of sending video status progress after video pause or seek
+- Updated it, de, nl translations
+- Other minor fixes
 
 v1.0.0 (2020-03-06)
--Added watched status sync with Netflix services WIP (details on github wiki)
--Reworked add-on/kodi auto-configuration based on device and system characteristics
--Reworked MSL service
--Added support to MSL switch profile, this fixes very old issues:
-  -Requests are now performed with the right msl profile
-  -No more missing audio languages on non-owner profiles
-  -No more missing subtitle languages on non-owner profiles
-  -No more video not available error when main profile has age limits and other profile are set as adults
-  -You can update watched status on all profiles
--Added workaround to fix 4k media flag with android device 4k capable
--Added turkish language
--Changes on nfsession profile switch in order to get the profiles cookies
--Improved ESN generation on android devices
--Automatically turn off omx player on raspberry (not compatible)
--Fixed the error when opening the Export menu caused by too many exported items
--Fixed an issue that causing delayed start of services features after start playback
--Fixed issues with ios/tvos restrictions (but due to missing widevine library for now are not supported)
--Fixed service databases upgrade
--Fixed an issue that caused wrong behaviour with Reset ESN
--Fixed an issue that caused wrong behaviour with highlighted titles
--Fixed a rare issue that caused "stream continuity" to stop working
--Updated jp, kr, it, pl, hu, hr, de, fr, es translations
--A lot of other code changes
+- Added watched status sync with Netflix services WIP (details on github wiki)
+- Reworked add-on/kodi auto-configuration based on device and system characteristics
+- Reworked MSL service
+- Added support to MSL switch profile, this fixes very old issues:
+  - Requests are now performed with the right msl profile
+  - No more missing audio languages on non-owner profiles
+  - No more missing subtitle languages on non-owner profiles
+  - No more video not available error when main profile has age limits and other profile are set as adults
+  - You can update watched status on all profiles
+- Added workaround to fix 4k media flag with android device 4k capable
+- Added turkish language
+- Changes on nfsession profile switch in order to get the profiles cookies
+- Improved ESN generation on android devices
+- Automatically turn off omx player on raspberry (not compatible)
+- Fixed the error when opening the Export menu caused by too many exported items
+- Fixed an issue that causing delayed start of services features after start playback
+- Fixed issues with ios/tvos restrictions (but due to missing widevine library for now are not supported)
+- Fixed service databases upgrade
+- Fixed an issue that caused wrong behaviour with Reset ESN
+- Fixed an issue that caused wrong behaviour with highlighted titles
+- Fixed a rare issue that caused "stream continuity" to stop working
+- Updated jp, kr, it, pl, hu, hr, de, fr, es translations
+- A lot of other code changes
 
 v0.16.4 (2020-01-28)
--Up Next is now supported only from version 1.1.0 and up
--Added czech language
--Added "because you liked" to recommendations menu
--Added Up Next install option
--Implemented Up Next feature, end time information
--Implemented Up Next feature, fast start next video
--Fixed the error "Request failed validation during key exchange"
--Fixed an issue that causing opening Up Next notification in wrong position
--Fixed html tags in profiles names
--Fixed STRM files resume workaround
--Fixed retrieving infolabels from library on python 3
--Managed user id token key expiration
--Manifest is saved to hdd with enabled verbose debugging only
--Updated de, es, hu, it translations
--Some minor changes, fixes
+- Up Next is now supported only from version 1.1.0 and up
+- Added czech language
+- Added "because you liked" to recommendations menu
+- Added Up Next install option
+- Implemented Up Next feature, end time information
+- Implemented Up Next feature, fast start next video
+- Fixed the error "Request failed validation during key exchange"
+- Fixed an issue that causing opening Up Next notification in wrong position
+- Fixed html tags in profiles names
+- Fixed STRM files resume workaround
+- Fixed retrieving infolabels from library on python 3
+- Managed user id token key expiration
+- Manifest is saved to hdd with enabled verbose debugging only
+- Updated de, es, hu, it translations
+- Some minor changes, fixes
 
 v0.16.3 (2020-01-18)
--Fixed an issue that causing addon freeze on export/update to library
--Fixed an regression issue that causing http error 401
--Fixed an issue that causing unicodedecode error at startup
--Fixed an issue that in some cases prevented the export of a tv show season
--Generally optimized addon speed
--Many improvements to the code
+- Fixed an issue that causing addon freeze on export/update to library
+- Fixed an regression issue that causing http error 401
+- Fixed an issue that causing unicodedecode error at startup
+- Fixed an issue that in some cases prevented the export of a tv show season
+- Generally optimized addon speed
+- Many improvements to the code
 
 v0.16.2 (2020-01-07)
--Improved add-on startup
--Improved loading of profiles list
--Added in expert setting a choice to speed up service or addon startup
--Fixed an issue that causing addon misbehaviour using multiple Kodi profiles
--Fixed an issue that causing addon breakage with sqlite connections
--Fixed some python 3 issues on Android
--Handled cases of metadata not available
--Permanently removed sharing Kodi videos settings between profiles
--Updated de, es, it translations
--Minor improvements
+- Improved add-on startup
+- Improved loading of profiles list
+- Added in expert setting a choice to speed up service or addon startup
+- Fixed an issue that causing addon misbehaviour using multiple Kodi profiles
+- Fixed an issue that causing addon breakage with sqlite connections
+- Fixed some python 3 issues on Android
+- Handled cases of metadata not available
+- Permanently removed sharing Kodi videos settings between profiles
+- Updated de, es, it translations
+- Minor improvements
 
 v0.16.1 (2019-12-14)
--Allowed to export individual seasons to the library (manual mode)
--Dolby atmos audio streams are now specified (Kodi 19)
--Added workaround to fix skin widgets
--Handled subtitle properties for next version of InputStream Adaptive
--Introduced accurate handling of subtitles (Kodi 19)
--Improved handling of subtitles (Kodi 18)
--Improved return to main page from search dialog
--Improved cancel login dialog after the logout
--Improved timeout on IPC over HTTP
--Fixed an issue that showed the wrong label while browsing movies 
--Fixed ParentalControl/Rating GUI on custom skins 
--Fixed an issue that cause unicodedecode error on some android devices
--Fixed an issue that can cause unicodedecode error in user/password
--Added japanese language
--Updated kr, hu, pt_br, fr
--Many improvements to the code
+- Allowed to export individual seasons to the library (manual mode)
+- Dolby atmos audio streams are now specified (Kodi 19)
+- Added workaround to fix skin widgets
+- Handled subtitle properties for next version of InputStream Adaptive
+- Introduced accurate handling of subtitles (Kodi 19)
+- Improved handling of subtitles (Kodi 18)
+- Improved return to main page from search dialog
+- Improved cancel login dialog after the logout
+- Improved timeout on IPC over HTTP
+- Fixed an issue that showed the wrong label while browsing movies 
+- Fixed ParentalControl/Rating GUI on custom skins 
+- Fixed an issue that cause unicodedecode error on some android devices
+- Fixed an issue that can cause unicodedecode error in user/password
+- Added japanese language
+- Updated kr, hu, pt_br, fr
+- Many improvements to the code
 
 v0.16.0 (2019-11-29)
--Added new parental control settings
--Added new thumb rating to movies/tv shows
--Started migrating to watched status marks by profile
--Optimized startup code
--Better handled no internet connection
--Fixed an issue that breaks the service when there is no internet connection
--Fixed an issue in some specific cases request at startup credentials even if already saved
--Fixed an issue did not show any error to the user when the loading of profiles fails
--Fixed an issue that did not allow the display of the skip button in the Kodi library
--New Hungarian language
--Updated de, hr, it, pl, pt_br translations
--Other minor improvements/fixes
+- Added new parental control settings
+- Added new thumb rating to movies/tv shows
+- Started migrating to watched status marks by profile
+- Optimized startup code
+- Better handled no internet connection
+- Fixed an issue that breaks the service when there is no internet connection
+- Fixed an issue in some specific cases request at startup credentials even if already saved
+- Fixed an issue did not show any error to the user when the loading of profiles fails
+- Fixed an issue that did not allow the display of the skip button in the Kodi library
+- New Hungarian language
+- Updated de, hr, it, pl, pt_br translations
+- Other minor improvements/fixes
 
 v0.15.11 (2019-11-20)
--Fixed a critical error on auto-update
--Fixed some error on py3
--Fix to handle dolby vision on Kodi 19
--Updated fr_fr, nl_nl translations
--Minor fixes
+- Fixed a critical error on auto-update
+- Fixed some error on py3
+- Fix to handle dolby vision on Kodi 19
+- Updated fr_fr, nl_nl translations
+- Minor fixes
 
 v0.15.10 (2019-11-17)
--Fixed error in exporting to Kodi library due to wrong settings name
--Updated de_de, pt_br translations
+- Fixed error in exporting to Kodi library due to wrong settings name
+- Updated de_de, pt_br translations
 
 v0.15.9 (2019-11-16)
--Removed limit to perform auto-update and auto-sync with my list only with main profile
--Added possibility to choose the profile to perform auto-sync with my list
--Auto-sync with my list now sync also the movies
--Auto-update now can be performed in manual and scheduled mode
--Purge library now ensures complete cleaning of the database and files
--Added possibility to disable sort order of my list from addon settings
--Updated user agents
--Modified debug logging in order to save cpu load
--Fixed pagination of episodes
--Fixed unhandled error of membership user account status
--When set to one profile the Kodi library is no longer modified by other profiles
--A lot of fixes/improvements to compatibility between py2 and py3
--Updated it, pl, pt_BR, hr_HR translations
--Minor fixes
+- Removed limit to perform auto-update and auto-sync with my list only with main profile
+- Added possibility to choose the profile to perform auto-sync with my list
+- Auto-sync with my list now sync also the movies
+- Auto-update now can be performed in manual and scheduled mode
+- Purge library now ensures complete cleaning of the database and files
+- Added possibility to disable sort order of my list from addon settings
+- Updated user agents
+- Modified debug logging in order to save cpu load
+- Fixed pagination of episodes
+- Fixed unhandled error of membership user account status
+- When set to one profile the Kodi library is no longer modified by other profiles
+- A lot of fixes/improvements to compatibility between py2 and py3
+- Updated it, pl, pt_BR, hr_HR translations
+- Minor fixes
 
 v0.15.8 (2019-10-31)
--Fixed addon open issue caused to a broken cookies
--Updated de translations
--Fixed an issue that cause UpNext sometimes to fail
--Minor fixes
+- Fixed addon open issue caused to a broken cookies
+- Updated de translations
+- Fixed an issue that cause UpNext sometimes to fail
+- Minor fixes
 
 v0.15.7 (2019-10-26)
--Do not start auto-sync if disabled
--Updated polish translation
+- Do not start auto-sync if disabled
+- Updated polish translation
 
 v0.15.6 (2019-10-24)
--Added customizable color to titles already contained in mylist
--Added menu to mylist menu to force update of the list
--Added trailers video length
--Added supplemental info to tvshow/movie plot (shown in green)
--Added add/remove to my-list also in childrens profiles
--Added owner/kids account profile infos to profiles menu items
--Added notification when library auto-sync is completed (customizable)
--Library auto-sync now take in account of changes made to mylist from other apps
--Library auto-sync now can export automatically NFOs
--Increased default cache ttl from 10m to 120m
--Improved speed of add/remove operations to mylist
--More intuitive settings menus
--Updated addon screenshots
--Fixed generate ESN on android
--Fixed "Perform full sync" setting now work without close settings window
--Fixed HTTPError 401 on add/remove to mylist
--Fixed cache on sorted lists
--Fixed library full sync when mylist have huge list
--Fixed wrong cache identifier
--Fixed videoid error when play a trailer
--Fixed purge cache that didn't delete the files
--Fixed mixed language of plot/titles when more profiles have different languages
--Other fixes
+- Added customizable color to titles already contained in mylist
+- Added menu to mylist menu to force update of the list
+- Added trailers video length
+- Added supplemental info to tvshow/movie plot (shown in green)
+- Added add/remove to my-list also in childrens profiles
+- Added owner/kids account profile infos to profiles menu items
+- Added notification when library auto-sync is completed (customizable)
+- Library auto-sync now take in account of changes made to mylist from other apps
+- Library auto-sync now can export automatically NFOs
+- Increased default cache ttl from 10m to 120m
+- Improved speed of add/remove operations to mylist
+- More intuitive settings menus
+- Updated addon screenshots
+- Fixed generate ESN on android
+- Fixed "Perform full sync" setting now work without close settings window
+- Fixed HTTPError 401 on add/remove to mylist
+- Fixed cache on sorted lists
+- Fixed library full sync when mylist have huge list
+- Fixed wrong cache identifier
+- Fixed videoid error when play a trailer
+- Fixed purge cache that didn't delete the files
+- Fixed mixed language of plot/titles when more profiles have different languages
+- Other fixes
 
 v0.15.5 (2019-10-12)
--Speedup loading lists due to the new login validity check
--Cookies expires are now used to check a valid login
--Fixed an issue introduced with previous version causing login error
--Fixed double handshake request on first run
+- Speedup loading lists due to the new login validity check
+- Cookies expires are now used to check a valid login
+- Fixed an issue introduced with previous version causing login error
+- Fixed double handshake request on first run
 
 v0.15.4 (2019-10-11)
--Added InputStream Helper settings in settings menu
--Fixed add/remove to mylist on huge lists
--Fixed expired mastertoken key issue
--Fixed skipping sections due to netflix changes
--Manifests now are requested only once
--Updated pt-br, de, es translations
--Minor improvements
+- Added InputStream Helper settings in settings menu
+- Fixed add/remove to mylist on huge lists
+- Fixed expired mastertoken key issue
+- Fixed skipping sections due to netflix changes
+- Manifests now are requested only once
+- Updated pt-br, de, es translations
+- Minor improvements
 
 v0.15.3 (2019-09-19)
--Initial conversion to python 3
--Initial integration tests
--Implemented device uuid to avoid always asking credentials
--Fixed a problem when library source is special:// or a direct path
--Fixed run library update on slow system like RPI
--Updated dutch language
--Minor fixes
+- Initial conversion to python 3
+- Initial integration tests
+- Implemented device uuid to avoid always asking credentials
+- Fixed a problem when library source is special:// or a direct path
+- Fixed run library update on slow system like RPI
+- Updated dutch language
+- Minor fixes
 
 v0.15.2 (2019-08-30)
--Fixed key handshake at addon first run
--Fixed library update service at first run
--Local database now dynamically created by code
--Profile data is not deleted if an problem occurred
--Minor fixes
+- Fixed key handshake at addon first run
+- Fixed library update service at first run
+- Local database now dynamically created by code
+- Profile data is not deleted if an problem occurred
+- Minor fixes
 
 v0.15.1 (2019-08-25)
--Fixed wrong path to linux systems
+- Fixed wrong path to linux systems
 
 v0.15.0 (2019-08-20)
--Implemented data management through database
--Implemented automatic export of new episodes
--Implemented a version upgrade system
--Implemented management of login errors
--Added a new context menu "Export new episodes" for a single tv show
--Added ability to exclude (and re-include) a tv show from library auto update
--Added possibility to share the same library with multiple devices (MySQL server is required)
--No more concurrency and data loss problems of previous "persistent storage"
--Fixed continuous "new access" email notification from netflix
--Fixed locale id error
--Fixed automatic library updates
--Fixed logout now the profiles are no longer accessible and you can enter your credentials
--Fixed exporting tvshow.nfo for a single episode
--Fixed UpNext watched status from Kodi library
--Fixed issue with library items that containing % in the path
--Other minor improvements and fixes
+- Implemented data management through database
+- Implemented automatic export of new episodes
+- Implemented a version upgrade system
+- Implemented management of login errors
+- Added a new context menu "Export new episodes" for a single tv show
+- Added ability to exclude (and re-include) a tv show from library auto update
+- Added possibility to share the same library with multiple devices (MySQL server is required)
+- No more concurrency and data loss problems of previous "persistent storage"
+- Fixed continuous "new access" email notification from netflix
+- Fixed locale id error
+- Fixed automatic library updates
+- Fixed logout now the profiles are no longer accessible and you can enter your credentials
+- Fixed exporting tvshow.nfo for a single episode
+- Fixed UpNext watched status from Kodi library
+- Fixed issue with library items that containing % in the path
+- Other minor improvements and fixes
 
 v0.14.6 (2019-06-29)
 - Improved Library Management that include:

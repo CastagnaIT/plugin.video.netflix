@@ -1,0 +1,64 @@
+name: Release
+on:
+  push:
+    tags:
+    - 'v*'
+jobs:
+  build:
+    name: Release plugin.video.netflix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build zip files
+        run: |
+          sudo apt-get install libxml2-utils
+          make multizip release=1
+      - name: Get Leia filename
+        id: get-leia-filename
+        run: |
+          echo ::set-output name=leia-filename::$(cd ..;ls plugin.video.netflix*.zip | grep -v '+matrix.' | head -1)
+      - name: Get Matrix filename
+        id: get-matrix-filename
+        run: |
+          echo ::set-output name=matrix-filename::$(cd ..;ls plugin.video.netflix*+matrix.*.zip | head -1)
+      - name: Get body
+        id: get-body
+        run: |
+          description=$(sed '1,/v[0-9\.]* ([0-9-]*)/d;/^$/,$d' changelog.txt)
+          echo $description
+          description="${description//'%'/'%25'}"
+          description="${description//$'\n'/'%0A'}"
+          description="${description//$'\r'/'%0D'}"
+          echo ::set-output name=body::$description
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{ steps.get-body.outputs.body }}
+          draft: false
+          prerelease: false
+      - name: Upload Leia zip
+        id: upload-leia-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_name: ${{ steps.get-leia-filename.outputs.leia-filename }}
+          asset_path: ../${{ steps.get-leia-filename.outputs.leia-filename }}
+          asset_content_type: application/zip
+      - name: Upload Matrix zip
+        id: upload-matrix-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_name: ${{ steps.get-matrix-filename.outputs.matrix-filename }}
+          asset_path: ../${{ steps.get-matrix-filename.outputs.matrix-filename }}
+          asset_content_type: application/zip
