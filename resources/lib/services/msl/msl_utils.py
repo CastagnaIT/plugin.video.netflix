@@ -125,9 +125,10 @@ def _find_audio_data(player_state, manifest):
     """
     Find the audio downloadable id and the audio track id
     """
-    language = common.convert_language_iso(player_state['currentaudiostream']['language'])
+    language = common.convert_language_iso(player_state['currentaudiostream']['language'], use_fallback=False)
+    if not language:  # If there is no language, means that is a fixed locale (fix_locale_languages in kodi_ops.py)
+        language = player_state['currentaudiostream']['language']
     channels = AUDIO_CHANNELS_CONV[player_state['currentaudiostream']['channels']]
-
     for audio_track in manifest['audio_tracks']:
         if audio_track['language'] == language and audio_track['channels'] == channels:
             # Get the stream dict with the highest bitrate
