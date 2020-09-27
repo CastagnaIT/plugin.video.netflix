@@ -166,6 +166,21 @@ class VideoId(object):
             return VideoId.from_dict(videoid_dict)
         return self
 
+    def to_string(self):
+        """Generate a valid pathitems as string ('show'/tvshowid/...) from this instance"""
+        if self.videoid:
+            return self.videoid
+        if self.movieid:
+            return '/'.join([self.MOVIE, self.movieid])
+        if self.supplementalid:
+            return '/'.join([self.SUPPLEMENTAL, self.supplementalid])
+        pathitems = [self.SHOW, self.tvshowid]
+        if self.seasonid:
+            pathitems.extend([self.SEASON, self.seasonid])
+        if self.episodeid:
+            pathitems.extend([self.EPISODE, self.episodeid])
+        return '/'.join(pathitems)
+
     def to_path(self):
         """Generate a valid pathitems list (['show', tvshowid, ...]) from
         this instance"""
