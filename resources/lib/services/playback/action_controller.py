@@ -33,10 +33,10 @@ class ActionController(xbmc.Monitor):
         xbmc.Monitor.__init__(self)
         self._init_data = None
         self.tracking = False
-        self.events_workaround = False
         self.active_player_id = None
         self.action_managers = None
         self._last_player_state = {}
+        self._is_pause_called = False
         common.register_slot(self.initialize_playback, common.Signals.PLAYBACK_INITIATED)
 
     def initialize_playback(self, data):
@@ -45,21 +45,15 @@ class ActionController(xbmc.Monitor):
         """
         self._init_data = data
         self.active_player_id = None
-        # WARNING KODI EVENTS SIDE EFFECTS - TO CONSIDER FOR ACTION MANAGER'S BEHAVIOURS!
-        # If action_managers is not None, means that 'Player.OnStop' event did not happen
-        if self.action_managers is not None:
-            # When you try to play a video while another one is currently in playing, Kodi have some side effects:
-            # - The event "Player.OnStop" not exists. This can happen for example when using context menu
-            #    "Play From Here" or with UpNext add-on, so to fix this we generate manually the stop event
-            #    when Kodi send 'Player.OnPlay' event.
-            # - The event "Player.OnResume" is sent without apparent good reason.
-            #    When you use ctx menu "Play From Here", this happen when click to next button (can not be avoided).
-            #    When you use UpNext add-on, happen a bit after, then can be avoided (by events_workaround).
-            self.events_workaround = True
-        else:
+        # WARNING KODI EVENTS SIDE EFFECTS!
+        # If action_managers is not None, means that 'Player.OnStop' event did not happen,
+        # this means that you have tried to play a video while another one is currently in playing
+        if self.action_managers is None:
             self._initialize_am()
 
     def _initialize_am(self):
+        if not self._init_data:
+            return
         self._last_player_state = {}
         self.action_managers = [
             AMPlayback(),
@@ -69,32 +63,38 @@ class ActionController(xbmc.Monitor):
             AMUpNextNotifier()
         ]
         self._notify_all(ActionManager.call_initialize, self._init_data)
+        self._init_data = None
+        self._is_pause_called = False
         self.tracking = True
 
     def onNotification(self, sender, method, data):  # pylint: disable=unused-argument
         """
         Callback for Kodi notifications that handles and dispatches playback events
         """
+        # WARNING: Do not get playerid from 'data',
+        # Because when Up Next add-on play a video while we are inside Netflix add-on and
+        # not externally like Kodi library, the playerid become -1 this id does not exist
         if not self.tracking or 'Player.' not in method:
             return
         try:
-            if method == 'Player.OnPlay':
-                if self.events_workaround:
-                    self._on_playback_stopped()
-                    self._initialize_am()
-            elif method == 'Player.OnAVStart':
-                # WARNING: Do not get playerid from 'data',
-                # Because when Up Next add-on play a video while we are inside Netflix add-on and
-                # not externally like Kodi library, the playerid become -1 this id does not exist
+            if method == 'Player.OnAVStart':
                 self._on_playback_started()
             elif method == 'Player.OnSeek':
                 self._on_playback_seek()
             elif method == 'Player.OnPause':
+                self._is_pause_called = True
                 self._on_playback_pause()
             elif method == 'Player.OnResume':
-                if self.events_workaround:
-                    LOG.debug('ActionController: Player.OnResume event has been ignored')
+                # Kodi can call this event instead the "OnStop" event when you try to play a video
+                # when another one is in playing, can be one of following cases:
+                # - When you use ctx menu "Play From Here", this happen when click to next button
+                # - When you use UpNext add-on
+                # - When you play a non-Netflix video when a Netflix video is in playback in background
+                if not self._is_pause_called:
+                    self._on_playback_stopped()
+                    self._initialize_am()
                     return
+                self._is_pause_called = False
                 self._on_playback_resume()
             elif method == 'Player.OnStop':
                 # When an error occurs before the video can be played,
@@ -104,11 +104,8 @@ class ActionController(xbmc.Monitor):
                     LOG.warn('ActionController: Possible problem with video playback, action managers disabled.')
                     self.tracking = False
                     self.action_managers = None
-                    self.events_workaround = False
                     return
-                # It should not happen, but we avoid a possible double Stop event when using the workaround
-                if not self.events_workaround:
-                    self._on_playback_stopped()
+                self._on_playback_stopped()
         except Exception:  # pylint: disable=broad-except
             import traceback
             LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
@@ -158,7 +155,6 @@ class ActionController(xbmc.Monitor):
         self._notify_all(ActionManager.call_on_playback_stopped,
                          self._last_player_state)
         self.action_managers = None
-        self.events_workaround = False
 
     def _notify_all(self, notification, data=None):
         LOG.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
