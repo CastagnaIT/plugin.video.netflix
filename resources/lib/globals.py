@@ -205,6 +205,7 @@ class GlobalVariables(object):
     MODE_PLAY = 'play'
     MODE_PLAY_STRM = 'play_strm'
     MODE_LIBRARY = 'library'
+    MODE_KEYMAPS = 'keymaps'
 
     def __init__(self):
         """Do nothing on constructing the object"""
