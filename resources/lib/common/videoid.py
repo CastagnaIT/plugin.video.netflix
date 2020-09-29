@@ -310,9 +310,7 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
     from the kwargs dict."""
     kwargs['videoid'] = VideoId.from_path(kwargs[pathitems_arg][path_offset:])
     if inject_remaining_pathitems or inject_full_pathitems:
-        if inject_full_pathitems:
-            kwargs[pathitems_arg] = kwargs[pathitems_arg]
-        else:
+        if inject_remaining_pathitems:
             kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
     else:
         del kwargs[pathitems_arg]
