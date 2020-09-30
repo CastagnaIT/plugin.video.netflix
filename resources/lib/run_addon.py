@@ -132,12 +132,15 @@ def _get_nav_handler(root_handler, pathitems):
     if root_handler == G.MODE_DIRECTORY:
         from resources.lib.navigation.directory import Directory
         nav_handler = Directory
-    if root_handler == G.MODE_ACTION:
+    elif root_handler == G.MODE_ACTION:
         from resources.lib.navigation.actions import AddonActionExecutor
         nav_handler = AddonActionExecutor
-    if root_handler == G.MODE_LIBRARY:
+    elif root_handler == G.MODE_LIBRARY:
         from resources.lib.navigation.library import LibraryActionExecutor
         nav_handler = LibraryActionExecutor
+    elif root_handler == G.MODE_KEYMAPS:
+        from resources.lib.navigation.keymaps import KeymapsActionExecutor
+        nav_handler = KeymapsActionExecutor
     if not nav_handler:
         raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
     return nav_handler

@@ -121,7 +121,7 @@ class AddonActionExecutor(object):
         """Add or remove an item from my list"""
         operation = pathitems[1]
         api.update_my_list(videoid, operation, self.params)
-        _sync_library(videoid, operation)
+        sync_library(videoid, operation)
         common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
@@ -207,22 +207,8 @@ class AddonActionExecutor(object):
 
     @common.inject_video_id(path_offset=1)
     def change_watched_status(self, videoid):
-        """Change the watched status locally"""
-        # Todo: how get resumetime/playcount of selected item for calculate current watched status?
-
-        profile_guid = G.LOCAL_DB.get_active_profile_guid()
-        current_value = G.SHARED_DB.get_watched_status(profile_guid, videoid.value, None, bool)
-        if current_value:
-            txt_index = 1
-            G.SHARED_DB.set_watched_status(profile_guid, videoid.value, False)
-        elif current_value is not None and not current_value:
-            txt_index = 2
-            G.SHARED_DB.delete_watched_status(profile_guid, videoid.value)
-        else:
-            txt_index = 0
-            G.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
-        ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
-        common.container_refresh()
+        """Change the watched status of a video, only when sync of watched status with NF is enabled"""
+        change_watched_status_locally(videoid)
 
     def configuration_wizard(self, pathitems=None):  # pylint: disable=unused-argument
         """Run the add-on configuration wizard"""
@@ -253,7 +239,7 @@ class AddonActionExecutor(object):
         common.container_refresh()
 
 
-def _sync_library(videoid, operation):
+def sync_library(videoid, operation):
     if operation and G.ADDON.getSettingBool('lib_sync_mylist') and G.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
         sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
                                                          G.LOCAL_DB.get_guid_owner_profile())
@@ -265,3 +251,21 @@ def _sync_library(videoid, operation):
             get_library_cls().export_to_library(videoid, False)
         elif operation == 'remove':
             get_library_cls().remove_from_library(videoid, False)
+
+
+def change_watched_status_locally(videoid):
+    """Change the watched status locally"""
+    # Todo: how get resumetime/playcount of selected item for calculate current watched status?
+    profile_guid = G.LOCAL_DB.get_active_profile_guid()
+    current_value = G.SHARED_DB.get_watched_status(profile_guid, videoid.value, None, bool)
+    if current_value:
+        txt_index = 1
+        G.SHARED_DB.set_watched_status(profile_guid, videoid.value, False)
+    elif current_value is not None and not current_value:
+        txt_index = 2
+        G.SHARED_DB.delete_watched_status(profile_guid, videoid.value)
+    else:
+        txt_index = 0
+        G.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
+    ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
+    common.container_refresh()
