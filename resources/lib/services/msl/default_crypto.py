@@ -15,19 +15,19 @@ import json
 
 
 try:  # The crypto package depends on the library installed (see Wiki)
-    from Crypto.Random import get_random_bytes
-    from Crypto.Hash import HMAC, SHA256
-    from Crypto.Cipher import PKCS1_OAEP
-    from Crypto.PublicKey import RSA
-    from Crypto.Util import Padding
-    from Crypto.Cipher import AES
-except ImportError:
     from Cryptodome.Random import get_random_bytes
     from Cryptodome.Hash import HMAC, SHA256
     from Cryptodome.Cipher import PKCS1_OAEP
     from Cryptodome.PublicKey import RSA
     from Cryptodome.Util import Padding
     from Cryptodome.Cipher import AES
+except ImportError:
+    from Crypto.Random import get_random_bytes
+    from Crypto.Hash import HMAC, SHA256
+    from Crypto.Cipher import PKCS1_OAEP
+    from Crypto.PublicKey import RSA
+    from Crypto.Util import Padding
+    from Crypto.Cipher import AES
 
 from resources.lib.common.exceptions import MSLError
 from resources.lib.utils.logging import LOG
