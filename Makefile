@@ -1,6 +1,6 @@
 export PYTHONPATH := .:$(CURDIR)/test
 PYTHON := python
-KODI_PYTHON_ABIS := 3.0.0 2.25.0
+KODI_PYTHON_ABIS := 3.0.0 2.26.0
 
 name = $(shell xmllint --xpath 'string(/addon/@id)' addon.xml)
 version = $(shell xmllint --xpath 'string(/addon/@version)' addon.xml)
