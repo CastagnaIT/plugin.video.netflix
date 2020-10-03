@@ -1,3 +1,10 @@
+v1.10.0 (2020-10-02)
+- Add initial support to keymapping (details to Wiki)
+- Fixed regression causing PIN request each time the main menu is loaded
+- Fixed an issue that caused build_media_tag exception while watching video
+- Fixed an issue that caused build_media_tag exception while watching a non-netflix content
+- Improvements to english language and related translations
+
 v1.9.1 (2020-09-18)
 - Add TV Shows/Movies Top 10
 - Add support to NFAuthenticationKey for linux
