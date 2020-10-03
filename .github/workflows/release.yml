@@ -25,7 +25,7 @@ jobs:
       - name: Get body
         id: get-body
         run: |
-          description=$(sed '1,/v[0-9\.]* ([0-9-]*)/d;/^$/,$d' changelog.txt)
+          description=$(sed '/v[0-9\.]*\s([0-9-]*)/d;/^$/,$d' changelog.txt)
           echo $description
           description="${description//'%'/'%25'}"
           description="${description//$'\n'/'%0A'}"
