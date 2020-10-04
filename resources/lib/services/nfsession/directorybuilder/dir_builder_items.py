@@ -154,7 +154,7 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
         'properties': {'nf_videoid': seasonid.to_string()}
     }
     add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data)
-    dict_item['art'] = get_art(tvshowid, season, common_data['profile_language_code'])
+    dict_item['art'] = get_art(tvshowid, season)
     dict_item['url'] = common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY)
     dict_item['menu_items'] = generate_context_menu_items(seasonid, False, None)
     return dict_item
@@ -186,7 +186,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
                  'properties': {'nf_videoid': episodeid.to_string()}}
     add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
     set_watched_status(dict_item, episode, common_data)
-    dict_item['art'] = get_art(episodeid, episode, common_data['profile_language_code'])
+    dict_item['art'] = get_art(episodeid, episode)
     dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
     dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
     return dict_item
@@ -249,7 +249,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
     dict_item = {'label': video_list['displayName'],
                  'is_folder': True}
     add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data)
-    dict_item['art'] = get_art(video_list.videoid, video_list.artitem, common_data['profile_language_code'])
+    dict_item['art'] = get_art(video_list.videoid, video_list.artitem)
     # Add possibility to browse the sub-genres (see build_video_listing)
     sub_genre_id = video_list.get('genreId')
     params = {'sub_genre_id': unicode(sub_genre_id)} if sub_genre_id else None
@@ -316,7 +316,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
                                 'nf_perpetual_range_start': perpetual_range_start}}
     add_info_dict_item(dict_item, videoid, video, video_list.data, is_in_mylist, common_data)
     set_watched_status(dict_item, video, common_data)
-    dict_item['art'] = get_art(videoid, video, common_data['profile_language_code'])
+    dict_item['art'] = get_art(videoid, video)
     dict_item['url'] = common.build_url(videoid=videoid,
                                         mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                         params=None if is_folder else common_data['params'])

@@ -17,7 +17,7 @@ import resources.lib.utils.api_paths as paths
 import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 from resources.lib.common.exceptions import CacheMiss, ItemNotFound
-from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
@@ -103,19 +103,15 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
         infos_copy.update({'PlotOutline': plotoutline + suppl_text})
 
 
-def get_art(videoid, item, profile_language_code=''):
+def get_art(videoid, item):
     """Get art infolabels"""
-    return _get_art(videoid, item or {}, profile_language_code)
+    return _get_art(videoid, item or {})
 
 
-def _get_art(videoid, item, profile_language_code):
+def _get_art(videoid, item):
     # If item is None this method raise TypeError
-    cache_identifier = videoid.value + '_' + profile_language_code
-    try:
-        art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
-    except CacheMiss:
-        art = parse_art(videoid, item)
-        G.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
+
+    art = parse_art(videoid, item)
     return art
 
 
@@ -258,7 +254,7 @@ def get_info_from_netflix(videoids):
     for videoid in videoids:
         try:
             infos = get_info(videoid, None, None, profile_language_code)[0]
-            art = _get_art(videoid, None, profile_language_code)
+            art = _get_art(videoid, None)
             info_data[videoid.value] = infos, art
             LOG.debug('Got infolabels and art from cache for videoid {}', videoid)
         except (AttributeError, TypeError):
@@ -270,7 +266,7 @@ def get_info_from_netflix(videoids):
         raw_data = api.get_video_raw_data(videoids_to_request)
         for videoid in videoids_to_request:
             infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
-            art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
+            art = get_art(videoid, raw_data['videos'][videoid.value])
             info_data[videoid.value] = infos, art
     return info_data
 

@@ -32,7 +32,6 @@ CACHE_GENRES = {'name': 'cache_genres', 'is_persistent': False, 'default_ttl': '
 CACHE_SUPPLEMENTAL = {'name': 'cache_supplemental', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_METADATA = {'name': 'cache_metadata', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
 CACHE_INFOLABELS = {'name': 'cache_infolabels', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
-CACHE_ARTINFO = {'name': 'cache_artinfo', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
 CACHE_MANIFESTS = {'name': 'cache_manifests', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_BOOKMARKS = {'name': 'cache_bookmarks', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_MYLIST = {'name': 'cache_mylist', 'is_persistent': False, 'default_ttl': 'CACHE_MYLIST_TTL'}
@@ -40,10 +39,10 @@ CACHE_SEARCH = {'name': 'cache_search', 'is_persistent': False, 'default_ttl': '
 
 # The complete list of buckets (to obtain the list quickly)
 BUCKET_NAMES = ['cache_common', 'cache_genres', 'cache_supplemental', 'cache_metadata', 'cache_infolabels',
-                'cache_artinfo', 'cache_manifests', 'cache_bookmarks', 'cache_mylist', 'cache_search']
+                'cache_manifests', 'cache_bookmarks', 'cache_mylist', 'cache_search']
 
 BUCKETS = [CACHE_COMMON, CACHE_GENRES, CACHE_SUPPLEMENTAL, CACHE_METADATA, CACHE_INFOLABELS,
-           CACHE_ARTINFO, CACHE_MANIFESTS, CACHE_BOOKMARKS, CACHE_MYLIST, CACHE_SEARCH]
+           CACHE_MANIFESTS, CACHE_BOOKMARKS, CACHE_MYLIST, CACHE_SEARCH]
 
 
 # Logic to get the identifier
