@@ -293,7 +293,7 @@ msgstr "Ansicht für Exportiert"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Aktiviere Intro und Recap überspringen Funktion"
+msgstr "Fragen ob Intro und Recap übersprungen werden sollen"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -325,7 +325,7 @@ msgstr "Audio- und Untertitel-Einstellungen beibehalten"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Anzeige erzwungener Untertitel nur erzwingen wenn Audiosprache gesetzt ist"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -485,7 +485,7 @@ msgstr "'Meine Liste' mit Kodi Bibliothek synchronisieren"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr "Möchten Sie fortfahren?[CR]Die vollständige Synchronisation wird alle vormals exportierten Titel löschen.[CR]Wenn es da viele Titel gibt, lann diese Operation etwas dauern."
+msgstr "Möchten Sie fortfahren?[CR]Die vollständige Synchronisation wird alle vormals exportierten Titel löschen.[CR]Wenn es da viele Titel gibt, kann diese Operation etwas dauern."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -692,7 +692,7 @@ msgstr "Aktiviere Workaround für STRM-Wiedergabe-Fortsetzung"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
-msgstr "Frage zum Fortsetzen des Videos"
+msgstr "Fragen ob Video fortgesetzt werden soll"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
@@ -708,7 +708,7 @@ msgstr "Es gab ein Problem bei der Anmeldung, möglicherweise ist Ihr Account ni
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Untertitel immer anzeigen wenn bevorzugte Audiosprache nicht verfügbar ist"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "Nach Genre/Subgenre ID"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Audio-/Untertitelsprache mit Landescode bevorzugen (falls verfügbar)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Standardmäßig Stereo-Audiospur bevorzugen"
