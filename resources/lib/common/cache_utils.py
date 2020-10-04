@@ -30,8 +30,8 @@ except NameError:  # Python 3
 CACHE_COMMON = {'name': 'cache_common', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_GENRES = {'name': 'cache_genres', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_SUPPLEMENTAL = {'name': 'cache_supplemental', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
-CACHE_METADATA = {'name': 'cache_metadata', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
-CACHE_INFOLABELS = {'name': 'cache_infolabels', 'is_persistent': True, 'default_ttl': 'CACHE_METADATA_TTL'}
+CACHE_METADATA = {'name': 'cache_metadata', 'is_persistent': False, 'default_ttl': 'CACHE_METADATA_TTL'}
+CACHE_INFOLABELS = {'name': 'cache_infolabels', 'is_persistent': False, 'default_ttl': 'CACHE_METADATA_TTL'}
 CACHE_MANIFESTS = {'name': 'cache_manifests', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_BOOKMARKS = {'name': 'cache_bookmarks', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
 CACHE_MYLIST = {'name': 'cache_mylist', 'is_persistent': False, 'default_ttl': 'CACHE_MYLIST_TTL'}
