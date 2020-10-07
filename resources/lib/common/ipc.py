@@ -24,7 +24,7 @@ try:  # Python 2
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
-IPC_TIMEOUT_SECS = 20
+IPC_TIMEOUT_SECS = 30
 IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
 
 
