@@ -39,7 +39,7 @@ class Cache(object):
         data = self._make_call('get', call_args)
         return deserialize_data(data)
 
-    def add(self, bucket, identifier, data, ttl=None, expires=None):
+    def add(self, bucket, identifier, data, ttl=None, expires=None, delayed_db_op=False):
         """
         Add or update an item to a cache bucket
 
@@ -48,13 +48,17 @@ class Cache(object):
         :param data: the content
         :param ttl: override default expiration (in seconds)
         :param expires: override default expiration (in timestamp) if specified override also the 'ttl' value
+        :param delayed_db_op: if True, queues the adding operation for the db, then is mandatory to call
+                      'execute_pending_db_add' at end of all operations to apply the changes to the db
+                      (only for persistent buckets)
         """
         call_args = {
             'bucket': bucket,
             'identifier': identifier,
             'data': None,  # This value is injected after the _make_call
             'ttl': ttl,
-            'expires': expires
+            'expires': expires,
+            'delayed_db_op': delayed_db_op
         }
         self._make_call('add', call_args, serialize_data(data))
 
