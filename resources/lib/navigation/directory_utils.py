@@ -221,9 +221,3 @@ def _find_index_last_watched(total_items, list_data):
             # Last partial watched item
             return index
     return 0
-
-
-def is_parent_root_path():
-    """Check if the navigation come from the root path"""
-    # Compare the current navigation path from xbmc.getInfoLabel('Container.FolderPath') with the root path
-    return xbmc.getInfoLabel('Container.FolderPath') == G.BASE_URL + '/'

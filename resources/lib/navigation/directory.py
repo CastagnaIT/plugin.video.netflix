@@ -17,8 +17,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import G
 from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
-                                                      end_of_directory, get_title, activate_profile, auto_scroll,
-                                                      is_parent_root_path)
+                                                      end_of_directory, get_title, activate_profile, auto_scroll)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
@@ -56,24 +55,18 @@ class Directory(object):
 
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
-        _is_parent_root_path = is_parent_root_path()
         # Fetch initial page to refresh all session data
-        if _is_parent_root_path and not G.IS_CONTAINER_REFRESHED:
+        if G.CURRENT_LOADED_DIRECTORY is None:
+            # Note when the profiles are updated to the database (by fetch_initial_page call),
+            # the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
             common.make_call('fetch_initial_page')
-        # Note when the profiles are updated to the database (by fetch_initial_page call),
-        #   the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
         autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
         if autoselect_profile_guid and not G.IS_CONTAINER_REFRESHED:
-            if _is_parent_root_path:
+            if G.CURRENT_LOADED_DIRECTORY is None:
                 LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
-            # Do not perform the profile switch if navigation come from a page that is not the root url,
-            # prevents profile switching when returning to the main menu from one of the sub-menus
-            if not _is_parent_root_path or activate_profile(autoselect_profile_guid):
-                self.home(None, True)
-                return
-        # IS_CONTAINER_REFRESHED is temporary set from the profiles context menu actions
-        #   to avoid perform the fetch_initial_page/auto-selection every time when the container will be refreshed
-        G.IS_CONTAINER_REFRESHED = False
+                self.params['switch_profile_guid'] = autoselect_profile_guid
+            self.home(None)
+            return
         list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
         self._profiles(list_data, extra_data)
 
@@ -92,10 +85,9 @@ class Directory(object):
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_MAINMENU)
-    def home(self, pathitems=None, is_autoselect_profile=False):  # pylint: disable=unused-argument
+    def home(self, pathitems=None):  # pylint: disable=unused-argument
         """Show home listing"""
-        if not is_autoselect_profile and 'switch_profile_guid' in self.params:
-            # This is executed only when you have selected a profile from the profile list
+        if 'switch_profile_guid' in self.params and G.CURRENT_LOADED_DIRECTORY in [None, 'root', 'profiles']:
             if not activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
                 return
