@@ -62,6 +62,7 @@ class CacheManagement(object):
         self.next_schedule = _compute_next_schedule()
         self.ttl_values = {}
         self.load_ttl_values()
+        self.pending_db_ops_add = []
 
     def load_ttl_values(self):
         """Load the ttl values from add-on settings"""
@@ -165,7 +166,7 @@ class CacheManagement(object):
             LOG.error('SQLite error {}:', exc.args[0])
             raise_from(DBSQLiteError, exc)
 
-    def add(self, bucket, identifier, data, ttl=None, expires=None):
+    def add(self, bucket, identifier, data, ttl=None, expires=None, delayed_db_op=False):
         """
         Add or update an item to a cache bucket
 
@@ -174,6 +175,9 @@ class CacheManagement(object):
         :param data: the content
         :param ttl: override default expiration (in seconds)
         :param expires: override default expiration (in timestamp) if specified override also the 'ttl' value
+        :param delayed_db_op: if True, queues the adding operation for the db, then is mandatory to call
+                              'execute_pending_db_add' at end of all operations to apply the changes to the db
+                              (only for persistent buckets)
         """
         try:
             identifier = self._add_prefix(identifier)
@@ -185,22 +189,46 @@ class CacheManagement(object):
             # Save the item data to memory-cache
             self._get_cache_bucket(bucket['name']).update({identifier: cache_entry})
             if bucket['is_persistent']:
-                # Save the item data to the cache database
-                self._add_db(bucket['name'], identifier, data, expires)
+                row_data = (bucket['name'], identifier, sql.Binary(data), expires, int(time()))
+                if delayed_db_op:
+                    # Add to pending operations
+                    self.pending_db_ops_add.append(row_data)
+                else:
+                    # Save the item data to the cache database
+                    self._add_db(row_data)
         except DBProfilesMissing:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch
             pass
 
     @handle_connection
-    def _add_db(self, bucket_name, identifier, data, expires):
+    def _add_db(self, row_data):
         try:
             cursor = self.conn.cursor()
             query = ('REPLACE INTO cache_data (bucket, identifier, value, expires, last_modified) '
                      'VALUES(?, ?, ?, ?, ?)')
-            cursor.execute(query, (bucket_name, identifier, sql.Binary(data), expires, int(time())))
+            cursor.execute(query, row_data)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
             raise_from(DBSQLiteError, exc)
+
+    @handle_connection
+    def execute_pending_db_ops(self):
+        """Execute all pending db operations at once"""
+        # Required for cases when the devices has a slow performance storage like old sdcard or mechanical hdd,
+        # this devices do not have enough speed performance to perform multiple individual db writing operations
+        # in a faster way and this results in a long delay in loading the lists,
+        # making a single db write for all changes greatly speeds up the loading of the lists
+        if self.pending_db_ops_add:
+            try:
+                cursor = self.conn.cursor()
+                cursor.execute("BEGIN TRANSACTION;")
+                query = ('REPLACE INTO cache_data (bucket, identifier, value, expires, last_modified) '
+                         'VALUES(?, ?, ?, ?, ?)')
+                cursor.executemany(query, self.pending_db_ops_add)
+                cursor.execute("COMMIT;")
+                self.pending_db_ops_add = []
+            except sql.Error as exc:
+                LOG.error('SQLite error {}:', exc.args[0])
 
     def delete(self, bucket, identifier, including_suffixes):
         """

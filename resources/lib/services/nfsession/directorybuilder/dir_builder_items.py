@@ -15,7 +15,7 @@ import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
 from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
-from resources.lib.kodi.infolabels import get_art, get_color_name, add_info_dict_item, set_watched_status
+from resources.lib.kodi.infolabels import get_color_name, add_info_dict_item, set_watched_status
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page)
 from resources.lib.utils.logging import measure_exec_time_decorator
@@ -75,6 +75,7 @@ def build_mainmenu_listing(loco_list):
         'art': {'icon': 'DefaultUser.png'},
         'is_folder': True
     })
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
 
@@ -141,6 +142,7 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
                        in iteritems(season_list.seasons)]
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {'title': season_list.tvshow['title'] + ' - ' + common.get_local_string(20366)[2:]}
 
 
@@ -154,7 +156,6 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
         'properties': {'nf_videoid': seasonid.to_string()}
     }
     add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data)
-    dict_item['art'] = get_art(tvshowid, season, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY)
     dict_item['menu_items'] = generate_context_menu_items(seasonid, False, None)
     return dict_item
@@ -174,6 +175,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
                        in iteritems(episodes_list.episodes)]
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, episodes_list.perpetual_range_selector)
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {'title': episodes_list.tvshow['title'] + ' - ' + episodes_list.season['summary']['name']}
 
 
@@ -186,7 +188,6 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
                  'properties': {'nf_videoid': episodeid.to_string()}}
     add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
     set_watched_status(dict_item, episode, common_data)
-    dict_item['art'] = get_art(episodeid, episode, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
     dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
     return dict_item
@@ -232,6 +233,7 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
 
         directory_items.append(_create_videolist_item(list_id, video_list, sub_menu_data, common_data))
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
 
@@ -248,8 +250,8 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
         pathitems = [path, menu_data['path'][1], list_id]
     dict_item = {'label': video_list['displayName'],
                  'is_folder': True}
-    add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data)
-    dict_item['art'] = get_art(video_list.videoid, video_list.artitem, common_data['profile_language_code'])
+    add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data,
+                       art_item=video_list.artitem)
     # Add possibility to browse the sub-genres (see build_video_listing)
     sub_genre_id = video_list.get('genreId')
     params = {'sub_genre_id': unicode(sub_genre_id)} if sub_genre_id else None
@@ -300,6 +302,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         directory_items.insert(0, folder_dict_item)
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id)
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
 
@@ -316,7 +319,6 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
                                 'nf_perpetual_range_start': perpetual_range_start}}
     add_info_dict_item(dict_item, videoid, video, video_list.data, is_in_mylist, common_data)
     set_watched_status(dict_item, video, common_data)
-    dict_item['art'] = get_art(videoid, video, common_data['profile_language_code'])
     dict_item['url'] = common.build_url(videoid=videoid,
                                         mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                         params=None if is_folder else common_data['params'])

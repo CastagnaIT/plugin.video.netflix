@@ -48,7 +48,7 @@ MEDIA_TYPE_MAPPINGS = {
 }
 
 
-def get_info(videoid, item, raw_data, profile_language_code=''):
+def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False):
     """Get the infolabels data"""
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
@@ -57,13 +57,15 @@ def get_info(videoid, item, raw_data, profile_language_code=''):
         quality_infos = cache_entry['quality_infos']
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data)
-        G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos})
+        G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos},
+                    delayed_db_op=delayed_db_op)
     return infos, quality_infos
 
 
-def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_data):
-    """Add infolabels to a dict_item"""
-    infos, quality_infos = get_info(videoid, item, raw_data)
+def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_data, art_item=None):
+    """Add infolabels and art to a dict_item"""
+    infos, quality_infos = get_info(videoid, item, raw_data,
+                                    delayed_db_op=True)
     dict_item['quality_info'] = quality_infos
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
@@ -76,6 +78,8 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
         dict_item['label'] = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
     infos_copy['title'] = dict_item['label']
     dict_item['info'] = infos_copy
+    dict_item['art'] = get_art(videoid, art_item or item, common_data['profile_language_code'],
+                               delayed_db_op=True)
 
 
 def _add_supplemental_plot_info(infos_copy, item, common_data):
@@ -103,19 +107,21 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
         infos_copy.update({'PlotOutline': plotoutline + suppl_text})
 
 
-def get_art(videoid, item, profile_language_code=''):
+def get_art(videoid, item, profile_language_code='', delayed_db_op=False):
     """Get art infolabels"""
-    return _get_art(videoid, item or {}, profile_language_code)
+    return _get_art(videoid, item or {}, profile_language_code,
+                    delayed_db_op=delayed_db_op)
 
 
-def _get_art(videoid, item, profile_language_code):
+def _get_art(videoid, item, profile_language_code, delayed_db_op=False):
     # If item is None this method raise TypeError
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
         art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
     except CacheMiss:
         art = parse_art(videoid, item)
-        G.CACHE.add(CACHE_ARTINFO, cache_identifier, art)
+        G.CACHE.add(CACHE_ARTINFO, cache_identifier, art,
+                    delayed_db_op=delayed_db_op)
     return art
 
 
