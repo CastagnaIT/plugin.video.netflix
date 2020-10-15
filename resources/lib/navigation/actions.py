@@ -39,7 +39,6 @@ class AddonActionExecutor(object):
         """Save the GUID for profile auto-selection"""
         G.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
         profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        G.IS_CONTAINER_REFRESHED = True
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30055))
 
@@ -47,7 +46,6 @@ class AddonActionExecutor(object):
         """Remove the GUID from auto-selection"""
         G.LOCAL_DB.set_value('autoselect_profile_guid', '')
         profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        G.IS_CONTAINER_REFRESHED = True
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30056))
 
@@ -55,7 +53,6 @@ class AddonActionExecutor(object):
         """Save the GUID for the playback from Kodi library"""
         G.LOCAL_DB.set_value('library_playback_profile_guid', self.params['profile_guid'])
         profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        G.IS_CONTAINER_REFRESHED = True
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30052))
 
@@ -63,7 +60,6 @@ class AddonActionExecutor(object):
         """Remove the GUID for the playback from Kodi library"""
         G.LOCAL_DB.set_value('library_playback_profile_guid', '')
         profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        G.IS_CONTAINER_REFRESHED = True
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30053))
 

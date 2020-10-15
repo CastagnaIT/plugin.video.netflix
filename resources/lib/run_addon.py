@@ -123,7 +123,7 @@ def route(pathitems):
         return False
     else:
         nav_handler = _get_nav_handler(root_handler, pathitems)
-        _execute(nav_handler, pathitems[1:], G.REQUEST_PARAMS)
+        _execute(nav_handler, pathitems[1:], G.REQUEST_PARAMS, root_handler)
     return True
 
 
@@ -146,14 +146,18 @@ def _get_nav_handler(root_handler, pathitems):
     return nav_handler
 
 
-def _execute(executor_type, pathitems, params):
+def _execute(executor_type, pathitems, params, root_handler):
     """Execute an action as specified by the path"""
     try:
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
+        LOG.debug('Invoking action: {}', executor.__name__)
+        executor(pathitems=pathitems)
+        if root_handler == G.MODE_DIRECTORY:
+            # Save the method name of current loaded directory
+            G.CURRENT_LOADED_DIRECTORY = executor.__name__
+            G.IS_CONTAINER_REFRESHED = False
     except AttributeError as exc:
         raise_from(InvalidPathError('Unknown action {}'.format('/'.join(pathitems))), exc)
-    LOG.debug('Invoking action: {}', executor.__name__)
-    executor(pathitems=pathitems)
 
 
 def _get_service_status(window_cls, prop_nf_service_status):
