@@ -25,7 +25,6 @@ class AMVideoEvents(ActionManager):
     def __init__(self):
         super(AMVideoEvents, self).__init__()
         self.event_data = {}
-        self.videoid = None
         self.is_event_start_sent = False
         self.last_tick_count = 0
         self.tick_elapsed = 0
@@ -42,14 +41,12 @@ class AMVideoEvents(ActionManager):
             self.enabled = False
             return
         self.event_data = data['event_data']
-        self.videoid = common.VideoId.from_dict(data['videoid'])
 
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
-        current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
         videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
-                                                        {'video_id': str(current_videoid.value)})
+                                                        {'video_id': str(self.videoid_parent.value)})
         if not videoid_exists:
             # Delete the cache of continueWatching list
             G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)

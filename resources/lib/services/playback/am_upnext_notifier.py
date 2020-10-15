@@ -36,12 +36,9 @@ class AMUpNextNotifier(ActionManager):
         return 'enabled={}'.format(self.enabled)
 
     def initialize(self, data):
-        if not data['videoid_next_episode'] or not data['info_data']:
+        if not self.videoid_next_episode or not data['info_data']:
             return
-        videoid = common.VideoId.from_dict(data['videoid'])
-        videoid_next_episode = common.VideoId.from_dict(data['videoid_next_episode'])
-        self.upnext_info = get_upnext_info(videoid, videoid_next_episode, data['info_data'], data['metadata'],
-                                           data['is_played_from_strm'])
+        self.upnext_info = self._get_upnext_info(data['info_data'], data['metadata'], data['is_played_from_strm'])
 
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
         LOG.debug('Sending initialization signal to Up Next Add-on')
@@ -50,30 +47,29 @@ class AMUpNextNotifier(ActionManager):
     def on_tick(self, player_state):
         pass
 
+    def _get_upnext_info(self, info_data, metadata, is_played_from_strm):
+        """Get the data to send to Up Next add-on"""
+        upnext_info = {
+            'current_episode': _upnext_info(self.videoid, *info_data[self.videoid.value]),
+            'next_episode': _upnext_info(self.videoid_next_episode, *info_data[self.videoid_next_episode.value])
+        }
 
-def get_upnext_info(videoid, videoid_next_episode, info_data, metadata, is_played_from_strm):
-    """Get the data to send to Up Next add-on"""
-    upnext_info = {
-        'current_episode': _upnext_info(videoid, *info_data[videoid.value]),
-        'next_episode': _upnext_info(videoid_next_episode, *info_data[videoid_next_episode.value])
-    }
+        if is_played_from_strm:
+            # The current video played is a STRM, then generate the path of next STRM file
+            file_path = G.SHARED_DB.get_episode_filepath(
+                self.videoid_next_episode.tvshowid,
+                self.videoid_next_episode.seasonid,
+                self.videoid_next_episode.episodeid)
+            url = G.py2_decode(translatePath(file_path))
+        else:
+            url = common.build_url(videoid=self.videoid_next_episode,
+                                   mode=G.MODE_PLAY,
+                                   params={'profile_guid': G.LOCAL_DB.get_active_profile_guid()})
+        upnext_info['play_url'] = url
 
-    if is_played_from_strm:
-        # The current video played is a STRM, then generate the path of next STRM file
-        file_path = G.SHARED_DB.get_episode_filepath(
-            videoid_next_episode.tvshowid,
-            videoid_next_episode.seasonid,
-            videoid_next_episode.episodeid)
-        url = G.py2_decode(translatePath(file_path))
-    else:
-        url = common.build_url(videoid=videoid_next_episode,
-                               mode=G.MODE_PLAY,
-                               params={'profile_guid': G.LOCAL_DB.get_active_profile_guid()})
-    upnext_info['play_url'] = url
-
-    if 'creditsOffset' in metadata[0]:
-        upnext_info['notification_offset'] = metadata[0]['creditsOffset']
-    return upnext_info
+        if 'creditsOffset' in metadata[0]:
+            upnext_info['notification_offset'] = metadata[0]['creditsOffset']
+        return upnext_info
 
 
 def _upnext_info(videoid, infos, art):

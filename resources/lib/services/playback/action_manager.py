@@ -22,6 +22,10 @@ class ActionManager(object):
 
     def __init__(self):
         self._enabled = None
+        self.videoid = None
+        self.videoid_parent = None
+        """If the 'videoid' variable is an episode, you get the parent videoid as tvshow or else return same videoid"""
+        self.videoid_next_episode = None
 
     @property
     def name(self):
@@ -48,6 +52,9 @@ class ActionManager(object):
         """
         Initialize the manager with data when the addon initiates a playback.
         """
+        self.videoid = data['videoid']
+        self.videoid_parent = data['videoid_parent']
+        self.videoid_next_episode = data['videoid_next_episode']
         self._call_if_enabled(self.initialize, data=data)
         LOG.debug('Initialized {}: {}', self.name, self)
 

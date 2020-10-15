@@ -47,8 +47,6 @@ class AMStreamContinuity(ActionManager):
 
     def __init__(self):
         super(AMStreamContinuity, self).__init__()
-        self.videoid = None
-        self.current_videoid = None
         self.current_streams = {}
         self.sc_settings = {}
         self.player = xbmc.Player()
@@ -58,17 +56,15 @@ class AMStreamContinuity(ActionManager):
         self.kodi_only_forced_subtitles = None
 
     def __str__(self):
-        return ('enabled={}, current_videoid={}'
-                .format(self.enabled, self.current_videoid))
+        return ('enabled={}, videoid_parent={}'
+                .format(self.enabled, self.videoid_parent))
 
     def initialize(self, data):
-        self.videoid = common.VideoId.from_dict(data['videoid'])
         if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             self.enabled = False
             return
-        self.current_videoid = self.videoid.derive_parent(common.VideoId.SHOW)
         self.sc_settings = G.SHARED_DB.get_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
-                                                             self.current_videoid.value, {})
+                                                             self.videoid_parent.value, {})
         self.kodi_only_forced_subtitles = common.get_kodi_subtitle_language() == 'forced_only'
 
     def on_playback_started(self, player_state):
@@ -171,7 +167,7 @@ class AMStreamContinuity(ActionManager):
                                                     stored_stream)
                     if index is None:
                         LOG.debug('No stream match found for {} and {} for videoid {}',
-                                  stype, stored_stream, self.current_videoid)
+                                  stype, stored_stream, self.videoid_parent)
                         return
                     value = index
                 else:
@@ -185,7 +181,7 @@ class AMStreamContinuity(ActionManager):
         LOG.debug('Save changed stream {} for {}', stream, stype)
         self.sc_settings[stype] = stream
         G.SHARED_DB.set_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
-                                          self.current_videoid.value,
+                                          self.videoid_parent.value,
                                           self.sc_settings)
 
     def _find_stream_index(self, streams, stored_stream):

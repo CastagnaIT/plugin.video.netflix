@@ -43,6 +43,12 @@ class ActionController(xbmc.Monitor):
         """
         Callback for AddonSignal when this add-on has initiated a playback
         """
+        # We convert the videoid only once for all action managers
+        videoid = common.VideoId.from_dict(data['videoid'])
+        data['videoid'] = videoid
+        data['videoid_parent'] = videoid.derive_parent(common.VideoId.SHOW)
+        if data['videoid_next_episode']:
+            data['videoid_next_episode'] = common.VideoId.from_dict(data['videoid_next_episode'])
         self._init_data = data
         self.active_player_id = None
         # WARNING KODI EVENTS SIDE EFFECTS!
