@@ -9,6 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import json
 import time
 
 import xbmc
@@ -86,7 +87,7 @@ class ActionController(xbmc.Monitor):
             if method == 'Player.OnAVStart':
                 self._on_playback_started()
             elif method == 'Player.OnSeek':
-                self._on_playback_seek()
+                self._on_playback_seek(json.loads(data)['player']['seekoffset'])
             elif method == 'Player.OnPause':
                 self._is_pause_called = True
                 self._on_playback_pause()
@@ -132,9 +133,9 @@ class ActionController(xbmc.Monitor):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
         self.active_player_id = player_id
 
-    def _on_playback_seek(self):
+    def _on_playback_seek(self, time_override):
         if self.tracking and self.active_player_id is not None:
-            player_state = self._get_player_state()
+            player_state = self._get_player_state(time_override=time_override)
             if player_state:
                 self._notify_all(ActionManager.call_on_playback_seek,
                                  player_state)
@@ -167,7 +168,7 @@ class ActionController(xbmc.Monitor):
         for manager in self.action_managers:
             _notify_managers(manager, notification, data)
 
-    def _get_player_state(self, player_id=None):
+    def _get_player_state(self, player_id=None, time_override=None):
         try:
             player_state = common.json_rpc('Player.GetProperties', {
                 'playerid': self.active_player_id or player_id,
@@ -186,10 +187,17 @@ class ActionController(xbmc.Monitor):
             return {}
 
         # convert time dict to elapsed seconds
-        player_state['elapsed_seconds'] = (
-            player_state['time']['hours'] * 3600 +
-            player_state['time']['minutes'] * 60 +
-            player_state['time']['seconds'])
+        player_state['elapsed_seconds'] = (player_state['time']['hours'] * 3600 +
+                                           player_state['time']['minutes'] * 60 +
+                                           player_state['time']['seconds'])
+
+        if time_override:
+            player_state['time'] = time_override
+            elapsed_seconds = (time_override['hours'] * 3600 +
+                               time_override['minutes'] * 60 +
+                               time_override['seconds'])
+            player_state['percentage'] = player_state['percentage'] / player_state['elapsed_seconds'] * elapsed_seconds
+            player_state['elapsed_seconds'] = elapsed_seconds
 
         # Sometimes may happen that when you stop playback the player status is partial,
         # this is because the Kodi player stop immediately but the stop notification (from the Monitor)
