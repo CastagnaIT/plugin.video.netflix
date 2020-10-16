@@ -68,18 +68,27 @@ def get_library_item_details(dbtype, itemid):
     return json_rpc(method, params)[dbtype + 'details']
 
 
-def scan_library(path=""):
-    """Start a Kodi library scanning in a specified folder to find new items"""
+def scan_library(path=''):
+    """
+    Start a Kodi library scanning in a specified folder to find new items
+    :param path: Update only the library elements in the specified path (fast processing)
+    """
     method = 'VideoLibrary.Scan'
-    params = {'directory': path}
+    params = {'directory': makeLegalFilename(translatePath(path))}
     return json_rpc(method, params)
 
 
-def clean_library(show_dialog=True):
-    """Start a Kodi library scanning to remove non-existing items"""
+def clean_library(show_dialog=True, path=''):
+    """
+    Start a Kodi library cleaning to remove non-existing items
+    :param show_dialog: True a progress dialog is shown
+    :param path: Clean only the library elements in the specified path (fast processing)
+    """
     method = 'VideoLibrary.Clean'
     params = {'content': 'video',
               'showdialogs': show_dialog}
+    if not G.KODI_VERSION.is_major_ver('18') and path:
+        params['directory'] = makeLegalFilename(translatePath(path))
     return json_rpc(method, params)
 
 
