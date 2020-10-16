@@ -29,12 +29,14 @@ except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
+# 16/10/2020 There is a new api endpoint to now used only for events/logblobs
+CHROME_PLAYAPI_URL = 'https://www.netflix.com/msl/playapi/cadmium/'
 
 ENDPOINTS = {
     'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
     'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
-    'events': CHROME_BASE_URL + 'pbo_events/%5E1.0.0/router',
-    'logblobs': CHROME_BASE_URL + 'pbo_logblobs/%5E1.0.0/router'
+    'events': CHROME_PLAYAPI_URL + 'event/1',
+    'logblobs': CHROME_PLAYAPI_URL + 'logblob/1'
 }
 
 MSL_DATA_FILENAME = 'msl_data.json'

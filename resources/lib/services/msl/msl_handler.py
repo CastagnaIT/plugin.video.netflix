@@ -281,7 +281,7 @@ class MSLHandler(object):
         # playback, and only the first time after a switch,
         # in the response you can also understand if the msl switch has worked
         LOG.debug('Requesting bind events')
-        response = self.msl_requests.chunked_request(ENDPOINTS['events'],
+        response = self.msl_requests.chunked_request(ENDPOINTS['manifest'],
                                                      self.msl_requests.build_request_data('/bind', {}),
                                                      get_esn(),
                                                      disable_msl_switch=False)
