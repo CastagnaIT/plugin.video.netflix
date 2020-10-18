@@ -111,16 +111,19 @@ def lazy_login(func):
 def route(pathitems):
     """Route to the appropriate handler"""
     LOG.debug('Routing navigation request')
-    root_handler = pathitems[0] if pathitems else G.MODE_DIRECTORY
+    if pathitems:
+        if 'extrafanart' in pathitems:
+            LOG.warn('Route: ignoring extrafanart invocation')
+            return False
+        root_handler = pathitems[0]
+    else:
+        root_handler = G.MODE_DIRECTORY
     if root_handler == G.MODE_PLAY:
         from resources.lib.navigation.player import play
         play(videoid=pathitems[1:])
     elif root_handler == G.MODE_PLAY_STRM:
         from resources.lib.navigation.player import play_strm
         play_strm(videoid=pathitems[1:])
-    elif root_handler == 'extrafanart':
-        LOG.warn('Route: ignoring extrafanart invocation')
-        return False
     else:
         nav_handler = _get_nav_handler(root_handler, pathitems)
         _execute(nav_handler, pathitems[1:], G.REQUEST_PARAMS, root_handler)
