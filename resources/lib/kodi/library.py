@@ -169,7 +169,7 @@ class Library(LibraryTasks):
                 section_root_dir = common.join_folders_paths(get_library_path(), folder_name)
                 common.delete_folder_contents(section_root_dir, delete_subfolders=True)
         # Clean the Kodi library database
-        common.clean_library(show_prg_dialog)
+        common.clean_library(show_prg_dialog, get_library_path())
 
     def auto_update_library(self, sync_with_mylist, show_prg_dialog=True, show_nfo_dialog=False, clear_on_cancel=False,
                             update_profiles=False):

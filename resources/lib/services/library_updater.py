@@ -19,16 +19,6 @@ import resources.lib.common as common
 from resources.lib.kodi.library_utils import get_library_path
 from resources.lib.utils.logging import LOG
 
-try:  # Kodi >= 19
-    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
-
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
-
 
 class LibraryUpdateService(xbmc.Monitor):
     """
@@ -146,9 +136,7 @@ class LibraryUpdateService(xbmc.Monitor):
             LOG.debug('Start Kodi library scan')
             self.scan_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
             self.scan_awaiting = False
-            # Update only the library elements in the add-on export folder
-            # for faster processing (on Kodi 18.x) with a large library
-            common.scan_library(makeLegalFilename(translatePath(get_library_path())))
+            common.scan_library(get_library_path())
         else:
             self.scan_awaiting = True
 
@@ -157,7 +145,7 @@ class LibraryUpdateService(xbmc.Monitor):
             LOG.debug('Start Kodi library clean')
             self.clean_in_progress = True  # Set as in progress (avoid wait "started" callback it comes late)
             self.clean_awaiting = False
-            common.clean_library(False)
+            common.clean_library(False, get_library_path())
         else:
             self.clean_awaiting = True
 
