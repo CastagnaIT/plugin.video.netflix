@@ -279,7 +279,7 @@ class AMStreamContinuity(ActionManager):
                         audio_language = audio_track['language']
                         break
             player_stream = self.player_state.get(STREAMS['subtitle']['current'])
-            if player_stream is None:
+            if not player_stream:
                 return
             if audio_language == 'original':
                 # Do nothing
