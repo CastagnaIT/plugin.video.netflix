@@ -154,10 +154,10 @@ def _execute(executor_type, pathitems, params, root_handler):
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
         LOG.debug('Invoking action: {}', executor.__name__)
         executor(pathitems=pathitems)
-        if root_handler == G.MODE_DIRECTORY:
+        if root_handler == G.MODE_DIRECTORY and not G.IS_ADDON_EXTERNAL_CALL:
             # Save the method name of current loaded directory
-            G.CURRENT_LOADED_DIRECTORY = executor.__name__
-            G.IS_CONTAINER_REFRESHED = False
+            WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = executor.__name__
+            WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = None
     except AttributeError as exc:
         raise_from(InvalidPathError('Unknown action {}'.format('/'.join(pathitems))), exc)
 
@@ -200,7 +200,7 @@ def _check_addon_external_call():
     if is_other_plugin_name or not getCondVisibility("Window.IsMedia"):
         monitor = Monitor()
         sec_elapsed = 0
-        while not _get_service_status(window_cls, prop_nf_service_status).get('status') == 'running':
+        while not _get_service_status().get('status') == 'running':
             if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
                 break
             sec_elapsed += 0.5

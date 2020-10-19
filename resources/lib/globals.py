@@ -224,11 +224,6 @@ class GlobalVariables(object):
         self.CACHE_TTL = None
         self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
-        self.IS_CONTAINER_REFRESHED = False  # True when container_refresh in kodi_ops.py is used by context menus, etc.
-        # The currently loaded directory page (method name of directory.py):
-        # None value means in the real addon startup page, so first run instance
-        # 'root' value always means addon startup page, but in this case is called by a Container refresh or manually
-        self.CURRENT_LOADED_DIRECTORY = None
 
     def init_globals(self, argv, reinitialize_database=False, reload_settings=False):
         """Initialized globally used module variables. Needs to be called at start of each plugin instance!"""

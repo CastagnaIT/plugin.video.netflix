@@ -71,7 +71,7 @@ def container_refresh(use_delay=False):
         # seems to be caused by a race condition with the Kodi library update (but i am not really sure)
         from time import sleep
         sleep(1)
-    G.IS_CONTAINER_REFRESHED = True
+    WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = 'True'
     xbmc.executebuiltin('Container.Refresh')
 
 

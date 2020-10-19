@@ -105,6 +105,8 @@ class NetflixService(object):
         self.controller = ActionController()
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
+        # We reset the value in case of any eventuality (add-on disabled, update, etc)
+        WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = None
         # Mark the service as active
         self._set_service_status('running')
         if not G.ADDON.getSettingBool('disable_startup_notification'):
