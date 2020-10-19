@@ -12,12 +12,11 @@ from functools import wraps
 from future.utils import raise_from
 
 from xbmc import getCondVisibility, Monitor, getInfoLabel
-from xbmcgui import Window
 
 from resources.lib.common.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
                                              MbrStatusFormerMemberError, MissingCredentialsError, LoginError,
                                              NotLoggedInError, InvalidPathError, BackendNotReady)
-from resources.lib.common import check_credentials, get_current_kodi_profile_name, get_local_string
+from resources.lib.common import check_credentials, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_addon_upgrade
 from resources.lib.utils.logging import LOG
@@ -163,16 +162,16 @@ def _execute(executor_type, pathitems, params, root_handler):
         raise_from(InvalidPathError('Unknown action {}'.format('/'.join(pathitems))), exc)
 
 
-def _get_service_status(window_cls, prop_nf_service_status):
+def _get_service_status():
     from json import loads
     try:
-        status = window_cls.getProperty(prop_nf_service_status)
+        status = WndHomeProps[WndHomeProps.SERVICE_STATUS]
         return loads(status) if status else {}
     except Exception:  # pylint: disable=broad-except
         return {}
 
 
-def _check_addon_external_call(window_cls, prop_nf_service_status):
+def _check_addon_external_call():
     """Check system to verify if the calls to the add-on are originated externally"""
     # The calls that are made from outside do not respect and do not check whether the services required
     # for the add-on are actually working and operational, causing problems with the execution of the frontend.
@@ -222,12 +221,8 @@ def run(argv):
     LOG.info('URL is {}'.format(G.URL))
     success = True
 
-    window_cls = Window(10000)  # Kodi home window
-
-    # If you use multiple Kodi profiles you need to distinguish the property of current profile
-    prop_nf_service_status = G.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
-    is_external_call = _check_addon_external_call(window_cls, prop_nf_service_status)
-    service_status = _get_service_status(window_cls, prop_nf_service_status)
+    is_external_call = _check_addon_external_call()
+    service_status = _get_service_status()
 
     if service_status.get('status') != 'running':
         if not is_external_call:

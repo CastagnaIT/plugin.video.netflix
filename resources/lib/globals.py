@@ -26,6 +26,7 @@ except ImportError:  # Python 2
 from future.utils import iteritems
 
 import xbmcaddon
+from xbmcgui import Window
 
 try:  # Kodi >= 19
     from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
@@ -213,6 +214,7 @@ class GlobalVariables(object):
         # on subsequent add-on invocations (invoked by reuseLanguageInvoker) will have no effect.
         # Define here also any other variables necessary for the correct loading of the other project modules
         self.PY_IS_VER2 = sys.version_info.major == 2
+        self.WND_KODI_HOME = Window(10000)  # Kodi home window
         self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
         self.ADDON_DATA_PATH = None
