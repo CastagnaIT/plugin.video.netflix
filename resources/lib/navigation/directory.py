@@ -56,17 +56,20 @@ class Directory(object):
     def root(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles or home listing when profile auto-selection is enabled"""
         # Fetch initial page to refresh all session data
-        if G.CURRENT_LOADED_DIRECTORY is None:
+        current_directory = common.WndHomeProps[common.WndHomeProps.CURRENT_DIRECTORY]
+        if not current_directory:
             # Note when the profiles are updated to the database (by fetch_initial_page call),
             # the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
             common.make_call('fetch_initial_page')
-        autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
-        if autoselect_profile_guid and not G.IS_CONTAINER_REFRESHED:
-            if G.CURRENT_LOADED_DIRECTORY is None:
-                LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
-                self.params['switch_profile_guid'] = autoselect_profile_guid
-            self.home(None)
-            return
+        # When the add-on is used in a browser window, we do not have to execute the auto profile selection
+        if not G.IS_ADDON_EXTERNAL_CALL:
+            autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
+            if autoselect_profile_guid and not common.WndHomeProps[common.WndHomeProps.IS_CONTAINER_REFRESHED]:
+                if not current_directory:
+                    LOG.info('Performing auto-selection of profile {}', autoselect_profile_guid)
+                    self.params['switch_profile_guid'] = autoselect_profile_guid
+                self.home(None)
+                return
         list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
         self._profiles(list_data, extra_data)
 
@@ -87,8 +90,14 @@ class Directory(object):
     @custom_viewmode(G.VIEW_MAINMENU)
     def home(self, pathitems=None):  # pylint: disable=unused-argument
         """Show home listing"""
-        if 'switch_profile_guid' in self.params and G.CURRENT_LOADED_DIRECTORY in [None, 'root', 'profiles']:
-            if not activate_profile(self.params['switch_profile_guid']):
+        if 'switch_profile_guid' in self.params:
+            if G.IS_ADDON_EXTERNAL_CALL:
+                # Profile switch/ask PIN only once
+                ret = not self.params['switch_profile_guid'] == G.LOCAL_DB.get_active_profile_guid()
+            else:
+                # Profile switch/ask PIN every time you come from ...
+                ret = common.WndHomeProps[common.WndHomeProps.CURRENT_DIRECTORY] in ['', 'root', 'profiles']
+            if ret and not activate_profile(self.params['switch_profile_guid']):
                 xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
                 return
         LOG.debug('Showing home listing')

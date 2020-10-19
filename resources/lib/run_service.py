@@ -11,11 +11,9 @@ from __future__ import absolute_import, division, unicode_literals
 import threading
 from socket import gaierror
 
-from xbmcgui import Window
-
 # Global cache must not be used within these modules, because stale values may
 # be used and cause inconsistencies!
-from resources.lib.common import select_port, get_local_string, get_current_kodi_profile_name
+from resources.lib.common import select_port, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade
 from resources.lib.utils.logging import LOG
@@ -34,9 +32,6 @@ class NetflixService(object):
     HOST_ADDRESS = '127.0.0.1'
 
     def __init__(self):
-        self.window_cls = Window(10000)  # Kodi home window
-        # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        self.prop_nf_service_status = G.py2_encode('nf_service_status_' + get_current_kodi_profile_name())
         self.controller = None
         self.library_updater = None
         self.settings_monitor = None
@@ -110,6 +105,8 @@ class NetflixService(object):
         self.controller = ActionController()
         self.library_updater = LibraryUpdateService()
         self.settings_monitor = SettingsMonitor()
+        # We reset the value in case of any eventuality (add-on disabled, update, etc)
+        WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = None
         # Mark the service as active
         self._set_service_status('running')
         if not G.ADDON.getSettingBool('disable_startup_notification'):
@@ -162,7 +159,7 @@ class NetflixService(object):
         """Save the service status to a Kodi property"""
         from json import dumps
         status = {'status': status, 'message': message}
-        self.window_cls.setProperty(self.prop_nf_service_status, dumps(status))
+        WndHomeProps[WndHomeProps.SERVICE_STATUS] = dumps(status)
 
 
 def run(argv):

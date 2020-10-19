@@ -71,7 +71,7 @@ def container_refresh(use_delay=False):
         # seems to be caused by a race condition with the Kodi library update (but i am not really sure)
         from time import sleep
         sleep(1)
-    G.IS_CONTAINER_REFRESHED = True
+    WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = 'True'
     xbmc.executebuiltin('Container.Refresh')
 
 
@@ -117,12 +117,44 @@ def stop_playback():
 
 def get_current_kodi_profile_name(no_spaces=True):
     """Lazily gets the name of the Kodi profile currently used"""
-    # pylint: disable=global-statement
-    global __CURRENT_KODI_PROFILE_NAME__
-    if not __CURRENT_KODI_PROFILE_NAME__:
+    if not hasattr(get_current_kodi_profile_name, 'cached'):
         name = json_rpc('Profiles.GetCurrentProfile', {'properties': ['thumbnail', 'lockmode']}).get('label', 'unknown')
-        __CURRENT_KODI_PROFILE_NAME__ = name.replace(' ', '_') if no_spaces else name
-    return __CURRENT_KODI_PROFILE_NAME__
+        get_current_kodi_profile_name.cached = name.replace(' ', '_') if no_spaces else name
+    return get_current_kodi_profile_name.cached
+
+
+class _WndProps(object):  # pylint: disable=no-init
+    """Read and write a property to the Kodi home window"""
+    # Default Properties keys
+    SERVICE_STATUS = 'service_status'
+    """Return current service status"""
+    IS_CONTAINER_REFRESHED = 'is_container_refreshed'
+    """Return 'True' when container_refresh in kodi_ops.py is used by context menus, etc."""
+    CURRENT_DIRECTORY = 'current_directory'
+    """
+    Return the name of the currently loaded directory (so the method name of directory.py class), otherwise:
+    ['']       When the add-on is in his first run instance, so startup page
+    ['root']   When add-on startup page is re-loaded (like refresh) or manually called
+    Notice: In some cases the value may not be consistent example:
+     - when you exit to Kodi home
+     - external calls to the add-on while browsing the add-on
+    """
+    def __getitem__(self, key):
+        try:
+            # If you use multiple Kodi profiles you need to distinguish the property of current profile
+            return G.WND_KODI_HOME.getProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
+                                                                                   key)))
+        except Exception:  # pylint: disable=broad-except
+            return ''
+
+    def __setitem__(self, key, newvalue):
+        # If you use multiple Kodi profiles you need to distinguish the property of current profile
+        G.WND_KODI_HOME.setProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
+                                                                        key)),
+                                    newvalue)
+
+
+WndHomeProps = _WndProps()
 
 
 def get_kodi_audio_language(iso_format=xbmc.ISO_639_1, use_fallback=True):
