@@ -168,7 +168,8 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
         'params': get_param_watched_status_by_profile(),
         'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
+        'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
     }
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data)
                        for episodeid_value, episode
@@ -274,7 +275,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
                                 if menu_data['path'][1] != 'myList'
                                 else None),
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
-        'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching'
+        'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
+        'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
     }
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video

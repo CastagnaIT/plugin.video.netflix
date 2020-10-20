@@ -308,14 +308,11 @@ def set_watched_status(dict_item, video_data, common_data):
     """Check and set progress status (watched and resume)"""
     if not common_data['set_watched_status'] or dict_item['is_folder']:
         return
-
     video_id = str(video_data['summary']['id'])
     # Check from db if user has manually changed the watched status
-    profile_guid = G.LOCAL_DB.get_active_profile_guid()
-    override_is_watched = G.SHARED_DB.get_watched_status(profile_guid, video_id, None, bool)
+    is_watched_user_overrided = G.SHARED_DB.get_watched_status(common_data['active_profile_guid'], video_id, None, bool)
     resume_time = 0
-
-    if override_is_watched is None:
+    if is_watched_user_overrided is None:
         # NOTE shakti 'watched' tag value:
         # in my tests playing a video (via web browser) until to the end this value is not changed to True
         # seem not respect really if a video is watched to the end or this tag have other purposes
@@ -333,12 +330,11 @@ def set_watched_status(dict_item, video_data, common_data):
         except CacheMiss:
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
             bookmark_position = video_data['bookmarkPosition']
-
         playcount = '1' if bookmark_position >= watched_threshold else '0'
         if playcount == '0' and bookmark_position > 0:
             resume_time = bookmark_position
     else:
-        playcount = '1' if override_is_watched else '0'
+        playcount = '1' if is_watched_user_overrided else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     dict_item['info']['PlayCount'] = playcount
