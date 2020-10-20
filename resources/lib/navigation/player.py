@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import json
+
 from future.utils import raise_from
 
 import xbmcgui
@@ -76,7 +78,7 @@ def _play(videoid, is_played_from_strm=False):
     # Get metadata of videoid
     try:
         metadata = api.get_metadata(videoid)
-        LOG.debug('Metadata is {}', metadata)
+        LOG.debug('Metadata is {}', json.dumps(metadata))
     except MetadataNotAvailable:
         LOG.warn('Metadata not available for {}', videoid)
         metadata = [{}, {}]
