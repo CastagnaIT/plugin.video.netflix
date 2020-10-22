@@ -541,7 +541,7 @@ msgstr "Activar perfís VP9 (deshabilite se causar mal comportamento)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
-msgstr "Pode que os servizos de segundo plano non estean listos aínda se acabou de iniciar o Kodi ou o complemento. Neste caso, tente novamente nun intre."
+msgstr "Pode que os servizos de segundo plano non estean listos aínda se acaba de iniciar o Kodi ou o complemento. Nese caso, tente novamente nun intre."
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
