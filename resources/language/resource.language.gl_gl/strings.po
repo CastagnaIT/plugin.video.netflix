@@ -375,7 +375,7 @@ msgstr "Navegue polas recomendacións e escolla algo novo que lle poida gustar."
 
 msgctxt "#30095"
 msgid "All TV shows"
-msgstr "Todos as series TV"
+msgstr "Todas as series TV"
 
 msgctxt "#30096"
 msgid "All Movies"
