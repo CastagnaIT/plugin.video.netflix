@@ -313,16 +313,21 @@ def set_watched_status(dict_item, video_data, common_data):
     is_watched_user_overrided = G.SHARED_DB.get_watched_status(common_data['active_profile_guid'], video_id, None, bool)
     resume_time = 0
     if is_watched_user_overrided is None:
-        # NOTE shakti 'watched' tag value:
-        # in my tests playing a video (via web browser) until to the end this value is not changed to True
-        # seem not respect really if a video is watched to the end or this tag have other purposes
-        # to now, the only way to know if a video is watched is compare the bookmarkPosition with creditsOffset value
-
-        # NOTE shakti 'creditsOffset' tag not exists on video type 'movie',
-        # then simulate the default Kodi playcount behaviour (playcountminimumpercent)
-        watched_threshold = min(video_data['runtime'] / 100 * 90,
-                                video_data.get('creditsOffset', video_data['runtime']))
-
+        # Note to shakti properties:
+        # 'watched':  unlike the name this value is used to other purposes, so not to set a video as watched
+        # 'watchedToEndOffset':  this value is used to determine if a video is watched but
+        #                        is available only with the metadata api and only for "episode" video type
+        # 'creditsOffset' :  this value is used as position where to show the (play) "Next" (episode) button
+        #                    on the website, but it may not be always available with the "movie" video type
+        if 'creditsOffset' in video_data:
+            # To better ensure that a video is marked as watched also when a user do not reach the ending credits
+            # we generally lower the watched threshold by 50 seconds for 50 minutes of video (3000 secs)
+            lower_value = video_data['runtime'] / 3000 * 50
+            watched_threshold = video_data['creditsOffset'] - lower_value
+        else:
+            # When missing the value should be only a video of movie type,
+            # then we simulate the default Kodi playcount behaviour (playcountminimumpercent)
+            watched_threshold = video_data['runtime'] / 100 * 90
         # To avoid asking to the server again the entire list of titles (after watched a video)
         # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
         try:

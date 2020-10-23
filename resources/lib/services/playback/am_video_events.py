@@ -112,6 +112,8 @@ class AMVideoEvents(ActionManager):
         self._reset_tick_count()
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._send_event(EVENT_STOP, self.event_data, player_state)
+        # Update the resume here may not always work due to race conditions with refresh list/stop event
+        self._save_resume_time(player_state['elapsed_seconds'])
 
     def _save_resume_time(self, resume_time):
         """Save resume time value in order to update the infolabel cache"""
