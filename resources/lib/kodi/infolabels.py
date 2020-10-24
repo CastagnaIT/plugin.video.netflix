@@ -85,6 +85,8 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
 def _add_supplemental_plot_info(infos_copy, item, common_data):
     """Add supplemental info to plot description"""
     suppl_info = []
+    if item.get('summary', {}).get('availabilityDateMessaging'):
+        suppl_info.append(item['summary']['availabilityDateMessaging'])
     if item.get('dpSupplementalMessage'):
         # Short information about future release of tv show season or other
         suppl_info.append(item['dpSupplementalMessage'])

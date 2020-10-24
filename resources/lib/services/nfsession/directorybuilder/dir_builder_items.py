@@ -17,7 +17,8 @@ from resources.lib.globals import G
 from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
 from resources.lib.kodi.infolabels import get_color_name, add_info_dict_item, set_watched_status
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
-                                                                                 add_items_previous_next_page)
+                                                                                 add_items_previous_next_page,
+                                                                                 get_availability_message)
 from resources.lib.utils.logging import measure_exec_time_decorator
 
 try:  # Python 2
@@ -181,16 +182,22 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
 
 
 def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data):
+    is_playable = episode['summary']['isPlayable']
     episodeid = seasonid.derive_episode(episodeid_value)
     dict_item = {'video_id': episodeid_value,
-                 'media_type': episodeid.mediatype,
+                 'media_type': episodeid.mediatype if is_playable else None,
                  'label': episode['title'],
                  'is_folder': False,
                  'properties': {'nf_videoid': episodeid.to_string()}}
     add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
     set_watched_status(dict_item, episode, common_data)
-    dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
-    dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
+    if is_playable:
+        dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
+        dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
+    else:
+        # The video is not playable, try check if there is a date
+        dict_item['properties']['nf_availability_message'] = get_availability_message(episode)
+        dict_item['url'] = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
     return dict_item
 
 
@@ -309,11 +316,12 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
 
 
 def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):
+    is_playable = video['availability']['isPlayable']
     videoid = common.VideoId.from_videolist_item(video)
     is_folder = videoid.mediatype == common.VideoId.SHOW
     is_in_mylist = videoid in common_data['mylist_items']
     dict_item = {'video_id': videoid_value,
-                 'media_type': videoid.mediatype,
+                 'media_type': videoid.mediatype if is_playable else None,
                  'label': video['title'],
                  'is_folder': is_folder,
                  'properties': {'nf_videoid': videoid.to_string(),
@@ -321,11 +329,16 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
                                 'nf_perpetual_range_start': perpetual_range_start}}
     add_info_dict_item(dict_item, videoid, video, video_list.data, is_in_mylist, common_data)
     set_watched_status(dict_item, video, common_data)
-    dict_item['url'] = common.build_url(videoid=videoid,
-                                        mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
-                                        params=None if is_folder else common_data['params'])
-    dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
-                                                          common_data['ctxmenu_remove_watched_status'])
+    if is_playable:
+        dict_item['url'] = common.build_url(videoid=videoid,
+                                            mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
+                                            params=None if is_folder else common_data['params'])
+        dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
+                                                              common_data['ctxmenu_remove_watched_status'])
+    else:
+        # The video is not playable, try check if there is a date
+        dict_item['properties']['nf_availability_message'] = get_availability_message(video)
+        dict_item['url'] = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
     return dict_item
 
 
