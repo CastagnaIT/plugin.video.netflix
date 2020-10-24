@@ -1,3 +1,14 @@
+v1.10.1 (2020-10-24)
+- Improved watched status, now videos will be marked as watched correctly (Kodi 19 all cases/Kodi 18 library only)
+- Improved loading video lists speed on slow hdd/sdcard
+- Updated some MSL endpoints
+- Implemented clean library by directory (Kodi 19)
+- Fixed problems with skins that cause add-on problems due to extrafanart
+- Fixed broken profile switch when profile autoselection was enabled
+- Fixed wrong time position sent to netflix server when player seek
+- Fixed notification error when playback a video with no subtitles (Kodi 19)
+- Add Galicial translation
+
 v1.10.0 (2020-10-02)
 - Add initial support to keymapping (details to Wiki)
 - Fixed regression causing PIN request each time the main menu is loaded
