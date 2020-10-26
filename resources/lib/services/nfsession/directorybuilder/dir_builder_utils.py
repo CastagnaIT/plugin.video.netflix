@@ -56,3 +56,9 @@ def get_param_watched_status_by_profile():
     :return: a dictionary to be add to 'build_url' params
     """
     return {'profile_guid': G.LOCAL_DB.get_active_profile_guid()}
+
+
+def get_availability_message(video_data):
+    return (video_data.get('summary', {}).get('availabilityDateMessaging') or
+            video_data.get('availability', {}).get('availabilityDate') or
+            common.get_local_string(10005))  # "Not available"

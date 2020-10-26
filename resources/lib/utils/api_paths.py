@@ -77,7 +77,7 @@ SEASONS_PARTIAL_PATHS = [
 EPISODES_PARTIAL_PATHS = [
     [['requestId', 'summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
       'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
-      'watched', 'delivery', 'trackIds']],
+      'watched', 'delivery', 'trackIds', 'availability']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS

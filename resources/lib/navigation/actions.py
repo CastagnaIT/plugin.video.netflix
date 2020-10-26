@@ -234,6 +234,10 @@ class AddonActionExecutor(object):
                 pass
         common.container_refresh()
 
+    def show_availability_message(self, pathitems=None):  # pylint: disable=unused-argument
+        """Show a message to the user to show the date of availability of a video"""
+        ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'),
+                          xbmc.getInfoLabel('ListItem.Property(nf_availability_message)'))
 
 def sync_library(videoid, operation):
     if operation and G.ADDON.getSettingBool('lib_sync_mylist') and G.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
