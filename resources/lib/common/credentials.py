@@ -213,4 +213,14 @@ def _prepare_authentication_key_data(data):
                 continue
             result_data['cookies'].append(convert_chrome_cookie(cookie))
         return result_data
+    if (data['app_name'] == 'NFAuthenticationKey' and
+            data['app_system'] == 'MacOS' and
+            # data['app_version'] == '1.0.0' and
+            data['app_author'] == 'CastagnaIT'):
+        result_data = {'cookies': []}
+        for cookie in data['data']['cookies']:
+            if 'netflix' not in cookie['domain']:
+                continue
+            result_data['cookies'].append(convert_chrome_cookie(cookie))
+        return result_data
     raise Exception('Authentication key file not supported')
