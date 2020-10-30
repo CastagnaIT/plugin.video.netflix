@@ -104,11 +104,11 @@ class ActionController(xbmc.Monitor):
                 self._is_pause_called = False
                 self._on_playback_resume()
             elif method == 'Player.OnStop':
-                # When an error occurs before the video can be played,
-                # Kodi send a Stop event and here the active_player_id is None, then ignore this event
                 if self.active_player_id is None:
+                    # if playback does not start due to an error in streams initialization
+                    # OnAVStart notification will not be called, then active_player_id will be None
                     LOG.debug('ActionController: Player.OnStop event has been ignored')
-                    LOG.warn('ActionController: Possible problem with video playback, action managers disabled.')
+                    LOG.warn('ActionController: Action managers disabled due to a playback initialization error')
                     self.tracking = False
                     self.action_managers = None
                     return
