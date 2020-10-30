@@ -1,0 +1,41 @@
+name: 'Rules checker'
+on:
+  issues:
+    types:
+      - opened
+jobs:
+  rules-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: "Run Rules checker"
+      - uses: CastagnaIT/action_rules_checker@v1.0.2
+        with:
+          github-token: ${{ secrets.GITHUBTOKEN }}
+          log-miss-label-text: "Ignored rules"
+          log-section-start-text: "### Debug log"
+          log-section-end-text: "### Additional context or screenshots (if appropriate)"
+          log-miss-comment-text: |
+            Thank you for your interest in this add-on development,
+            this is an automatically generated message by our Bot
+
+            It seems that you have not full followed the template we provide and require for all bug reports.
+
+            Attach the debug log is mandatory for a bug report, _the log rules are explained in the Issue creation page or in the ReadMe_.
+
+            Please edit your Issue message to follow our [template](../raw/master/.github/ISSUE_TEMPLATE/bug_report.md). The issue will be closed after about one week has passed without satisfactory follow-up from your side.
+
+            If you believe it was sent in error, please say so and a team member will remove the "Ignored rules" label.
+          generic-comment-text: |
+            Thank you for your interest in this add-on development,
+            this is an automatically generated message by our Bot
+
+            It seems that you have not used any of the templates provided to correctly open an Issue thread.
+
+            Using the templates provided is mandatory to provide all necessary information, this helps us to better manage all your requests, optimizing the time needed to deal with the requests of all users and the development.
+
+            Please edit your Issue message to follow our [templates](../issues/new/choose) and make sure to fill in all fields appropriately, or close this Issue and create a new one by using the most suitable template.
+
+            If you believe it was sent in error, please say so.
+          triage-needed-label: "Triage: Needed"
+          feature-label-text: "Enhancement"
