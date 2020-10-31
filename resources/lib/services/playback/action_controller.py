@@ -87,7 +87,7 @@ class ActionController(xbmc.Monitor):
             if method == 'Player.OnAVStart':
                 self._on_playback_started()
             elif method == 'Player.OnSeek':
-                self._on_playback_seek(json.loads(data)['player']['seekoffset'])
+                self._on_playback_seek(json.loads(data)['player']['time'])
             elif method == 'Player.OnPause':
                 self._is_pause_called = True
                 self._on_playback_pause()
