@@ -11,7 +11,7 @@ jobs:
         name: "Run Rules checker"
       - uses: CastagnaIT/action_rules_checker@v1.0.2
         with:
-          github-token: ${{ secrets.GITHUBTOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           log-miss-label-text: "Ignored rules"
           log-section-start-text: "### Debug log"
           log-section-end-text: "### Additional context or screenshots (if appropriate)"
