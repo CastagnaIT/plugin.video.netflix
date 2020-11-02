@@ -151,11 +151,9 @@ def merge_dicts(dict_to_merge, merged_dict):
     return merged_dict
 
 
-def compare_dicts(dict_a, dict_b, excluded_keys=None):
-    """Compare two dict with same keys, with optional keys to exclude from compare"""
-    if excluded_keys is None:
-        excluded_keys = []
-    return all(dict_a[k] == dict_b[k] for k in dict_a if k not in excluded_keys)
+def compare_dict_keys(dict_a, dict_b, compare_keys):
+    """Compare two dictionaries with the specified keys"""
+    return all(dict_a[k] == dict_b[k] for k in dict_a if k in compare_keys)
 
 
 def chunked_list(seq, chunk_len):

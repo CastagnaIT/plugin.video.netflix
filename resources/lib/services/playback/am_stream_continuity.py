@@ -300,7 +300,8 @@ class AMStreamContinuity(ActionManager):
         # Kodi version >= 19, compares stream properties to find the right stream index
         # between episodes with a different numbers of streams
         if isinstance(stream_a, dict):
-            return common.compare_dicts(stream_a, stream_b, ['index'])
+            return common.compare_dict_keys(stream_a, stream_b,
+                                            ['channels', 'codec', 'isdefault', 'isimpaired', 'isoriginal', 'language'])
         # subtitleenabled is boolean and not a dict
         return stream_a == stream_b
 
