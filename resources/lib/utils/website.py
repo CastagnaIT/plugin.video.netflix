@@ -345,4 +345,4 @@ def parse_html(html_value):
             return unescape(html_value)
         except ImportError:  # Python <= 3.3
             from html.parser import HTMLParser
-            return HTMLParser().unescape(html_value)
+            return HTMLParser().unescape(html_value)  # pylint: disable=no-member
