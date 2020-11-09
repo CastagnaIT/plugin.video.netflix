@@ -171,7 +171,7 @@ class ActionController(xbmc.Monitor):
     def _get_player_state(self, player_id=None, time_override=None):
         try:
             player_state = common.json_rpc('Player.GetProperties', {
-                'playerid': self.active_player_id or player_id,
+                'playerid': self.active_player_id if player_id is None else player_id,
                 'properties': [
                     'audiostreams',
                     'currentaudiostream',
