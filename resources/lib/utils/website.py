@@ -287,15 +287,17 @@ def extract_json(content, name):
     try:
         json_array = recompile(JSON_REGEX.format(name), DOTALL).findall(content.decode('utf-8'))
         json_str = json_array[0]
-        json_str_replace = json_str.replace('\\"', '\\\\"')  # Escape double-quotes
-        json_str_replace = json_str_replace.replace('\\s', '\\\\s')  # Escape \s
-        json_str_replace = json_str_replace.replace('\\n', '\\\\n')  # Escape line feed
-        json_str_replace = json_str_replace.replace('\\t', '\\\\t')  # Escape tab
+        json_str_replace = json_str.replace(r'\"', r'\\"')  # Escape \"
+        json_str_replace = json_str_replace.replace(r'\s', r'\\s')  # Escape whitespace
+        json_str_replace = json_str_replace.replace(r'\r', r'\\r')  # Escape return
+        json_str_replace = json_str_replace.replace(r'\n', r'\\n')  # Escape line feed
+        json_str_replace = json_str_replace.replace(r'\t', r'\\t')  # Escape tab
         json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
     except Exception as exc:  # pylint: disable=broad-except
         if json_str:
+            # For testing purposes remember to add raw prefix to the string to test: json_str = r'string to test'
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
