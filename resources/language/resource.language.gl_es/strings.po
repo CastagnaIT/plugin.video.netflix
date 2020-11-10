@@ -326,8 +326,8 @@ msgid "Remember audio / subtitle preferences"
 msgstr "Lembrar preferencias de son / subtítulos"
 
 msgctxt "#30083"
-msgid "Save bookmarks for library items / mark as watched"
-msgstr "Salvar marcadores como elementos da biblioteca / marcar como visto"
+msgid "Force the display of forced subtitles only with the audio language set"
+msgstr ""
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -709,8 +709,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "Houbo un problema co acceso; é posíbel que a súa conta non fose confirmada ou reactivada."
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
-msgstr "Desactivar subtítulos se non houber fluxos de subtítulos forzados (Funciona soamente se o Reprodutor está configurado con subtítulos 'Só forzados’)"
+msgid "Always show the subtitles when the preferred audio language is not available"
+msgstr ""
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1054,3 +1054,12 @@ msgstr "Pola lingua dos subtítulos"
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
 msgstr "Polo ID do xénero/subxénero"
+
+# Unused 30414 to 30499
+msgctxt "#30500"
+msgid "Prefer the audio/subtitle language with country code (if available)"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Prefer stereo audio tracks by default"
+msgstr ""
