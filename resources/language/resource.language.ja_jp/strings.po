@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Japanese\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -325,7 +325,7 @@ msgstr "音声・字幕設定を保存"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "音声に含まれた強制字幕は無条件に表示"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "ログイン失敗、アカウント確認がまだ取れてないか再
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "希望の音声がない場合、常に字幕を表示"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "ジャンル／サーブジャンルID"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "(利用可能であれば)国名コード付きの音声・字幕を優先"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "デフォルトでステレオ音声を優先"
