@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-09-05 07:40+0000\n"
+"PO-Revision-Date: 2020-11-11 14:40+0000\n"
 "Last-Translator: frodo19\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -325,7 +325,7 @@ msgstr "Hang/felirat beállítások megjegyzése"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Kényszeríteni a kényszerített feliratok megjelenítését csak a beállított nyelvhez"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "Probléma merült fel a bejelentkezés során, lehetséges, hogy fiókj�
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Mindig mutassa a feliratot, ha a preferált audio nyelv nem érhető el"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "Műfaj/alműfaj azonosító szerint"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Előnyben részesíti a hang/felirat nyelvét országkóddal (ha van)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Alapértelmezés szerint előnyben részesíti a sztereó hangsávokat"
