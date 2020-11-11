@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-09-03 20:34+0000\n"
+"PO-Revision-Date: 2020-11-11 14:34+0000\n"
 "Last-Translator: Marcin W. + notoco\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -37,6 +37,7 @@ msgid "Enter PIN to watch restricted content"
 msgstr "Wprowadź PIN żeby oglądać zabezpieczoną zawartość"
 
 # Unused 30003
+
 msgctxt "#30004"
 msgid "Password"
 msgstr "Hasło"
@@ -66,6 +67,7 @@ msgid "Lists of all kinds"
 msgstr "Wszystkie listy"
 
 # Unused 30011, 30012, 30013
+
 msgctxt "#30014"
 msgid "Account"
 msgstr "Konto"
@@ -127,6 +129,7 @@ msgid "Playback error"
 msgstr "Błąd odtwarzania"
 
 # Unused 30029
+
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Usuń z biblioteki"
@@ -136,6 +139,7 @@ msgid "General"
 msgstr "Ogólne"
 
 # Unused 30032
+
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "Aktywuj Dolby Digital Plus (DDPlus HQ i Atmos na Premium)"
@@ -149,6 +153,7 @@ msgid "InputStream Adaptive settings..."
 msgstr "Ustawienia wtyczki strumieniowej..."
 
 # Unused 30036
+
 msgctxt "#30037"
 msgid "Views"
 msgstr "Widoki"
@@ -202,6 +207,7 @@ msgid "Library"
 msgstr "Bibilioteka"
 
 # Unused 30050
+
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "Profil ustawiony do odtwarzania z biblioteki"
@@ -227,6 +233,7 @@ msgid "Remove auto-selection"
 msgstr "Usuń automatczyny wybór profilu"
 
 # Unused 30057, 30058
+
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Uważaj, masz zamiar zaktualizować wiele tytułów {}.[CR]Może to spowodować problemy z usługą lub tymczasową blokadę konta.[CR]Czy chcesz kontynuować?"
@@ -325,7 +332,7 @@ msgstr "Pamiętaj ustawienia dźwięku i napisów"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Wymuś wyświetlanie wymuszonych napisów tylko przy ustawionym języku audio"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -512,6 +519,7 @@ msgid "Enable Up Next integration"
 msgstr "Włącz integrację z Up Next"
 
 # Unused 30130
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Sprawdź plik dziennika, aby uzyskać szczegółowe informacje"
@@ -533,6 +541,7 @@ msgid "Cache cleared"
 msgstr "Pamięć podręczna wyczyszczona"
 
 # Unused 30136
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Włącz profile VP9 (wyłącz jeśli powoduje artefakty)"
@@ -610,6 +619,7 @@ msgid "Do you have a Netflix Premium account?"
 msgstr "Czy masz konto Netflix Premium?"
 
 # Unused 30156
+
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Konfiguracja została zakończona"
@@ -708,7 +718,7 @@ msgstr "Wystąpił problem z logowaniem, możliwe, że Twoje konto nie zostało 
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Zawsze pokazuj napisy, gdy preferowany język dźwięku nie jest dostępny"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -747,6 +757,7 @@ msgid "TV show"
 msgstr "serial"
 
 # Unused 30191
+
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]Pliki te są wykorzystywane przez scrapery informacji do integracji informacji o filmach i serialach, wraz z dodatkowymi odcinkami lub wersjami reżyserskimi"
@@ -872,6 +883,7 @@ msgid "Kid account"
 msgstr "Profil dziecka"
 
 # Unused 30223
+
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Tryb automatycznej aktualizacji"
@@ -893,6 +905,7 @@ msgid "Set a profile for synchronization"
 msgstr "Ustaw profil dla synchronizacji"
 
 # Unused 30229
+
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "Sprawdź aktualizacje teraz"
@@ -966,6 +979,7 @@ msgid "Results per page (in case of timeout error decrease it)"
 msgstr "Wyników na stronę (w przypadku przekroczenia limitu czasu zmniejsz go)"
 
 # Unused 30248 to 30299
+
 msgctxt "#30300"
 msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
 msgstr "Czy chcesz usunąć status oglądania '{}'?[CR][CR]Operacja może zająć do 24 godzin, dlatego tytuł może nadal pojawiać się na liście."
@@ -975,6 +989,7 @@ msgid "Include Kodi library (only sending data)"
 msgstr "Uwzględnij bibliotekę Kodi (tylko wysyłanie danych)"
 
 # Unused 30302 to 30339
+
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Wybierz metodę logowania[CR](jeśli logowanie przy użyciu adresu e-mail/hasła zawsze zwraca \"nieprawidłowe hasło\", użyj klucza uwierzytelniania, instrukcje w pliku ReadMe GitHub)"
@@ -1000,6 +1015,7 @@ msgid "Enter PIN"
 msgstr "Podaj PIN"
 
 # Unused 30346 to 30398
+
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "Sortuj historię według"
@@ -1037,6 +1053,7 @@ msgid "No matches found"
 msgstr "Brak pasujących wyników"
 
 # Unused 30408, 30409
+
 msgctxt "#30410"
 msgid "By term"
 msgstr "Wg. słowa"
@@ -1054,10 +1071,11 @@ msgid "By genre/subgenre ID"
 msgstr "Wg. ID gatunku/podgatunku"
 
 # Unused 30414 to 30499
+
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferuj język dźwięku/napisów z kodem kraju (jeśli jest dostępny)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Domyślnie preferuj ścieżki audio stereo"
