@@ -19,6 +19,15 @@ from .misc_utils import is_less_version
 
 __CURRENT_KODI_PROFILE_NAME__ = None
 
+LOCALE_CONV_TABLE = {
+    'es-ES': 'es-Spain',
+    'pt-BR': 'pt-Brazil',
+    'fr-CA': 'fr-Canada',
+    'ar-EG': 'ar-Egypt',
+    'nl-BE': 'nl-Belgium',
+    'en-GB': 'en-UnitedKingdom'
+}
+
 
 def json_rpc(method, params=None):
     """
@@ -157,94 +166,52 @@ class _WndProps(object):  # pylint: disable=no-init
 WndHomeProps = _WndProps()
 
 
-def get_kodi_audio_language(iso_format=xbmc.ISO_639_1, use_fallback=True):
+def get_kodi_audio_language(iso_format=xbmc.ISO_639_1):
     """
     Return the audio language from Kodi settings
-    WARNING: when use_fallback is False, based on Kodi settings can also return values as: 'mediadefault', 'original'
+    WARNING: Based on Kodi player settings can also return values as: 'mediadefault', 'original'
     """
     audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    converted_lang = convert_language_iso(audio_language['value'], iso_format, use_fallback)
-    if not converted_lang:
-        if audio_language['value'] == 'default':
-            # Kodi audio language settings is set as "User interface language"
-            converted_lang = xbmc.getLanguage(iso_format, False)  # Get lang. active
-        else:
-            converted_lang = audio_language['value']
-    return converted_lang
+    if audio_language['value'] in ['mediadefault', 'original']:
+        return audio_language['value']
+    return convert_language_iso(audio_language['value'], iso_format)
 
 
 def get_kodi_subtitle_language(iso_format=xbmc.ISO_639_1):
-    """
-    Return the subtitle language from Kodi settings
-    """
+    """Return the subtitle language from Kodi settings"""
     subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
     if subtitle_language['value'] == 'forced_only':
         return subtitle_language['value']
     return convert_language_iso(subtitle_language['value'], iso_format)
 
 
-def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1, use_fallback=True):
+def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
     """
-    Convert language code from an English name or three letter code (ISO 639-2) to two letter code (ISO 639-1)
-
-    :param iso_format: specify the iso format (ISO_639_1 or ISO_639_2)
-    :param use_fallback: if True when the conversion fails, is returned the current Kodi active language
+    Convert given value (English name or two/three letter code) to the specified format
+    :param iso_format: specify the iso format (two letter code ISO_639_1 or three letter code ISO_639_2)
     """
-    converted_lang = xbmc.convertLanguage(G.py2_encode(from_value), iso_format)
-    if not use_fallback:
-        return converted_lang
-    converted_lang = converted_lang if converted_lang else xbmc.getLanguage(iso_format, False)  # Get lang. active
-    return converted_lang if converted_lang else 'en' if iso_format == xbmc.ISO_639_1 else 'eng'
+    return xbmc.convertLanguage(G.py2_encode(from_value), iso_format)
 
 
 def fix_locale_languages(data_list):
-    """Replace locale code, Kodi does not understand the country code"""
-    # Get all the ISO 639-1 codes (without country)
-    verify_unofficial_lang = G.KODI_VERSION.is_major_ver('19') or not G.KODI_VERSION.is_less_version('18.7')
-    locale_list_nocountry = []
+    """Replace all the languages with the country code because Kodi does not support IETF BCP 47 standard"""
+    # Languages with the country code causes the display of wrong names in Kodi settings like
+    # es-ES as 'Spanish-Spanish', pt-BR as 'Portuguese-Breton', nl-BE as 'Dutch-Belarusian', etc
+    # and the impossibility to set them as the default audio/subtitle language
     for item in data_list:
         if item.get('isNoneTrack', False):
             continue
-        if verify_unofficial_lang and item['language'] == 'pt-BR':
-            # Unofficial ISO 639-1 Portuguese (Brazil) language code has been added to Kodi 18.7 and Kodi 19.x
-            # https://github.com/xbmc/xbmc/pull/17689
+        if item['language'] == 'pt-BR' and not G.KODI_VERSION.is_less_version('18.7'):
+            # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
+            # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
             item['language'] = 'pb'
-        if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
-            locale_list_nocountry.append(item['language'])
-    # Replace the locale languages with country with a new one
-    for item in data_list:
-        if item.get('isNoneTrack', False):
-            continue
-        if len(item['language']) == 2:
-            continue
-        item['language'] = _adjust_locale(item['language'],
-                                          item['language'][0:2] in locale_list_nocountry)
-
-
-def _adjust_locale(locale_code, lang_code_without_country_exists):
-    """
-    Locale conversion helper
-    Conversion table to prevent Kodi to display
-    es-ES as Spanish - Spanish, pt-BR as Portuguese - Breton, and so on
-    Kodi issue: https://github.com/xbmc/xbmc/issues/15308
-    """
-    locale_conversion_table = {
-        'es-ES': 'es-Spain',
-        'pt-BR': 'pt-Brazil',
-        'fr-CA': 'fr-Canada',
-        'ar-EG': 'ar-Egypt',
-        'nl-BE': 'nl-Belgium',
-        'en-GB': 'en-UnitedKingdom'
-    }
-    language_code = locale_code[0:2]
-    if not lang_code_without_country_exists:
-        return language_code
-
-    if locale_code in locale_conversion_table:
-        return locale_conversion_table[locale_code]
-
-    LOG.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
-    return locale_code
+        if len(item['language']) > 2:
+            # Replace know locale with country
+            # so Kodi will not recognize the modified country code and will show the string as it is
+            if item['language'] in LOCALE_CONV_TABLE:
+                item['language'] = LOCALE_CONV_TABLE[item['language']]
+            else:
+                LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
 
 
 class GetKodiVersion(object):

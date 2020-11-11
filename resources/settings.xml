@@ -100,12 +100,14 @@
     <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,1) + eq(-20,true)" enable="eq(-20,true)" subsetting="true"/>
   </category>
   <category label="30078"><!--Playback-->
-    <setting id="BookmarkManager_enabled" type="bool" label="30083" visible="false" default="true"/>
-    <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true"/>
+    <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true" />
+    <setting id="show_forced_subtitles_only" type="bool" label="30083" default="false"/>
+    <setting id="show_subtitles_miss_audio" type="bool" label="30181" default="false" visible="!String.StartsWith(System.BuildVersion,18)" />
+    <setting id="prefer_alternative_lang" type="bool" label="30500" default="false" visible="!String.StartsWith(System.BuildVersion,18)" />
+    <setting id="prefer_audio_stereo" type="bool" label="30501" default="false" />
     <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
     <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
     <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="forced_subtitle_workaround" type="bool" label="30181" default="true" />
     <setting label="30049" type="lsep"/><!--Library-->
     <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
     <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>

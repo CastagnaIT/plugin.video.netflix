@@ -324,8 +324,8 @@ msgid "Remember audio / subtitle preferences"
 msgstr "记住音频/字幕首选项"
 
 msgctxt "#30083"
-msgid "Save bookmarks for library items / mark as watched"
-msgstr "保存图书馆项目的书签/标记为已观看"
+msgid "Force the display of forced subtitles only with the audio language set"
+msgstr ""
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -707,8 +707,8 @@ msgid "There has been a problem with login, it is possible that your account has
 msgstr "有一个登录的问题，可能是您的帐户没有被确认或重新激活。"
 
 msgctxt "#30181"
-msgid "Disable subtitles if there are no forced subtitles streams (Works only if Kodi Player is set to 'Only forced' subtitles)"
-msgstr "如果没有强制字幕流，则禁用字幕（仅当Kodi Player设置为“仅强制”字幕时才有效）"
+msgid "Always show the subtitles when the preferred audio language is not available"
+msgstr ""
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1052,3 +1052,12 @@ msgstr "通过字幕语言"
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
 msgstr "按类型/子类型ID"
+
+# Unused 30414 to 30499
+msgctxt "#30500"
+msgid "Prefer the audio/subtitle language with country code (if available)"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Prefer stereo audio tracks by default"
+msgstr ""
