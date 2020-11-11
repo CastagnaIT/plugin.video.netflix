@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Korean\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -325,7 +325,7 @@ msgstr "음성/자막 설정 기억하기"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "음성에 포함된 강제자막은 무조건 표시"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "로그인에 문제가 있습니다. 계정이 아직 처리 중이거�
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "원하는 음성이 없으면, 항상 자막을 보여줍니다."
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "장르/서브장르ID"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "(사용할 수 있으면)국가코드가 있는 음성/자막을 먼저 선택합니다."
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "스테레오 음성을 먼저 선택합니다."
