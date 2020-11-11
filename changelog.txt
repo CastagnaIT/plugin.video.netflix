@@ -1,16 +1,3 @@
-v1.11.0 (2020-11-xx)
-- Reworked Audio/Subtitles language features
-  - Add support to Kodi player audio setting "Media default" (use NF profile language)
-  - Add setting to force the display subtitles only with the audio language set
-  - Add setting to always show regular subtitles when the preferred audio language is not available (Kodi 19 only)
-  - Add setting to prefer select audio/subtitles with country code (Kodi 19 only)
-  - Add setting to prefer stereo audio tracks instead multichannels
-- Add check for video availability
-- Add support to NFAuthentication for MacOS
-- Fixed wrong resume time after manual seek (when nf sync enabled)
-- Fixed login/addon open error due to json parsing error
-- Others minor fixes
-
 v1.10.1 (2020-10-24)
 - Improved watched status, now videos will be marked as watched correctly (Kodi 19 all cases/Kodi 18 library only)
 - Improved loading video lists speed on slow hdd/sdcard
