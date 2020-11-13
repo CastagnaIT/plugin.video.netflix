@@ -325,7 +325,7 @@ msgstr "Lembrar preferências de áudio / legendas"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Forçe a exibição de legendas forçadas apenas com o idioma de áudio definido"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "Houve um problema com o login, é possível que sua conta não tenha sid
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Sempre mostre as legendas quando o idioma de áudio preferido não estiver disponível"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "Pelo ID do gênero/subgênero"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferir o idioma de áudio/legenda com código do país (se disponível)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Prefere tracks de áudio estéreo por padrão"
