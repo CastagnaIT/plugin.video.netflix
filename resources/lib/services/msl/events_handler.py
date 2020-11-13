@@ -20,14 +20,9 @@ from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.msl import msl_utils
-from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS
+from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS, create_req_params
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
-
-try:  # Python 2
-    from urllib import urlencode
-except ImportError:  # Python 3
-    from urllib.parse import urlencode
 
 try:
     import Queue as queue
@@ -49,7 +44,6 @@ class Event(object):
         self.event_data = event_data
         self.request_data = request_data
         self.response_data = None
-        self.req_attempt = 0
         LOG.debug('EVENT [{}] - Added to queue', self.event_type)
 
     def get_event_id(self):
@@ -58,17 +52,10 @@ class Event(object):
     def set_response(self, response):
         self.response_data = response
         LOG.debug('EVENT [{}] - Request response: {}', self.event_type, response)
-        # Seem that malformed requests are ignored without returning errors
-        # self.status = self.STATUS_ERROR
-        self.status = self.STATUS_SUCCESS
-
-    def is_response_success(self):
-        return self.status == self.STATUS_SUCCESS and self.req_attempt <= 3
-
-    def is_attempts_granted(self):
-        """Returns True if you can make new request attempts"""
-        self.req_attempt += 1
-        return bool(self.req_attempt <= 3)
+        if 'RequestError' in response:
+            self.status = self.STATUS_ERROR
+        else:
+            self.status = self.STATUS_SUCCESS
 
     def get_video_id(self):
         return self.request_data['params']['sessionParams']['uiplaycontext']['video_id']
@@ -119,29 +106,23 @@ class EventsHandler(threading.Thread):
         """Do the event post request"""
         event.status = Event.STATUS_REQUESTED
         # Request attempts can be made up to a maximum of 3 times per event
-        while event.is_attempts_granted():
-            LOG.info('EVENT [{}] - Executing request (attempt {})', event, event.req_attempt)
-            params = {'reqAttempt': event.req_attempt,
-                      'reqPriority': 20 if event.event_type == EVENT_START else 0,
-                      'reqName': 'events/{}'.format(event)}
-            url = ENDPOINTS['events'] + '?' + urlencode(params).replace('%2F', '/')
-            try:
-                response = self.chunked_request(url, event.request_data, get_esn(), disable_msl_switch=False)
-                event.set_response(response)
-                break
-            except Exception as exc:  # pylint: disable=broad-except
-                LOG.error('EVENT [{}] - The request has failed: {}', event, exc)
-        if event.event_type == EVENT_STOP:
+        LOG.info('EVENT [{}] - Executing request', event)
+        endpoint_url = ENDPOINTS['events'] + create_req_params(20 if event.event_type == EVENT_START else 0,
+                                                               'events/{}'.format(event))
+        try:
+            response = self.chunked_request(endpoint_url, event.request_data, get_esn(),
+                                            disable_msl_switch=False, retry_all_exceptions=True)
+            # Malformed/wrong content in requests are ignored without returning error feedback in the response
+            event.set_response(response)
+        except Exception as exc:  # pylint: disable=broad-except
+            LOG.error('EVENT [{}] - The request has failed: {}', event, exc)
+            event.set_response('RequestError')
+        if event.event_type == EVENT_STOP and event.status == Event.STATUS_SUCCESS:
             self.clear_queue()
             if event.event_data['allow_request_update_loco']:
                 # Calls to nfsession
                 common.make_http_call('update_loco_context', {'context_name': 'continueWatching'})
                 common.make_http_call('update_videoid_bookmark', {'video_id': event.get_video_id()})
-        # Below commented lines: let future requests continue to be sent, unstable connections like wi-fi cause problems
-        # if not event.is_response_success():
-            # The event request is unsuccessful then there is some problem,
-            # no longer make any future requests from this event id
-        #     return False
         return True
 
     def stop_join(self):

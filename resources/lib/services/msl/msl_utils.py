@@ -28,6 +28,11 @@ try:  # Python 2
 except NameError:  # Python 3
     unicode = str  # pylint: disable=redefined-builtin
 
+try:  # Python 2
+    from urllib import urlencode
+except ImportError:  # Python 3
+    from urllib.parse import urlencode
+
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 # 16/10/2020 There is a new api endpoint to now used only for events/logblobs
 CHROME_PLAYAPI_URL = 'https://www.netflix.com/msl/playapi/cadmium/'
@@ -213,3 +218,22 @@ def generate_logblobs_params():
     blobs_dump = json.dumps(blobs_container)
     blobs_dump = blobs_dump.replace('"', '\"').replace(' ', '').replace('#', ' ')
     return {'logblobs': blobs_dump}
+
+
+def create_req_params(req_priority, req_name):
+    """Create the params for the POST request"""
+    # Used list of tuple in order to preserve the params order
+    # Will result something like:
+    # ?reqAttempt=&reqPriority=0&reqName=events/engage&clienttype=akira&uiversion=vdeb953cf&browsername=chrome&browserversion=84.0.4147.136&osname=windows&osversion=10.0
+    params = [
+        ('reqAttempt', ''),  # Will be populated by _post() in msl_requests.py
+        ('reqPriority', req_priority),
+        ('reqName', req_name),
+        ('clienttype', 'akira'),
+        ('uiversion', G.LOCAL_DB.get_value('build_identifier', '', table=TABLE_SESSION)),
+        ('browsername', 'chrome'),
+        ('browserversion', G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION).lower()),
+        ('osname', G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION).lower()),
+        ('osversion', G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION))
+    ]
+    return '?' + urlencode(params)

@@ -14,21 +14,18 @@ import base64
 import json
 import re
 import zlib
+
 from future.utils import raise_from
+from requests import exceptions
 
 import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, EVENT_BIND, ENDPOINTS,
-                                                  MSL_DATA_FILENAME)
+from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
+                                                  MSL_DATA_FILENAME, create_req_params)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
-
-try:  # Python 2
-    from urllib import urlencode
-except ImportError:  # Python 3
-    from urllib.parse import urlencode
 
 
 class MSLRequests(MSLRequestBuilder):
@@ -84,11 +81,8 @@ class MSLRequests(MSLRequestBuilder):
         # The only way (found to now) to get it immediately, is send a logblob event request, and save the
         # user id token obtained in the response.
         LOG.debug('Requesting logblog')
-        params = {'reqAttempt': 1,
-                  'reqPriority': 0,
-                  'reqName': EVENT_BIND}
-        url = ENDPOINTS['logblobs'] + '?' + urlencode(params).replace('%2F', '/')
-        response = self.chunked_request(url,
+        endpoint_url = ENDPOINTS['logblobs'] + create_req_params(0, 'bind')
+        response = self.chunked_request(endpoint_url,
                                         self.build_request_data('/logblob', generate_logblobs_params()),
                                         get_esn(),
                                         force_auth_credential=True)
@@ -158,26 +152,44 @@ class MSLRequests(MSLRequestBuilder):
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
     @measure_exec_time_decorator(is_immediate=True)
-    def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
+    def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False,
+                        retry_all_exceptions=False):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
         auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
-            self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
+            self._post(endpoint, self.msl_request(request_data, esn, auth_data), retry_all_exceptions),
             save_uid_token_to_owner=auth_data['user_id_token'] is None)
         return chunked_response['result']
 
-    def _post(self, endpoint, request_data):
+    def _post(self, endpoint, request_data, retry_all_exceptions=False):
         """Execute a post request"""
-        LOG.debug('Executing POST request to {}', endpoint)
-        start = perf_clock()
-        response = self.session.post(endpoint, request_data)
-        LOG.debug('Request took {}s', perf_clock() - start)
-        LOG.debug('Request returned response with status {}', response.status_code)
-        response.raise_for_status()
-        return response
+        is_attemps_enabled = 'reqAttempt=' in endpoint
+        max_attempts = 3 if is_attemps_enabled else 1
+        retry_attempt = 1
+        while retry_attempt <= max_attempts:
+            if is_attemps_enabled:
+                _endpoint = endpoint.replace('reqAttempt=', 'reqAttempt=' + str(retry_attempt))
+            else:
+                _endpoint = endpoint
+            LOG.debug('Executing POST request to {}', _endpoint)
+            start = perf_clock()
+            try:
+                response = self.session.post(_endpoint, request_data, timeout=4)
+                LOG.debug('Request took {}s', perf_clock() - start)
+                LOG.debug('Request returned response with status {}', response.status_code)
+                response.raise_for_status()
+                return response
+            except Exception as exc:  # pylint: disable=broad-except
+                LOG.error('HTTP request error: {}', exc)
+                if not retry_all_exceptions and not isinstance(exc, exceptions.ReadTimeout):
+                    raise
+                if retry_attempt >= max_attempts:
+                    raise
+                retry_attempt += 1
+                LOG.warn('Will be executed a new POST request (attempt {})'.format(retry_attempt))
 
     # pylint: disable=unused-argument
     @measure_exec_time_decorator(is_immediate=True)

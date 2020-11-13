@@ -24,7 +24,7 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
 from .msl_requests import MSLRequests
-from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME
+from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME, create_req_params
 from .profiles import enabled_profiles
 
 try:  # Python 2
@@ -223,7 +223,7 @@ class MSLHandler(object):
             #   then when ISA perform the license callback we replace it with the fresh license challenge data.
             params['challenge'] = self.manifest_challenge
 
-        endpoint_url = ENDPOINTS['manifest'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/manifest'
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
         manifest = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data('/manifest', params),
                                                      esn,
@@ -257,7 +257,7 @@ class MSLHandler(object):
             'xid': xid
         }]
         self.manifest_challenge = challenge
-        endpoint_url = ENDPOINTS['license'] + '?reqAttempt=1&reqPriority=0&reqName=prefetch/license'
+        endpoint_url = ENDPOINTS['license'] + create_req_params(0, 'prefetch/license')
         response = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data(self.last_license_url,
                                                                                           params,
@@ -281,7 +281,8 @@ class MSLHandler(object):
         # playback, and only the first time after a switch,
         # in the response you can also understand if the msl switch has worked
         LOG.debug('Requesting bind events')
-        response = self.msl_requests.chunked_request(ENDPOINTS['manifest'],
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params(20, 'bind')
+        response = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data('/bind', {}),
                                                      get_esn(),
                                                      disable_msl_switch=False)
@@ -308,7 +309,8 @@ class MSLHandler(object):
                 'echo': 'drmSessionId'
             }]
 
-            response = self.msl_requests.chunked_request(ENDPOINTS['license'],
+            endpoint_url = ENDPOINTS['license'] + create_req_params(10, 'release/license')
+            response = self.msl_requests.chunked_request(endpoint_url,
                                                          self.msl_requests.build_request_data('/bundle', params),
                                                          get_esn())
             LOG.debug('License release response: {}', response)
