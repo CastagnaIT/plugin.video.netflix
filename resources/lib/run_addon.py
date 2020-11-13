@@ -15,7 +15,7 @@ from xbmc import getCondVisibility, Monitor, getInfoLabel
 
 from resources.lib.common.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
                                              MbrStatusFormerMemberError, MissingCredentialsError, LoginError,
-                                             NotLoggedInError, InvalidPathError, BackendNotReady)
+                                             NotLoggedInError, InvalidPathError, BackendNotReady, HttpErrorTimeout)
 from resources.lib.common import check_credentials, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_addon_upgrade
@@ -40,15 +40,17 @@ def catch_exceptions_decorator(func):
                            ('The operation has been cancelled.\r\n'
                             'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
                             'Please report it to InputStream Helper github.'.format(exc)))
-        except HttpError401:  # HTTP error 401 Client Error: Unauthorized for url ...
-            # This is a generic error, can happen when the http request for some reason has failed.
+        except (HttpError401, HttpErrorTimeout) as exc:  # HTTP error 401 Client Error: Unauthorized for url ...
+            # HttpError401: This is a generic error, can happen when the http request for some reason has failed.
             # Known causes:
             # - Possible change of data format or wrong data in the http request (also in headers/params)
             # - Some current nf session data are not more valid (authURL/cookies/...)
+            # HttpErrorTimeout: This error is raised by Requests ReadTimeout error, unknown causes
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog(get_local_string(30105),
-                           ('There was a communication problem with Netflix.\r\n'
-                            'You can try the operation again or exit.'))
+                           ('There was a communication problem with Netflix.[CR]'
+                            'You can try the operation again or exit.[CR]'
+                            '(Error code: {})').format(exc.__class__.__name__))
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
             from resources.lib.kodi.ui import show_error_info
             show_error_info(get_local_string(30008), get_local_string(30180), False, True)
