@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-11-23 16:15+0000\n"
-"PO-Revision-Date: 2020-09-03 23:00+0000\n"
+"PO-Revision-Date: 2020-11-11 13:00+0000\n"
 "Last-Translator: thombet\n"
 "Language-Team: Français\n"
 "Language: fr\n"
@@ -325,7 +325,7 @@ msgstr "Se souvenir des préférences audio / sous-titres"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Afficher les sous-titres forcés uniquement dans la langue audio sélectionnée"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "Il y a eu un problème de connexion, peut-être que votre compte n'a pas
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Toujours afficher les sous-titres quand la langue audio préférée n'est pas disponible"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "Par identifiant de genre/sous-genre"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Préférer les langues audio/sous-titres avec code pays (si disponible)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Préférer les pistes audio stéréo par défaut"
