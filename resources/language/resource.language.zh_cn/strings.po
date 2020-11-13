@@ -325,7 +325,7 @@ msgstr "记住音频/字幕首选项"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "仅在设置音频语言后强制显示字幕"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "有一个登录的问题，可能是您的帐户没有被确认或重新
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "当首选的音频语言不可用时，总是显示字幕"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -997,7 +997,7 @@ msgstr "认证密钥文件已过期"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr "输入PIN"
+msgstr "输入PIN码"
 
 # Unused 30346 to 30398
 msgctxt "#30399"
@@ -1056,8 +1056,8 @@ msgstr "按类型/子类型ID"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "根据地区代码首选音频/字幕语言（如果可用）"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "默认首选立体声音轨"

@@ -325,7 +325,7 @@ msgstr "Απομνημόνευση προτιμήσεων για ήχο / υπο
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Επιβολή απεικόνισης των επιβεβλημένων υποτίτλων μόνο με την καθορισμένη γλώσσα ήχου"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -708,7 +708,7 @@ msgstr "Υπάρχει πρόβλημα με την είσοδο σας, ενδ�
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Δείχνε πάντα τους υποτίτλους όταν η επιλεγμένη γλώσσα ήχου δεν είναι διαθέσιμη"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1056,8 +1056,8 @@ msgstr "Μέσω είδους/ID υπόειδους"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Προτίμηση της γλώσσας ήχων/υποτίτλων με κωδικό χώρας (εάν είναι διαθέσιμοι)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Προτίμηση των στέρεο ηχητικών κλιπ εξ'ορισμού"

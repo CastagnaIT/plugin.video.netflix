@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-20 16:15+0000\n"
-"PO-Revision-Date: 2020-05-28 18:00+0000\n"
+"PO-Revision-Date: 2020-11-11 10:00+0000\n"
 "Last-Translator: Snn1452 <>\n"
 "Language-Team: Turkish (Turkey)\n"
 "Language: tr_tr\n"
@@ -191,7 +191,7 @@ msgstr "InputStream Adaptive eklentisi veya Widevine kitaplığı ile ilgili bir
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr ""
+msgstr "Kitaplık güncellemesi devam ediyor"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -204,19 +204,19 @@ msgstr "Kitaplık"
 # Unused 30050
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profili kitaplıktan oynatmaya ayarla"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Kitaplıktan oynatmaya ayarla"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Kitaplıktan oynatmayı kaldır"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil otomatik seçime ayarlandı"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -229,7 +229,7 @@ msgstr "Profilin otomatik-seçimini kaldır"
 # Unused 30057, 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Dikkatli olun, birçok başlığı güncellemek üzeresiniz {}.[CR]Bu, hizmet sorunlarına veya hesabın geçici olarak yasaklanmasına neden olabilir.[CR]Devam etmek istiyor musunuz?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -245,7 +245,7 @@ msgstr "Ebeveyn denetimleri"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr ""
+msgstr "Bir güncelleme zaten devam ediyor"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -325,7 +325,7 @@ msgstr "Ses / altyazı tercihlerini hatırla"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Zorunlu altyazıların görüntülenmesini yalnızca ses dili ayarıyla zorla"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -485,7 +485,7 @@ msgstr "Listemi Kodi kitaplığı ile senkronize et"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr ""
+msgstr "Devam etmek istiyor musunuz?[CR]Tam senkronizasyon önceden dışa aktarılan tüm başlıkları silecektir.[CR]Çok sayıda başlık varsa bu işlem biraz zaman alabilir."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -547,7 +547,7 @@ msgstr "HTTP üzerinden IPC'yi etkinleştir (Eklenti Sinyalleri zaman aşımı m
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr ""
+msgstr "Mevcut kitaplığı içe aktar"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -704,11 +704,11 @@ msgstr "Fragmanlar & daha fazlasını göster"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
-msgstr ""
+msgstr "Giriş yapmak ile ilgili bir sorun var, hesabınız onaylanmamış veya yeniden etkinleştirilmemiş olabilir."
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Tercih edilen ses dili mevcut olmadığında daima altyazıları göster"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -890,7 +890,7 @@ msgstr "Kodi kitaplığını Listem ile senkronize et"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
-msgstr ""
+msgstr "Senkronizasyon için bir profil ayarlayın"
 
 # Unused 30229
 msgctxt "#30230"
@@ -955,15 +955,15 @@ msgstr "Widevine güvenlik seviyesi L3'ü zorla"
 
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr ""
+msgstr "Kitaplığa aktarılan dosyaları silme"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr ""
+msgstr "İçe aktarılamayan {} başlık var.[CR]Bu dosyaları silmek istiyor musunuz?"
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Sayfa başına sonuçlar (zaman aşımı hatası durumunda azaltın)"
 
 # Unused 30248 to 30299
 msgctxt "#30300"
@@ -972,37 +972,37 @@ msgstr "'{}' için izlenme durumunu kaldırmak istiyor musunuz?[CR][CR]İşlem 2
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Kodi kitaplığını dahil et (yalnızca veri gönderme)"
 
 # Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "Giriş yapma yöntemini seçin[CR](E-Posta/Şifre ile oturum açma her zaman \"yanlış şifre\" döndürürse, Kimlik Doğrulama anahtarını kullanın, GitHub ReadMe'deki talimatları uygulayın)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "E-Posta/Şifre"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "Kimlik Doğrulama anahtarı"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "Seçili dosya uyumlu değil veya bozuk"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "Kimlik doğrulama anahtarı dosyasının süresi doldu"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "PIN girin"
 
 # Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Geçmişi sıralama ölçütü"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1051,13 +1051,13 @@ msgstr "Altyazı diline göre"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Tür/alt tür kimliğine göre"
 
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Ülke koduyla birlikte ses/altyazı dilini tercih edin (varsa)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Varsayılan olarak stereo ses parçalarını tercih et"
