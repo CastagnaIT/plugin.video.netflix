@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.10.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.11.0" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="script.module.addon.signals" version="0.0.3"/>
@@ -85,16 +85,20 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.10.1 (2020-10-24)
-- Improved watched status, now videos will be marked as watched correctly (Kodi 19 all cases/Kodi 18 library only)
-- Improved loading video lists speed on slow hdd/sdcard
-- Updated some MSL endpoints
-- Implemented clean library by directory (Kodi 19)
-- Fixed problems with skins that cause add-on problems due to extrafanart
-- Fixed broken profile switch when profile autoselection was enabled
-- Fixed wrong time position sent to netflix server when player seek
-- Fixed notification error when playback a video with no subtitles (Kodi 19)
-- Add Galicial translation
+v1.11.0 (2020-11-14)
+- Reworked Audio/Subtitles language features
+  - Add support to Kodi player audio setting "Media default" (use NF profile language)
+  - Add setting to force the display subtitles only with the audio language set
+  - Add setting to always show subtitles when the preferred audio language is not available (Kodi 19 only)
+  - Add setting to prefer audio/subtitles with country code (Kodi 19 only)
+  - Add setting to prefer stereo audio tracks (instead of multichannels)
+- Add check for video availability
+- Add support to NFAuthentication for MacOS
+- Add workaround to HTTP connection problem blocking the add-on service
+- Fixed wrong resume time after manual seek (when nf sync enabled)
+- Fixed login/addon open error due to json parsing error
+- Updated translations it, jp, kr, tr, gr, ro, fr, hu, pl, de, zh-cn, pt-br
+- Others minor fixes
     </news>
   </extension>
 </addon>
