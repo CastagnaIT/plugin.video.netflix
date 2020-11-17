@@ -49,6 +49,10 @@ def generate_android_esn():
                 nrdp_modelgroup = subprocess.check_output(
                     ['/system/bin/getprop',
                      'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r').upper()
+                if not nrdp_modelgroup:
+                    nrdp_modelgroup = subprocess.check_output(
+                        ['/system/bin/getprop',
+                         'ro.vendor.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r').upper()
 
                 drm_security_level = G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
                 system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
