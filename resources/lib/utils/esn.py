@@ -28,6 +28,7 @@ def generate_android_esn():
     if get_system_platform() == 'android':
         import subprocess
         try:
+            sdk_version = int(subprocess.check_output(['/system/bin/getprop', 'ro.build.version.sdk']))
             manufacturer = subprocess.check_output(
                 ['/system/bin/getprop',
                  'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r').upper()
@@ -39,11 +40,8 @@ def generate_android_esn():
                 # Netflix Ready Device Platform (NRDP)
                 nrdp_modelgroup = subprocess.check_output(
                     ['/system/bin/getprop',
-                     'ro.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r').upper()
-                if not nrdp_modelgroup:
-                    nrdp_modelgroup = subprocess.check_output(
-                        ['/system/bin/getprop',
-                         'ro.vendor.nrdp.modelgroup']).decode('utf-8').strip(' \t\n\r').upper()
+                     'ro.vendor.nrdp.modelgroup' if sdk_version >= 28 else 'ro.nrdp.modelgroup']
+                ).decode('utf-8').strip(' \t\n\r').upper()
 
                 drm_security_level = G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
                 system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
