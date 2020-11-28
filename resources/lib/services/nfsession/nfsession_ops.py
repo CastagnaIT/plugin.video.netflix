@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import xbmc
+
 import time
 from datetime import datetime, timedelta
 from future.utils import raise_from
@@ -92,6 +94,10 @@ class NFSessionOperations(SessionPathRequests):
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         LOG.debug('Switching to profile {}', guid)
+        if xbmc.Player().isPlayingVideo():
+            # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
+            # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
+            raise Warning('It is not possible select a profile while a video is playing.')
         current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
             LOG.info('The profile guid {} is already set, activation not needed.', guid)
