@@ -133,7 +133,7 @@ def show_library_task_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(common.get_local_string(0),
                             '[CR]'.join(['{} ({})'.format(err['title'], err['error'])
-                                        for err in errors]))
+                                         for err in errors]))
 
 
 def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=False, extensions=None):

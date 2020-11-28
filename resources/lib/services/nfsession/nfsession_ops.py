@@ -9,22 +9,22 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-import xbmc
-
 import time
 from datetime import datetime, timedelta
 from future.utils import raise_from
 
-import resources.lib.utils.website as website
+import xbmc
+
 import resources.lib.common as common
+import resources.lib.utils.website as website
+from resources.lib.common import cache_utils
 from resources.lib.common.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
                                              MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
                                              HttpError401, InvalidProfilesError)
-from resources.lib.common import cache_utils
-from resources.lib.utils import cookies
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
+from resources.lib.utils import cookies
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 

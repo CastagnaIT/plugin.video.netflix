@@ -92,6 +92,12 @@ class Player:
         self._count += 1
         return bool(self._count % 5 != 0)
 
+    def isPlayingVideo(self):
+        """A stub implementation for the xbmc Player class isPlayingVideo() method"""
+        # Return True four times out of five
+        self._count += 1
+        return bool(self._count % 5 != 0)
+
     def seekTime(self, seekTime):
         """A stub implementation for the xbmc Player class seekTime() method"""
 
