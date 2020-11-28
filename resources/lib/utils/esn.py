@@ -16,6 +16,31 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from .logging import LOG
 
+# 25/11/2020 - Follow Android ESN generator is changed (current method not yet known)
+# First NF identifies the device in this way and in the following order:
+# 1) if getPackageManager().hasSystemFeature("org.chromium.arc") == true
+#                 the device is : DEV_TYPE_CHROME_OS (Chrome OS)
+# 2) if getSystemService(Context.DISPLAY_SERVICE)).getDisplay(0) == null
+#                 the device is : DEV_TYPE_ANDROID_STB (Set-Top Box)
+# 3) if getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() == UI_MODE_TYPE_TELEVISION
+#                 the device is : DEV_TYPE_ANDROID_TV
+# 4) if 528 is <= of (calculated resolution display):
+#    DisplayMetrics dMetr = new DisplayMetrics();
+#    defaultDisplay.getRealMetrics(displayMetrics);
+#    float disDens = displayMetrics.density;
+#    if 528 <= Math.min((dMetr.widthPixels / disDens, (dMetr.heightPixels / disDens)
+#                 the device is : DEV_TYPE_TABLET
+# 5) if all other cases are not suitable, then the device is :  DEV_TYPE_PHONE
+# Then after identifying the device type, a specific letter will be added after the prefix "PRV-"
+
+# ESN Device categories (updated 25/11/2020)
+#  Unknown or Phone "PRV-P"
+#  Tablet?          "PRV-T"   (should be for tablet)
+#  Tablet           "PRV-C"   (should be for Chrome OS devices only)
+#  Google TV        "PRV-B"   (Set-Top Box)
+#  Smart Display    "PRV-E"
+#  Android TV       "PRV-"    (without letter specified)
+
 
 def get_esn():
     """Get the generated esn or if set get the custom esn"""
@@ -54,30 +79,6 @@ def generate_android_esn():
                     # We do not know if override the DRM System ID to 4445 is a good behaviour for all devices,
                     # but at least for Beelink GT-King (S922X) this is needed
                     system_id = '4445'
-
-                # The original android ESN generator is not full replicable
-                # because we can not access easily to android APIs to get system data
-                # First NF identifies the device in this way and in the following order:
-                # 1) if getPackageManager().hasSystemFeature("org.chromium.arc") == true
-                #                 the device is : DEV_TYPE_CHROME_OS (Chrome OS)
-                # 2) if getSystemService(Context.DISPLAY_SERVICE)).getDisplay(0) == null
-                #                 the device is : DEV_TYPE_ANDROID_STB (Set-Top Box)
-                # 3) if getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() == UI_MODE_TYPE_TELEVISION
-                #                 the device is : DEV_TYPE_ANDROID_TV
-                # 4) if 528 is <= of (calculated resolution display):
-                #    DisplayMetrics dMetr = new DisplayMetrics();
-                #    defaultDisplay.getRealMetrics(displayMetrics);
-                #    float disDens = displayMetrics.density;
-                #    if 528 <= Math.min((dMetr.widthPixels / disDens, (dMetr.heightPixels / disDens)
-                #                 the device is : DEV_TYPE_TABLET
-                # 5) if all other cases are not suitable, then the device is :  DEV_TYPE_PHONE
-
-                # Then after identifying the device type, a specific letter will be added after the prefix "PRV-":
-                #   DEV_TYPE_CHROME_OS      "PRV-C"
-                #   DEV_TYPE_ANDROID_STB    "PRV-B"
-                #   DEV_TYPE_ANDROID_TV     "PRV-" (no letter specified)
-                #   DEV_TYPE_TABLET         "PRV-T"
-                #   DEV_TYPE_PHONE          "PRV-P"
 
                 if drm_security_level == 'L1':
                     esn = 'NFANDROID2-PRV-'
