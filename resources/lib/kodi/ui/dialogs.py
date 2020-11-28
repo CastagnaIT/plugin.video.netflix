@@ -102,7 +102,7 @@ def ask_for_resume(resume_position):
 def show_backend_not_ready(error_details=None):
     message = common.get_local_string(30138)
     if error_details:
-        message += '\r\n\r\nError details:\r\n' + error_details
+        message += '[CR][CR]Error details:[CR]' + error_details
     return xbmcgui.Dialog().ok(common.get_local_string(30105), message)
 
 
@@ -117,8 +117,8 @@ def show_yesno_dialog(title, message, yeslabel=None, nolabel=None):
 def show_error_info(title, message, unknown_error=False, netflix_error=False):
     """Show a dialog that displays the error message"""
     prefix = (30104, 30102, 30101)[unknown_error + netflix_error]
-    return xbmcgui.Dialog().ok(title, (common.get_local_string(prefix) + '\r\n' +
-                                       message + '\r\n\r\n' +
+    return xbmcgui.Dialog().ok(title, (common.get_local_string(prefix) + '[CR]' +
+                                       message + '[CR][CR]' +
                                        common.get_local_string(30103)))
 
 
@@ -132,8 +132,8 @@ def show_addon_error_info(exc):
 def show_library_task_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(common.get_local_string(0),
-                            '\n'.join(['{} ({})'.format(err['title'], err['error'])
-                                       for err in errors]))
+                            '[CR]'.join(['{} ({})'.format(err['title'], err['error'])
+                                        for err in errors]))
 
 
 def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=False, extensions=None):

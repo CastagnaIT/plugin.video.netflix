@@ -37,10 +37,10 @@ def catch_exceptions_decorator(func):
         except InputStreamHelperError as exc:
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog('InputStream Helper Add-on error',
-                           ('The operation has been cancelled.\r\n'
-                            'InputStream Helper has generated an internal error:\r\n{}\r\n\r\n'
+                           ('The operation has been cancelled.[CR]'
+                            'InputStream Helper has generated an internal error:[CR]{}[CR][CR]'
                             'Please report it to InputStream Helper github.'.format(exc)))
-        except (HttpError401, HttpErrorTimeout) as exc:  # HTTP error 401 Client Error: Unauthorized for url ...
+        except (HttpError401, HttpErrorTimeout) as exc:
             # HttpError401: This is a generic error, can happen when the http request for some reason has failed.
             # Known causes:
             # - Possible change of data format or wrong data in the http request (also in headers/params)
