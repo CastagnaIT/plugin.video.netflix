@@ -325,7 +325,7 @@ msgstr "Recordar preferencias de audio / subtítulos"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Forzar la visualización de subtítulos forzados solo con el idioma de audio configurado"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -1056,8 +1056,8 @@ msgstr "Por ID de género/subgénero"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferir el idioma de audio/subtítulos con código de país (si está disponible)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Preferir pistas de audio estéreo por defecto"
