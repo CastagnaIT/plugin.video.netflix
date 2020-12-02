@@ -93,6 +93,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
     @measure_exec_time_decorator(is_immediate=True)
     def login_auth_data(self, data=None, password=None):
         """Perform account login with authentication data"""
+        from requests import exceptions
         LOG.debug('Logging in with authentication data')
         # Add the cookies to the session
         self.session.cookies.clear()
@@ -112,13 +113,19 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         if not email:
             raise WebsiteParsingError('E-mail field not found')
         # Verify the password (with parental control api)
-        response = self.post_safe('profile_hub',
-                                  data={'destination': 'contentRestrictions',
-                                        'guid': G.LOCAL_DB.get_active_profile_guid(),
-                                        'password': password,
-                                        'task': 'auth'})
-        if response.get('status') != 'ok':
-            raise LoginError(common.get_local_string(12344))  # 12344=Passwords entered did not match.
+        try:
+            response = self.post_safe('profile_hub',
+                                      data={'destination': 'contentRestrictions',
+                                            'guid': G.LOCAL_DB.get_active_profile_guid(),
+                                            'password': password,
+                                            'task': 'auth'})
+            if response.get('status') != 'ok':
+                raise LoginError(common.get_local_string(12344))  # 12344=Passwords entered did not match.
+        except exceptions.HTTPError as exc:
+            if exc.response.status_code == 500:
+                # This endpoint raise HTTP error 500 when the password is wrong
+                raise_from(LoginError(common.get_local_string(12344)), exc)
+            raise
         common.set_credentials({'email': email, 'password': password})
         LOG.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
