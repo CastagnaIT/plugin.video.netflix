@@ -325,7 +325,7 @@ msgstr "Recordar preferencias de audio / subtítulos"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Forzar la visualización de subtítulos forzados solo con el idioma de audio configurado"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -449,7 +449,7 @@ msgstr "Cierre de sesión completado"
 
 msgctxt "#30114"
 msgid "Keep 'My list' and Kodi Library in sync"
-msgstr "Mantener Mi lista y la biblioteca de Kodi sincronizados"
+msgstr "Mantener 'Mi lista' y la biblioteca de Kodi sincronizados"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -469,7 +469,7 @@ msgstr "Error en la operación de la API: {}"
 
 msgctxt "#30119"
 msgid "'My list' operation successful"
-msgstr "Operación Mi lista completada"
+msgstr "Operación en 'Mi lista' completada correctamente"
 
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
@@ -481,7 +481,7 @@ msgstr "Sincronizar todo ahora"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "Sincronizar Mi lista con la biblioteca de Kodi"
+msgstr "Sincronizar 'Mi lista' con la biblioteca de Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
@@ -644,7 +644,7 @@ msgstr "Examina los contenidos audiodescritos."
 
 msgctxt "#30165"
 msgid "View for 'My list'"
-msgstr "Vista para Mi lista"
+msgstr "Vista para 'Mi lista'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -708,7 +708,7 @@ msgstr "Ha habido un problema con el inicio de sesión, es posible que su cuenta
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Mostrar siempre los subtítulos cuando el idioma de audio preferido no esté disponible"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -841,7 +841,7 @@ msgstr "Forzar actualización"
 
 msgctxt "#30215"
 msgid "Color of the titles included in 'My list'"
-msgstr "Color para títulos incluidos en Mi lista"
+msgstr "Color para títulos incluidos en 'Mi lista'"
 
 msgctxt "#30216"
 msgid "Show ESN in use"
@@ -886,7 +886,7 @@ msgstr "Programada"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with 'My list'"
-msgstr "Sincronizar la biblioteca de Kodi con Mi Lista"
+msgstr "Sincronizar la biblioteca de Kodi con 'Mi Lista'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
@@ -1056,8 +1056,8 @@ msgstr "Por ID de género/subgénero"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferir el idioma de audio/subtítulos con código de país (si está disponible)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Preferir pistas de audio estéreo por defecto"
