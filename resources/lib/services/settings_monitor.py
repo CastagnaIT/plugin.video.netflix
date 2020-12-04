@@ -18,7 +18,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR, TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.utils.esn import generate_android_esn
+from resources.lib.utils.esn import generate_android_esn, ForceWidevine
 from resources.lib.utils.logging import LOG
 
 try:  # Python 2
@@ -125,10 +125,10 @@ def _check_esn():
 
     if not custom_esn:
         # Check if "Force identification as L3 Widevine device" is changed (ANDROID ONLY)
-        is_l3_forced = bool(G.ADDON.getSettingBool('force_widevine_l3'))
-        is_l3_forced_old = G.LOCAL_DB.get_value('force_widevine_l3', False, TABLE_SETTINGS_MONITOR)
-        if is_l3_forced != is_l3_forced_old:
-            G.LOCAL_DB.set_value('force_widevine_l3', is_l3_forced, TABLE_SETTINGS_MONITOR)
+        force_widevine = G.ADDON.getSettingString('force_widevine')
+        force_widevine_old = G.LOCAL_DB.get_value('force_widevine', ForceWidevine.DISABLED, TABLE_SETTINGS_MONITOR)
+        if force_widevine != force_widevine_old:
+            G.LOCAL_DB.set_value('force_widevine', force_widevine, TABLE_SETTINGS_MONITOR)
             # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
             G.LOCAL_DB.set_value('esn', generate_android_esn() or '', TABLE_SESSION)
             common.send_signal(signal=common.Signals.ESN_CHANGED)

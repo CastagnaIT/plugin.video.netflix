@@ -12,14 +12,16 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import time
 
+from future.utils import raise_from
+
 import xbmcaddon
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
+from resources.lib.common.exceptions import CacheMiss, MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
-from resources.lib.common.exceptions import CacheMiss, MSLError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
@@ -258,11 +260,19 @@ class MSLHandler(object):
         }]
         self.manifest_challenge = challenge
         endpoint_url = ENDPOINTS['license'] + create_req_params(0, 'prefetch/license')
-        response = self.msl_requests.chunked_request(endpoint_url,
-                                                     self.msl_requests.build_request_data(self.last_license_url,
-                                                                                          params,
-                                                                                          'drmSessionId'),
-                                                     get_esn())
+        try:
+            response = self.msl_requests.chunked_request(endpoint_url,
+                                                         self.msl_requests.build_request_data(self.last_license_url,
+                                                                                              params,
+                                                                                              'drmSessionId'),
+                                                         get_esn())
+        except MSLError as exc:
+            if exc.err_number == '1044' and common.get_system_platform() == 'android':
+                msg = ('This title is not available to watch instantly. Please try another title.\r\n'
+                       'To try to solve this problem you can force "Widevine L3" from the add-on Expert settings.\r\n'
+                       'More info in the Wiki FAQ on add-on GitHub.')
+                raise_from(MSLError(msg), exc)
+            raise
         # This xid must be used also for each future Event request, until playback stops
         G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 

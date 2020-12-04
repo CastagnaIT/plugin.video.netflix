@@ -60,13 +60,18 @@ class MSLRequests(MSLRequestBuilder):
         if not esn:
             LOG.warn('Cannot perform key handshake, missing ESN')
             return False
-
         LOG.info('Performing key handshake with ESN: {}',
                  common.censure(esn) if G.ADDON.getSetting('esn') else esn)
-        response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
-        header_data = self.decrypt_header_data(response['headerdata'], False)
-        self.crypto.parse_key_response(header_data, esn, True)
-
+        try:
+            response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
+            header_data = self.decrypt_header_data(response['headerdata'], False)
+            self.crypto.parse_key_response(header_data, esn, True)
+        except MSLError as exc:
+            if exc.err_number == 207006 and common.get_system_platform() == 'android':
+                msg = ('Request failed validation during key exchange\r\n'
+                       'To try to solve this problem read the Wiki FAQ on add-on GitHub.')
+                raise_from(MSLError(msg), exc)
+            raise
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()
         LOG.debug('Key handshake successful')
@@ -246,24 +251,31 @@ def _raise_if_error(decoded_response):
     if raise_error:
         LOG.error('Full MSL error information:')
         LOG.error(json.dumps(decoded_response))
-        raise MSLError(_get_error_details(decoded_response))
+        err_message, err_number = _get_error_details(decoded_response)
+        raise MSLError(err_message, err_number)
     return decoded_response
 
 
 def _get_error_details(decoded_response):
+    err_message = 'Unhandled error check log.'
+    err_number = None
     # Catch a chunk error
     if 'errordata' in decoded_response:
-        return G.py2_encode(json.loads(base64.standard_b64decode(decoded_response['errordata']))['errormsg'])
+        err_data = json.loads(base64.standard_b64decode(decoded_response['errordata']))
+        err_message = err_data['errormsg']
+        err_number = err_data['internalcode']
     # Catch a manifest error
-    if 'error' in decoded_response:
+    elif 'error' in decoded_response:
         if decoded_response['error'].get('errorDisplayMessage'):
-            return G.py2_encode(decoded_response['error']['errorDisplayMessage'])
+            err_message = decoded_response['error']['errorDisplayMessage']
+            err_number = decoded_response['error'].get('bladeRunnerCode')
     # Catch a license error
-    if 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
+    elif 'result' in decoded_response and isinstance(decoded_response.get('result'), list):
         if 'error' in decoded_response['result'][0]:
             if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
-                return G.py2_encode(decoded_response['result'][0]['error']['errorDisplayMessage'])
-    return G.py2_encode('Unhandled error check log.')
+                err_message = decoded_response['result'][0]['error']['errorDisplayMessage']
+                err_number = decoded_response['result'][0]['error'].get('bladeRunnerCode')
+    return G.py2_encode(err_message), err_number
 
 
 @measure_exec_time_decorator(is_immediate=True)

@@ -137,7 +137,7 @@
     <setting id="cdn_server" type="labelenum" label="30241" values="Server 1|Server 2|Server 3" default="Server 1" />
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
-    <setting id="force_widevine_l3" type="bool" label="30244" visible="System.Platform.Android" default="false"/>
+    <setting id="force_widevine" type="labelenum" label="30244" values="Disabled|Widevine L3|Widevine L3 (ID-4445)" default="Disabled" visible="System.Platform.Android"/>
     <setting id="page_results" type="slider" option="int" range="45,45,180" label="30247" default="90"/>
     <setting label="30016" type="lsep"/><!--ESN-->
     <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://$ID/action/view_esn/)"/>

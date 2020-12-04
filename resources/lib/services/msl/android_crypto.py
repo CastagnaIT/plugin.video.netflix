@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import base64
 import json
+
 from future.utils import raise_from
 
 import xbmcdrm
@@ -18,6 +19,7 @@ import xbmcdrm
 from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.utils.esn import ForceWidevine
 from resources.lib.utils.logging import LOG
 from .base_crypto import MSLBaseCrypto
 
@@ -66,7 +68,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             LOG.warn('Widevine CryptoSession system id not obtained!')
         LOG.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
-        if G.ADDON.getSettingBool('force_widevine_l3'):
+        if G.ADDON.getSettingString('force_widevine') != ForceWidevine.DISABLED:
             LOG.warn('Widevine security level is forced to L3 by user settings!')
         LOG.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
         LOG.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])

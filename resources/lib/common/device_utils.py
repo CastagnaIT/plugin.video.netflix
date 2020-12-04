@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmc
 
 from resources.lib.globals import G
+from resources.lib.utils.esn import ForceWidevine
 from resources.lib.utils.logging import LOG
 
 
@@ -79,7 +80,7 @@ def is_device_4k_capable():
     if get_system_platform() == 'android':
         from resources.lib.database.db_utils import TABLE_SESSION
         # Check if the drm has security level L1
-        is_l3_forced = G.ADDON.getSettingBool('force_widevine_l3')
+        is_l3_forced = G.ADDON.getSettingString('force_widevine') != ForceWidevine.DISABLED
         is_drm_l1_security_level = (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
                                     and not is_l3_forced)
         # Check if HDCP level is 2.2 or up

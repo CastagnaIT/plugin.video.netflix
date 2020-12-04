@@ -11,10 +11,10 @@ from __future__ import absolute_import, division, unicode_literals
 
 from re import sub
 
-from resources.lib.common.device_utils import get_system_platform
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from .logging import LOG
+
 
 # 25/11/2020 - Follow Android ESN generator is changed (current method not yet known)
 # First NF identifies the device in this way and in the following order:
@@ -42,6 +42,13 @@ from .logging import LOG
 #  Android TV       "PRV-"    (without letter specified)
 
 
+class ForceWidevine:  # pylint: disable=no-init, disable=too-few-public-methods
+    """The enum values of 'force_widevine' add-on setting"""
+    DISABLED = 'Disabled'
+    L3 = 'Widevine L3'
+    L3_4445 = 'Widevine L3 (ID-4445)'
+
+
 def get_esn():
     """Get the generated esn or if set get the custom esn"""
     custom_esn = G.ADDON.getSetting('esn')
@@ -50,6 +57,7 @@ def get_esn():
 
 def generate_android_esn():
     """Generate an ESN if on android or return the one from user_data"""
+    from resources.lib.common.device_utils import get_system_platform
     if get_system_platform() == 'android':
         import subprocess
         try:
@@ -73,11 +81,12 @@ def generate_android_esn():
 
                 # Some device with false Widevine certification can be specified as Widevine L1
                 # but we do not know how NF original app force the fallback to L3, so we add a manual setting
-                is_l3_forced = bool(G.ADDON.getSettingBool('force_widevine_l3'))
-                if is_l3_forced:
+                force_widevine = G.ADDON.getSettingString('force_widevine')
+                if force_widevine == ForceWidevine.L3:
                     drm_security_level = 'L3'
-                    # We do not know if override the DRM System ID to 4445 is a good behaviour for all devices,
-                    # but at least for Beelink GT-King (S922X) this is needed
+                elif force_widevine == ForceWidevine.L3_4445:
+                    # For some devices the Netflix android app change the DRM System ID to 4445
+                    drm_security_level = 'L3'
                     system_id = '4445'
 
                 if drm_security_level == 'L1':
@@ -95,7 +104,7 @@ def generate_android_esn():
                 esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
                 if system_id:
                     esn += '-' + system_id + '-'
-                LOG.debug('Generated Android ESN: {} is L3 forced: {}', esn, is_l3_forced)
+                LOG.debug('Generated Android ESN: {} (force widevine is set as "{}")', esn, force_widevine)
                 return esn
         except OSError:
             pass

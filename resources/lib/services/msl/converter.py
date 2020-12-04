@@ -8,12 +8,14 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
+
 import uuid
 import xml.etree.ElementTree as ET
 
+import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-import resources.lib.common as common
+from resources.lib.utils.esn import ForceWidevine
 from resources.lib.utils.logging import LOG
 
 
@@ -110,7 +112,7 @@ def _add_protection_info(adaptation_set, pssh, keyid):
         })
     # Add child tags to the DRM system configuration ('widevine:license' is an ISA custom tag)
     if (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
-            and not G.ADDON.getSettingBool('force_widevine_l3')):
+            and G.ADDON.getSettingString('force_widevine') == ForceWidevine.DISABLED):
         # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices,
         # if it is set on L3 devices ISA already remove it automatically.
         # But some L1 devices with non regular Widevine library cause issues then need to be handled
