@@ -3,7 +3,8 @@
   <category label="30031"><!--General-->
     <setting label="30014" type="lsep"/><!--Account-->
     <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://$ID/action/logout/)" option="close"/>
-    <setting id="parental_control" type="action" label="30062" action="RunPlugin(plugin://$ID/action/parental_control/)" option="close"/>
+    <setting label="30012" type="lsep"/><!--Profile options-->
+    <setting label="30013" type="text" enable="false"/>
     <setting label="30015" type="lsep"/><!--Other options-->
     <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
     <setting id="sync_watched_status_library" type="bool" label="30301" default="false" visible="eq(-1,true)" subsetting="true"/>

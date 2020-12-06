@@ -128,14 +128,13 @@ class NFSessionOperations(SessionPathRequests):
         G.CACHE_MANAGEMENT.identifier_prefix = guid
         cookies.save(self.session.cookies)
 
-    def parental_control_data(self, password):
+    def parental_control_data(self, guid, password):
         # Ask to the service if password is right and get the PIN status
         from requests import exceptions
-        profile_guid = G.LOCAL_DB.get_active_profile_guid()
         try:
             response = self.post_safe('profile_hub',
                                       data={'destination': 'contentRestrictions',
-                                            'guid': profile_guid,
+                                            'guid': guid,
                                             'password': password,
                                             'task': 'auth'})
             if response.get('status') != 'ok':
@@ -150,7 +149,7 @@ class NFSessionOperations(SessionPathRequests):
         # Note: The language of descriptions change in base of the language of selected profile
         response_content = self.get_safe('restrictions',
                                          data={'password': password},
-                                         append_to_address=profile_guid)
+                                         append_to_address=guid)
         extracted_content = website.extract_parental_control_data(response_content, response['maturity'])
         response['profileInfo']['profileName'] = website.parse_html(response['profileInfo']['profileName'])
         extracted_content['data'] = response

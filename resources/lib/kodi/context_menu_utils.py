@@ -87,5 +87,8 @@ CONTEXT_MENU_ACTIONS = {
         'url': ctx_item_url(['library_playback_set_profile'])},
     'library_playback_remove_profile': {
         'label': common.get_local_string(30053),
-        'url': ctx_item_url(['library_playback_remove_profile'])}
+        'url': ctx_item_url(['library_playback_remove_profile'])},
+    'profile_parental_control': {
+        'label': common.get_local_string(30062),
+        'url': ctx_item_url(['parental_control'])}
 }
