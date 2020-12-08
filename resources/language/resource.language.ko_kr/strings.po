@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2020-07-02 18:20+0900\n"
 "Last-Translator: Allen Choi<37539914+Thunderbird2086@users.noreply.github.com>\n"
 "Language-Team: Korean\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -65,7 +65,15 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "장르"
 
-# Unused 30011, 30012, 30013
+# Unused 30011
+msgctxt "#30012"
+msgid "Profiles options and parental control"
+msgstr ""
+
+msgctxt "#30013"
+msgid "In the profile list, open the context menu in the chosen profile"
+msgstr ""
+
 msgctxt "#30014"
 msgid "Account"
 msgstr "계정"

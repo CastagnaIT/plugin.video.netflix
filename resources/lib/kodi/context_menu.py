@@ -30,7 +30,8 @@ def generate_context_menu_profile(profile_guid, is_autoselect, is_library_playba
                   {'profile_guid': profile_guid}),
         _ctx_item('library_playback_remove_profile' if is_library_playback else 'library_playback_set_profile',
                   None,
-                  {'profile_guid': profile_guid})
+                  {'profile_guid': profile_guid}),
+        _ctx_item('profile_parental_control', None, {'profile_guid': profile_guid})
     ]
     return items
 

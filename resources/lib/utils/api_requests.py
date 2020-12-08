@@ -174,9 +174,9 @@ def _update_mylist_cache(videoid, operation, params):
 
 
 @measure_exec_time_decorator()
-def get_parental_control_data(password):
+def get_parental_control_data(guid, password):
     """Get the parental control data"""
-    return common.make_call('parental_control_data', {'password': password})
+    return common.make_call('parental_control_data', {'guid': guid, 'password': password})
 
 
 @catch_api_errors_decorator

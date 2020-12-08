@@ -69,7 +69,8 @@ class AddonActionExecutor(object):
         if not password:
             return
         try:
-            parental_control_data = api.get_parental_control_data(password)
+            parental_control_data = api.get_parental_control_data(self.params['profile_guid'],
+                                                                  password)
             ui.show_modal_dialog(False,
                                  ui.xmldialogs.ParentalControl,
                                  'plugin-video-netflix-ParentalControl.xml',

@@ -65,7 +65,15 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "Listes de toutes sortes"
 
-# Unused 30011, 30012, 30013
+# Unused 30011
+msgctxt "#30012"
+msgid "Profiles options and parental control"
+msgstr ""
+
+msgctxt "#30013"
+msgid "In the profile list, open the context menu in the chosen profile"
+msgstr ""
+
 msgctxt "#30014"
 msgid "Account"
 msgstr "Compte"
