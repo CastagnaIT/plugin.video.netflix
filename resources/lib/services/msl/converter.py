@@ -47,9 +47,9 @@ def convert_to_dash(manifest):
 
     has_audio_drm_streams = manifest['audio_tracks'][0].get('hasDrmStreams', False)
 
-    default_audio_track_id = _get_default_audio_track_id(manifest)
+    id_default_audio_tracks = _get_id_default_audio_tracks(manifest)
     for audio_track in manifest['audio_tracks']:
-        is_default = default_audio_track_id == audio_track['id']
+        is_default = audio_track['id'] in id_default_audio_tracks
         _convert_audio_track(audio_track, period, init_length, is_default, has_audio_drm_streams, cdn_index)
 
     for text_track in manifest['timedtexttracks']:
@@ -292,7 +292,7 @@ def _convert_text_track(text_track, period, default, cdn_index, isa_version):
     _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[cdn_index])
 
 
-def _get_default_audio_track_id(manifest):
+def _get_id_default_audio_tracks(manifest):
     """Get the track id of the audio track to be set as default"""
     channels_stereo = ['1.0', '2.0']
     channels_multi = ['5.1', '7.1']
@@ -306,7 +306,7 @@ def _get_default_audio_track_id(manifest):
         audio_language = profile_language_code[0:2]
     if not audio_language == 'original':
         # If set give priority to the same audio language with different country
-        if G.ADDON.getSettingBool('prefer_alternative_lang'):
+        if not G.KODI_VERSION.is_major_ver('18') and G.ADDON.getSettingBool('prefer_alternative_lang'):
             # Here we have only the language code without country code, we do not know the country code to be used,
             # usually there are only two tracks with the same language and different countries,
             # then we try to find the language with the country code
@@ -324,14 +324,20 @@ def _get_default_audio_track_id(manifest):
         audio_stream = _find_audio_stream(manifest, 'isNative', True, channels_multi)
     if not audio_stream:
         audio_stream = _find_audio_stream(manifest, 'isNative', True, channels_stereo)
-    return audio_stream.get('id')
+    # Try find the default track for impaired
+    imp_audio_stream = {}
+    if not is_prefer_stereo:
+        imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_multi, True)
+    if not imp_audio_stream:
+        imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_stereo, True)
+    return audio_stream.get('id'), imp_audio_stream.get('id')
 
 
-def _find_audio_stream(manifest, property_name, property_value, channels_list):
+def _find_audio_stream(manifest, property_name, property_value, channels_list, is_impaired=False):
     return next((audio_track for audio_track in manifest['audio_tracks']
                  if audio_track[property_name] == property_value
                  and audio_track['channels'] in channels_list
-                 and not audio_track['trackType'] == 'ASSISTIVE'), {})
+                 and (audio_track['trackType'] == 'ASSISTIVE') == is_impaired), {})
 
 
 def _is_default_subtitle(manifest, current_text_track):

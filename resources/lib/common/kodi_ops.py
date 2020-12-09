@@ -198,10 +198,52 @@ def fix_locale_languages(data_list):
     # Languages with the country code causes the display of wrong names in Kodi settings like
     # es-ES as 'Spanish-Spanish', pt-BR as 'Portuguese-Breton', nl-BE as 'Dutch-Belarusian', etc
     # and the impossibility to set them as the default audio/subtitle language
+    # Issue: https://github.com/xbmc/xbmc/issues/15308
+    if G.KODI_VERSION.is_major_ver('18'):
+        _fix_locale_languages_kodi18(data_list)
+    else:
+        _fix_locale_languages(data_list)
+
+
+def _fix_locale_languages_kodi18(data_list):
+    # Get all the ISO 639-1 codes (without country)
+    verify_unofficial_lang = not G.KODI_VERSION.is_less_version('18.7')
+    locale_list_nocountry = []
     for item in data_list:
         if item.get('isNoneTrack', False):
             continue
-        if item['language'] == 'pt-BR' and not G.KODI_VERSION.is_less_version('18.7'):
+        if verify_unofficial_lang and item['language'] == 'pt-BR':
+            # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
+            # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
+            item['language'] = 'pb'
+        if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
+            locale_list_nocountry.append(item['language'])
+    # Replace the locale languages with country with a new one
+    for item in data_list:
+        if item.get('isNoneTrack', False):
+            continue
+        if len(item['language']) == 2:
+            continue
+        item['language'] = _adjust_locale(item['language'],
+                                          item['language'][0:2] in locale_list_nocountry)
+
+
+def _adjust_locale(locale_code, lang_code_without_country_exists):
+    """Locale conversion helper"""
+    language_code = locale_code[0:2]
+    if not lang_code_without_country_exists:
+        return language_code
+    if locale_code in LOCALE_CONV_TABLE:
+        return LOCALE_CONV_TABLE[locale_code]
+    LOG.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
+    return locale_code
+
+
+def _fix_locale_languages(data_list):
+    for item in data_list:
+        if item.get('isNoneTrack', False):
+            continue
+        if item['language'] == 'pt-BR':
             # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
             # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
             item['language'] = 'pb'
