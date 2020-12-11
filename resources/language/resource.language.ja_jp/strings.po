@@ -68,11 +68,11 @@ msgstr "ジャンル"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "プロフィールオプションと視聴制限"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "プロフィールリストから選び、コンテキストメニューを開きましょう。"
 
 msgctxt "#30014"
 msgid "Account"
