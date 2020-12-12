@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
+from resources.lib.common.exceptions import InvalidVideoListTypeError
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
 from resources.lib.utils.logging import LOG
@@ -45,14 +46,18 @@ class AMVideoEvents(ActionManager):
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
-        videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
-                                                        {'video_id': str(self.videoid_parent.value)})
-        if not videoid_exists:
-            # Delete the cache of continueWatching list
-            G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
-            # When the continueWatching context is invalidated from a refreshListByContext call
-            # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
-            G.CACHE.delete(CACHE_COMMON, 'loco_list')
+        try:
+            videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
+                                                            {'video_id': str(self.videoid_parent.value)})
+            if not videoid_exists:
+                # Delete the cache of continueWatching list
+                G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
+                # When the continueWatching context is invalidated from a refreshListByContext call
+                # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
+                G.CACHE.delete(CACHE_COMMON, 'loco_list')
+        except InvalidVideoListTypeError:
+            # Ignore possible "No lists with context xxx available" exception due to a new profile without data
+            pass
 
     def on_tick(self, player_state):
         if self.lock_events:
