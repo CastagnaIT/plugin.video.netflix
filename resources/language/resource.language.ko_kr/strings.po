@@ -68,11 +68,11 @@ msgstr "장르"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "프로파일 설정 및 시청제한"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "프로파일 목록에서 선택한 후, 바로가기 메뉴를 이용하십시오."
 
 msgctxt "#30014"
 msgid "Account"
