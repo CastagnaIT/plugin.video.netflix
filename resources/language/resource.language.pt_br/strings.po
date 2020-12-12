@@ -68,11 +68,11 @@ msgstr "Listar todos os tipos"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "Opções de perfis e controle parental"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "Na lista de perfis, abra o menu de contexto no perfil escolhido"
 
 msgctxt "#30014"
 msgid "Account"
