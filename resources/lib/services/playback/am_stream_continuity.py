@@ -386,7 +386,7 @@ class AMStreamContinuity(ActionManager):
         if not any(audio_track['language'] == audio_language for audio_track in audio_list):
             # No audio available for the preferred audio language,
             # then try find a regular subtitle in the preferred audio language
-            stream = self._find_subtitle_stream(audio_language, audio_list)
+            stream = self._find_subtitle_stream(audio_language)
         if stream:
             self.sc_settings.update({'subtitleenabled': True})
             self.sc_settings.update({'subtitle': stream})
