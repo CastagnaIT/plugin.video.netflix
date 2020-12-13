@@ -1,3 +1,21 @@
+v1.12.0 (2020-12-13)
+- >> END OF THE ADD-ON DEVELOPMENT ON KODI 18.x
+- >> ON KODI 18.x THE ADD-ON WILL RECEIVE ONLY BUG FIX OR MINOR CHANGES
+- Add more options to force Widevine L3 (android)
+- Improved errors messages to resolve:
+  - This title is not available to watch instantly
+  - Request failed validation during key exchange
+- Reverted "reworked Audio/Subtitles language features" on Kodi 18
+- Fix missing default audio track for impaired (Kodi 19)
+- Fixed "Prefer audio/subtitles language with country code" (Kodi 19)
+- Parental control moved to profiles list context menu
+- Fixed ESN generation with modelgroup
+- Fixed build_media_tag exception due to video pause
+- Blocked profile switching while playing, can cause issues
+- Managed wrong password case on login that caused http error 500
+- Updated translations it, de, gr, pt-br, hu, ro, es, jp, kr, fr
+
+
 v1.11.0 (2020-11-14)
 - Reworked Audio/Subtitles language features
   - Add support to Kodi player audio setting "Media default" (use NF profile language)
