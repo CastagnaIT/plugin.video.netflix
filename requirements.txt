@@ -4,10 +4,10 @@ kodi-addon-checker
 mysql-connector-python
 polib
 pycrypto
-pycryptodomex==3.4.5
+pycryptodomex
 pydes
 pylint
 requests
-setuptools >= 41
+setuptools
 tox
-xmlschema==1.0.18; python_version == '2.7'
+xmlschema
