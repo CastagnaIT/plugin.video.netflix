@@ -11,8 +11,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
 
-from future.utils import itervalues
-
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
@@ -233,7 +231,7 @@ def get_available_audio_languages():
     }
     response = common.make_call('path_request', call_args)
     lang_list = {}
-    for lang_dict in itervalues(response.get('spokenAudioLanguages', {})):
+    for lang_dict in response.get('spokenAudioLanguages', {}).values():
         lang_list[lang_dict['id']] = lang_dict['name']
     return lang_list
 
@@ -245,7 +243,7 @@ def get_available_subtitles_languages():
     }
     response = common.make_call('path_request', call_args)
     lang_list = {}
-    for lang_dict in itervalues(response.get('subtitleLanguages', {})):
+    for lang_dict in response.get('subtitleLanguages', {}).values():
         lang_list[lang_dict['id']] = lang_dict['name']
     return lang_list
 

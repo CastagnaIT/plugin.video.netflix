@@ -11,8 +11,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import copy
 
-from future.utils import itervalues
-
 import resources.lib.utils.api_paths as paths
 import resources.lib.utils.api_requests as api
 import resources.lib.common as common
@@ -194,7 +192,7 @@ def _parse_tags(item):
     """Parse the tags"""
     return {'tag': [tagdef['name']
                     for tagdef
-                    in itervalues(item.get('tags', {}))
+                    in item.get('tags', {}).values()
                     if isinstance(tagdef.get('name', {}), unicode)]}
 
 
