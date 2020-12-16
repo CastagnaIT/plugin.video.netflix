@@ -8,5 +8,5 @@
     See LICENSES/MIT.md for more information.
 """
 # pylint: disable=wildcard-import
-from .dialogs import *  # pylint: disable=redefined-builtin
+from .dialogs import *
 from .xmldialogs import *

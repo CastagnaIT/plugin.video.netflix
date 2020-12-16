@@ -15,12 +15,6 @@ from collections import OrderedDict
 from resources.lib.utils.logging import LOG
 
 
-try:  # Python 2
-    basestring
-except NameError:  # Python 3
-    basestring = str  # pylint: disable=redefined-builtin
-
-
 class DataTypeNotMapped(Exception):
     """Data type not mapped"""
 

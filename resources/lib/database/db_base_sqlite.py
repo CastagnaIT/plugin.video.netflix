@@ -18,11 +18,6 @@ import resources.lib.database.db_utils as db_utils
 from resources.lib.common.exceptions import DBSQLiteConnectionError, DBSQLiteError
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    from itertools import izip as zip  # pylint: disable=redefined-builtin
-except ImportError:
-    pass
-
 
 CONN_ISOLATION_LEVEL = None  # Autocommit mode
 
