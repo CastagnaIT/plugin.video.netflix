@@ -1,12 +1,11 @@
 name: Release Leia
 on:
   push:
-    branches:
-    - Leia
     tags:
     - 'v*'
 jobs:
   build:
+    if: github.event.base_ref == 'refs/heads/Leia'
     name: Publish Leia release
     runs-on: ubuntu-latest
     steps:

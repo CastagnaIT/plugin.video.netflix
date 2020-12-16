@@ -1,12 +1,11 @@
 name: Release
 on:
   push:
-    branches:
-    - master
     tags:
     - 'v*'
 jobs:
   build:
+    if: github.event.base_ref == 'refs/heads/master'
     name: Publish release
     runs-on: ubuntu-latest
     steps:
