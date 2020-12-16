@@ -8,9 +8,6 @@
 """
 import threading
 from socket import gaierror
-
-# Global cache must not be used within these modules, because stale values may
-# be used and cause inconsistencies!
 from resources.lib.common import select_port, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade

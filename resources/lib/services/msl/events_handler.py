@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import queue
 import random
 import threading
 import time
@@ -21,11 +22,6 @@ from resources.lib.services.msl import msl_utils
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS, create_req_params
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
-
-try:
-    import Queue as queue
-except ImportError:  # Python 3
-    import queue
 
 
 class Event(object):

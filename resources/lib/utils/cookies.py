@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import pickle
 from time import time
 
 import xbmcvfs
@@ -14,11 +15,6 @@ import xbmcvfs
 from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 
 
 def save(cookie_jar, log_output=True):

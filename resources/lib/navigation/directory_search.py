@@ -90,7 +90,8 @@ def search_add():
     else:
         raise NotImplementedError('Search type index {} not implemented'.format(type_index))
     # Redirect to "search" endpoint (otherwise no results in JSON-RPC)
-    # Rewrite path history using dir_update_listing + container_update (otherwise will retrigger input dialog on Back or Container.Refresh)
+    # Rewrite path history using dir_update_listing + container_update
+    # (otherwise will retrigger input dialog on Back or Container.Refresh)
     if row_id is not None and search_query(row_id, 0, False):
         url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY, params={'dir_update_listing': True})
         common.container_update(url, False)

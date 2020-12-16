@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import json
 from functools import wraps
 
 import AddonSignals
@@ -15,7 +16,6 @@ from resources.lib.common import exceptions
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .misc_utils import run_threaded
-
 
 IPC_TIMEOUT_SECS = 20
 IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
@@ -85,11 +85,7 @@ def make_http_call(callname, data):
     """Make an IPC call via HTTP and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function."""
     from collections import OrderedDict
-    try:  # Python 3
-        from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
-    except ImportError:  # Python 2
-        from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
-    import json
+    from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     LOG.debug('Handling HTTP IPC call to {}'.format(callname))
     # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}/{}'.format(G.LOCAL_DB.get_value('ns_service_port', 8001), callname)
@@ -101,7 +97,6 @@ def make_http_call(callname, data):
     except HTTPError as exc:
         result = json.loads(exc.reason)
     except URLError as exc:
-        # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
         err_msg = str(exc)
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
@@ -114,11 +109,7 @@ def make_http_call(callname, data):
 def make_http_call_cache(callname, params, data):
     """Make an IPC call via HTTP and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function."""
-    try:  # Python 3
-        from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
-    except ImportError:  # Python 2
-        from urllib2 import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
-    import json
+    from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, Request, urlopen
     # debug('Handling HTTP IPC call to {}'.format(callname))
     # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}/{}'.format(G.LOCAL_DB.get_value('cache_service_port', 8002), callname)

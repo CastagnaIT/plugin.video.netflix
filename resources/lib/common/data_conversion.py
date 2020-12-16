@@ -72,7 +72,4 @@ def _conv_string_to_datetime(value):
     except (TypeError, ImportError):
         # Python bug https://bugs.python.org/issue27400
         import time
-        # Workaround for http://bugs.python.org/issue8098 only to py2
-        # Error: ImportError: Failed to import _strptime because the import lockis held by another thread.
-        import _strptime  # pylint: disable=unused-import
         return datetime.datetime(*(time.strptime(value, '%Y-%m-%d %H:%M:%S.%f')[0:6]))

@@ -14,12 +14,7 @@
 import collections
 import os
 import sys
-
-try:  # Python 3
-    from urllib.parse import parse_qsl, unquote, urlparse
-except ImportError:  # Python 2
-    from urllib2 import unquote
-    from urlparse import parse_qsl, urlparse
+from urllib.parse import parse_qsl, unquote, urlparse
 
 import xbmcaddon
 import xbmcvfs

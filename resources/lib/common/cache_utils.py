@@ -7,18 +7,12 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-
+import pickle
 from functools import wraps
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .exceptions import CacheMiss
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
 
 # Cache buckets (the default_ttl is the variable name in 'global' class)
 CACHE_COMMON = {'name': 'cache_common', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
@@ -110,7 +104,6 @@ def serialize_data(value):
 def deserialize_data(value):
     try:
         return pickle.loads(value)
-    except (pickle.UnpicklingError, TypeError, EOFError) as exc:
-        # TypeError/EOFError happen when standard_b64decode fails
+    except pickle.UnpicklingError as exc:
         LOG.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
         raise CacheMiss from exc

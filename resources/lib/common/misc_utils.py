@@ -7,16 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-# try:  # Python 3
-#     from io import StringIO
-# except ImportError:  # Python 2
-#     from StringIO import StringIO
-
-try:  # Python 3
-    from urllib.parse import quote, urlencode
-except ImportError:  # Python 2
-    from urllib import urlencode
-    from urllib2 import quote
+from urllib.parse import quote, urlencode
 
 from resources.lib.globals import G
 

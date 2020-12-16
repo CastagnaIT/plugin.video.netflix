@@ -8,25 +8,12 @@
     See LICENSES/MIT.md for more information.
 """
 import base64
+from http.server import BaseHTTPRequestHandler
+from socketserver import TCPServer
+from urllib.parse import parse_qs, urlparse
 
 from resources.lib.common.exceptions import MSLError
 from resources.lib.utils.logging import LOG
-
-try:  # Python 3
-    from urllib.parse import parse_qs, urlparse
-except ImportError:  # Python 2
-    from urlparse import urlparse, parse_qs
-
-try:  # Python 3
-    from http.server import BaseHTTPRequestHandler
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-
-try:  # Python 3
-    from socketserver import TCPServer
-except ImportError:
-    from SocketServer import TCPServer
-
 from .msl_handler import MSLHandler
 
 

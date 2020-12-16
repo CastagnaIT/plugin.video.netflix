@@ -8,20 +8,12 @@
     See LICENSES/MIT.md for more information.
 """
 import json
+from http.server import BaseHTTPRequestHandler
+from socketserver import TCPServer
 
 from resources.lib.common.exceptions import InvalidPathError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-
-try:  # Python 3
-    from http.server import BaseHTTPRequestHandler
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-
-try:  # Python 3
-    from socketserver import TCPServer
-except ImportError:
-    from SocketServer import TCPServer
 
 
 class NetflixHttpRequestHandler(BaseHTTPRequestHandler):

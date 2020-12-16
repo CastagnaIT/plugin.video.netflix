@@ -14,15 +14,6 @@ from functools import wraps
 import xbmc
 
 
-def perf_clock():
-    if hasattr(time, 'perf_counter'):
-        return time.perf_counter()  # pylint: disable=no-member
-    if hasattr(time, 'clock'):
-        # time.clock() was deprecated in Python 3.3 and removed in Python 3.8
-        return time.clock()  # pylint: disable=no-member
-    return time.time()
-
-
 class Logging(object):
     """A helper class for logging"""
     LEVEL_VERBOSE = 'Verbose'
@@ -156,11 +147,11 @@ def measure_exec_time_decorator(is_immediate=False):
             if not LOG.is_time_trace_enabled:
                 return func(*args, **kwargs)
             LOG.add_time_trace_level()
-            start = perf_clock()
+            start = time.perf_counter()
             try:
                 return func(*args, **kwargs)
             finally:
-                execution_time = int((perf_clock() - start) * 1000)
+                execution_time = int((time.perf_counter() - start) * 1000)
                 if is_immediate:
                     LOG.debug('Call to {} took {}ms', func.__name__, execution_time)
                 else:

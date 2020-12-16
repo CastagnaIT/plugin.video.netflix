@@ -11,6 +11,7 @@
 import base64
 import json
 import re
+import time
 import zlib
 
 from requests import exceptions
@@ -22,7 +23,7 @@ from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
                                                   MSL_DATA_FILENAME, create_req_params)
 from resources.lib.utils.esn import get_esn
-from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class MSLRequests(MSLRequestBuilder):
@@ -177,10 +178,10 @@ class MSLRequests(MSLRequestBuilder):
             else:
                 _endpoint = endpoint
             LOG.debug('Executing POST request to {}', _endpoint)
-            start = perf_clock()
+            start = time.perf_counter()
             try:
                 response = self.session.post(_endpoint, request_data, timeout=4)
-                LOG.debug('Request took {}s', perf_clock() - start)
+                LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 response.raise_for_status()
                 return response

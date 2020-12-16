@@ -9,18 +9,19 @@
     See LICENSES/MIT.md for more information.
 """
 import json
+import time
 
-import resources.lib.utils.website as website
 import resources.lib.common as common
+import resources.lib.utils.website as website
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
                                              HttpError401, NotLoggedInError, HttpErrorTimeout)
-from resources.lib.kodi import ui
-from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.services.nfsession.session.endpoints import ENDPOINTS, BASE_URL
-from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
+from resources.lib.utils import cookies
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class SessionHTTPRequests(SessionBase):
@@ -53,7 +54,7 @@ class SessionHTTPRequests(SessionBase):
         LOG.debug('Executing {verb} request to {url}',
                   verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
-        start = perf_clock()
+        start = time.perf_counter()
         try:
             response = method(
                 url=url,
@@ -65,7 +66,7 @@ class SessionHTTPRequests(SessionBase):
         except exceptions.ReadTimeout as exc:
             LOG.error('HTTP Request ReadTimeout error: {}', exc)
             raise HttpErrorTimeout from exc
-        LOG.debug('Request took {}s', perf_clock() - start)
+        LOG.debug('Request took {}s', time.perf_counter() - start)
         LOG.debug('Request returned status code {}', response.status_code)
         # for redirect in response.history:
         #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
