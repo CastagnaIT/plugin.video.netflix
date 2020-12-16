@@ -24,11 +24,6 @@ from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class SessionAccess(SessionCookie, SessionHTTPRequests):
     """Handle the authentication access"""
@@ -153,7 +148,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except LoginValidateError as exc:
             self.session.cookies.clear()
             common.purge_credentials()
-            raise LoginError(unicode(exc)) from exc
+            raise LoginError(str(exc)) from exc
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
             self.session.cookies.clear()
             LOG.warn('Membership status {} not valid for login', exc)

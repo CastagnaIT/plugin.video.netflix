@@ -10,10 +10,6 @@
 from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 __CRYPT_KEY__ = None
 
@@ -35,7 +31,7 @@ def get_random_uuid():
     :return: a string of a random uuid
     """
     import uuid
-    return unicode(uuid.uuid4())
+    return str(uuid.uuid4())
 
 
 def get_namespace_uuid(name):

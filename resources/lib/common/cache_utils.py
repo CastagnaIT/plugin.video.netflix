@@ -19,10 +19,6 @@ try:
 except ImportError:
     import pickle
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 # Cache buckets (the default_ttl is the variable name in 'global' class)
 CACHE_COMMON = {'name': 'cache_common', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
@@ -97,12 +93,12 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     if fixed_identifier:
         identifier = fixed_identifier
     else:
-        identifier = unicode(kwargs.get(identify_from_kwarg_name) or '')
+        identifier = str(kwargs.get(identify_from_kwarg_name) or '')
         if not identifier and args:
-            arg_value = unicode(args[identify_fallback_arg_index] or '')
+            arg_value = str(args[identify_fallback_arg_index] or '')
             identifier = arg_value
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier += '_' + unicode(kwargs.get(identify_append_from_kwarg_name))
+            identifier += '_' + str(kwargs.get(identify_append_from_kwarg_name))
     # LOG.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier
 

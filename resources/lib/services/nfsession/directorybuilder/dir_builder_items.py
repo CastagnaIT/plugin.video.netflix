@@ -17,10 +17,6 @@ from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import 
                                                                                  get_availability_message)
 from resources.lib.utils.logging import measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 # This module convert a DataType object like VideoListSorted (that contains a list of items videos, items, etc)
 # in a list of dict items very similar to xbmcgui.ListItem, that the client-frontend will convert into real ListItem's
@@ -258,7 +254,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
                        art_item=video_list.artitem)
     # Add possibility to browse the sub-genres (see build_video_listing)
     sub_genre_id = video_list.get('genreId')
-    params = {'sub_genre_id': unicode(sub_genre_id)} if sub_genre_id else None
+    params = {'sub_genre_id': str(sub_genre_id)} if sub_genre_id else None
     dict_item['url'] = common.build_url(pathitems,
                                         params=params,
                                         mode=G.MODE_DIRECTORY)
@@ -344,7 +340,7 @@ def build_subgenres_listing(subgenre_list, menu_data):
     directory_items = []
     for index, subgenre_data in subgenre_list.lists:  # pylint: disable=unused-variable
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
-        sel_video_list_id = unicode(subgenre_data['id'])
+        sel_video_list_id = str(subgenre_data['id'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['loco_known'] = False

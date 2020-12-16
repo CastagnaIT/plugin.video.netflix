@@ -25,11 +25,6 @@ from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME, create_req_params
 from .profiles import enabled_profiles
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class MSLHandler(object):
     """Handles session management and crypto for license, manifest and event requests"""
@@ -139,7 +134,7 @@ class MSLHandler(object):
 
     @measure_exec_time_decorator(is_immediate=True)
     def _load_manifest(self, viewable_id, esn):
-        cache_identifier = esn + '_' + unicode(viewable_id)
+        cache_identifier = esn + '_' + str(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
@@ -198,7 +193,7 @@ class MSLHandler(object):
             'supportsUnequalizedDownloadables': True,
             'showAllSubDubTracks': False,
             'titleSpecificData': {
-                unicode(viewable_id): {
+                str(viewable_id): {
                     'unletterboxed': True
                 }
             },

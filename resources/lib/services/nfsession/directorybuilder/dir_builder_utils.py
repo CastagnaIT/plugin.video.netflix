@@ -12,11 +12,6 @@ import os
 import resources.lib.common as common
 from resources.lib.globals import G
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 def _get_custom_thumb_path(thumb_file_name):
     return os.path.join(G.ADDON_DATA_PATH, 'resources', 'media', thumb_file_name)

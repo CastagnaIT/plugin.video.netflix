@@ -16,11 +16,6 @@ from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class NetflixService(object):
     """
@@ -77,7 +72,7 @@ class NetflixService(object):
                            'Read how to install the add-on in the GitHub Readme.\r\n'
                            'Error details: {}'.format(exc))
             else:
-                message = unicode(exc)
+                message = str(exc)
             self._set_service_status('error', message)
         return False
 
@@ -150,7 +145,7 @@ class NetflixService(object):
             import traceback
             from resources.lib.kodi.ui import show_notification
             LOG.error(traceback.format_exc())
-            show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
+            show_notification(': '.join((exc.__class__.__name__, str(exc))))
         return self.controller.waitForAbort(1)
 
     def _set_service_status(self, status, message=None):

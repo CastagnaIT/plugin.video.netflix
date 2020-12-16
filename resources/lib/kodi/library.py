@@ -26,10 +26,6 @@ from resources.lib.kodi.library_utils import (request_kodi_library_update, get_l
                                               get_library_subfolders, delay_anti_ban)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 # Reasons that led to the creation of a class for the library operations:
 # - Time-consuming update functionality like "full sync of kodi library", "auto update", "export" (large tv show)
@@ -233,7 +229,7 @@ class Library(LibraryTasks):
 
         # Check if tv shows have been removed from the My List
         for videoid_value in exp_tvshows_videoids_values:
-            if unicode(videoid_value) in mylist_video_id_list:
+            if str(videoid_value) in mylist_video_id_list:
                 continue
             # The tv show no more exist in My List so remove it from library
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
@@ -241,7 +237,7 @@ class Library(LibraryTasks):
 
         # Check if movies have been removed from the My List
         for videoid_value in exp_movies_videoids_values:
-            if unicode(videoid_value) in mylist_video_id_list:
+            if str(videoid_value) in mylist_video_id_list:
                 continue
             # The movie no more exist in My List so remove it from library
             videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])

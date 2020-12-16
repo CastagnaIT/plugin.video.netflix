@@ -13,11 +13,6 @@ import xbmcgui
 from resources.lib.globals import G
 import resources.lib.common as common
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
@@ -121,7 +116,7 @@ def show_error_info(title, message, unknown_error=False, netflix_error=False):
 def show_addon_error_info(exc):
     """Show a dialog to notify of an addon internal error"""
     show_error_info(title=common.get_local_string(30105),
-                    message=': '.join((exc.__class__.__name__, unicode(exc))),
+                    message=': '.join((exc.__class__.__name__, str(exc))),
                     netflix_error=False)
 
 

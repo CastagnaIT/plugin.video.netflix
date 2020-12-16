@@ -17,11 +17,6 @@ from resources.lib.common.exceptions import APIError, LoginError, MissingCredent
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 def catch_api_errors_decorator(func):
     """Decorator that catch APIError exception and displays a notification"""
@@ -70,7 +65,7 @@ def login(ask_credentials=True):
         raise
     except LoginError as exc:
         # Login not valid
-        ui.show_ok_dialog(common.get_local_string(30008), unicode(exc))
+        ui.show_ok_dialog(common.get_local_string(30008), str(exc))
     return False
 
 

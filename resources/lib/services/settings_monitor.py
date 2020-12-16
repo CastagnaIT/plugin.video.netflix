@@ -19,11 +19,6 @@ from resources.lib.globals import G
 from resources.lib.utils.esn import generate_android_esn, ForceWidevine
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class SettingsMonitor(xbmc.Monitor):
     def __init__(self):
@@ -141,7 +136,7 @@ def _check_msl_profiles():
                  'disable_webvtt_subtitle']
     collect_int = ''
     for menu_key in menu_keys:
-        collect_int += unicode(int(G.ADDON.getSettingBool(menu_key)))
+        collect_int += str(int(G.ADDON.getSettingBool(menu_key)))
     collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
     if collect_int != collect_int_old:
         G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)

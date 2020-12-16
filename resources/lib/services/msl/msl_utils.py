@@ -21,10 +21,6 @@ from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 try:  # Python 2
     from urllib import urlencode

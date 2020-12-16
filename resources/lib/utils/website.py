@@ -22,10 +22,6 @@ from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
 from .esn import generate_android_esn
 from .logging import LOG, measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 PAGE_ITEMS_INFO = [
     'models/userInfo/data/name',
