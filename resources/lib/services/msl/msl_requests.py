@@ -15,7 +15,6 @@ import json
 import re
 import zlib
 
-from future.utils import raise_from
 from requests import exceptions
 
 import resources.lib.common as common
@@ -70,7 +69,7 @@ class MSLRequests(MSLRequestBuilder):
             if exc.err_number == 207006 and common.get_system_platform() == 'android':
                 msg = ('Request failed validation during key exchange\r\n'
                        'To try to solve this problem read the Wiki FAQ on add-on GitHub.')
-                raise_from(MSLError(msg), exc)
+                raise MSLError(msg) from exc
             raise
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()
@@ -235,8 +234,7 @@ def _process_json_response(response):
     try:
         return _raise_if_error(response.json())
     except ValueError as exc:
-        raise_from(MSLError('Expected JSON response, got {}'.format(response.text)),
-                   exc)
+        raise MSLError('Expected JSON response, got {}'.format(response.text)) from exc
 
 
 def _raise_if_error(decoded_response):

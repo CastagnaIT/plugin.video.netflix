@@ -12,8 +12,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import re
 
-from future.utils import raise_from
-
 import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.utils.cookies as cookies
@@ -124,7 +122,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
-                raise_from(LoginError(common.get_local_string(12344)), exc)
+                raise LoginError(common.get_local_string(12344)) from exc
             raise
         common.set_credentials({'email': email, 'password': password})
         LOG.info('Login successful')
@@ -157,11 +155,11 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except LoginValidateError as exc:
             self.session.cookies.clear()
             common.purge_credentials()
-            raise_from(LoginError(unicode(exc)), exc)
+            raise LoginError(unicode(exc)) from exc
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
             self.session.cookies.clear()
             LOG.warn('Membership status {} not valid for login', exc)
-            raise_from(LoginError(common.get_local_string(30180)), exc)
+            raise LoginError(common.get_local_string(30180)) from exc
         except Exception:  # pylint: disable=broad-except
             self.session.cookies.clear()
             import traceback

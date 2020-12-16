@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
-from future.utils import raise_from
 
 import mysql.connector
 
@@ -40,7 +39,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc)
-            raise_from(DBMySQLConnectionError, exc)
+            raise DBMySQLConnectionError from exc
         finally:
             if conn and conn.is_connected():
                 conn.close()
@@ -87,10 +86,10 @@ class MySQLDatabase(db_base.BaseDatabase):
                     LOG.error('MySql error {}:', e)
                     if e.errno == 1115:  # Unknown character set: 'utf8mb4'
                         # Means an outdated MySQL/MariaDB version in use, needed MySQL => 5.5.3 or MariaDB => 5.5
-                        raise_from(DBMySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade'), e)
-                    raise_from(DBMySQLError(str(e)), e)
+                        raise DBMySQLError('Your MySQL/MariaDB version is outdated, consider an upgrade') from e
+                    raise DBMySQLError(str(e)) from e
             LOG.error('MySql error {}:', exc)
-            raise_from(DBMySQLConnectionError, exc)
+            raise DBMySQLConnectionError from exc
         finally:
             if self.conn and self.conn.is_connected():
                 self.conn.close()
@@ -110,7 +109,7 @@ class MySQLDatabase(db_base.BaseDatabase):
                     pass
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc)
-            raise_from(DBMySQLError, exc)
+            raise DBMySQLError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -128,7 +127,7 @@ class MySQLDatabase(db_base.BaseDatabase):
             return cursor
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc.args[0])
-            raise_from(DBMySQLError, exc)
+            raise DBMySQLError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))

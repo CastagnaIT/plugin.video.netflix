@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 from re import search, compile as recompile, DOTALL, sub
 
-from future.utils import iteritems, raise_from
+from future.utils import iteritems
 
 import xbmc
 
@@ -166,7 +166,7 @@ def parse_profiles(data):
         import traceback
         LOG.error(traceback.format_exc(), 'latin-1')
         LOG.error('Profile list data: {}', profiles_list)
-        raise_from(InvalidProfilesError, exc)
+        raise InvalidProfilesError from exc
 
 
 def _delete_non_existing_profiles(current_guids):
@@ -276,7 +276,7 @@ def validate_login(react_context):
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
             LOG.error(error_msg)
-            raise_from(WebsiteParsingError(error_msg), exc)
+            raise WebsiteParsingError(error_msg) from exc
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -301,7 +301,7 @@ def extract_json(content, name):
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(traceback.format_exc())
-        raise_from(WebsiteParsingError('Unable to extract {}'.format(name)), exc)
+        raise WebsiteParsingError('Unable to extract {}'.format(name)) from exc
 
 
 def extract_parental_control_data(content, current_maturity):
@@ -333,7 +333,7 @@ def extract_parental_control_data(content, current_maturity):
             raise WebsiteParsingError('Unable to get maturity rating levels')
         return {'rating_levels': rating_levels, 'current_level_index': current_level_index}
     except KeyError as exc:
-        raise_from(WebsiteParsingError('Unable to get path in to reactContext data'), exc)
+        raise WebsiteParsingError('Unable to get path in to reactContext data') from exc
 
 
 def parse_html(html_value):

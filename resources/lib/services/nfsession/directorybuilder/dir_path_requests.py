@@ -9,7 +9,7 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from future.utils import iteritems, raise_from
+from future.utils import iteritems
 
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
@@ -86,8 +86,7 @@ class DirectoryPathRequests(object):
         try:
             return next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
         except StopIteration as exc:
-            raise_from(InvalidVideoListTypeError('No lists with context {} available'.format(context)),
-                       exc)
+            raise InvalidVideoListTypeError('No lists with context {} available'.format(context)) from exc
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='profiles_raw_data',
                               ttl=300, ignore_self_class=True)

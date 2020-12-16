@@ -11,8 +11,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 
-from future.utils import raise_from
-
 import xbmcgui
 import xbmcplugin
 
@@ -180,7 +178,7 @@ def get_inputstream_listitem(videoid):
         # Captures all types of ISH internal errors
         import traceback
         LOG.error(traceback.format_exc())
-        raise_from(InputStreamHelperError(str(exc)), exc)
+        raise InputStreamHelperError(str(exc)) from exc
 
 
 def _profile_switch():

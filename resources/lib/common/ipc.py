@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from functools import wraps
-from future.utils import raise_from
 
 import AddonSignals
 
@@ -113,7 +112,7 @@ def make_http_call(callname, data):
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise_from(exceptions.BackendNotReady(err_msg), exc)
+        raise exceptions.BackendNotReady(err_msg) from exc
     _raise_for_error(result)
     return result
 
@@ -135,14 +134,14 @@ def make_http_call_cache(callname, params, data):
         result = urlopen(r, timeout=IPC_TIMEOUT_SECS).read()
     except HTTPError as exc:
         if exc.reason in exceptions.__dict__:
-            raise_from(exceptions.__dict__[exc.reason], exc)
-        raise_from(Exception('The service has returned: {}'.format(exc.reason)), exc)
+            raise exceptions.__dict__[exc.reason] from exc
+        raise Exception('The service has returned: {}'.format(exc.reason)) from exc
     except URLError as exc:
         err_msg = str(exc)
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise_from(exceptions.BackendNotReady(err_msg), exc)
+        raise exceptions.BackendNotReady(err_msg) from exc
     return result
 
 

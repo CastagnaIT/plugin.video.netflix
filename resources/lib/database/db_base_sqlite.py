@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, unicode_literals
 import sqlite3 as sql
 import threading
 from functools import wraps
-from future.utils import iteritems, raise_from
+from future.utils import iteritems
 
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
@@ -58,7 +58,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteConnectionError, exc)
+            raise DBSQLiteConnectionError from exc
         finally:
             if conn:
                 args[0].is_connected = False
@@ -102,7 +102,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteConnectionError, exc)
+            raise DBSQLiteConnectionError from exc
         finally:
             if self.conn:
                 self.conn.close()
@@ -114,7 +114,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             cursor.executemany(query, params)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -130,7 +130,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -147,7 +147,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             return cursor
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))

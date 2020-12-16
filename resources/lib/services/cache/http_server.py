@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
-from future.utils import raise_from
 
 from resources.lib.common.exceptions import InvalidPathError
 from resources.lib.globals import G
@@ -87,8 +86,7 @@ def _call(instance, func_name, data):
     try:
         func = getattr(instance, func_name)
     except AttributeError as exc:
-        raise_from(InvalidPathError('Name of the method {} not found'.format(func_name)),
-                   exc)
+        raise InvalidPathError('Name of the method {} not found'.format(func_name)) from exc
     if isinstance(data, dict):
         return func(**data)
     if data is not None:
