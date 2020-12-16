@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.common.exceptions import InvalidVideoListTypeError

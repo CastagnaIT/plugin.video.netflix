@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 SKIPPABLE_SECTIONS = {'credit': 30076, 'recap': 30077}
 OFFSET_WATCHED_TO_END = 'watchedToEndOffset'
 OFFSET_CREDITS = 'creditsOffset'

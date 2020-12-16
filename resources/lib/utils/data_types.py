@@ -8,7 +8,6 @@
     See LICENSES/MIT.md for more information.
 """
 # pylint: disable=too-few-public-methods
-from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict
 
 import resources.lib.common as common

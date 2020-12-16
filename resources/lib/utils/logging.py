@@ -8,8 +8,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import sys
 import time
 from functools import wraps

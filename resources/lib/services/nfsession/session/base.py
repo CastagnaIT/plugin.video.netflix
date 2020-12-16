@@ -8,8 +8,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G

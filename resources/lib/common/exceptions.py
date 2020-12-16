@@ -7,7 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
 # Note: This module is also used to dynamically raise exceptions for IPC (see _raise_for_error in ipc.py)
 
 

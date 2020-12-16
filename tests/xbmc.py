@@ -7,9 +7,6 @@
     See LICENSES/GPL-3.0-only.md for more information.
 """
 # pylint: disable=unused-argument
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import sys
 import os
 import json

@@ -8,8 +8,6 @@
     See LICENSES/MIT.md for more information.
 """
 # pylint: disable=invalid-name,missing-docstring,attribute-defined-outside-init
-from __future__ import absolute_import, division, unicode_literals
-
 import time
 
 import xbmc

@@ -8,10 +8,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
-
 
 import resources.lib.utils.website as website
 import resources.lib.common as common

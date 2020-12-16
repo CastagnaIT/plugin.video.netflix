@@ -7,7 +7,6 @@
     See LICENSES/GPL-3.0-only.md for more information.
 """
 # pylint: disable=too-many-arguments,unused-argument
-from __future__ import absolute_import, division, print_function, unicode_literals
 import os
 from xbmcextra import kodi_to_ansi
 

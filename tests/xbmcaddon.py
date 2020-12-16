@@ -6,7 +6,6 @@
     SPDX-License-Identifier: GPL-3.0-only
     See LICENSES/GPL-3.0-only.md for more information.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 import json
 from xbmcextra import addon_settings, global_settings, import_language, read_addon_xml
 

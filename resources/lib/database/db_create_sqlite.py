@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import sqlite3 as sql
 
 import resources.lib.database.db_utils as db_utils

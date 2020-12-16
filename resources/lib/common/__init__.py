@@ -8,8 +8,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from .ipc import *  # pylint: disable=redefined-builtin
 from .videoid import *  # pylint: disable=redefined-builtin
 from .credentials import *

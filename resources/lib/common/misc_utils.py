@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 try:  # Python 2
     from itertools import imap as map  # pylint: disable=redefined-builtin
 except ImportError:

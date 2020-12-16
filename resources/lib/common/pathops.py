@@ -7,7 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
 
 
 def get_path(path, search_space, include_key=False):

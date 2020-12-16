@@ -11,8 +11,6 @@
 # Using the Kodi reuseLanguageInvoker feature, only the code in the addon.py or service.py module
 # will be run every time the addon is called.
 # All other modules (imports) are initialized only on the first invocation of the add-on.
-from __future__ import absolute_import, division, unicode_literals
-
 import collections
 import os
 import sys
