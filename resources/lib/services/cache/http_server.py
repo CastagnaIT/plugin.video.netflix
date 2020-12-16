@@ -55,7 +55,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
@@ -75,7 +75,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 

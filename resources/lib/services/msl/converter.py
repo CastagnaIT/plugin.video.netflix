@@ -22,7 +22,7 @@ from resources.lib.utils.logging import LOG
 def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEG-DASH manifest"""
     from xbmcaddon import Addon
-    isa_version = G.remove_ver_suffix(G.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
+    isa_version = G.remove_ver_suffix(Addon('inputstream.adaptive').getAddonInfo('version'))
 
     # If a CDN server has stability problems it may cause errors with streaming,
     # we allow users to select a different CDN server

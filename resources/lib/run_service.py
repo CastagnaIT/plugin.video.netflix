@@ -70,7 +70,7 @@ class NetflixService(object):
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('Background services do not start due to the following error')
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
                            'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
@@ -134,7 +134,7 @@ class NetflixService(object):
             self._set_service_status('stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             show_addon_error_info(exc)
             return
 
@@ -151,7 +151,7 @@ class NetflixService(object):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
         return self.controller.waitForAbort(1)
 

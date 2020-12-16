@@ -69,10 +69,10 @@ class LibraryJobs(object):
         LOG.debug('Removing {} ({}) from add-on library', videoid, job_data['title'])
         try:
             # Remove the STRM file exported
-            exported_file_path = G.py2_decode(translatePath(job_data['file_path']))
+            exported_file_path = translatePath(job_data['file_path'])
             common.delete_file_safe(exported_file_path)
 
-            parent_folder = G.py2_decode(translatePath(os.path.dirname(exported_file_path)))
+            parent_folder = translatePath(os.path.dirname(exported_file_path))
 
             # Remove the NFO file of the related STRM file
             nfo_file = os.path.splitext(exported_file_path)[0] + '.nfo'
@@ -99,7 +99,7 @@ class LibraryJobs(object):
             LOG.warn('The videoid {} not exists in the add-on library database', videoid)
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             ui.show_addon_error_info(exc)
 
     # -------------------------- The follow functions not concern jobs for tasks
@@ -109,7 +109,6 @@ class LibraryJobs(object):
         Get a VideoId from an existing STRM file that was exported
         """
         for filename in common.list_dir(folder_path)[1]:
-            filename = G.py2_decode(filename)
             if not filename.endswith('.strm'):
                 continue
             file_path = common.join_folders_paths(folder_path, filename)

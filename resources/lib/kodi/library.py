@@ -229,7 +229,7 @@ class Library(LibraryTasks):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             LOG.error('An error has occurred in the library auto update: {}', exc)
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
         finally:
             G.SHARED_DB.set_value('library_auto_update_is_running', False)
 
@@ -323,7 +323,7 @@ class Library(LibraryTasks):
         folders = get_library_subfolders(FOLDER_NAME_MOVIES, path) + get_library_subfolders(FOLDER_NAME_SHOWS, path)
         with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
             for folder_path in folders:
-                folder_name = os.path.basename(G.py2_decode(translatePath(folder_path)))
+                folder_name = os.path.basename(translatePath(folder_path))
                 progress_bar.set_message(folder_name)
                 try:
                     videoid = self.import_videoid_from_existing_strm(folder_path, folder_name)

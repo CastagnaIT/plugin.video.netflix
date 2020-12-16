@@ -151,7 +151,7 @@ def parse_profiles(data):
             G.LOCAL_DB.set_profile(guid, is_active, sort_order)
             G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
-            summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
+            summary['language_desc'] = xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME)
             if LOG.level == LOG.LEVEL_VERBOSE:
                 for key, value in iteritems(summary):
                     if key in PROFILE_DEBUG_INFO:
@@ -164,7 +164,7 @@ def parse_profiles(data):
         _delete_non_existing_profiles(current_guids)
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc(), 'latin-1')
         LOG.error('Profile list data: {}', profiles_list)
         raise_from(InvalidProfilesError, exc)
 
@@ -271,7 +271,7 @@ def validate_login(react_context):
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError) as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
@@ -300,7 +300,7 @@ def extract_json(content, name):
             # For testing purposes remember to add raw prefix to the string to test: json_str = r'string to test'
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc())
         raise_from(WebsiteParsingError('Unable to extract {}'.format(name)), exc)
 
 

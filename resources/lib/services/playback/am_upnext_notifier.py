@@ -60,7 +60,7 @@ class AMUpNextNotifier(ActionManager):
                 self.videoid_next_episode.tvshowid,
                 self.videoid_next_episode.seasonid,
                 self.videoid_next_episode.episodeid)
-            url = G.py2_decode(translatePath(file_path))
+            url = translatePath(file_path)
         else:
             url = common.build_url(videoid=self.videoid_next_episode,
                                    mode=G.MODE_PLAY,

@@ -109,12 +109,11 @@ def make_http_call(callname, data):
         result = json.loads(exc.reason)
     except URLError as exc:
         # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
-        err_msg = G.py2_decode(str(exc), 'latin-1')
+        err_msg = str(exc)
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise_from(exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1')),
-                   exc)
+        raise_from(exceptions.BackendNotReady(err_msg), exc)
     _raise_for_error(result)
     return result
 
@@ -139,12 +138,11 @@ def make_http_call_cache(callname, params, data):
             raise_from(exceptions.__dict__[exc.reason], exc)
         raise_from(Exception('The service has returned: {}'.format(exc.reason)), exc)
     except URLError as exc:
-        # On PY2 the exception message have to be decoded with latin-1 for system with symbolic characters
-        err_msg = G.py2_decode(str(exc), 'latin-1')
+        err_msg = str(exc)
         if '10049' in err_msg:
             err_msg += '\r\nPossible cause is wrong localhost settings in your operative system.'
         LOG.error(err_msg)
-        raise_from(exceptions.BackendNotReady(G.py2_encode(err_msg, encoding='latin-1')), exc)
+        raise_from(exceptions.BackendNotReady(err_msg), exc)
     return result
 
 
@@ -202,7 +200,7 @@ def _perform_ipc_return_call_instance(instance, func, data):
         if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
             LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
         result = ipc_convert_exc_to_json(exc)
     return _execute_addonsignals_return_call(result, func.__name__)
 
@@ -214,7 +212,7 @@ def _perform_ipc_return_call(func, data, func_name=None):
         if exc.__class__.__name__ not in ['CacheMiss', 'MetadataNotAvailable']:
             LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
         result = ipc_convert_exc_to_json(exc)
     return _execute_addonsignals_return_call(result, func_name)
 

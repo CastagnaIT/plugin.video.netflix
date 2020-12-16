@@ -133,12 +133,12 @@ def _get_item_details_from_kodi(mediatype, file_path):
     """Get a Kodi library item with details (from Kodi database) by searching with the file path"""
     # To ensure compatibility with previously exported items, make the filename legal
     file_path = makeLegalFilename(file_path)
-    dir_path = os.path.dirname(G.py2_decode(translatePath(file_path)))
-    filename = os.path.basename(G.py2_decode(translatePath(file_path)))
+    dir_path = os.path.dirname(translatePath(file_path))
+    filename = os.path.basename(translatePath(file_path))
     # We get the data from Kodi library using filters, this is much faster than loading all episodes in memory.
     if file_path[:10] == 'special://':
         # If the path is special, search with real directory path and also special path
-        special_dir_path = os.path.dirname(G.py2_decode(file_path))
+        special_dir_path = os.path.dirname(file_path)
         path_filter = {'or': [{'field': 'path', 'operator': 'startswith', 'value': dir_path},
                               {'field': 'path', 'operator': 'startswith', 'value': special_dir_path}]}
     else:

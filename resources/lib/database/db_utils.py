@@ -43,7 +43,7 @@ VidLibProp = {
 def get_local_db_path(db_filename):
     # First ensure database folder exists
     from resources.lib.common import folder_exists
-    db_folder = G.py2_decode(translatePath(os.path.join(G.DATA_PATH, 'database')))
+    db_folder = translatePath(os.path.join(G.DATA_PATH, 'database'))
     if not folder_exists(db_folder):
         xbmcvfs.mkdirs(db_folder)
     return os.path.join(db_folder, db_filename)

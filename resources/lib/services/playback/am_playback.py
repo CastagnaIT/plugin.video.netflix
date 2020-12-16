@@ -94,7 +94,7 @@ class AMPlayback(ActionManager):
                 self.videoid.tvshowid,
                 self.videoid.seasonid,
                 self.videoid.episodeid)
-            url = G.py2_decode(translatePath(file_path))
+            url = translatePath(file_path)
             if G.KODI_VERSION.is_major_ver('18'):
                 common.json_rpc('Files.SetFileDetails',
                                 {"file": url, "media": "video", "resume": {"position": 0, "total": 0}, "playcount": 1})

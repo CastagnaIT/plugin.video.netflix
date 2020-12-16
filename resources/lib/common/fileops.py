@@ -163,14 +163,14 @@ def delete_folder_contents(path, delete_subfolders=False):
     """
     directories, files = list_dir(translatePath(path))
     for filename in files:
-        xbmcvfs.delete(os.path.join(path, G.py2_decode(filename)))
+        xbmcvfs.delete(os.path.join(path, filename))
     if not delete_subfolders:
         return
     for directory in directories:
-        delete_folder_contents(os.path.join(path, G.py2_decode(directory)), True)
+        delete_folder_contents(os.path.join(path, directory), True)
         # Give time because the system performs previous op. otherwise it can't delete the folder
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(path, G.py2_decode(directory)))
+        xbmcvfs.rmdir(os.path.join(path, directory))
 
 
 def delete_folder(path):
@@ -204,4 +204,4 @@ def write_nfo_file(nfo_data, file_path):
 def join_folders_paths(*args):
     """Join multiple folder paths in a safe way"""
     # Avoid the use of os.path.join, in some cases with special chars like % break the path
-    return G.py2_decode(makeLegalFilename('/'.join(args)))
+    return makeLegalFilename('/'.join(args))

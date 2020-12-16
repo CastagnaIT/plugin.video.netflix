@@ -50,7 +50,7 @@ class MSLRequests(MSLRequestBuilder):
             self.crypto.load_crypto_session(msl_data)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
@@ -275,7 +275,7 @@ def _get_error_details(decoded_response):
             if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
                 err_message = decoded_response['result'][0]['error']['errorDisplayMessage']
                 err_number = decoded_response['result'][0]['error'].get('bladeRunnerCode')
-    return G.py2_encode(err_message), err_number
+    return err_message, err_number
 
 
 @measure_exec_time_decorator(is_immediate=True)

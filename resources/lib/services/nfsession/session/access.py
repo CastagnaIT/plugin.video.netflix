@@ -53,7 +53,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             LOG.error('Login prefetch: request exception {}', exc)
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
         except Exception as exc:  # pylint: disable=broad-except
             LOG.warn('Login prefetch: failed {}', exc)
         return False
@@ -165,7 +165,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except Exception:  # pylint: disable=broad-except
             self.session.cookies.clear()
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             raise
 
     @measure_exec_time_decorator(is_immediate=True)

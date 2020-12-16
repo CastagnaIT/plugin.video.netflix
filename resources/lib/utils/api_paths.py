@@ -144,7 +144,7 @@ def _convert_season(value):
     if isinstance(value, int):
         return str(value)
     # isdigit is needed to filter out non numeric characters from 'shortName' key
-    return ''.join([n for n in G.py2_encode(value) if n.isdigit()])
+    return ''.join([n for n in value if n.isdigit()])
 
 
 def build_paths(base_path, partial_paths):

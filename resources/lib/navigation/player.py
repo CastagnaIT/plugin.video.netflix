@@ -179,7 +179,7 @@ def get_inputstream_listitem(videoid):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc())
         raise_from(InputStreamHelperError(str(exc)), exc)
 
 
@@ -270,7 +270,7 @@ def _upnext_get_next_episode_videoid(videoid, metadata):
         return videoid_next_episode
     except (TypeError, KeyError):
         # import traceback
-        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        # LOG.debug(traceback.format_exc())
         LOG.debug('There is no next episode, not setting up Up Next')
         return None
 

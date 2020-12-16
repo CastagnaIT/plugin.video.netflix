@@ -11,9 +11,8 @@ from __future__ import absolute_import, division, unicode_literals
 
 import base64
 
-from resources.lib.globals import G
+from resources.lib.common.exceptions import MSLError
 from resources.lib.utils.logging import LOG
-from ...common.exceptions import MSLError
 
 try:  # Python 3
     from urllib.parse import parse_qs, urlparse
@@ -58,7 +57,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(base64.standard_b64decode(b64license))
         except Exception as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -79,7 +78,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
         except Exception as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 

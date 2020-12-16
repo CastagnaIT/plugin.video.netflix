@@ -116,7 +116,7 @@ def schedule_builtin(time, command, name='NetflixTask'):
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin(G.py2_encode('PlayMedia({})'.format(media)))
+    xbmc.executebuiltin('PlayMedia({})'.format(media))
 
 
 def stop_playback():
@@ -151,15 +151,13 @@ class _WndProps(object):  # pylint: disable=no-init
     def __getitem__(self, key):
         try:
             # If you use multiple Kodi profiles you need to distinguish the property of current profile
-            return G.WND_KODI_HOME.getProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
-                                                                                   key)))
+            return G.WND_KODI_HOME.getProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key))
         except Exception:  # pylint: disable=broad-except
             return ''
 
     def __setitem__(self, key, newvalue):
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        G.WND_KODI_HOME.setProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
-                                                                        key)),
+        G.WND_KODI_HOME.setProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key),
                                     newvalue)
 
 
@@ -190,7 +188,7 @@ def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
     Convert given value (English name or two/three letter code) to the specified format
     :param iso_format: specify the iso format (two letter code ISO_639_1 or three letter code ISO_639_2)
     """
-    return xbmc.convertLanguage(G.py2_encode(from_value), iso_format)
+    return xbmc.convertLanguage(from_value, iso_format)
 
 
 def fix_locale_languages(data_list):

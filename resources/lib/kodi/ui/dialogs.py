@@ -24,17 +24,16 @@ except NameError:  # Python 3
 
 def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
-    xbmc.executebuiltin(G.py2_encode('Notification({}, {}, {}, {})'
-                                     .format(title, msg, time, G.ICON)))
+    xbmc.executebuiltin('Notification({}, {}, {}, {})'.format(title, msg, time, G.ICON))
 
 
 def ask_credentials():
     """
     Show some dialogs and ask the user for account credentials
     """
-    email = G.py2_decode(xbmcgui.Dialog().input(
+    email = xbmcgui.Dialog().input(
         heading=common.get_local_string(30005),
-        type=xbmcgui.INPUT_ALPHANUM)) or None
+        type=xbmcgui.INPUT_ALPHANUM) or None
     common.verify_credentials(email)
     password = ask_for_password()
     common.verify_credentials(password)
@@ -46,10 +45,10 @@ def ask_credentials():
 
 def ask_for_password():
     """Ask the user for the password"""
-    return G.py2_decode(xbmcgui.Dialog().input(
+    return xbmcgui.Dialog().input(
         heading=common.get_local_string(30004),
         type=xbmcgui.INPUT_ALPHANUM,
-        option=xbmcgui.ALPHANUM_HIDE_INPUT)) or None
+        option=xbmcgui.ALPHANUM_HIDE_INPUT) or None
 
 
 def ask_for_rating():
@@ -79,10 +78,10 @@ def ask_for_search_term(default_text=None):
 
 
 def _ask_for_input(heading, default_text=None):
-    return G.py2_decode(xbmcgui.Dialog().input(
+    return xbmcgui.Dialog().input(
         defaultt=default_text,
         heading=heading,
-        type=xbmcgui.INPUT_ALPHANUM)) or None
+        type=xbmcgui.INPUT_ALPHANUM) or None
 
 
 def ask_for_confirmation(title, message):
@@ -146,8 +145,8 @@ def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=
     :param extensions: extensions allowed e.g. '.jpg|.png'
     :return: The selected path as string (or tuple of selected items) if user pressed 'Ok', else None
     """
-    ret = G.py2_decode(xbmcgui.Dialog().browse(browse_type, title, shares='local', useThumbs=False, treatAsFolder=False,
-                                               defaultt=default_path, enableMultiple=multi_selection, mask=extensions))
+    ret = xbmcgui.Dialog().browse(browse_type, title, shares='local', useThumbs=False, treatAsFolder=False,
+                                  defaultt=default_path, enableMultiple=multi_selection, mask=extensions)
     # Note: when defaultt is set and the user cancel the action (when enableMultiple is False),
     #       will be returned the defaultt value again, so we avoid this strange behavior...
     return None if not ret or ret == default_path else ret

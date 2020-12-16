@@ -104,7 +104,7 @@ class SessionHTTPRequests(SessionBase):
             import traceback
             LOG.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
                      type(exc).__name__)
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
             self.session.cookies.clear()
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
@@ -116,13 +116,13 @@ class SessionHTTPRequests(SessionBase):
         except exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
-            LOG.warn(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.warn(traceback.format_exc())
             if raise_exception:
                 raise
         except Exception:  # pylint: disable=broad-except
             import traceback
             LOG.warn('Failed to refresh session data, login expired (Exception)')
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
             self.session.cookies.clear()
             if raise_exception:
                 raise

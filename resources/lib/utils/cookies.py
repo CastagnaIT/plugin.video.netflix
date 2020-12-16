@@ -57,7 +57,7 @@ def load():
     if not xbmcvfs.exists(file_path):
         LOG.debug('Cookies file does not exist')
         raise MissingCookiesError
-    LOG.debug('Loading cookies from {}', G.py2_decode(file_path))
+    LOG.debug('Loading cookies from {}', file_path)
     cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
         if G.PY_IS_VER2:
@@ -73,7 +73,7 @@ def load():
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc())
         raise_from(MissingCookiesError, exc)
     finally:
         cookie_file.close()

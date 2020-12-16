@@ -59,7 +59,7 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc())
         raise_from(InputStreamHelperError(str(exc)), exc)
 
     isa_addon = Addon('inputstream.adaptive')

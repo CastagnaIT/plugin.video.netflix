@@ -176,6 +176,6 @@ def _compute_next_schedule(date_last_start=None):
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
         # import traceback
-        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        # LOG.debug(traceback.format_exc())
         LOG.warn('Managed error at _compute_next_schedule')
         return None

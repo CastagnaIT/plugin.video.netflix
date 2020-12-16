@@ -98,7 +98,7 @@ class EventsHandler(threading.Thread):
             except Exception as exc:  # pylint: disable=broad-except
                 LOG.error('[Event queue monitor] An error has occurred: {}', exc)
                 import traceback
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
                 self.clear_queue()
             monitor.waitForAbort(1)
 
@@ -136,7 +136,7 @@ class EventsHandler(threading.Thread):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             show_addon_error_info(exc)
 
     def add_event_to_queue(self, event_type, event_data, player_state):

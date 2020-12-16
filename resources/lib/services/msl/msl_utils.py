@@ -66,7 +66,7 @@ def display_error_info(func):
             return func(*args, **kwargs)
         except Exception as exc:
             if isinstance(exc, MSLError):
-                message = exc.__class__.__name__ + ': ' + G.py2_decode(str(exc))
+                message = exc.__class__.__name__ + ': ' + str(exc)
             else:
                 message = exc.__class__.__name__ + ': ' + str(exc)
             ui.show_error_info(common.get_local_string(30028), message,
