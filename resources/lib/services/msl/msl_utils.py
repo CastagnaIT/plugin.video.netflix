@@ -54,10 +54,7 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            if isinstance(exc, MSLError):
-                message = exc.__class__.__name__ + ': ' + str(exc)
-            else:
-                message = exc.__class__.__name__ + ': ' + str(exc)
+            message = exc.__class__.__name__ + ': ' + str(exc)
             ui.show_error_info(common.get_local_string(30028), message,
                                unknown_error=not message,
                                netflix_error=isinstance(exc, MSLError))
