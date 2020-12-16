@@ -10,7 +10,6 @@
 # pylint: disable=too-few-public-methods
 from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict
-from future.utils import listvalues
 
 import resources.lib.common as common
 
@@ -89,7 +88,7 @@ class VideoListLoCo:
         # Set first videos titles (special handling for menus see parse_info in infolabels.py)
         self.contained_titles = _get_titles(self.videos)
         # Set art data of first video (special handling for menus see parse_info in infolabels.py)
-        self.artitem = listvalues(self.videos)[0]
+        self.artitem = list(self.videos.values())[0]
         try:
             self.videoids = _get_videoids(self.videos)
         except KeyError:
@@ -123,7 +122,7 @@ class VideoList:
             self.videos = OrderedDict(resolve_refs(self.data['lists'][self.videoid.value], self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())
-                self.artitem = listvalues(self.videos)[0]
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -159,7 +158,7 @@ class VideoListSorted:
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())
-                self.artitem = listvalues(self.videos)[0]
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -189,7 +188,7 @@ class SearchVideoList:
             self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
             self.videoids = _get_videoids(self.videos)
             # self.artitem = next(self.videos.values(), None)
-            self.artitem = listvalues(self.videos)[0] if self.videos else None
+            self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
@@ -208,7 +207,7 @@ class CustomVideoList:
         self.videos = OrderedDict(self.data.get('videos', {}))
         self.videoids = _get_videoids(self.videos)
         # self.artitem = next(self.videos.values())
-        self.artitem = listvalues(self.videos)[0] if self.videos else None
+        self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
