@@ -10,7 +10,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
 from datetime import datetime
-from future.utils import iteritems
 
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
@@ -92,7 +91,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         cur.execute("BEGIN TRANSACTION;")
         query = 'DELETE FROM profiles_config WHERE Guid = ?'
         self._execute_non_query(query, (guid,), cur)
-        records_values = [(guid, key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
+        records_values = [(guid, key, common.convert_to_string(value)) for key, value in dict_values.items()]
         insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
         self._executemany_non_query(insert_query, records_values, cur)
         cur.execute("COMMIT;")

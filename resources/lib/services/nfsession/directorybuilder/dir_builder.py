@@ -9,8 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from future.utils import iteritems
-
 from resources.lib.utils.data_types import merge_data_type
 from resources.lib.common.exceptions import CacheMiss
 from resources.lib.common import VideoId
@@ -156,7 +154,7 @@ class DirectoryBuilder(DirectoryPathRequests):
         video_id_list = []
         video_id_list_type = []
         if video_list:
-            for video_id, video in iteritems(video_list.videos):
+            for video_id, video in video_list.videos.items():
                 video_id_list.append(video_id)
                 video_id_list_type.append(video['summary']['type'])
         return video_id_list, video_id_list_type

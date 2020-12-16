@@ -9,8 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from future.utils import iteritems
-
 import resources.lib.common as common
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
@@ -44,7 +42,7 @@ def build_mainmenu_listing(loco_list):
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
     }
-    for menu_id, data in iteritems(G.MAIN_MENU_ITEMS):
+    for menu_id, data in G.MAIN_MENU_ITEMS.items():
         if data.get('has_show_setting', True) and not G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
             continue
         if data['loco_known']:
@@ -140,7 +138,7 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
     }
     directory_items = [_create_season_item(tvshowid, seasonid_value, season, season_list, common_data)
                        for seasonid_value, season
-                       in iteritems(season_list.seasons)]
+                       in season_list.seasons.items()]
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
@@ -174,7 +172,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
     }
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data)
                        for episodeid_value, episode
-                       in iteritems(episodes_list.episodes)]
+                       in episodes_list.episodes.items()]
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, episodes_list.perpetual_range_selector)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
@@ -212,7 +210,7 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
     }
     contexts = menu_data.get('loco_contexts')
-    items_list = loco_list.lists_by_context(contexts) if contexts else iteritems(loco_list.lists)
+    items_list = loco_list.lists_by_context(contexts) if contexts else loco_list.lists.items()
     directory_items = []
     for video_list_id, video_list in items_list:
         menu_parameters = common.MenuIdParameters(video_list_id)
@@ -287,7 +285,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
     }
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
-                       in iteritems(video_list.videos)]
+                       in video_list.videos.items()]
     # If genre_id exists add possibility to browse LoCo sub-genres
     if sub_genre_id and sub_genre_id != 'None':
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS

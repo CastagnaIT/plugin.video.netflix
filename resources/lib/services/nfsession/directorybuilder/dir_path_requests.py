@@ -9,8 +9,6 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from future.utils import iteritems
-
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
                                             SearchVideoList, CustomVideoList)
@@ -39,7 +37,7 @@ class DirectoryPathRequests(object):
             if video_list:
                 # pylint: disable=unused-variable
                 items = [common.VideoId.from_videolist_item(video)
-                         for video_id, video in iteritems(video_list.videos)
+                         for video_id, video in video_list.videos.items()
                          if video['queue'].get('inQueue', False)]
             return items
         except InvalidVideoListTypeError:

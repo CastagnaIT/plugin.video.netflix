@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import copy
 
-from future.utils import iteritems, itervalues
+from future.utils import itervalues
 
 import resources.lib.utils.api_paths as paths
 import resources.lib.utils.api_requests as api
@@ -187,7 +187,7 @@ def _parse_referenced_infos(item, raw_data):
     return {target: [person['name']
                      for _, person
                      in paths.resolve_refs(item.get(source, {}), raw_data)]
-            for target, source in iteritems(paths.REFERENCE_MAPPINGS)}
+            for target, source in paths.REFERENCE_MAPPINGS.items()}
 
 
 def _parse_tags(item):

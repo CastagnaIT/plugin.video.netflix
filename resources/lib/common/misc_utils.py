@@ -8,7 +8,6 @@
     See LICENSES/MIT.md for more information.
 """
 from __future__ import absolute_import, division, unicode_literals
-from future.utils import iteritems
 
 try:  # Python 2
     from itertools import imap as map  # pylint: disable=redefined-builtin
@@ -54,7 +53,7 @@ def get_class_methods(class_item=None):
     """
     from types import FunctionType
     _type = FunctionType
-    return [x for x, y in iteritems(class_item.__dict__)
+    return [x for x, y in class_item.__dict__.items()
             if isinstance(y, _type)]
 
 
@@ -143,7 +142,7 @@ def strf_timestamp(timestamp, form):
 def merge_dicts(dict_to_merge, merged_dict):
     """Recursively merge the contents of dict_to_merge into merged_dict.
     Values that are already present in merged_dict will be overwritten if they are also present in dict_to_merge"""
-    for key, value in iteritems(dict_to_merge):
+    for key, value in dict_to_merge.items():
         if isinstance(merged_dict.get(key), dict):
             merge_dicts(value, merged_dict[key])
         else:

@@ -10,7 +10,7 @@
 # pylint: disable=too-few-public-methods
 from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict
-from future.utils import iteritems, itervalues, listvalues
+from future.utils import itervalues, listvalues
 
 import resources.lib.common as common
 
@@ -38,7 +38,7 @@ class LoCo(object):
         """Get all video lists"""
         # It is as property to avoid slow down the loading of main menu
         lists = {}
-        for list_id, list_data in iteritems(self.data['lists']):  # pylint: disable=unused-variable
+        for list_id, list_data in self.data['lists'].items():  # pylint: disable=unused-variable
             lists.update({list_id: VideoListLoCo(self.data, list_id)})
         return lists
 
@@ -48,19 +48,19 @@ class LoCo(object):
 
         :param contexts: list of context names
         :param break_on_first: stop the research at first match
-        :return iteritems of a dict where key=list id, value=VideoListLoCo object data
+        :return iterable items of a dict where key=list id, value=VideoListLoCo object data
         """
         lists = {}
-        for list_id, list_data in iteritems(self.data['lists']):
+        for list_id, list_data in self.data['lists'].items():
             if list_data['componentSummary']['context'] in contexts:
                 lists.update({list_id: VideoListLoCo(self.data, list_id)})
                 if break_on_first:
                     break
-        return iteritems(lists)
+        return lists.items()
 
     def find_by_context(self, context):
         """Return the video list and the id list of a context"""
-        for list_id, data in iteritems(self.data['lists']):
+        for list_id, data in self.data['lists'].items():
             if data['componentSummary']['context'] != context:
                 continue
             return list_id, VideoListLoCo(self.data, list_id)
@@ -257,7 +257,7 @@ class SubgenreList:
 
 
 def merge_data_type(data, data_to_merge):
-    for video_id, video in iteritems(data_to_merge.videos):
+    for video_id, video in data_to_merge.videos.items():
         data.videos[video_id] = video
     data.videoids.extend(data_to_merge.videoids)
     data.contained_titles.extend(data_to_merge.contained_titles)
