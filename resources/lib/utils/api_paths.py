@@ -97,7 +97,7 @@ SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 INFO_MAPPINGS = [
     ('Title', 'title'),  # Title is needed only for UpNext metadata on play method
     ('Year', 'releaseYear'),
-    ('Plot', 'regularSynopsis'),  # Complete plot (Kodi 18 original skins do not use plotoutline)
+    ('Plot', 'regularSynopsis'),  # Complete plot
     ('PlotOutline', 'synopsis'),  # Small plot
     ('Season', 'seasonCount'),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
     ('Season', ['summary', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)

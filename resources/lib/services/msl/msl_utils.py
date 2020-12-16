@@ -88,11 +88,7 @@ def build_media_tag(player_state, manifest):
 
     audio_downloadable_id, audio_track_id = _find_audio_data(player_state, manifest)
     video_downloadable_id, video_track_id = _find_video_data(player_state, manifest)
-    # Warning 'currentsubtitle' value in player_state on Kodi 18
-    # do not have proprieties like isdefault, isforced, isimpaired
-    # if in the future the implementation will be done it should be available only on Kodi 19
-    # then for now we leave the subtitles as disabled
-
+    # Todo: subtitles data set always as disabled, could be added in future
     text_track_id = 'T:1:1;1;NONE;0;1;'
 
     play_times = {

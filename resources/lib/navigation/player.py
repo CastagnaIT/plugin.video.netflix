@@ -120,9 +120,6 @@ def _play(videoid, is_played_from_strm=False):
             event_data['videoid'] = videoid.to_dict()
             event_data['is_played_by_library'] = is_played_from_strm
 
-    if 'raspberrypi' in common.get_system_platform():
-        _raspberry_disable_omxplayer()
-
     # Start and initialize the action controller (see action_controller.py)
     LOG.debug('Sending initialization signal')
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
@@ -169,7 +166,7 @@ def get_inputstream_listitem(videoid):
             key=is_helper.inputstream_addon + '.server_certificate',
             value=INPUTSTREAM_SERVER_CERTIFICATE)
         list_item.setProperty(
-            key='inputstreamaddon' if G.KODI_VERSION.is_major_ver('18') else 'inputstream',
+            key='inputstream',
             value=is_helper.inputstream_addon)
         return list_item
     except Exception as exc:  # pylint: disable=broad-except
@@ -287,13 +284,3 @@ def _find_next_episode(videoid, metadata):
         return common.VideoId(tvshowid=videoid.tvshowid,
                               seasonid=next_season['id'],
                               episodeid=episode['id'])
-
-
-def _raspberry_disable_omxplayer():
-    """Check and disable OMXPlayer (not compatible with Netflix video streams)"""
-    # Only Kodi 18 has this property, from Kodi 19 OMXPlayer has been removed
-    if not G.KODI_VERSION.is_major_ver('18'):
-        return
-    value = common.json_rpc('Settings.GetSettingValue', {'setting': 'videoplayer.useomxplayer'})
-    if value.get('value'):
-        common.json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.useomxplayer', 'value': False})

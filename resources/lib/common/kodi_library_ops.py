@@ -76,7 +76,7 @@ def clean_library(show_dialog=True, path=''):
     method = 'VideoLibrary.Clean'
     params = {'content': 'video',
               'showdialogs': show_dialog}
-    if not G.KODI_VERSION.is_major_ver('18') and path:
+    if path:
         params['directory'] = xbmcvfs.makeLegalFilename(xbmcvfs.translatePath(path))
     return json_rpc(method, params)
 

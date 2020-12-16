@@ -89,18 +89,9 @@ class AMPlayback(ActionManager):
                 self.videoid.seasonid,
                 self.videoid.episodeid)
             url = xbmcvfs.translatePath(file_path)
-            if G.KODI_VERSION.is_major_ver('18'):
-                common.json_rpc('Files.SetFileDetails',
-                                {"file": url, "media": "video", "resume": {"position": 0, "total": 0}, "playcount": 1})
-                # After apply the change Kodi 18 not update the library directory item
-                common.container_refresh()
-            else:
-                common.json_rpc('Files.SetFileDetails',
-                                {"file": url, "media": "video", "resume": None, "playcount": 1})
+            common.json_rpc('Files.SetFileDetails',
+                            {"file": url, "media": "video", "resume": None, "playcount": 1})
         else:
-            if G.KODI_VERSION.is_major_ver('18'):
-                # "Files.SetFileDetails" on Kodi 18 not support "plugin://" path
-                return
             url = common.build_url(videoid=self.videoid,
                                    mode=G.MODE_PLAY,
                                    params={'profile_guid': G.LOCAL_DB.get_active_profile_guid()})

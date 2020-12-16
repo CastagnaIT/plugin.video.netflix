@@ -58,9 +58,8 @@ def show_dlg_input_numeric(message, mask_input=True):
     """Ask the user to enter numbers"""
     args = {'heading': message,
             'type': 0,
-            'defaultt': ''}
-    if not G.KODI_VERSION.is_major_ver('18'):  # Kodi => 19.x support mask input
-        args['bHiddenInput'] = mask_input
+            'defaultt': '',
+            'bHiddenInput': mask_input}
     return xbmcgui.Dialog().numeric(**args) or None
 
 
@@ -86,7 +85,7 @@ def ask_for_resume(resume_position):
     return xbmcgui.Dialog().contextmenu(
         [
             common.get_local_string(12022).format(common.convert_seconds_to_hms_str(resume_position)),
-            common.get_local_string(12023 if G.KODI_VERSION.is_major_ver('18') else 12021)
+            common.get_local_string(12021)
         ])
 
 
