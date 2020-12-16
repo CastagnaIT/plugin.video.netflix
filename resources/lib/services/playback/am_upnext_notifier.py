@@ -7,15 +7,12 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import xbmcvfs
+
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
-
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 class AMUpNextNotifier(ActionManager):
@@ -58,7 +55,7 @@ class AMUpNextNotifier(ActionManager):
                 self.videoid_next_episode.tvshowid,
                 self.videoid_next_episode.seasonid,
                 self.videoid_next_episode.episodeid)
-            url = translatePath(file_path)
+            url = xbmcvfs.translatePath(file_path)
         else:
             url = common.build_url(videoid=self.videoid_next_episode,
                                    mode=G.MODE_PLAY,

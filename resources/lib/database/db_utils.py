@@ -13,11 +13,6 @@ import xbmcvfs
 
 from resources.lib.globals import G
 
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
-
 
 LOCAL_DB_FILENAME = 'nf_local.sqlite3'
 SHARED_DB_FILENAME = 'nf_shared.sqlite3'
@@ -41,7 +36,7 @@ VidLibProp = {
 def get_local_db_path(db_filename):
     # First ensure database folder exists
     from resources.lib.common import folder_exists
-    db_folder = translatePath(os.path.join(G.DATA_PATH, 'database'))
+    db_folder = xbmcvfs.translatePath(os.path.join(G.DATA_PATH, 'database'))
     if not folder_exists(db_folder):
         xbmcvfs.mkdirs(db_folder)
     return os.path.join(db_folder, db_filename)

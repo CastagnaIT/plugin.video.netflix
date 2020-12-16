@@ -22,12 +22,9 @@ except ImportError:  # Python 2
     from urlparse import parse_qsl, urlparse
 
 import xbmcaddon
+import xbmcvfs
 from xbmcgui import Window
 
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 try:  # Python 2
     unicode
@@ -265,7 +262,7 @@ class GlobalVariables(object):
             os.path.join(self.ADDON_DATA_PATH, 'packages', 'mysql-connector-python')
         ]
         for path in packages_paths:  # packages_paths has unicode type values
-            path = translatePath(path)
+            path = xbmcvfs.translatePath(path)
             if path not in sys.path:
                 # Add embedded package path to python system directory
                 sys.path.insert(0, path)

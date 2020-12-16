@@ -10,16 +10,12 @@
 import time
 
 import xbmc
+import xbmcvfs
 
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
-
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 class AMPlayback(ActionManager):
@@ -92,7 +88,7 @@ class AMPlayback(ActionManager):
                 self.videoid.tvshowid,
                 self.videoid.seasonid,
                 self.videoid.episodeid)
-            url = translatePath(file_path)
+            url = xbmcvfs.translatePath(file_path)
             if G.KODI_VERSION.is_major_ver('18'):
                 common.json_rpc('Files.SetFileDetails',
                                 {"file": url, "media": "video", "resume": {"position": 0, "total": 0}, "playcount": 1})
