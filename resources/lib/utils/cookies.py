@@ -52,11 +52,7 @@ def load():
     LOG.debug('Loading cookies from {}', file_path)
     cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
-        if G.PY_IS_VER2:
-            # pickle.loads on py2 wants string
-            cookie_jar = pickle.loads(cookie_file.read())
-        else:
-            cookie_jar = pickle.loads(cookie_file.readBytes())
+        cookie_jar = pickle.loads(cookie_file.readBytes())
         # Clear flwssn cookie if present, as it is trouble with early expiration
         if 'flwssn' in cookie_jar:
             cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')

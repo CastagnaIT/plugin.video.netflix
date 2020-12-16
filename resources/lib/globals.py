@@ -206,7 +206,6 @@ class GlobalVariables(object):
         # The class initialization (GlobalVariables) will only take place at the first initialization of this module
         # on subsequent add-on invocations (invoked by reuseLanguageInvoker) will have no effect.
         # Define here also any other variables necessary for the correct loading of the other project modules
-        self.PY_IS_VER2 = sys.version_info.major == 2
         self.WND_KODI_HOME = Window(10000)  # Kodi home window
         self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
