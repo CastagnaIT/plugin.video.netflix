@@ -22,7 +22,7 @@ from resources.lib.utils.logging import LOG
 
 class SettingsMonitor(xbmc.Monitor):
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        super().__init__()
 
     def onSettingsChanged(self):
         status = G.settings_monitor_suspend_status()

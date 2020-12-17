@@ -45,7 +45,7 @@ def handle_connection(func):
     return wrapper
 
 
-class CacheManagement(object):
+class CacheManagement:
     """Cache management"""
 
     def __init__(self):

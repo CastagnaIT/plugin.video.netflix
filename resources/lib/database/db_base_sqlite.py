@@ -66,7 +66,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         self.is_mysql_database = False
         self.db_filename = db_filename
         self.db_file_path = db_utils.get_local_db_path(db_filename)
-        super(SQLiteDatabase, self).__init__()
+        super().__init__()
 
     @property
     def is_connected(self):

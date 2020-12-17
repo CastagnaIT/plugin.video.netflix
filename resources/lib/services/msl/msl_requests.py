@@ -30,7 +30,7 @@ class MSLRequests(MSLRequestBuilder):
     """Provides methods to make MSL requests"""
 
     def __init__(self, msl_data=None):
-        super(MSLRequests, self).__init__()
+        super().__init__()
         from requests import session
         self.session = session()
         self.session.headers.update({

@@ -20,7 +20,7 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
-class DirectoryPathRequests(object):
+class DirectoryPathRequests:
     """Builds and executes PATH requests for the directories"""
 
     nfsession = None

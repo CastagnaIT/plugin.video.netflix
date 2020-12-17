@@ -50,7 +50,7 @@ class AMStreamContinuity(ActionManager):
     # you must delete, every time, the file /Kodi/userdata/Database/MyVideosXXX.db, or,
     # if you are able you can delete in realtime the data in the 'settings' table of db file.
     def __init__(self):
-        super(AMStreamContinuity, self).__init__()
+        super().__init__()
         self.enabled = True  # By default we enable this action manager
         self.current_streams = {}
         self.sc_settings = {}

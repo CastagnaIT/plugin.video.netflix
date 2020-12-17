@@ -14,7 +14,7 @@ from functools import wraps
 import xbmc
 
 
-class Logging(object):
+class Logging:
     """A helper class for logging"""
     LEVEL_VERBOSE = 'Verbose'
     LEVEL_INFO = 'Info'

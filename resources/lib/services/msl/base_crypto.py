@@ -17,7 +17,7 @@ from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 
 
-class MSLBaseCrypto(object):
+class MSLBaseCrypto:
     """
     Common base class for MSL crypto operations.
     Handles MasterToken and sequence number

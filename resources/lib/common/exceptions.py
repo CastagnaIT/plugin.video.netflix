@@ -63,7 +63,7 @@ class MSLError(Exception):
     def __init__(self, message, err_number=None):
         self.message = message
         self.err_number = err_number
-        super(MSLError, self).__init__(self.message)
+        super().__init__(self.message)
 
 
 class LicenseError(MSLError):

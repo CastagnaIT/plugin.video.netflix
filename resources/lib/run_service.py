@@ -14,7 +14,7 @@ from resources.lib.upgrade_controller import check_service_upgrade
 from resources.lib.utils.logging import LOG
 
 
-class NetflixService(object):
+class NetflixService:
     """
     Netflix addon service
     """

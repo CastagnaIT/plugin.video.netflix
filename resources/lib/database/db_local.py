@@ -16,8 +16,8 @@ from resources.lib.common.exceptions import DBProfilesMissing
 
 
 class NFLocalDatabase(db_sqlite.SQLiteDatabase):
-    def __init__(self):  # pylint: disable=super-on-old-class
-        super(NFLocalDatabase, self).__init__(db_utils.LOCAL_DB_FILENAME)
+    def __init__(self):
+        super().__init__(db_utils.LOCAL_DB_FILENAME)
 
     def _get_active_guid_profile(self):
         query = 'SELECT Guid FROM profiles WHERE IsActive = 1'

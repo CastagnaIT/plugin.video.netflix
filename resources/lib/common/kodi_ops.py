@@ -130,7 +130,7 @@ def get_current_kodi_profile_name(no_spaces=True):
     return get_current_kodi_profile_name.cached
 
 
-class _WndProps(object):  # pylint: disable=no-init
+class _WndProps:  # pylint: disable=no-init
     """Read and write a property to the Kodi home window"""
     # Default Properties keys
     SERVICE_STATUS = 'service_status'
@@ -211,7 +211,7 @@ def fix_locale_languages(data_list):
                 LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
 
 
-class GetKodiVersion(object):
+class GetKodiVersion:
     """Get the kodi version, git date, stage name"""
     # Examples of some types of supported strings:
     # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4

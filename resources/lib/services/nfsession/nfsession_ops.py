@@ -29,7 +29,7 @@ class NFSessionOperations(SessionPathRequests):
     """Provides methods to perform operations within the Netflix session"""
 
     def __init__(self):
-        super(NFSessionOperations, self).__init__()
+        super().__init__()
         # Slot allocation for IPC
         self.slots = [
             self.get_safe,

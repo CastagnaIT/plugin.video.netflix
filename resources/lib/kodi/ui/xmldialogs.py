@@ -79,12 +79,13 @@ class Skip(xbmcgui.WindowXMLDialog):
                                    ACTION_NOOP]
 
         if get_machine()[0:5] == 'armv7':
-            xbmcgui.WindowXMLDialog.__init__(self)
+            super().__init__()
         else:
             try:
-                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+                super().__init__(*args, **kwargs)
+                #xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
             except Exception:  # pylint: disable=broad-except
-                xbmcgui.WindowXMLDialog.__init__(self)
+                super().__init__()
 
     def onInit(self):
         self.getControl(6012).setLabel(self.label)
@@ -118,12 +119,14 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
         if get_machine()[0:5] == 'armv7':
-            xbmcgui.WindowXMLDialog.__init__(self)
+            #xbmcgui.WindowXMLDialog.__init__(self)
+            super().__init__()
         else:
             try:
-                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+                super().__init__(*args, **kwargs)
+                #xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
             except Exception:  # pylint: disable=broad-except
-                xbmcgui.WindowXMLDialog.__init__(self)
+                super().__init__()
 
     def onInit(self):
         self._generate_levels_labels()
@@ -226,12 +229,12 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
         if get_machine()[0:5] == 'armv7':
-            xbmcgui.WindowXMLDialog.__init__(self)
+            super().__init__()
         else:
             try:
-                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+                super().__init__(*args, **kwargs)
             except Exception:  # pylint: disable=broad-except
-                xbmcgui.WindowXMLDialog.__init__(self)
+                super().__init__()
 
     def onInit(self):
         self.getControl(10000).setLabel(self.title)
@@ -310,12 +313,12 @@ class Profiles(xbmcgui.WindowXMLDialog):
                                    ACTION_PLAYER_STOP,
                                    ACTION_NAV_BACK]
         if get_machine()[0:5] == 'armv7':
-            xbmcgui.WindowXMLDialog.__init__(self)
+            super().__init__()
         else:
             try:
-                xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+                super().__init__(*args, **kwargs)
             except Exception:  # pylint: disable=broad-except
-                xbmcgui.WindowXMLDialog.__init__(self)
+                super().__init__()
 
     def onInit(self):
         self.getControl(99).setLabel(self.title)

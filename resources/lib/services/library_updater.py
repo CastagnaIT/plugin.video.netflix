@@ -23,7 +23,7 @@ class LibraryUpdateService(xbmc.Monitor):
     Checks if a library update is scheduled and triggers it
     """
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        super().__init__()
         try:
             self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         except Exception:  # pylint: disable=broad-except

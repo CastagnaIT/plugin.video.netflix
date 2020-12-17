@@ -24,7 +24,7 @@ class AMPlayback(ActionManager):
     SETTING_ID = 'ResumeManager_enabled'
 
     def __init__(self):
-        super(AMPlayback, self).__init__()
+        super().__init__()
         self.resume_position = None
         self.enabled = True
         self.start_time = None

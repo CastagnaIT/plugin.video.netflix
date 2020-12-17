@@ -22,7 +22,7 @@ class AMVideoEvents(ActionManager):
     SETTING_ID = 'ProgressManager_enabled'
 
     def __init__(self):
-        super(AMVideoEvents, self).__init__()
+        super().__init__()
         self.event_data = {}
         self.is_event_start_sent = False
         self.last_tick_count = 0

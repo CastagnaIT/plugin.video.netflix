@@ -11,7 +11,7 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
-class ActionManager(object):
+class ActionManager:
     """
     Base class for managers that handle executing of specific actions during playback
     """

@@ -14,7 +14,7 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
-class SessionBase(object):
+class SessionBase:
     """Initialize the netflix session"""
 
     session = None

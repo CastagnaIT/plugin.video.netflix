@@ -21,7 +21,7 @@ IPC_TIMEOUT_SECS = 20
 IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
 
 
-class Signals(object):  # pylint: disable=no-init
+class Signals:  # pylint: disable=no-init
     """Signal names for use with AddonSignals"""
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
@@ -166,7 +166,7 @@ def ipc_return_call(func):
     return make_return_call
 
 
-class EnvelopeIPCReturnCall(object):
+class EnvelopeIPCReturnCall:
     """Makes a function callable through IPC and handles catching, conversion and forwarding of exceptions"""
     # Defines a type of in-memory reference to avoids define functions in the source code just to handle IPC return call
     def __init__(self, func):

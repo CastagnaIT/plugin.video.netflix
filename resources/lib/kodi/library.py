@@ -53,7 +53,6 @@ class Library(LibraryTasks):
     """Kodi library integration"""
 
     def __init__(self, func_get_metadata, func_get_mylist_videoids_profile_switch, func_req_profiles_info):
-        LibraryTasks.__init__(self)
         # External functions
         self.ext_func_get_metadata = func_get_metadata
         self.ext_func_get_mylist_videoids_profile_switch = func_get_mylist_videoids_profile_switch

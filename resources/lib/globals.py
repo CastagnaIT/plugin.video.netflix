@@ -21,7 +21,7 @@ import xbmcvfs
 from xbmcgui import Window
 
 
-class GlobalVariables(object):
+class GlobalVariables:
     """Encapsulation for global variables to work around quirks with
     Kodi's reuseLanguageInvoker behavior"""
     # pylint: disable=attribute-defined-outside-init

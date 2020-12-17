@@ -14,7 +14,7 @@ from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 from resources.lib.utils.logging import LOG
 
 
-class NetflixSession(object):
+class NetflixSession:
     """Stateful netflix session management"""
 
     http_ipc_slots = {}

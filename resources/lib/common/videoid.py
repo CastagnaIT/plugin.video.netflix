@@ -12,7 +12,7 @@ from functools import wraps
 from .exceptions import InvalidVideoId
 
 
-class VideoId(object):
+class VideoId:
     """Universal representation of a video id. Video IDs can be of multiple types:
     - supplemental: a single identifier only for supplementalid, all other values must be None
     - movie: a single identifier only for movieid, all other values must be None
@@ -322,7 +322,7 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
         del kwargs[pathitems_arg]
 
 
-class MenuIdParameters(object):
+class MenuIdParameters:
     """Parse the information grouped in a id value of a menu"""
     # Example:
     # 8f0bcda8-a281-4ca3-9f56-f64ee1d76219_68180357X28X1430972X1551542684270

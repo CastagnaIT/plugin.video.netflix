@@ -17,7 +17,7 @@ import resources.lib.common as common
 from resources.lib.utils.logging import measure_exec_time_decorator
 
 
-class MSLRequestBuilder(object):
+class MSLRequestBuilder:
     """Provides mechanisms to create MSL requests"""
 
     def __init__(self):

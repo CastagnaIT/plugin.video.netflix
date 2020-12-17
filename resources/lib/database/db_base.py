@@ -9,7 +9,7 @@
 """
 
 
-class BaseDatabase(object):
+class BaseDatabase:
     """
     Base class to handle various types of databases
     """

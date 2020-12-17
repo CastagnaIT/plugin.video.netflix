@@ -16,7 +16,7 @@ from resources.lib.utils.logging import LOG
 
 
 # pylint: disable=no-self-use
-class LibraryActionExecutor(object):
+class LibraryActionExecutor:
     """Executes actions"""
 
     def __init__(self, params):

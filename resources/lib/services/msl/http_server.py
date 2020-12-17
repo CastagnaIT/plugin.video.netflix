@@ -77,4 +77,4 @@ class MSLTCPServer(TCPServer):
         """Initialization of MSLTCPServer"""
         LOG.info('Constructing MSLTCPServer')
         self.msl_handler = MSLHandler()
-        TCPServer.__init__(self, server_address, MSLHttpRequestHandler)
+        super().__init__(server_address, MSLHttpRequestHandler)

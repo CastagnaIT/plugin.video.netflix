@@ -89,4 +89,4 @@ class CacheTCPServer(TCPServer):
     def __init__(self, server_address):
         """Initialization of CacheTCPServer"""
         LOG.info('Constructing CacheTCPServer')
-        TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)
+        super().__init__(server_address, NetflixHttpRequestHandler)

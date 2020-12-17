@@ -24,7 +24,7 @@ from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 
 
-class Event(object):
+class Event:
     """Object representing an event request to be processed"""
 
     STATUS_REQUESTED = 'REQUESTED'
@@ -62,7 +62,7 @@ class EventsHandler(threading.Thread):
     """Handle and build Netflix event requests"""
 
     def __init__(self, chunked_request):
-        super(EventsHandler, self).__init__()
+        super().__init__()
         self.chunked_request = chunked_request
         # session_id, app_id are common to all events
         self.session_id = int(time.time()) * 10000 + random.randint(1, 10001)

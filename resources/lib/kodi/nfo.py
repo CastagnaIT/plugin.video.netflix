@@ -14,7 +14,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.utils.logging import LOG
 
 
-class NFOSettings(object):
+class NFOSettings:
     def __init__(self, enforce=None):
         """
         :param enforce: Used for export new episode, to force the nfo export status

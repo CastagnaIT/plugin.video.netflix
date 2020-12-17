@@ -156,7 +156,7 @@ class ProgressDialog(xbmcgui.DialogProgress):
     """Context manager to handle a progress dialog window"""
     # Keep the same arguments for all progress bar classes
     def __init__(self, is_enabled, title=None, initial_value=0, max_value=1):
-        xbmcgui.DialogProgress.__init__(self)
+        super().__init__()
         self.is_enabled = is_enabled
         self.max_value = max_value
         self.value = initial_value
@@ -194,7 +194,7 @@ class ProgressBarBG(xbmcgui.DialogProgressBG):
     """Context manager to handle a progress bar in background"""
     # Keep the same arguments for all progress bar classes
     def __init__(self, is_enabled, title, initial_value=None, max_value=None):
-        xbmcgui.DialogProgressBG.__init__(self)
+        super().__init__()
         self.is_enabled = is_enabled
         self.max_value = max_value
         self.value = 0 if max_value and initial_value is None else initial_value

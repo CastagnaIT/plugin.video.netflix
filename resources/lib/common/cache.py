@@ -13,7 +13,7 @@ from resources.lib.common.cache_utils import deserialize_data, serialize_data
 from resources.lib.globals import G
 
 
-class Cache(object):
+class Cache:
     """Cache"""
     # All the cache is automatically allocated by profile by using a prefix in the cache identifier
     # and the data remains in memory until the service will be stopped (if it is not specified as persistent)
