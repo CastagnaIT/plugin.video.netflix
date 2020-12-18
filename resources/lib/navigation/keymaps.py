@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from functools import wraps
 
 import xbmc
@@ -42,7 +40,7 @@ def allow_execution_decorator(check_addon=True, check_lib=False, inject_videoid=
     return allow_execution
 
 
-class KeymapsActionExecutor(object):
+class KeymapsActionExecutor:
     """Executes keymaps actions"""
 
     def __init__(self, params):

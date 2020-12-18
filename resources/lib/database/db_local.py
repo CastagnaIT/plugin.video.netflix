@@ -7,10 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from datetime import datetime
-from future.utils import iteritems
 
 import resources.lib.common as common
 import resources.lib.database.db_base_sqlite as db_sqlite
@@ -19,8 +16,8 @@ from resources.lib.common.exceptions import DBProfilesMissing
 
 
 class NFLocalDatabase(db_sqlite.SQLiteDatabase):
-    def __init__(self):  # pylint: disable=super-on-old-class
-        super(NFLocalDatabase, self).__init__(db_utils.LOCAL_DB_FILENAME)
+    def __init__(self):
+        super().__init__(db_utils.LOCAL_DB_FILENAME)
 
     def _get_active_guid_profile(self):
         query = 'SELECT Guid FROM profiles WHERE IsActive = 1'
@@ -92,7 +89,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
         cur.execute("BEGIN TRANSACTION;")
         query = 'DELETE FROM profiles_config WHERE Guid = ?'
         self._execute_non_query(query, (guid,), cur)
-        records_values = [(guid, key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
+        records_values = [(guid, key, common.convert_to_string(value)) for key, value in dict_values.items()]
         insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
         self._executemany_non_query(insert_query, records_values, cur)
         cur.execute("COMMIT;")

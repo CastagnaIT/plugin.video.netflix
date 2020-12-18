@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import xbmcplugin
 
 import resources.lib.common as common
@@ -36,7 +34,7 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 #  the indexes are: 0 the function name of this 'Directory' class, 1 the menu id, 2 an optional id
 
 
-class Directory(object):
+class Directory:
     """Directory listings"""
 
     def __init__(self, params):

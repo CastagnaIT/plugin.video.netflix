@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from datetime import datetime
 
 import resources.lib.common as common
@@ -24,21 +22,21 @@ def get_shareddb_class(use_mysql=False):
     class NFSharedDatabase(base_class):
         def __init__(self):
             if use_mysql:
-                super(NFSharedDatabase, self).__init__()  # pylint: disable=no-value-for-parameter
+                super().__init__(None)
             else:
-                super(NFSharedDatabase, self).__init__(db_utils.SHARED_DB_FILENAME)
+                super().__init__(db_utils.SHARED_DB_FILENAME)
 
         def get_value(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF, data_type=None):  # pylint: disable=useless-super-delegation
-            return super(NFSharedDatabase, self).get_value(key, default_value, table, data_type)
+            return super().get_value(key, default_value, table, data_type)
 
         def get_values(self, key, default_value=None, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
-            return super(NFSharedDatabase, self).get_values(key, default_value, table)
+            return super().get_values(key, default_value, table)
 
         def set_value(self, key, value, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
-            super(NFSharedDatabase, self).set_value(key, value, table)
+            super().set_value(key, value, table)
 
         def delete_key(self, key, table=db_utils.TABLE_SHARED_APP_CONF):  # pylint: disable=useless-super-delegation
-            super(NFSharedDatabase, self).delete_key(key, table)
+            super().delete_key(key, table)
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection

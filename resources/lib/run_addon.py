@@ -6,10 +6,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from functools import wraps
-from future.utils import raise_from
 
 from xbmc import getCondVisibility, Monitor, getInfoLabel
 
@@ -33,7 +30,7 @@ def catch_exceptions_decorator(func):
             success = True
         except BackendNotReady as exc_bnr:
             from resources.lib.kodi.ui import show_backend_not_ready
-            show_backend_not_ready(G.py2_decode(str(exc_bnr), 'latin-1'))
+            show_backend_not_ready(str(exc_bnr))
         except InputStreamHelperError as exc:
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog('InputStream Helper Add-on error',
@@ -57,7 +54,7 @@ def catch_exceptions_decorator(func):
         except Exception as exc:
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             show_addon_error_info(exc)
         finally:
             if not success:
@@ -161,7 +158,7 @@ def _execute(executor_type, pathitems, params, root_handler):
             WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = executor.__name__
             WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = None
     except AttributeError as exc:
-        raise_from(InvalidPathError('Unknown action {}'.format('/'.join(pathitems))), exc)
+        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems))) from exc
 
 
 def _get_service_status():

@@ -6,8 +6,6 @@
     See LICENSES/GPL-3.0-only.md for more information.
 """
 # pylint: disable=missing-docstring
-
-from __future__ import absolute_import, division, print_function, unicode_literals
 import sys
 
 

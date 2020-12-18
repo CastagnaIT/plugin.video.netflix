@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from datetime import datetime, timedelta
 
 import AddonSignals
@@ -25,7 +23,7 @@ class LibraryUpdateService(xbmc.Monitor):
     Checks if a library update is scheduled and triggers it
     """
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        super().__init__()
         try:
             self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
         except Exception:  # pylint: disable=broad-except
@@ -176,6 +174,6 @@ def _compute_next_schedule(date_last_start=None):
         # If any other error appears, we don't want the service to crash,
         # let's return None in all case
         # import traceback
-        # LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        # LOG.debug(traceback.format_exc())
         LOG.warn('Managed error at _compute_next_schedule')
         return None

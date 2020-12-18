@@ -7,9 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
 import sys
-from future.utils import iteritems
 
 import xbmc
 
@@ -21,15 +19,10 @@ from resources.lib.globals import G
 from resources.lib.utils.esn import generate_android_esn, ForceWidevine
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
 
 class SettingsMonitor(xbmc.Monitor):
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        super().__init__()
 
     def onSettingsChanged(self):
         status = G.settings_monitor_suspend_status()
@@ -65,7 +58,7 @@ class SettingsMonitor(xbmc.Monitor):
         _check_esn()
 
         # Check menu settings changes
-        for menu_id, menu_data in iteritems(G.MAIN_MENU_ITEMS):
+        for menu_id, menu_data in G.MAIN_MENU_ITEMS.items():
             # Check settings changes in show/hide menu
             if menu_data.get('has_show_setting', True):
                 show_menu_new_setting = bool(G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
@@ -143,7 +136,7 @@ def _check_msl_profiles():
                  'disable_webvtt_subtitle']
     collect_int = ''
     for menu_key in menu_keys:
-        collect_int += unicode(int(G.ADDON.getSettingBool(menu_key)))
+        collect_int += str(int(G.ADDON.getSettingBool(menu_key)))
     collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
     if collect_int != collect_int_old:
         G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)

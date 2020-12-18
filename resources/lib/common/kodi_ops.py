@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
 
 import xbmc
@@ -116,7 +114,7 @@ def schedule_builtin(time, command, name='NetflixTask'):
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin(G.py2_encode('PlayMedia({})'.format(media)))
+    xbmc.executebuiltin('PlayMedia({})'.format(media))
 
 
 def stop_playback():
@@ -132,7 +130,7 @@ def get_current_kodi_profile_name(no_spaces=True):
     return get_current_kodi_profile_name.cached
 
 
-class _WndProps(object):  # pylint: disable=no-init
+class _WndProps:  # pylint: disable=no-init
     """Read and write a property to the Kodi home window"""
     # Default Properties keys
     SERVICE_STATUS = 'service_status'
@@ -151,15 +149,13 @@ class _WndProps(object):  # pylint: disable=no-init
     def __getitem__(self, key):
         try:
             # If you use multiple Kodi profiles you need to distinguish the property of current profile
-            return G.WND_KODI_HOME.getProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
-                                                                                   key)))
+            return G.WND_KODI_HOME.getProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key))
         except Exception:  # pylint: disable=broad-except
             return ''
 
     def __setitem__(self, key, newvalue):
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        G.WND_KODI_HOME.setProperty(G.py2_encode('netflix_{}_{}'.format(get_current_kodi_profile_name(),
-                                                                        key)),
+        G.WND_KODI_HOME.setProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key),
                                     newvalue)
 
 
@@ -190,7 +186,7 @@ def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
     Convert given value (English name or two/three letter code) to the specified format
     :param iso_format: specify the iso format (two letter code ISO_639_1 or three letter code ISO_639_2)
     """
-    return xbmc.convertLanguage(G.py2_encode(from_value), iso_format)
+    return xbmc.convertLanguage(from_value, iso_format)
 
 
 def fix_locale_languages(data_list):
@@ -199,47 +195,6 @@ def fix_locale_languages(data_list):
     # es-ES as 'Spanish-Spanish', pt-BR as 'Portuguese-Breton', nl-BE as 'Dutch-Belarusian', etc
     # and the impossibility to set them as the default audio/subtitle language
     # Issue: https://github.com/xbmc/xbmc/issues/15308
-    if G.KODI_VERSION.is_major_ver('18'):
-        _fix_locale_languages_kodi18(data_list)
-    else:
-        _fix_locale_languages(data_list)
-
-
-def _fix_locale_languages_kodi18(data_list):
-    # Get all the ISO 639-1 codes (without country)
-    verify_unofficial_lang = not G.KODI_VERSION.is_less_version('18.7')
-    locale_list_nocountry = []
-    for item in data_list:
-        if item.get('isNoneTrack', False):
-            continue
-        if verify_unofficial_lang and item['language'] == 'pt-BR':
-            # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
-            # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
-            item['language'] = 'pb'
-        if len(item['language']) == 2 and not item['language'] in locale_list_nocountry:
-            locale_list_nocountry.append(item['language'])
-    # Replace the locale languages with country with a new one
-    for item in data_list:
-        if item.get('isNoneTrack', False):
-            continue
-        if len(item['language']) == 2:
-            continue
-        item['language'] = _adjust_locale(item['language'],
-                                          item['language'][0:2] in locale_list_nocountry)
-
-
-def _adjust_locale(locale_code, lang_code_without_country_exists):
-    """Locale conversion helper"""
-    language_code = locale_code[0:2]
-    if not lang_code_without_country_exists:
-        return language_code
-    if locale_code in LOCALE_CONV_TABLE:
-        return LOCALE_CONV_TABLE[locale_code]
-    LOG.debug('AdjustLocale - missing mapping conversion for locale: {}'.format(locale_code))
-    return locale_code
-
-
-def _fix_locale_languages(data_list):
     for item in data_list:
         if item.get('isNoneTrack', False):
             continue
@@ -256,7 +211,7 @@ def _fix_locale_languages(data_list):
                 LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
 
 
-class GetKodiVersion(object):
+class GetKodiVersion:
     """Get the kodi version, git date, stage name"""
     # Examples of some types of supported strings:
     # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4

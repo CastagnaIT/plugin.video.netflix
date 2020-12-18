@@ -7,29 +7,13 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import base64
+from http.server import BaseHTTPRequestHandler
+from socketserver import TCPServer
+from urllib.parse import parse_qs, urlparse
 
-from resources.lib.globals import G
+from resources.lib.common.exceptions import MSLError
 from resources.lib.utils.logging import LOG
-from ...common.exceptions import MSLError
-
-try:  # Python 3
-    from urllib.parse import parse_qs, urlparse
-except ImportError:  # Python 2
-    from urlparse import urlparse, parse_qs
-
-try:  # Python 3
-    from http.server import BaseHTTPRequestHandler
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-
-try:  # Python 3
-    from socketserver import TCPServer
-except ImportError:
-    from SocketServer import TCPServer
-
 from .msl_handler import MSLHandler
 
 
@@ -58,7 +42,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(base64.standard_b64decode(b64license))
         except Exception as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -79,7 +63,7 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
         except Exception as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             self.send_response(500 if isinstance(exc, MSLError) else 400)
             self.end_headers()
 
@@ -93,4 +77,4 @@ class MSLTCPServer(TCPServer):
         """Initialization of MSLTCPServer"""
         LOG.info('Constructing MSLTCPServer')
         self.msl_handler = MSLHandler()
-        TCPServer.__init__(self, server_address, MSLHttpRequestHandler)
+        super().__init__(server_address, MSLHttpRequestHandler)

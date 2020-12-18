@@ -7,24 +7,12 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import datetime
 import json
 from ast import literal_eval
 from collections import OrderedDict
 
 from resources.lib.utils.logging import LOG
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
-try:  # Python 2
-    basestring
-except NameError:  # Python 3
-    basestring = str  # pylint: disable=redefined-builtin
 
 
 class DataTypeNotMapped(Exception):
@@ -35,7 +23,7 @@ def convert_to_string(value):
     if value is None:
         return None
     data_type = type(value)
-    if data_type in (str, unicode):
+    if data_type == str:
         return value
     converter = None
     if data_type in (int, float, bool, tuple, datetime.datetime):
@@ -51,7 +39,7 @@ def convert_to_string(value):
 def convert_from_string(value, to_data_type):
     if value is None:
         return None
-    if to_data_type in (str, unicode, int, float):
+    if to_data_type in (str, int, float):
         return to_data_type(value)
     if to_data_type in (bool, list, tuple):
         return literal_eval(value)
@@ -84,7 +72,4 @@ def _conv_string_to_datetime(value):
     except (TypeError, ImportError):
         # Python bug https://bugs.python.org/issue27400
         import time
-        # Workaround for http://bugs.python.org/issue8098 only to py2
-        # Error: ImportError: Failed to import _strptime because the import lockis held by another thread.
-        import _strptime  # pylint: disable=unused-import
         return datetime.datetime(*(time.strptime(value, '%Y-%m-%d %H:%M:%S.%f')[0:6]))

@@ -7,26 +7,14 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
+import pickle
 from time import time
-from future.utils import raise_from
 
 import xbmcvfs
 
 from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 def save(cookie_jar, log_output=True):
@@ -57,14 +45,10 @@ def load():
     if not xbmcvfs.exists(file_path):
         LOG.debug('Cookies file does not exist')
         raise MissingCookiesError
-    LOG.debug('Loading cookies from {}', G.py2_decode(file_path))
+    LOG.debug('Loading cookies from {}', file_path)
     cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
-        if G.PY_IS_VER2:
-            # pickle.loads on py2 wants string
-            cookie_jar = pickle.loads(cookie_file.read())
-        else:
-            cookie_jar = pickle.loads(cookie_file.readBytes())
+        cookie_jar = pickle.loads(cookie_file.readBytes())
         # Clear flwssn cookie if present, as it is trouble with early expiration
         if 'flwssn' in cookie_jar:
             cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
@@ -73,8 +57,8 @@ def load():
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise_from(MissingCookiesError, exc)
+        LOG.error(traceback.format_exc())
+        raise MissingCookiesError from exc
     finally:
         cookie_file.close()
 
@@ -94,7 +78,7 @@ def log_cookie(cookie_jar):
 
 def cookie_file_path():
     """Return the file path to store cookies"""
-    return translatePath(G.COOKIES_PATH)
+    return xbmcvfs.translatePath(G.COOKIES_PATH)
 
 
 def convert_chrome_cookie(cookie):

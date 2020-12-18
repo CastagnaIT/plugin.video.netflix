@@ -6,25 +6,15 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import threading
 from socket import gaierror
-
-# Global cache must not be used within these modules, because stale values may
-# be used and cause inconsistencies!
 from resources.lib.common import select_port, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
-
-class NetflixService(object):
+class NetflixService:
     """
     Netflix addon service
     """
@@ -70,7 +60,7 @@ class NetflixService(object):
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('Background services do not start due to the following error')
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
                            'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
@@ -79,7 +69,7 @@ class NetflixService(object):
                            'Read how to install the add-on in the GitHub Readme.\r\n'
                            'Error details: {}'.format(exc))
             else:
-                message = unicode(exc)
+                message = str(exc)
             self._set_service_status('error', message)
         return False
 
@@ -134,7 +124,7 @@ class NetflixService(object):
             self._set_service_status('stopped')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             show_addon_error_info(exc)
             return
 
@@ -151,8 +141,8 @@ class NetflixService(object):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             from resources.lib.kodi.ui import show_notification
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-            show_notification(': '.join((exc.__class__.__name__, unicode(exc))))
+            LOG.error(traceback.format_exc())
+            show_notification(': '.join((exc.__class__.__name__, str(exc))))
         return self.controller.waitForAbort(1)
 
     def _set_service_status(self, status, message=None):

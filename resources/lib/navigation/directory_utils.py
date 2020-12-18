@@ -7,11 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from functools import wraps
-
-from future.utils import iteritems
 
 import xbmc
 import xbmcgui
@@ -83,7 +79,7 @@ def _convert_dict_to_listitem(dict_item):
             'TotalTime': dict_item.get('TotalTime', ''),
             'ResumeTime': dict_item.get('ResumeTime', '')
         })
-    for stream_type, quality_info in iteritems(dict_item.get('quality_info', {})):
+    for stream_type, quality_info in dict_item.get('quality_info', {}).items():
         list_item.addStreamInfo(stream_type, quality_info)
     list_item.setProperties(properties)
     list_item.setInfo('video', dict_item.get('info', {}))
@@ -196,17 +192,12 @@ def auto_scroll(list_data):
 
 
 def _auto_scroll_init_checks():
-    if G.KODI_VERSION.is_major_ver('18'):
-        # Check if a selection is already done
-        if xbmc.getInfoLabel('ListItem.Label') != '..':
-            return False
-    else:  # These infoLabel not works on Kodi 18.x
-        # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
-        if not xbmc.getCondVisibility('Container.SortMethod(23)'):
-            return False
-        # Check if a selection is already done (CurrentItem return the index)
-        if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
-            return False
+    # Check if view sort method is "Episode" (ID 23 = SortByEpisodeNumber)
+    if not xbmc.getCondVisibility('Container.SortMethod(23)'):
+        return False
+    # Check if a selection is already done (CurrentItem return the index)
+    if int(xbmc.getInfoLabel('ListItem.CurrentItem') or 2) > 1:
+        return False
     return True
 
 

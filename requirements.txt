@@ -1,11 +1,8 @@
 codecov
-future
 kodi-addon-checker
 mysql-connector-python
 polib
-pycrypto
 pycryptodomex
-pydes
 pylint
 requests
 setuptools

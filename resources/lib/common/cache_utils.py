@@ -7,24 +7,12 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
+import pickle
 from functools import wraps
-from future.utils import raise_from
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .exceptions import CacheMiss
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 # Cache buckets (the default_ttl is the variable name in 'global' class)
 CACHE_COMMON = {'name': 'cache_common', 'is_persistent': False, 'default_ttl': 'CACHE_TTL'}
@@ -99,37 +87,23 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     if fixed_identifier:
         identifier = fixed_identifier
     else:
-        identifier = unicode(kwargs.get(identify_from_kwarg_name) or '')
+        identifier = str(kwargs.get(identify_from_kwarg_name) or '')
         if not identifier and args:
-            arg_value = unicode(args[identify_fallback_arg_index] or '')
+            arg_value = str(args[identify_fallback_arg_index] or '')
             identifier = arg_value
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier += '_' + unicode(kwargs.get(identify_append_from_kwarg_name))
+            identifier += '_' + str(kwargs.get(identify_append_from_kwarg_name))
     # LOG.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier
 
 
 def serialize_data(value):
-    if G.PY_IS_VER2:
-        # On python 2 pickle.dumps produces str
-        # Pickle on python 2 use non-standard byte-string seem not possible convert it in to byte in a easy way
-        # then serialize it with base64
-        from base64 import standard_b64encode
-        return standard_b64encode(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))
-    # On python 3 pickle.dumps produces byte
     return pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def deserialize_data(value):
     try:
-        if G.PY_IS_VER2:
-            # On python 2 pickle.loads wants str
-            from base64 import standard_b64decode
-            return pickle.loads(standard_b64decode(value))
-        # On python 3 pickle.loads wants byte
         return pickle.loads(value)
-    except (pickle.UnpicklingError, TypeError, EOFError) as exc:
-        # TypeError/EOFError happen when standard_b64decode fails
-        # This should happen only if manually mixing the database data
+    except pickle.UnpicklingError as exc:
         LOG.error('It was not possible to deserialize the cache data, try purge cache from expert settings menu')
-        raise_from(CacheMiss, exc)
+        raise CacheMiss from exc

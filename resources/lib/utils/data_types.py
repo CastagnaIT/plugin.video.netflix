@@ -8,9 +8,7 @@
     See LICENSES/MIT.md for more information.
 """
 # pylint: disable=too-few-public-methods
-from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict
-from future.utils import iteritems, itervalues, listvalues
 
 import resources.lib.common as common
 
@@ -18,7 +16,7 @@ from .api_paths import resolve_refs
 from .logging import LOG
 
 
-class LoCo(object):
+class LoCo:
     """List of components (LoCo)"""
     def __init__(self, path_response):
         self.data = path_response
@@ -38,7 +36,7 @@ class LoCo(object):
         """Get all video lists"""
         # It is as property to avoid slow down the loading of main menu
         lists = {}
-        for list_id, list_data in iteritems(self.data['lists']):  # pylint: disable=unused-variable
+        for list_id, list_data in self.data['lists'].items():  # pylint: disable=unused-variable
             lists.update({list_id: VideoListLoCo(self.data, list_id)})
         return lists
 
@@ -48,19 +46,19 @@ class LoCo(object):
 
         :param contexts: list of context names
         :param break_on_first: stop the research at first match
-        :return iteritems of a dict where key=list id, value=VideoListLoCo object data
+        :return iterable items of a dict where key=list id, value=VideoListLoCo object data
         """
         lists = {}
-        for list_id, list_data in iteritems(self.data['lists']):
+        for list_id, list_data in self.data['lists'].items():
             if list_data['componentSummary']['context'] in contexts:
                 lists.update({list_id: VideoListLoCo(self.data, list_id)})
                 if break_on_first:
                     break
-        return iteritems(lists)
+        return lists.items()
 
     def find_by_context(self, context):
         """Return the video list and the id list of a context"""
-        for list_id, data in iteritems(self.data['lists']):
+        for list_id, data in self.data['lists'].items():
             if data['componentSummary']['context'] != context:
                 continue
             return list_id, VideoListLoCo(self.data, list_id)
@@ -89,7 +87,7 @@ class VideoListLoCo:
         # Set first videos titles (special handling for menus see parse_info in infolabels.py)
         self.contained_titles = _get_titles(self.videos)
         # Set art data of first video (special handling for menus see parse_info in infolabels.py)
-        self.artitem = listvalues(self.videos)[0]
+        self.artitem = list(self.videos.values())[0]
         try:
             self.videoids = _get_videoids(self.videos)
         except KeyError:
@@ -122,8 +120,8 @@ class VideoList:
                          else next(iter(self.data['lists']))))
             self.videos = OrderedDict(resolve_refs(self.data['lists'][self.videoid.value], self.data))
             if self.videos:
-                # self.artitem = next(itervalues(self.videos))
-                self.artitem = listvalues(self.videos)[0]
+                # self.artitem = next(self.videos.values())
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -158,8 +156,8 @@ class VideoListSorted:
                 if context_id else path_response[context_name][req_sort_order_type]
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
-                # self.artitem = next(itervalues(self.videos))
-                self.artitem = listvalues(self.videos)[0]
+                # self.artitem = next(self.videos.values())
+                self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
                 try:
                     self.videoids = _get_videoids(self.videos)
@@ -188,8 +186,8 @@ class SearchVideoList:
             self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
             self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
             self.videoids = _get_videoids(self.videos)
-            # self.artitem = next(itervalues(self.videos), None)
-            self.artitem = listvalues(self.videos)[0] if self.videos else None
+            # self.artitem = next(self.videos.values(), None)
+            self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
@@ -207,8 +205,8 @@ class CustomVideoList:
         self.data = path_response
         self.videos = OrderedDict(self.data.get('videos', {}))
         self.videoids = _get_videoids(self.videos)
-        # self.artitem = next(itervalues(self.videos))
-        self.artitem = listvalues(self.videos)[0] if self.videos else None
+        # self.artitem = next(self.videos.values())
+        self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
 
     def __getitem__(self, key):
@@ -257,7 +255,7 @@ class SubgenreList:
 
 
 def merge_data_type(data, data_to_merge):
-    for video_id, video in iteritems(data_to_merge.videos):
+    for video_id, video in data_to_merge.videos.items():
         data.videos[video_id] = video
     data.videoids.extend(data_to_merge.videoids)
     data.contained_titles.extend(data_to_merge.contained_titles)
@@ -277,14 +275,14 @@ def _get_title(video):
 def _get_titles(videos):
     """Return a list of videos' titles"""
     return [_get_title(video)
-            for video in itervalues(videos)
+            for video in videos.values()
             if _get_title(video)]
 
 
 def _get_videoids(videos):
     """Return a list of VideoId s for the videos"""
     return [common.VideoId.from_videolist_item(video)
-            for video in itervalues(videos)]
+            for video in videos.values()]
 
 
 def _filterout_loco_contexts(root_id, data, contexts):

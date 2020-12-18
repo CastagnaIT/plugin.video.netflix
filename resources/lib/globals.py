@@ -11,35 +11,17 @@
 # Using the Kodi reuseLanguageInvoker feature, only the code in the addon.py or service.py module
 # will be run every time the addon is called.
 # All other modules (imports) are initialized only on the first invocation of the add-on.
-from __future__ import absolute_import, division, unicode_literals
-
 import collections
 import os
 import sys
-
-try:  # Python 3
-    from urllib.parse import parse_qsl, unquote, urlparse
-except ImportError:  # Python 2
-    from urllib2 import unquote
-    from urlparse import parse_qsl, urlparse
-
-from future.utils import iteritems
+from urllib.parse import parse_qsl, unquote, urlparse
 
 import xbmcaddon
+import xbmcvfs
 from xbmcgui import Window
 
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin,invalid-name
-
-
-class GlobalVariables(object):
+class GlobalVariables:
     """Encapsulation for global variables to work around quirks with
     Kodi's reuseLanguageInvoker behavior"""
     # pylint: disable=attribute-defined-outside-init
@@ -213,7 +195,6 @@ class GlobalVariables(object):
         # The class initialization (GlobalVariables) will only take place at the first initialization of this module
         # on subsequent add-on invocations (invoked by reuseLanguageInvoker) will have no effect.
         # Define here also any other variables necessary for the correct loading of the other project modules
-        self.PY_IS_VER2 = sys.version_info.major == 2
         self.WND_KODI_HOME = Window(10000)  # Kodi home window
         self.IS_ADDON_FIRSTRUN = None
         self.ADDON = None
@@ -234,7 +215,7 @@ class GlobalVariables(object):
         # xbmcaddon.Addon must be created at every instance otherwise it does not read any new changes to the settings
         self.ADDON = xbmcaddon.Addon()
         self.URL = urlparse(argv[0])
-        self.REQUEST_PATH = G.py2_decode(unquote(self.URL[2][1:]))
+        self.REQUEST_PATH = unquote(self.URL[2][1:])
         try:
             self.PARAM_STRING = argv[2][1:]
         except IndexError:
@@ -242,14 +223,14 @@ class GlobalVariables(object):
         self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
         if self.IS_ADDON_FIRSTRUN:
             # Global variables that do not need to be generated at every instance
-            self.ADDON_ID = self.py2_decode(self.ADDON.getAddonInfo('id'))
-            self.PLUGIN = self.py2_decode(self.ADDON.getAddonInfo('name'))
-            self.VERSION_RAW = self.py2_decode(self.ADDON.getAddonInfo('version'))
+            self.ADDON_ID = self.ADDON.getAddonInfo('id')
+            self.PLUGIN = self.ADDON.getAddonInfo('name')
+            self.VERSION_RAW = self.ADDON.getAddonInfo('version')
             self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
-            self.ICON = self.py2_decode(self.ADDON.getAddonInfo('icon'))
-            self.DEFAULT_FANART = self.py2_decode(self.ADDON.getAddonInfo('fanart'))
-            self.ADDON_DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('path'))  # Add-on folder
-            self.DATA_PATH = self.py2_decode(self.ADDON.getAddonInfo('profile'))  # Add-on user data folder
+            self.ICON = self.ADDON.getAddonInfo('icon')
+            self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
+            self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Add-on folder
+            self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Add-on user data folder
             self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
             self.COOKIES_PATH = os.path.join(self.DATA_PATH, 'COOKIES')
             try:
@@ -268,15 +249,10 @@ class GlobalVariables(object):
         packages_paths = [
             os.path.join(self.ADDON_DATA_PATH, 'packages', 'mysql-connector-python')
         ]
-        # On PY2 sys.path list can contains values as unicode type and string type at same time,
-        #   here we will add only unicode type so filter values by unicode.
-        #   This fixes comparison errors between str/unicode
-        sys_path_filtered = [value for value in sys.path if isinstance(value, unicode)]
-        for path in packages_paths:  # packages_paths has unicode type values
-            path = G.py2_decode(translatePath(path))
-            if path not in sys_path_filtered:
+        for path in packages_paths:
+            path = xbmcvfs.translatePath(path)
+            if path not in sys.path:
                 # Add embedded package path to python system directory
-                # The "path" will add an unicode type to avoids problems with OS using symbolic characters
                 sys.path.insert(0, path)
 
         # Initialize the log
@@ -358,25 +334,11 @@ class GlobalVariables(object):
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
-        for _, data in iteritems(self.MAIN_MENU_ITEMS):
+        for _, data in self.MAIN_MENU_ITEMS.items():
             if data['loco_known']:
                 if data['loco_contexts'][0] == context:
                     return True
         return False
-
-    def py2_decode(self, value, encoding='utf-8'):
-        """Decode text only on python 2"""
-        # To remove when Kodi 18 support is over / Py2 dead
-        if self.PY_IS_VER2:
-            return value.decode(encoding)
-        return value
-
-    def py2_encode(self, value, encoding='utf-8'):
-        """Encode text only on python 2"""
-        # To remove when Kodi 18 support is over / Py2 dead
-        if self.PY_IS_VER2:
-            return value.encode(encoding)
-        return value
 
     @staticmethod
     def remove_ver_suffix(version):

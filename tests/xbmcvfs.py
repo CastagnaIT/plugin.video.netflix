@@ -6,7 +6,6 @@
     SPDX-License-Identifier: GPL-3.0-only
     See LICENSES/GPL-3.0-only.md for more information.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 import os
 import shutil
 
@@ -16,10 +15,7 @@ def File(path, flags='r'):
     try:
         return open(path, flags)
     except IOError:
-        try:  # Python 3
-            from io import StringIO
-        except ImportError:  # Python 2
-            from StringIO import StringIO
+        from io import StringIO
         return StringIO('')
 
 
@@ -91,6 +87,17 @@ def rmdir(path):
     return os.rmdir(path)
 
 
-def makeLegalFilename(filename):  # Kodi >= 19 (on xbmc there is the method for Kodi 18)
+def makeLegalFilename(filename):
     """A reimplementation of the xbmc makeLegalFilename() function"""
     return os.path.basename(filename)
+
+
+def translatePath(path):
+    """A stub implementation of the xbmc translatePath() function"""
+    if path.startswith('special://home'):
+        return path.replace('special://home', os.path.join(os.getcwd(), 'test'))
+    if path.startswith('special://profile'):
+        return path.replace('special://profile', os.path.join(os.getcwd(), 'tests/usedata'))
+    if path.startswith('special://userdata'):
+        return path.replace('special://userdata', os.path.join(os.getcwd(), 'tests/userdata'))
+    return path

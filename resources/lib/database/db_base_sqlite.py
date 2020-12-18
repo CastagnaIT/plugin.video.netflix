@@ -7,12 +7,9 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import sqlite3 as sql
 import threading
 from functools import wraps
-from future.utils import iteritems, raise_from
 
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
@@ -20,11 +17,6 @@ import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.common.exceptions import DBSQLiteConnectionError, DBSQLiteError
 from resources.lib.utils.logging import LOG
-
-try:  # Python 2
-    from itertools import izip as zip  # pylint: disable=redefined-builtin
-except ImportError:
-    pass
 
 
 CONN_ISOLATION_LEVEL = None  # Autocommit mode
@@ -58,7 +50,7 @@ def handle_connection(func):
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteConnectionError, exc)
+            raise DBSQLiteConnectionError from exc
         finally:
             if conn:
                 args[0].is_connected = False
@@ -74,7 +66,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         self.is_mysql_database = False
         self.db_filename = db_filename
         self.db_file_path = db_utils.get_local_db_path(db_filename)
-        super(SQLiteDatabase, self).__init__()
+        super().__init__()
 
     @property
     def is_connected(self):
@@ -102,7 +94,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 db_create_sqlite.create_database(self.db_file_path, self.db_filename)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteConnectionError, exc)
+            raise DBSQLiteConnectionError from exc
         finally:
             if self.conn:
                 self.conn.close()
@@ -114,7 +106,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             cursor.executemany(query, params)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -130,7 +122,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                 cursor.execute(query)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -147,7 +139,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             return cursor
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
-            raise_from(DBSQLiteError, exc)
+            raise DBSQLiteError from exc
         except ValueError:
             LOG.error('Value {}', str(params))
             LOG.error('Value type {}', type(params))
@@ -248,7 +240,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
             query = 'INSERT OR REPLACE INTO {} ({}, {}) VALUES (?, ?)'.format(table_name,
                                                                               table_columns[0],
                                                                               table_columns[1])
-            records_values = [(key, common.convert_to_string(value)) for key, value in iteritems(dict_values)]
+            records_values = [(key, common.convert_to_string(value)) for key, value in dict_values.items()]
         else:
             # sqlite UPSERT clause exists only on sqlite >= 3.24.0
             query = ('INSERT INTO {tbl_name} ({tbl_col1}, {tbl_col2}) VALUES (?, ?) '
@@ -257,7 +249,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
                                                     tbl_col1=table_columns[0],
                                                     tbl_col2=table_columns[1])
             records_values = []
-            for key, value in iteritems(dict_values):
+            for key, value in dict_values.items():
                 value_str = common.convert_to_string(value)
                 records_values.append((key, value_str, value_str, key))
         cur = self.get_cursor()

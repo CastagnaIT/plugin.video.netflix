@@ -8,8 +8,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import copy
 
 import xbmc
@@ -52,14 +50,13 @@ class AMStreamContinuity(ActionManager):
     # you must delete, every time, the file /Kodi/userdata/Database/MyVideosXXX.db, or,
     # if you are able you can delete in realtime the data in the 'settings' table of db file.
     def __init__(self):
-        super(AMStreamContinuity, self).__init__()
+        super().__init__()
         self.enabled = True  # By default we enable this action manager
         self.current_streams = {}
         self.sc_settings = {}
         self.player = xbmc.Player()
         self.player_state = {}
         self.resume = {}
-        self.legacy_kodi_version = G.KODI_VERSION.is_major_ver('18')
         self.is_kodi_forced_subtitles_only = None
         self.is_prefer_sub_impaired = None
         self.is_prefer_audio_impaired = None
@@ -84,8 +81,7 @@ class AMStreamContinuity(ActionManager):
         else:
             # Disable on_tick activity to check changes of settings
             self.enabled = False
-        if (not self.legacy_kodi_version and
-                player_state.get(STREAMS['subtitle']['current']) is None and
+        if (player_state.get(STREAMS['subtitle']['current']) is None and
                 player_state.get('currentvideostream') is None):
             # Kodi 19 BUG JSON RPC: "Player.GetProperties" is broken: https://github.com/xbmc/xbmc/issues/17915
             # The first call return wrong data the following calls return OSError, and then _notify_all will be blocked
@@ -102,16 +98,13 @@ class AMStreamContinuity(ActionManager):
             # Copy player state to restore it after, or the changes will affect the _restore_stream()
             _player_state_copy = copy.deepcopy(player_state)
             # Force selection of the audio/subtitles language with country code
-            if not self.legacy_kodi_version and G.ADDON.getSettingBool('prefer_alternative_lang'):
+            if G.ADDON.getSettingBool('prefer_alternative_lang'):
                 self._select_lang_with_country_code()
             # Ensures the display of forced subtitles only with the audio language set
             if G.ADDON.getSettingBool('show_forced_subtitles_only'):
-                if self.legacy_kodi_version:
-                    self._ensure_forced_subtitle_only_kodi18()
-                else:
-                    self._ensure_forced_subtitle_only()
+                self._ensure_forced_subtitle_only()
             # Ensure in any case to show the regular subtitles when the preferred audio language is not available
-            if not self.legacy_kodi_version and G.ADDON.getSettingBool('show_subtitles_miss_audio'):
+            if G.ADDON.getSettingBool('show_subtitles_miss_audio'):
                 self._ensure_subtitles_no_audio_available()
             player_state = _player_state_copy
         for stype in sorted(STREAMS):
@@ -176,33 +169,21 @@ class AMStreamContinuity(ActionManager):
             return
         LOG.debug('Trying to restore {} with stored data {}', stype, stored_stream)
         data_type_dict = isinstance(stored_stream, dict)
-        if self.legacy_kodi_version:
-            # Kodi version 18, this is the old method that have a unresolvable bug:
-            # in cases where between episodes there are a number of different streams the
-            # audio/subtitle selection fails by setting a wrong language,
-            # there is no way with Kodi 18 to compare the streams.
-            # will be removed when Kodi 18 is deprecated
-            if not self._is_stream_value_equal(self.current_streams[stype], stored_stream):
+        # Compares stream properties to find the right stream index
+        # between episodes with a different numbers of streams
+        if not self._is_stream_value_equal(self.current_streams[stype], stored_stream):
+            if data_type_dict:
+                index = self._find_stream_index(self.player_state[STREAMS[stype]['list']],
+                                                stored_stream)
+                if index is None:
+                    LOG.debug('No stream match found for {} and {} for videoid {}',
+                              stype, stored_stream, self.videoid_parent)
+                    return
+                value = index
+            else:
                 # subtitleenabled is boolean and not a dict
-                set_stream(self.player, (stored_stream['index']
-                                         if data_type_dict
-                                         else stored_stream))
-        else:
-            # Kodi version >= 19, compares stream properties to find the right stream index
-            # between episodes with a different numbers of streams
-            if not self._is_stream_value_equal(self.current_streams[stype], stored_stream):
-                if data_type_dict:
-                    index = self._find_stream_index(self.player_state[STREAMS[stype]['list']],
-                                                    stored_stream)
-                    if index is None:
-                        LOG.debug('No stream match found for {} and {} for videoid {}',
-                                  stype, stored_stream, self.videoid_parent)
-                        return
-                    value = index
-                else:
-                    # subtitleenabled is boolean and not a dict
-                    value = stored_stream
-                set_stream(self.player, value)
+                value = stored_stream
+            set_stream(self.player, value)
         self.current_streams[stype] = stored_stream
         LOG.debug('Restored {} to {}', stype, stored_stream)
 
@@ -216,7 +197,6 @@ class AMStreamContinuity(ActionManager):
     def _find_stream_index(self, streams, stored_stream):
         """
         Find the right stream index
-        --- THIS WORKS ONLY WITH KODI VERSION 19 AND UP
         in the case of episodes, it is possible that between different episodes some languages are
         not present, so the indexes are changed, then you have to rely on the streams properties
         """
@@ -310,36 +290,6 @@ class AMStreamContinuity(ActionManager):
             # We update the current player state data to avoid wrong behaviour with features executed after
             self.player_state[STREAMS['subtitle']['current']] = stream_sub
         else:
-            self.sc_settings.update({'subtitleenabled': False})
-
-    def _ensure_forced_subtitle_only_kodi18(self):
-        """Ensures the display of forced subtitles only with the audio language set [KODI 18]"""
-        # With Kodi 18 it is not possible to read the properties of the player streams,
-        # so the only possible way is to read the data from the manifest file
-        from resources.lib.common.cache_utils import CACHE_MANIFESTS
-        from resources.lib.utils.esn import get_esn
-        # Get the manifest
-        cache_identifier = get_esn() + '_' + self.videoid.value
-        manifest = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
-        common.fix_locale_languages(manifest['timedtexttracks'])
-        # Get the language
-        audio_language = common.get_kodi_audio_language()
-        if audio_language == 'mediadefault':
-            # Netflix do not have a "Media default" track then we rely on the language of current nf profile,
-            # although due to current Kodi locale problems could be not always accurate.
-            profile_language_code = G.LOCAL_DB.get_profile_config('language')
-            audio_language = profile_language_code[0:2]
-        if audio_language == 'original':
-            # Find the language of the original audio track
-            stream = next((audio_track for audio_track in manifest['audio_tracks']
-                           if audio_track['isNative']), None)
-            if not stream:
-                return
-            audio_language = stream['language']
-        # Check in the manifest if there is a forced subtitle in the specified language
-        if not any(text_track.get('isForcedNarrative', False)
-                   and text_track['language'] == audio_language
-                   for text_track in manifest['timedtexttracks']):
             self.sc_settings.update({'subtitleenabled': False})
 
     def _ensure_forced_subtitle_only(self):
@@ -437,14 +387,6 @@ class AMStreamContinuity(ActionManager):
         return audio_language
 
     def _is_stream_value_equal(self, stream_a, stream_b):
-        if self.legacy_kodi_version:
-            # Kodi version 18, compare dict values directly, this will always fails when
-            # between episodes the number of streams change,
-            # there is no way with Kodi 18 to compare the streams
-            # will be removed when Kodi 18 is deprecated
-            return stream_a == stream_b
-        # Kodi version >= 19, compares stream properties to find the right stream index
-        # between episodes with a different numbers of streams
         if isinstance(stream_a, dict):
             return common.compare_dict_keys(stream_a, stream_b,
                                             ['channels', 'codec', 'isdefault', 'isimpaired', 'isoriginal', 'language'])

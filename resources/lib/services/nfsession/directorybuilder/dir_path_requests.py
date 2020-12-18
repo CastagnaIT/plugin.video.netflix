@@ -7,10 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
-from future.utils import iteritems, raise_from
-
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
                                             SearchVideoList, CustomVideoList)
@@ -24,7 +20,7 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
-class DirectoryPathRequests(object):
+class DirectoryPathRequests:
     """Builds and executes PATH requests for the directories"""
 
     nfsession = None
@@ -39,7 +35,7 @@ class DirectoryPathRequests(object):
             if video_list:
                 # pylint: disable=unused-variable
                 items = [common.VideoId.from_videolist_item(video)
-                         for video_id, video in iteritems(video_list.videos)
+                         for video_id, video in video_list.videos.items()
                          if video['queue'].get('inQueue', False)]
             return items
         except InvalidVideoListTypeError:
@@ -86,8 +82,7 @@ class DirectoryPathRequests(object):
         try:
             return next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
         except StopIteration as exc:
-            raise_from(InvalidVideoListTypeError('No lists with context {} available'.format(context)),
-                       exc)
+            raise InvalidVideoListTypeError('No lists with context {} available'.format(context)) from exc
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='profiles_raw_data',
                               ttl=300, ignore_self_class=True)

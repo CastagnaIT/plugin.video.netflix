@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import xbmc
 
 import resources.lib.common as common
@@ -24,7 +22,7 @@ from resources.lib.utils.esn import get_esn, generate_android_esn, generate_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
-class AddonActionExecutor(object):
+class AddonActionExecutor:
     """Executes actions"""
     # pylint: disable=no-self-use
     def __init__(self, params):

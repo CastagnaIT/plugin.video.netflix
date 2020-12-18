@@ -7,12 +7,11 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
 import random
 import time
 from functools import wraps
+from urllib.parse import urlencode
 
 import xbmcgui
 
@@ -22,16 +21,6 @@ from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
-
-try:  # Python 2
-    from urllib import urlencode
-except ImportError:  # Python 3
-    from urllib.parse import urlencode
 
 CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 # 16/10/2020 There is a new api endpoint to now used only for events/logblobs
@@ -65,10 +54,7 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            if isinstance(exc, MSLError):
-                message = exc.__class__.__name__ + ': ' + G.py2_decode(str(exc))
-            else:
-                message = exc.__class__.__name__ + ': ' + str(exc)
+            message = exc.__class__.__name__ + ': ' + str(exc)
             ui.show_error_info(common.get_local_string(30028), message,
                                unknown_error=not message,
                                netflix_error=isinstance(exc, MSLError))
@@ -102,11 +88,7 @@ def build_media_tag(player_state, manifest):
 
     audio_downloadable_id, audio_track_id = _find_audio_data(player_state, manifest)
     video_downloadable_id, video_track_id = _find_video_data(player_state, manifest)
-    # Warning 'currentsubtitle' value in player_state on Kodi 18
-    # do not have proprieties like isdefault, isforced, isimpaired
-    # if in the future the implementation will be done it should be available only on Kodi 19
-    # then for now we leave the subtitles as disabled
-
+    # Todo: subtitles data set always as disabled, could be added in future
     text_track_id = 'T:1:1;1;NONE;0;1;'
 
     play_times = {

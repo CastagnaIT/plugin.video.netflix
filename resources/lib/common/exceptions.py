@@ -7,7 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
 # Note: This module is also used to dynamically raise exceptions for IPC (see _raise_for_error in ipc.py)
 
 
@@ -64,7 +63,7 @@ class MSLError(Exception):
     def __init__(self, message, err_number=None):
         self.message = message
         self.err_number = err_number
-        super(MSLError, self).__init__(self.message)
+        super().__init__(self.message)
 
 
 class LicenseError(MSLError):

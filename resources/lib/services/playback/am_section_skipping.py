@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import xbmc
 
 import resources.lib.common as common
@@ -27,7 +25,7 @@ class AMSectionSkipper(ActionManager):
     SETTING_ID = 'SectionSkipper_enabled'
 
     def __init__(self):
-        super(AMSectionSkipper, self).__init__()
+        super().__init__()
         self.markers = {}
         self.auto_skip = False
         self.pause_on_skip = False

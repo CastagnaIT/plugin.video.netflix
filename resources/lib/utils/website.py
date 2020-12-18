@@ -7,12 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
 from re import search, compile as recompile, DOTALL, sub
-
-from future.utils import iteritems, raise_from
 
 import xbmc
 
@@ -26,10 +22,6 @@ from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
 from .esn import generate_android_esn
 from .logging import LOG, measure_exec_time_decorator
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 PAGE_ITEMS_INFO = [
     'models/userInfo/data/name',
@@ -141,7 +133,7 @@ def parse_profiles(data):
             raise InvalidProfilesError('It has not been possible to obtain the list of profiles.')
         sort_order = 0
         current_guids = []
-        for index, profile_data in iteritems(profiles_list):  # pylint: disable=unused-variable
+        for index, profile_data in profiles_list.items():  # pylint: disable=unused-variable
             summary = jgraph_get('summary', profile_data)
             guid = summary['guid']
             current_guids.append(guid)
@@ -151,9 +143,9 @@ def parse_profiles(data):
             G.LOCAL_DB.set_profile(guid, is_active, sort_order)
             G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
-            summary['language_desc'] = G.py2_decode(xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME))
+            summary['language_desc'] = xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME)
             if LOG.level == LOG.LEVEL_VERBOSE:
-                for key, value in iteritems(summary):
+                for key, value in summary.items():
                     if key in PROFILE_DEBUG_INFO:
                         LOG.debug('Profile info {}', {key: value})
             # Translate the profile name, is coded as HTML
@@ -164,9 +156,9 @@ def parse_profiles(data):
         _delete_non_existing_profiles(current_guids)
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc(), 'latin-1')
         LOG.error('Profile list data: {}', profiles_list)
-        raise_from(InvalidProfilesError, exc)
+        raise InvalidProfilesError from exc
 
 
 def _delete_non_existing_profiles(current_guids):
@@ -271,12 +263,12 @@ def validate_login(react_context):
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError) as exc:
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             error_msg = (
                 'Something is wrong in PAGE_ITEM_ERROR_CODE or PAGE_ITEM_ERROR_CODE_LIST paths.'
                 'react_context data may have changed.')
             LOG.error(error_msg)
-            raise_from(WebsiteParsingError(error_msg), exc)
+            raise WebsiteParsingError(error_msg) from exc
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -300,8 +292,8 @@ def extract_json(content, name):
             # For testing purposes remember to add raw prefix to the string to test: json_str = r'string to test'
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise_from(WebsiteParsingError('Unable to extract {}'.format(name)), exc)
+        LOG.error(traceback.format_exc())
+        raise WebsiteParsingError('Unable to extract {}'.format(name)) from exc
 
 
 def extract_parental_control_data(content, current_maturity):
@@ -333,18 +325,14 @@ def extract_parental_control_data(content, current_maturity):
             raise WebsiteParsingError('Unable to get maturity rating levels')
         return {'rating_levels': rating_levels, 'current_level_index': current_level_index}
     except KeyError as exc:
-        raise_from(WebsiteParsingError('Unable to get path in to reactContext data'), exc)
+        raise WebsiteParsingError('Unable to get path in to reactContext data') from exc
 
 
 def parse_html(html_value):
     """Parse HTML entities"""
-    try:  # Python 2
-        from HTMLParser import HTMLParser
-        return HTMLParser().unescape(html_value)
-    except ImportError:
-        try:  # Python >= 3.4
-            from html import unescape
-            return unescape(html_value)
-        except ImportError:  # Python <= 3.3
-            from html.parser import HTMLParser
-            return HTMLParser().unescape(html_value)  # pylint: disable=no-member
+    try:  # Python >= 3.4
+        from html import unescape
+        return unescape(html_value)
+    except ImportError:  # Python <= 3.3
+        from html.parser import HTMLParser
+        return HTMLParser().unescape(html_value)  # pylint: disable=no-member

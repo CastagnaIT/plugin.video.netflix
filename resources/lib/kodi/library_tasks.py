@@ -8,8 +8,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import os
 import re
 
@@ -86,7 +84,7 @@ class LibraryTasks(LibraryJobs):
             job_handler(job_data, get_library_path())
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             LOG.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
             list_errors.append({'title': job_data['title'],
                                 'error': '{}: {}'.format(type(exc).__name__, exc)})

@@ -7,21 +7,14 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import xml.etree.ElementTree as ET
 from resources.lib.globals import G
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.utils.logging import LOG
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
-
-class NFOSettings(object):
+class NFOSettings:
     def __init__(self, enforce=None):
         """
         :param enforce: Used for export new episode, to force the nfo export status
@@ -177,5 +170,5 @@ def _build_root_node(root_name, tags):
     for (k, v) in list(tags.items()):
         if v:
             tag = ET.SubElement(root, k)
-            tag.text = unicode(v)
+            tag.text = str(v)
     return root

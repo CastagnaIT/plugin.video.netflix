@@ -8,23 +8,20 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
+import time
 
-from future.utils import raise_from
-
-import resources.lib.utils.website as website
 import resources.lib.common as common
+import resources.lib.utils.website as website
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
                                              HttpError401, NotLoggedInError, HttpErrorTimeout)
-from resources.lib.kodi import ui
-from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.services.nfsession.session.endpoints import ENDPOINTS, BASE_URL
-from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
+from resources.lib.utils import cookies
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class SessionHTTPRequests(SessionBase):
@@ -57,7 +54,7 @@ class SessionHTTPRequests(SessionBase):
         LOG.debug('Executing {verb} request to {url}',
                   verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
-        start = perf_clock()
+        start = time.perf_counter()
         try:
             response = method(
                 url=url,
@@ -68,8 +65,8 @@ class SessionHTTPRequests(SessionBase):
                 timeout=8)
         except exceptions.ReadTimeout as exc:
             LOG.error('HTTP Request ReadTimeout error: {}', exc)
-            raise_from(HttpErrorTimeout, exc)
-        LOG.debug('Request took {}s', perf_clock() - start)
+            raise HttpErrorTimeout from exc
+        LOG.debug('Request took {}s', time.perf_counter() - start)
         LOG.debug('Request returned status code {}', response.status_code)
         # for redirect in response.history:
         #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
@@ -104,7 +101,7 @@ class SessionHTTPRequests(SessionBase):
             import traceback
             LOG.warn('Failed to refresh session data, login can be expired or the password has been changed ({})',
                      type(exc).__name__)
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
             self.session.cookies.clear()
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
@@ -112,17 +109,17 @@ class SessionHTTPRequests(SessionBase):
             # Needed to do a new login
             common.purge_credentials()
             ui.show_notification(common.get_local_string(30008))
-            raise_from(NotLoggedInError, exc)
+            raise NotLoggedInError from exc
         except exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
-            LOG.warn(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.warn(traceback.format_exc())
             if raise_exception:
                 raise
         except Exception:  # pylint: disable=broad-except
             import traceback
             LOG.warn('Failed to refresh session data, login expired (Exception)')
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
             self.session.cookies.clear()
             if raise_exception:
                 raise

@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import os
 import xml.etree.ElementTree as ET
 
@@ -17,16 +15,6 @@ import xbmcvfs
 
 from resources.lib.globals import G
 from .misc_utils import build_url
-
-try:  # Kodi >= 19
-    from xbmcvfs import makeLegalFilename  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import makeLegalFilename  # pylint: disable=ungrouped-imports
-
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
 
 
 def check_folder_path(path):
@@ -66,7 +54,7 @@ def file_exists(file_path):
     :param file_path: File path to check
     :return: True if exists
     """
-    return xbmcvfs.exists(translatePath(file_path))
+    return xbmcvfs.exists(xbmcvfs.translatePath(file_path))
 
 
 def copy_file(from_path, to_path):
@@ -77,8 +65,8 @@ def copy_file(from_path, to_path):
     :return: True if copied
     """
     try:
-        return xbmcvfs.copy(translatePath(from_path),
-                            translatePath(to_path))
+        return xbmcvfs.copy(xbmcvfs.translatePath(from_path),
+                            xbmcvfs.translatePath(to_path))
     finally:
         pass
 
@@ -100,7 +88,7 @@ def save_file(file_path, content, mode='wb'):
     :param content: The content of the file
     :param mode: optional mode options
     """
-    file_handle = xbmcvfs.File(translatePath(file_path), mode)
+    file_handle = xbmcvfs.File(xbmcvfs.translatePath(file_path), mode)
     try:
         file_handle.write(bytearray(content))
     finally:
@@ -124,7 +112,7 @@ def load_file(file_path, mode='rb'):
     :param mode: optional mode options
     :return: The content of the file
     """
-    file_handle = xbmcvfs.File(translatePath(file_path), mode)
+    file_handle = xbmcvfs.File(xbmcvfs.translatePath(file_path), mode)
     try:
         return file_handle.readBytes().decode('utf-8')
     finally:
@@ -140,7 +128,7 @@ def delete_file_safe(file_path):
 
 
 def delete_file(filename):
-    file_path = translatePath(os.path.join(G.DATA_PATH, filename))
+    file_path = xbmcvfs.translatePath(os.path.join(G.DATA_PATH, filename))
     try:
         xbmcvfs.delete(file_path)
     finally:
@@ -161,16 +149,16 @@ def delete_folder_contents(path, delete_subfolders=False):
     :param path: Path to perform delete contents
     :param delete_subfolders: If True delete also all subfolders
     """
-    directories, files = list_dir(translatePath(path))
+    directories, files = list_dir(xbmcvfs.translatePath(path))
     for filename in files:
-        xbmcvfs.delete(os.path.join(path, G.py2_decode(filename)))
+        xbmcvfs.delete(os.path.join(path, filename))
     if not delete_subfolders:
         return
     for directory in directories:
-        delete_folder_contents(os.path.join(path, G.py2_decode(directory)), True)
+        delete_folder_contents(os.path.join(path, directory), True)
         # Give time because the system performs previous op. otherwise it can't delete the folder
         xbmc.sleep(80)
-        xbmcvfs.rmdir(os.path.join(path, G.py2_decode(directory)))
+        xbmcvfs.rmdir(os.path.join(path, directory))
 
 
 def delete_folder(path):
@@ -178,12 +166,12 @@ def delete_folder(path):
     delete_folder_contents(path, True)
     # Give time because the system performs previous op. otherwise it can't delete the folder
     xbmc.sleep(80)
-    xbmcvfs.rmdir(translatePath(path))
+    xbmcvfs.rmdir(xbmcvfs.translatePath(path))
 
 
 def write_strm_file(videoid, file_path):
     """Write a playable URL to a STRM file"""
-    filehandle = xbmcvfs.File(translatePath(file_path), 'wb')
+    filehandle = xbmcvfs.File(xbmcvfs.translatePath(file_path), 'wb')
     try:
         filehandle.write(bytearray(build_url(videoid=videoid,
                                              mode=G.MODE_PLAY_STRM).encode('utf-8')))
@@ -193,7 +181,7 @@ def write_strm_file(videoid, file_path):
 
 def write_nfo_file(nfo_data, file_path):
     """Write a NFO file"""
-    filehandle = xbmcvfs.File(translatePath(file_path), 'wb')
+    filehandle = xbmcvfs.File(xbmcvfs.translatePath(file_path), 'wb')
     try:
         filehandle.write(bytearray('<?xml version=\'1.0\' encoding=\'UTF-8\'?>'.encode('utf-8')))
         filehandle.write(bytearray(ET.tostring(nfo_data, encoding='utf-8', method='xml')))
@@ -204,4 +192,4 @@ def write_nfo_file(nfo_data, file_path):
 def join_folders_paths(*args):
     """Join multiple folder paths in a safe way"""
     # Avoid the use of os.path.join, in some cases with special chars like % break the path
-    return G.py2_decode(makeLegalFilename('/'.join(args)))
+    return xbmcvfs.makeLegalFilename('/'.join(args))

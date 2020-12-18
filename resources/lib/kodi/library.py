@@ -8,12 +8,10 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import os
 from datetime import datetime
 
-from future.utils import iteritems
+import xbmcvfs
 
 import resources.lib.utils.api_requests as api
 import resources.lib.common as common
@@ -28,15 +26,6 @@ from resources.lib.kodi.library_utils import (request_kodi_library_update, get_l
                                               get_library_subfolders, delay_anti_ban)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
-try:  # Kodi >= 19
-    from xbmcvfs import translatePath  # pylint: disable=ungrouped-imports
-except ImportError:  # Kodi 18
-    from xbmc import translatePath  # pylint: disable=ungrouped-imports
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 # Reasons that led to the creation of a class for the library operations:
 # - Time-consuming update functionality like "full sync of kodi library", "auto update", "export" (large tv show)
@@ -64,7 +53,6 @@ class Library(LibraryTasks):
     """Kodi library integration"""
 
     def __init__(self, func_get_metadata, func_get_mylist_videoids_profile_switch, func_req_profiles_info):
-        LibraryTasks.__init__(self)
         # External functions
         self.ext_func_get_metadata = func_get_metadata
         self.ext_func_get_mylist_videoids_profile_switch = func_get_mylist_videoids_profile_switch
@@ -229,7 +217,7 @@ class Library(LibraryTasks):
         except Exception as exc:  # pylint: disable=broad-except
             import traceback
             LOG.error('An error has occurred in the library auto update: {}', exc)
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
         finally:
             G.SHARED_DB.set_value('library_auto_update_is_running', False)
 
@@ -240,7 +228,7 @@ class Library(LibraryTasks):
 
         # Check if tv shows have been removed from the My List
         for videoid_value in exp_tvshows_videoids_values:
-            if unicode(videoid_value) in mylist_video_id_list:
+            if str(videoid_value) in mylist_video_id_list:
                 continue
             # The tv show no more exist in My List so remove it from library
             videoid = common.VideoId.from_path([common.VideoId.SHOW, videoid_value])
@@ -248,7 +236,7 @@ class Library(LibraryTasks):
 
         # Check if movies have been removed from the My List
         for videoid_value in exp_movies_videoids_values:
-            if unicode(videoid_value) in mylist_video_id_list:
+            if str(videoid_value) in mylist_video_id_list:
                 continue
             # The movie no more exist in My List so remove it from library
             videoid = common.VideoId.from_path([common.VideoId.MOVIE, videoid_value])
@@ -273,7 +261,7 @@ class Library(LibraryTasks):
         excluded_videoids_values = G.SHARED_DB.get_tvshows_id_list(VidLibProp['exclude_update'], True)
         # Start the update operations
         with ui.ProgressDialog(show_prg_dialog, max_value=len(videoids_tasks)) as progress_bar:
-            for videoid, task_handler in iteritems(videoids_tasks):
+            for videoid, task_handler in videoids_tasks.items():
                 # Check if current videoid is excluded from updates
                 if int(videoid.value) in excluded_videoids_values:
                     continue
@@ -323,7 +311,7 @@ class Library(LibraryTasks):
         folders = get_library_subfolders(FOLDER_NAME_MOVIES, path) + get_library_subfolders(FOLDER_NAME_SHOWS, path)
         with ui.ProgressDialog(True, max_value=len(folders)) as progress_bar:
             for folder_path in folders:
-                folder_name = os.path.basename(G.py2_decode(translatePath(folder_path)))
+                folder_name = os.path.basename(xbmcvfs.translatePath(folder_path))
                 progress_bar.set_message(folder_name)
                 try:
                     videoid = self.import_videoid_from_existing_strm(folder_path, folder_name)

@@ -7,24 +7,13 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import json
-from future.utils import raise_from
+from http.server import BaseHTTPRequestHandler
+from socketserver import TCPServer
 
 from resources.lib.common.exceptions import InvalidPathError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-
-try:  # Python 3
-    from http.server import BaseHTTPRequestHandler
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-
-try:  # Python 3
-    from socketserver import TCPServer
-except ImportError:
-    from SocketServer import TCPServer
 
 
 class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
@@ -55,7 +44,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
@@ -75,7 +64,7 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:  # pylint: disable=broad-except
             if exc.__class__.__name__ != 'CacheMiss':
                 import traceback
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
             self.send_response(500, exc.__class__.__name__)
             self.end_headers()
 
@@ -87,8 +76,7 @@ def _call(instance, func_name, data):
     try:
         func = getattr(instance, func_name)
     except AttributeError as exc:
-        raise_from(InvalidPathError('Name of the method {} not found'.format(func_name)),
-                   exc)
+        raise InvalidPathError('Name of the method {} not found'.format(func_name)) from exc
     if isinstance(data, dict):
         return func(**data)
     if data is not None:
@@ -101,4 +89,4 @@ class CacheTCPServer(TCPServer):
     def __init__(self, server_address):
         """Initialization of CacheTCPServer"""
         LOG.info('Constructing CacheTCPServer')
-        TCPServer.__init__(self, server_address, NetflixHttpRequestHandler)
+        super().__init__(server_address, NetflixHttpRequestHandler)

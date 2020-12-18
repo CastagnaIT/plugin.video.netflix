@@ -8,11 +8,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import re
-
-from future.utils import raise_from
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
@@ -27,11 +23,6 @@ from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
-
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 
 class SessionAccess(SessionCookie, SessionHTTPRequests):
@@ -53,7 +44,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             # It was not possible to connect to the web service, no connection, network problem, etc
             import traceback
             LOG.error('Login prefetch: request exception {}', exc)
-            LOG.debug(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.debug(traceback.format_exc())
         except Exception as exc:  # pylint: disable=broad-except
             LOG.warn('Login prefetch: failed {}', exc)
         return False
@@ -124,7 +115,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except exceptions.HTTPError as exc:
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
-                raise_from(LoginError(common.get_local_string(12344)), exc)
+                raise LoginError(common.get_local_string(12344)) from exc
             raise
         common.set_credentials({'email': email, 'password': password})
         LOG.info('Login successful')
@@ -157,15 +148,15 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         except LoginValidateError as exc:
             self.session.cookies.clear()
             common.purge_credentials()
-            raise_from(LoginError(unicode(exc)), exc)
+            raise LoginError(str(exc)) from exc
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError) as exc:
             self.session.cookies.clear()
             LOG.warn('Membership status {} not valid for login', exc)
-            raise_from(LoginError(common.get_local_string(30180)), exc)
+            raise LoginError(common.get_local_string(30180)) from exc
         except Exception:  # pylint: disable=broad-except
             self.session.cookies.clear()
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
             raise
 
     @measure_exec_time_decorator(is_immediate=True)

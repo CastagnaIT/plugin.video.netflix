@@ -7,10 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
-from future.utils import raise_from
-
 import inputstreamhelper
 from xbmc import getCondVisibility
 from xbmcaddon import Addon
@@ -59,8 +55,8 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
-        raise_from(InputStreamHelperError(str(exc)), exc)
+        LOG.error(traceback.format_exc())
+        raise InputStreamHelperError(str(exc)) from exc
 
     isa_addon = Addon('inputstream.adaptive')
     isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)

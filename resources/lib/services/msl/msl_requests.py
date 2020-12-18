@@ -8,14 +8,12 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import base64
 import json
 import re
+import time
 import zlib
 
-from future.utils import raise_from
 from requests import exceptions
 
 import resources.lib.common as common
@@ -25,14 +23,14 @@ from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
                                                   MSL_DATA_FILENAME, create_req_params)
 from resources.lib.utils.esn import get_esn
-from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
+from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
 class MSLRequests(MSLRequestBuilder):
     """Provides methods to make MSL requests"""
 
     def __init__(self, msl_data=None):
-        super(MSLRequests, self).__init__()
+        super().__init__()
         from requests import session
         self.session = session()
         self.session.headers.update({
@@ -50,7 +48,7 @@ class MSLRequests(MSLRequestBuilder):
             self.crypto.load_crypto_session(msl_data)
         except Exception:  # pylint: disable=broad-except
             import traceback
-            LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+            LOG.error(traceback.format_exc())
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
@@ -70,7 +68,7 @@ class MSLRequests(MSLRequestBuilder):
             if exc.err_number == 207006 and common.get_system_platform() == 'android':
                 msg = ('Request failed validation during key exchange\r\n'
                        'To try to solve this problem read the Wiki FAQ on add-on GitHub.')
-                raise_from(MSLError(msg), exc)
+                raise MSLError(msg) from exc
             raise
         # Delete all the user id tokens (are correlated to the previous mastertoken)
         self.crypto.clear_user_id_tokens()
@@ -180,10 +178,10 @@ class MSLRequests(MSLRequestBuilder):
             else:
                 _endpoint = endpoint
             LOG.debug('Executing POST request to {}', _endpoint)
-            start = perf_clock()
+            start = time.perf_counter()
             try:
                 response = self.session.post(_endpoint, request_data, timeout=4)
-                LOG.debug('Request took {}s', perf_clock() - start)
+                LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 response.raise_for_status()
                 return response
@@ -235,8 +233,7 @@ def _process_json_response(response):
     try:
         return _raise_if_error(response.json())
     except ValueError as exc:
-        raise_from(MSLError('Expected JSON response, got {}'.format(response.text)),
-                   exc)
+        raise MSLError('Expected JSON response, got {}'.format(response.text)) from exc
 
 
 def _raise_if_error(decoded_response):
@@ -275,7 +272,7 @@ def _get_error_details(decoded_response):
             if decoded_response['result'][0]['error'].get('errorDisplayMessage'):
                 err_message = decoded_response['result'][0]['error']['errorDisplayMessage']
                 err_number = decoded_response['result'][0]['error'].get('bladeRunnerCode')
-    return G.py2_encode(err_message), err_number
+    return err_message, err_number
 
 
 @measure_exec_time_decorator(is_immediate=True)

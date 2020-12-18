@@ -7,9 +7,6 @@
     See LICENSES/GPL-3.0-only.md for more information.
 """
 # pylint: disable=unused-argument
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import sys
 import os
 import json
@@ -178,13 +175,6 @@ def getRegion(key):
 def log(msg, level):
     """A reimplementation of the xbmc log() function"""
     print('[32;1m%s: [32;0m%s[0m' % (level, msg))
-
-
-def makeLegalFilename(filename, fatX=None):  # Kodi 18
-    """A reimplementation of the xbmc makeLegalFilename() function"""
-    if fatX:
-        return filename
-    return os.path.basename(filename)
 
 
 def setContent(self, content):

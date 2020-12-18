@@ -7,8 +7,6 @@
     See LICENSES/GPL-3.0-only.md for more information.
 """
 # pylint: disable=unused-argument
-
-from __future__ import absolute_import, division, print_function, unicode_literals
 from xbmcextra import kodi_to_ansi, uri_to_path
 
 SORT_METHOD_NONE = 0

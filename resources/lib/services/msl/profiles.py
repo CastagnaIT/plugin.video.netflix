@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 from resources.lib.globals import G
 import resources.lib.common as common
 
@@ -88,11 +86,8 @@ def enabled_profiles():
 
 
 def _subtitle_profiles():
-    from xbmcaddon import Addon
-    isa_version = G.remove_ver_suffix(G.py2_decode(Addon('inputstream.adaptive').getAddonInfo('version')))
     subtitle_profile = ['webvtt-lssdh-ios8']
-    if G.ADDON.getSettingBool('disable_webvtt_subtitle') \
-       or not common.is_minimum_version(isa_version, '2.3.8'):
+    if G.ADDON.getSettingBool('disable_webvtt_subtitle'):
         subtitle_profile = ['simplesdh']
     return subtitle_profile
 

@@ -8,16 +8,14 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
-from .ipc import *  # pylint: disable=redefined-builtin
-from .videoid import *  # pylint: disable=redefined-builtin
+from .ipc import *
+from .videoid import *
 from .credentials import *
 from .fileops import *
-from .kodi_ops import *  # pylint: disable=redefined-builtin
+from .kodi_ops import *
 from .kodi_library_ops import *
 from .pathops import *
-from .device_utils import *  # pylint: disable=redefined-builtin
-from .misc_utils import *  # pylint: disable=redefined-builtin
-from .data_conversion import *  # pylint: disable=redefined-builtin
-from .uuid_device import *  # pylint: disable=redefined-builtin
+from .device_utils import *
+from .misc_utils import *
+from .data_conversion import *
+from .uuid_device import *

@@ -7,8 +7,6 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import os
 import random
 from datetime import datetime, timedelta
@@ -40,7 +38,7 @@ def get_library_path():
 def get_library_subfolders(folder_name, custom_lib_path=None):
     """Returns all the subfolders contained in a folder of library path"""
     section_path = common.join_folders_paths(custom_lib_path or get_library_path(), folder_name)
-    return [common.join_folders_paths(section_path, G.py2_decode(folder))
+    return [common.join_folders_paths(section_path, folder)
             for folder
             in common.list_dir(section_path)[0]]
 

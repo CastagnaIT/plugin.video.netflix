@@ -8,13 +8,10 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
 import time
 
 import resources.lib.utils.cookies as cookies
 from resources.lib.common.exceptions import MissingCookiesError
-from resources.lib.globals import G
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.utils.logging import LOG
 
@@ -35,7 +32,7 @@ class SessionCookie(SessionBase):
             except Exception as exc:
                 import traceback
                 LOG.error('Failed to load stored cookies: {}', type(exc).__name__)
-                LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+                LOG.error(traceback.format_exc())
                 return False
             LOG.info('Successfully loaded stored cookies')
         return True

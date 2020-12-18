@@ -7,16 +7,9 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from __future__ import absolute_import, division, unicode_literals
-
-from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
 
-try:  # Python 2
-    unicode
-except NameError:  # Python 3
-    unicode = str  # pylint: disable=redefined-builtin
 
 __CRYPT_KEY__ = None
 
@@ -38,7 +31,7 @@ def get_random_uuid():
     :return: a string of a random uuid
     """
     import uuid
-    return unicode(uuid.uuid4())
+    return str(uuid.uuid4())
 
 
 def get_namespace_uuid(name):
@@ -75,13 +68,10 @@ def _get_system_uuid():
 
 def _get_windows_uuid():
     # pylint: disable=broad-except
-    # pylint: disable=no-member
+    # pylint: disable=import-error  # Under linux pylint rightly complains
     uuid_value = None
     try:
-        try:  # Python 2
-            import _winreg as winreg
-        except ImportError:  # Python 3
-            import winreg
+        import winreg
         registry = winreg.HKEY_LOCAL_MACHINE
         address = 'SOFTWARE\\Microsoft\\Cryptography'
         keyargs = winreg.KEY_READ | winreg.KEY_WOW64_64KEY
@@ -111,7 +101,7 @@ def _get_linux_uuid():
     except Exception as exc:
         import traceback
         LOG.error('_get_linux_uuid first attempt returned: {}', exc)
-        LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
+        LOG.error(traceback.format_exc())
     if not uuid_value:
         try:
             # Fedora linux
@@ -169,12 +159,7 @@ def _parse_osx_xml_plist_data(data):
     import plistlib
     import re
     dict_values = {}
-    try:  # Python 2
-        xml_data = plistlib.readPlistFromString(data)
-    except AttributeError:  # Python => 3.4
-        # pylint: disable=no-member
-        xml_data = plistlib.loads(data)
-
+    xml_data = plistlib.loads(data)
     items_dict = xml_data[0]['_items'][0]
     r = re.compile(r'.*UUID.*')  # Find to example "platform_UUID" key
     uuid_keys = list(filter(r.match, list(items_dict.keys())))
