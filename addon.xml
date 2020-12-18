@@ -6,6 +6,7 @@
     <import addon="script.module.inputstreamhelper" version="0.4.4"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.requests" version="2.22.0"/>
+    <import addon="script.module.myconnpy" version="8.0.18"/> <!--MySQL Connector/Python-->
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
