@@ -13,11 +13,9 @@
 # All other modules (imports) are initialized only on the first invocation of the add-on.
 import collections
 import os
-import sys
 from urllib.parse import parse_qsl, unquote, urlparse
 
 import xbmcaddon
-import xbmcvfs
 from xbmcgui import Window
 
 
@@ -245,16 +243,6 @@ class GlobalVariables:
                                                              netloc=self.ADDON_ID)
             from resources.lib.common.kodi_ops import GetKodiVersion
             self.KODI_VERSION = GetKodiVersion()
-        # Add absolute paths of embedded py packages (packages not supplied by Kodi)
-        packages_paths = [
-            os.path.join(self.ADDON_DATA_PATH, 'packages', 'mysql-connector-python')
-        ]
-        for path in packages_paths:
-            path = xbmcvfs.translatePath(path)
-            if path not in sys.path:
-                # Add embedded package path to python system directory
-                sys.path.insert(0, path)
-
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
