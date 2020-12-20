@@ -8,6 +8,7 @@
     See LICENSES/MIT.md for more information.
 """
 import json
+from contextlib import contextmanager
 
 import xbmc
 
@@ -86,6 +87,16 @@ def container_update(url, reset_history=False):
     """Update the current container"""
     func_str = 'Container.Update({},replace)' if reset_history else 'Container.Update({})'
     xbmc.executebuiltin(func_str.format(url))
+
+
+@contextmanager
+def show_busy_dialog():
+    """Context to show the busy dialog on the screen"""
+    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
+    try:
+        yield
+    finally:
+        xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
 
 
 def get_local_string(string_id):
