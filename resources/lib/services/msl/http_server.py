@@ -8,10 +8,12 @@
     See LICENSES/MIT.md for more information.
 """
 import base64
+import json
 from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer
 from urllib.parse import parse_qs, urlparse
 
+from resources.lib import common
 from resources.lib.common.exceptions import MSLError
 from resources.lib.utils.logging import LOG
 from .msl_handler import MSLHandler
@@ -29,17 +31,33 @@ class MSLHttpRequestHandler(BaseHTTPRequestHandler):
         try:
             url_parse = urlparse(self.path)
             LOG.debug('Handling HTTP POST IPC call to {}', url_parse.path)
-            if '/license' not in url_parse:
-                self.send_response(404)
+            if '/license' in url_parse:
+                length = int(self.headers.get('content-length', 0))
+                data = self.rfile.read(length).decode('utf-8').split('!')
+                b64license = self.server.msl_handler.get_license(
+                    challenge=data[0], sid=base64.standard_b64decode(data[1]).decode('utf-8'))
+                self.send_response(200)
                 self.end_headers()
-                return
-            length = int(self.headers.get('content-length', 0))
-            data = self.rfile.read(length).decode('utf-8').split('!')
-            b64license = self.server.msl_handler.get_license(
-                challenge=data[0], sid=base64.standard_b64decode(data[1]).decode('utf-8'))
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(base64.standard_b64decode(b64license))
+                self.wfile.write(base64.standard_b64decode(b64license))
+            else:
+                func_name = self.path[1:]
+                length = int(self.headers.get('content-length', 0))
+                data = json.loads(self.rfile.read(length)) or None
+                try:
+                    result = self.server.msl_handler.http_ipc_slots[func_name](data)
+                    if isinstance(result, dict) and common.IPC_EXCEPTION_PLACEHOLDER in result:
+                        self.send_response(500, json.dumps(result))
+                        self.end_headers()
+                        return
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(json.dumps(result).encode('utf-8'))
+                except KeyError:
+                    self.send_response(500, json.dumps(
+                        common.ipc_convert_exc_to_json(class_name='SlotNotImplemented',
+                                                       message='The specified slot {} does not exist'.format(func_name))
+                    ))
+                    self.end_headers()
         except Exception as exc:
             import traceback
             LOG.error(traceback.format_exc())
