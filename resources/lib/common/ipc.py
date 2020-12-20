@@ -74,21 +74,21 @@ def _send_signal(signal, data):
 
 
 @measure_exec_time_decorator()
-def make_call(callname, data=None):
+def make_call(callname, data=None, port_setting_name='ns_service_port'):
     # Note: IPC over HTTP handle FULL objects serialization, AddonSignals NOT HANDLE the serialization of objects
     if G.IPC_OVER_HTTP:
-        return make_http_call(callname, data)
+        return make_http_call(callname, data, port_setting_name)
     return make_addonsignals_call(callname, data)
 
 
-def make_http_call(callname, data):
+def make_http_call(callname, data, port_setting_name='ns_service_port'):
     """Make an IPC call via HTTP and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function."""
     from collections import OrderedDict
     from urllib.request import build_opener, install_opener, ProxyHandler, HTTPError, URLError, urlopen
     LOG.debug('Handling HTTP IPC call to {}'.format(callname))
     # Note: On python 3, using 'localhost' slowdown the call (Windows OS is affected) not sure if it is an urllib issue
-    url = 'http://127.0.0.1:{}/{}'.format(G.LOCAL_DB.get_value('ns_service_port', 8001), callname)
+    url = 'http://127.0.0.1:{}/{}'.format(G.LOCAL_DB.get_value(port_setting_name), callname)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
         result = json.loads(
