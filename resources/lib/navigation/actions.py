@@ -14,11 +14,9 @@ import resources.lib.kodi.ui as ui
 import resources.lib.utils.api_requests as api
 from resources.lib.common import cache_utils
 from resources.lib.common.exceptions import MissingCredentialsError, CacheMiss
-from resources.lib.database.db_utils import (TABLE_SESSION, TABLE_SETTINGS_MONITOR)
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
 from resources.lib.utils.api_paths import VIDEO_LIST_RATING_THUMB_PATHS, SUPPLEMENTAL_TYPE_TRAILERS
-from resources.lib.utils.esn import get_esn, generate_android_esn, generate_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
@@ -162,43 +160,12 @@ class AddonActionExecutor:
             # the LoCo need to be updated to obtain the new list id, so we delete the cache to get new data
             G.CACHE.delete(cache_utils.CACHE_COMMON, 'loco_list')
 
-    def view_esn(self, pathitems=None):  # pylint: disable=unused-argument
-        """Show the ESN in use"""
-        ui.show_ok_dialog(common.get_local_string(30016), get_esn())
-
-    def reset_esn(self, pathitems=None):  # pylint: disable=unused-argument
-        """Reset the ESN stored (retrieved from website and manual)"""
-        if not ui.ask_for_confirmation(common.get_local_string(30217),
-                                       common.get_local_string(30218)):
+    def show_esn_widevine_options(self, pathitems=None):  # pylint: disable=unused-argument
+        # Deny opening of the dialog when the user is not logged
+        if not common.check_credentials():
+            ui.show_notification(common.get_local_string(30112))
             return
-        # Generate a new ESN
-        generated_esn = self._get_new_esn()
-        # Reset the ESN obtained from website/generated
-        G.LOCAL_DB.set_value('esn', '', TABLE_SESSION)
-        # Reset the custom ESN (manual ESN from settings)
-        G.settings_monitor_suspend(at_first_change=True)
-        G.ADDON.setSetting('esn', '')
-        # Reset the custom ESN (backup of manual ESN from settings, used in settings_monitor.py)
-        G.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
-        # Save the new ESN
-        G.LOCAL_DB.set_value('esn', generated_esn, TABLE_SESSION)
-        # Reinitialize the MSL handler (delete msl data file, then reset everything)
-        common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
-        # Show login notification
-        ui.show_notification(common.get_local_string(30109))
-        # Open root page
-        common.container_update(G.BASE_URL, True)
-
-    def _get_new_esn(self):
-        if common.get_system_platform() == 'android':
-            return generate_android_esn()
-        # In the all other systems, create a new ESN by using the existing ESN prefix
-        current_esn = G.LOCAL_DB.get_value('esn', table=TABLE_SESSION)
-        from re import search
-        esn_prefix_match = search(r'.+-', current_esn)
-        if not esn_prefix_match:
-            raise Exception('It was not possible to generate a new ESN. Before try login.')
-        return generate_esn(esn_prefix_match.group(0))
+        ui.show_esn_widevine_dialog()
 
     @common.inject_video_id(path_offset=1)
     def change_watched_status(self, videoid):
@@ -237,6 +204,7 @@ class AddonActionExecutor:
         """Show a message to the user to show the date of availability of a video"""
         ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'),
                           xbmc.getInfoLabel('ListItem.Property(nf_availability_message)'))
+
 
 def sync_library(videoid, operation):
     if operation and G.ADDON.getSettingBool('lib_sync_mylist') and G.ADDON.getSettingInt('lib_auto_upd_mode') == 2:

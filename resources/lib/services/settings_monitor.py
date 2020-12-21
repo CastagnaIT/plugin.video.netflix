@@ -14,9 +14,8 @@ import xbmc
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
-from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR, TABLE_SESSION
+from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR
 from resources.lib.globals import G
-from resources.lib.utils.esn import generate_android_esn, ForceWidevine
 from resources.lib.utils.logging import LOG
 
 
@@ -54,8 +53,6 @@ class SettingsMonitor(xbmc.Monitor):
             ui.show_notification(G.ADDON.getLocalizedString(30202))
         if not use_mysql_after and use_mysql_old:
             G.LOCAL_DB.set_value('use_mysql', False, TABLE_SETTINGS_MONITOR)
-
-        _check_esn()
 
         # Check menu settings changes
         for menu_id, menu_data in G.MAIN_MENU_ITEMS.items():
@@ -106,25 +103,6 @@ class SettingsMonitor(xbmc.Monitor):
             LOG.debug('SettingsMonitor: addon will be rebooted')
             # Open root page
             common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
-
-
-def _check_esn():
-    """Check if the custom esn is changed"""
-    custom_esn = G.ADDON.getSetting('esn')
-    custom_esn_old = G.LOCAL_DB.get_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
-    if custom_esn != custom_esn_old:
-        G.LOCAL_DB.set_value('custom_esn', custom_esn, TABLE_SETTINGS_MONITOR)
-        common.send_signal(signal=common.Signals.ESN_CHANGED)
-
-    if not custom_esn:
-        # Check if "Force identification as L3 Widevine device" is changed (ANDROID ONLY)
-        force_widevine = G.ADDON.getSettingString('force_widevine')
-        force_widevine_old = G.LOCAL_DB.get_value('force_widevine', ForceWidevine.DISABLED, TABLE_SETTINGS_MONITOR)
-        if force_widevine != force_widevine_old:
-            G.LOCAL_DB.set_value('force_widevine', force_widevine, TABLE_SETTINGS_MONITOR)
-            # If user has changed setting is needed clear previous ESN and perform a new handshake with the new one
-            G.LOCAL_DB.set_value('esn', generate_android_esn() or '', TABLE_SESSION)
-            common.send_signal(signal=common.Signals.ESN_CHANGED)
 
 
 def _check_msl_profiles():

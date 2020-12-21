@@ -82,10 +82,7 @@ msgctxt "#30015"
 msgid "Other options"
 msgstr "その他"
 
-msgctxt "#30016"
-msgid "ESN"
-msgstr "ESN"
-
+# Unused 30016
 msgctxt "#30017"
 msgid "Logout"
 msgstr "ログアウト"
@@ -148,10 +145,7 @@ msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
 msgstr "ドルビーサラウンドを使う"
 
-msgctxt "#30034"
-msgid "Manual ESN"
-msgstr "ESN入力"
-
+# Unused 30034
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "インプットストリームアドオン設定"
@@ -851,18 +845,7 @@ msgctxt "#30215"
 msgid "Color of the titles included in 'My list'"
 msgstr "マイリストにあるタイトルの色"
 
-msgctxt "#30216"
-msgid "Show ESN in use"
-msgstr "ESNを確認"
-
-msgctxt "#30217"
-msgid "Reset ESN"
-msgstr "ESN再設定"
-
-msgctxt "#30218"
-msgid "Are you sure you want to reset the ESN?[CR]If you confirm, wait until you receive the login message."
-msgstr "ESNを再設定しますか。[CR]すると、ログインメッセージをお待ち下さい。"
-
+# Unused 30216 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "同期化完了の通知を使わない。"
@@ -957,10 +940,7 @@ msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
 msgstr "最初の未視聴のエピソードを選択"
 
-msgctxt "#30244"
-msgid "Force Widevine security level L3"
-msgstr "WidevineセキュリティレベルをL3にする"
-
+# Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
 msgstr "ライブラリにエクスポートしたファイルを削除中"
@@ -1069,3 +1049,44 @@ msgstr "(利用可能であれば)国名コード付きの音声・字幕を優�
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
 msgstr "デフォルトでステレオ音声を優先"
+
+# Unused 30502 to 30599
+msgctxt "#30600"
+msgid "ESN / Widevine settings"
+msgstr ""
+
+msgctxt "#30601"
+msgid "ESN:"
+msgstr ""
+
+msgctxt "#30602"
+msgid "Change ESN"
+msgstr ""
+
+msgctxt "#30603"
+msgid "Save system info"
+msgstr ""
+
+msgctxt "#30604"
+msgid "Widevine - Force security level"
+msgstr ""
+
+msgctxt "#30605"
+msgid "Force {}"
+msgstr ""
+
+msgctxt "#30606"
+msgid "ESN set successfully[CR]Try to play a video"
+msgstr ""
+
+msgctxt "#30607"
+msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
+msgstr ""
+
+msgctxt "#30608"
+msgid "Wrong ESN format"
+msgstr ""
+
+msgctxt "#30609"
+msgid "Do you want to reset all settings?"
+msgstr ""

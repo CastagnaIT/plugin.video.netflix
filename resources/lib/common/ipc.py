@@ -25,7 +25,6 @@ class Signals:  # pylint: disable=no-init
     """Signal names for use with AddonSignals"""
     # pylint: disable=too-few-public-methods
     PLAYBACK_INITIATED = 'playback_initiated'
-    ESN_CHANGED = 'esn_changed'
     RELEASE_LICENSE = 'release_license'
     REQUEST_KODI_LIBRARY_UPDATE = 'request_kodi_library_update'
     UPNEXT_ADDON_INIT = 'upnext_data'

@@ -19,7 +19,7 @@ from resources.lib.common.exceptions import (InvalidProfilesError, InvalidAuthUR
                                              WebsiteParsingError, LoginValidateError, MbrStatusAnonymousError,
                                              MbrStatusNeverMemberError, MbrStatusFormerMemberError, DBProfilesMissing)
 from .api_paths import jgraph_get, jgraph_get_list, jgraph_get_path
-from .esn import generate_android_esn
+from .esn import get_website_esn, set_website_esn
 from .logging import LOG, measure_exec_time_decorator
 
 
@@ -89,8 +89,8 @@ def extract_session_data(content, validate=False, update_profiles=False):
 
     # Save only some info of the current profile from user data
     G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
-    if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
-        G.LOCAL_DB.set_value('esn', generate_android_esn() or user_data['esn'], TABLE_SESSION)
+    if not get_website_esn():
+        set_website_esn(user_data['esn'])
     G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
     result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
