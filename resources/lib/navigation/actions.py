@@ -67,11 +67,7 @@ class AddonActionExecutor:
         try:
             parental_control_data = api.get_parental_control_data(self.params['profile_guid'],
                                                                   password)
-            ui.show_modal_dialog(False,
-                                 ui.xmldialogs.ParentalControl,
-                                 'plugin-video-netflix-ParentalControl.xml',
-                                 G.ADDON.getAddonInfo('path'),
-                                 **parental_control_data)
+            ui.show_parental_dialog(**parental_control_data)
         except MissingCredentialsError:
             ui.show_ok_dialog('Netflix', common.get_local_string(30009))
 
@@ -87,14 +83,10 @@ class AddonActionExecutor:
             track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
             is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
             user_rating = video_data.get('userRating', {}).get('userRating') if is_thumb_rating else None
-            ui.show_modal_dialog(False,
-                                 ui.xmldialogs.RatingThumb,
-                                 'plugin-video-netflix-RatingThumb.xml',
-                                 G.ADDON.getAddonInfo('path'),
-                                 videoid=videoid,
-                                 title=title,
-                                 track_id_jaw=track_id_jaw,
-                                 user_rating=user_rating)
+            ui.show_rating_thumb_dialog(videoid=videoid,
+                                        title=title,
+                                        track_id_jaw=track_id_jaw,
+                                        user_rating=user_rating)
         else:
             LOG.warn('Rating thumb video list api request no got results for {}', videoid)
 
