@@ -95,14 +95,14 @@ class NFSessionOperations(SessionPathRequests):
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         LOG.debug('Switching to profile {}', guid)
-        if xbmc.Player().isPlayingVideo():
-            # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
-            # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
-            raise Warning('It is not possible select a profile while a video is playing.')
         current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
             LOG.info('The profile guid {} is already set, activation not needed.', guid)
             return
+        if xbmc.Player().isPlayingVideo():
+            # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
+            # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
+            raise Warning('It is not possible select a profile while a video is playing.')
         timestamp = time.time()
         LOG.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
