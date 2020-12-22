@@ -258,7 +258,7 @@ def _save_system_info():
 
 
 def _get_cdm_file_path():
-    if common.get_system_platform() in ['linux', 'linux raspberrypi']:
+    if common.get_system_platform() == 'linux':
         lib_filename = 'libwidevinecdm.so'
     elif common.get_system_platform() in ['windows', 'uwp']:
         lib_filename = 'widevinecdm.dll'

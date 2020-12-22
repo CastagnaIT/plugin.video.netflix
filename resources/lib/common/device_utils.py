@@ -41,10 +41,7 @@ def get_system_platform():
     if not hasattr(get_system_platform, 'cached'):
         platform = "unknown"
         if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
-            if xbmc.getCondVisibility('system.platform.linux.raspberrypi'):
-                platform = "linux raspberrypi"
-            else:
-                platform = "linux"
+            platform = "linux"
         elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
             platform = "android"
         elif xbmc.getCondVisibility('system.platform.uwp'):
@@ -55,7 +52,7 @@ def get_system_platform():
             platform = "osx"
         elif xbmc.getCondVisibility('system.platform.ios'):
             platform = "ios"
-        elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
+        elif xbmc.getCondVisibility('system.platform.tvos'):
             platform = "tvos"
         get_system_platform.cached = platform
     return get_system_platform.cached

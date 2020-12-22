@@ -54,7 +54,7 @@ def _get_system_uuid():
         uuid_value = _get_windows_uuid()
     elif system == 'android':
         uuid_value = _get_android_uuid()
-    elif system in ['linux', 'linux raspberrypi']:
+    elif system == 'linux':
         uuid_value = _get_linux_uuid()
     elif system == 'osx':
         # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
@@ -62,7 +62,7 @@ def _get_system_uuid():
         uuid_value = _get_macos_uuid()
     if not uuid_value:
         LOG.debug('It is not possible to get a system UUID creating a new UUID')
-        uuid_value = _get_fake_uuid(system not in ['android', 'linux', 'linux raspberrypi'])
+        uuid_value = _get_fake_uuid(system not in ['android', 'linux'])
     return get_namespace_uuid(str(uuid_value)).bytes
 
 
