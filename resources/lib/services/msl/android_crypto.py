@@ -15,7 +15,7 @@ import xbmcdrm
 from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.utils.esn import ForceWidevine
+from resources.lib.utils.esn import WidevineForceSecLev
 from resources.lib.utils.logging import LOG
 from .base_crypto import MSLBaseCrypto
 
@@ -63,8 +63,11 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         else:
             LOG.warn('Widevine CryptoSession system id not obtained!')
         LOG.debug('Widevine CryptoSession security level: {}', drm_info['security_level'])
-        if G.ADDON.getSettingString('force_widevine') != ForceWidevine.DISABLED:
-            LOG.warn('Widevine security level is forced to L3 by user settings!')
+        wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                                WidevineForceSecLev.DISABLED,
+                                                table=TABLE_SESSION)
+        if wv_force_sec_lev != WidevineForceSecLev.DISABLED:
+            LOG.warn('Widevine security level is forced to {} by user settings!'.format(wv_force_sec_lev))
         LOG.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
         LOG.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
         LOG.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))

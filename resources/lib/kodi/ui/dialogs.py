@@ -65,10 +65,10 @@ def show_dlg_input_numeric(message, mask_input=True):
 
 def ask_for_search_term(default_text=None):
     """Ask the user for a search term"""
-    return _ask_for_input(common.get_local_string(30402), default_text)
+    return ask_for_input(common.get_local_string(30402), default_text)
 
 
-def _ask_for_input(heading, default_text=None):
+def ask_for_input(heading, default_text=None):
     return xbmcgui.Dialog().input(
         defaultt=default_text,
         heading=heading,

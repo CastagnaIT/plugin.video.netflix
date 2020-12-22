@@ -40,20 +40,44 @@ from .logging import LOG
 #  Android TV       "PRV-"    (without letter specified)
 
 
-class ForceWidevine:  # pylint: disable=no-init, disable=too-few-public-methods
-    """The enum values of 'force_widevine' add-on setting"""
+class WidevineForceSecLev:  # pylint: disable=no-init, disable=too-few-public-methods
+    """The values accepted for 'widevine_force_seclev' TABLE_SESSION setting"""
     DISABLED = 'Disabled'
-    L3 = 'Widevine L3'
-    L3_4445 = 'Widevine L3 (ID-4445)'
+    L3 = 'L3'
+    L3_4445 = 'L3 (ID 4445)'
 
 
 def get_esn():
-    """Get the generated esn or if set get the custom esn"""
-    custom_esn = G.ADDON.getSetting('esn')
-    return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
+    """Get the ESN currently in use"""
+    return G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
 
-def generate_android_esn():
+def set_esn(esn=None):
+    """
+    Set the ESN to be used
+    :param esn: if None the ESN will be generated or retrieved
+    :return: The ESN set
+    """
+    if not esn:
+        # Generate the ESN if we are on Android or get it from the website
+        esn = generate_android_esn() or get_website_esn()
+        if not esn:
+            raise Exception('It was not possible to obtain an ESN')
+    G.LOCAL_DB.set_value('esn', esn, TABLE_SESSION)
+    return esn
+
+
+def get_website_esn():
+    """Get the ESN set by the website"""
+    return G.LOCAL_DB.get_value('website_esn', table=TABLE_SESSION)
+
+
+def set_website_esn(esn):
+    """Save the ESN of the website"""
+    G.LOCAL_DB.set_value('website_esn', esn, TABLE_SESSION)
+
+
+def generate_android_esn(wv_force_sec_lev=None):
     """Generate an ESN if on android or return the one from user_data"""
     from resources.lib.common.device_utils import get_system_platform
     if get_system_platform() == 'android':
@@ -79,10 +103,13 @@ def generate_android_esn():
 
                 # Some device with false Widevine certification can be specified as Widevine L1
                 # but we do not know how NF original app force the fallback to L3, so we add a manual setting
-                force_widevine = G.ADDON.getSettingString('force_widevine')
-                if force_widevine == ForceWidevine.L3:
+                if not wv_force_sec_lev:
+                    wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                                            WidevineForceSecLev.DISABLED,
+                                                            table=TABLE_SESSION)
+                if wv_force_sec_lev == WidevineForceSecLev.L3:
                     drm_security_level = 'L3'
-                elif force_widevine == ForceWidevine.L3_4445:
+                elif wv_force_sec_lev == WidevineForceSecLev.L3_4445:
                     # For some devices the Netflix android app change the DRM System ID to 4445
                     drm_security_level = 'L3'
                     system_id = '4445'
@@ -102,7 +129,7 @@ def generate_android_esn():
                 esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
                 if system_id:
                     esn += '-' + system_id + '-'
-                LOG.debug('Generated Android ESN: {} (force widevine is set as "{}")', esn, force_widevine)
+                LOG.debug('Generated Android ESN: {} (widevine force sec.lev. set as "{}")', esn, wv_force_sec_lev)
                 return esn
         except OSError:
             pass

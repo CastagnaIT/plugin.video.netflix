@@ -41,6 +41,7 @@ class NFSessionOperations(SessionPathRequests):
             self.perpetual_path_request,
             self.callpath_request,
             self.fetch_initial_page,
+            self.refresh_session_data,
             self.activate_profile,
             self.parental_control_data,
             self.get_metadata,
@@ -77,15 +78,18 @@ class NFSessionOperations(SessionPathRequests):
         LOG.debug('Fetch initial page')
         from requests import exceptions
         try:
-            response = self.get_safe('browse')
-            api_data = self.website_extract_session_data(response, update_profiles=True)
-            self.auth_url = api_data['auth_url']
+            self.refresh_session_data(True)
         except exceptions.TooManyRedirects:
             # This error can happen when the profile used in nf session actually no longer exists,
             # something wrong happen in the session then the server try redirect to the login page without success.
             # (CastagnaIT: i don't know the best way to handle this borderline case, but login again works)
             self.session.cookies.clear()
             self.login()
+
+    def refresh_session_data(self, update_profiles):
+        response = self.get_safe('browse')
+        api_data = self.website_extract_session_data(response, update_profiles=update_profiles)
+        self.auth_url = api_data['auth_url']
 
     @measure_exec_time_decorator(is_immediate=True)
     def activate_profile(self, guid):

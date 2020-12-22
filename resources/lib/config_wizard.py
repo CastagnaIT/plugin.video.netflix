@@ -26,7 +26,6 @@ def run_addon_configuration(show_end_msg=False):
     """
     system = get_system_platform()
     LOG.debug('Running add-on configuration wizard ({})', system)
-    G.settings_monitor_suspend(True, False)
     is_4k_capable = is_device_4k_capable()
 
     _set_profiles(system, is_4k_capable)
@@ -39,8 +38,6 @@ def run_addon_configuration(show_end_msg=False):
 
     # Enable UpNext if it is installed and enabled
     G.ADDON.setSettingBool('UpNextNotifier_enabled', getCondVisibility('System.AddonIsEnabled(service.upnext)'))
-
-    G.settings_monitor_suspend(False)
     if show_end_msg:
         show_ok_dialog(get_local_string(30154), get_local_string(30157))
 

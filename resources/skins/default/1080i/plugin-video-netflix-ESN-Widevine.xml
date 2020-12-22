@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>30010</defaultcontrol>
+	<controls>
+		<control type="group">
+			<!-- Note: some tags to the controls have been set even if not necessary to ensure compatibility with the custom skins of kodi -->
+			<top>250</top>
+			<left>200</left>
+			<width>1520</width>
+			<!-- Screen background -->
+			<control type="image">
+				<left>-2000</left>
+				<top>-2000</top>
+				<width>6000</width>
+				<height>6000</height>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<texture colordiffuse="C2FFFFFF">colors/black.png</texture>
+			</control>
+
+			<control type="group">
+				<width>1520</width>
+				<height>490</height>
+				<!-- Window Background -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="FF1A2123">colors/white.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window header -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<height>66</height>
+					<texture colordiffuse="FFFAFAFA" border="2">colors/white70.png</texture>
+					<aspectratio>stretch</aspectratio>
+				</control>
+				<!-- Window text header -->
+				<control type="label" id="40098">
+					<posy>0</posy> <!-- estouchy skin with label control use posy/posx tag instead of top/left -->
+					<posx>40</posx>
+					<top>0</top>
+					<left>40</left>
+					<right>100</right>
+					<height>66</height>
+					<textcolor>FF000000</textcolor>
+					<font>font32_title</font>
+					<label>$ADDON[plugin.video.netflix 30600]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<shadowcolor>white</shadowcolor>
+				</control>
+				<!-- Window close button -->
+				<control type="button" id="40099">
+					<right>10</right>
+					<left>1450</left>
+					<top>11</top>
+					<width>42</width>
+					<height>42</height>
+					<texturefocus>dialogs/close.png</texturefocus>
+					<texturenofocus>nf_icon.png</texturenofocus>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+			<!-- Background color that encloses and highlights the controls of the window -->
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>400</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+
+			<!-- Controls -->
+			<control type="group" id="10080">
+				<left>0</left>
+				<top>0</top>
+				<width>1200</width>
+				<height>400</height>
+				<defaultcontrol>30010</defaultcontrol>
+				<visible>true</visible>
+				<onright>10090</onright>
+
+				<control type="label" id="10001">
+					<description>ESN:</description>
+					<posy>135</posy>
+					<posx>65</posx>
+					<top>135</top>
+					<left>65</left>
+					<width>150</width>
+					<visible>true</visible>
+					<scroll>false</scroll>
+					<label>$ADDON[plugin.video.netflix 30601]</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<aligny>top</aligny>
+					<haspath>false</haspath>
+					<font>font14</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+
+				<control type="label" id="30000">
+					<description>ESN code</description>
+					<posy>135</posy>
+					<posx>170</posx>
+					<top>135</top>
+					<left>170</left>
+					<width>1000</width>
+					<visible>true</visible>
+					<scroll>true</scroll>
+					<label>-</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<aligny>top</aligny>
+					<haspath>false</haspath>
+					<font>font14</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+				
+				<control type="button" id="30010">
+					<description>CHANGE ESN button</description>
+					<posy>200</posy>
+					<posx>65</posx>
+					<top>200</top>
+					<left>65</left>
+					<width>300</width>
+					<height>100</height>
+					<label>$ADDON[plugin.video.netflix 30602]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<ondown>40000</ondown>
+					<onright>30011</onright>
+				</control>
+				
+				<control type="button" id="30011">
+					<description>Reset button</description>
+					<posy>200</posy>
+					<posx>365</posx>
+					<top>200</top>
+					<left>365</left>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[13007]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<ondown>40000</ondown>
+					<onleft>30010</onleft>
+					<onright>30012</onright>
+				</control>
+
+				<control type="button" id="30012">
+					<description>Save system info button</description>
+					<posy>200</posy>
+					<posx>665</posx>
+					<top>200</top>
+					<left>665</left>
+					<width>300</width>
+					<height>100</height>
+					<label>$ADDON[plugin.video.netflix 30603]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+					<ondown>40000</ondown>
+					<onleft>30011</onleft>
+					<onright>40020</onright>
+				</control>
+
+				<control type="label" id="10004">
+					<description>Widevine security level</description>
+					<posy>310</posy>
+					<posx>65</posx>
+					<top>310</top>
+					<left>65</left>
+					<width>1000</width>
+					<height>110</height>
+					<visible>true</visible>
+					<scroll>false</scroll>
+					<label>$ADDON[plugin.video.netflix 30604]</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<aligny>top</aligny>
+					<haspath>false</haspath>
+					<font>font14</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+				
+				<control type="radiobutton" id="40000">
+					<description>Widevine force sec.lev. DISABLED</description>
+					<type>radiobutton</type>
+					<left>65</left>
+					<top>350</top>
+					<width>300</width>
+					<height>110</height>
+					<visible>true</visible>
+					<colordiffuse>red</colordiffuse>
+					<texturefocus>myfocustexture.png</texturefocus>
+					<texturenofocus>mynormaltexture.png</texturenofocus>
+					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
+					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
+					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<label>$LOCALIZE[13106]</label>
+					<font>font12</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>red</focusedcolor>
+					<disabledcolor>80FFFFFF</disabledcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textoffsetx>4</textoffsetx>
+					<textoffsety>5</textoffsety>
+					<pulseonselect>false</pulseonselect>
+					<onup>30010</onup>
+					<onright>40001</onright>
+				</control>
+				<control type="radiobutton" id="40001">
+					<description>Widevine force sec.lev. L3</description>
+					<type>radiobutton</type>
+					<left>375</left>
+					<top>350</top>
+					<width>300</width>
+					<height>110</height>
+					<visible>true</visible>
+					<colordiffuse>red</colordiffuse>
+					<texturefocus>myfocustexture.png</texturefocus>
+					<texturenofocus>mynormaltexture.png</texturenofocus>
+					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
+					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
+					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<label/>
+					<font>font12</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>red</focusedcolor>
+					<disabledcolor>80FFFFFF</disabledcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textoffsetx>4</textoffsetx>
+					<textoffsety>5</textoffsety>
+					<pulseonselect>false</pulseonselect>
+					<onup>30010</onup>
+					<onleft>40000</onleft>
+					<onright>40002</onright>
+				</control>
+				<control type="radiobutton" id="40002">
+					<description>Widevine force sec.lev. L3 (ID 4445)</description>
+					<type>radiobutton</type>
+					<left>685</left>
+					<top>350</top>
+					<width>300</width>
+					<height>110</height>
+					<visible>true</visible>
+					<colordiffuse>red</colordiffuse>
+					<texturefocus>myfocustexture.png</texturefocus>
+					<texturenofocus>mynormaltexture.png</texturenofocus>
+					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
+					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
+					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<label/>
+					<font>font12</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>red</focusedcolor>
+					<disabledcolor>80FFFFFF</disabledcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textoffsetx>4</textoffsetx>
+					<textoffsety>5</textoffsety>
+					<pulseonselect>false</pulseonselect>
+					<onup>30010</onup>
+					<onleft>40001</onleft>
+					<onright>40020</onright>
+				</control>
+			</control>
+			<!-- Window default side buttons -->
+			<control type="grouplist" id="10090">
+				<left>1210</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>350</height>
+				<itemgap>-10</itemgap>
+				<onleft>10080</onleft>
+				<control type="button" id="40020">
+					<description>Apply button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[14070]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+				<control type="button" id="40021">
+					<description>OK button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[186]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+				<control type="button" id="40022">
+					<description>Cancel button</description>
+					<width>300</width>
+					<height>100</height>
+					<label>$LOCALIZE[222]</label>
+					<font>font25_title</font>
+					<texturefocus border="40" colordiffuse="red">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+					<textcolor>white</textcolor>
+					<disabledcolor>white</disabledcolor>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<pulseonselect>no</pulseonselect>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
