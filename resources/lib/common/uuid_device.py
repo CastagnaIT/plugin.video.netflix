@@ -11,18 +11,13 @@ from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
 
 
-__CRYPT_KEY__ = None
-
-
 def get_crypt_key():
     """
     Lazily generate the crypt key and return it
     """
-    # pylint: disable=global-statement
-    global __CRYPT_KEY__
-    if not __CRYPT_KEY__:
-        __CRYPT_KEY__ = _get_system_uuid()
-    return __CRYPT_KEY__
+    if not hasattr(get_crypt_key, 'cached'):
+        get_crypt_key.cached = _get_system_uuid()
+    return get_crypt_key.cached
 
 
 def get_random_uuid():
