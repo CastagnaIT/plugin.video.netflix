@@ -149,6 +149,7 @@ class _WndProps:  # pylint: disable=no-init
     IS_CONTAINER_REFRESHED = 'is_container_refreshed'
     """Return 'True' when container_refresh in kodi_ops.py is used by context menus, etc."""
     CURRENT_DIRECTORY = 'current_directory'
+    CURRENT_DIRECTORY_MENU_ID = 'current_directory_menu_id'
     """
     Return the name of the currently loaded directory (so the method name of directory.py class), otherwise:
     ['']       When the add-on is in his first run instance, so startup page
