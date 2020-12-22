@@ -83,10 +83,12 @@ def _perform_service_changes(previous_ver, current_ver):
         # In the version 1.2.0 has been implemented in auto-update mode setting the option to disable the feature
         try:
             lib_auto_upd_mode = G.ADDON.getSettingInt('lib_auto_upd_mode')
-            G.ADDON.setSettingInt('lib_auto_upd_mode', lib_auto_upd_mode + 1)
+            with G.SETTINGS_MONITOR.ignore_events(1):
+                G.ADDON.setSettingInt('lib_auto_upd_mode', lib_auto_upd_mode + 1)
         except TypeError:
             # In case of a previous rollback this could fails
-            G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
+            with G.SETTINGS_MONITOR.ignore_events(1):
+                G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
     if previous_ver and is_less_version(previous_ver, '1.9.0'):
         # In the version 1.9.0 has been changed the COOKIE_ filename with a static filename
         from resources.lib.upgrade_actions import rename_cookie_file
@@ -107,6 +109,8 @@ def _perform_service_changes(previous_ver, current_ver):
         if esn:
             from resources.lib.utils.esn import set_esn
             set_esn(esn)
+        # - 'suspend_settings_monitor' is not more used
+        G.LOCAL_DB.delete_key('suspend_settings_monitor')
     # Always leave this to last - After the operations set current version
     G.LOCAL_DB.set_value('service_previous_version', current_ver)
 
