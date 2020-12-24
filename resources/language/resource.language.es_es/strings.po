@@ -1053,40 +1053,40 @@ msgstr "Preferir pistas de audio estéreo por defecto"
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "Ajustes ESN / Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "Cambiar ESN:"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "Guardar info del sistema"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widevine - Forzar nivel de seguridad"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr ""
+msgstr "Forzar {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "ESN configurado correctamente[CR]Intente reproducir un vídeo"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "Este ESN no se puede utilizar[CR]Intente cambiar ESN o restablecer ESN.[CR][CR]Detalles del error:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "Formato de ESN incorrecto"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "¿Quieres restablecer todos los ajustes?"
