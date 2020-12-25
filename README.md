@@ -41,6 +41,10 @@ Install add-on manually - updates should always be installed manually:
 * As Kodi file source, only for Kodi 18:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
+
+#### Ubuntu:
+On Ubuntu its required to have Kodi installed via the TeamXBMC-PPA and NOT via the ubuntu-package. With the Ubuntu-Package pycryptodomex will be not installed and you can't install the Addon.
+
 ## Login with Authentication key
 
 An alternative login method to avoid "incorrect password" error
