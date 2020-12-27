@@ -8,6 +8,7 @@
     See LICENSES/MIT.md for more information.
 """
 import json
+from contextlib import contextmanager
 
 import xbmc
 
@@ -88,6 +89,16 @@ def container_update(url, reset_history=False):
     xbmc.executebuiltin(func_str.format(url))
 
 
+@contextmanager
+def show_busy_dialog():
+    """Context to show the busy dialog on the screen"""
+    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
+    try:
+        yield
+    finally:
+        xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
+
+
 def get_local_string(string_id):
     """Retrieve a localized string by its id"""
     src = xbmc if string_id < 30000 else G.ADDON
@@ -138,6 +149,7 @@ class _WndProps:  # pylint: disable=no-init
     IS_CONTAINER_REFRESHED = 'is_container_refreshed'
     """Return 'True' when container_refresh in kodi_ops.py is used by context menus, etc."""
     CURRENT_DIRECTORY = 'current_directory'
+    CURRENT_DIRECTORY_MENU_ID = 'current_directory_menu_id'
     """
     Return the name of the currently loaded directory (so the method name of directory.py class), otherwise:
     ['']       When the add-on is in his first run instance, so startup page

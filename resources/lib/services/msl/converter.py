@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.utils.esn import ForceWidevine
+from resources.lib.utils.esn import WidevineForceSecLev
 from resources.lib.utils.logging import LOG
 
 
@@ -106,8 +106,11 @@ def _add_protection_info(adaptation_set, pssh, keyid):
             'value': 'widevine'
         })
     # Add child tags to the DRM system configuration ('widevine:license' is an ISA custom tag)
+    wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                            WidevineForceSecLev.DISABLED,
+                                            table=TABLE_SESSION)
     if (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
-            and G.ADDON.getSettingString('force_widevine') == ForceWidevine.DISABLED):
+            and wv_force_sec_lev == WidevineForceSecLev.DISABLED):
         # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices,
         # if it is set on L3 devices ISA already remove it automatically.
         # But some L1 devices with non regular Widevine library cause issues then need to be handled

@@ -20,7 +20,7 @@ import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
+from resources.lib.services.msl.msl_utils import (generate_logblobs_params, ENDPOINTS,
                                                   MSL_DATA_FILENAME, create_req_params)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
@@ -50,16 +50,13 @@ class MSLRequests(MSLRequestBuilder):
             import traceback
             LOG.error(traceback.format_exc())
 
-    @display_error_info
-    @measure_exec_time_decorator(is_immediate=True)
-    def perform_key_handshake(self, data=None):  # pylint: disable=unused-argument
+    def perform_key_handshake(self):
         """Perform a key handshake and initialize crypto keys"""
         esn = get_esn()
         if not esn:
-            LOG.warn('Cannot perform key handshake, missing ESN')
+            LOG.error('Cannot perform key handshake, missing ESN')
             return False
-        LOG.info('Performing key handshake with ESN: {}',
-                 common.censure(esn) if G.ADDON.getSetting('esn') else esn)
+        LOG.info('Performing key handshake with ESN: {}', common.censure(esn) if len(esn) > 50 else esn)
         try:
             response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
             header_data = self.decrypt_header_data(response['headerdata'], False)

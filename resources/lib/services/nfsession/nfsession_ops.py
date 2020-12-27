@@ -41,6 +41,7 @@ class NFSessionOperations(SessionPathRequests):
             self.perpetual_path_request,
             self.callpath_request,
             self.fetch_initial_page,
+            self.refresh_session_data,
             self.activate_profile,
             self.parental_control_data,
             self.get_metadata,
@@ -77,9 +78,7 @@ class NFSessionOperations(SessionPathRequests):
         LOG.debug('Fetch initial page')
         from requests import exceptions
         try:
-            response = self.get_safe('browse')
-            api_data = self.website_extract_session_data(response, update_profiles=True)
-            self.auth_url = api_data['auth_url']
+            self.refresh_session_data(True)
         except exceptions.TooManyRedirects:
             # This error can happen when the profile used in nf session actually no longer exists,
             # something wrong happen in the session then the server try redirect to the login page without success.
@@ -87,18 +86,23 @@ class NFSessionOperations(SessionPathRequests):
             self.session.cookies.clear()
             self.login()
 
+    def refresh_session_data(self, update_profiles):
+        response = self.get_safe('browse')
+        api_data = self.website_extract_session_data(response, update_profiles=update_profiles)
+        self.auth_url = api_data['auth_url']
+
     @measure_exec_time_decorator(is_immediate=True)
     def activate_profile(self, guid):
         """Set the profile identified by guid as active"""
         LOG.debug('Switching to profile {}', guid)
-        if xbmc.Player().isPlayingVideo():
-            # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
-            # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
-            raise Warning('It is not possible select a profile while a video is playing.')
         current_active_guid = G.LOCAL_DB.get_active_profile_guid()
         if guid == current_active_guid:
             LOG.info('The profile guid {} is already set, activation not needed.', guid)
             return
+        if xbmc.Player().isPlayingVideo():
+            # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
+            # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
+            raise Warning('It is not possible select a profile while a video is playing.')
         timestamp = time.time()
         LOG.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles

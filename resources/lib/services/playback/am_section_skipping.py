@@ -74,13 +74,9 @@ class AMSectionSkipper(ActionManager):
         LOG.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
-        ui.show_modal_dialog(True,
-                             ui.xmldialogs.Skip,
-                             "plugin-video-netflix-Skip.xml",
-                             G.ADDON.getAddonInfo('path'),
-                             seconds=dialog_duration,
-                             skip_to=self.markers[section]['end'],
-                             label=common.get_local_string(SKIPPABLE_SECTIONS[section]))
+        ui.show_skip_dialog(dialog_duration,
+                            seek_time=self.markers[section]['end'],
+                            label=common.get_local_string(SKIPPABLE_SECTIONS[section]))
 
     def on_playback_stopped(self, player_state):
         # Close any dialog remaining open

@@ -204,7 +204,7 @@ class GlobalVariables:
         self.CACHE_MYLIST_TTL = None
         self.CACHE_METADATA_TTL = None
 
-    def init_globals(self, argv, reinitialize_database=False, reload_settings=False):
+    def init_globals(self, argv):
         """Initialized globally used module variables. Needs to be called at start of each plugin instance!"""
         # IS_ADDON_FIRSTRUN: specifies if the add-on has been initialized for the first time
         #                    (reuseLanguageInvoker not used yet)
@@ -224,7 +224,7 @@ class GlobalVariables:
             self.ADDON_ID = self.ADDON.getAddonInfo('id')
             self.PLUGIN = self.ADDON.getAddonInfo('name')
             self.VERSION_RAW = self.ADDON.getAddonInfo('version')
-            self.VERSION = self.remove_ver_suffix(self.VERSION_RAW)
+            self.VERSION = remove_ver_suffix(self.VERSION_RAW)
             self.ICON = self.ADDON.getAddonInfo('icon')
             self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
             self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Add-on folder
@@ -243,82 +243,45 @@ class GlobalVariables:
                                                              netloc=self.ADDON_ID)
             from resources.lib.common.kodi_ops import GetKodiVersion
             self.KODI_VERSION = GetKodiVersion()
+            self.init_database()
+            # Initialize the cache
+            if self.IS_SERVICE:
+                from resources.lib.services.cache.cache_management import CacheManagement
+                self.CACHE_MANAGEMENT = CacheManagement()
+                from resources.lib.services.settings_monitor import SettingsMonitor
+                self.SETTINGS_MONITOR = SettingsMonitor()
+            from resources.lib.common.cache import Cache
+            self.CACHE = Cache()
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
                        self.ADDON.getSettingString('debug_log_level'),
                        self.ADDON.getSettingBool('enable_timing'))
-
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
-        self._init_database(self.IS_ADDON_FIRSTRUN or reinitialize_database)
 
-        if self.IS_ADDON_FIRSTRUN or reload_settings:
-            # Put here all the global variables that need to be updated on service side
-            # when the user changes the add-on settings
-            if self.IS_SERVICE:
-                # Initialize the cache
-                if reload_settings:
-                    self.CACHE_MANAGEMENT.load_ttl_values()
-                else:
-                    from resources.lib.services.cache.cache_management import CacheManagement
-                    self.CACHE_MANAGEMENT = CacheManagement()
-                    # Reset the "settings monitor" of the service in case of add-on crash
-                    self.settings_monitor_suspend(False)
-            from resources.lib.common.cache import Cache
-            self.CACHE = Cache()
-
-    def _init_database(self, initialize):
+    def init_database(self):
         # Initialize local database
-        if initialize:
-            import resources.lib.database.db_local as db_local
-            self.LOCAL_DB = db_local.NFLocalDatabase()
+        import resources.lib.database.db_local as db_local
+        self.LOCAL_DB = db_local.NFLocalDatabase()
         # Initialize shared database
         use_mysql = G.ADDON.getSettingBool('use_mysql')
-        if initialize or use_mysql:
-            import resources.lib.database.db_shared as db_shared
-            from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
-            try:
-                shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
-                self.SHARED_DB = shared_db_class()
-            except (DBMySQLConnectionError, DBMySQLError) as exc:
-                import resources.lib.kodi.ui as ui
-                if isinstance(exc, DBMySQLError):
-                    # There is a problem with the database
-                    ui.show_addon_error_info(exc)
-                # The MySQL database cannot be reached, fallback to local SQLite database
-                # When this code is called from addon, is needed apply the change also in the
-                # service, so disabling it run the SettingsMonitor
-                self.ADDON.setSettingBool('use_mysql', False)
-                ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
-                shared_db_class = db_shared.get_shareddb_class()
-                self.SHARED_DB = shared_db_class()
-
-    def settings_monitor_suspend(self, is_suspended=True, at_first_change=False):
-        """
-        Suspends for the necessary time the settings monitor of the service
-        that otherwise cause the reinitialization of global settings and possible consequent actions
-        to settings changes or unnecessary checks when a setting will be changed.
-        :param is_suspended: True/False - allows or denies the execution of the settings monitor
-        :param at_first_change:
-         True - monitor setting is automatically reactivated after the FIRST change to the settings
-         False - monitor setting MUST BE REACTIVATED MANUALLY
-        :return: None
-        """
-        if is_suspended and at_first_change:
-            new_value = 'First'
-        else:
-            new_value = str(is_suspended)
-        # Accepted values in string: First, True, False
-        current_value = G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
-        if new_value == current_value:
-            return
-        G.LOCAL_DB.set_value('suspend_settings_monitor', new_value)
-
-    def settings_monitor_suspend_status(self):
-        """
-        Returns the suspend status of settings monitor
-        """
-        return G.LOCAL_DB.get_value('suspend_settings_monitor', 'False')
+        import resources.lib.database.db_shared as db_shared
+        from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
+        try:
+            shared_db_class = db_shared.get_shareddb_class(use_mysql=use_mysql)
+            self.SHARED_DB = shared_db_class()
+        except (DBMySQLConnectionError, DBMySQLError) as exc:
+            import resources.lib.kodi.ui as ui
+            if isinstance(exc, DBMySQLError):
+                # There is a problem with the database
+                ui.show_addon_error_info(exc)
+            # The MySQL database cannot be reached, fallback to local SQLite database
+            # When this code is called from addon, is needed apply the change also in the
+            # service, so disabling it run the SettingsMonitor
+            self.ADDON.setSettingBool('use_mysql', False)
+            ui.show_notification(self.ADDON.getLocalizedString(30206), time=10000)
+            shared_db_class = db_shared.get_shareddb_class()
+            self.SHARED_DB = shared_db_class()
 
     def is_known_menu_context(self, context):
         """Return true if context are one of the menu with loco_known=True"""
@@ -328,12 +291,12 @@ class GlobalVariables:
                     return True
         return False
 
-    @staticmethod
-    def remove_ver_suffix(version):
-        """Remove the codename suffix from version value"""
-        import re
-        pattern = re.compile(r'\+\w+\.\d$')  # Example: +matrix.1
-        return re.sub(pattern, '', version)
+
+def remove_ver_suffix(version):
+    """Remove the codename suffix from version value"""
+    import re
+    pattern = re.compile(r'\+\w+\.\d$')  # Example: +matrix.1
+    return re.sub(pattern, '', version)
 
 
 # We initialize an instance importable of GlobalVariables from run_addon.py and run_service.py,

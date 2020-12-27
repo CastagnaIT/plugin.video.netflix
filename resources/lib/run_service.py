@@ -24,7 +24,6 @@ class NetflixService:
     def __init__(self):
         self.controller = None
         self.library_updater = None
-        self.settings_monitor = None
 
     def init_servers(self):
         """Initialize the http servers"""
@@ -86,7 +85,6 @@ class NetflixService:
         """
         from resources.lib.services.playback.action_controller import ActionController
         from resources.lib.services.library_updater import LibraryUpdateService
-        from resources.lib.services.settings_monitor import SettingsMonitor
         for server in self.SERVERS:
             server['instance'].server_activate()
             server['instance'].timeout = 1
@@ -94,7 +92,6 @@ class NetflixService:
             LOG.info('[{}] Thread started'.format(server['name']))
         self.controller = ActionController()
         self.library_updater = LibraryUpdateService()
-        self.settings_monitor = SettingsMonitor()
         # We reset the value in case of any eventuality (add-on disabled, update, etc)
         WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = None
         # Mark the service as active

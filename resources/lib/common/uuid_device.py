@@ -11,18 +11,13 @@ from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
 
 
-__CRYPT_KEY__ = None
-
-
 def get_crypt_key():
     """
     Lazily generate the crypt key and return it
     """
-    # pylint: disable=global-statement
-    global __CRYPT_KEY__
-    if not __CRYPT_KEY__:
-        __CRYPT_KEY__ = _get_system_uuid()
-    return __CRYPT_KEY__
+    if not hasattr(get_crypt_key, 'cached'):
+        get_crypt_key.cached = _get_system_uuid()
+    return get_crypt_key.cached
 
 
 def get_random_uuid():
@@ -54,7 +49,7 @@ def _get_system_uuid():
         uuid_value = _get_windows_uuid()
     elif system == 'android':
         uuid_value = _get_android_uuid()
-    elif system in ['linux', 'linux raspberrypi']:
+    elif system == 'linux':
         uuid_value = _get_linux_uuid()
     elif system == 'osx':
         # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
@@ -62,7 +57,7 @@ def _get_system_uuid():
         uuid_value = _get_macos_uuid()
     if not uuid_value:
         LOG.debug('It is not possible to get a system UUID creating a new UUID')
-        uuid_value = _get_fake_uuid(system not in ['android', 'linux', 'linux raspberrypi'])
+        uuid_value = _get_fake_uuid(system not in ['android', 'linux'])
     return get_namespace_uuid(str(uuid_value)).bytes
 
 

@@ -10,7 +10,7 @@
 import xbmc
 
 from resources.lib.globals import G
-from resources.lib.utils.esn import ForceWidevine
+from resources.lib.utils.esn import WidevineForceSecLev
 from resources.lib.utils.logging import LOG
 
 
@@ -41,10 +41,7 @@ def get_system_platform():
     if not hasattr(get_system_platform, 'cached'):
         platform = "unknown"
         if xbmc.getCondVisibility('system.platform.linux') and not xbmc.getCondVisibility('system.platform.android'):
-            if xbmc.getCondVisibility('system.platform.linux.raspberrypi'):
-                platform = "linux raspberrypi"
-            else:
-                platform = "linux"
+            platform = "linux"
         elif xbmc.getCondVisibility('system.platform.linux') and xbmc.getCondVisibility('system.platform.android'):
             platform = "android"
         elif xbmc.getCondVisibility('system.platform.uwp'):
@@ -55,7 +52,7 @@ def get_system_platform():
             platform = "osx"
         elif xbmc.getCondVisibility('system.platform.ios'):
             platform = "ios"
-        elif xbmc.getCondVisibility('system.platform.tvos'):  # Supported only on Kodi 19.x
+        elif xbmc.getCondVisibility('system.platform.tvos'):
             platform = "tvos"
         get_system_platform.cached = platform
     return get_system_platform.cached
@@ -79,7 +76,10 @@ def is_device_4k_capable():
     if get_system_platform() == 'android':
         from resources.lib.database.db_utils import TABLE_SESSION
         # Check if the drm has security level L1
-        is_l3_forced = G.ADDON.getSettingString('force_widevine') != ForceWidevine.DISABLED
+        wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                                WidevineForceSecLev.DISABLED,
+                                                table=TABLE_SESSION)
+        is_l3_forced = wv_force_sec_lev != WidevineForceSecLev.DISABLED
         is_drm_l1_security_level = (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
                                     and not is_l3_forced)
         # Check if HDCP level is 2.2 or up
