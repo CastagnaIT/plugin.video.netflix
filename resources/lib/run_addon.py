@@ -151,15 +151,15 @@ def _execute(executor_type, pathitems, params, root_handler):
     """Execute an action as specified by the path"""
     try:
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
-        LOG.debug('Invoking action: {}', executor.__name__)
-        executor(pathitems=pathitems)
-        if root_handler == G.MODE_DIRECTORY and not G.IS_ADDON_EXTERNAL_CALL:
-            # Save the method name of current loaded directory and his menu item id
-            WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = executor.__name__
-            WndHomeProps[WndHomeProps.CURRENT_DIRECTORY_MENU_ID] = pathitems[1] if len(pathitems) > 1 else ''
-            WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = None
     except AttributeError as exc:
         raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems))) from exc
+    LOG.debug('Invoking action: {}', executor.__name__)
+    executor(pathitems=pathitems)
+    if root_handler == G.MODE_DIRECTORY and not G.IS_ADDON_EXTERNAL_CALL:
+        # Save the method name of current loaded directory and his menu item id
+        WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = executor.__name__
+        WndHomeProps[WndHomeProps.CURRENT_DIRECTORY_MENU_ID] = pathitems[1] if len(pathitems) > 1 else ''
+        WndHomeProps[WndHomeProps.IS_CONTAINER_REFRESHED] = None
 
 
 def _get_service_status():
