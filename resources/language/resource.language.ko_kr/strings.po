@@ -1053,40 +1053,40 @@ msgstr "스테레오 음성을 먼저 선택합니다."
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "ESN/Widevine 설정"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "ESN변경"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "시스템 정보 저장"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widebine - 강제보안레벨"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr ""
+msgstr "강제 {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "ESN설정을 바꾸었습니다[CR]영상을 재생해 보십시오"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "사용할 수 없는 ESN입니다[CR]ESN을 바꾸거나 다시 설정하십시오.[CR][CR]자세한 내용은:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "ESN형식이 이상합니다."
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "전부 다시 설정할까요?"
