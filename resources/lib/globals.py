@@ -243,6 +243,12 @@ class GlobalVariables:
                                                              netloc=self.ADDON_ID)
             from resources.lib.common.kodi_ops import GetKodiVersion
             self.KODI_VERSION = GetKodiVersion()
+        # Initialize the log
+        from resources.lib.utils.logging import LOG
+        LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
+                       self.ADDON.getSettingString('debug_log_level'),
+                       self.ADDON.getSettingBool('enable_timing'))
+        if self.IS_ADDON_FIRSTRUN:
             self.init_database()
             # Initialize the cache
             if self.IS_SERVICE:
@@ -252,11 +258,6 @@ class GlobalVariables:
                 self.SETTINGS_MONITOR = SettingsMonitor()
             from resources.lib.common.cache import Cache
             self.CACHE = Cache()
-        # Initialize the log
-        from resources.lib.utils.logging import LOG
-        LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
-                       self.ADDON.getSettingString('debug_log_level'),
-                       self.ADDON.getSettingBool('enable_timing'))
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
     def init_database(self):
