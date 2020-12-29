@@ -14,7 +14,7 @@ from future.utils import raise_from
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-from .exceptions import ItemNotFound
+from .exceptions import ItemNotFound, DBRecordNotExistError
 from .kodi_ops import json_rpc, get_local_string, json_rpc_multi
 from .videoid import VideoId
 
@@ -99,7 +99,7 @@ def get_library_item_by_videoid(videoid):
         file_path, media_type = _get_videoid_file_path(videoid)
         # Ask to Kodi to find this file path in Kodi library database, and get all item details
         return _get_item_details_from_kodi(media_type, file_path)
-    except (KeyError, IndexError, ItemNotFound) as exc:
+    except (KeyError, IndexError, ItemNotFound, DBRecordNotExistError) as exc:
         raise_from(ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid)),
                    exc)
 
@@ -123,8 +123,6 @@ def _get_videoid_file_path(videoid):
         media_type = VideoId.EPISODE
     else:
         # Items of other mediatype are never in library
-        raise ItemNotFound
-    if file_path is None:
         raise ItemNotFound
     return file_path, media_type
 
