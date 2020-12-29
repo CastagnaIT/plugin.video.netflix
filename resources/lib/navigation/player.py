@@ -210,6 +210,10 @@ def _strm_resume_workaroud(is_played_from_strm, videoid):
     """Workaround for resuming STRM files from library"""
     if not is_played_from_strm or not G.ADDON.getSettingBool('ResumeManager_enabled'):
         return None
+    # The resume workaround will fail when:
+    # - The metadata have a new episode, but the STRM is not exported yet
+    # - User try to play STRM files copied from another/previous add-on installation (without import them)
+    # - User try to play STRM files from a shared path (like SMB) of another device (without use shared db)
     resume_position = infolabels.get_resume_info_from_library(videoid).get('position')
     if resume_position:
         index_selected = (ui.ask_for_resume(resume_position)
