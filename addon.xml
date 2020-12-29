@@ -2,7 +2,7 @@
 <addon id="plugin.video.netflix" name="Netflix" version="1.12.0+matrix.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
-    <import addon="script.module.addon.signals" version="0.0.5"/>
+    <import addon="script.module.addon.signals" version="0.0.6"/>
     <import addon="script.module.inputstreamhelper" version="0.4.4"/>
     <import addon="script.module.pycryptodome" version="3.4.3"/>
     <import addon="script.module.requests" version="2.22.0"/>
