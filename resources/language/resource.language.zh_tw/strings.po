@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-12-27 18:53+0000\n"
+"PO-Revision-Date: 2020-12-29 23:45+0000\n"
 "Last-Translator: JuenTingShie <>\n"
 "Language-Team: Taiwanese\n"
 "Language: zh_TW\n"
@@ -545,7 +545,7 @@ msgstr "如果您剛啟動Kodi/套件程式，則可能無法使用背景服務�
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "啟用基於HTTP的IPC（在套件程式提示信號超時資訊時使用）"
+msgstr "啟用基於HTTP的IPC（在Addon Signals超時資訊顯示時使用）"
 
 msgctxt "#30140"
 msgid "Import existing library"
@@ -835,7 +835,7 @@ msgstr "沒有設備可以處理共用資料庫的自動更新"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
-msgstr "InputStream助手設置..."
+msgstr "InputStream Helper設置..."
 
 msgctxt "#30214"
 msgid "Force refresh"
@@ -973,7 +973,7 @@ msgstr "電子信箱/密碼"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr "身份驗證金鑰"
+msgstr "Authentication key"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
@@ -981,7 +981,7 @@ msgstr "所選文件不相容或已損壞"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr "認證金鑰文件已過期"
+msgstr "Authentication key已過期"
 
 msgctxt "#30345"
 msgid "Enter PIN"
