@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
+from resources.lib.common.exceptions import DBRecordNotExistError
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
@@ -38,11 +39,20 @@ class AMUpNextNotifier(ActionManager):
     def initialize(self, data):
         if not self.videoid_next_episode or not data['info_data']:
             return
-        self.upnext_info = self._get_upnext_info(data['info_data'], data['metadata'], data['is_played_from_strm'])
+        try:
+            self.upnext_info = self._get_upnext_info(data['info_data'], data['metadata'], data['is_played_from_strm'])
+        except DBRecordNotExistError:
+            # The videoid record of the STRM episode is missing in add-on database when:
+            # - The metadata have a new episode, but the STRM is not exported yet
+            # - User try to play STRM files copied from another/previous add-on installation (without import them)
+            # - User try to play STRM files from a shared path (like SMB) of another device (without use shared db)
+            LOG.warn('Up Next add-on signal skipped, the videoid for the next episode does not exist in the database')
+            self.upnext_info = None
 
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
-        LOG.debug('Sending initialization signal to Up Next Add-on')
-        common.send_signal(common.Signals.UPNEXT_ADDON_INIT, self.upnext_info, non_blocking=True)
+        if self.upnext_info:
+            LOG.debug('Sending initialization signal to Up Next Add-on')
+            common.send_signal(common.Signals.UPNEXT_ADDON_INIT, self.upnext_info, non_blocking=True)
 
     def on_tick(self, player_state):
         pass

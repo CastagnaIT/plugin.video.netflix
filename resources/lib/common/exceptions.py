@@ -135,6 +135,10 @@ class DBProfilesMissing(Exception):
     """There are no stored profiles in database"""
 
 
+class DBRecordNotExistError(Exception):
+    """The record do not exist in database"""
+
+
 # All other exceptions
 
 class InvalidPathError(Exception):
