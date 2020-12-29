@@ -92,7 +92,7 @@ FAQs:
 
 Some guides like:
 - [How to export to Kodi library and use auto-sync](https://github.com/CastagnaIT/plugin.video.netflix/wiki/How-to-export-and-sync-tv-shows-and-movies-in-Kodi-library)
-- [How to share the exported content in the library with multiple devices](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Use-library-exported-with-multiple-devices)
+- [How to share the exported content in the library with multiple devices](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Share-STRM-library-with-multiple-devices)
 - [How works and limitations of the synchronisation of watched status with Netflix](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Sync-of-watched-status-with-Netflix)
 
 And much more...
