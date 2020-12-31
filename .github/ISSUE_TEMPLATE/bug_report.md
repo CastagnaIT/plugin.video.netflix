@@ -1,7 +1,6 @@
 ---
-name: Problem report
-about: If something doesn't work
-
+name: Bug report
+about: To report errors or wrong behaviour - please use the Wiki pages, Kodi forum or Discussions tab to solve other questions
 ---
 ## Bug report
 
@@ -19,8 +18,7 @@ Used Operating system:
 * [ ] Windows
 
 ### Describe the bug
-<!--- A bug report that is not clear will be closed -->
-<!--- ALWAYS ATTACH THE LINK FOR KODI LOG FILE, HOW TO BELOW -->
+<!--- A bug report that is not clear or not have a log will be closed -->
 <!--- Put your text below this line -->
 
 #### Expected behavior
@@ -42,24 +40,16 @@ Used Operating system:
 <!--- Put your text below this line -->
 
 ### Debug log
-<!--- How to:
+<!--- MANDATORY ATTACH/LINK A LOG:
 1) Go to add-on settings, in Expert page and change "Debug logging level" to "Verbose"
 2) Enable Kodi debug: go to Kodi Settings > System Settings > Logging, and enable "Enable debug logging"
 3) How to get the log file? Read Kodi wiki: https://kodi.wiki/view/Log_file/Easy
-RESPECT THE RULES!
-- A DEBUG LOG IS ALWAYS MANDATORY WHEN CREATING AN ISSUE. PROVIDE A LINK TO THE LOG!
-- DO NOT PASTE THE CONTENT OF THE LOG HERE
-- DO NOT CUT THE LOG
-- If the log file is really huge (more 1Mb) in Kodi settings disable "Component-specific logging" then create a new log
+4) You can attach the log file here or use http://paste.kodi.tv/
 -->
-The debug log can be found from this link:
-
+The debug log can be found here:
+<!--- PLEASE RESPECT THE RULES! DO NOT PASTE THE CONTENT OF THE LOG HERE AND DO NOT CUT THE LOG INFO -->
 
 ### Additional context or screenshots (if appropriate)
-
-#### Installation
-* [ ] I'm using other Netflix Repo <!--- Specify which one is used -->
-* [ ] I'm using a different source <!--- Specify which one is used -->
 
 #### Other information
 <!--- E.g. related issues, suggestions, links for us to have context, etc... -->

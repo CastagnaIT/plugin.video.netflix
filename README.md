@@ -107,27 +107,26 @@ If it happens often, there is the possibility to exclude the auto update from th
 
 ## Something doesn't work
 
-***Before open an issue please try read the Wiki pages or ask for help in the Kodi forum***
+***Before open a new Issue and engage the developers, please try to find your answer on other channels like:
+old closed Issues (on Issue tab), the Wiki pages or ask in the Kodi forum.***
 
-If something doesn't work for you:
-1. Open add-on settings, go to in Expert page and change `Debug logging level` to `Verbose`
-2. Enable the Debug log in your Kodi settings
-3. Perform the actions that cause the error, so they are written in the log
-4. Open a new github issue (of type *Problem report*) by following the instructions in the report
-
-We can't help you if you don't provide detailed information (i.e. explanation and full debug log) on your issue.
+If you have encountered an error or misbehaviour:
+1. Open add-on settings, go to in `Expert` page and change `Debug logging level` to `Verbose`
+2. Enable Kodi debug, go to Kodi `Settings` > `System Settings` > `Logging` and enable `Enable debug logging`
+3. Perform the actions that cause the error, so they are written in the log file
+4. Open a new GitHub Issue (of type *Bug report*) and fill in the page with detailed information
+5. Attach/link in your Issue thread the log file is mandatory (follow rules below)
 
 Rules for the log:
-- Use a service like [Kodi paste](http://paste.kodi.tv) to copy the log content
-- Do not paste the content of the log directly into a GH message
+- You can attach the log file or use a service like [Kodi paste](http://paste.kodi.tv) to make a link
+- Do not paste the content of the log directly into a Issue or message
 - Do not cut, edit or remove parts of the log (there are no sensitive data)
-- If the log file is really huge (more 1Mb) in Kodi settings disable 'Component-specific logging'
 
 When the problem will be solved, remember to disable the debug logging, to avoid unnecessary slowing down in your device.
 
 **Why my Issue is labeled with ![Ignored rules](https://img.shields.io/badge/-Ignored%20rules-red) ?**
 
-This happens when the guidelines for compiling the Issue post have not been followed. Therefore if the information will not be filled and or changed in the right way, the Issue post will be closed in the next days.
+This happens when the guidelines for compiling the Issue thread have not been followed. Therefore if the information will not be filled and or changed in the right way, the Issue post will be closed in the next days.
 
 
 ## Code of Conduct
@@ -139,8 +138,6 @@ By participating in this project you agree to abide by its terms.
 
 Licensed under The MIT License.
 
-## Contributions and collaborations
+## Support the project
 
 [Info for contribute and donations](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Contribute-and-donations)
-
-[Info for Business collaboration](https://github.com/CastagnaIT/plugin.video.netflix/wiki/Business-collaboration)
