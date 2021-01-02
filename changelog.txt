@@ -1,3 +1,13 @@
+v1.13.0 (2021-01-02)
+- Add new ESN/Widevine setting dialog
+- MySQL Connector/Python library is now a Kodi dependency
+- Removed all Python 2 code / Kodi 18 compatibility
+- Fixed an issue that not allow to use same profile to play videos with UpNext
+- Disabled UpNext when play STRM of a shared path (Wiki: Share STRM library with multiple devices - OPTION 2)
+- Minor code fixes/improvements
+- Add Taiwan transation
+- Updated translations it, de, es, jp, kr, ro
+
 v1.12.0 (2020-12-13)
 - >> END OF THE ADD-ON DEVELOPMENT ON KODI 18.x
 - >> ON KODI 18.x THE ADD-ON WILL RECEIVE ONLY BUG FIX OR MINOR CHANGES
