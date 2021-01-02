@@ -1,3 +1,7 @@
+v1.12.1 (2021-01-02)
+- Fixed an issue that not allow to use same profile to play videos with UpNext
+- Disabled UpNext when play STRM of a shared path (Wiki: Share STRM library with multiple devices - OPTION 2)
+
 v1.12.0 (2020-12-13)
 - >> END OF THE ADD-ON DEVELOPMENT ON KODI 18.x
 - >> ON KODI 18.x THE ADD-ON WILL RECEIVE ONLY BUG FIX OR MINOR CHANGES
