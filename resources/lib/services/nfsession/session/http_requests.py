@@ -10,6 +10,9 @@
 """
 import json
 import time
+from copy import deepcopy
+
+import requests
 
 import resources.lib.common as common
 import resources.lib.utils.website as website
@@ -30,14 +33,14 @@ class SessionHTTPRequests(SessionBase):
     def get(self, endpoint, **kwargs):
         """Execute a GET request to the designated endpoint."""
         return self._request_call(
-            method=self.session.get,
+            method='GET',
             endpoint=endpoint,
             **kwargs)
 
     def post(self, endpoint, **kwargs):
         """Execute a POST request to the designated endpoint."""
         return self._request_call(
-            method=self.session.post,
+            method='POST',
             endpoint=endpoint,
             **kwargs)
 
@@ -51,18 +54,35 @@ class SessionHTTPRequests(SessionBase):
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
                else _document_url(endpoint_conf['address'], kwargs))
-        LOG.debug('Executing {verb} request to {url}',
-                  verb='GET' if method == self.session.get else 'POST', url=url)
+        LOG.debug('Executing {verb} request to {url}', verb=method, url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = time.perf_counter()
         try:
-            response = method(
-                url=url,
-                verify=self.verify_ssl,
-                headers=headers,
-                params=params,
-                data=data,
-                timeout=8)
+            # The Requests module has persistent connections enabled by default, that send
+            # "connection: keep-alive" in the headers, Netflix does not use persistent connections and
+            # this prevents connection from being returned to the pool that can causing failures with new requests,
+            # see PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1036
+            # Currently Requests module not allow to disable "keep-alive" the only way is create a custom request.
+            _headers = deepcopy(self.session.headers)
+            _headers.update(headers)
+            req = requests.Request(method,
+                                   url=url,
+                                   headers=_headers,
+                                   cookies=self.session.cookies,
+                                   params=params,
+                                   data=data)
+            req_prep = req.prepare()
+            response = self.session.send(req_prep,
+                                         verify=self.verify_ssl,
+                                         timeout=8)
+            # _method = self.session.get if method == 'GET' else self.session.post
+            # response = _method(
+            #     url=url,
+            #     verify=self.verify_ssl,
+            #     headers=headers,
+            #     params=params,
+            #     data=data,
+            #     timeout=8)
         except exceptions.ReadTimeout as exc:
             LOG.error('HTTP Request ReadTimeout error: {}', exc)
             raise HttpErrorTimeout from exc
