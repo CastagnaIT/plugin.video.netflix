@@ -17,7 +17,7 @@ import requests
 import resources.lib.common as common
 import resources.lib.utils.website as website
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401, NotLoggedInError, HttpErrorTimeout)
+                                             HttpError401, NotLoggedInError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -49,7 +49,6 @@ class SessionHTTPRequests(SessionBase):
         return self._request(method, endpoint, None, **kwargs)
 
     def _request(self, method, endpoint, session_refreshed, **kwargs):
-        from requests import exceptions
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
@@ -57,35 +56,31 @@ class SessionHTTPRequests(SessionBase):
         LOG.debug('Executing {verb} request to {url}', verb=method, url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = time.perf_counter()
-        try:
-            # The Requests module has persistent connections enabled by default, that send
-            # "connection: keep-alive" in the headers, Netflix does not use persistent connections and
-            # this prevents connection from being returned to the pool that can causing failures with new requests,
-            # see PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1036
-            # Currently Requests module not allow to disable "keep-alive" the only way is create a custom request.
-            _headers = deepcopy(self.session.headers)
-            _headers.update(headers)
-            req = requests.Request(method,
-                                   url=url,
-                                   headers=_headers,
-                                   cookies=self.session.cookies,
-                                   params=params,
-                                   data=data)
-            req_prep = req.prepare()
-            response = self.session.send(req_prep,
-                                         verify=self.verify_ssl,
-                                         timeout=8)
-            # _method = self.session.get if method == 'GET' else self.session.post
-            # response = _method(
-            #     url=url,
-            #     verify=self.verify_ssl,
-            #     headers=headers,
-            #     params=params,
-            #     data=data,
-            #     timeout=8)
-        except exceptions.ReadTimeout as exc:
-            LOG.error('HTTP Request ReadTimeout error: {}', exc)
-            raise HttpErrorTimeout from exc
+        # The Requests module has persistent connections enabled by default, that send
+        # "connection: keep-alive" in the headers, Netflix does not use persistent connections and
+        # this prevents connection from being returned to the pool that can causing failures with new requests,
+        # see PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1036
+        # Currently Requests module not allow to disable "keep-alive" the only way is create a custom request.
+        _headers = deepcopy(self.session.headers)
+        _headers.update(headers)
+        req = requests.Request(method,
+                               url=url,
+                               headers=_headers,
+                               cookies=self.session.cookies,
+                               params=params,
+                               data=data)
+        req_prep = req.prepare()
+        response = self.session.send(req_prep,
+                                     verify=self.verify_ssl,
+                                     timeout=8)
+        # _method = self.session.get if method == 'GET' else self.session.post
+        # response = _method(
+        #     url=url,
+        #     verify=self.verify_ssl,
+        #     headers=headers,
+        #     params=params,
+        #     data=data,
+        #     timeout=8)
         LOG.debug('Request took {}s', time.perf_counter() - start)
         LOG.debug('Request returned status code {}', response.status_code)
         # for redirect in response.history:
