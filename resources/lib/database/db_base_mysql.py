@@ -9,15 +9,17 @@
 """
 from functools import wraps
 
-import mysql.connector
-
+from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
+try:
+    import mysql.connector
+    import resources.lib.database.db_create_mysql as db_create_mysql
+    from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
+except ImportError:
+    LOG.error('could not import MySQL modules')
 import resources.lib.common as common
 import resources.lib.database.db_base as db_base
 import resources.lib.database.db_utils as db_utils
-import resources.lib.database.db_create_mysql as db_create_mysql
-from resources.lib.common.exceptions import DBMySQLConnectionError, DBMySQLError
-from resources.lib.globals import G
-from resources.lib.utils.logging import LOG
 
 
 def handle_connection(func):
