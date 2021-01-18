@@ -58,6 +58,7 @@ class AMStreamContinuity(ActionManager):
         self.player_state = {}
         self.resume = {}
         self.is_kodi_forced_subtitles_only = None
+        self.is_prefer_alternative_lang = None
         self.is_prefer_sub_impaired = None
         self.is_prefer_audio_impaired = None
 
@@ -67,6 +68,7 @@ class AMStreamContinuity(ActionManager):
 
     def initialize(self, data):
         self.is_kodi_forced_subtitles_only = common.get_kodi_subtitle_language() == 'forced_only'
+        self.is_prefer_alternative_lang = G.ADDON.getSettingBool('prefer_alternative_lang')
         self.is_prefer_sub_impaired = common.json_rpc('Settings.GetSettingValue',
                                                       {'setting': 'accessibility.subhearing'}).get('value')
         self.is_prefer_audio_impaired = common.json_rpc('Settings.GetSettingValue',
@@ -98,7 +100,7 @@ class AMStreamContinuity(ActionManager):
             # Copy player state to restore it after, or the changes will affect the _restore_stream()
             _player_state_copy = copy.deepcopy(player_state)
             # Force selection of the audio/subtitles language with country code
-            if G.ADDON.getSettingBool('prefer_alternative_lang'):
+            if self.is_prefer_alternative_lang:
                 self._select_lang_with_country_code()
             # Ensures the display of forced subtitles only with the audio language set
             if G.ADDON.getSettingBool('show_forced_subtitles_only'):
@@ -149,7 +151,6 @@ class AMStreamContinuity(ActionManager):
         if not is_sub_stream_equal or not is_sub_enabled_equal:
             self._set_current_stream('subtitle', player_state)
             self._save_changed_stream('subtitle', player_stream)
-
             self._set_current_stream('subtitleenabled', player_state)
             self._save_changed_stream('subtitleenabled', player_sub_enabled)
             if not is_sub_stream_equal:
@@ -238,80 +239,75 @@ class AMStreamContinuity(ActionManager):
 
     def _select_lang_with_country_code(self):
         """Force selection of the audio/subtitles language with country code"""
-        # If Kodi Player audio language is not set as "mediadefault" the language with country code for
-        # audio/subtitles, will never be selected automatically, then we try to do this manually.
-        audio_language = self._get_current_audio_language()
-        if '-' not in audio_language:
-            # There is no audio language with country code or different settings have been chosen
-            return
-        # Audio side
-        if common.get_kodi_audio_language() not in ['mediadefault', 'original']:
-            audio_list = self.player_state.get(STREAMS['audio']['list'])
-            stream = None
+        # --- Audio side ---
+        # NOTE: Kodi is able to auto-select the language with country code for audio/subtitles only
+        # if audio track is set as default and the Kodi Player audio language is set as "mediadefault".
+        pref_audio_language = self._get_preferred_audio_language()
+        # Get current audio languages
+        audio_list = self.player_state.get(STREAMS['audio']['list'])
+        lang_code = _find_lang_with_country_code(audio_list, pref_audio_language)
+        if lang_code and common.get_kodi_audio_language() not in ['mediadefault', 'original']:
+            stream_audio = None
             if self.is_prefer_audio_impaired:
-                stream = next((audio_track for audio_track in audio_list
-                               if audio_track['language'] == audio_language
-                               and audio_track['isimpaired']
-                               and audio_track['isdefault']),  # The default track can change is user choose 2ch as def
-                              None)
-            if not stream:
-                stream = next((audio_track for audio_track in audio_list
-                               if audio_track['language'] == audio_language
-                               and not audio_track['isimpaired']
-                               and audio_track['isdefault']),  # The default track can change is user choose 2ch as def
-                              None)
-            if stream:
-                self.sc_settings.update({'audio': stream})
+                stream_audio = next((audio_track for audio_track in audio_list
+                                     if audio_track['language'] == lang_code
+                                     and audio_track['isimpaired']
+                                     and audio_track['isdefault']),  # The default track can change is user choose 2ch
+                                    None)
+            if not stream_audio:
+                stream_audio = next((audio_track for audio_track in audio_list
+                                     if audio_track['language'] == lang_code
+                                     and not audio_track['isimpaired']
+                                     and audio_track['isdefault']),  # The default track can change is user choose 2ch
+                                    None)
+            if stream_audio:
+                self.sc_settings.update({'audio': stream_audio})
                 # We update the current player state data to avoid wrong behaviour with features executed after
-                self.player_state[STREAMS['audio']['current']] = stream
-        # Subtitles side
-        subtitle_list = self.player_state.get(STREAMS['subtitle']['list'])
-        if not any(subtitle_track for subtitle_track in subtitle_list
-                   if subtitle_track['language'].startswith(audio_language[:2] + '-')):
-            self.sc_settings.update({'subtitleenabled': False})
+                self.player_state[STREAMS['audio']['current']] = stream_audio
+        # --- Subtitles side ---
+        # Get the subtitles language set in Kodi Player setting
+        pref_subtitle_language = self._get_preferred_subtitle_language()
+        if not pref_subtitle_language:
             return
-        if self.is_kodi_forced_subtitles_only:
-            subtitle_language = audio_language
-        else:
-            # Get the subtitles language set in Kodi Player setting
-            subtitle_language = common.get_kodi_subtitle_language()
-            # Get the alternative language code
-            # Here we have only the language code without country code, we do not know the country code to be used,
-            # usually there are only two tracks with the same language and different countries,
-            # then we try to find the language with the country code
-            _stream = next((subtitle_track for subtitle_track in subtitle_list
-                            if subtitle_track['language'].startswith(subtitle_language + '-')), None)
-            if _stream:
-                subtitle_language = _stream['language']
-        stream_sub = self._find_subtitle_stream(subtitle_language, self.is_kodi_forced_subtitles_only)
+        subtitle_list = self.player_state.get(STREAMS['subtitle']['list'])
+        lang_code = _find_lang_with_country_code(subtitle_list, pref_subtitle_language)
+        if not lang_code:
+            return
+        stream_sub = self._find_subtitle_stream(lang_code, self.is_kodi_forced_subtitles_only)
         if stream_sub:
             self.sc_settings.update({'subtitleenabled': True})
             self.sc_settings.update({'subtitle': stream_sub})
             # We update the current player state data to avoid wrong behaviour with features executed after
             self.player_state[STREAMS['subtitle']['current']] = stream_sub
-        else:
-            self.sc_settings.update({'subtitleenabled': False})
 
     def _ensure_forced_subtitle_only(self):
-        """Ensures the display of forced subtitles only with the audio language set"""
+        """Ensures the display of forced subtitles only with the preferred audio language set"""
         # When the audio language in Kodi player is set e.g. to 'Italian', and you try to play a video
         # without Italian audio language, Kodi choose another language available e.g. English,
         # this will also be reflected on the subtitles that which will be shown in English language,
         # but the subtitles may be available in Italian or the user may not want to view them in other languages.
-        # Get current subtitle stream
-        player_stream = self.player_state.get(STREAMS['subtitle']['current'])
-        if not player_stream:
+        # Get current subtitle stream set (could be also changed by _select_lang_with_country_code)
+        sub_stream = self.player_state.get(STREAMS['subtitle']['current'])
+        if not sub_stream:
             return
-        # Get current audio language
-        audio_language = self._get_current_audio_language()
-        if player_stream['isforced'] and player_stream['language'] == audio_language:
+        # Get the preferred audio language
+        pref_audio_language = self._get_preferred_audio_language()
+        # Get current audio languages
+        audio_list = self.player_state.get(STREAMS['audio']['list'])
+        if self.is_prefer_alternative_lang:
+            lang_code = _find_lang_with_country_code(audio_list, pref_audio_language)
+            if lang_code:
+                pref_audio_language = lang_code
+        if '-' not in pref_audio_language:
+            pref_audio_language = common.convert_language_iso(pref_audio_language, xbmc.ISO_639_2)
+        if sub_stream['isforced'] and sub_stream['language'] == pref_audio_language:
             return
         subtitles_list = self.player_state.get(STREAMS['subtitle']['list'])
-        if not player_stream['language'] == audio_language:
+        if not sub_stream['language'] == pref_audio_language:
             # The current subtitle is not forced or forced but not in the preferred audio language
             # Try find a forced subtitle in the preferred audio language
             stream = next((subtitle_track for subtitle_track in subtitles_list
-                           if subtitle_track['language'] == audio_language
+                           if subtitle_track['language'] == pref_audio_language
                            and subtitle_track['isforced']),
                           None)
             if stream:
@@ -324,19 +320,29 @@ class AMStreamContinuity(ActionManager):
 
     def _ensure_subtitles_no_audio_available(self):
         """Ensure in any case to show the regular subtitles when the preferred audio language is not available"""
-        # Get current subtitle stream
-        player_stream = self.player_state.get(STREAMS['subtitle']['current'])
-        if not player_stream:
+        # Check if there are subtitles
+        subtitles_list = self.player_state.get(STREAMS['subtitle']['list'])
+        if not subtitles_list:
             return
-        # Get current audio language
-        audio_language = self._get_current_audio_language()
+        # Get the preferred audio language
+        pref_audio_language = self._get_preferred_audio_language()
         audio_list = self.player_state.get(STREAMS['audio']['list'])
+        # Check if there is an audio track available in the preferred audio language,
+        # can also happen that in list there are languages with country code only
+        accepted_lang_codes = [common.convert_language_iso(pref_audio_language, xbmc.ISO_639_2)]
+        if self.is_prefer_alternative_lang:
+            lang_code = _find_lang_with_country_code(audio_list, pref_audio_language)
+            if lang_code:
+                accepted_lang_codes.append(lang_code)
         stream = None
-        # Check if there is an audio track available in the preferred audio language
-        if not any(audio_track['language'] == audio_language for audio_track in audio_list):
-            # No audio available for the preferred audio language,
+        if not any(audio_track['language'] in accepted_lang_codes for audio_track in audio_list):
+            # No audio available in the preferred audio languages,
             # then try find a regular subtitle in the preferred audio language
-            stream = self._find_subtitle_stream(audio_language)
+            if len(accepted_lang_codes) == 2:
+                # Try find with country code
+                stream = self._find_subtitle_stream(accepted_lang_codes[-1])
+            if not stream:
+                stream = self._find_subtitle_stream(accepted_lang_codes[0])
         if stream:
             self.sc_settings.update({'subtitleenabled': True})
             self.sc_settings.update({'subtitle': stream})
@@ -361,30 +367,61 @@ class AMStreamContinuity(ActionManager):
                           None)
         return stream
 
-    def _get_current_audio_language(self):
-        # Get current audio language
-        audio_list = self.player_state.get(STREAMS['audio']['list'])
-        audio_language = common.get_kodi_audio_language(iso_format=xbmc.ISO_639_2)
+    def _get_preferred_audio_language(self):
+        """
+        Get the language code of the preferred audio as set in Kodi Player setting
+        :return: The language code (as ISO with 2 letters)
+        """
+        audio_language = common.get_kodi_audio_language()
         if audio_language == 'mediadefault':
             # Netflix do not have a "Media default" track then we rely on the language of current nf profile,
             # although due to current Kodi locale problems could be not always accurate.
             profile_language_code = G.LOCAL_DB.get_profile_config('language')
-            audio_language = common.convert_language_iso(profile_language_code[0:2], xbmc.ISO_639_2)
+            audio_language = profile_language_code[:2]
         if audio_language == 'original':
+            # Get current audio languages
+            audio_list = self.player_state.get(STREAMS['audio']['list'])
             # Find the language of the original audio track
             stream = next((audio_track for audio_track in audio_list if audio_track['isoriginal']), None)
-            audio_language = stream['language']
-        elif G.ADDON.getSettingBool('prefer_alternative_lang'):
-            # Get the alternative language code
-            # Here we have only the language code without country code, we do not know the country code to be used,
-            # usually there are only two tracks with the same language and different countries,
-            # then we try to find the language with the country code
-            two_letter_lang_code = common.convert_language_iso(audio_language)
-            stream = next((audio_track for audio_track in audio_list
-                           if audio_track['language'].startswith(two_letter_lang_code + '-')), None)
-            if stream:
-                audio_language = stream['language']
+            # stream['language'] can be ISO 3 letters or with country code (pt-BR) / converted with LOCALE_CONV_TABLE
+            if stream is None:  # Means some problem, let the code break
+                audio_language = None
+            else:
+                if '-' in stream['language']:
+                    audio_language = stream['language'][:2]
+                else:
+                    audio_language = common.convert_language_iso(stream['language'])
         return audio_language
+
+    def _get_preferred_subtitle_language(self):
+        """
+        Get the language code of the preferred subtitle as set in Kodi Player setting
+        :return: The language code (as ISO with 2 letters) or 'None' if disabled
+        """
+        subtitle_language = common.get_kodi_subtitle_language()
+        if subtitle_language == 'forced_only':
+            # Then match the audio language
+            subtitle_language = self._get_preferred_audio_language()
+        elif subtitle_language == 'original':
+            # Get current audio languages
+            audio_list = self.player_state.get(STREAMS['audio']['list'])
+            # Find the language of the original audio track
+            stream = next((audio_track for audio_track in audio_list if audio_track['isoriginal']), None)
+            # stream['language'] can be ISO 3 letters or with country code (pt-BR) / converted with LOCALE_CONV_TABLE
+            if stream is None:
+                subtitle_language = None
+            else:
+                if '-' in stream['language']:
+                    subtitle_language = stream['language'][:2]
+                else:
+                    subtitle_language = common.convert_language_iso(stream['language'])
+        elif subtitle_language == 'default':
+            # Get the Kodi UI language
+            subtitle_language = common.get_kodi_ui_language()
+        elif subtitle_language == 'none':
+            # Subtitles are disabled
+            subtitle_language = None
+        return subtitle_language
 
     def _is_stream_value_equal(self, stream_a, stream_b):
         if isinstance(stream_a, dict):
@@ -397,3 +434,20 @@ class AMStreamContinuity(ActionManager):
 def _filter_streams(streams, filter_name, match_value):
     return [dict_stream for dict_stream in streams if
             dict_stream.get(filter_name, False) == match_value]
+
+
+def _find_lang_with_country_code(tracks_list, lang_code):
+    """
+    Try to find a language code with country code
+    :param tracks_list: list of tracks where search the language code
+    :param lang_code: the language code to find (2 letters - ISO_639_1)
+    :return: the language code with country code or 'None' if it does not exist
+    """
+    # The search checks whether a language exists with "-" char.
+    # Usually for the same language there might be two different countries,
+    # e.g. "es" and "es-ES" (that will be converted in "es-Spain" by LOCALE_CONV_TABLE)
+    _stream = next((track for track in tracks_list
+                    if track['language'].startswith(lang_code + '-')), None)
+    if _stream:
+        return _stream['language']
+    return None

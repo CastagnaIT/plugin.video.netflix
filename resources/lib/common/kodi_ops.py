@@ -179,18 +179,32 @@ def get_kodi_audio_language(iso_format=xbmc.ISO_639_1):
     Return the audio language from Kodi settings
     WARNING: Based on Kodi player settings can also return values as: 'mediadefault', 'original'
     """
-    audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})
-    if audio_language['value'] in ['mediadefault', 'original']:
-        return audio_language['value']
-    return convert_language_iso(audio_language['value'], iso_format)
+    audio_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.audiolanguage'})['value']
+    if audio_language in ['mediadefault', 'original']:
+        return audio_language
+    if audio_language == 'default':  # "User interface language"
+        return get_kodi_ui_language(iso_format)
+    return convert_language_iso(audio_language, iso_format)
 
 
 def get_kodi_subtitle_language(iso_format=xbmc.ISO_639_1):
-    """Return the subtitle language from Kodi settings"""
-    subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})
-    if subtitle_language['value'] == 'forced_only':
-        return subtitle_language['value']
-    return convert_language_iso(subtitle_language['value'], iso_format)
+    """
+    Return the subtitle language from Kodi settings
+    WARNING: Based on Kodi player settings can also return values as: 'forced_only', 'original', or:
+    'default' when set as "User interface language"
+    'none' when set as "None"
+    """
+    subtitle_language = json_rpc('Settings.GetSettingValue', {'setting': 'locale.subtitlelanguage'})['value']
+    if subtitle_language in ['forced_only', 'original', 'default', 'none']:
+        return subtitle_language
+    return convert_language_iso(subtitle_language, iso_format)
+
+
+def get_kodi_ui_language(iso_format=xbmc.ISO_639_1):
+    """Return the Kodi UI interface language"""
+    setting = json_rpc('Settings.GetSettingValue', {'setting': 'locale.language'})
+    # The value returned is as "resource.language.en_gb" we keep only the first two chars "en"
+    return convert_language_iso(setting.split('.')[-1][:2], iso_format)
 
 
 def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
