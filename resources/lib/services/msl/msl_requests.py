@@ -181,7 +181,7 @@ class MSLRequests(MSLRequestBuilder):
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 response.raise_for_status()
-                return response
+                return response.text
             except Exception as exc:  # pylint: disable=broad-except
                 LOG.error('HTTP request error: {}', exc)
                 if not retry_all_exceptions and not isinstance(exc, exceptions.ReadTimeout):
@@ -191,46 +191,40 @@ class MSLRequests(MSLRequestBuilder):
                 retry_attempt += 1
                 LOG.warn('Will be executed a new POST request (attempt {})'.format(retry_attempt))
 
-    # pylint: disable=unused-argument
     @measure_exec_time_decorator(is_immediate=True)
     def _process_chunked_response(self, response, save_uid_token_to_owner=False):
-        """Parse and decrypt an encrypted chunked response. Raise an error
-        if the response is plaintext json"""
-        try:
-            # if the json() does not fail we have an error because
-            # the expected response is a chunked json response
-            return _raise_if_error(response.json())
-        except ValueError:
-            # json() failed so parse and decrypt the chunked response
-            LOG.debug('Received encrypted chunked response')
-            response = _parse_chunks(response.text)
-            # TODO: sending for the renewal request is not yet implemented
-            # if self.crypto.get_current_mastertoken_validity()['is_renewable']:
-            #     # Check if mastertoken is renewed
-            #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
+        """Parse and decrypt an encrypted chunked response. Raise an error if the response is plaintext json"""
+        LOG.debug('Received encrypted chunked response')
+        if not response:
+            return {}
+        response = _parse_chunks(response)
+        # TODO: sending for the renewal request is not yet implemented
+        # if self.crypto.get_current_mastertoken_validity()['is_renewable']:
+        #     # Check if mastertoken is renewed
+        #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
 
-            header_data = self.decrypt_header_data(response['header'].get('headerdata'))
+        header_data = self.decrypt_header_data(response['header'].get('headerdata'))
 
-            if 'useridtoken' in header_data:
-                # Save the user id token for the future msl requests
-                profile_guid = G.LOCAL_DB.get_guid_owner_profile() if save_uid_token_to_owner else\
-                    G.LOCAL_DB.get_active_profile_guid()
-                self.crypto.save_user_id_token(profile_guid, header_data['useridtoken'])
-            # if 'keyresponsedata' in header_data:
-            #     LOG.debug('Found key handshake in response data')
-            #     # Update current mastertoken
-            #     self.request_builder.crypto.parse_key_response(header_data, True)
-            decrypted_response = _decrypt_chunks(response['payloads'], self.crypto)
-            return _raise_if_error(decrypted_response)
+        if 'useridtoken' in header_data:
+            # Save the user id token for the future msl requests
+            profile_guid = G.LOCAL_DB.get_guid_owner_profile() if save_uid_token_to_owner else\
+                G.LOCAL_DB.get_active_profile_guid()
+            self.crypto.save_user_id_token(profile_guid, header_data['useridtoken'])
+        # if 'keyresponsedata' in header_data:
+        #     LOG.debug('Found key handshake in response data')
+        #     # Update current mastertoken
+        #     self.request_builder.crypto.parse_key_response(header_data, True)
+        decrypted_response = _decrypt_chunks(response['payloads'], self.crypto)
+        return _raise_if_error(decrypted_response)
 
 
 @measure_exec_time_decorator(is_immediate=True)
 def _process_json_response(response):
     """Execute a post request and expect a JSON response"""
     try:
-        return _raise_if_error(response.json())
+        return _raise_if_error(json.loads(response))
     except ValueError as exc:
-        raise MSLError('Expected JSON response, got {}'.format(response.text)) from exc
+        raise MSLError('Expected JSON format type, got {}'.format(response)) from exc
 
 
 def _raise_if_error(decoded_response):
@@ -274,18 +268,27 @@ def _get_error_details(decoded_response):
 
 @measure_exec_time_decorator(is_immediate=True)
 def _parse_chunks(message):
-    header = json.loads(message.split('}}')[0] + '}}')
-    payloads = re.split(',\"signature\":\"[0-9A-Za-z=/+]+\"}', message.split('}}')[1])
-    payloads = [x + '}' for x in payloads][:-1]
-    return {'header': header, 'payloads': payloads}
+    try:
+        msg_parts = json.loads('[' + message.replace('}{', '},{') + ']')
+        header = None
+        payloads = []
+        for msg_part in msg_parts:
+            if 'headerdata' in msg_part:
+                header = msg_part
+            elif 'payload' in msg_part:
+                payloads.append(msg_part)
+        return {'header': header, 'payloads': payloads}
+    except Exception as exc:  # pylint: disable=broad-except
+        LOG.error('Unable to parse the chunks due to error: {}', exc)
+        LOG.debug('Message data: {}', message)
+        raise
 
 
 @measure_exec_time_decorator(is_immediate=True)
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:
-        payloadchunk = json.loads(chunk)
-        payload = payloadchunk.get('payload')
+        payload = chunk.get('payload')
         decoded_payload = base64.standard_b64decode(payload)
         encryption_envelope = json.loads(decoded_payload)
         # Decrypt the text
