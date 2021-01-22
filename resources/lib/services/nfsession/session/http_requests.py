@@ -14,7 +14,7 @@ import time
 import resources.lib.common as common
 import resources.lib.utils.website as website
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401, NotLoggedInError, HttpErrorTimeout)
+                                             HttpError401, NotLoggedInError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -46,7 +46,6 @@ class SessionHTTPRequests(SessionBase):
         return self._request(method, endpoint, None, **kwargs)
 
     def _request(self, method, endpoint, session_refreshed, **kwargs):
-        from requests import exceptions
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
@@ -55,17 +54,13 @@ class SessionHTTPRequests(SessionBase):
                   verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = time.perf_counter()
-        try:
-            response = method(
-                url=url,
-                verify=self.verify_ssl,
-                headers=headers,
-                params=params,
-                data=data,
-                timeout=8)
-        except exceptions.ReadTimeout as exc:
-            LOG.error('HTTP Request ReadTimeout error: {}', exc)
-            raise HttpErrorTimeout from exc
+        response = method(
+            url=url,
+            verify=self.verify_ssl,
+            headers=headers,
+            params=params,
+            data=data,
+            timeout=8)
         LOG.debug('Request took {}s', time.perf_counter() - start)
         LOG.debug('Request returned status code {}', response.status_code)
         # for redirect in response.history:
