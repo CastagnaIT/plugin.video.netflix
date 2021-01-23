@@ -17,7 +17,7 @@ from future.utils import raise_from
 import resources.lib.utils.website as website
 import resources.lib.common as common
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401, NotLoggedInError, HttpErrorTimeout)
+                                             HttpError401, NotLoggedInError)
 from resources.lib.kodi import ui
 from resources.lib.utils import cookies
 from resources.lib.database.db_utils import TABLE_SESSION
@@ -49,7 +49,6 @@ class SessionHTTPRequests(SessionBase):
         return self._request(method, endpoint, None, **kwargs)
 
     def _request(self, method, endpoint, session_refreshed, **kwargs):
-        from requests import exceptions
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
@@ -58,17 +57,13 @@ class SessionHTTPRequests(SessionBase):
                   verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
         start = perf_clock()
-        try:
-            response = method(
-                url=url,
-                verify=self.verify_ssl,
-                headers=headers,
-                params=params,
-                data=data,
-                timeout=8)
-        except exceptions.ReadTimeout as exc:
-            LOG.error('HTTP Request ReadTimeout error: {}', exc)
-            raise_from(HttpErrorTimeout, exc)
+        response = method(
+            url=url,
+            verify=self.verify_ssl,
+            headers=headers,
+            params=params,
+            data=data,
+            timeout=8)
         LOG.debug('Request took {}s', perf_clock() - start)
         LOG.debug('Request returned status code {}', response.status_code)
         # for redirect in response.history:

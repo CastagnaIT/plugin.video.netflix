@@ -21,10 +21,6 @@ class HttpError401(Exception):
     """The request has returned http error 401 unauthorized for url ..."""
 
 
-class HttpErrorTimeout(Exception):
-    """The request has raised timeout"""
-
-
 class WebsiteParsingError(Exception):
     """Parsing info from the Netflix Website failed"""
 

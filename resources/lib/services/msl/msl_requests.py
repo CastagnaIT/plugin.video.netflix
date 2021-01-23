@@ -15,7 +15,6 @@ import json
 import zlib
 
 from future.utils import raise_from
-from requests import exceptions
 
 import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
@@ -156,19 +155,18 @@ class MSLRequests(MSLRequestBuilder):
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
     @measure_exec_time_decorator(is_immediate=True)
-    def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False,
-                        retry_all_exceptions=False):
+    def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
         auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
-            self._post(endpoint, self.msl_request(request_data, esn, auth_data), retry_all_exceptions),
+            self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
             save_uid_token_to_owner=auth_data['user_id_token'] is None)
         return chunked_response['result']
 
-    def _post(self, endpoint, request_data, retry_all_exceptions=False):
+    def _post(self, endpoint, request_data):
         """Execute a post request"""
         is_attemps_enabled = 'reqAttempt=' in endpoint
         max_attempts = 3 if is_attemps_enabled else 1
@@ -188,8 +186,6 @@ class MSLRequests(MSLRequestBuilder):
                 return response.text
             except Exception as exc:  # pylint: disable=broad-except
                 LOG.error('HTTP request error: {}', exc)
-                if not retry_all_exceptions and not isinstance(exc, exceptions.ReadTimeout):
-                    raise
                 if retry_attempt >= max_attempts:
                     raise
                 retry_attempt += 1
