@@ -14,6 +14,8 @@ import base64
 import json
 import zlib
 
+import requests.exceptions as req_exceptions
+
 from future.utils import raise_from
 
 import resources.lib.common as common
@@ -168,28 +170,29 @@ class MSLRequests(MSLRequestBuilder):
 
     def _post(self, endpoint, request_data):
         """Execute a post request"""
-        is_attemps_enabled = 'reqAttempt=' in endpoint
-        max_attempts = 3 if is_attemps_enabled else 1
-        retry_attempt = 1
-        while retry_attempt <= max_attempts:
-            if is_attemps_enabled:
-                _endpoint = endpoint.replace('reqAttempt=', 'reqAttempt=' + str(retry_attempt))
-            else:
-                _endpoint = endpoint
-            LOG.debug('Executing POST request to {}', _endpoint)
-            start = perf_clock()
+        is_attempts_enabled = 'reqAttempt=' in endpoint
+        retry = 1
+        while True:
             try:
+                if is_attempts_enabled:
+                    _endpoint = endpoint.replace('reqAttempt=', 'reqAttempt=' + str(retry))
+                else:
+                    _endpoint = endpoint
+                LOG.debug('Executing POST request to {}', _endpoint)
+                start = perf_clock()
                 response = self.session.post(_endpoint, request_data, timeout=4)
                 LOG.debug('Request took {}s', perf_clock() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
-                response.raise_for_status()
-                return response.text
-            except Exception as exc:  # pylint: disable=broad-except
+                break
+            except (req_exceptions.ConnectionError, req_exceptions.ReadTimeout) as exc:
+                # Info on PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1046
                 LOG.error('HTTP request error: {}', exc)
-                if retry_attempt >= max_attempts:
+                if retry == 3:
                     raise
-                retry_attempt += 1
-                LOG.warn('Will be executed a new POST request (attempt {})'.format(retry_attempt))
+                retry += 1
+                LOG.warn('Another attempt will be performed ({})', retry)
+        response.raise_for_status()
+        return response.text
 
     @measure_exec_time_decorator(is_immediate=True)
     def _process_chunked_response(self, response, save_uid_token_to_owner=False):
