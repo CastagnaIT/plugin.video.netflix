@@ -25,12 +25,11 @@ def convert_to_string(value):
     data_type = type(value)
     if data_type == str:
         return value
-    converter = None
     if data_type in (int, float, bool, tuple, datetime.datetime):
         converter = _conv_standard_to_string
-    if data_type in (list, dict, OrderedDict):
+    elif data_type in (list, dict, OrderedDict):
         converter = _conv_json_to_string
-    if not converter:
+    else:
         LOG.error('convert_to_string: Data type {} not mapped'.format(data_type))
         raise DataTypeNotMapped
     return converter(value)
@@ -43,12 +42,11 @@ def convert_from_string(value, to_data_type):
         return to_data_type(value)
     if to_data_type in (bool, list, tuple):
         return literal_eval(value)
-    converter = None
     if to_data_type == dict:
         converter = _conv_string_to_json
-    if to_data_type == datetime.datetime:
+    elif to_data_type == datetime.datetime:
         converter = _conv_string_to_datetime
-    if not converter:
+    else:
         LOG.error('convert_from_string: Data type {} not mapped'.format(to_data_type))
         raise DataTypeNotMapped
     return converter(value)
