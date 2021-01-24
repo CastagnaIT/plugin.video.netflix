@@ -31,6 +31,7 @@ jobs:
         pip install kodi-addon-checker
     - name: Checking language translations
       run: make check-translations
+      working-directory: ${{ github.repository }}
     - name: Remove unwanted files
       run: awk '/export-ignore/ { print $1 }' .gitattributes | xargs rm -rf --
       working-directory: ${{ github.repository }}
