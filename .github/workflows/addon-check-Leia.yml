@@ -1,0 +1,38 @@
+name: Kodi
+on:
+  push:
+    branches:
+    - Leia
+  pull_request:
+    branches:
+    - Leia
+jobs:
+  tests:
+    name: Addon checker
+    runs-on: ubuntu-latest
+    env:
+      PYTHONIOENCODING: utf-8
+    strategy:
+      fail-fast: false
+      matrix:
+        kodi-branch: [leia]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ github.repository }}
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        sudo apt-get install gettext
+        python -m pip install --upgrade pip
+        pip install kodi-addon-checker
+    - name: Checking language translations
+      run: make check-translations
+    - name: Remove unwanted files
+      run: awk '/export-ignore/ { print $1 }' .gitattributes | xargs rm -rf --
+      working-directory: ${{ github.repository }}
+    - name: Run kodi-addon-checker
+      run: kodi-addon-checker --branch=${{ matrix.kodi-branch }} ${{ github.repository }}/

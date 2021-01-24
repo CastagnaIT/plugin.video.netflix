@@ -1,0 +1,50 @@
+name: CI
+on:
+  push:
+    branches:
+    - Leia
+  pull_request:
+    branches:
+    - Leia
+jobs:
+  tests:
+    name: Add-on testing
+    # ubuntu-latest has dropped Python 2, ubuntu-18.04 is the last one
+    runs-on: ubuntu-18.04
+    env:
+      PYTHONIOENCODING: utf-8
+      PYTHONPATH: ${{ github.workspace }}/resources/lib:${{ github.workspace }}/tests
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [2.7]
+    steps:
+    - name: Check out ${{ github.sha }} from repository ${{ github.repository }}
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tox
+      run: python -m tox -q -e flake8,py
+      if: always()
+    - name: Run pylint
+      run: python -m pylint resources/lib/ tests/
+      if: always()
+    - name: Compare translations
+      run: make check-translations
+      if: always()
+    - name: Analyze with SonarCloud
+      uses: SonarSource/sonarcloud-github-action@v1.4
+      with:
+        args: >
+          -Dsonar.organization=add-ons
+          -Dsonar.projectKey=add-ons_plugin.video.netflix
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      continue-on-error: true
