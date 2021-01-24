@@ -148,7 +148,8 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
         'is_folder': True,
         'properties': {'nf_videoid': seasonid.to_string()}
     }
-    add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data)
+    add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data,
+                       art_item=season_list.artitem)
     dict_item['url'] = common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY)
     dict_item['menu_items'] = generate_context_menu_items(seasonid, False, None)
     return dict_item

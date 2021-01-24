@@ -106,7 +106,8 @@ class DirectoryPathRequests:
             raise InvalidVideoId('Cannot request season list for {}'.format(videoid))
         LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
-            'paths': build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS),
+            'paths': (build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS) +
+                      build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS)),
             'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']],
             'perpetual_range_start': perpetual_range_start
         }

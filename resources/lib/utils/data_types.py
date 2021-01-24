@@ -224,6 +224,8 @@ class SeasonList:
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videoid = videoid
+        # Get the art data of tv show (from first videoid)
+        self.artitem = next(iter(self.data.get('videos', {}).values()), None)
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
         self.seasons = OrderedDict(
             resolve_refs(self.tvshow['seasonList'], self.data))
