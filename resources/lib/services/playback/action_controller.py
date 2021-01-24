@@ -97,7 +97,7 @@ class ActionController(xbmc.Monitor):
                 self._on_playback_pause()
             elif method == 'Player.OnResume':
                 # Kodi call this event instead the "Player.OnStop" event when you try to play a video
-                # while another one is in playing (also if the current video is in pause)
+                # while another one is in playing (also if the current video is in pause) (not happen on RPI devices)
                 # Can be one of following cases:
                 # - When you use ctx menu "Play From Here", this happen when click to next button
                 # - When you use UpNext add-on
