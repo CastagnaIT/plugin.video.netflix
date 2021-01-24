@@ -1,3 +1,13 @@
+v1.13.1 (2021-01-25)
+- Add images to seasons list items
+- Implemented support to Kodi language setting case "User interface language"
+- Fixed "Prefer the audio/subtitle language with country code" feature
+- Fixed possible dependencies errors on new installations
+- Fixed possible service crash on slower devices like RPI
+- Better managed data chunks in some cases could cause errors on starting playback
+- Tried to better handle HTTP ReadTimeout/ConnectionError errors
+- Updated translations fr, hu, pt-br, zh-cn
+
 v1.13.0 (2021-01-02)
 - Add new ESN/Widevine setting dialog
 - MySQL Connector/Python library is now a Kodi dependency
