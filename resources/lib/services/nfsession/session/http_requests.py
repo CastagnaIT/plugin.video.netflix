@@ -11,10 +11,12 @@
 import json
 import time
 
+import requests.exceptions as req_exceptions
+
 import resources.lib.common as common
 import resources.lib.utils.website as website
 from resources.lib.common.exceptions import (APIError, WebsiteParsingError, MbrStatusError, MbrStatusAnonymousError,
-                                             HttpError401, NotLoggedInError, HttpErrorTimeout)
+                                             HttpError401, NotLoggedInError)
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -46,28 +48,34 @@ class SessionHTTPRequests(SessionBase):
         return self._request(method, endpoint, None, **kwargs)
 
     def _request(self, method, endpoint, session_refreshed, **kwargs):
-        from requests import exceptions
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
                if endpoint_conf['is_api_call']
                else _document_url(endpoint_conf['address'], kwargs))
-        LOG.debug('Executing {verb} request to {url}',
-                  verb='GET' if method == self.session.get else 'POST', url=url)
         data, headers, params = self._prepare_request_properties(endpoint_conf, kwargs)
-        start = time.perf_counter()
-        try:
-            response = method(
-                url=url,
-                verify=self.verify_ssl,
-                headers=headers,
-                params=params,
-                data=data,
-                timeout=8)
-        except exceptions.ReadTimeout as exc:
-            LOG.error('HTTP Request ReadTimeout error: {}', exc)
-            raise HttpErrorTimeout from exc
-        LOG.debug('Request took {}s', time.perf_counter() - start)
-        LOG.debug('Request returned status code {}', response.status_code)
+        retry = 1
+        while True:
+            try:
+                LOG.debug('Executing {verb} request to {url}',
+                          verb='GET' if method == self.session.get else 'POST', url=url)
+                start = time.perf_counter()
+                response = method(
+                    url=url,
+                    verify=self.verify_ssl,
+                    headers=headers,
+                    params=params,
+                    data=data,
+                    timeout=8)
+                LOG.debug('Request took {}s', time.perf_counter() - start)
+                LOG.debug('Request returned status code {}', response.status_code)
+                break
+            except (req_exceptions.ConnectionError, req_exceptions.ReadTimeout) as exc:
+                # Info on PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1046
+                LOG.error('HTTP request error: {}', exc)
+                if retry == 3:
+                    raise
+                retry += 1
+                LOG.warn('Another attempt will be performed ({})', retry)
         # for redirect in response.history:
         #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
         if not session_refreshed:
@@ -89,7 +97,6 @@ class SessionHTTPRequests(SessionBase):
 
     def try_refresh_session_data(self, raise_exception=False):
         """Refresh session data from the Netflix website"""
-        from requests import exceptions
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
             cookies.save(self.session.cookies)
@@ -110,7 +117,7 @@ class SessionHTTPRequests(SessionBase):
             common.purge_credentials()
             ui.show_notification(common.get_local_string(30008))
             raise NotLoggedInError from exc
-        except exceptions.RequestException:
+        except req_exceptions.RequestException:
             import traceback
             LOG.warn('Failed to refresh session data, request error (RequestException)')
             LOG.warn(traceback.format_exc())
