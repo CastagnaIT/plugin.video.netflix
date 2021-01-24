@@ -1,3 +1,8 @@
+v1.12.2 (2021-01-25)
+- Fixed possible service crash on slower devices like RPI
+- Better managed data chunks in some cases could cause errors on starting playback
+- Tried to better handle HTTP ReadTimeout/ConnectionError errors
+
 v1.12.1 (2021-01-02)
 - Fixed an issue that not allow to use same profile to play videos with UpNext
 - Disabled UpNext when play STRM of a shared path (Wiki: Share STRM library with multiple devices - OPTION 2)
@@ -18,7 +23,6 @@ v1.12.0 (2020-12-13)
 - Blocked profile switching while playing, can cause issues
 - Managed wrong password case on login that caused http error 500
 - Updated translations it, de, gr, pt-br, hu, ro, es, jp, kr, fr
-
 
 v1.11.0 (2020-11-14)
 - Reworked Audio/Subtitles language features
