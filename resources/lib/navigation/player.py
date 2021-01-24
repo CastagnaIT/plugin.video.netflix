@@ -129,6 +129,7 @@ def _play(videoid, is_played_from_strm=False):
 
     # Start and initialize the action controller (see action_controller.py)
     LOG.debug('Sending initialization signal')
+    # Do not use send_signal as threaded slow devices are not powerful to send in faster way and arrive late to service
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
         'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
@@ -136,7 +137,7 @@ def _play(videoid, is_played_from_strm=False):
         'info_data': info_data,
         'is_played_from_strm': is_played_from_strm,
         'resume_position': resume_position,
-        'event_data': event_data}, non_blocking=True)
+        'event_data': event_data})
     xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
 

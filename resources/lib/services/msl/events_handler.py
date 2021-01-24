@@ -111,7 +111,7 @@ class EventsHandler(threading.Thread):
                                                                'events/{}'.format(event))
         try:
             response = self.chunked_request(endpoint_url, event.request_data, get_esn(),
-                                            disable_msl_switch=False, retry_all_exceptions=True)
+                                            disable_msl_switch=False)
             # Malformed/wrong content in requests are ignored without returning error feedback in the response
             event.set_response(response)
         except Exception as exc:  # pylint: disable=broad-except
