@@ -57,11 +57,6 @@ def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     cancel_playback = False
     LOG.debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
-    if previous_ver and is_less_version(previous_ver, '0.15.9'):
-        import resources.lib.kodi.ui as ui
-        msg = ('This update resets the settings to auto-update library.\r\n'
-               'Therefore only in case you are using auto-update must be reconfigured.')
-        ui.show_ok_dialog('Netflix upgrade', msg)
     if previous_ver and is_less_version(previous_ver, '1.7.0'):
         from resources.lib.upgrade_actions import migrate_library
         migrate_library()
