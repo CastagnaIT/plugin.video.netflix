@@ -128,7 +128,6 @@ def route(pathitems):
 
 
 def _get_nav_handler(root_handler, pathitems):
-    nav_handler = None
     if root_handler == G.MODE_DIRECTORY:
         from resources.lib.navigation.directory import Directory
         nav_handler = Directory
@@ -141,7 +140,7 @@ def _get_nav_handler(root_handler, pathitems):
     elif root_handler == G.MODE_KEYMAPS:
         from resources.lib.navigation.keymaps import KeymapsActionExecutor
         nav_handler = KeymapsActionExecutor
-    if not nav_handler:
+    else:
         raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
     return nav_handler
 
