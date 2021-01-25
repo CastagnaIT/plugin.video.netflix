@@ -1073,7 +1073,7 @@ msgstr "Widevine - 强制安全级别"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr "Force {}"
+msgstr ""
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
