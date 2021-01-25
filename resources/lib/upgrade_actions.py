@@ -12,8 +12,7 @@ import os
 import xbmc
 import xbmcvfs
 
-from resources.lib.common.fileops import (delete_folder_contents, list_dir, join_folders_paths, load_file, save_file,
-                                          copy_file, delete_file)
+from resources.lib.common.fileops import (list_dir, join_folders_paths, load_file, save_file, copy_file, delete_file)
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.kodi.library_utils import get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS
@@ -29,21 +28,6 @@ def rename_cookie_file():
                       join_folders_paths(G.DATA_PATH, 'COOKIES'))
             xbmc.sleep(80)
             delete_file(filename)
-
-
-def delete_cache_folder():
-    # Delete cache folder in the add-on userdata (no more needed with the new cache management)
-    cache_path = os.path.join(G.DATA_PATH, 'cache')
-    if not os.path.exists(xbmcvfs.translatePath(cache_path)):
-        return
-    LOG.debug('Deleting the cache folder from add-on userdata folder')
-    try:
-        delete_folder_contents(cache_path, True)
-        xbmc.sleep(80)
-        xbmcvfs.rmdir(cache_path)
-    except Exception:  # pylint: disable=broad-except
-        import traceback
-        LOG.error(traceback.format_exc())
 
 
 def migrate_library():
