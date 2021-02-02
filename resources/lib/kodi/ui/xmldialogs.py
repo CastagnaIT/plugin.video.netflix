@@ -72,10 +72,10 @@ class Skip(xbmcgui.WindowXMLDialog):
         super().__init__(*args)
 
     def onInit(self):
-        self.getControl(6012).setLabel(self.label)
+        self.getControl(6012).setLabel(self.label)  # pylint: disable=no-member
 
-    def onClick(self, controlID):
-        if controlID == 6012:
+    def onClick(self, controlId):
+        if controlId == 6012:
             xbmc.Player().seekTime(self.seek_time)
             self.close()
 

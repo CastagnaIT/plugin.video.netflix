@@ -43,13 +43,13 @@ class Profiles(xbmcgui.WindowXMLDialog):
                     break
         self.setFocusId(10001)
 
-    def onClick(self, controlID):
-        if controlID == 10001:  # Save and close dialog
+    def onClick(self, controlId):
+        if controlId == 10001:  # Save and close dialog
             sel_list_item = self.ctrl_list.getSelectedItem()
             # 'nf_guid' property is set to Listitems from _create_profile_item of dir_builder_items.py
             self.return_value = sel_list_item.getProperty('nf_guid')
             self.close()
-        if controlID in [10029, 100]:  # Close
+        if controlId in [10029, 100]:  # Close
             self.close()
 
     def onAction(self, action):

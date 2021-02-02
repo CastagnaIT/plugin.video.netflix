@@ -55,14 +55,14 @@ class RatingThumb(xbmcgui.WindowXMLDialog):
             self.getControl(10020).controlLeft(self.getControl(10012))
         self.setFocusId(focus_id)
 
-    def onClick(self, controlID):
-        if controlID in [10010, 10020, 10012, 10022]:  # Rating and close
+    def onClick(self, controlId):
+        if controlId in [10010, 10020, 10012, 10022]:  # Rating and close
             rating_map = {10010: 2, 10020: 1, 10012: 0, 10022: 0}
-            rating_value = rating_map[controlID]
+            rating_value = rating_map[controlId]
             from resources.lib.utils.api_requests import rate_thumb
             rate_thumb(self.videoid, rating_value, self.track_id_jaw)
             self.close()
-        if controlID in [10040, 100]:  # Close
+        if controlId in [10040, 100]:  # Close
             self.close()
 
     def onAction(self, action):

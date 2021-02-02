@@ -58,8 +58,8 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         # setInt(value, min, delta, max)
         slider_control.setInt(self.current_level_index, 0, 1, self.levels_count - 1)
 
-    def onClick(self, controlID):
-        if controlID == 10028:  # Save and close dialog
+    def onClick(self, controlId):
+        if controlId == 10028:  # Save and close dialog
             # pin = self.getControl(10002).getText()
             # # Validate pin length
             # if not self._validate_pin(pin):
@@ -77,7 +77,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
             from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_GENRES, CACHE_MYLIST, CACHE_SEARCH
             G.CACHE.clear([CACHE_COMMON, CACHE_GENRES, CACHE_MYLIST, CACHE_SEARCH])
             self.close()
-        if controlID in [10029, 100]:  # Close dialog
+        if controlId in [10029, 100]:  # Close dialog
             self.close()
 
     def onAction(self, action):

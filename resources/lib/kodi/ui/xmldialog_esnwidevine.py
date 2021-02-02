@@ -62,25 +62,25 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
                 if _sec_lev != WidevineForceSecLev.DISABLED:
                     self.getControl(_id).setVisible(False)
 
-    def onClick(self, controlID):
+    def onClick(self, controlId):
         # [Widevine sec. lev.] radio buttons - this setting can affect the ESN so make a preview of the change
-        if controlID in self.WV_SECLEV_MAP_BTN.values():
-            self._ensure_wv_btn_check(controlID)
+        if controlId in self.WV_SECLEV_MAP_BTN.values():
+            self._ensure_wv_btn_check(controlId)
             self.wv_sec_lev_new = list(
-                self.WV_SECLEV_MAP_BTN.keys())[list(self.WV_SECLEV_MAP_BTN.values()).index(controlID)]
+                self.WV_SECLEV_MAP_BTN.keys())[list(self.WV_SECLEV_MAP_BTN.values()).index(controlId)]
             self._refresh_esn()
             self._update_esn_label()
         # [Change ESN] button
-        if controlID == 30010:
+        if controlId == 30010:
             self._change_esn()
         # [Reset] button - reset all settings to default
-        if controlID == 30011:
+        if controlId == 30011:
             self._reset()
         # [Apply changes] button
-        if controlID == 40020:
+        if controlId == 40020:
             self._apply_changes()
         # [OK] button - close and keep changes
-        if controlID == 40021:
+        if controlId == 40021:
             if not self.changes_applied:
                 # The changes to MSL (key handshake) will be done when will be played a video
                 set_esn(self.esn_new or self.esn)
@@ -92,11 +92,11 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
             G.CACHE.clear([CACHE_MANIFESTS])
             self.close()
         # [X or Cancel] button - close and cancel changes
-        if controlID in [40099, 40022]:
+        if controlId in [40099, 40022]:
             self._revert_changes()
             self.close()
         # [Save system info] button
-        if controlID == 30012:
+        if controlId == 30012:
             _save_system_info()
 
     def onAction(self, action):
