@@ -289,7 +289,7 @@ def _get_id_default_audio_tracks(manifest):
         # due to current Kodi locale problems this could not be accurate.
         profile_language_code = G.LOCAL_DB.get_profile_config('language')
         audio_language = profile_language_code[0:2]
-    if not audio_language == 'original':
+    if audio_language != 'original':
         # If set give priority to the same audio language with different country
         if G.ADDON.getSettingBool('prefer_alternative_lang'):
             # Here we have only the language code without country code, we do not know the country code to be used,
