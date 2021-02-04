@@ -259,8 +259,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatsko ažuriranje televizije prikazuje sezone i epizode"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Razina evidentiranja pogrešaka"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

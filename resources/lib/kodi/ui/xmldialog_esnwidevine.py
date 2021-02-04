@@ -198,7 +198,7 @@ def _save_system_info():
         return
     # This collect the main data to allow verification checks for problems
     data = 'Netflix add-on version: ' + G.VERSION
-    data += '\nDebug logging level: ' + LOG.level
+    data += '\nDebug enabled: ' + str(LOG.is_enabled)
     data += '\nSystem platform: ' + common.get_system_platform()
     data += '\nMachine architecture: ' + common.get_machine()
     data += '\nUser agent string: ' + common.get_user_agent()

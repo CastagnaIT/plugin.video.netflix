@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "新しいシーズンとエピソードの更新方法"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "デバッグロギングレベル"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

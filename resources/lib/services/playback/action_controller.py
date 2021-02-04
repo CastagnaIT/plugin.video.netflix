@@ -141,7 +141,7 @@ class ActionController(xbmc.Monitor):
     def _on_playback_started(self):
         player_id = _get_player_id()
         self._notify_all(ActionManager.call_on_playback_started, self._get_player_state(player_id))
-        if LOG.level == LOG.LEVEL_VERBOSE and G.ADDON.getSettingBool('show_codec_info'):
+        if LOG.is_enabled and G.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
         self.active_player_id = player_id
 

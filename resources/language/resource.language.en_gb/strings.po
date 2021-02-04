@@ -267,7 +267,7 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr ""
 
 msgctxt "#30066"
-msgid "Debug logging level"
+msgid "Enable debug logging"
 msgstr ""
 
 msgctxt "#30067"

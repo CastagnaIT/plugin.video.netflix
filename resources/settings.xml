@@ -132,9 +132,9 @@
     <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
     <setting label="30116" type="lsep"/><!--Advanced Addon Configuration-->
     <setting id="show_esn_widevine_options" type="action" label="30600" action="RunPlugin(plugin://$ID/action/show_esn_widevine_options/)" option="close"/>
-    <setting id="debug_log_level" type="labelenum" label="30066" values="Disabled|Info|Verbose" default="Disabled"/>
-    <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,2)" subsetting="true"/>
-    <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,2)" subsetting="true"/>
+    <setting id="enable_debug" type="bool" label="30066" default="false" />
+    <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,true)" subsetting="true"/>
+    <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,true)" subsetting="true"/>
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
     <setting id="cdn_server" type="labelenum" label="30241" values="Server 1|Server 2|Server 3" default="Server 1" />
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>

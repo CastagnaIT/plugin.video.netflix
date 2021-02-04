@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatická aktualizace řad a dílů seriálů"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Úroveň protokolování"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

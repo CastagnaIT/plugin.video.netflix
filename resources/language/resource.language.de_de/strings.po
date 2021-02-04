@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatische Aktualisierung für Serien-Staffeln und -Episoden"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Fehler-Aufzeichnungs-Stufe"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "새로운 시즌과 에피소드를 새로 고치는 방법"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "디버그로그 레벨"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

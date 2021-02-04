@@ -65,7 +65,7 @@ def load():
 
 def log_cookie(cookie_jar):
     """Print cookie info to the log"""
-    if not LOG.level == LOG.LEVEL_VERBOSE:
+    if not LOG.is_enabled:
         return
     debug_output = 'Cookies currently loaded:\n'
     for cookie in cookie_jar:

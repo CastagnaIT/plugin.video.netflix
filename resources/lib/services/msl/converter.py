@@ -54,7 +54,7 @@ def convert_to_dash(manifest):
         _convert_text_track(text_track, period, is_default, cdn_index)
 
     xml = ET.tostring(root, encoding='utf-8', method='xml')
-    if LOG.level == LOG.LEVEL_VERBOSE:
+    if LOG.is_enabled:
         common.save_file_def('manifest.mpd', xml)
     return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
 

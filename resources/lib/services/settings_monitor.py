@@ -52,7 +52,7 @@ class SettingsMonitor(xbmc.Monitor):
     def _on_change(self):
         # Reinitialize the log settings
         LOG.initialize(G.ADDON_ID, G.PLUGIN_HANDLE,
-                       G.ADDON.getSettingString('debug_log_level'),
+                       G.ADDON.getSettingBool('enable_debug'),
                        G.ADDON.getSettingBool('enable_timing'))
         LOG.debug('SettingsMonitor: settings have been changed, started checks')
         reboot_addon = False

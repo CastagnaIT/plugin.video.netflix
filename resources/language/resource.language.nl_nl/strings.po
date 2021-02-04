@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatisch bijwerken voor tv-programma's"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Foutopsporing log niveau"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"

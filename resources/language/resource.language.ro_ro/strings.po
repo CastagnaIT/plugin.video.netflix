@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Auto-actualizare pentru sezoanele și episoadele serialelor"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Nivel de jurnal depanare"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
