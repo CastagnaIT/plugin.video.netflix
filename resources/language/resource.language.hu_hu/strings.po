@@ -469,10 +469,6 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "API művelet sikertelen: {}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "Saját lista művelet sikeres"
-
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Kodi médiatárból nem törölhető automatikusan a szezon, töröld kézzel."

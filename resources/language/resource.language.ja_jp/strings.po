@@ -469,10 +469,6 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "API実行失敗:{}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "マイリスト処理完了"
-
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Kodiライブラリからシーズンを削除しませんでしたので、手動で削除してください"

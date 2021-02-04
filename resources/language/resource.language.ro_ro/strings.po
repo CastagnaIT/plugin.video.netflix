@@ -469,10 +469,6 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "Operațiune API eșuată: {}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "Operațiune reușită pe 'Lista mea'"
-
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Nu se poate șterge automat un sezon din librăria Kodi, vă rugăm s-o faceți manual"
