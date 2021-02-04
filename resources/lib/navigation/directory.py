@@ -122,15 +122,11 @@ class Directory:
         }
         list_data, extra_data = common.make_call('get_seasons', call_args)
         if len(list_data) == 1:
-            # Check if Kodi setting "Flatten TV show seasons" is enabled
-            value = common.json_rpc('Settings.GetSettingValue',
-                                    {'setting': 'videolibrary.flattentvshows'}).get('value')
-            if value != 0:  # Values: 0=never, 1=if one season, 2=always
-                # If there is only one season, load and show the episodes now
-                pathitems = list_data[0]['url'].replace(G.BASE_URL, '').strip('/').split('/')[1:]
-                videoid = common.VideoId.from_path(pathitems)
-                self._episodes(videoid, pathitems)
-                return
+            # If there is only one season, load and show the episodes now
+            pathitems = list_data[0]['url'].replace(G.BASE_URL, '').strip('/').split('/')[1:]
+            videoid = common.VideoId.from_path(pathitems)
+            self._episodes(videoid, pathitems)
+            return
         self._seasons_directory(list_data, extra_data)
 
     @custom_viewmode(G.VIEW_SEASON)
