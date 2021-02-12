@@ -72,8 +72,7 @@ class SessionHTTPRequests(SessionBase):
                 LOG.debug('Request took {}s', perf_clock() - start)
                 LOG.debug('Request returned status code {}', response.status_code)
                 break
-            except (req_exceptions.ConnectionError, req_exceptions.ReadTimeout) as exc:
-                # Info on PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1046
+            except req_exceptions.ConnectionError as exc:
                 LOG.error('HTTP request error: {}', exc)
                 if retry == 3:
                     raise

@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, unicode_literals
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
 from resources.lib.utils.logging import LOG
 
 
@@ -41,6 +42,7 @@ class SessionBase(object):
             pass
         from requests import session
         self.session = session()
+        enable_tcp_keep_alive(self.session)
         self.session.max_redirects = 10  # Too much redirects should means some problem
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
