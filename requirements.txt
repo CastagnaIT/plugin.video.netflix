@@ -8,4 +8,4 @@ requests
 setuptools
 tox
 xmlschema
-git+git://github.com/CastagnaIT/Kodistubs@matrix
+Kodistubs==19.0.2
