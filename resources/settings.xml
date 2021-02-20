@@ -1,152 +1,1039 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-  <category label="30031"><!--General-->
-    <setting label="30014" type="lsep"/><!--Account-->
-    <setting id="logout" type="action" label="30017" action="RunPlugin(plugin://$ID/action/logout/)" option="close"/>
-    <setting label="30012" type="lsep"/><!--Profile options-->
-    <setting label="30013" type="text" enable="false"/>
-    <setting label="30015" type="lsep"/><!--Other options-->
-    <setting id="ProgressManager_enabled" type="bool" label="30235" default="false"/>
-    <setting id="sync_watched_status_library" type="bool" label="30301" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="select_first_unwatched" type="bool" label="30243" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="mylist_titles_color" type="enum" label="30215" lvalues="13106|762|13343|13341|761|760|731|767" default="1"/>
-    <setting id="supplemental_info_color" type="enum" label="30239" lvalues="13106|762|13343|13341|761|760|731|767" default="3"/>
-    <setting id="disable_startup_notification" type="bool" label="30141" default="false"/>
-  </category>
-  <category label="30025"><!--Library-->
-    <setting label="30065" type="lsep"/><!--Auto-Update-->
-    <setting id="lib_auto_upd_mode" type="enum" label="30224" lvalues="13106|30225|30226" default="1"/>
-    <setting id="lib_auto_upd_check_now" type="action" label="30230" action="RunPlugin(plugin://$ID/library/auto_upd_run_now/)" visible="gt(-1,0)" subsetting="true"/>
-    <setting id="lib_auto_upd_freq" type="enum" label="30064" lvalues="30067|30068|30069|30070" default="0" visible="gt(-2,1)" subsetting="true"/>
-    <setting id="lib_auto_upd_start" type="time" label="30071" visible="gt(-3,1)" default="00:00" subsetting="true"/>
-    <setting id="lib_auto_upd_wait_idle" type="bool" label="30072" visible="gt(-4,1)" default="false" subsetting="true"/>
-    <setting id="lib_auto_upd_disable_notification" type="bool" label="30219" default="false" visible="gt(-5,1)" subsetting="true"/>
-    <setting label="30227" type="lsep"/><!--Synchronize Kodi library with My List-->
-    <setting id="lib_sync_mylist" type="bool" label="30114" default="false" enable="gt(-7,1)"/>
-    <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" action="RunPlugin(plugin://$ID/library/sync_mylist_sel_profile/)" enable="eq(-1,true) + gt(-8,1)" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="lib_sync_mylist_now" type="action" label="30121" action="RunPlugin(plugin://$ID/library/sync_mylist/)" enable="eq(-2,true) + gt(-9,1)" visible="eq(-2,true)" subsetting="true"/>
-    <setting label="30184" type="lsep"/><!--NFO Files-->
-    <setting id="enable_nfo_export" type="bool" label="30185" default="false"/>
-    <setting id="export_movie_nfo" type="enum" label="30186" lvalues="21337|20422|30188" visible="eq(-1,true)" default="1" subsetting="true"/>
-    <setting id="export_tvshow_nfo" type="enum" label="30187" lvalues="21337|20422|30188" visible="eq(-2,true)" default="1" subsetting="true"/>
-    <setting id="export_full_tvshow_nfo" type="bool" label="30193" visible="eq(-3,true)" default="false" subsetting="true"/>
-    <setting label="30015" type="lsep"/><!--Other options-->
-    <setting id="enablelibraryfolder" type="bool" label="30026" default="false"/>
-    <setting id="customlibraryfolder" type="folder" label="30027" enable="eq(-1,true)" default="special://profile/addon_data/plugin.video.netflix" source="auto" option="writeable" subsetting="true"/>
-    <setting id="purge_library" type="action" label="30125" action="RunPlugin(plugin://$ID/library/purge/)"/>
-    <setting id="import_library" type="action" label="30140" action="RunPlugin(plugin://$ID/library/import_library/)"/>
-    <setting label="30199" type="lsep"/><!--Shared library-->
-    <setting id="use_mysql" type="bool" label="30200" default="false"/>
-    <setting id="mysql_username" type="text" label="30201" default="kodi" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="mysql_password" type="text" label="30004" default="kodi" option="hidden" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="mysql_host" type="ipaddress" label="30203" default="127.0.0.1" visible="eq(-3,true)" subsetting="true"/>
-    <setting id="mysql_port" type="number" label="30204" default="3306" visible="eq(-4,true)" subsetting="true"/>
-    <setting id="mysql_test" type="action" label="30205" action="RunPlugin(plugin://$ID/library/mysql_test/)" visible="false" subsetting="true" option="close"/>
-    <setting id="mysql_device_auto_update" type="action" label="30207" action="RunPlugin(plugin://$ID/library/set_autoupdate_device/)" visible="eq(-6,true)" subsetting="true"/>
-    <setting id="mysql_check_auto_update_device" type="action" label="30208" action="RunPlugin(plugin://$ID/library/check_autoupdate_device/)" visible="eq(-7,true)" subsetting="true"/>
-  </category>
-  <category label="30166"><!--Main menu items-->
-    <setting id="show_menu_mylist" type="bool" label="30167" default="true"/>
-    <setting id="menu_sortorder_mylist" type="select" label="30149" lvalues="30150|13106" visible="eq(-1,true)" subsetting="true" default="0"/> <!-- sort order is supported only to US country-->
-    <setting id="show_menu_continuewatching" type="bool" label="30168" default="true"/>
-    <setting id="show_menu_chosenforyou" type="bool" label="30169" default="true"/>
-    <setting id="show_menu_recentlyadded" type="bool" label="30145" default="true"/>
-    <setting id="menu_sortorder_recentlyadded" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_newrelease" type="bool" label="30170" default="true"/>
-    <setting id="menu_sortorder_newrelease" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_currenttitles" type="bool" label="30171" default="true"/>
-    <setting id="show_menu_mostwatched" type="bool" label="30242" default="true"/> <!--Top 10 menu-->
-    <setting id="show_menu_mostviewed" type="bool" label="30172" default="true"/>
-    <setting id="show_menu_netflixoriginals" type="bool" label="30173" default="true"/>
-    <setting id="menu_sortorder_netflixoriginals" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_assistiveaudio" type="bool" label="30163" default="true"/>
-    <setting id="menu_sortorder_assistiveaudio" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_recommendations" type="bool" label="30001" default="true"/>
-    <setting id="show_menu_tvshowsgenres" type="bool" label="30174" default="true"/>
-    <setting id="menu_sortorder_tvshowsgenres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_moviesgenres" type="bool" label="30175" default="true"/>
-    <setting id="menu_sortorder_moviesgenres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_tvshows" type="bool" label="30095" default="true"/>
-    <setting id="menu_sortorder_tvshows" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_movies" type="bool" label="30096" default="true"/>
-    <setting id="menu_sortorder_movies" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_genres" type="bool" label="30010" default="true"/>
-    <setting id="menu_sortorder_genres" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_search" type="bool" label="30400" default="true"/>
-    <setting id="menu_sortorder_search" type="select" label="30149" lvalues="30150|30151|30152|30153" visible="eq(-1,true)" subsetting="true" default="2"/>
-    <setting id="menu_sortorder_search_history" type="select" label="30399" lvalues="30162|30150" visible="eq(-2,true)" subsetting="true" default="0"/>
-    <setting id="show_menu_exported" type="bool" label="30048" default="true"/>
-  </category>
-  <category label="30037"><!--Views-->
-    <setting id="customview" type="bool" label="30038" default="false"/>
-    <setting id="viewmodeprofiles" type="select" label="30044" lvalues="30162|30142" default="0" enable="eq(-1,true)"/>
-    <setting id="viewmodeprofilesid" type="number" label="30143" visible="eq(-1,1) + eq(-2,true)" enable="eq(-2,true)" subsetting="true"/>
-    <setting id="viewmodemainmenu" type="select" label="30159" lvalues="30162|30142" default="0" enable="eq(-3,true)"/>
-    <setting id="viewmodemainmenuid" type="number" label="30143" visible="eq(-1,1) + eq(-4,true)" enable="eq(-4,true)" subsetting="true"/>
-    <setting id="viewmodemylist" type="select" label="30165" lvalues="30162|30142" default="0" enable="eq(-5,true)"/>
-    <setting id="viewmodemylistid" type="number" label="30143" visible="eq(-1,1) + eq(-6,true)" enable="eq(-6,true)" subsetting="true"/>
-    <setting id="viewmodefolder" type="select" label="30039" lvalues="30162|30142" default="0" enable="eq(-7,true)"/>
-    <setting id="viewmodefolderid" type="number" label="30143" visible="eq(-1,1) + eq(-8,true)" enable="eq(-8,true)" subsetting="true"/>
-    <setting id="viewmodemovie" type="select" label="30040" lvalues="30162|30142" default="0" enable="eq(-9,true)"/>
-    <setting id="viewmodemovieid" type="number" label="30143" visible="eq(-1,1) + eq(-10,true)" enable="eq(-10,true)" subsetting="true"/>
-    <setting id="viewmodeshow" type="select" label="30041" lvalues="30162|30142" default="0" enable="eq(-11,true)"/>
-    <setting id="viewmodeshowid" type="number" label="30143" visible="eq(-1,1) + eq(-12,true)" enable="eq(-12,true)" subsetting="true"/>
-    <setting id="viewmodeseason" type="select" label="30042" lvalues="30162|30142" default="0" enable="eq(-13,true)"/>
-    <setting id="viewmodeseasonid" type="number" label="30143" visible="eq(-1,1) + eq(-14,true)" enable="eq(-14,true)" subsetting="true"/>
-    <setting id="viewmodeepisode" type="select" label="30043" lvalues="30162|30142" default="0" enable="eq(-15,true)"/>
-    <setting id="viewmodeepisodeid" type="number" label="30143" visible="eq(-1,1) + eq(-16,true)" enable="eq(-16,true)" subsetting="true"/>
-    <setting id="viewmodesearch" type="select" label="30160" lvalues="30162|30142" default="0" enable="eq(-17,true)"/>
-    <setting id="viewmodesearchid" type="number" label="30143" visible="eq(-1,1) + eq(-18,true)" enable="eq(-18,true)" subsetting="true"/>
-    <setting id="viewmodeexported" type="select" label="30161" lvalues="30162|30142" default="0" enable="eq(-19,true)"/>
-    <setting id="viewmodeexportedid" type="number" label="30143" visible="eq(-1,1) + eq(-20,true)" enable="eq(-20,true)" subsetting="true"/>
-  </category>
-  <category label="30078"><!--Playback-->
-    <setting id="StreamContinuityManager_enabled" type="bool" label="30082" default="true" />
-    <setting id="show_forced_subtitles_only" type="bool" label="30083" default="false"/>
-    <setting id="show_subtitles_miss_audio" type="bool" label="30181" default="false" visible="!String.StartsWith(System.BuildVersion,18)" />
-    <setting id="prefer_alternative_lang" type="bool" label="30500" default="false" visible="!String.StartsWith(System.BuildVersion,18)" />
-    <setting id="prefer_audio_stereo" type="bool" label="30501" default="false" />
-    <setting id="SectionSkipper_enabled" type="bool" label="30075" default="true"/>
-    <setting id="auto_skip_credits" type="bool" label="30079" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="pause_on_skip" type="bool" label="30080" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting label="30049" type="lsep"/><!--Library-->
-    <setting id="ResumeManager_enabled" type="bool" label="30176" default="true"/>
-    <setting id="ResumeManager_dialog" type="bool" label="30177" default="true" visible="eq(-1,true)" subsetting="true"/>
-    <setting label="30238" type="lsep"/><!--Up Next-->
-    <setting id="upnext_install" type="action" label="30234" action="InstallAddon(service.upnext)" visible="!System.HasAddon(service.upnext)" option="close"/>
-    <setting id="UpNextNotifier_enabled" type="bool" label="30129" default="false" visible="System.HasAddon(service.upnext)"/>
-    <setting id="upnext_settings" type="action" label="30178" action="Addon.OpenSettings(service.upnext)" visible="System.HasAddon(service.upnext)" option="close"/>
-  </category>
-  <category label="30023"><!--Expert-->
-    <setting id="configuration_wizard" type="action" label="30158" action="RunPlugin(plugin://$ID/action/configuration_wizard/)" option="close"/>
-    <setting id="is_settings" type="action" label="30035" action="Addon.OpenSettings(inputstream.adaptive)" enable="System.HasAddon(inputstream.adaptive)" option="close"/>
-    <setting id="ishelper_settings" type="action" label="30213" action="Addon.OpenSettings(script.module.inputstreamhelper)" option="close"/>
-    <setting label="30115" type="lsep"/><!--Content Profiles-->
-    <!--If something is changed in this group remember to make the changes also on settings_monitor.py "content profiles"-->
-    <setting id="enable_dolby_sound" type="bool" label="30033" default="true"/>
-    <setting id="enable_vp9_profiles" type="bool" label="30137" enable="eq(1,false)|eq(0,true)" default="true"/>
-    <setting id="enable_hevc_profiles" type="bool" label="30060" enable="eq(-1,false)|eq(0,true)" default="false"/>
-    <setting id="enable_hdr_profiles" type="bool" label="30098" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="enable_dolbyvision_profiles" type="bool" label="30099" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="disable_webvtt_subtitle" type="bool" label="30144" default="false"/>
-    <setting id="enable_force_hdcp" type="bool" label="30081" default="false"/>
-    <setting label="30116" type="lsep"/><!--Advanced Addon Configuration-->
-    <setting id="show_esn_widevine_options" type="action" label="30600" action="RunPlugin(plugin://$ID/action/show_esn_widevine_options/)" option="close"/>
-    <setting id="enable_debug" type="bool" label="30066" default="false" />
-    <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,true)" subsetting="true"/>
-    <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,true)" subsetting="true"/>
-    <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
-    <setting id="cdn_server" type="labelenum" label="30241" values="Server 1|Server 2|Server 3" default="Server 1" />
-    <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
-    <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->
-    <setting id="page_results" type="slider" option="int" range="45,45,180" label="30247" default="90"/>
-    <setting id="esn" type="text" label="30601" value="" default="" visible="false" enable="false"/> <!-- not more used, kept only for upgrade purpose -->
-    <setting id="force_widevine" type="labelenum" label="30604" values="Disabled|Widevine L3|Widevine L3 (ID-4445)" default="Disabled" visible="false" enable="false"/> <!-- not more used, kept only for upgrade purpose -->
-    <setting label="30117" type="lsep"/><!--Cache-->
-    <setting id="cache_ttl" type="slider" option="int" range="5,5,2880" label="30084" default="180"/>
-    <setting id="cache_mylist_ttl" type="slider" option="int" range="10,10,1440" label="30086" default="60"/>
-    <setting id="cache_metadata_ttl" type="slider" option="int" range="1,1,60" label="30085" default="30"/>
-    <setting id="purge_inmemory_cache" type="action" label="30132" action="RunPlugin(plugin://$ID/action/purge_cache/)"/>
-    <setting id="purge_complete_cache" type="action" label="30133" action="RunPlugin(plugin://$ID/action/purge_cache/?on_disk=True)"/>
-  </category>
+<settings version="1">
+    <section id="plugin.video.netflix">
+        <!--CATEGORY: General-->
+        <category id="general" label="30031" help="">
+            <!--GROUP: Account-->
+            <group id="1" label="30014">
+                <setting id="logout" type="action" label="30017">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/logout/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+            </group>
+            <!--GROUP: Profile options info-->
+            <group id="2" label="30012">
+                <setting id="profile_options_info" type="string" label="30013" help="">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string">
+                        <heading>30013</heading>
+                    </control>
+                    <enable>false</enable>
+                </setting>
+            </group>
+            <!--GROUP: Other options-->
+            <group id="3" label="30015">
+                <setting id="ProgressManager_enabled" type="boolean" label="30235" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="sync_watched_status_library" type="boolean" label="30301" help="" parent="ProgressManager_enabled">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="ProgressManager_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="select_first_unwatched" type="boolean" label="30243" help="" parent="ProgressManager_enabled">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="ProgressManager_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mylist_titles_color" type="integer" label="30215" help="">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="13106">0</option>
+                            <option label="762">1</option>
+                            <option label="13343">2</option>
+                            <option label="13341">3</option>
+                            <option label="761">4</option>
+                            <option label="760">5</option>
+                            <option label="731">6</option>
+                            <option label="767">7</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="supplemental_info_color" type="integer" label="30239" help="">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <options>
+                            <option label="13106">0</option>
+                            <option label="762">1</option>
+                            <option label="13343">2</option>
+                            <option label="13341">3</option>
+                            <option label="761">4</option>
+                            <option label="760">5</option>
+                            <option label="731">6</option>
+                            <option label="767">7</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="disable_startup_notification" type="boolean" label="30141" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+        <!--CATEGORY: Library-->
+        <category id="library" label="30025" help="">
+            <!--GROUP: Auto-Update-->
+            <group id="1" label="30065">
+                <setting id="lib_auto_upd_mode" type="integer" label="30224" help="">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="13106">0</option>
+                            <option label="30225">1</option>
+                            <option label="30226">2</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="lib_auto_upd_check_now" type="action" label="30230" parent="lib_auto_upd_mode">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/auto_upd_run_now/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">0</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_auto_upd_freq" type="integer" label="30064" help="" parent="lib_auto_upd_mode">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30067">0</option>
+                            <option label="30068">1</option>
+                            <option label="30069">2</option>
+                            <option label="30070">2</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_auto_upd_start" type="time" label="30071" help="" parent="lib_auto_upd_mode">
+                    <level>0</level>
+                    <default>00:00</default>
+                    <control type="button" format="time">
+                        <heading>30071</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_auto_upd_wait_idle" type="boolean" label="30072" help="" parent="lib_auto_upd_mode">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_auto_upd_disable_notification" type="boolean" label="30219" help="" parent="lib_auto_upd_mode">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: Synchronize Kodi library with My List-->
+            <group id="2" label="30227">
+                <setting id="lib_sync_mylist" type="boolean" label="30114" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="enable" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" parent="lib_sync_mylist">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/sync_mylist_sel_profile/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="lib_sync_mylist">true</dependency>
+                        <dependency type="visible" setting="lib_sync_mylist">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="lib_sync_mylist_now" type="action" label="30121" parent="lib_sync_mylist">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/sync_mylist/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="lib_sync_mylist">true</dependency>
+                        <dependency type="visible" setting="lib_sync_mylist">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: NFO Files-->
+            <group id="3" label="30184">
+                <setting id="enable_nfo_export" type="boolean" label="30185" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="export_movie_nfo" type="integer" label="30186" help="" parent="enable_nfo_export">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="21337">0</option>
+                            <option label="20422">1</option>
+                            <option label="30188">2</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_nfo_export">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="export_tvshow_nfo" type="integer" label="30187" help="" parent="enable_nfo_export">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="21337">0</option>
+                            <option label="20422">1</option>
+                            <option label="30188">2</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_nfo_export">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="export_full_tvshow_nfo" type="boolean" label="30193" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_nfo_export">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: Other options-->
+            <group id="4" label="30184">
+                <setting id="enablelibraryfolder" type="boolean" label="30026" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="customlibraryfolder" type="path" label="30027" help="">
+                    <level>0</level>
+                    <default>special://profile/addon_data/plugin.video.netflix</default>
+                    <constraints>
+                        <writable>true</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path">
+                        <heading>30027</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="enablelibraryfolder">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="purge_library" type="action" label="30125">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/purge/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+                <setting id="import_library" type="action" label="30140">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/import_library/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+            </group>
+            <!--GROUP: Shared library-->
+            <group id="5" label="30199">
+                <setting id="use_mysql" type="boolean" label="30200" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="mysql_username" type="string" label="30201" help="" parent="use_mysql">
+                    <level>0</level>
+                    <default>kodi</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string">
+                        <heading>30201</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mysql_password" type="string" label="30004" help="" parent="use_mysql">
+                    <level>0</level>
+                    <default>kodi</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string">
+                        <heading>30004</heading>
+                        <hidden>true</hidden>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mysql_host" type="string" label="30203" help="" parent="use_mysql">
+                    <level>0</level>
+                    <default>127.0.0.1</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="ip">
+                        <heading>30203</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mysql_port" type="integer" label="30204" help="" parent="use_mysql">
+                    <level>0</level>
+                    <default>3306</default>
+                    <control type="edit" format="integer">
+                        <heading>30204</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mysql_device_auto_update" type="action" label="30207" parent="use_mysql">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/set_autoupdate_device/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="mysql_check_auto_update_device" type="action" label="30208" parent="use_mysql">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/check_autoupdate_device/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible" setting="use_mysql">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+        <!--CATEGORY: Main menu items-->
+        <category id="main.menu.items" label="30166" help="">
+            <!--GROUP: Main menu items-->
+            <group id="1" label="30166">
+                <setting id="show_menu_mylist" type="boolean" label="30167" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <!-- Sort order for My List is supported only to US country-->
+                <setting id="menu_sortorder_mylist" type="integer" label="30149" help="" parent="show_menu_mylist">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="13106">1</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_mylist">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_continuewatching" type="boolean" label="30168" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_chosenforyou" type="boolean" label="30169" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_recentlyadded" type="boolean" label="30145" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_recentlyadded" type="integer" label="30149" help="" parent="show_menu_recentlyadded">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_recentlyadded">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_newrelease" type="boolean" label="30170" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_newrelease" type="integer" label="30149" help="" parent="show_menu_newrelease">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_newrelease">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_currenttitles" type="boolean" label="30171" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_mostwatched" type="boolean" label="30242" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_mostviewed" type="boolean" label="30172" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_netflixoriginals" type="boolean" label="30173" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_netflixoriginals" type="integer" label="30149" help="" parent="show_menu_netflixoriginals">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_netflixoriginals">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_assistiveaudio" type="boolean" label="30163" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_assistiveaudio" type="integer" label="30149" help="" parent="show_menu_assistiveaudio">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_assistiveaudio">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_recommendations" type="boolean" label="30001" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_menu_tvshowsgenres" type="boolean" label="30174" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_tvshowsgenres" type="integer" label="30149" help="" parent="show_menu_tvshowsgenres">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_tvshowsgenres">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_moviesgenres" type="boolean" label="30175" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_moviesgenres" type="integer" label="30149" help="" parent="show_menu_moviesgenres">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_moviesgenres">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_tvshows" type="boolean" label="30095" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_tvshows" type="integer" label="30149" help="" parent="show_menu_tvshows">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_tvshows">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_movies" type="boolean" label="30096" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_movies" type="integer" label="30149" help="" parent="show_menu_movies">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_movies">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_genres" type="boolean" label="30010" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_genres" type="integer" label="30149" help="" parent="show_menu_genres">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_genres">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_search" type="boolean" label="30400" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_sortorder_search" type="integer" label="30149" help="" parent="show_menu_search">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <options>
+                            <option label="30150">0</option>
+                            <option label="30151">1</option>
+                            <option label="30152">2</option>
+                            <option label="30153">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_search">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="menu_sortorder_search_history" type="integer" label="30399" help="" parent="show_menu_search">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30162">0</option>
+                            <option label="30150">1</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="show_menu_search">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_menu_exported" type="boolean" label="30048" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+        <!--CATEGORY: Skin viewtypes-->
+        <category id="skin.viewtypes" label="30037" help="">
+            <!--GROUP: Skin viewtypes-->
+            <group id="1" label="30037">
+                <setting id="customview" type="boolean" label="30038" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="viewmodeprofilesid" type="integer" label="30044" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30044</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodemainmenuid" type="integer" label="30159" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30159</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodemylistid" type="integer" label="30165" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30165</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodefolderid" type="integer" label="30039" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30039</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodemovieid" type="integer" label="30040" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30040</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodeshowid" type="integer" label="30041" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30041</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodeseasonid" type="integer" label="30042" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30042</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodeepisodeid" type="integer" label="30043" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30043</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodesearchid" type="integer" label="30160" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30160</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="viewmodeexportedid" type="integer" label="30161" help="" parent="customview">
+                    <level>0</level>
+                    <default>0</default>
+                    <control type="edit" format="integer">
+                        <heading>30161</heading>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="customview">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+        <!--CATEGORY: Playback-->
+        <category id="playback" label="30078" help="">
+            <!--GROUP: Playback-->
+            <group id="1" label="30078">
+                <setting id="StreamContinuityManager_enabled" type="boolean" label="30082" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_forced_subtitles_only" type="boolean" label="30083" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_subtitles_miss_audio" type="boolean" label="30181" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="prefer_alternative_lang" type="boolean" label="30500" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="prefer_audio_stereo" type="boolean" label="30501" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="SectionSkipper_enabled" type="boolean" label="30075" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="auto_skip_credits" type="boolean" label="30079" help="" parent="SectionSkipper_enabled">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="SectionSkipper_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="pause_on_skip" type="boolean" label="30080" help="" parent="auto_skip_credits">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="auto_skip_credits">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: Library-->
+            <group id="2" label="30049">
+                <setting id="ResumeManager_enabled" type="boolean" label="30176" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="ResumeManager_dialog" type="boolean" label="30177" help="" parent="ResumeManager_enabled">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="ResumeManager_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: Up Next-->
+            <group id="3" label="30238">
+                <setting id="UpNextNotifier_enabled" type="boolean" label="30129" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="upnext_settings" type="action" label="30178">
+                    <level>0</level>
+                    <data>Addon.OpenSettings(service.upnext)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+            </group>
+        </category>
+        <!--CATEGORY: Expert-->
+        <category id="expert" label="30023" help="">
+            <!--GROUP: Expert-->
+            <group id="1" label="30023">
+                <setting id="configuration_wizard" type="action" label="30158">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/configuration_wizard/)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="isa_settings" type="action" label="30035">
+                    <level>0</level>
+                    <data>Addon.OpenSettings(inputstream.adaptive)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="ish_settings" type="action" label="30213">
+                    <level>0</level>
+                    <data>Addon.OpenSettings(script.module.inputstreamhelper)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+            </group>
+            <!--GROUP: Content Profiles-->
+            <group id="2" label="30115">
+                <!--If something will be modified in this group remember to reflect the changes also on settings_monitor.py "content profiles"-->
+                <setting id="enable_dolby_sound" type="boolean" label="30033" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_vp9_profiles" type="boolean" label="30137" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_hevc_profiles" type="boolean" label="30060" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_hdr_profiles" type="boolean" label="30098" help="" parent="enable_hevc_profiles">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_hevc_profiles">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_dolbyvision_profiles" type="boolean" label="30099" help="" parent="enable_hevc_profiles">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_hevc_profiles">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="disable_webvtt_subtitle" type="boolean" label="30144" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_force_hdcp" type="boolean" label="30081" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <!--GROUP: Advanced Addon Configuration-->
+            <group id="3" label="30116">
+                <setting id="show_esn_widevine_options" type="action" label="30600">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/show_esn_widevine_options/)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="enable_debug" type="boolean" label="30066" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_timing" type="boolean" label="30134" help="" parent="enable_debug">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_debug">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_codec_info" type="boolean" label="30073" help="" parent="enable_debug">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="enable_debug">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="stream_max_resolution" type="string" label="30194" help="">
+                    <level>0</level>
+                    <default>--</default>
+                    <constraints>
+                        <options>
+                            <option label="--">--</option>
+                            <option label="SD 480p">SD 480p</option>
+                            <option label="SD 576p">SD 576p</option>
+                            <option label="HD 720p">HD 720p</option>
+                            <option label="Full HD 1080p">Full HD 1080p</option>
+                            <option label="UHD 4K">UHD 4K</option>
+                        </options>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="cdn_server" type="string" label="30241" help="">
+                    <level>0</level>
+                    <default>Server 1</default>
+                    <constraints>
+                        <options>
+                            <option label="Server 1">Server 1</option>
+                            <option label="Server 2">Server 2</option>
+                            <option label="Server 3">Server 3</option>
+                        </options>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="enable_ipc_over_http" type="boolean" label="30139" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="page_results" type="integer" label="30247" help="">
+                    <level>0</level>
+                    <default>90</default>
+                    <constraints>
+                        <minimum>45</minimum>
+                        <step>45</step>
+                        <maximum>180</maximum>
+                    </constraints>
+                    <control type="slider" format="integer">
+                        <popup>false</popup>
+                    </control>
+                </setting>
+            </group>
+            <!--GROUP: Cache-->
+            <group id="4" label="30117">
+                <setting id="cache_ttl" type="integer" label="30084" help="">
+                    <level>0</level>
+                    <default>180</default>
+                    <constraints>
+                        <minimum>5</minimum>
+                        <step>5</step>
+                        <maximum>2880</maximum>
+                    </constraints>
+                    <control type="slider" format="integer">
+                        <popup>false</popup>
+                    </control>
+                </setting>
+                <setting id="cache_mylist_ttl" type="integer" label="30086" help="">
+                    <level>0</level>
+                    <default>60</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <step>10</step>
+                        <maximum>1440</maximum>
+                    </constraints>
+                    <control type="slider" format="integer">
+                        <popup>false</popup>
+                    </control>
+                </setting>
+                <setting id="cache_metadata_ttl" type="integer" label="30085" help="">
+                    <level>0</level>
+                    <default>30</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <step>1</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="integer">
+                        <popup>false</popup>
+                    </control>
+                </setting>
+                <setting id="purge_inmemory_cache" type="action" label="30132">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/purge_cache/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+                <setting id="purge_complete_cache" type="action" label="30133">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/purge_cache/?on_disk=True)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+            </group>
+        </category>
+    </section>
 </settings>
