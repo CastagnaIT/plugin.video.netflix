@@ -462,6 +462,13 @@ def get_shareddb_class(use_mysql=False):
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
+        def clear_stream_continuity(self):
+            """Clear all stream continuity data"""
+            query = 'DELETE FROM stream_continuity'
+            self._execute_non_query(query)
+
+        @db_base_mysql.handle_connection
+        @db_base_sqlite.handle_connection
         def purge_library(self):
             """Delete all records from library tables"""
             query = 'DELETE FROM video_lib_movies'

@@ -137,7 +137,10 @@ class AddonActionExecutor:
     @measure_exec_time_decorator()
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
         """Clear the cache. If on_disk param is supplied, also clear cached items from disk"""
-        G.CACHE.clear(clear_database=self.params.get('on_disk', False))
+        _on_disk = self.params.get('on_disk', False)
+        G.CACHE.clear(clear_database=_on_disk)
+        if _on_disk:
+            G.SHARED_DB.clear_stream_continuity()
         ui.show_notification(common.get_local_string(30135))
 
     def force_update_list(self, pathitems=None):  # pylint: disable=unused-argument
