@@ -11,6 +11,7 @@
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
 from resources.lib.utils.logging import LOG
 
 
@@ -37,8 +38,9 @@ class SessionBase:
             LOG.info('Session closed')
         except AttributeError:
             pass
-        from requests import session
-        self.session = session()
+        from requests import Session
+        self.session = Session()
+        enable_tcp_keep_alive(self.session)
         self.session.max_redirects = 10  # Too much redirects should means some problem
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),
