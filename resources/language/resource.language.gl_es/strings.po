@@ -154,36 +154,36 @@ msgstr "Axustes do complemento InputStream..."
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Vistas"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Activar vistas personalizadas"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Vista para os cartafoles"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Vista para os filmes"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Vista para as series TV"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Vista para as tempadas"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Vista para os episodios"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Vista para os perfís"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -260,8 +260,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Actualizar tempadas e episodios das series TV automaticamente"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Nivel do rexistro de depuración"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
@@ -471,10 +471,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "A operación da API fallou: {}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "Operación de ‘Miña lista’ correcta"
-
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Non é posíbel eliminar automaticamente unha tempada da biblioteca do Kodi, por favor fágao manualmente"
@@ -623,16 +620,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Executar o asistente de configuración do complemento"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Vista para o menú principal"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Vista para procura"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Vista para exportados"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -647,8 +644,8 @@ msgid "Browse contents with audio description."
 msgstr "Navegar polos contidos con descrición de son."
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Vista para ‘Miña lista’"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -902,10 +899,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Mostrar soamente os títulos con valoracións [B]{}[/B]."
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Instalar o complemento 'Up Next'"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Sincronizar co Netflix o estado da visualización dos vídeos"

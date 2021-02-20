@@ -16,15 +16,11 @@ import xbmc
 
 class Logging:
     """A helper class for logging"""
-    LEVEL_VERBOSE = 'Verbose'
-    LEVEL_INFO = 'Info'
-    LEVEL_DISABLED = 'Disabled'
-    LEVEL_NOTSET = None
 
     def __init__(self):
-        self.level = self.LEVEL_NOTSET
         self.__addon_id = None
         self.__plugin_handle = None
+        self.is_enabled = None
         self.is_time_trace_enabled = False
         self.time_trace_level = -2
         self.__time_trace_data = []
@@ -32,26 +28,24 @@ class Logging:
         self.info = self._info
         self.warn = self._warn
 
-    def initialize(self, addon_id, plugin_handle, log_level, is_time_trace_enabled):
-        if log_level == self.level and is_time_trace_enabled == self.is_time_trace_enabled:
+    def initialize(self, addon_id, plugin_handle, is_enabled, is_time_trace_enabled):
+        if is_enabled == self.is_enabled and is_time_trace_enabled == self.is_time_trace_enabled:
             return
         self.__addon_id = addon_id
         self.__plugin_handle = plugin_handle
-        self.__log('The debug logging level is set as "{}"'.format(log_level), xbmc.LOGINFO)
-        self.level = log_level
-        self.is_time_trace_enabled = log_level == self.LEVEL_VERBOSE and is_time_trace_enabled
-        # To avoid adding extra workload to the cpu when logging is not required,
-        # we replace the log methods with a empty method
-        if self.level != self.LEVEL_VERBOSE:
-            self.debug = self.__not_to_process
-        else:
-            self.debug = self._debug
-        if self.level == self.LEVEL_DISABLED:
-            self.info = self.__not_to_process
-            self.warn = self.__not_to_process
-        else:
+        self.__log('The debug logging is set as {}'.format('ENABLED' if is_enabled else 'DISABLED'), xbmc.LOGINFO)
+        self.is_enabled = is_enabled
+        self.is_time_trace_enabled = is_enabled and is_time_trace_enabled
+        if is_enabled:
             self.info = self._info
             self.warn = self._warn
+            self.debug = self._debug
+        else:
+            # To avoid adding extra workload to the cpu when logging is not required,
+            # we replace the log methods with a empty method
+            self.info = self.__not_to_process
+            self.warn = self.__not_to_process
+            self.debug = self.__not_to_process
 
     def __log(self, msg, log_level, *args, **kwargs):
         """Log a message to the Kodi logfile."""

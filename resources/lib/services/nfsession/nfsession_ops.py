@@ -255,7 +255,7 @@ class NFSessionOperations(SessionPathRequests):
             # and if path_suffixs is added return also the new video list data
         except Exception as exc:  # pylint: disable=broad-except
             LOG.warn('refreshListByContext failed: {}', exc)
-            if not LOG.level == LOG.LEVEL_VERBOSE:
+            if not LOG.is_enabled:
                 return
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='An error prevented the update the loco context on Netflix',

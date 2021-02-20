@@ -128,7 +128,6 @@ def update_my_list(videoid, operation, params):
          'data': {
              'operation': operation,
              'videoId': videoid.value}})
-    ui.show_notification(common.get_local_string(30119))
     _update_mylist_cache(videoid, operation, params)
 
 

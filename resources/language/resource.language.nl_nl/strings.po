@@ -152,36 +152,36 @@ msgstr "InputStream Adaptive instellingen…"
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Weergaven"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Activeer aangepaste weergaves"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Weergave voor mappen"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Weergave voor films"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Weergave voor tv-programma's"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Weergave voor seizoenen"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Weergave voor afleveringen"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Weergave voor profielen"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatisch bijwerken voor tv-programma's"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Foutopsporing log niveau"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
@@ -469,10 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "API operatie mislukt: {}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "'Mijn lijst' operatie was succesvol"
-
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Het is onmogelijk om automatisch een seizoen te verwijderen uit de Kodi-bibliotheek, gelieve dit handmatig uit te voeren"
@@ -621,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Start de add-on configuratie wizard"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Weergave voor hoofdmenu"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Weergave voor zoekopdrachten"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Weergave voor geëxporteerd"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -645,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "Blader door inhoud met audiobeschrijving"
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Weergave voor 'Mijn lijst'"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -900,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Toon enkel video's met waardering [B]{}[/B]"
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Installeer de Up Next add-on"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Synchroniseer de 'bekeken' status van video's met Netflix"

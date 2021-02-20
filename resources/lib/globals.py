@@ -246,7 +246,7 @@ class GlobalVariables:
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
-                       self.ADDON.getSettingString('debug_log_level'),
+                       self.ADDON.getSettingBool('enable_debug'),
                        self.ADDON.getSettingBool('enable_timing'))
         if self.IS_ADDON_FIRSTRUN:
             self.init_database()

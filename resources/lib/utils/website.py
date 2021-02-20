@@ -144,7 +144,7 @@ def parse_profiles(data):
             G.SHARED_DB.set_profile(guid, sort_order)
             # Add profile language description translated from locale
             summary['language_desc'] = xbmc.convertLanguage(summary['language'][:2], xbmc.ENGLISH_NAME)
-            if LOG.level == LOG.LEVEL_VERBOSE:
+            if LOG.is_enabled:
                 for key, value in summary.items():
                     if key in PROFILE_DEBUG_INFO:
                         LOG.debug('Profile info {}', {key: value})

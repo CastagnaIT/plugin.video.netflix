@@ -152,36 +152,36 @@ msgstr "InputStream自适应设置..."
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "视图"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "启用自定义视图"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "查看文件夹"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "查看电影"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "查看节目"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "查看季"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "查看剧集"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "查看文件"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -258,8 +258,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "自动更新电视节目的季与集"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "调试日志记录级别"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
@@ -469,10 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "API操作失败：{}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "我的列表操作成功"
-
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "无法自动从Kodi库中删除季节，请手动执行"
@@ -621,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "运行插件配置向导"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "查看主菜单"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "查看搜索"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "查看导出"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -645,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "浏览带有音频描述的内容"
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "查看我的列表"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -900,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "仅显示评分为[B]{}[/B]的标题。"
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "安装Up Next插件"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "将视频的观看状态与Netflix同步"

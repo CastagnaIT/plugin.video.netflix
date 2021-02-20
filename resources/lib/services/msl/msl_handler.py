@@ -150,7 +150,7 @@ class MSLHandler:
                 # when requested by am_stream_continuity.py / events_handler.py will cause problems
                 # if it is already expired, so we guarantee a minimum of safety ttl of 4h (14400s = 4 hours)
                 raise CacheMiss()
-            if LOG.level == LOG.LEVEL_VERBOSE:
+            if LOG.is_enabled:
                 LOG.debug('Manifest for {} obtained from the cache', viewable_id)
                 # Save the manifest to disk as reference
                 common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -227,7 +227,7 @@ class MSLHandler:
                                                      self.msl_requests.build_request_data('/manifest', params),
                                                      esn,
                                                      disable_msl_switch=False)
-        if LOG.level == LOG.LEVEL_VERBOSE:
+        if LOG.is_enabled:
             # Save the manifest to disk as reference
             common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
         # Save the manifest to the cache to retrieve it during its validity

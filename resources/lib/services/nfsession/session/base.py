@@ -28,7 +28,6 @@ class SessionBase:
     external_func_activate_profile = None  # (set by nfsession_op.py)
 
     def __init__(self):
-        self.verify_ssl = bool(G.ADDON.getSettingBool('ssl_verification'))
         self._init_session()
 
     def _init_session(self):

@@ -153,36 +153,36 @@ msgstr "Prilagodi postavke InputStream ..."
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Posjete"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Omogući prilagođene prikaze"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Pogledajte mape"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Prikaz za filmove"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Prikaz za emisije"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Prikaz za sezone"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Prikaz za epizode"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Prikaz za profile"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -259,8 +259,8 @@ msgid "Auto-update for TV shows seasons and episodes"
 msgstr "Automatsko ažuriranje televizije prikazuje sezone i epizode"
 
 msgctxt "#30066"
-msgid "Debug logging level"
-msgstr "Razina evidentiranja pogrešaka"
+msgid "Enable debug logging"
+msgstr ""
 
 msgctxt "#30067"
 msgid "daily"
@@ -470,10 +470,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "Operacija API-a nije uspjela: {}"
 
-msgctxt "#30119"
-msgid "'My list' operation successful"
-msgstr "Operacija Mog popisa uspješna"
-
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Ne može se automatski ukloniti sezona iz Kodi zbirke, učinite to ručno"
@@ -622,16 +619,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Pokrenite čarobnjaka za konfiguraciju"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Prikaz za glavni izbornik"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Prikaz za pretraživanje"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Prikaz za izvezene"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -646,8 +643,8 @@ msgid "Browse contents with audio description."
 msgstr "Pregledavajte sadržaj s audio opisom."
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Pogledajte moj popis"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -901,10 +898,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr ""
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Instaliraj Up Next dodatak"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Sinkroniziraj status gledanja videozapisa s Netflixom"

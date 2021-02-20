@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import xbmc
 import xbmcvfs
 
 import resources.lib.common as common
@@ -32,7 +33,9 @@ class AMUpNextNotifier(ActionManager):
         return 'enabled={}'.format(self.enabled)
 
     def initialize(self, data):
-        if not self.videoid_next_episode or not data['info_data']:
+        if (not self.videoid_next_episode or
+                not data['info_data'] or
+                not xbmc.getCondVisibility('System.AddonIsEnabled(service.upnext)')):
             return
         try:
             self.upnext_info = self._get_upnext_info(data['info_data'], data['metadata'], data['is_played_from_strm'])
