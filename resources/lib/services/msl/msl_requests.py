@@ -24,6 +24,7 @@ from resources.lib.globals import G
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
                                                   MSL_DATA_FILENAME, create_req_params)
+from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
 
@@ -35,6 +36,7 @@ class MSLRequests(MSLRequestBuilder):
         super(MSLRequests, self).__init__()
         from requests import session
         self.session = session()
+        enable_tcp_keep_alive(self.session)
         self.session.headers.update({
             'User-Agent': common.get_user_agent(),
             'Content-Type': 'text/plain',
@@ -184,8 +186,7 @@ class MSLRequests(MSLRequestBuilder):
                 LOG.debug('Request took {}s', perf_clock() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 break
-            except (req_exceptions.ConnectionError, req_exceptions.ReadTimeout) as exc:
-                # Info on PR: https://github.com/CastagnaIT/plugin.video.netflix/pull/1046
+            except req_exceptions.ConnectionError as exc:
                 LOG.error('HTTP request error: {}', exc)
                 if retry == 3:
                     raise
