@@ -59,8 +59,8 @@ class MSLRequests(MSLRequestBuilder):
             return False
         LOG.info('Performing key handshake with ESN: {}', common.censure(esn) if len(esn) > 50 else esn)
         try:
-            response = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
-            header_data = self.decrypt_header_data(response['headerdata'], False)
+            header, _ = _process_json_response(self._post(ENDPOINTS['manifest'], self.handshake_request(esn)))
+            header_data = self.decrypt_header_data(header['headerdata'], False)
             self.crypto.parse_key_response(header_data, esn, True)
         except MSLError as exc:
             if exc.err_number == 207006 and common.get_system_platform() == 'android':
@@ -193,16 +193,14 @@ class MSLRequests(MSLRequestBuilder):
     def _process_chunked_response(self, response, save_uid_token_to_owner=False):
         """Parse and decrypt an encrypted chunked response. Raise an error if the response is plaintext json"""
         LOG.debug('Received encrypted chunked response')
-        if not response:
-            return {}
-        response = _parse_chunks(response)
+        header, payloads = _process_json_response(response)
+
         # TODO: sending for the renewal request is not yet implemented
         # if self.crypto.get_current_mastertoken_validity()['is_renewable']:
         #     # Check if mastertoken is renewed
-        #     self.request_builder.crypto.compare_mastertoken(response['header']['mastertoken'])
+        #     self.request_builder.crypto.compare_mastertoken(header['mastertoken'])
 
-        header_data = self.decrypt_header_data(response['header'].get('headerdata'))
-
+        header_data = self.decrypt_header_data(header['headerdata'])
         if 'useridtoken' in header_data:
             # Save the user id token for the future msl requests
             profile_guid = G.LOCAL_DB.get_guid_owner_profile() if save_uid_token_to_owner else\
@@ -212,17 +210,20 @@ class MSLRequests(MSLRequestBuilder):
         #     LOG.debug('Found key handshake in response data')
         #     # Update current mastertoken
         #     self.request_builder.crypto.parse_key_response(header_data, True)
-        decrypted_response = _decrypt_chunks(response['payloads'], self.crypto)
+        decrypted_response = _decrypt_chunks(payloads, self.crypto)
         return _raise_if_error(decrypted_response)
 
 
-@measure_exec_time_decorator(is_immediate=True)
 def _process_json_response(response):
-    """Execute a post request and expect a JSON response"""
+    """Processes the response data by returning header and payloads in JSON format and check for possible MSL error"""
     try:
-        return _raise_if_error(json.loads(response))
+        data = json.loads('[' + response.replace('}{', '},{') + ']')
+        # On 'data' list the first dict is always the header or the error
+        payloads = [msg_part for msg_part in data if 'payload' in msg_part]
+        return _raise_if_error(data[0]), payloads
     except ValueError as exc:
-        raise MSLError('Expected JSON format type, got {}'.format(response)) from exc
+        LOG.error('Unable to load json data {}', response)
+        raise MSLError('Unable to load json data') from exc
 
 
 def _raise_if_error(decoded_response):
@@ -265,24 +266,6 @@ def _get_error_details(decoded_response):
 
 
 @measure_exec_time_decorator(is_immediate=True)
-def _parse_chunks(message):
-    try:
-        msg_parts = json.loads('[' + message.replace('}{', '},{') + ']')
-        header = None
-        payloads = []
-        for msg_part in msg_parts:
-            if 'headerdata' in msg_part:
-                header = msg_part
-            elif 'payload' in msg_part:
-                payloads.append(msg_part)
-        return {'header': header, 'payloads': payloads}
-    except Exception as exc:  # pylint: disable=broad-except
-        LOG.error('Unable to parse the chunks due to error: {}', exc)
-        LOG.debug('Message data: {}', message)
-        raise
-
-
-@measure_exec_time_decorator(is_immediate=True)
 def _decrypt_chunks(chunks, crypto):
     decrypted_payload = ''
     for chunk in chunks:
@@ -296,13 +279,11 @@ def _decrypt_chunks(chunks, crypto):
         # unpad the plaintext
         plaintext = json.loads(plaintext)
         data = plaintext.get('data')
-
         # uncompress data if compressed
         if plaintext.get('compressionalgo') == 'GZIP':
             decoded_data = base64.standard_b64decode(data)
             data = zlib.decompress(decoded_data, 16 + zlib.MAX_WBITS).decode('utf-8')
         else:
             data = base64.standard_b64decode(data).decode('utf-8')
-
         decrypted_payload += data
     return json.loads(decrypted_payload)
