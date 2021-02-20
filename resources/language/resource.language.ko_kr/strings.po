@@ -152,36 +152,36 @@ msgstr "InputStream 애드온 설정"
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "홈"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "사용자 설정"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "폴더"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "영화"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "TV프로그램"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "시즌"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "에피소드"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "프로파일"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -469,6 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "API실행 실패: {}"
 
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Kodi라이브러리에서 시진을 지우지 못 했습니다. 수동으로 삭제해 주십시오."
@@ -617,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "애드온설정 마법사 실행"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "홈"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "검색"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "내 보낸 것들"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -641,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "음성지원"
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "내가 찜한 콘텐츠"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -896,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "[B]{}[/B]의 콘텐츠만 보여줍니다."
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Up Next 애드온 설치"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "시청상태를 Netflix와 동기화합니다."

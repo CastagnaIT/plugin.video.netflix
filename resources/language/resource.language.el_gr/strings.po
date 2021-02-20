@@ -152,36 +152,36 @@ msgstr "Ρυθμίσεις προσθέτου InputStream"
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Όψεις"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Ενεργοποίηση προσαρμοσμένων όψεων"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Όψη για τους φακέλους"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Όψη για τις ταινίες"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Όψη για τις σειρές"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Όψη για τις σεζόν"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Όψη για τα επεισόδια"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Όψη για τα προφίλ"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -469,6 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "Αποτυχία εργασίας του API: {}"
 
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Αδυναμία αυτόματης αφαίρεσης της σεζόν από την βιβλιοθήκη του Kodi, παρακαλώ κάντε το χειροκίνητα"
@@ -617,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Εκτέλεση μάγου ρύθμισης του προσθέτου"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Όψη για το κυρίως μενού"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Όψη για την αναζήτηση"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Όψη για τα εξηχθημένα"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -641,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "Περιήγηση περιεχομένων με ηχητική περιγραφή."
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Όψη για την λίστα μου"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -896,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Δείξε μόνο τίτλους βαθμολογημένοι [B]{}[/B]."
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Εγκατάσταση του προσθέτου για τα επόμενα"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Συγχρονισμός της κατάστασης προβολής των βίντεο με το Νέτφλιξ"

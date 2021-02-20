@@ -152,36 +152,36 @@ msgstr "Setări pentru InputStream Adaptive..."
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Mod vizualizare"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Activează moduri personalizate de vizualizare"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Mod vizualizare pentru directoare"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Mod vizualizare pentru filme"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Mod vizualizare pentru seriale"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Mod vizualizare pentru sezoane"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Mod vizualizare pentru episoade"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Mod vizualizare pentru profile"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -469,6 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "Operațiune API eșuată: {}"
 
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Nu se poate șterge automat un sezon din librăria Kodi, vă rugăm s-o faceți manual"
@@ -617,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Rulează asistentul de configurare al add-on-ului"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Mod vizualizare pentru meniul principal"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Mod vizualizare pentru căutare"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Mod vizualizare pentru exportări"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -641,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "Navighează conținut cu descriere audio."
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Mod vizualizare pentru 'Lista mea'"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -896,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Arată doar titluri cu clasificarea [B]{}[/B]."
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Instalaează add-on-ul Up Next"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Sincronizează statutul conținutului urmărit cu Netflix"

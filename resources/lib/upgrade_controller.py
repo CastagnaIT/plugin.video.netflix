@@ -9,7 +9,6 @@
 """
 from resources.lib.common.misc_utils import is_less_version
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
-from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
@@ -79,20 +78,26 @@ def _perform_service_changes(previous_ver, current_ver):
         # In the version 1.13.0:
         # - 'force_widevine' on setting.xml has been moved
         #   as 'widevine_force_seclev' in TABLE_SESSION with different values:
-        force_widevine = G.ADDON.getSettingString('force_widevine')
-        # Old values: Disabled|Widevine L3|Widevine L3 (ID-4445)
-        # New values: Disabled|L3|L3 (ID 4445)
-        if force_widevine == 'Widevine L3':
-            G.LOCAL_DB.set_value('widevine_force_seclev', 'L3', table=TABLE_SESSION)
-        elif force_widevine == 'Widevine L3 (ID-4445)':
-            G.LOCAL_DB.set_value('widevine_force_seclev', 'L3 (ID 4445)', table=TABLE_SESSION)
-        # - 'esn' on setting.xml is not more used but if was set the value need to be copied on 'esn' on TABLE_SESSION:
-        esn = G.ADDON.getSettingString('esn')
-        if esn:
-            from resources.lib.utils.esn import set_esn
-            set_esn(esn)
+        # force_widevine = G.ADDON.getSettingString('force_widevine')
+        # # Old values: Disabled|Widevine L3|Widevine L3 (ID-4445)
+        # # New values: Disabled|L3|L3 (ID 4445)
+        # if force_widevine == 'Widevine L3':
+        #     G.LOCAL_DB.set_value('widevine_force_seclev', 'L3', table=TABLE_SESSION)
+        # elif force_widevine == 'Widevine L3 (ID-4445)':
+        #     G.LOCAL_DB.set_value('widevine_force_seclev', 'L3 (ID 4445)', table=TABLE_SESSION)
+        # # - 'esn' on setting.xml is not more used but if was set the value need to be copied on 'esn' on TABLE_SESSION:
+        # esn = G.ADDON.getSettingString('esn')
+        # if esn:
+        #     from resources.lib.utils.esn import set_esn
+        #     set_esn(esn)
         # - 'suspend_settings_monitor' is not more used
         G.LOCAL_DB.delete_key('suspend_settings_monitor')
+        # In the version 1.14.0 the new settings.xml format has been introduced
+        # the migration of the settings (commented above) from this version is no more possible
+        from resources.lib.kodi import ui
+        ui.show_ok_dialog('Netflix add-on upgrade',
+                          'This add-on upgrade has reset your ESN code, if you had set an ESN code manually '
+                          'you must re-enter it again in the Expert settings, otherwise simply ignore this message.')
     # Always leave this to last - After the operations set current version
     G.LOCAL_DB.set_value('service_previous_version', current_ver)
 

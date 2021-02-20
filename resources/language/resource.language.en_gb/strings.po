@@ -159,35 +159,35 @@ msgstr ""
 # Unused 30036
 
 msgctxt "#30037"
-msgid "Views"
+msgid "Skin viewtypes"
 msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
+msgid "Enable custom viewtypes"
 msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
+msgid "View ID for folders"
 msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
+msgid "View ID for movies"
 msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
+msgid "View ID for shows"
 msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
+msgid "View ID for seasons"
 msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
+msgid "View ID for episodes"
 msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
+msgid "View ID for profiles"
 msgstr ""
 
 msgctxt "#30045"
@@ -478,6 +478,8 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr ""
 
+# Unused 30119
+
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr ""
@@ -629,15 +631,15 @@ msgid "Run add-on configuration wizard"
 msgstr ""
 
 msgctxt "#30159"
-msgid "View for main menu"
+msgid "View ID for main menu"
 msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
+msgid "View ID for search"
 msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
+msgid "View ID for exported"
 msgstr ""
 
 msgctxt "#30162"
@@ -653,7 +655,7 @@ msgid "Browse contents with audio description."
 msgstr ""
 
 msgctxt "#30165"
-msgid "View for 'My list'"
+msgid "View ID for 'My list'"
 msgstr ""
 
 msgctxt "#30166"
@@ -912,9 +914,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr ""
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr ""
+# Unused 30234
 
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"

@@ -20,33 +20,22 @@ from resources.lib.globals import G
 from resources.lib.kodi import ui
 
 
-def custom_viewmode(partial_setting_id):
-    """Decorator that sets a custom viewmode if currently in a listing of the plugin"""
+def custom_viewmode(content_type):
+    """Decorator that sets a custom viewmode (skin viewtype) if currently in a listing of the plugin"""
     # pylint: disable=missing-docstring
     def decorate_viewmode(func):
         @wraps(func)
         def set_custom_viewmode(*args, **kwargs):
-            # pylint: disable=no-member
-            override_partial_setting_id = func(*args, **kwargs)
-            _activate_view(override_partial_setting_id
-                           if override_partial_setting_id else
-                           partial_setting_id)
+            override_content_type = func(*args, **kwargs)
+            _content_type = override_content_type if override_content_type else content_type
+            if (G.ADDON.getSettingBool('customview')
+                    and 'plugin://{}'.format(G.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath')):
+                # Activate the given skin viewtype if the plugin is run in the foreground
+                view_id = G.ADDON.getSettingInt('viewmode' + _content_type + 'id')
+                if view_id > 0:
+                    xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
         return set_custom_viewmode
     return decorate_viewmode
-
-
-def _activate_view(partial_setting_id):
-    """Activate the given view if the plugin is run in the foreground"""
-    if 'plugin://{}'.format(G.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath'):
-        if G.ADDON.getSettingBool('customview'):
-            view_mode = int(G.ADDON.getSettingInt('viewmode' + partial_setting_id))
-            if view_mode == 0:
-                # Leave the management to kodi
-                return
-            # Force a custom view, get the id from settings
-            view_id = int(G.ADDON.getSettingInt('viewmode' + partial_setting_id + 'id'))
-            if view_id > 0:
-                xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
 
 
 def convert_list_to_list_items(list_data):

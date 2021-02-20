@@ -152,36 +152,36 @@ msgstr "Ustawienia wtyczki strumieniowej..."
 
 # Unused 30036
 msgctxt "#30037"
-msgid "Views"
-msgstr "Widoki"
+msgid "Skin viewtypes"
+msgstr ""
 
 msgctxt "#30038"
-msgid "Enable custom views"
-msgstr "Aktywuj niestandardowe widoki"
+msgid "Enable custom viewtypes"
+msgstr ""
 
 msgctxt "#30039"
-msgid "View for folders"
-msgstr "Widok folderów"
+msgid "View ID for folders"
+msgstr ""
 
 msgctxt "#30040"
-msgid "View for movies"
-msgstr "Widok filmów"
+msgid "View ID for movies"
+msgstr ""
 
 msgctxt "#30041"
-msgid "View for shows"
-msgstr "Widok seriali"
+msgid "View ID for shows"
+msgstr ""
 
 msgctxt "#30042"
-msgid "View for seasons"
-msgstr "Widok sezonów"
+msgid "View ID for seasons"
+msgstr ""
 
 msgctxt "#30043"
-msgid "View for episodes"
-msgstr "Widok odcinków"
+msgid "View ID for episodes"
+msgstr ""
 
 msgctxt "#30044"
-msgid "View for profiles"
-msgstr "Widok profili"
+msgid "View ID for profiles"
+msgstr ""
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -469,6 +469,7 @@ msgctxt "#30118"
 msgid "API operation failed: {}"
 msgstr "Operacja API nie powiodła się: {}"
 
+# Unused 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Nie można automatycznie usunąć sezonu z biblioteki Kodi, zrób to ręcznie"
@@ -617,16 +618,16 @@ msgid "Run add-on configuration wizard"
 msgstr "Uruchom kreatora konfiguracji"
 
 msgctxt "#30159"
-msgid "View for main menu"
-msgstr "Widok głównego menu"
+msgid "View ID for main menu"
+msgstr ""
 
 msgctxt "#30160"
-msgid "View for search"
-msgstr "Widok wyszukiwania"
+msgid "View ID for search"
+msgstr ""
 
 msgctxt "#30161"
-msgid "View for exported"
-msgstr "Widok wyeksportowanych"
+msgid "View ID for exported"
+msgstr ""
 
 msgctxt "#30162"
 msgid "Last used"
@@ -641,8 +642,8 @@ msgid "Browse contents with audio description."
 msgstr "Przeglądaj zawartość z deskrypcją audio"
 
 msgctxt "#30165"
-msgid "View for 'My list'"
-msgstr "Widok mojej listy"
+msgid "View ID for 'My list'"
+msgstr ""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -896,10 +897,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Pokaż tylko tytuły ocenione [B]{}[/B]."
 
-msgctxt "#30234"
-msgid "Install Up Next add-on"
-msgstr "Zainstaluj dodatek Up Next"
-
+# Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Zsynchronizuj status oglądanych filmów z Netflix"
