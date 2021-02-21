@@ -202,7 +202,7 @@ def get_kodi_subtitle_language(iso_format=xbmc.ISO_639_1):
 
 def get_kodi_ui_language(iso_format=xbmc.ISO_639_1):
     """Return the Kodi UI interface language"""
-    setting = json_rpc('Settings.GetSettingValue', {'setting': 'locale.language'})
+    setting = json_rpc('Settings.GetSettingValue', {'setting': 'locale.language'})['value']
     # The value returned is as "resource.language.en_gb" we keep only the first two chars "en"
     return convert_language_iso(setting.split('.')[-1][:2], iso_format)
 
