@@ -38,7 +38,7 @@ Install add-on via repository - provide automatic installation of updates:
 
 Install add-on manually - updates should always be installed manually:
 * Daily builds - To get latest fixes https://bit.ly/citnfdailybuilds (not always published see dates)
-* As Kodi file source, only for Kodi 18:<br/>
+* As Kodi file source, only for Kodi 19:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
 ## Login with Authentication key
@@ -111,7 +111,9 @@ If it happens often, there is the possibility to exclude the auto update from th
 old closed Issues (on Issue tab), the Wiki pages or ask in the Kodi forum.***
 
 If you have encountered an error or misbehaviour:
-1. Open add-on settings, go to in `Expert` page and change `Debug logging level` to `Verbose`
+1. Open add-on `Expert` settings and:<br/>
+if on Kodi 18, change `Debug logging level` setting to `Verbose`<br/>
+if on Kodi 19, turn on `Enable debug logging` setting
 2. Enable Kodi debug, go to Kodi `Settings` > `System Settings` > `Logging` and enable `Enable debug logging`
 3. Perform the actions that cause the error, so they are written in the log file
 4. Open a new GitHub Issue (of type *Bug report*) and fill in the page with detailed information
