@@ -1,3 +1,7 @@
+v1.12.3 (2021-02-21)
+- Fixed HTTP ReadTimeout/ConnectionError errors
+- Fixed incorrect handling of MSL errors
+
 v1.12.2 (2021-01-25)
 - Fixed possible service crash on slower devices like RPI
 - Better managed data chunks in some cases could cause errors on starting playback
