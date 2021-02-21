@@ -552,14 +552,7 @@ msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Απενεργοποίηση της ειδοποίησης εκκίνησης"
 
-msgctxt "#30142"
-msgid "Custom"
-msgstr "Προσπαρμοσμένο"
-
-msgctxt "#30143"
-msgid "Custom view ID"
-msgstr "Προσαρμοσμένο ID όψης"
-
+# Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Απενεργοποίηση υποστήριξης υποτίτλων WebVTT"

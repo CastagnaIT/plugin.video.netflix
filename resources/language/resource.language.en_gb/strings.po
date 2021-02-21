@@ -564,13 +564,7 @@ msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr ""
 
-msgctxt "#30142"
-msgid "Custom"
-msgstr ""
-
-msgctxt "#30143"
-msgid "Custom view ID"
-msgstr ""
+# Unused 30142, 30143
 
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"

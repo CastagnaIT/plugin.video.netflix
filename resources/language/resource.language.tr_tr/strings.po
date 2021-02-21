@@ -552,14 +552,7 @@ msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Başlangıç ​​bildirimini devre dışı bırak"
 
-msgctxt "#30142"
-msgid "Custom"
-msgstr "Özel"
-
-msgctxt "#30143"
-msgid "Custom view ID"
-msgstr "Özel görünüm kimliği"
-
+# Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "WebVTT altyazı desteğini devre dışı bırak"

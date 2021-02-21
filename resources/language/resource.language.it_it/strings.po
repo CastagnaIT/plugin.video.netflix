@@ -552,14 +552,7 @@ msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Disabilita notifica all'avvio"
 
-msgctxt "#30142"
-msgid "Custom"
-msgstr "Personalizzata"
-
-msgctxt "#30143"
-msgid "Custom view ID"
-msgstr "ID Vista personalizzata"
-
+# Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Disabilita supporto ai sottotitoli WebVTT"

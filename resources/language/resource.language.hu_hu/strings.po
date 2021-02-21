@@ -552,14 +552,7 @@ msgctxt "#30141"
 msgid "Disable startup notification"
 msgstr "Indítási értesítés letiltása"
 
-msgctxt "#30142"
-msgid "Custom"
-msgstr "Saját"
-
-msgctxt "#30143"
-msgid "Custom view ID"
-msgstr "Saját nézet"
-
+# Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "WebVTT felirat támogatás tiltása"
