@@ -1,3 +1,13 @@
+v1.14.0 (2021-02-21)
+- Converted settings xml to the new Kodi settings format type
+- Debug logging setting is now an on/off switch
+- Fixed stream continuity errors after Kodi migration (Kodi 18 to 19)
+- Fixed HTTP ReadTimeout/ConnectionError errors
+- Fixed incorrect handling of MSL errors
+- Fixed AttributeError on playback when "User interface language" is set as preferred audio
+- Updated translations de, it
+- Minor fixes/changes
+
 v1.13.1 (2021-01-25)
 - Add images to seasons list items
 - Implemented support to Kodi language setting case "User interface language"
