@@ -70,6 +70,12 @@ def _perform_service_changes(previous_ver, current_ver):
     LOG.debug('Initialize service upgrade operations, from version {} to {})', previous_ver, current_ver)
     # Clear cache (prevents problems when netflix change data structures)
     G.CACHE.clear()
+    # Delete all stream continuity data - if user has upgraded from Kodi 18 to Kodi 19
+    if is_less_version(previous_ver, '1.13'):
+        # There is no way to determine if the user has migrated from Kodi 18 to Kodi 19,
+        #   then we assume that add-on versions prior to 1.13 was on Kodi 18
+        # The am_stream_continuity.py on Kodi 18 works differently and the existing data can not be used on Kodi 19
+        G.SHARED_DB.clear_stream_continuity()
     if previous_ver and is_less_version(previous_ver, '1.9.0'):
         # In the version 1.9.0 has been changed the COOKIE_ filename with a static filename
         from resources.lib.upgrade_actions import rename_cookie_file
