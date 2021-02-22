@@ -157,7 +157,7 @@ msgstr "Type de vue de l'habillage"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr "Activer les vues personnalisées"
+msgstr "Activer les types de vue personnalisés"
 
 msgctxt "#30039"
 msgid "View ID for folders"
@@ -259,7 +259,7 @@ msgstr "Mise à jour automatique des saisons et épisodes des séries"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr "Activer le mode débogage pour la journalisation"
+msgstr "Activer la journalisation des informations de débogage"
 
 msgctxt "#30067"
 msgid "daily"
