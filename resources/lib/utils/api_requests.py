@@ -30,6 +30,7 @@ def catch_api_errors_decorator(func):
             # (see _raise_api_error in session/http_requests.py)
             LOG.error('{} the API call has returned an error: {}', func.__name__, exc)
             ui.show_notification(common.get_local_string(30118).format(exc))
+            return None
     return api_error_wrapper
 
 
