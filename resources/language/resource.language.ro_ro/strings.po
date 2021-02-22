@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2020-11-29 23:50+0000\n"
+"PO-Revision-Date: 2021-02-22 13:00+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "Language: ro_RO\n"
@@ -153,35 +153,35 @@ msgstr "Setări pentru InputStream Adaptive..."
 # Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
-msgstr ""
+msgstr "Modalități de vizualizare pentru skin"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr ""
+msgstr "Activează modalități de vizualizare personalizate"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr ""
+msgstr "ID de vizualizare pentru directoare"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr ""
+msgstr "ID vizualizare pentru filme"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr ""
+msgstr "ID vizualizare pentru seriale"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr ""
+msgstr "ID vizualizare pentru sezoane"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr ""
+msgstr "ID vizualizare pentru episoade"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr ""
+msgstr "ID vizualizare pentru profile"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -259,27 +259,27 @@ msgstr "Auto-actualizare pentru sezoanele și episoadele serialelor"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Activează loguri pentru depanare"
 
 msgctxt "#30067"
 msgid "daily"
-msgstr "Zilnic"
+msgstr "zilnic"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "O dată la câteva zile"
+msgstr "o dată la câteva zile"
 
 msgctxt "#30069"
 msgid "every 5 days"
-msgstr "La fiecare 5 zile"
+msgstr "la fiecare 5 zile"
 
 msgctxt "#30070"
 msgid "weekly"
-msgstr "Săptămânal"
+msgstr "săptămânal"
 
 msgctxt "#30071"
 msgid "Time of Day"
-msgstr "Ora din zi"
+msgstr "ora din zi"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
@@ -612,15 +612,15 @@ msgstr "Rulează asistentul de configurare al add-on-ului"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr ""
+msgstr "ID de vizualizare pentru meniul principal"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr ""
+msgstr "ID de vizualizare pentru căutare"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr ""
+msgstr "ID de vizualizare pentru exporturi"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -636,7 +636,7 @@ msgstr "Navighează conținut cu descriere audio."
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "ID de vizualizare pentru 'Lista mea'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -1044,7 +1044,7 @@ msgstr "Setări ESN / Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
