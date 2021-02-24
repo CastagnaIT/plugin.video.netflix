@@ -261,7 +261,7 @@ msgstr "Actualizar tempadas e episodios das series TV automaticamente"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Activar rexistro de depuración"
 
 msgctxt "#30067"
 msgid "daily"
@@ -702,7 +702,7 @@ msgstr "Houbo un problema co acceso; é posíbel que a súa conta non fose confi
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Mostrar sempre os subtítulos cando a lingua preferida do audio non está dispoñíbel"
 
 msgctxt "#30182"
 msgid "Export NFO files"
