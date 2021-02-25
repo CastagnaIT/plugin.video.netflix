@@ -165,7 +165,7 @@ msgstr "Nézettípus azonosító  mappákhoz"
 
 msgctxt "#30040"
 msgid "View ID for movies"
- msgstr "Nézettípus azonosító filmekhez"
+msgstr "Nézettípus azonosító filmekhez"
 
 msgctxt "#30041"
 msgid "View ID for shows"
