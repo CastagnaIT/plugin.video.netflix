@@ -70,11 +70,11 @@ msgstr "Listar todos os tipos"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "Opcións de perfís e control parental"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "Na lista de perfís, abre o menú contextual no perfil escollido"
 
 msgctxt "#30014"
 msgid "Account"
@@ -155,35 +155,35 @@ msgstr "Axustes do complemento InputStream..."
 # Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
-msgstr ""
+msgstr "Tema para modos de vista"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr ""
+msgstr "Activar modos de vista personalizados"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr ""
+msgstr "ID de vista para cartafoles"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr ""
+msgstr "ID de vista para filmes"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr ""
+msgstr "ID de vista para series TV"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr ""
+msgstr "ID de vista para tempadas"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr ""
+msgstr "ID de vista para episodios"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr ""
+msgstr "ID de vista para perfiles"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -261,7 +261,7 @@ msgstr "Actualizar tempadas e episodios das series TV automaticamente"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Activar rexistro de depuración"
 
 msgctxt "#30067"
 msgid "daily"
@@ -329,7 +329,7 @@ msgstr "Lembrar preferencias de son / subtítulos"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Forzar a visualización de subtítulos forzados soamente coa lingua do audio configurada"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -614,15 +614,15 @@ msgstr "Executar o asistente de configuración do complemento"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr ""
+msgstr "ID de vista para o menú principal"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr ""
+msgstr "ID de vista para a procura"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr ""
+msgstr "ID de vista para exportados"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -638,7 +638,7 @@ msgstr "Navegar polos contidos con descrición de son."
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "ID de vista para 'A miña lista'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -646,7 +646,7 @@ msgstr "Elementos do menú principal"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "Miña lista"
+msgstr "A miña lista"
 
 msgctxt "#30168"
 msgid "Continue watching"
@@ -702,7 +702,7 @@ msgstr "Houbo un problema co acceso; é posíbel que a súa conta non fose confi
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Mostrar sempre os subtítulos cando a lingua preferida do audio non está dispoñíbel"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1033,49 +1033,49 @@ msgstr "Polo ID do xénero/subxénero"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferir a lingua do audio/subtítulo co código do país (se dispoñíbel)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Preferir pistas de audio en estéreo por defecto"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "Configuración ESN/ Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "Mudar ESN"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "Gardar información do sistema"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widevine - Forzar nivel de seguranza"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr ""
+msgstr "Forzar {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "O ESN configurouse correctamente[CR]Tenta reproducir un vídeo"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "Non se pode empregar este ESN[CR]Tenta mudar o ESN ou reinicialo.[CR][CR]Detalles do erro:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "Formato incorrecto do ESN"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "Queres reiniciar todos os parámetros?"
