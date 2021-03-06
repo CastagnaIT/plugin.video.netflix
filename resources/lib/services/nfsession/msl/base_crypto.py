@@ -12,7 +12,7 @@ import base64
 import time
 
 import resources.lib.common as common
-from resources.lib.services.msl.msl_utils import MSL_DATA_FILENAME
+from resources.lib.services.nfsession.msl.msl_utils import MSL_DATA_FILENAME
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 

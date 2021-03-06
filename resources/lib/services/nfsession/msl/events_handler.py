@@ -11,6 +11,7 @@ import queue
 import random
 import threading
 import time
+from typing import TYPE_CHECKING
 
 import xbmc
 
@@ -18,10 +19,14 @@ from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.services.msl import msl_utils
-from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_STOP, EVENT_ENGAGE, ENDPOINTS, create_req_params
+from resources.lib.services.nfsession.msl import msl_utils
+from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, EVENT_START, EVENT_STOP, EVENT_ENGAGE,
+                                                            create_req_params)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
+
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
 
 class Event:
@@ -61,16 +66,16 @@ class Event:
 class EventsHandler(threading.Thread):
     """Handle and build Netflix event requests"""
 
-    def __init__(self, chunked_request):
+    def __init__(self, chunked_request, nfsession: 'NFSessionOperations'):
         super().__init__()
         self.chunked_request = chunked_request
+        self.nfsession = nfsession
         # session_id, app_id are common to all events
-        self.session_id = int(time.time()) * 10000 + random.randint(1, 10001)
+        self.session_id = int(time.time()) * 10000 + random.SystemRandom().randint(1, 10001)
         self.app_id = None
         self.queue_events = queue.Queue(maxsize=10)
         self.cache_data_events = {}
         self.banned_events_ids = []
-        common.register_slot(signal=common.Signals.QUEUE_VIDEO_EVENT, callback=self.callback_event_video_queue)
         self._stop_requested = False
 
     def run(self):
@@ -114,9 +119,8 @@ class EventsHandler(threading.Thread):
         if event.event_type == EVENT_STOP and event.status == Event.STATUS_SUCCESS:
             self.clear_queue()
             if event.event_data['allow_request_update_loco']:
-                # Calls to nfsession
-                common.make_http_call('update_loco_context', {'context_name': 'continueWatching'})
-                common.make_http_call('update_videoid_bookmark', {'video_id': event.get_video_id()})
+                self.nfsession.update_loco_context('continueWatching')
+                self.nfsession.update_videoid_bookmark(event.get_video_id())
         return True
 
     def stop_join(self):
@@ -146,7 +150,7 @@ class EventsHandler(threading.Thread):
                      event_type, previous_data.get('xid'))
             return
 
-        from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
+        from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
         request_data = MSLRequestBuilder.build_request_data(url,
                                                             self._build_event_params(event_type,
                                                                                      event_data,

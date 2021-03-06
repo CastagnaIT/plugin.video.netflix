@@ -12,6 +12,7 @@ import xbmcgui
 import xbmcvfs
 
 from resources.lib import common
+from resources.lib.common import IPC_ENDPOINT_MSL
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -171,7 +172,7 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
             G.LOCAL_DB.set_value('widevine_force_seclev', self.wv_sec_lev_new or self.wv_force_sec_lev, TABLE_SESSION)
             # Try apply the changes by performing the MSL key handshake right now
             try:
-                common.make_call('perform_key_handshake', port_setting_name='msl_service_port')
+                common.make_call('perform_key_handshake', endpoint=IPC_ENDPOINT_MSL)
                 # When the MSL not raise errors not always means that the device can play the videos
                 # because the MSL manifest/license request may not be granted (you have to play a video to know it).
                 ui.show_ok_dialog(common.get_local_string(30600), common.get_local_string(30606))

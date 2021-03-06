@@ -7,6 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+from typing import TYPE_CHECKING
+
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
                                             SearchVideoList, CustomVideoList)
@@ -19,11 +21,15 @@ from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
+
 
 class DirectoryPathRequests:
     """Builds and executes PATH requests for the directories"""
 
-    nfsession = None
+    def __init__(self, nfsession: 'NFSessionOperations'):
+        self.nfsession = nfsession
 
     @cache_utils.cache_output(cache_utils.CACHE_MYLIST, fixed_identifier='my_list_items', ignore_self_class=True)
     def req_mylist_items(self):

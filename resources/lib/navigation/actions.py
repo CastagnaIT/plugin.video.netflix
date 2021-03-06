@@ -184,8 +184,8 @@ class AddonActionExecutor:
             ui.show_notification('The operation was cancelled due to an unexpected error')
             return
         # Check if item is in the cache
-        videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
-                                                        {'video_id': str(videoid.value)})
+        videoid_exists, list_id = common.make_call('get_continuewatching_videoid_exists',
+                                                   {'video_id': str(videoid.value)})
         if videoid_exists:
             # Try to remove the videoid from the list in the cache
             try:

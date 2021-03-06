@@ -151,7 +151,7 @@ def generate_logblobs_params():
     screen_size = str(xbmcgui.getScreenWidth()) + 'x' + str(xbmcgui.getScreenHeight())
     timestamp_utc = time.time()
     timestamp = int(timestamp_utc * 1000)
-    app_id = int(time.time()) * 10000 + random.randint(1, 10001)  # Should be used with all log requests
+    app_id = int(time.time()) * 10000 + random.SystemRandom().randint(1, 10001)  # Should be used with all log requests
 
     # Here you have to enter only the real data, falsifying the data would cause repercussions in netflix server logs
     # therefore since it is possible to exclude data, we avoid entering data that we do not have

@@ -13,13 +13,23 @@ from datetime import datetime, timedelta
 from functools import wraps
 from time import time
 
-from resources.lib.common import G
-from resources.lib.common.cache_utils import BUCKET_NAMES, BUCKETS
+from resources.lib.common import cache_utils
 from resources.lib.common.exceptions import (UnknownCacheBucketError, CacheMiss, DBSQLiteConnectionError,
                                              DBSQLiteError, DBProfilesMissing)
+from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 CONN_ISOLATION_LEVEL = None  # Autocommit mode
+
+# All the cache is automatically allocated by profile by using a prefix in the cache identifier
+# and the data remains in memory until the service will be stopped (if it is not specified as persistent)
+
+# The persistent cache option:
+# This option will enable to save/read the cache data in a database (see cache_management.py)
+# When a cache bucket is set as 'persistent', allow to the cache data to survive events that stop the netflix
+# service for example: update of add-on, restart of Kodi or change Kodi profile.
+# This option can be enabled for each individual bucket,
+# by set 'is_persistent' to True in the bucket variable (see cache_utils.py)
 
 
 def handle_connection(func):
@@ -60,6 +70,18 @@ class CacheManagement:
         self.ttl_values = {}
         self.load_ttl_values()
         self.pending_db_ops_add = []
+        # Todo: currently AddonSignals does not support serialization of objects
+        # # Slot allocation for IPC
+        # slots = [
+        #     self.get,
+        #     self.add,
+        #     self.delete,
+        #     self.clear
+        # ]
+        # for slot in slots:
+        #     # For AddonSignals IPC
+        #     enveloped_func = common.EnvelopeIPCReturnCall(slot).call
+        #     common.register_slot(enveloped_func, slot.__name__)
 
     def load_ttl_values(self):
         """Load the ttl values from add-on settings"""
@@ -124,22 +146,31 @@ class CacheManagement:
     def _get_cache_bucket(self, bucket_name):
         """Get the data contained to a cache bucket"""
         if bucket_name not in self.memory_cache:
-            if bucket_name not in BUCKET_NAMES:  # Verify only at the first time (something is wrong in source code)
+            if bucket_name not in cache_utils.BUCKET_NAMES:  # Verify only at the first time (something is wrong in source code)
                 raise UnknownCacheBucketError()
             self.memory_cache[bucket_name] = {}
         return self.memory_cache[bucket_name]
 
-    def get(self, bucket, identifier):
-        """Get a item from cache bucket"""
+    def get(self, bucket, identifier, deserialize_data=True):
+        """
+        Get a item from cache bucket
+        :param bucket: bucket where read the data
+        :param identifier: key identifier of the data
+        :param deserialize_data: Must be False ONLY when this method is called by IPC (common/cache.py)
+        :return: the data
+        :raise CacheMiss: if cache entry does not exist
+        """
         try:
             identifier = self._add_prefix(identifier)
             cache_entry = self._get_cache_bucket(bucket['name'])[identifier]
             if cache_entry['expires'] < int(time()):
                 # Cache expired
                 raise CacheMiss()
-            return cache_entry['data']
+            return cache_utils.deserialize_data(cache_entry['data']) if deserialize_data else cache_entry['data']
         except KeyError as exc:
             if bucket['is_persistent']:
+                if deserialize_data:
+                    return cache_utils.deserialize_data(self._get_db(bucket['name'], identifier))
                 return self._get_db(bucket['name'], identifier)
             raise CacheMiss from exc
         except DBProfilesMissing as exc:
@@ -166,7 +197,6 @@ class CacheManagement:
     def add(self, bucket, identifier, data, ttl=None, expires=None, delayed_db_op=False):
         """
         Add or update an item to a cache bucket
-
         :param bucket: bucket where save the data
         :param identifier: key identifier of the data
         :param data: the content
@@ -177,6 +207,7 @@ class CacheManagement:
                               (only for persistent buckets)
         """
         try:
+            data = cache_utils.serialize_data(data)
             identifier = self._add_prefix(identifier)
             if not expires:
                 if not ttl and bucket['default_ttl']:
@@ -227,7 +258,7 @@ class CacheManagement:
             except sql.Error as exc:
                 LOG.error('SQLite error {}:', exc.args[0])
 
-    def delete(self, bucket, identifier, including_suffixes):
+    def delete(self, bucket, identifier, including_suffixes=False):
         """
         Delete an item from cache bucket
 
@@ -306,7 +337,7 @@ class CacheManagement:
     def delete_expired(self):
         bucket_names_db = []
         timestamp = time()
-        for bucket in BUCKETS:
+        for bucket in cache_utils.BUCKETS:
             if bucket['is_persistent']:
                 bucket_names_db.append(bucket['name'])
             bucket_content = self._get_cache_bucket(bucket['name'])

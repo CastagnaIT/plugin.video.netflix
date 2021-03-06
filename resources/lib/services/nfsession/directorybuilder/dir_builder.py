@@ -22,7 +22,7 @@ class DirectoryBuilder(DirectoryPathRequests):
     """Prepare the data to build a directory"""
 
     def __init__(self, nfsession):
-        self.nfsession = nfsession
+        super().__init__(nfsession)
         # Slot allocation for IPC
         self.slots = [
             self.get_mainmenu,

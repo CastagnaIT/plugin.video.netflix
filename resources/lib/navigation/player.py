@@ -21,13 +21,8 @@ from resources.lib.utils.api_paths import EVENT_PATHS
 from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
-# Note: On SERVICE_URL_FORMAT with python 3, using 'localhost' slowdown the call (Windows OS is affected),
-# so the time that Kodi takes to start a video increases, (due to requests exchange between ISA and the add-on)
-# not sure if it is an urllib issue
-
-SERVICE_URL_FORMAT = 'http://127.0.0.1:{port}'
-MANIFEST_PATH_FORMAT = '/manifest?id={videoid}'
-LICENSE_PATH_FORMAT = '/license?id={videoid}'
+MANIFEST_PATH_FORMAT = common.IPC_ENDPOINT_MSL + '/get_manifest?videoid={}'
+LICENSE_PATH_FORMAT = common.IPC_ENDPOINT_MSL + '/get_license?videoid={}'
 
 INPUTSTREAM_SERVER_CERTIFICATE = (
     'Cr0CCAMSEOVEukALwQ8307Y2+LVP+0MYh/HPkwUijgIwggEKAoIBAQDm875btoWUbGqQD8eA'
@@ -136,9 +131,8 @@ def _play(videoid, is_played_from_strm=False):
 
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set for playback of the given video_id"""
-    service_url = SERVICE_URL_FORMAT.format(
-        port=G.LOCAL_DB.get_value('msl_service_port', 8000))
-    manifest_path = MANIFEST_PATH_FORMAT.format(videoid=videoid.value)
+    service_url = 'http://127.0.0.1:{}'.format(G.LOCAL_DB.get_value('nf_server_service_port'))
+    manifest_path = MANIFEST_PATH_FORMAT.format(videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/xml+dash')
@@ -162,7 +156,7 @@ def get_inputstream_listitem(videoid):
             value='mpd')
         list_item.setProperty(
             key=is_helper.inputstream_addon + '.license_key',
-            value=service_url + LICENSE_PATH_FORMAT.format(videoid=videoid.value) + '||b{SSM}!b{SID}|')
+            value=service_url + LICENSE_PATH_FORMAT.format(videoid.value) + '||b{SSM}!b{SID}|')
         list_item.setProperty(
             key=is_helper.inputstream_addon + '.server_certificate',
             value=INPUTSTREAM_SERVER_CERTIFICATE)

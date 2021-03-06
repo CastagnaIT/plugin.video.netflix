@@ -7,13 +7,18 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-import resources.lib.common as common
+from typing import TYPE_CHECKING
+
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.common.exceptions import InvalidVideoListTypeError
 from resources.lib.globals import G
-from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
+from resources.lib.services.nfsession.msl.msl_utils import EVENT_ENGAGE, EVENT_START, EVENT_STOP, EVENT_KEEP_ALIVE
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
+
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
+    from resources.lib.services.nfsession.msl.msl_handler import MSLHandler
 
 
 class AMVideoEvents(ActionManager):
@@ -21,8 +26,10 @@ class AMVideoEvents(ActionManager):
 
     SETTING_ID = 'ProgressManager_enabled'
 
-    def __init__(self):
+    def __init__(self, msl_handler: 'MSLHandler', directory_builder: 'DirectoryBuilder'):
         super().__init__()
+        self.msl_handler = msl_handler
+        self.directory_builder = directory_builder
         self.event_data = {}
         self.is_event_start_sent = False
         self.last_tick_count = 0
@@ -45,8 +52,8 @@ class AMVideoEvents(ActionManager):
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
         try:
-            videoid_exists, list_id = common.make_http_call('get_continuewatching_videoid_exists',
-                                                            {'video_id': str(self.videoid_parent.value)})
+            videoid_exists, list_id = self.directory_builder.get_continuewatching_videoid_exists(
+                str(self.videoid_parent.value))
             if not videoid_exists:
                 # Delete the cache of continueWatching list
                 G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
@@ -137,8 +144,6 @@ class AMVideoEvents(ActionManager):
             LOG.warn('AMVideoEvents: the event [{}] cannot be sent, missing player_state data', event_type)
             return
         event_data['allow_request_update_loco'] = self.allow_request_update_loco
-        common.send_signal(common.Signals.QUEUE_VIDEO_EVENT, {
-            'event_type': event_type,
-            'event_data': event_data,
-            'player_state': player_state
-        }, non_blocking=True)
+        self.msl_handler.events_handler_thread.add_event_to_queue(event_type,
+                                                                  event_data,
+                                                                  player_state)
