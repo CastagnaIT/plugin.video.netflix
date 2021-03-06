@@ -15,46 +15,22 @@ from resources.lib.utils.logging import LOG
 
 
 class NetflixService:
-    """
-    Netflix addon service
-    """
-    SERVERS = []
+    """Netflix addon service"""
     HOST_ADDRESS = '127.0.0.1'
 
     def __init__(self):
-        self.controller = None
         self.library_updater = None
+        self.nf_server_instance = None
+        self.nf_server_thread = None
 
     def init_servers(self):
-        """Initialize the http servers"""
+        """Initialize the HTTP server"""
         try:
             # Import modules here to intercept possible missing libraries on linux systems
-            from resources.lib.services.msl.http_server import MSLTCPServer
-            from resources.lib.services.nfsession.http_server import NetflixTCPServer
-            from resources.lib.services.cache.http_server import CacheTCPServer
-            # Do not change the init order of the servers,
-            # MSLTCPServer must always be initialized first to get the DRM info
-            self.SERVERS = [
-                {
-                    'name': 'MSL',
-                    'class': MSLTCPServer,
-                    'instance': None,
-                    'thread': None
-                }, {
-                    'name': 'NS',
-                    'class': NetflixTCPServer,
-                    'instance': None,
-                    'thread': None
-                }, {
-                    'name': 'CACHE',
-                    'class': CacheTCPServer,
-                    'instance': None,
-                    'thread': None
-                }
-            ]
-
-            for server in self.SERVERS:
-                self._init_server(server)
+            from resources.lib.services.http_server import NFThreadedTCPServer
+            self.nf_server_instance = NFThreadedTCPServer((self.HOST_ADDRESS, select_port('NF_SERVER')))
+            self.nf_server_instance.allow_reuse_address = True
+            self.nf_server_thread = threading.Thread(target=self.nf_server_instance.serve_forever)
             return True
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('Background services do not start due to the following error')
@@ -72,25 +48,14 @@ class NetflixService:
             self._set_service_status('error', message)
         return False
 
-    def _init_server(self, server):
-        server['class'].allow_reuse_address = True
-        server['instance'] = server['class'](
-            (self.HOST_ADDRESS, select_port(server['name']))
-        )
-        server['thread'] = threading.Thread(target=server['instance'].serve_forever)
-
     def start_services(self):
-        """
-        Start the background services
-        """
-        from resources.lib.services.playback.action_controller import ActionController
+        """Start the background services"""
         from resources.lib.services.library_updater import LibraryUpdateService
-        for server in self.SERVERS:
-            server['instance'].server_activate()
-            server['instance'].timeout = 1
-            server['thread'].start()
-            LOG.info('[{}] Thread started'.format(server['name']))
-        self.controller = ActionController()
+
+        self.nf_server_instance.server_activate()
+        self.nf_server_thread.start()
+        LOG.info('[{}] Thread started'.format('NF_SERVER'))
+
         self.library_updater = LibraryUpdateService()
         # We reset the value in case of any eventuality (add-on disabled, update, etc)
         WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = None
@@ -101,16 +66,13 @@ class NetflixService:
             show_notification(get_local_string(30110))
 
     def shutdown(self):
-        """
-        Stop the background services
-        """
+        """Stop the background services"""
         self._set_service_status('stopped')
-        for server in self.SERVERS:
-            server['instance'].shutdown()
-            server['instance'].server_close()
-            server['instance'] = None
-            server['thread'].join()
-            server['thread'] = None
+        self.nf_server_instance.shutdown()
+        self.nf_server_instance.server_close()
+        self.nf_server_instance = None
+        self.nf_server_thread.join()
+        self.nf_server_thread = None
         LOG.info('Stopped MSL Service')
 
     def run(self):
@@ -125,14 +87,13 @@ class NetflixService:
             show_addon_error_info(exc)
             return
 
-        while not self.controller.abortRequested():
+        while not G.SETTINGS_MONITOR.abortRequested():
             if self._tick_and_wait_for_abort():
                 break
         self.shutdown()
 
     def _tick_and_wait_for_abort(self):
         try:
-            self.controller.on_service_tick()
             self.library_updater.on_service_tick()
             G.CACHE_MANAGEMENT.on_service_tick()
         except Exception as exc:  # pylint: disable=broad-except
@@ -140,7 +101,7 @@ class NetflixService:
             from resources.lib.kodi.ui import show_notification
             LOG.error(traceback.format_exc())
             show_notification(': '.join((exc.__class__.__name__, str(exc))))
-        return self.controller.waitForAbort(1)
+        return G.SETTINGS_MONITOR.waitForAbort(1)
 
     def _set_service_status(self, status, message=None):
         """Save the service status to a Kodi property"""

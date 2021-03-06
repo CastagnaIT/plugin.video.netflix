@@ -7,8 +7,10 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import base64
 import json
 import time
+from typing import TYPE_CHECKING
 
 import xbmcaddon
 
@@ -24,6 +26,9 @@ from .events_handler import EventsHandler
 from .msl_requests import MSLRequests
 from .msl_utils import ENDPOINTS, display_error_info, MSL_DATA_FILENAME, create_req_params
 from .profiles import enabled_profiles
+
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
 
 class MSLHandler:
@@ -62,12 +67,10 @@ class MSLHandler:
                           'tVRcsnTRQATcogwCytXohKroBGvODIYcpVFsy2saOCyh4HTezzXJvgogx2f15ViyF5rDqho4YsW0z4it9TF'
                           'BT0OOLkk0fQ6a1LSqA49eN3RufKYq4LT+G+ffdgoDmKpIWS3bp7xQ6GeYtDAUh0D8Ipwc8aKzP2')
 
-    def __init__(self):
-        self._events_handler_thread = None
+    def __init__(self, nfsession: 'NFSessionOperations'):
+        self.nfsession = nfsession
+        self.events_handler_thread = None
         self._init_msl_handler()
-        common.register_slot(
-            signal=common.Signals.RELEASE_LICENSE,
-            callback=self.release_license)
         common.register_slot(
             signal=common.Signals.CLEAR_USER_ID_TOKENS,
             callback=self.clear_user_id_tokens)
@@ -77,11 +80,8 @@ class MSLHandler:
         common.register_slot(
             signal=common.Signals.SWITCH_EVENTS_HANDLER,
             callback=self.switch_events_handler)
-        # Register slot perform_key_handshake to IPC
-        func_name = self.msl_requests.perform_key_handshake.__name__
-        enveloped_func = common.EnvelopeIPCReturnCall(self.msl_requests.perform_key_handshake).call
-        self.http_ipc_slots[func_name] = enveloped_func  # HTTP IPC (http_server.py)
-        common.register_slot(enveloped_func, func_name)  # AddonSignals IPC
+        # Slot allocation for IPC
+        self.slots = [self.msl_requests.perform_key_handshake]
 
     def _init_msl_handler(self):
         self.msl_requests = None
@@ -90,7 +90,7 @@ class MSLHandler:
             LOG.info('Loaded MSL data from disk')
         except Exception:  # pylint: disable=broad-except
             msl_data = None
-        self.msl_requests = MSLRequests(msl_data)
+        self.msl_requests = MSLRequests(msl_data, self.nfsession)
         self.switch_events_handler()
 
     def reinitialize_msl_handler(self, data=None):  # pylint: disable=unused-argument
@@ -105,18 +105,17 @@ class MSLHandler:
 
     def switch_events_handler(self, data=None):
         """Switch to enable or disable the Events handler"""
-        if self._events_handler_thread:
-            self._events_handler_thread.stop_join()
-            self._events_handler_thread = None
+        if self.events_handler_thread:
+            self.events_handler_thread.stop_join()
+            self.events_handler_thread = None
         if G.ADDON.getSettingBool('ProgressManager_enabled') or data:
-            self._events_handler_thread = EventsHandler(self.msl_requests.chunked_request)
-            self._events_handler_thread.start()
+            self.events_handler_thread = EventsHandler(self.msl_requests.chunked_request, self.nfsession)
+            self.events_handler_thread.start()
 
     @display_error_info
-    @measure_exec_time_decorator(is_immediate=True)
-    def load_manifest(self, viewable_id):
+    def get_manifest(self, viewable_id):
         """
-        Loads the manifests for the given viewable_id and returns a mpd-XML-Manifest
+        Get the manifests for the given viewable_id and returns a mpd-XML-Manifest
 
         :param viewable_id: The id of of the viewable
         :return: MPD XML Manifest or False if no success
@@ -126,7 +125,7 @@ class MSLHandler:
             # When the add-on is installed from scratch or you logout the account the ESN will be empty
             if not esn:
                 esn = set_esn()
-            manifest = self._load_manifest(viewable_id, esn)
+            manifest = self._get_manifest(viewable_id, esn)
         except MSLError as exc:
             if 'Email or password is incorrect' in str(exc):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -139,7 +138,7 @@ class MSLHandler:
         return self.__tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def _load_manifest(self, viewable_id, esn):
+    def _get_manifest(self, viewable_id, esn):
         cache_identifier = esn + '_' + str(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
@@ -237,16 +236,16 @@ class MSLHandler:
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
-    def get_license(self, challenge, sid):
+    def get_license(self, license_data):
         """
         Requests and returns a license for the given challenge and sid
 
-        :param challenge: The base64 encoded challenge
-        :param sid: The sid paired to the challenge
+        :param license_data: The license data provided by isa
         :return: Base64 representation of the license key or False unsuccessful
         """
         LOG.debug('Requesting license')
-
+        challenge, sid = license_data.decode('utf-8').split('!')
+        sid = base64.standard_b64decode(sid).decode('utf-8')
         timestamp = int(time.time() * 10000)
         xid = str(timestamp + 1610)
         params = [{
@@ -280,7 +279,7 @@ class MSLHandler:
         if self.msl_requests.msl_switch_requested:
             self.msl_requests.msl_switch_requested = False
             self.bind_events()
-        return response[0]['licenseResponseBase64']
+        return base64.standard_b64decode(response[0]['licenseResponseBase64'])
 
     def bind_events(self):
         """Bind events"""
@@ -297,7 +296,7 @@ class MSLHandler:
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
-    def release_license(self, data=None):  # pylint: disable=unused-argument
+    def release_license(self):
         """Release the server license"""
         try:
             # When you try to play a video while another one is currently in playing,

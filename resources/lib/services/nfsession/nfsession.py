@@ -10,7 +10,9 @@
 import resources.lib.common as common
 from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
+from resources.lib.services.nfsession.msl.msl_handler import MSLHandler
 from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
+from resources.lib.services.playback.action_controller import ActionController
 from resources.lib.utils.logging import LOG
 
 
@@ -22,16 +24,20 @@ class NetflixSession:
     def __init__(self):
         # Create and establish the Netflix session
         self.nfsession = NFSessionOperations()
+        # Create MSL handler
+        self.msl_handler = MSLHandler(self.nfsession)
         # Initialize correlated features
         self.directory_builder = DirectoryBuilder(self.nfsession)
+        self.action_controller = ActionController(self.nfsession, self.msl_handler, self.directory_builder)
         # Register the functions to IPC
-        slots = self.nfsession.slots + self.directory_builder.slots + [self.library_auto_update]
+        slots = (self.nfsession.slots + self.msl_handler.slots +
+                 self.directory_builder.slots + [self.library_auto_update])
         for slot in slots:
             func_name = slot.__name__
-            enveloped_func = common.EnvelopeIPCReturnCall(slot).call
             # For HTTP IPC (http_server.py)
-            self.http_ipc_slots[func_name] = enveloped_func
+            self.http_ipc_slots[func_name] = slot
             # For AddonSignals IPC
+            enveloped_func = common.EnvelopeIPCReturnCall(slot).call
             common.register_slot(enveloped_func, func_name)
 
     def library_auto_update(self):

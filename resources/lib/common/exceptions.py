@@ -162,3 +162,7 @@ class ItemNotFound(Exception):
 
 class InputStreamHelperError(Exception):
     """An internal error has occurred to InputStream Helper add-on"""
+
+
+class SlotNotImplemented(Exception):
+    """IPC Slot not implemented"""

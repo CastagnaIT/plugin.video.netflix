@@ -12,34 +12,37 @@ import base64
 import json
 import time
 import zlib
+from typing import TYPE_CHECKING
 
 import requests.exceptions as req_exceptions
 
 import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
-from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-from resources.lib.services.msl.msl_utils import (generate_logblobs_params, ENDPOINTS,
-                                                  MSL_DATA_FILENAME, create_req_params)
-from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
+
+from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
+from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, create_req_params, generate_logblobs_params,
+                                                            MSL_DATA_FILENAME)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
+
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
 
 class MSLRequests(MSLRequestBuilder):
     """Provides methods to make MSL requests"""
 
-    def __init__(self, msl_data=None):
+    HTTP_HEADERS = {
+        'User-Agent': common.get_user_agent(),
+        'Content-Type': 'text/plain',
+        'Accept': '*/*',
+        'Host': 'www.netflix.com'
+    }
+
+    def __init__(self, msl_data, nfsession):
         super().__init__()
-        from requests import Session
-        self.session = Session()
-        enable_tcp_keep_alive(self.session)
-        self.session.headers.update({
-            'User-Agent': common.get_user_agent(),
-            'Content-Type': 'text/plain',
-            'Accept': '*/*',
-            'Host': 'www.netflix.com'
-        })
+        self.nfsession: 'NFSessionOperations' = nfsession
         self._load_msl_data(msl_data)
         self.msl_switch_requested = False
 
@@ -176,7 +179,9 @@ class MSLRequests(MSLRequestBuilder):
                     _endpoint = endpoint
                 LOG.debug('Executing POST request to {}', _endpoint)
                 start = time.perf_counter()
-                response = self.session.post(_endpoint, request_data, timeout=4)
+                response = self.nfsession.session.post(_endpoint, request_data,
+                                                       headers=self.HTTP_HEADERS,
+                                                       timeout=4)
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 break

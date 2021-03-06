@@ -198,7 +198,6 @@ class GlobalVariables:
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
-        self.CACHE = None
         self.CACHE_MANAGEMENT = None
         self.CACHE_TTL = None
         self.CACHE_MYLIST_TTL = None
@@ -252,12 +251,14 @@ class GlobalVariables:
             self.init_database()
             # Initialize the cache
             if self.IS_SERVICE:
-                from resources.lib.services.cache.cache_management import CacheManagement
+                from resources.lib.services.cache_management import CacheManagement
                 self.CACHE_MANAGEMENT = CacheManagement()
+                self.CACHE = self.CACHE_MANAGEMENT
                 from resources.lib.services.settings_monitor import SettingsMonitor
                 self.SETTINGS_MONITOR = SettingsMonitor()
-            from resources.lib.common.cache import Cache
-            self.CACHE = Cache()
+            else:
+                from resources.lib.common.cache import Cache
+                self.CACHE = Cache()
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
     def init_database(self):
