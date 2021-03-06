@@ -355,7 +355,7 @@ msgstr "瀏覽子類別"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "瀏覽相關的影片清單並發現更多內容。"
+msgstr "瀏覽相關的影片清單並探索更多內容。"
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
@@ -367,7 +367,7 @@ msgstr "搜尋內容並輕鬆找到想要觀看的內容。"
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "按類型瀏覽內容並輕鬆發現相關內容。"
+msgstr "按類型瀏覽內容並輕鬆探索相關內容。"
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
@@ -534,7 +534,7 @@ msgstr "暫存已清除"
 # Unused 30136
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "啟用VP9（如果導致假影請禁用）"
+msgstr "啟用VP9（如果導致假影請停用）"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -550,12 +550,12 @@ msgstr "匯入現有的資料庫"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "禁用啟動通知"
+msgstr "停用啟動通知"
 
 # Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "禁用WebVTT字幕支援"
+msgstr "停用WebVTT字幕支援"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -563,7 +563,7 @@ msgstr "最近新增"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr "發現最新新增的內容。"
+msgstr "探索最新新增的內容。"
 
 msgctxt "#30147"
 msgid "Next page »"
@@ -608,7 +608,7 @@ msgstr "設定已完成"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "運行套件程式設定引導"
+msgstr "執行套件程式設定精靈"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -749,7 +749,7 @@ msgstr "將所有資訊包含在NFO檔中（僅與“本地資訊”抓取器一
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr "將影片流解析度限制為"
+msgstr "將影片串流解析度限制為"
 
 msgctxt "#30195"
 msgid "Export new episodes"
@@ -838,7 +838,7 @@ msgstr "我的清單中標題顏色"
 # Unused 30216 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr "禁用同步完成通知"
+msgstr "停用同步完成通知"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -1035,7 +1035,7 @@ msgstr "根據地區代碼首選音訊/字幕語言（如果可用）"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr "默認選擇立體聲音軌"
+msgstr "預設選擇立體聲音軌"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
