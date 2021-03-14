@@ -26,7 +26,7 @@ msgstr "Netflix VOD服務套件"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
-msgstr "在您居住的國家使用此套件可能並不合法 - 請在安裝前與您當地的法律核對"
+msgstr "在您居住的國家使用此套件可能並不合法 - 請在安裝前與您當地的法律核對。"
 
 msgctxt "#30001"
 msgid "Recommendations"
@@ -169,7 +169,7 @@ msgstr "查看電影ID"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr "查看節目"
+msgstr "查看節目ID"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
@@ -189,7 +189,7 @@ msgstr "移除評分|我不喜歡|我喜歡"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "InputStream Adaptive套件程式或Widevine資料庫出現問題。可能遺失或未啟用，操作將被取消"
+msgstr "InputStream Adaptive套件程式或Widevine資料庫出現問題。可能遺失或未啟用，操作將被取消。"
 
 msgctxt "#30047"
 msgid "Library update in progress"
@@ -231,7 +231,7 @@ msgstr "刪除自動選擇"
 # Unused 30057, 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr "注意，您將更新許多標題{}。[CR]這可能會導致服務問題或帳戶暫時封禁。您想繼續嗎?"
+msgstr "注意，您將更新許多標題{}。[CR]這可能會導致服務問題或帳戶暫時封禁。[CR]您想繼續嗎？"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -355,11 +355,11 @@ msgstr "瀏覽子類別"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "瀏覽相關的影片清單並發現更多內容"
+msgstr "瀏覽相關的影片清單並探索更多內容。"
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "瀏覽和管理已匯出到Kodi資料庫的內容"
+msgstr "瀏覽和管理已匯出到Kodi資料庫的內容。"
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -367,7 +367,7 @@ msgstr "搜尋內容並輕鬆找到想要觀看的內容。"
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "按類型瀏覽內容並輕鬆發現相關內容。"
+msgstr "按類型瀏覽內容並輕鬆探索相關內容。"
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
@@ -484,7 +484,7 @@ msgstr "將我的清單同步到Kodi資料庫"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr "您想繼續嗎?完全同步將刪除所有以前匯出的標題。如果有很多標題，這個操作可能需要一些時間。"
+msgstr "您想繼續嗎？[CR]完全同步將刪除所有以前匯出的標題。[CR]如果有很多標題，這個操作可能需要一些時間。"
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -513,7 +513,7 @@ msgstr "啟用Up Next集成"
 # Unused 30130
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
-msgstr "檢查日誌檔以獲取詳細資訊”"
+msgstr "檢查日誌檔以獲取詳細資訊"
 
 msgctxt "#30132"
 msgid "Clear in-memory cache"
@@ -534,7 +534,7 @@ msgstr "暫存已清除"
 # Unused 30136
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "啟用VP9（如果導致假影請禁用）"
+msgstr "啟用VP9（如果導致假影請停用）"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -550,12 +550,12 @@ msgstr "匯入現有的資料庫"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "禁用啟動通知"
+msgstr "停用啟動通知"
 
 # Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "禁用WebVTT字幕支援"
+msgstr "停用WebVTT字幕支援"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -563,7 +563,7 @@ msgstr "最近新增"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr "發現最新新增的內容"
+msgstr "探索最新新增的內容。"
 
 msgctxt "#30147"
 msgid "Next page »"
@@ -608,7 +608,7 @@ msgstr "設定已完成"
 
 msgctxt "#30158"
 msgid "Run add-on configuration wizard"
-msgstr "運行套件程式設定引導"
+msgstr "執行套件程式設定精靈"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -632,7 +632,7 @@ msgstr "音訊描述"
 
 msgctxt "#30164"
 msgid "Browse contents with audio description."
-msgstr "瀏覽帶有音訊描述的內容"
+msgstr "瀏覽帶有音訊描述的內容。"
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
@@ -749,7 +749,7 @@ msgstr "將所有資訊包含在NFO檔中（僅與“本地資訊”抓取器一
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
-msgstr "將影片流解析度限制為"
+msgstr "將影片串流解析度限制為"
 
 msgctxt "#30195"
 msgid "Export new episodes"
@@ -797,7 +797,7 @@ msgstr "測試資料庫連接"
 
 msgctxt "#30206"
 msgid "ERROR: The MySQL-database is not reachable - the local database will be used"
-msgstr "錯誤：無法訪問MySQL資料庫-將使用本地資料庫"
+msgstr "錯誤：無法訪問MySQL資料庫 - 將使用本地資料庫"
 
 msgctxt "#30207"
 msgid "Set this device as main auto-updates manager"
@@ -838,7 +838,7 @@ msgstr "我的清單中標題顏色"
 # Unused 30216 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr "禁用同步完成通知"
+msgstr "停用同步完成通知"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -934,7 +934,7 @@ msgstr "刪除匯出到資料庫的內容"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
-msgstr "有{}標題無法導入，您是否要刪除這些內容"
+msgstr "有{}標題無法導入，[CR]您是否要刪除這些內容？"
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
@@ -1035,7 +1035,7 @@ msgstr "根據地區代碼首選音訊/字幕語言（如果可用）"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr "默認選擇立體聲音軌"
+msgstr "預設選擇立體聲音軌"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
@@ -1076,4 +1076,4 @@ msgstr "ESN格式錯誤"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr "您想要重設所有設定嗎?"
+msgstr "您想要重設所有設定嗎？"
