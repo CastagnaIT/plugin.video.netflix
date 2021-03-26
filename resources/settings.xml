@@ -965,7 +965,7 @@
                 </setting>
                 <setting id="enable_ipc_over_http" type="boolean" label="30139" help="">
                     <level>0</level>
-                    <default>false</default>
+                    <default>true</default>
                     <control type="toggle"/>
                 </setting>
                 <setting id="page_results" type="integer" label="30247" help="">
