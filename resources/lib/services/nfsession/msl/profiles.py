@@ -42,8 +42,8 @@ PROFILES = {
     'dolbysound': ['ddplus-2.0-dash', 'ddplus-5.1-dash', 'ddplus-5.1hq-dash', 'ddplus-atmos-dash'],
     'h264': ['playready-h264mpl30-dash', 'playready-h264mpl31-dash',
              'playready-h264mpl40-dash',
-             'playready-h264hpl30-dash', 'playready-h264hpl31-dash',
-             'playready-h264hpl40-dash'],
+             'playready-h264hpl22-dash', 'playready-h264hpl30-dash',
+             'playready-h264hpl31-dash', 'playready-h264hpl40-dash'],
     'hevc':
         _profile_strings(base=HEVC,
                          tails=[(BASE_LEVELS, CENC),
