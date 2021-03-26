@@ -7,11 +7,16 @@
 """
 import binascii
 import json
+import time
 
 xbmc = __import__('xbmc')
 xbmcaddon = __import__('xbmcaddon')
 
 RECEIVER = None
+
+
+class WaitTimeoutError(Exception):
+    pass
 
 
 def _getReceiver():
@@ -61,28 +66,34 @@ class SignalReceiver(xbmc.Monitor):
 
 
 class CallHandler:
-    def __init__(self, signal, data, source_id, timeout=1000):
+    def __init__(self, signal, data, source_id, timeout=1000, use_timeout_exception=False):
         self.signal = signal
         self.data = data
         self.timeout = timeout
         self.sourceID = source_id
         self._return = None
+        self.is_callback_received = False
+        self.use_timeout_exception = use_timeout_exception
         registerSlot(self.sourceID, '_return.{0}'.format(self.signal), self.callback)
         sendSignal(signal, data, self.sourceID)
 
     def callback(self, data):
         self._return = data
+        self.is_callback_received = True
 
     def waitForReturn(self):
-        waited = 0
-        while waited < self.timeout:
-            if self._return is not None:
+        monitor = xbmc.Monitor()
+        end_time = time.perf_counter() + (self.timeout / 1000)
+        while not self.is_callback_received:
+            if time.perf_counter() > end_time:
+                if self.use_timeout_exception:
+                    unRegisterSlot(self.sourceID, self.signal)
+                    raise WaitTimeoutError
                 break
-            xbmc.sleep(100)
-            waited += 100
-
+            if monitor.abortRequested():
+                raise OSError
+            xbmc.sleep(10)
         unRegisterSlot(self.sourceID, self.signal)
-
         return self._return
 
 
@@ -112,5 +123,5 @@ def returnCall(signal, data=None, source_id=None):
     sendSignal('_return.{0}'.format(signal), data, source_id)
 
 
-def makeCall(signal, data=None, source_id=None, timeout_ms=1000):
-    return CallHandler(signal, data, source_id, timeout_ms).waitForReturn()
+def makeCall(signal, data=None, source_id=None, timeout_ms=1000, use_timeout_exception=False):
+    return CallHandler(signal, data, source_id, timeout_ms, use_timeout_exception).waitForReturn()
