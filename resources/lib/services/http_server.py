@@ -7,13 +7,11 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-import json
 import pickle
 from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer, ThreadingMixIn
 from urllib.parse import urlparse, parse_qs
 
-from resources.lib import common
 from resources.lib.common import IPC_ENDPOINT_CACHE, IPC_ENDPOINT_NFSESSION, IPC_ENDPOINT_MSL
 from resources.lib.common.exceptions import InvalidPathError, CacheMiss, MetadataNotAvailable, SlotNotImplemented
 from resources.lib.globals import G
@@ -88,37 +86,37 @@ def handle_msl_request(server, func_name, data, params=None):
 
 
 def handle_request(server, handler, func_name, data):
+    server.send_response(200)
+    server.end_headers()
     try:
         try:
             func = handler.http_ipc_slots[func_name]
         except KeyError as exc:
             raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
         ret_data = _call_func(func, pickle.loads(data))
-        server.send_response(200)
-        server.end_headers()
-        if ret_data:
-            server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
     except Exception as exc:  # pylint: disable=broad-except
         if not isinstance(exc, (CacheMiss, MetadataNotAvailable)):
             LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
             LOG.error(traceback.format_exc())
-        server.send_error(500, json.dumps(common.ipc_convert_exc_to_json(exc)))
+        ret_data = exc
+    if ret_data:
+        server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
 
 
 def handle_cache_request(server, func_name, data):
+    server.send_response(200)
+    server.end_headers()
     try:
         ret_data = _call_instance_func(G.CACHE_MANAGEMENT, func_name, pickle.loads(data))
-        server.send_response(200)
-        server.end_headers()
-        if ret_data:
-            server.wfile.write(ret_data)
     except Exception as exc:  # pylint: disable=broad-except
         if not isinstance(exc, (CacheMiss, MetadataNotAvailable)):
             LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
             LOG.error(traceback.format_exc())
-        server.send_error(500, json.dumps(common.ipc_convert_exc_to_json(exc)))
+        ret_data = pickle.dumps(exc, protocol=pickle.HIGHEST_PROTOCOL)
+    if ret_data:
+        server.wfile.write(ret_data)
 
 
 def _call_instance_func(instance, func_name, data):

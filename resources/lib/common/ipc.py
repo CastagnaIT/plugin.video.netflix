@@ -7,8 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-import json
 import pickle
+from base64 import b64encode, b64decode
 
 import AddonSignals
 
@@ -18,7 +18,6 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .misc_utils import run_threaded
 
 IPC_TIMEOUT_SECS = 20
-IPC_EXCEPTION_PLACEHOLDER = 'IPC_EXCEPTION_PLACEHOLDER'
 
 # IPC via HTTP endpoints
 IPC_ENDPOINT_CACHE = '/cache'
@@ -92,14 +91,13 @@ def make_call(func_name, data=None, endpoint=IPC_ENDPOINT_NFSESSION):
     return make_addonsignals_call(func_name, data)
 
 
-# pylint: disable=inconsistent-return-statements
 def make_http_call(endpoint, func_name, data=None):
     """
     Make an IPC call via HTTP and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function.
     """
     from urllib.request import build_opener, install_opener, ProxyHandler, urlopen
-    from urllib.error import HTTPError, URLError
+    from urllib.error import URLError
     # Note: Using 'localhost' as address slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = 'http://127.0.0.1:{}{}/{}'.format(G.LOCAL_DB.get_value('nf_server_service_port'), endpoint, func_name)
     LOG.debug('Handling HTTP IPC call to {}'.format(url))
@@ -109,9 +107,14 @@ def make_http_call(endpoint, func_name, data=None):
                      data=pickle.dumps(data, protocol=pickle.HIGHEST_PROTOCOL),
                      timeout=IPC_TIMEOUT_SECS) as f:
             received_data = f.read()
-            return pickle.loads(received_data) if received_data else None
-    except HTTPError as exc:
-        _raise_exception(json.loads(exc.reason))
+            if received_data:
+                _data = pickle.loads(received_data)
+                if isinstance(_data, Exception):
+                    raise _data
+                return _data
+        return None
+    # except HTTPError as exc:
+    #     raise exc
     except URLError as exc:
         err_msg = str(exc)
         if '10049' in err_msg:
@@ -130,24 +133,16 @@ def make_addonsignals_call(callname, data):
         source_id=G.ADDON_ID,
         signal=callname,
         data=data,
-        timeout_ms=IPC_TIMEOUT_SECS * 1000)
-    if isinstance(result, dict) and IPC_EXCEPTION_PLACEHOLDER in result:
-        _raise_exception(result)
-    if result is None:
-        raise Exception('Addon Signals call timeout')
-    return result
-
-
-def _raise_exception(result):
-    """Raises an exception by converting it from the json format (done by ipc_convert_exc_to_json)"""
-    result = result[IPC_EXCEPTION_PLACEHOLDER]
-    if result['class'] in exceptions.__dict__:
-        raise exceptions.__dict__[result['class']](result['message'])
-    raise Exception(result['class'] + '\r\nError details:\r\n' + result.get('message', '--'))
+        timeout_ms=IPC_TIMEOUT_SECS * 1000,
+        use_timeout_exception=True)
+    _result = pickle.loads(b64decode(result))
+    if isinstance(_result, Exception):
+        raise _result
+    return _result
 
 
 class EnvelopeIPCReturnCall:
-    """Makes a function callable through IPC and handles catching, conversion and forwarding of exceptions"""
+    """Makes a function callable through AddonSignals IPC, handles catching, conversion and forwarding of exceptions"""
     # Defines a type of in-memory reference to avoids define functions in the source code just to handle IPC return call
     def __init__(self, func):
         self._func = func
@@ -161,34 +156,9 @@ class EnvelopeIPCReturnCall:
                 LOG.error('IPC callback raised exception: {exc}', exc=exc)
                 import traceback
                 LOG.error(traceback.format_exc())
-            result = ipc_convert_exc_to_json(exc)
-        return _execute_addonsignals_return_call(result, self._func.__name__)
-
-
-def ipc_convert_exc_to_json(exc=None, class_name=None, message=None):
-    """
-    Convert an exception to a json data exception
-    :param exc: exception class
-
-    or else, build a json data exception
-    :param class_name: custom class name
-    :param message: custom message
-    """
-    return {IPC_EXCEPTION_PLACEHOLDER: {
-        'class': class_name or exc.__class__.__name__,
-        'message': message or str(exc),
-    }}
-
-
-def _execute_addonsignals_return_call(result, func_name):
-    """If enabled execute AddonSignals return callback"""
-    if G.IPC_OVER_HTTP:
-        return result
-    # Do not return None or AddonSignals will keep waiting till timeout
-    if result is None:
-        result = {}
-    AddonSignals.returnCall(signal=func_name, source_id=G.ADDON_ID, data=result)
-    return result
+            result = exc
+        _result = b64encode(pickle.dumps(result, pickle.HIGHEST_PROTOCOL)).decode('ascii')
+        AddonSignals.returnCall(signal=self._func.__name__, source_id=G.ADDON_ID, data=_result)
 
 
 def _call(func, data):
