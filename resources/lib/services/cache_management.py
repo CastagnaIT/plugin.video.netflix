@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from time import time
 
+from resources.lib import common
 from resources.lib.common import cache_utils
 from resources.lib.common.exceptions import (UnknownCacheBucketError, CacheMiss, DBSQLiteConnectionError,
                                              DBSQLiteError, DBProfilesMissing)
@@ -70,18 +71,17 @@ class CacheManagement:
         self.ttl_values = {}
         self.load_ttl_values()
         self.pending_db_ops_add = []
-        # Todo: currently AddonSignals does not support serialization of objects
-        # # Slot allocation for IPC
-        # slots = [
-        #     self.get,
-        #     self.add,
-        #     self.delete,
-        #     self.clear
-        # ]
-        # for slot in slots:
-        #     # For AddonSignals IPC
-        #     enveloped_func = common.EnvelopeIPCReturnCall(slot).call
-        #     common.register_slot(enveloped_func, slot.__name__)
+        # Slot allocation for IPC
+        slots = [
+            self.get,
+            self.add,
+            self.delete,
+            self.clear
+        ]
+        for slot in slots:
+            # For AddonSignals IPC
+            enveloped_func = common.EnvelopeIPCReturnCall(slot).call
+            common.register_slot(enveloped_func, slot.__name__)
 
     def load_ttl_values(self):
         """Load the ttl values from add-on settings"""
@@ -151,12 +151,11 @@ class CacheManagement:
             self.memory_cache[bucket_name] = {}
         return self.memory_cache[bucket_name]
 
-    def get(self, bucket, identifier, deserialize_data=True):
+    def get(self, bucket, identifier):
         """
         Get a item from cache bucket
         :param bucket: bucket where read the data
         :param identifier: key identifier of the data
-        :param deserialize_data: Must be False ONLY when this method is called by IPC (common/cache.py)
         :return: the data
         :raise CacheMiss: if cache entry does not exist
         """
@@ -166,12 +165,10 @@ class CacheManagement:
             if cache_entry['expires'] < int(time()):
                 # Cache expired
                 raise CacheMiss()
-            return cache_utils.deserialize_data(cache_entry['data']) if deserialize_data else cache_entry['data']
+            return cache_utils.deserialize_data(cache_entry['data'])
         except KeyError as exc:
             if bucket['is_persistent']:
-                if deserialize_data:
-                    return cache_utils.deserialize_data(self._get_db(bucket['name'], identifier))
-                return self._get_db(bucket['name'], identifier)
+                return cache_utils.deserialize_data(self._get_db(bucket['name'], identifier))
             raise CacheMiss from exc
         except DBProfilesMissing as exc:
             # Raised by _add_prefix there is no active profile guid when add-on is installed from scratch

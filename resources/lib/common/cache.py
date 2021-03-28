@@ -7,7 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from resources.lib.common import make_http_call, IPC_ENDPOINT_CACHE
+from resources.lib.common import make_call, IPC_ENDPOINT_CACHE
 
 
 class Cache:
@@ -17,12 +17,9 @@ class Cache:
         """Get a item from cache bucket"""
         call_args = {
             'bucket': bucket,
-            'identifier': identifier,
-            'deserialize_data': False
+            'identifier': identifier
         }
-        # Todo: currently AddonSignals does not support serialization of objects
-        # return make_call('get', call_args, IPC_ENDPOINT_CACHE)
-        return make_http_call(IPC_ENDPOINT_CACHE, 'get', call_args)
+        return make_call('get', call_args, IPC_ENDPOINT_CACHE)
 
     def add(self, bucket, identifier, data, ttl=None, expires=None, delayed_db_op=False):
         """
@@ -45,8 +42,7 @@ class Cache:
             'expires': expires,
             'delayed_db_op': delayed_db_op
         }
-        # make_call('add', call_args, IPC_ENDPOINT_CACHE)
-        make_http_call(IPC_ENDPOINT_CACHE, 'add', call_args)
+        make_call('add', call_args, IPC_ENDPOINT_CACHE)
 
     def delete(self, bucket, identifier, including_suffixes=False):
         """
@@ -59,8 +55,7 @@ class Cache:
             'identifier': identifier,
             'including_suffixes': including_suffixes
         }
-        # make_call('delete', call_args, IPC_ENDPOINT_CACHE)
-        make_http_call(IPC_ENDPOINT_CACHE, 'delete', call_args)
+        make_call('delete', call_args, IPC_ENDPOINT_CACHE)
 
     def clear(self, buckets=None, clear_database=True):
         """
@@ -73,5 +68,4 @@ class Cache:
             'buckets': buckets,
             'clear_database': clear_database
         }
-        # make_call('clear', call_args, IPC_ENDPOINT_CACHE)
-        make_http_call(IPC_ENDPOINT_CACHE, 'clear', call_args)
+        make_call('clear', call_args, IPC_ENDPOINT_CACHE)

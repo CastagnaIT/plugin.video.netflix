@@ -114,9 +114,9 @@ def handle_cache_request(server, func_name, data):
             LOG.error('IPC callback raised exception: {exc}', exc=exc)
             import traceback
             LOG.error(traceback.format_exc())
-        ret_data = pickle.dumps(exc, protocol=pickle.HIGHEST_PROTOCOL)
+        ret_data = exc
     if ret_data:
-        server.wfile.write(ret_data)
+        server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
 
 
 def _call_instance_func(instance, func_name, data):
