@@ -14,7 +14,7 @@ import resources.lib.kodi.library_utils as lib_utils
 import resources.lib.kodi.ui as ui
 from resources.lib.database.db_utils import TABLE_MENU_DATA
 from resources.lib.globals import G
-from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, custom_viewmode,
+from resources.lib.navigation.directory_utils import (finalize_directory, custom_viewmode,
                                                       end_of_directory, get_title, activate_profile, auto_scroll)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
@@ -68,20 +68,20 @@ class Directory:
                     self.params['switch_profile_guid'] = autoselect_profile_guid
                 self.home(None)
                 return
-        list_data, extra_data = common.make_call('get_profiles', {'request_update': False})
-        self._profiles(list_data, extra_data)
+        dir_items, extra_data = common.make_call('get_profiles', {'request_update': False})
+        self._profiles(dir_items, extra_data)
 
     def profiles(self, pathitems=None):  # pylint: disable=unused-argument
         """Show profiles listing"""
         LOG.debug('Showing profiles listing')
-        list_data, extra_data = common.make_call('get_profiles', {'request_update': True})
-        self._profiles(list_data, extra_data)
+        dir_items, extra_data = common.make_call('get_profiles', {'request_update': True})
+        self._profiles(dir_items, extra_data)
 
     @custom_viewmode(G.VIEW_PROFILES)
-    def _profiles(self, list_data, extra_data):  # pylint: disable=unused-argument
+    def _profiles(self, dir_items, extra_data):  # pylint: disable=unused-argument
         # The standard kodi theme does not allow to change view type if the content is "files" type,
         # so here we use "images" type, visually better to see
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_IMAGES)
+        finalize_directory(dir_items, G.CONTENT_IMAGES)
         end_of_directory(True)
 
     @measure_exec_time_decorator()
@@ -99,8 +99,8 @@ class Directory:
                 xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
                 return
         LOG.debug('Showing home listing')
-        list_data, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
+        dir_items, extra_data = common.make_call('get_mainmenu')  # pylint: disable=unused-variable
+        finalize_directory(dir_items, G.CONTENT_FOLDER,
                            title=(G.LOCAL_DB.get_profile_config('profileName', '???') +
                                   ' - ' + common.get_local_string(30097)))
         end_of_directory(True)
@@ -120,18 +120,18 @@ class Directory:
             'tvshowid_dict': videoid.to_dict(),
             'perpetual_range_start': self.perpetual_range_start,
         }
-        list_data, extra_data = common.make_call('get_seasons', call_args)
-        if len(list_data) == 1:
+        dir_items, extra_data = common.make_call('get_seasons', call_args)
+        if len(dir_items) == 1:
             # If there is only one season, load and show the episodes now
-            pathitems = list_data[0]['url'].replace(G.BASE_URL, '').strip('/').split('/')[1:]
+            pathitems = dir_items[0][0].replace(G.BASE_URL, '').strip('/').split('/')[1:]
             videoid = common.VideoId.from_path(pathitems)
             self._episodes(videoid, pathitems)
             return
-        self._seasons_directory(list_data, extra_data)
+        self._seasons_directory(dir_items, extra_data)
 
     @custom_viewmode(G.VIEW_SEASON)
-    def _seasons_directory(self, list_data, extra_data):
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_SEASON, 'sort_only_label',
+    def _seasons_directory(self, dir_items, extra_data):
+        finalize_directory(dir_items, G.CONTENT_SEASON, 'sort_only_label',
                            title=extra_data.get('title', ''))
         end_of_directory(self.dir_update_listing)
 
@@ -143,12 +143,11 @@ class Directory:
             'seasonid_dict': videoid.to_dict(),
             'perpetual_range_start': self.perpetual_range_start,
         }
-        list_data, extra_data = common.make_call('get_episodes', call_args)
-
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_EPISODE, 'sort_episodes',
+        dir_items, extra_data = common.make_call('get_episodes', call_args)
+        finalize_directory(dir_items, G.CONTENT_EPISODE, 'sort_episodes',
                            title=extra_data.get('title', ''))
         end_of_directory(self.dir_update_listing)
-        auto_scroll(list_data)
+        auto_scroll(dir_items)
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_SHOW)
@@ -162,9 +161,9 @@ class Directory:
             'menu_data': menu_data,
             'is_dynamic_id': not G.is_known_menu_context(pathitems[2])
         }
-        list_data, extra_data = common.make_call('get_video_list', call_args)
+        dir_items, extra_data = common.make_call('get_video_list', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(False)
         return menu_data.get('view')
@@ -183,16 +182,15 @@ class Directory:
             'perpetual_range_start': self.perpetual_range_start,
             'is_dynamic_id': not G.is_known_menu_context(pathitems[2])
         }
-        list_data, extra_data = common.make_call('get_video_list_sorted', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_sorted', call_args)
         sort_type = 'sort_nothing'
         if menu_data['path'][1] == 'myList' and int(G.ADDON.getSettingInt('menu_sortorder_mylist')) == 0:
             # At the moment it is not possible to make a query with results sorted for the 'mylist',
             # so we adding the sort order of kodi
             sort_type = 'sort_label_ignore_folders'
 
-        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data), sort_type=sort_type)
-
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
 
@@ -206,9 +204,9 @@ class Directory:
             'genre_id': None,
             'force_use_videolist_id': True,
         }
-        list_data, extra_data = common.make_call('get_genres', call_args)
+        dir_items, extra_data = common.make_call('get_genres', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
+        finalize_directory(dir_items, G.CONTENT_FOLDER,
                            title=get_title(menu_data, extra_data), sort_type='sort_label')
         end_of_directory(False)
         return menu_data.get('view')
@@ -225,9 +223,9 @@ class Directory:
             'video_id_dict': loads(self.params['video_id_dict']),
             'supplemental_type': self.params['supplemental_type']
         }
-        list_data, extra_data = common.make_call('get_video_list_supplemental', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_supplemental', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')
@@ -245,9 +243,9 @@ class Directory:
             'genre_id': None if len(pathitems) < 3 else int(pathitems[2]),
             'force_use_videolist_id': False,
         }
-        list_data, extra_data = common.make_call('get_genres', call_args)
+        dir_items, extra_data = common.make_call('get_genres', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER,
+        finalize_directory(dir_items, G.CONTENT_FOLDER,
                            title=get_title(menu_data, extra_data), sort_type='sort_label')
         end_of_directory(False)
         return menu_data.get('view')
@@ -260,9 +258,9 @@ class Directory:
             'menu_data': menu_data,
             'genre_id': pathitems[2]
         }
-        list_data, extra_data = common.make_call('get_subgenres', call_args)
+        dir_items, extra_data = common.make_call('get_subgenres', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data),
                            sort_type='sort_label')
         end_of_directory(False)
@@ -291,9 +289,9 @@ class Directory:
             'chunked_video_list': chunked_video_list,
             'perpetual_range_selector': perpetual_range_selector
         }
-        list_data, extra_data = common.make_call('get_video_list_chunked', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_chunked', call_args)
 
-        finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                            title=get_title(menu_data, extra_data))
         end_of_directory(self.dir_update_listing)
         return menu_data.get('view')

@@ -123,7 +123,7 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
         title = title_prefix + ' - ' + title
     # Get profiles data
     # pylint: disable=unused-variable
-    list_data, extra_data = make_call('get_profiles',
+    dir_items, extra_data = make_call('get_profiles',
                                       {'request_update': True,
                                        'preselect_guid': preselect_guid,
                                        'detailed_info': False})
@@ -132,7 +132,7 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
                              Profiles,
                              'plugin-video-netflix-Profiles.xml',
                              title=title,
-                             list_data=list_data,
+                             dir_items=dir_items,
                              preselect_guid=preselect_guid)
 
 

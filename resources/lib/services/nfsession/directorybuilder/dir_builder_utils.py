@@ -10,6 +10,7 @@
 import os
 
 import resources.lib.common as common
+from resources.lib.common.kodi_wrappers import ListItemW
 from resources.lib.globals import G
 
 
@@ -22,24 +23,20 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
         if 'previous_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('previous_start'),
                       'sub_genre_id': sub_genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
-            previous_page_item = {
-                'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
-                'label': common.get_local_string(30148),
-                'art': {'thumb': _get_custom_thumb_path('FolderPagePrevious.png')},
-                'is_folder': True,
-                'properties': {'specialsort': 'top'}  # Force an item to stay on top (not documented in Kodi)
-            }
-            directory_items.insert(0, previous_page_item)
+            previous_page_item = ListItemW(label=common.get_local_string(30148))
+            previous_page_item.setProperty('specialsort', 'top')  # Force an item to stay on top
+            previous_page_item.setArt({'thumb': _get_custom_thumb_path('FolderPagePrevious.png')})
+            directory_items.insert(0, (common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
+                                       previous_page_item,
+                                       True))
         if 'next_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
-            next_page_item = {
-                'url': common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
-                'label': common.get_local_string(30147),
-                'art': {'thumb': _get_custom_thumb_path('FolderPageNext.png')},
-                'is_folder': True,
-                'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
-            }
-            directory_items.append(next_page_item)
+            next_page_item = ListItemW(label=common.get_local_string(30147))
+            next_page_item.setProperty('specialsort', 'bottom')  # Force an item to stay on bottom
+            next_page_item.setArt({'thumb': _get_custom_thumb_path('FolderPageNext.png')})
+            directory_items.append((common.build_url(pathitems=pathitems, params=params, mode=G.MODE_DIRECTORY),
+                                    next_page_item,
+                                    True))
 
 
 def get_param_watched_status_by_profile():

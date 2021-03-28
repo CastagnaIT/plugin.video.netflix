@@ -8,10 +8,11 @@
     See LICENSES/MIT.md for more information.
 """
 import resources.lib.common as common
+from resources.lib.common.kodi_wrappers import ListItemW
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
 from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
-from resources.lib.kodi.infolabels import get_color_name, add_info_dict_item, set_watched_status
+from resources.lib.kodi.infolabels import get_color_name, set_watched_status, add_info_list_item
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page,
                                                                                  get_availability_message)
@@ -19,12 +20,11 @@ from resources.lib.utils.logging import measure_exec_time_decorator
 
 
 # This module convert a DataType object like VideoListSorted (that contains a list of items videos, items, etc)
-# in a list of dict items very similar to xbmcgui.ListItem, that the client-frontend will convert into real ListItem's
-# (because currently the xbmcgui.ListItem object is not serializable)
-# The dict keys are managed from the method '_convert_list' of listings.py
+#   in a list of ListItemW items (a wrapper of the real xbmcgui.ListItem).
 
-# All build methods should return same tuple data ('directory items', 'extra data dict')
-# common_data dict is used to avoid cpu overload in consecutive accesses to other resources improve a lot the execution
+# All build methods should return same tuple data ('directory items', 'extra data dict'),
+#  all the 'directory_items' variables stand for the items to put in to xbmcplugin.addDirectoryItems
+# 'common_data' dict is used to avoid cpu overload for multiple accesses to other resources improve a lot the execution
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -44,30 +44,25 @@ def build_mainmenu_listing(loco_list):
             if not list_id:
                 continue
             menu_title = video_list['displayName']
-            dict_item = _create_videolist_item(list_id, video_list, data, common_data, static_lists=True)
+            directory_item = _create_videolist_item(list_id, video_list, data, common_data, static_lists=True)
+            directory_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+            directory_items.append(directory_item)
         else:
             menu_title = common.get_local_string(data['label_id']) if data.get('label_id') else 'Missing menu title'
             menu_description = (common.get_local_string(data['description_id'])
                                 if data['description_id'] is not None
                                 else '')
-            dict_item = {
-                'url': common.build_url(data['path'], mode=G.MODE_DIRECTORY),
-                'label': menu_title,
-                'art': {'icon': data['icon']},
-                'info': {'plot': menu_description},  # The description
-                'is_folder': True
-            }
-        dict_item['menu_items'] = generate_context_menu_mainmenu(menu_id)
-        directory_items.append(dict_item)
+            list_item = ListItemW(label=menu_title)
+            list_item.setArt({'icon': data['icon']})
+            list_item.setInfo('video', {'plot': menu_description})
+            list_item.addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+            directory_items.append((common.build_url(data['path'], mode=G.MODE_DIRECTORY), list_item, True))
         # Save the menu titles, to reuse it when will be open the content of menus
         G.LOCAL_DB.set_value(menu_id, {'title': menu_title}, TABLE_MENU_DATA)
-    # Add profiles menu
-    directory_items.append({
-        'url': common.build_url(['profiles'], mode=G.MODE_DIRECTORY),
-        'label': common.get_local_string(13200),  # "Profiles"
-        'art': {'icon': 'DefaultUser.png'},
-        'is_folder': True
-    })
+    # Add "Profiles" menu
+    pfl_list_item = ListItemW(label=common.get_local_string(13200))
+    pfl_list_item.setArt({'icon': 'DefaultUser.png'})
+    directory_items.append((common.build_url(['profiles'], mode=G.MODE_DIRECTORY), pfl_list_item, True))
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
@@ -89,7 +84,6 @@ def build_profiles_listing(preselect_guid=None, detailed_info=True):
 
 def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_playback, detailed_info):
     profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
-
     profile_attributes = []
     if G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
         profile_attributes.append('[COLOR red]' + common.get_local_string(20068) + '[/COLOR]')
@@ -108,19 +102,18 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_pl
         menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback)
     else:
         menu_items = []
-    dict_item = {
-        'label': profile_name,
-        'properties': {'nf_guid': profile_guid, 'nf_description': description.replace('[CR]', ' - ')},
-        'art': {'icon': G.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)},
-        'info': {'plot': description},  # The description
-        'is_selected': is_selected,
-        'menu_items': menu_items,
-        'url': common.build_url(pathitems=['home'],
-                                params={'switch_profile_guid': profile_guid},
-                                mode=G.MODE_DIRECTORY),
-        'is_folder': True
-    }
-    return dict_item
+    list_item = ListItemW(label=profile_name)
+    list_item.setProperties({
+        'nf_guid': profile_guid,
+        'nf_description': description.replace('[CR]', ' - ')
+    })
+    list_item.setArt({'icon': G.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)})
+    list_item.setInfo('video', {'plot': description})
+    list_item.select(is_selected)
+    list_item.addContextMenuItems(menu_items)
+    return (common.build_url(pathitems=['home'], params={'switch_profile_guid': profile_guid}, mode=G.MODE_DIRECTORY),
+            list_item,
+            True)
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -131,8 +124,7 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
     }
     directory_items = [_create_season_item(tvshowid, seasonid_value, season, season_list, common_data)
-                       for seasonid_value, season
-                       in season_list.seasons.items()]
+                       for seasonid_value, season in season_list.seasons.items()]
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
@@ -141,18 +133,12 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
 
 def _create_season_item(tvshowid, seasonid_value, season, season_list, common_data):
     seasonid = tvshowid.derive_season(seasonid_value)
-    dict_item = {
-        'video_id': seasonid_value,
-        'media_type': seasonid.mediatype,
-        'label': season['summary']['name'],
-        'is_folder': True,
-        'properties': {'nf_videoid': seasonid.to_string()}
-    }
-    add_info_dict_item(dict_item, seasonid, season, season_list.data, False, common_data,
+    list_item = ListItemW(label=season['summary']['name'])
+    list_item.setProperty('nf_videoid', seasonid.to_string())
+    add_info_list_item(list_item, seasonid, season, season_list.data, False, common_data,
                        art_item=season_list.artitem)
-    dict_item['url'] = common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY)
-    dict_item['menu_items'] = generate_context_menu_items(seasonid, False, None)
-    return dict_item
+    list_item.addContextMenuItems(generate_context_menu_items(seasonid, False, None))
+    return common.build_url(videoid=seasonid, mode=G.MODE_DIRECTORY), list_item, True
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -177,21 +163,21 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
 def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data):
     is_playable = episode['summary']['isPlayable']
     episodeid = seasonid.derive_episode(episodeid_value)
-    dict_item = {'video_id': episodeid_value,
-                 'media_type': episodeid.mediatype if is_playable else None,
-                 'label': episode['title'],
-                 'is_folder': False,
-                 'properties': {'nf_videoid': episodeid.to_string()}}
-    add_info_dict_item(dict_item, episodeid, episode, episodes_list.data, False, common_data)
-    set_watched_status(dict_item, episode, common_data)
+    list_item = ListItemW(label=episode['title'])
+    list_item.setProperties({
+        'isPlayable': 'true' if is_playable else 'false',
+        'nf_videoid': episodeid.to_string()
+    })
+    add_info_list_item(list_item, episodeid, episode, episodes_list.data, False, common_data)
+    set_watched_status(list_item, episode, common_data)
     if is_playable:
-        dict_item['url'] = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
-        dict_item['menu_items'] = generate_context_menu_items(episodeid, False, None)
+        url = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])
+        list_item.addContextMenuItems(generate_context_menu_items(episodeid, False, None))
     else:
         # The video is not playable, try check if there is a date
-        dict_item['properties']['nf_availability_message'] = get_availability_message(episode)
-        dict_item['url'] = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
-    return dict_item
+        list_item.setProperty('nf_availability_message', get_availability_message(episode))
+        url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
+    return url, list_item, False
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -249,17 +235,13 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
         else:
             path = 'video_list_sorted'
         pathitems = [path, menu_data['path'][1], list_id]
-    dict_item = {'label': video_list['displayName'],
-                 'is_folder': True}
-    add_info_dict_item(dict_item, video_list.videoid, video_list, video_list.data, False, common_data,
+    list_item = ListItemW(label=video_list['displayName'])
+    add_info_list_item(list_item, video_list.videoid, video_list, video_list.data, False, common_data,
                        art_item=video_list.artitem)
     # Add possibility to browse the sub-genres (see build_video_listing)
     sub_genre_id = video_list.get('genreId')
     params = {'sub_genre_id': str(sub_genre_id)} if sub_genre_id else None
-    dict_item['url'] = common.build_url(pathitems,
-                                        params=params,
-                                        mode=G.MODE_DIRECTORY)
-    return dict_item
+    return common.build_url(pathitems, params=params, mode=G.MODE_DIRECTORY), list_item, True
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -294,45 +276,45 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
         G.LOCAL_DB.set_value(menu_id, sub_menu_data, TABLE_MENU_DATA)
         # Create the folder for the access to sub-genre
-        folder_dict_item = {
-            'url': common.build_url(['genres', menu_id, sub_genre_id], mode=G.MODE_DIRECTORY),
-            'label': common.get_local_string(30089),
-            'art': {'icon': 'DefaultVideoPlaylists.png'},
-            'info': {'plot': common.get_local_string(30088)},  # The description
-            'is_folder': True
-        }
-        directory_items.insert(0, folder_dict_item)
+        folder_list_item = ListItemW(label=common.get_local_string(30089))
+        folder_list_item.setArt({'icon': 'DefaultVideoPlaylists.png'})
+        folder_list_item.setInfo('video', {'plot': common.get_local_string(30088)})  # The description
+        directory_items.insert(0, (common.build_url(['genres', menu_id, sub_genre_id], mode=G.MODE_DIRECTORY),
+                                   folder_list_item,
+                                   True))
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
 
-def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):
+def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):  # pylint: disable=unused-argument
     is_playable = video['availability']['isPlayable']
     videoid = common.VideoId.from_videolist_item(video)
     is_folder = videoid.mediatype == common.VideoId.SHOW
     is_in_mylist = videoid in common_data['mylist_items']
-    dict_item = {'video_id': videoid_value,
-                 'media_type': videoid.mediatype if is_playable else None,
-                 'label': video['title'],
-                 'is_folder': is_folder,
-                 'properties': {'nf_videoid': videoid.to_string(),
-                                'nf_is_in_mylist': str(is_in_mylist),
-                                'nf_perpetual_range_start': perpetual_range_start}}
-    add_info_dict_item(dict_item, videoid, video, video_list.data, is_in_mylist, common_data)
-    set_watched_status(dict_item, video, common_data)
+
+    list_item = ListItemW(label=video['title'])
+    list_item.setProperties({
+        'isPlayable': str(not is_folder and is_playable),
+        'nf_videoid': videoid.to_string(),
+        'nf_is_in_mylist': str(is_in_mylist),
+        'nf_perpetual_range_start': str(perpetual_range_start)
+    })
+    add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data)
+    if not is_folder:
+        set_watched_status(list_item, video, common_data)
     if is_playable:
-        dict_item['url'] = common.build_url(videoid=videoid,
-                                            mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
-                                            params=None if is_folder else common_data['params'])
-        dict_item['menu_items'] = generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
-                                                              common_data['ctxmenu_remove_watched_status'])
+        url = common.build_url(videoid=videoid,
+                               mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
+                               params=None if is_folder else common_data['params'])
+        list_item.addContextMenuItems(generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
+                                                                  common_data['ctxmenu_remove_watched_status']))
     else:
         # The video is not playable, try check if there is a date
-        dict_item['properties']['nf_availability_message'] = get_availability_message(video)
-        dict_item['url'] = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
-    return dict_item
+        list_item.setProperty('nf_availability_message', get_availability_message(video))
+        url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
+    return url, list_item, is_folder
 
 
 @measure_exec_time_decorator(is_immediate=True)
@@ -358,9 +340,5 @@ def build_subgenres_listing(subgenre_list, menu_data):
 
 def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
-    dict_item = {
-        'url': common.build_url(pathitems, mode=G.MODE_DIRECTORY),
-        'is_folder': True,
-        'label': subgenre_data['name']
-    }
-    return dict_item
+    list_item = ListItemW(label=subgenre_data['name'])
+    return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True

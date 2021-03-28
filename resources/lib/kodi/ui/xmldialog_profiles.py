@@ -22,7 +22,7 @@ class Profiles(xbmcgui.WindowXMLDialog):
         self.ctrl_list = None
         self.return_value = None
         self.title = kwargs['title']
-        self.list_data = kwargs['list_data']
+        self.dir_items = kwargs['dir_items']
         self.preselect_guid = kwargs.get('preselect_guid')
         self.action_exit_keys_id = [ACTION_PREVIOUS_MENU,
                                     ACTION_PLAYER_STOP,
@@ -30,15 +30,16 @@ class Profiles(xbmcgui.WindowXMLDialog):
         super().__init__(*args)
 
     def onInit(self):
+        # Keep only the ListItem objects
+        list_items = [list_item for (_, list_item, _) in self.dir_items]
         self.getControl(99).setLabel(self.title)
         self.ctrl_list = self.getControl(10001)
-        from resources.lib.navigation.directory_utils import convert_list_to_list_items
-        self.ctrl_list.addItems(convert_list_to_list_items(self.list_data))
+        self.ctrl_list.addItems(list_items)
         # Preselect the ListItem by guid
         self.ctrl_list.selectItem(0)
         if self.preselect_guid:
-            for index, profile_data in enumerate(self.list_data):
-                if profile_data['properties']['nf_guid'] == self.preselect_guid:
+            for index, list_item in enumerate(list_items):
+                if list_item.getProperty('nf_guid') == self.preselect_guid:
                     self.ctrl_list.selectItem(index)
                     break
         self.setFocusId(10001)

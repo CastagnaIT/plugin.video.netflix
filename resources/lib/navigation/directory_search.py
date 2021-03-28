@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import xbmcgui
 import xbmcplugin
 
 import resources.lib.utils.api_requests as api
@@ -14,7 +15,7 @@ from resources.lib import common
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.kodi.context_menu import generate_context_menu_searchitem
-from resources.lib.navigation.directory_utils import (finalize_directory, convert_list_to_dir_items, end_of_directory,
+from resources.lib.navigation.directory_utils import (finalize_directory, end_of_directory,
                                                       custom_viewmode, get_title)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
@@ -54,13 +55,13 @@ def route_search_nav(pathitems, perpetual_range_start, dir_update_listing, param
 
 def search_list(dir_update_listing=False):
     """Show the list of search item (main directory)"""
-    list_data = [_create_dictitem_from_row(row) for row in G.LOCAL_DB.get_search_list()]
-    list_data.insert(0, _get_dictitem_add())
-    list_data.append(_get_dictitem_clear())
+    dir_items = [_create_diritem_from_row(row) for row in G.LOCAL_DB.get_search_list()]
+    dir_items.insert(0, _get_diritem_add())
+    dir_items.append(_get_diritem_clear())
     sort_type = 'sort_nothing'
     if G.ADDON.getSettingInt('menu_sortorder_search_history') == 1:
         sort_type = 'sort_label_ignore_folders'
-    finalize_directory(convert_list_to_dir_items(list_data), G.CONTENT_FOLDER, sort_type,
+    finalize_directory(dir_items, G.CONTENT_FOLDER, sort_type,
                        common.get_local_string(30400))
     end_of_directory(dir_update_listing)
 
@@ -178,7 +179,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start
         }
-        list_data, extra_data = common.make_call('get_video_list_search', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_search', call_args)
     elif search_type == 'audio_lang':
         call_args = {
             'menu_data': menu_data,
@@ -187,7 +188,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'context_name': 'spokenAudio',
             'context_id': common.convert_from_string(search_item['Parameters'], dict)['lang_code']
         }
-        list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'subtitles_lang':
         call_args = {
             'menu_data': menu_data,
@@ -196,7 +197,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'context_name': 'subtitles',
             'context_id': common.convert_from_string(search_item['Parameters'], dict)['lang_code']
         }
-        list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'genre_id':
         call_args = {
             'menu_data': menu_data,
@@ -205,56 +206,47 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'context_name': 'genres',
             'context_id': common.convert_from_string(search_item['Parameters'], dict)['genre_id']
         }
-        list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
+        dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     else:
         raise NotImplementedError('Search type {} not implemented'.format(search_type))
     # Show the results
-    if not list_data:
+    if not dir_items:
         ui.show_notification(common.get_local_string(30407))
         return False
-    _search_results_directory(search_item['Value'], menu_data, list_data, extra_data, dir_update_listing)
+    _search_results_directory(search_item['Value'], menu_data, dir_items, extra_data, dir_update_listing)
     return True
 
 
 @custom_viewmode(G.VIEW_SHOW)
-def _search_results_directory(search_value, menu_data, list_data, extra_data, dir_update_listing):
+def _search_results_directory(search_value, menu_data, dir_items, extra_data, dir_update_listing):
     extra_data['title'] = common.get_local_string(30400) + ' - ' + search_value
-    finalize_directory(convert_list_to_dir_items(list_data), menu_data.get('content_type', G.CONTENT_SHOW),
+    finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                        title=get_title(menu_data, extra_data))
     end_of_directory(dir_update_listing)
     return menu_data.get('view')
 
 
-def _get_dictitem_add():
-    """The "add" menu item"""
-    return {
-        'url': common.build_url(['search', 'search', 'add'], mode=G.MODE_DIRECTORY),
-        'label': common.get_local_string(30403),
-        'art': {'icon': 'DefaultAddSource.png'},
-        'is_folder': True,
-        'properties': {'specialsort': 'top'}  # Force an item to stay on top (not documented in Kodi)
-    }
+def _get_diritem_add():
+    """Generate the "add" menu item"""
+    list_item = xbmcgui.ListItem(label=common.get_local_string(30403), offscreen=True)
+    list_item.setArt({'icon': 'DefaultAddSource.png'})
+    list_item.setProperty('specialsort', 'top')  # Force an item to stay on top
+    return common.build_url(['search', 'search', 'add'], mode=G.MODE_DIRECTORY), list_item, True
 
 
-def _get_dictitem_clear():
-    """The "clear" menu item"""
-    return {
-        'url': common.build_url(['search', 'search', 'clear'], mode=G.MODE_DIRECTORY),
-        'label': common.get_local_string(30404),
-        'art': {'icon': 'icons\\infodialogs\\uninstall.png'},
-        'is_folder': False,  # Set folder to false to run as command so that clear is not in directory history
-        'media_type': None,  # Set media type none to avoid setting isplayable flag for non-folder item
-        'properties': {'specialsort': 'bottom'}  # Force an item to stay on bottom (not documented in Kodi)
-    }
+def _get_diritem_clear():
+    """Generate the "clear" menu item"""
+    list_item = xbmcgui.ListItem(label=common.get_local_string(30404), offscreen=True)
+    list_item.setArt({'icon': 'icons\\infodialogs\\uninstall.png'})
+    list_item.setProperty('specialsort', 'bottom')  # Force an item to stay on bottom
+    # This ListItem is not set as folder so that the executed command is not added to the history
+    return common.build_url(['search', 'search', 'clear'], mode=G.MODE_DIRECTORY), list_item, False
 
 
-def _create_dictitem_from_row(row):
+def _create_diritem_from_row(row):
     row_id = str(row['ID'])
     search_desc = common.get_local_string(30401) + ': ' + SEARCH_TYPES_DESC.get(row['Type'], 'Unknown')
-    return {
-        'url': common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY),
-        'label': row['Value'],
-        'info': {'plot': search_desc},  # The description
-        'menu_items': generate_context_menu_searchitem(row_id, row['Type']),
-        'is_folder': True
-    }
+    list_item = xbmcgui.ListItem(label=row['Value'], offscreen=True)
+    list_item.setInfo('video', {'plot': search_desc})
+    list_item.addContextMenuItems(generate_context_menu_searchitem(row_id, row['Type']))
+    return common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY), list_item, True

@@ -136,7 +136,6 @@ def get_inputstream_listitem(videoid):
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/xml+dash')
-    list_item.setProperty('isFolder', 'false')
     list_item.setProperty('IsPlayable', 'true')
     try:
         import inputstreamhelper
