@@ -14,6 +14,7 @@ import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 from resources.lib.common.exceptions import CacheMiss, ItemNotFound
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
+from resources.lib.common.kodi_wrappers import ListItemW
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
@@ -54,11 +55,11 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
     return infos, quality_infos
 
 
-def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_data, art_item=None):
-    """Add infolabels and art to a dict_item"""
+def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None):
+    """Add infolabels and art to a ListItem"""
     infos, quality_infos = get_info(videoid, item, raw_data,
                                     delayed_db_op=True)
-    dict_item['quality_info'] = quality_infos
+    list_item.addStreamInfoFromDict(quality_infos)
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
     if 'Plot' not in infos_copy and 'PlotOutline' in infos_copy:
@@ -67,11 +68,11 @@ def add_info_dict_item(dict_item, videoid, item, raw_data, is_in_mylist, common_
     _add_supplemental_plot_info(infos_copy, item, common_data)
     if is_in_mylist and common_data.get('mylist_titles_color'):
         # Highlight ListItem title when the videoid is contained in my-list
-        dict_item['label'] = _colorize_text(common_data['mylist_titles_color'], dict_item['label'])
-    infos_copy['title'] = dict_item['label']
-    dict_item['info'] = infos_copy
-    dict_item['art'] = get_art(videoid, art_item or item, common_data['profile_language_code'],
-                               delayed_db_op=True)
+        list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
+    infos_copy['title'] = list_item.getLabel()
+    list_item.setInfo('video', infos_copy)
+    list_item.setArt(get_art(videoid, art_item or item, common_data['profile_language_code'],
+                             delayed_db_op=True))
 
 
 def _add_supplemental_plot_info(infos_copy, item, common_data):
@@ -298,9 +299,9 @@ def get_color_name(color_index):
     return COLORS[color_index]
 
 
-def set_watched_status(dict_item, video_data, common_data):
+def set_watched_status(list_item: ListItemW, video_data, common_data):
     """Check and set progress status (watched and resume)"""
-    if not common_data['set_watched_status'] or dict_item['is_folder']:
+    if not common_data['set_watched_status']:
         return
     video_id = str(video_data['summary']['id'])
     # Check from db if user has manually changed the watched status
@@ -336,6 +337,6 @@ def set_watched_status(dict_item, video_data, common_data):
         playcount = '1' if is_watched_user_overrided else '0'
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
-    dict_item['info']['PlayCount'] = playcount
-    dict_item['TotalTime'] = str(video_data['runtime'])
-    dict_item['ResumeTime'] = str(resume_time)
+    list_item.updateInfo({'PlayCount': playcount})
+    list_item.setProperty('TotalTime', str(video_data['runtime']))
+    list_item.setProperty('ResumeTime', str(resume_time))

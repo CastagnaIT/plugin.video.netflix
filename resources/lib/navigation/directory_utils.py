@@ -10,7 +10,6 @@
 from functools import wraps
 
 import xbmc
-import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
@@ -38,47 +37,6 @@ def custom_viewmode(content_type):
     return decorate_viewmode
 
 
-def convert_list_to_list_items(list_data):
-    """Convert a generic list (of dict) items into a list of xbmcgui.Listitem"""
-    list_items = []
-    for dict_item in list_data:
-        list_items.append(_convert_dict_to_listitem(dict_item))
-    return list_items
-
-
-def convert_list_to_dir_items(list_data):
-    """Convert a generic list (of dict) items into a list of directory tuple items for xbmcplugin.addDirectoryItems"""
-    directory_items = []
-    for dict_item in list_data:
-        directory_items.append((dict_item['url'], _convert_dict_to_listitem(dict_item), dict_item['is_folder']))
-    return directory_items
-
-
-def _convert_dict_to_listitem(dict_item):
-    list_item = xbmcgui.ListItem(label=dict_item['label'], offscreen=True)
-    list_item.setContentLookup(False)
-    properties = dict_item.get('properties', {})  # 'properties' key allow to set custom properties to xbmcgui.Listitem
-    properties['isFolder'] = str(dict_item['is_folder'])
-
-    if not dict_item['is_folder'] and dict_item['media_type'] in [common.VideoId.EPISODE,
-                                                                  common.VideoId.MOVIE,
-                                                                  common.VideoId.SUPPLEMENTAL]:
-        properties.update({
-            'IsPlayable': 'true',
-            'TotalTime': dict_item.get('TotalTime', ''),
-            'ResumeTime': dict_item.get('ResumeTime', '')
-        })
-    for stream_type, quality_info in dict_item.get('quality_info', {}).items():
-        list_item.addStreamInfo(stream_type, quality_info)
-    list_item.setProperties(properties)
-    list_item.setInfo('video', dict_item.get('info', {}))
-    list_item.setArt(dict_item.get('art', {}))
-    list_item.addContextMenuItems(dict_item.get('menu_items', []))
-    if dict_item.get('is_selected'):
-        list_item.select(True)
-    return list_item
-
-
 def add_sort_methods(sort_type):
     if sort_type == 'sort_nothing':
         xbmcplugin.addSortMethod(G.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_NONE)
@@ -92,13 +50,13 @@ def add_sort_methods(sort_type):
         xbmcplugin.addSortMethod(G.PLUGIN_HANDLE, xbmcplugin.SORT_METHOD_VIDEO_TITLE)
 
 
-def finalize_directory(items, content_type=G.CONTENT_FOLDER, sort_type='sort_nothing', title=None):
+def finalize_directory(dir_items, content_type=G.CONTENT_FOLDER, sort_type='sort_nothing', title=None):
     """Finalize a directory listing. Add items, set available sort methods and content type"""
     if title:
         xbmcplugin.setPluginCategory(G.PLUGIN_HANDLE, title)
     xbmcplugin.setContent(G.PLUGIN_HANDLE, content_type)
     add_sort_methods(sort_type)
-    xbmcplugin.addDirectoryItems(G.PLUGIN_HANDLE, items)
+    xbmcplugin.addDirectoryItems(G.PLUGIN_HANDLE, dir_items)
 
 
 def end_of_directory(dir_update_listing):
@@ -142,25 +100,28 @@ def verify_profile_pin(guid):
     return None if not pin else verify_profile_lock(guid, pin)
 
 
-def auto_scroll(list_data):
+def auto_scroll(dir_items):
     """
     Auto scroll the current viewed list to select the last partial watched or next episode to be watched,
     works only with Sync of watched status with netflix
     """
     # A sad implementation to a Kodi feature available only for the Kodi library
     if G.ADDON.getSettingBool('ProgressManager_enabled') and G.ADDON.getSettingBool('select_first_unwatched'):
-        total_items = len(list_data)
+        total_items = len(dir_items)
         if total_items:
             # Delay a bit to wait for the completion of the screen update
             xbmc.sleep(100)
             if not _auto_scroll_init_checks():
                 return
             # Check if all items are already watched
-            watched_items = sum(dict_item['info'].get('PlayCount', '0') != '0' for dict_item in list_data)
-            to_resume_items = sum(dict_item.get('ResumeTime', '0') != '0' for dict_item in list_data)
+            watched_items = 0
+            to_resume_items = 0
+            for _, list_item, _ in dir_items:
+                watched_items += list_item.getVideoInfoTag().getPlayCount() != 0
+                to_resume_items += float(list_item.getProperty('ResumeTime')) != 0
             if total_items == watched_items or (watched_items + to_resume_items) == 0:
                 return
-            steps = _find_index_last_watched(total_items, list_data)
+            steps = _find_index_last_watched(total_items, dir_items)
             # Get the sort order of the view
             is_sort_descending = xbmc.getCondVisibility('Container.SortDirection(descending)')
             if is_sort_descending:
@@ -190,14 +151,14 @@ def _auto_scroll_init_checks():
     return True
 
 
-def _find_index_last_watched(total_items, list_data):
+def _find_index_last_watched(total_items, dir_items):
     """Find last watched item"""
     for index in range(total_items - 1, -1, -1):
-        dict_item = list_data[index]
-        if dict_item['info'].get('PlayCount', '0') != '0':
+        list_item = dir_items[index][1]
+        if list_item.getVideoInfoTag().getPlayCount() != 0:
             # Last watched item
             return index + 1
-        if dict_item.get('ResumeTime', '0') != '0':
+        if float(list_item.getProperty('ResumeTime')) != 0:
             # Last partial watched item
             return index
     return 0
