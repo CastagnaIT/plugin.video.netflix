@@ -117,18 +117,6 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': None,
          'accept': '*/*'},
-    'pin_reset':
-        {'address': '/pin/reset',
-         'is_api_call': True,
-         'use_default_params': False,
-         'add_auth_url': None},
-    'pin_service':
-        {'address': '/pin/service',
-         'is_api_call': True,
-         'use_default_params': False,
-         'add_auth_url': 'to_data',
-         'content_type': 'application/json',
-         'accept': 'application/json, text/javascript, */*'},
     'metadata':
         {'address': '/metadata',
          'is_api_call': True,

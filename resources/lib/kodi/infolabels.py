@@ -10,7 +10,6 @@
 import copy
 
 import resources.lib.utils.api_paths as paths
-import resources.lib.utils.api_requests as api
 import resources.lib.common as common
 from resources.lib.common.exceptions import CacheMiss, ItemNotFound
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS, CACHE_ARTINFO
@@ -71,7 +70,7 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
         list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
     infos_copy['title'] = list_item.getLabel()
     list_item.setInfo('video', infos_copy)
-    list_item.setArt(get_art(videoid, art_item or item, common_data['profile_language_code'],
+    list_item.setArt(get_art(videoid, art_item or item or {}, common_data['profile_language_code'],
                              delayed_db_op=True))
 
 
@@ -103,13 +102,7 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
 
 
 def get_art(videoid, item, profile_language_code='', delayed_db_op=False):
-    """Get art infolabels"""
-    return _get_art(videoid, item or {}, profile_language_code,
-                    delayed_db_op=delayed_db_op)
-
-
-def _get_art(videoid, item, profile_language_code, delayed_db_op=False):
-    # If item is None this method raise TypeError
+    """Get art infolabels - NOTE: If 'item' arg is None this method can raise TypeError when there is not cache"""
     cache_identifier = videoid.value + '_' + profile_language_code
     try:
         art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
@@ -249,31 +242,6 @@ def _assign_art(videoid, **kwargs):
 def _best_art(arts):
     """Return the best art (determined by list order of arts) or an empty string if none is available"""
     return next((art for art in arts if art), '')
-
-
-def get_info_from_netflix(videoids):
-    """Get infolabels and arts from cache (if exist) or Netflix API, for multiple videoid"""
-    profile_language_code = G.LOCAL_DB.get_profile_config('language', '')
-    videoids_to_request = []
-    info_data = {}
-    for videoid in videoids:
-        try:
-            infos = get_info(videoid, None, None, profile_language_code)[0]
-            art = _get_art(videoid, None, profile_language_code)
-            info_data[videoid.value] = infos, art
-            LOG.debug('Got infolabels and art from cache for videoid {}', videoid)
-        except (AttributeError, TypeError):
-            videoids_to_request.append(videoid)
-
-    if videoids_to_request:
-        # Retrieve missing data from API
-        LOG.debug('Retrieving infolabels and art from API for {} videoids', len(videoids_to_request))
-        raw_data = api.get_video_raw_data(videoids_to_request)
-        for videoid in videoids_to_request:
-            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
-            art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
-            info_data[videoid.value] = infos, art
-    return info_data
 
 
 def get_info_from_library(videoid):

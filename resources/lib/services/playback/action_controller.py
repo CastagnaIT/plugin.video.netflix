@@ -59,8 +59,7 @@ class ActionController(xbmc.Monitor):
         videoid = common.VideoId.from_dict(data['videoid'])
         data['videoid'] = videoid
         data['videoid_parent'] = videoid.derive_parent(common.VideoId.SHOW)
-        if data['videoid_next_episode']:
-            data['videoid_next_episode'] = common.VideoId.from_dict(data['videoid_next_episode'])
+        data['metadata'] = self.nfsession.get_metadata(videoid)
         self._init_data = data
         self.active_player_id = None
         self.is_tracking_enabled = True
@@ -75,7 +74,7 @@ class ActionController(xbmc.Monitor):
             AMSectionSkipper(),
             AMStreamContinuity(),
             AMVideoEvents(self.nfsession, self.msl_handler, self.directory_builder),
-            AMUpNextNotifier()
+            AMUpNextNotifier(self.nfsession)
         ]
         self.init_count += 1
         self._notify_all(ActionManager.call_initialize, self._init_data)
