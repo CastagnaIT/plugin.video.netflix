@@ -17,7 +17,6 @@ import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 import resources.lib.utils.api_requests as api
 from resources.lib.globals import G
-from resources.lib.utils.api_paths import EVENT_PATHS
 from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
@@ -61,10 +60,9 @@ def _play(videoid, is_played_from_strm=False):
              ' [external call]' if G.IS_ADDON_EXTERNAL_CALL else '')
 
     # Profile switch when playing from a STRM file (library)
-    if is_played_from_strm:
-        if not _profile_switch():
-            xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
-            return
+    if is_played_from_strm and not _profile_switch():
+        xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
+        return
 
     # Get metadata of videoid
     try:
@@ -92,7 +90,6 @@ def _play(videoid, is_played_from_strm=False):
         return
 
     info_data = None
-    event_data = {}
     videoid_next_episode = None
 
     # Get Infolabels and Arts for the videoid to be played, and for the next video if it is an episode (for UpNext)
@@ -107,14 +104,6 @@ def _play(videoid, is_played_from_strm=False):
         list_item.setInfo('video', info)
         list_item.setArt(arts)
 
-    # Get event data for videoid to be played (needed for sync of watched status with Netflix)
-    if (G.ADDON.getSettingBool('ProgressManager_enabled')
-            and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]):
-        if not is_played_from_strm or is_played_from_strm and G.ADDON.getSettingBool('sync_watched_status_library'):
-            event_data = _get_event_data(videoid)
-            event_data['videoid'] = videoid.to_dict()
-            event_data['is_played_by_library'] = is_played_from_strm
-
     # Start and initialize the action controller (see action_controller.py)
     LOG.debug('Sending initialization signal')
     # Do not use send_signal as threaded slow devices are not powerful to send in faster way and arrive late to service
@@ -124,8 +113,7 @@ def _play(videoid, is_played_from_strm=False):
         'metadata': metadata,
         'info_data': info_data,
         'is_played_from_strm': is_played_from_strm,
-        'resume_position': resume_position,
-        'event_data': event_data})
+        'resume_position': resume_position})
     xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
 
 
@@ -218,39 +206,6 @@ def _strm_resume_workaroud(is_played_from_strm, videoid):
         if index_selected == 1:
             resume_position = None
     return resume_position
-
-
-def _get_event_data(videoid):
-    """Get data needed to send event requests to Netflix and for resume from last position"""
-    is_episode = videoid.mediatype == common.VideoId.EPISODE
-    req_videoids = [videoid]
-    if is_episode:
-        # Get also the tvshow data
-        req_videoids.append(videoid.derive_parent(common.VideoId.SHOW))
-
-    raw_data = api.get_video_raw_data(req_videoids, EVENT_PATHS)
-    if not raw_data:
-        return {}
-    LOG.debug('Event data: {}', raw_data)
-    videoid_data = raw_data['videos'][videoid.value]
-
-    if is_episode:
-        # Get inQueue from tvshow data
-        is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('inQueue', False)
-    else:
-        is_in_mylist = videoid_data['queue'].get('inQueue', False)
-
-    event_data = {'resume_position':
-                  videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
-                  'runtime': videoid_data['runtime'],
-                  'request_id': videoid_data['requestId'],
-                  'watched': videoid_data['watched'],
-                  'is_in_mylist': is_in_mylist}
-    if videoid.mediatype == common.VideoId.EPISODE:
-        event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
-    else:
-        event_data['track_id'] = videoid_data['trackIds']['trackId_jaw']
-    return event_data
 
 
 def _upnext_get_next_episode_videoid(videoid, metadata):

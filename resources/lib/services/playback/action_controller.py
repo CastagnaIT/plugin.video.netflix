@@ -74,7 +74,7 @@ class ActionController(xbmc.Monitor):
             AMPlayback(),
             AMSectionSkipper(),
             AMStreamContinuity(),
-            AMVideoEvents(self.msl_handler, self.directory_builder),
+            AMVideoEvents(self.nfsession, self.msl_handler, self.directory_builder),
             AMUpNextNotifier()
         ]
         self.init_count += 1

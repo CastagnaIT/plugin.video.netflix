@@ -9,14 +9,17 @@
 """
 from typing import TYPE_CHECKING
 
+from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
 from resources.lib.common.exceptions import InvalidVideoListTypeError
 from resources.lib.globals import G
 from resources.lib.services.nfsession.msl.msl_utils import EVENT_ENGAGE, EVENT_START, EVENT_STOP, EVENT_KEEP_ALIVE
+from resources.lib.utils.api_paths import build_paths, EVENT_PATHS
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
 if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
     from resources.lib.services.nfsession.directorybuilder.dir_builder import DirectoryBuilder
     from resources.lib.services.nfsession.msl.msl_handler import MSLHandler
 
@@ -26,8 +29,9 @@ class AMVideoEvents(ActionManager):
 
     SETTING_ID = 'ProgressManager_enabled'
 
-    def __init__(self, msl_handler: 'MSLHandler', directory_builder: 'DirectoryBuilder'):
+    def __init__(self, nfsession: 'NFSessionOperations' , msl_handler: 'MSLHandler', directory_builder: 'DirectoryBuilder'):
         super().__init__()
+        self.nfsession = nfsession
         self.msl_handler = msl_handler
         self.directory_builder = directory_builder
         self.event_data = {}
@@ -42,11 +46,17 @@ class AMVideoEvents(ActionManager):
         return 'enabled={}'.format(self.enabled)
 
     def initialize(self, data):
-        if not data['event_data']:
-            LOG.warn('AMVideoEvents: disabled due to no event data')
+        if not data['videoid'].mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+            LOG.warn('AMVideoEvents: disabled due to no not supported videoid mediatype')
             self.enabled = False
             return
-        self.event_data = data['event_data']
+        if (not data['is_played_from_strm'] or
+                (data['is_played_from_strm'] and G.ADDON.getSettingBool('sync_watched_status_library'))):
+            self.event_data = self._get_event_data(data['videoid'])
+            self.event_data['videoid'] = data['videoid'].to_dict()
+            self.event_data['is_played_by_library'] = data['is_played_from_strm']
+        else:
+            self.enabled = False
 
     def on_playback_started(self, player_state):
         # Clear continue watching list data on the cache, to force loading of new data
@@ -147,3 +157,41 @@ class AMVideoEvents(ActionManager):
         self.msl_handler.events_handler_thread.add_event_to_queue(event_type,
                                                                   event_data,
                                                                   player_state)
+
+    def _get_event_data(self, videoid):
+        """Get data needed to send event requests to Netflix"""
+        is_episode = videoid.mediatype == common.VideoId.EPISODE
+        req_videoids = [videoid]
+        if is_episode:
+            # Get also the tvshow data
+            req_videoids.append(videoid.derive_parent(common.VideoId.SHOW))
+
+        raw_data = self._get_video_raw_data(req_videoids)
+        if not raw_data:
+            return {}
+        LOG.debug('Event data: {}', raw_data)
+        videoid_data = raw_data['videos'][videoid.value]
+
+        if is_episode:
+            # Get inQueue from tvshow data
+            is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('inQueue', False)
+        else:
+            is_in_mylist = videoid_data['queue'].get('inQueue', False)
+
+        event_data = {'resume_position':
+                          videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
+                      'runtime': videoid_data['runtime'],
+                      'request_id': videoid_data['requestId'],
+                      'watched': videoid_data['watched'],
+                      'is_in_mylist': is_in_mylist}
+        if videoid.mediatype == common.VideoId.EPISODE:
+            event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
+        else:
+            event_data['track_id'] = videoid_data['trackIds']['trackId_jaw']
+        return event_data
+
+    def _get_video_raw_data(self, videoids):
+        """Retrieve raw data for specified video id's"""
+        video_ids = [int(videoid.value) for videoid in videoids]
+        LOG.debug('Requesting video raw data for {}', video_ids)
+        return self.nfsession.path_request(build_paths(['videos', video_ids], EVENT_PATHS))
