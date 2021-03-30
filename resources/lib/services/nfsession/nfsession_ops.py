@@ -22,6 +22,7 @@ from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
 from resources.lib.utils import cookies
+from resources.lib.utils.api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
@@ -46,7 +47,8 @@ class NFSessionOperations(SessionPathRequests):
             self.parental_control_data,
             self.get_metadata,
             self.update_loco_context,
-            self.update_videoid_bookmark
+            self.update_videoid_bookmark,
+            self.get_videoid_info
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -276,3 +278,21 @@ class NFSessionOperations(SessionPathRequests):
             ui.show_notification(title=common.get_local_string(30105),
                                  msg='An error prevented the update the status watched on Netflix',
                                  time=10000)
+
+    def get_videoid_info(self, videoid):
+        """Get infolabels and arts from cache (if exist) otherwise will be requested"""
+        if isinstance(videoid, list):  # IPC call send the videoid as "path" list
+            videoid = common.VideoId.from_path(videoid)
+        from resources.lib.kodi.infolabels import get_info, get_art
+        profile_language_code = G.LOCAL_DB.get_profile_config('language', '')
+        try:
+            infos = get_info(videoid, None, None, profile_language_code)[0]
+            art = get_art(videoid, None, profile_language_code)
+        except (AttributeError, TypeError):
+            paths = build_paths(['videos', int(videoid.value)], EPISODES_PARTIAL_PATHS)
+            if videoid.mediatype == common.VideoId.EPISODE:
+                paths.extend(build_paths(['videos', int(videoid.tvshowid)], ART_PARTIAL_PATHS + [['title']]))
+            raw_data = self.path_request(paths)
+            infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
+            art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
+        return infos, art

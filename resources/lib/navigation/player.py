@@ -7,17 +7,14 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-import json
-
 import xbmcgui
 import xbmcplugin
 
 import resources.lib.common as common
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
-import resources.lib.utils.api_requests as api
 from resources.lib.globals import G
-from resources.lib.common.exceptions import MetadataNotAvailable, InputStreamHelperError
+from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 MANIFEST_PATH_FORMAT = common.IPC_ENDPOINT_MSL + '/get_manifest?videoid={}'
@@ -64,22 +61,6 @@ def _play(videoid, is_played_from_strm=False):
         xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
         return
 
-    # Get metadata of videoid
-    try:
-        metadata = api.get_metadata(videoid)
-        LOG.debug('Metadata is {}', json.dumps(metadata))
-    except MetadataNotAvailable:
-        LOG.warn('Metadata not available for {}', videoid)
-        metadata = [{}, {}]
-
-    # Check parental control PIN
-    pin_result = _verify_pin(metadata[0].get('requiresPin', False))
-    if not pin_result:
-        if pin_result is not None:
-            ui.show_notification(common.get_local_string(30106), time=8000)
-        xbmcplugin.endOfDirectory(G.PLUGIN_HANDLE, succeeded=False)
-        return
-
     # Generate the xbmcgui.ListItem to be played
     list_item = get_inputstream_listitem(videoid)
 
@@ -89,18 +70,9 @@ def _play(videoid, is_played_from_strm=False):
         xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=False, listitem=list_item)
         return
 
-    info_data = None
-    videoid_next_episode = None
-
-    # Get Infolabels and Arts for the videoid to be played, and for the next video if it is an episode (for UpNext)
+    # When a video is played from Kodi library or Up Next add-on is needed set infoLabels and art info to list_item
     if is_played_from_strm or is_upnext_enabled or G.IS_ADDON_EXTERNAL_CALL:
-        if is_upnext_enabled and videoid.mediatype == common.VideoId.EPISODE:
-            # When UpNext is enabled, get the next episode to play
-            videoid_next_episode = _upnext_get_next_episode_videoid(videoid, metadata)
-        info_data = infolabels.get_info_from_netflix(
-            [videoid, videoid_next_episode] if videoid_next_episode else [videoid])
-        info, arts = info_data[videoid.value]
-        # When a item is played from Kodi library or Up Next add-on is needed set info and art to list_item
+        info, arts = common.make_call('get_videoid_info', {'videoid': videoid.to_path()})
         list_item.setInfo('video', info)
         list_item.setArt(arts)
 
@@ -109,9 +81,6 @@ def _play(videoid, is_played_from_strm=False):
     # Do not use send_signal as threaded slow devices are not powerful to send in faster way and arrive late to service
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
         'videoid': videoid.to_dict(),
-        'videoid_next_episode': videoid_next_episode.to_dict() if videoid_next_episode else None,
-        'metadata': metadata,
-        'info_data': info_data,
         'is_played_from_strm': is_played_from_strm,
         'resume_position': resume_position})
     xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
@@ -129,33 +98,32 @@ def get_inputstream_listitem(videoid):
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
         inputstream_ready = is_helper.check_inputstream()
-        if not inputstream_ready:
-            raise Exception(common.get_local_string(30046))
-
-        list_item.setProperty(
-            key=is_helper.inputstream_addon + '.stream_headers',
-            value='user-agent=' + common.get_user_agent())
-        list_item.setProperty(
-            key=is_helper.inputstream_addon + '.license_type',
-            value='com.widevine.alpha')
-        list_item.setProperty(
-            key=is_helper.inputstream_addon + '.manifest_type',
-            value='mpd')
-        list_item.setProperty(
-            key=is_helper.inputstream_addon + '.license_key',
-            value=service_url + LICENSE_PATH_FORMAT.format(videoid.value) + '||b{SSM}!b{SID}|')
-        list_item.setProperty(
-            key=is_helper.inputstream_addon + '.server_certificate',
-            value=INPUTSTREAM_SERVER_CERTIFICATE)
-        list_item.setProperty(
-            key='inputstream',
-            value=is_helper.inputstream_addon)
-        return list_item
     except Exception as exc:  # pylint: disable=broad-except
         # Captures all types of ISH internal errors
         import traceback
         LOG.error(traceback.format_exc())
         raise InputStreamHelperError(str(exc)) from exc
+    if not inputstream_ready:
+        raise Exception(common.get_local_string(30046))
+    list_item.setProperty(
+        key='inputstream.adaptive.stream_headers',
+        value='user-agent=' + common.get_user_agent())
+    list_item.setProperty(
+        key='inputstream.adaptive.license_type',
+        value='com.widevine.alpha')
+    list_item.setProperty(
+        key='inputstream.adaptive.manifest_type',
+        value='mpd')
+    list_item.setProperty(
+        key='inputstream.adaptive.license_key',
+        value=service_url + LICENSE_PATH_FORMAT.format(videoid.value) + '||b{SSM}!b{SID}|')
+    list_item.setProperty(
+        key='inputstream.adaptive.server_certificate',
+        value=INPUTSTREAM_SERVER_CERTIFICATE)
+    list_item.setProperty(
+        key='inputstream',
+        value='inputstream.adaptive')
+    return list_item
 
 
 def _profile_switch():
@@ -181,13 +149,6 @@ def _profile_switch():
     return True
 
 
-def _verify_pin(pin_required):
-    if not pin_required:
-        return True
-    pin = ui.show_dlg_input_numeric(common.get_local_string(30002))
-    return None if not pin else api.verify_pin(pin)
-
-
 def _strm_resume_workaroud(is_played_from_strm, videoid):
     """Workaround for resuming STRM files from library"""
     if not is_played_from_strm or not G.ADDON.getSettingBool('ResumeManager_enabled'):
@@ -206,34 +167,3 @@ def _strm_resume_workaroud(is_played_from_strm, videoid):
         if index_selected == 1:
             resume_position = None
     return resume_position
-
-
-def _upnext_get_next_episode_videoid(videoid, metadata):
-    """Determine the next episode and get the videoid"""
-    try:
-        videoid_next_episode = _find_next_episode(videoid, metadata)
-        LOG.debug('Next episode is {}', videoid_next_episode)
-        return videoid_next_episode
-    except (TypeError, KeyError):
-        # import traceback
-        # LOG.debug(traceback.format_exc())
-        LOG.debug('There is no next episode, not setting up Up Next')
-        return None
-
-
-def _find_next_episode(videoid, metadata):
-    try:
-        # Find next episode in current season
-        episode = common.find(metadata[0]['seq'] + 1, 'seq',
-                              metadata[1]['episodes'])
-        return common.VideoId(tvshowid=videoid.tvshowid,
-                              seasonid=videoid.seasonid,
-                              episodeid=episode['id'])
-    except (IndexError, KeyError):
-        # Find first episode of next season
-        next_season = common.find(metadata[1]['seq'] + 1, 'seq',
-                                  metadata[2]['seasons'])
-        episode = common.find(1, 'seq', next_season['episodes'])
-        return common.VideoId(tvshowid=videoid.tvshowid,
-                              seasonid=next_season['id'],
-                              episodeid=episode['id'])

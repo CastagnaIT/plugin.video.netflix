@@ -187,21 +187,6 @@ def set_parental_control_data(data):
 
 @catch_api_errors_decorator
 @measure_exec_time_decorator()
-def verify_pin(pin):
-    """Send adult PIN to Netflix and verify it."""
-    try:
-        common.make_call(
-            'post_safe',
-            {'endpoint': 'pin_service',
-             'data': {'pin': pin}}
-        )
-        return True
-    except HttpError401:  # Wrong PIN
-        return False
-
-
-@catch_api_errors_decorator
-@measure_exec_time_decorator()
 def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
     try:
