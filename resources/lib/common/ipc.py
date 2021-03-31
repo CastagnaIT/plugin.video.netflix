@@ -23,6 +23,7 @@ IPC_TIMEOUT_SECS = 20
 IPC_ENDPOINT_CACHE = '/cache'
 IPC_ENDPOINT_MSL = '/msl'
 IPC_ENDPOINT_NFSESSION = '/nfsession'
+IPC_ENDPOINT_NFSESSION_TEST = '/nfsessiontest'
 
 
 class Signals:  # pylint: disable=no-init

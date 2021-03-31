@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer, ThreadingMixIn
 from urllib.parse import urlparse, parse_qs
 
-from resources.lib.common import IPC_ENDPOINT_CACHE, IPC_ENDPOINT_NFSESSION, IPC_ENDPOINT_MSL
+from resources.lib.common import IPC_ENDPOINT_CACHE, IPC_ENDPOINT_NFSESSION, IPC_ENDPOINT_MSL, IPC_ENDPOINT_NFSESSION_TEST
 from resources.lib.common.exceptions import InvalidPathError, CacheMiss, MetadataNotAvailable, SlotNotImplemented
 from resources.lib.globals import G
 from resources.lib.services.nfsession.nfsession import NetflixSession
@@ -49,6 +49,8 @@ class NetflixHttpRequestHandler(BaseHTTPRequestHandler):
             handle_cache_request(self, func_name, data)
         elif endpoint == IPC_ENDPOINT_NFSESSION:
             handle_request(self, self.server.netflix_session, func_name, data)
+        elif endpoint == IPC_ENDPOINT_NFSESSION_TEST and LOG.is_enabled:
+            handle_request_test(self, self.server.netflix_session, func_name, data)
         else:
             self.send_error(404, 'Not found')
             self.end_headers()
@@ -117,6 +119,22 @@ def handle_cache_request(server, func_name, data):
         ret_data = exc
     if ret_data:
         server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
+
+
+def handle_request_test(server, handler, func_name, data):
+    server.send_response(200)
+    server.end_headers()
+    import json
+    try:
+        try:
+            func = handler.http_ipc_slots[func_name]
+        except KeyError as exc:
+            raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
+        ret_data = _call_func(func, json.loads(data))
+    except Exception as exc:  # pylint: disable=broad-except
+        ret_data = 'The request has failed, error: {}'.format(exc)
+    if ret_data:
+        server.wfile.write(json.dumps(ret_data).encode('utf-8'))
 
 
 def _call_instance_func(instance, func_name, data):
