@@ -1,3 +1,6 @@
+v1.12.4 (2021-04-02)
+- Fixes due to website changes (fix KeyError loco)
+
 v1.12.3 (2021-02-21)
 - Fixed HTTP ReadTimeout/ConnectionError errors
 - Fixed incorrect handling of MSL errors
