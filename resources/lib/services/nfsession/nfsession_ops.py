@@ -48,7 +48,8 @@ class NFSessionOperations(SessionPathRequests):
             self.parental_control_data,
             self.get_metadata,
             self.update_loco_context,
-            self.update_videoid_bookmark
+            self.update_videoid_bookmark,
+            self.get_loco_data
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -220,29 +221,33 @@ class NFSessionOperations(SessionPathRequests):
             raise MetadataNotAvailable
         return metadata_data['video']
 
-    def update_loco_context(self, context_name):
-        """Update a loco list by context"""
-        # Call this api seem no more needed to update the continueWatching loco list
-        # Get current loco root data
+    def get_loco_data(self):
+        """
+        Get the LoCo root id and the continueWatching list data references
+        needed for events requests and update_loco_context
+        """
+        context_name = 'continueWatching'
         loco_data = self.path_request([['loco', [context_name], ['context', 'id', 'index']]])
         loco_root = loco_data['loco'][1]
-        if 'continueWatching' in loco_data['locos'][loco_root]:
-            context_index = loco_data['locos'][loco_root]['continueWatching'][2]
-            context_id = loco_data['locos'][loco_root][context_index][1]
-        else:
-            # In the new profiles, there is no 'continueWatching' list and no list is returned
-            LOG.warn('update_loco_context: Update skipped due to missing context {}', context_name)
-            return
+        _loco_data = {'root_id': loco_root}
+        if context_name in loco_data['locos'][loco_root]:
+            # NOTE: In the new profiles, there is no 'continueWatching' list and no list is returned
+            _loco_data['list_context_name'] = context_name
+            _loco_data['list_index'] = loco_data['locos'][loco_root][context_name][2]
+            _loco_data['list_id'] = loco_data['locos'][loco_root][_loco_data['list_index']][1]
+        return _loco_data
 
-        path = [['locos', loco_root, 'refreshListByContext']]
+    def update_loco_context(self, loco_root_id, list_context_name, list_id, list_index):
+        """Update a loco list by context"""
+        path = [['locos', loco_root_id, 'refreshListByContext']]
         # After the introduction of LoCo, the following notes are to be reviewed (refers to old LoLoMo):
         #   The fourth parameter is like a request-id, but it does not seem to match to
         #   serverDefs/date/requestId of reactContext nor to request_id of the video event request,
         #   seem to have some kind of relationship with renoMessageId suspect with the logblob but i am not sure.
         #   I noticed also that this request can also be made with the fourth parameter empty.
-        params = [common.enclose_quotes(context_id),
-                  context_index,
-                  common.enclose_quotes(context_name),
+        params = [common.enclose_quotes(list_id),
+                  list_index,
+                  common.enclose_quotes(list_context_name),
                   '']
         # path_suffixs = [
         #    [{'from': 0, 'to': 100}, 'itemSummary'],

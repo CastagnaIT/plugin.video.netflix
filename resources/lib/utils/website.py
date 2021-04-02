@@ -89,12 +89,6 @@ def extract_session_data(content, validate=False, update_profiles=False):
 
     if update_profiles:
         parse_profiles(falcor_cache)
-
-    # 21/05/2020 - Netflix has introduced a new paging type called "loco" similar to the old "lolomo"
-    # Extract loco root id
-    loco_root = falcor_cache['loco']['value'][1]
-    G.LOCAL_DB.set_value('loco_root_id', loco_root, TABLE_SESSION)
-
     # Save only some info of the current profile from user data
     G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
