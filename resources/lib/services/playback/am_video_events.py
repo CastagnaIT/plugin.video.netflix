@@ -10,11 +10,12 @@
 from typing import TYPE_CHECKING
 
 from resources.lib import common
-from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON, CACHE_MANIFESTS
 from resources.lib.common.exceptions import InvalidVideoListTypeError
 from resources.lib.globals import G
 from resources.lib.services.nfsession.msl.msl_utils import EVENT_ENGAGE, EVENT_START, EVENT_STOP, EVENT_KEEP_ALIVE
 from resources.lib.utils.api_paths import build_paths, EVENT_PATHS
+from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
@@ -29,7 +30,8 @@ class AMVideoEvents(ActionManager):
 
     SETTING_ID = 'ProgressManager_enabled'
 
-    def __init__(self, nfsession: 'NFSessionOperations' , msl_handler: 'MSLHandler', directory_builder: 'DirectoryBuilder'):
+    def __init__(self, nfsession: 'NFSessionOperations', msl_handler: 'MSLHandler',
+                 directory_builder: 'DirectoryBuilder'):
         super().__init__()
         self.nfsession = nfsession
         self.msl_handler = msl_handler
@@ -46,19 +48,20 @@ class AMVideoEvents(ActionManager):
         return 'enabled={}'.format(self.enabled)
 
     def initialize(self, data):
-        if not data['videoid'].mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
+        if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             LOG.warn('AMVideoEvents: disabled due to no not supported videoid mediatype')
             self.enabled = False
             return
         if (not data['is_played_from_strm'] or
                 (data['is_played_from_strm'] and G.ADDON.getSettingBool('sync_watched_status_library'))):
-            self.event_data = self._get_event_data(data['videoid'])
-            self.event_data['videoid'] = data['videoid'].to_dict()
+            self.event_data = self._get_event_data(self.videoid)
+            self.event_data['videoid'] = self.videoid
             self.event_data['is_played_by_library'] = data['is_played_from_strm']
         else:
             self.enabled = False
 
     def on_playback_started(self, player_state):
+        self.event_data['manifest'] = _get_manifest(self.videoid)
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
         try:
@@ -132,7 +135,7 @@ class AMVideoEvents(ActionManager):
         self._reset_tick_count()
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._send_event(EVENT_STOP, self.event_data, player_state)
-        # Update the resume here may not always work due to race conditions with refresh list/stop event
+        # Update the resume here may not always work due to race conditions with GUI directory refresh and Stop event
         self._save_resume_time(player_state['elapsed_seconds'])
 
     def _save_resume_time(self, resume_time):
@@ -195,3 +198,9 @@ class AMVideoEvents(ActionManager):
         video_ids = [int(videoid.value) for videoid in videoids]
         LOG.debug('Requesting video raw data for {}', video_ids)
         return self.nfsession.path_request(build_paths(['videos', video_ids], EVENT_PATHS))
+
+
+def _get_manifest(videoid):
+    """Get the manifest from cache"""
+    cache_identifier = get_esn() + '_' + videoid.value
+    return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
