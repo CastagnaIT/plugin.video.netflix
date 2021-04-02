@@ -1,3 +1,19 @@
+v1.15.0 (2021-04-02)
+NOTICE TO PARENTAL CONTROL:
+THE OLD PARENTAL CONTROL WITH PIN IS NO LONGER SUPPORTED,
+HAS BEEN DEPRECATED BY NETFLIX SINCE LAST YEAR, IF YOU KEEP USING IT
+YOU MUST UPDATE YOUR ACCOUNT PARENTAL CONTROL SETTINGS.
+- Fixes due to website changes (fix KeyError loco)
+- Removed the deprecated Parental Control (with PIN protection)
+- Improved playback startup speed
+- Enabled IPC over HTTP by default, IPC over AddonSignals lead to a memory leak (Kodi bug)
+- IPC now use only Pickle
+- Add missing support to IPC over AddonSignals for the cache
+- Joined all HTTP servers to one multithreaded to save resources
+- Used a single web session instead of two distinct (nfsession/MSL)
+- Cleaned many part of source code (nfsession/MSL/directory/IPC/...)
+- Update translations zh_tw, gr
+
 v1.14.1 (2021-02-25)
 - Fixed error caused by installation from scratch
 - Update translations pt_br, zh,tw, ro, fr, zh_cn, jp, kr, gl_es, hu
