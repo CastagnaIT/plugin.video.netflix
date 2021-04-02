@@ -16,7 +16,6 @@ import time
 import xbmc
 
 from resources.lib import common
-from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.msl import msl_utils
@@ -28,40 +27,6 @@ try:
     import Queue as queue
 except ImportError:  # Python 3
     import queue
-
-
-class Event(object):
-    """Object representing an event request to be processed"""
-
-    STATUS_REQUESTED = 'REQUESTED'
-    STATUS_INQUEUE = 'IN_QUEUE'
-    STATUS_ERROR = 'ERROR'
-    STATUS_SUCCESS = 'SUCCESS'
-
-    def __init__(self, request_data, event_data):
-        self.event_type = request_data['params']['event']
-        self.status = self.STATUS_INQUEUE
-        self.event_data = event_data
-        self.request_data = request_data
-        self.response_data = None
-        LOG.debug('EVENT [{}] - Added to queue', self.event_type)
-
-    def get_event_id(self):
-        return self.request_data['xid']
-
-    def set_response(self, response):
-        self.response_data = response
-        LOG.debug('EVENT [{}] - Request response: {}', self.event_type, response)
-        if 'RequestError' in response:
-            self.status = self.STATUS_ERROR
-        else:
-            self.status = self.STATUS_SUCCESS
-
-    def get_video_id(self):
-        return self.request_data['params']['sessionParams']['uiplaycontext']['video_id']
-
-    def __str__(self):
-        return self.event_type
 
 
 class EventsHandler(threading.Thread):
@@ -78,6 +43,7 @@ class EventsHandler(threading.Thread):
         self.banned_events_ids = []
         common.register_slot(signal=common.Signals.QUEUE_VIDEO_EVENT, callback=self.callback_event_video_queue)
         self._stop_requested = False
+        self.loco_data = None
 
     def run(self):
         """Monitor and process the event queue"""
@@ -87,12 +53,9 @@ class EventsHandler(threading.Thread):
         while not monitor.abortRequested() and not self._stop_requested:
             try:
                 # Take the first queued item
-                event = self.queue_events.get_nowait()
+                event_type, event_data, player_state = self.queue_events.get_nowait()
                 # Process the request
-                continue_queue = self._process_event_request(event)
-                if not continue_queue:
-                    # Ban future requests from this event id
-                    self.banned_events_ids += [event.get_event_id()]
+                self._process_event_request(event_type, event_data, player_state)
             except queue.Empty:
                 pass
             except Exception as exc:  # pylint: disable=broad-except
@@ -100,30 +63,49 @@ class EventsHandler(threading.Thread):
                 import traceback
                 LOG.error(G.py2_decode(traceback.format_exc(), 'latin-1'))
                 self.clear_queue()
-            monitor.waitForAbort(1)
+            monitor.waitForAbort(0.5)
 
-    def _process_event_request(self, event):
-        """Do the event post request"""
-        event.status = Event.STATUS_REQUESTED
+    def _process_event_request(self, event_type, event_data, player_state):
+        """Build and make the event post request"""
+        if event_type == EVENT_START:
+            # We get at every new video playback a fresh LoCo data
+            self.loco_data = common.make_http_call('get_loco_data', None)
+        url = event_data['manifest']['links']['events']['href']
+        from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
+        request_data = MSLRequestBuilder.build_request_data(url,
+                                                            self._build_event_params(event_type,
+                                                                                     event_data,
+                                                                                     player_state,
+                                                                                     event_data['manifest'],
+                                                                                     self.loco_data))
         # Request attempts can be made up to a maximum of 3 times per event
-        LOG.info('EVENT [{}] - Executing request', event)
-        endpoint_url = ENDPOINTS['events'] + create_req_params(20 if event.event_type == EVENT_START else 0,
-                                                               'events/{}'.format(event))
+        LOG.info('EVENT [{}] - Executing request', event_type)
+        endpoint_url = ENDPOINTS['events'] + create_req_params(20 if event_type == EVENT_START else 0,
+                                                               'events/{}'.format(event_type))
         try:
-            response = self.chunked_request(endpoint_url, event.request_data, get_esn(),
+            response = self.chunked_request(endpoint_url, request_data, get_esn(),
                                             disable_msl_switch=False)
-            # Malformed/wrong content in requests are ignored without returning error feedback in the response
-            event.set_response(response)
+            # Malformed/wrong content in requests are ignored without returning any error in the response or exception
+            LOG.debug('EVENT [{}] - Request response: {}', event_type, response)
+            if event_type == EVENT_STOP:
+                if event_data['allow_request_update_loco']:
+                    if 'list_context_name' in self.loco_data:
+                        common.make_http_call('update_loco_context', {
+                            'loco_root_id': self.loco_data['root_id'],
+                            'list_context_name': self.loco_data['list_context_name'],
+                            'list_id': self.loco_data['list_id'],
+                            'list_index': self.loco_data['list_index']})
+                    else:
+                        LOG.warn('EventsHandler: LoCo list not updated due to missing list context data')
+                    video_id = request_data['params']['sessionParams']['uiplaycontext']['video_id']
+                    common.make_http_call('update_videoid_bookmark', {'video_id': video_id})
+                self.loco_data = None
         except Exception as exc:  # pylint: disable=broad-except
-            LOG.error('EVENT [{}] - The request has failed: {}', event, exc)
-            event.set_response('RequestError')
-        if event.event_type == EVENT_STOP and event.status == Event.STATUS_SUCCESS:
-            self.clear_queue()
-            if event.event_data['allow_request_update_loco']:
-                # Calls to nfsession
-                common.make_http_call('update_loco_context', {'context_name': 'continueWatching'})
-                common.make_http_call('update_videoid_bookmark', {'video_id': event.get_video_id()})
-        return True
+            LOG.error('EVENT [{}] - The request has failed: {}', event_type, exc)
+            # Ban future event requests from this event xid
+            # self.banned_events_xid.append(request_data['xid'])
+            # Todo: this has been disabled because unstable Wi-Fi connections may cause consecutive errors
+            #   probably this should be handled in a different way
 
     def stop_join(self):
         self._stop_requested = True
@@ -142,24 +124,14 @@ class EventsHandler(threading.Thread):
     def add_event_to_queue(self, event_type, event_data, player_state):
         """Adds an event in the queue of events to be processed"""
         videoid = common.VideoId.from_dict(event_data['videoid'])
-        # pylint: disable=unused-variable
-        previous_data, previous_player_state = self.cache_data_events.get(videoid.value, ({}, None))
-        manifest = get_manifest(videoid)
-        url = manifest['links']['events']['href']
-
+        previous_data, _ = self.cache_data_events.get(videoid.value, ({}, None))
         if previous_data.get('xid') in self.banned_events_ids:
             LOG.warn('EVENT [{}] - Not added to the queue. The xid {} is banned due to a previous failed request',
                      event_type, previous_data.get('xid'))
             return
-
-        from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
-        request_data = MSLRequestBuilder.build_request_data(url,
-                                                            self._build_event_params(event_type,
-                                                                                     event_data,
-                                                                                     player_state,
-                                                                                     manifest))
         try:
-            self.queue_events.put_nowait(Event(request_data, event_data))
+            self.queue_events.put_nowait((event_type, event_data, player_state))
+            LOG.debug('EVENT [{}] - Added to queue', event_type)
         except queue.Full:
             LOG.warn('EVENT [{}] - Not added to the queue. The event queue is full.', event_type)
 
@@ -170,7 +142,7 @@ class EventsHandler(threading.Thread):
         self.cache_data_events = {}
         self.banned_events_ids = []
 
-    def _build_event_params(self, event_type, event_data, player_state, manifest):
+    def _build_event_params(self, event_type, event_data, player_state, manifest, loco_data):
         """Build data params for an event request"""
         videoid = common.VideoId.from_dict(event_data['videoid'])
         # Get previous elaborated data of the same video id
@@ -215,7 +187,7 @@ class EventsHandler(threading.Thread):
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
                     # lolomo_id: use loco root id value
-                    'lolomo_id': G.LOCAL_DB.get_value('loco_root_id', '', TABLE_SESSION),
+                    'lolomo_id': loco_data['root_id'],
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
                     'request_id': event_data['request_id'],
@@ -231,9 +203,3 @@ class EventsHandler(threading.Thread):
 
         self.cache_data_events[videoid.value] = (params, player_state)
         return params
-
-
-def get_manifest(videoid):
-    """Get the manifest from cache"""
-    cache_identifier = get_esn() + '_' + videoid.value
-    return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

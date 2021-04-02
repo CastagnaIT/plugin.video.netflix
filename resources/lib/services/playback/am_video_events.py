@@ -10,10 +10,11 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.common as common
-from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON, CACHE_MANIFESTS
 from resources.lib.common.exceptions import InvalidVideoListTypeError
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_utils import EVENT_START, EVENT_ENGAGE, EVENT_STOP, EVENT_KEEP_ALIVE
+from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
 
@@ -44,6 +45,7 @@ class AMVideoEvents(ActionManager):
         self.event_data = data['event_data']
 
     def on_playback_started(self, player_state):
+        self.event_data['manifest'] = _get_manifest(self.videoid)
         # Clear continue watching list data on the cache, to force loading of new data
         # but only when the videoid not exists in the continue watching list
         try:
@@ -144,3 +146,9 @@ class AMVideoEvents(ActionManager):
             'event_data': event_data,
             'player_state': player_state
         }, non_blocking=True)
+
+
+def _get_manifest(videoid):
+    """Get the manifest from cache"""
+    cache_identifier = get_esn() + '_' + videoid.value
+    return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
