@@ -23,7 +23,7 @@ class SessionPathRequests(SessionAccess):
     @measure_exec_time_decorator(is_immediate=True)
     def path_request(self, paths, use_jsongraph=False):
         """Perform a path request against the Shakti API"""
-        LOG.debug('Executing path request: {}', json.dumps(paths))
+        LOG.debug('Executing path request: {}', paths)
         custom_params = {}
         if use_jsongraph:
             custom_params['falcor_server'] = '0.1.0'
@@ -126,9 +126,7 @@ class SessionPathRequests(SessionAccess):
     def callpath_request(self, callpaths, params=None, path_suffixs=None):
         """Perform a callPath request against the Shakti API"""
         LOG.debug('Executing callPath request: {} params: {} path_suffixs: {}',
-                  json.dumps(callpaths),
-                  params,
-                  json.dumps(path_suffixs))
+                  callpaths, params, path_suffixs)
         custom_params = {
             'falcor_server': '0.1.0',
             'method': 'call',
