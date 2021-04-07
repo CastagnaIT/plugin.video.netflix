@@ -465,11 +465,7 @@ msgctxt "#30117"
 msgid "Cache"
 msgstr "Önbellek"
 
-msgctxt "#30118"
-msgid "API operation failed: {}"
-msgstr "API işlemi başarısız oldu: {}"
-
-# Unused 30119
+# Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Bir sezon Kodi kitaplığından otomatik olarak kaldırılamıyor, lütfen manuel olarak yapın"

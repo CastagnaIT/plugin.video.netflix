@@ -7,31 +7,13 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from functools import wraps
-
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from resources.lib.common.exceptions import APIError, LoginError, MissingCredentialsError, CacheMiss, HttpError401
+from resources.lib.common.exceptions import LoginError, MissingCredentialsError, CacheMiss, HttpError401
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
-
-
-def catch_api_errors_decorator(func):
-    """Decorator that catch APIError exception and displays a notification"""
-    # pylint: disable=missing-docstring
-    @wraps(func)
-    def api_error_wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except APIError as exc:
-            # This error is raised only when in the API response data the key 'status' has 'error' value
-            # (see _raise_api_error in session/http_requests.py)
-            LOG.error('{} the API call has returned an error: {}', func.__name__, exc)
-            ui.show_notification(common.get_local_string(30118).format(exc))
-            return None
-    return api_error_wrapper
 
 
 def logout():
@@ -84,7 +66,6 @@ def get_video_raw_data(videoids, custom_partial_path=None):  # Do not apply cach
     return common.make_call('path_request', paths)
 
 
-@catch_api_errors_decorator
 @measure_exec_time_decorator()
 def rate(videoid, rating):
     """Rate a video on Netflix"""
@@ -100,7 +81,6 @@ def rate(videoid, rating):
     ui.show_notification(common.get_local_string(30127).format(rating * 2))
 
 
-@catch_api_errors_decorator
 @measure_exec_time_decorator()
 def rate_thumb(videoid, rating, track_id_jaw):
     """Rate a video on Netflix"""
@@ -118,7 +98,6 @@ def rate_thumb(videoid, rating, track_id_jaw):
     ui.show_notification(common.get_local_string(30045).split('|')[rating])
 
 
-@catch_api_errors_decorator
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""
@@ -175,7 +154,6 @@ def get_parental_control_data(guid, password):
     return common.make_call('parental_control_data', {'guid': guid, 'password': password})
 
 
-@catch_api_errors_decorator
 @measure_exec_time_decorator()
 def set_parental_control_data(data):
     """Set the parental control data"""
@@ -190,7 +168,6 @@ def set_parental_control_data(data):
     )
 
 
-@catch_api_errors_decorator
 @measure_exec_time_decorator()
 def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
