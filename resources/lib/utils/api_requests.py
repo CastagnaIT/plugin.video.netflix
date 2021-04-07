@@ -129,12 +129,7 @@ def update_my_list(videoid, operation, params):
          'data': {
              'operation': operation,
              'videoId': videoid.value}})
-    if G.IPC_OVER_HTTP:
-        _update_mylist_cache(videoid, operation, params)
-    else:
-        # Todo: _update_mylist_cache cause error when execute G.CACHE.add
-        #  because the IPC over AddonSignals can receive objects but not send objects
-        G.CACHE.clear([cache_utils.CACHE_MYLIST], clear_database=False)
+    _update_mylist_cache(videoid, operation, params)
 
 
 def _update_mylist_cache(videoid, operation, params):
