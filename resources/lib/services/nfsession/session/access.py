@@ -178,7 +178,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         common.purge_credentials()
 
         # Reinitialize the MSL handler (delete msl data file, then reset everything)
-        common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
+        common.send_signal(common.Signals.REINITIALIZE_MSL_HANDLER, {'delete_msl_file': True})
 
         G.CACHE.clear(clear_database=True)
 

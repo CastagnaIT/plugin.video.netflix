@@ -174,8 +174,6 @@ class NFSessionOperations(SessionPathRequests):
     @measure_exec_time_decorator(is_immediate=True)
     def get_metadata(self, videoid, refresh=False):
         """Retrieve additional metadata for the given VideoId"""
-        if isinstance(videoid, list):  # IPC call send the videoid as "path" list
-            videoid = common.VideoId.from_path(videoid)
         # Get the parent VideoId (when the 'videoid' is a type of EPISODE/SEASON)
         parent_videoid = videoid.derive_parent(common.VideoId.SHOW)
         # Delete the cache if we need to refresh the all metadata
@@ -269,8 +267,6 @@ class NFSessionOperations(SessionPathRequests):
 
     def get_videoid_info(self, videoid):
         """Get infolabels and arts from cache (if exist) otherwise will be requested"""
-        if isinstance(videoid, list):  # IPC call send the videoid as "path" list
-            videoid = common.VideoId.from_path(videoid)
         from resources.lib.kodi.infolabels import get_info, get_art
         profile_language_code = G.LOCAL_DB.get_profile_config('language', '')
         try:

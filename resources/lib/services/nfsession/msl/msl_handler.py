@@ -73,13 +73,16 @@ class MSLHandler:
         self._init_msl_handler()
         common.register_slot(
             signal=common.Signals.CLEAR_USER_ID_TOKENS,
-            callback=self.clear_user_id_tokens)
+            callback=self.clear_user_id_tokens,
+            is_signal=True)
         common.register_slot(
             signal=common.Signals.REINITIALIZE_MSL_HANDLER,
-            callback=self.reinitialize_msl_handler)
+            callback=self.reinitialize_msl_handler,
+            is_signal=True)
         common.register_slot(
             signal=common.Signals.SWITCH_EVENTS_HANDLER,
-            callback=self.switch_events_handler)
+            callback=self.switch_events_handler,
+            is_signal=True)
         # Slot allocation for IPC
         self.slots = [self.msl_requests.perform_key_handshake]
 
@@ -93,22 +96,22 @@ class MSLHandler:
         self.msl_requests = MSLRequests(msl_data, self.nfsession)
         self.switch_events_handler()
 
-    def reinitialize_msl_handler(self, data=None):  # pylint: disable=unused-argument
+    def reinitialize_msl_handler(self, delete_msl_file=False):
         """
         Reinitialize the MSL handler
-        :param data: set True for delete the msl file data, and then reset all
+        :param delete_msl_file: if True delete the msl file data
         """
         LOG.debug('Reinitializing MSL handler')
-        if data is True:
+        if delete_msl_file:
             common.delete_file(MSL_DATA_FILENAME)
         self._init_msl_handler()
 
-    def switch_events_handler(self, data=None):
+    def switch_events_handler(self, override_enable=False):
         """Switch to enable or disable the Events handler"""
         if self.events_handler_thread:
             self.events_handler_thread.stop_join()
             self.events_handler_thread = None
-        if G.ADDON.getSettingBool('ProgressManager_enabled') or data:
+        if G.ADDON.getSettingBool('ProgressManager_enabled') or override_enable:
             self.events_handler_thread = EventsHandler(self.msl_requests.chunked_request, self.nfsession)
             self.events_handler_thread.start()
 
@@ -324,7 +327,7 @@ class MSLHandler:
             # Example the supplemental media type have no license
             LOG.debug('No license to release')
 
-    def clear_user_id_tokens(self, data=None):  # pylint: disable=unused-argument
+    def clear_user_id_tokens(self):
         """Clear all user id tokens"""
         self.msl_requests.crypto.clear_user_id_tokens()
 

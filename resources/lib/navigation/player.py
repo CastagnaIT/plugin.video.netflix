@@ -72,7 +72,7 @@ def _play(videoid, is_played_from_strm=False):
 
     # When a video is played from Kodi library or Up Next add-on is needed set infoLabels and art info to list_item
     if is_played_from_strm or is_upnext_enabled or G.IS_ADDON_EXTERNAL_CALL:
-        info, arts = common.make_call('get_videoid_info', {'videoid': videoid.to_path()})
+        info, arts = common.make_call('get_videoid_info', videoid)
         list_item.setInfo('video', info)
         list_item.setArt(arts)
 
@@ -80,7 +80,7 @@ def _play(videoid, is_played_from_strm=False):
     LOG.debug('Sending initialization signal')
     # Do not use send_signal as threaded slow devices are not powerful to send in faster way and arrive late to service
     common.send_signal(common.Signals.PLAYBACK_INITIATED, {
-        'videoid': videoid.to_dict(),
+        'videoid': videoid,
         'is_played_from_strm': is_played_from_strm,
         'resume_position': resume_position})
     xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)

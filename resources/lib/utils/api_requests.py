@@ -256,7 +256,7 @@ def remove_watched_status(videoid):
 
 
 def get_metadata(videoid, refresh=False):
-    return common.make_call('get_metadata', {'videoid': videoid.to_path(),
+    return common.make_call('get_metadata', {'videoid': videoid,
                                              'refresh': refresh})
 
 
