@@ -7,7 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from resources.lib.common.misc_utils import is_less_version
+from resources.lib.common.misc_utils import CmpVersion
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
@@ -25,7 +25,7 @@ def check_addon_upgrade():
     cancel_playback = False
     addon_previous_ver = G.LOCAL_DB.get_value('addon_previous_version', None)
     addon_current_ver = G.VERSION
-    if addon_previous_ver is None or is_less_version(addon_previous_ver, addon_current_ver):
+    if addon_previous_ver is None or CmpVersion(addon_current_ver) > addon_previous_ver:
         cancel_playback = _perform_addon_changes(addon_previous_ver, addon_current_ver)
     return addon_previous_ver is None, cancel_playback
 
@@ -48,7 +48,7 @@ def check_service_upgrade():
     # Perform service changes
     service_previous_ver = G.LOCAL_DB.get_value('service_previous_version', None)
     service_current_ver = G.VERSION
-    if service_previous_ver is None or is_less_version(service_previous_ver, service_current_ver):
+    if service_previous_ver is None or CmpVersion(service_current_ver) > service_previous_ver:
         _perform_service_changes(service_previous_ver, service_current_ver)
 
 
@@ -56,7 +56,7 @@ def _perform_addon_changes(previous_ver, current_ver):
     """Perform actions for an version bump"""
     cancel_playback = False
     LOG.debug('Initialize addon upgrade operations, from version {} to {})', previous_ver, current_ver)
-    if previous_ver and is_less_version(previous_ver, '1.7.0'):
+    if previous_ver and CmpVersion(previous_ver) < '1.7.0':
         from resources.lib.upgrade_actions import migrate_library
         migrate_library()
         cancel_playback = True
@@ -71,16 +71,16 @@ def _perform_service_changes(previous_ver, current_ver):
     # Clear cache (prevents problems when netflix change data structures)
     G.CACHE.clear()
     # Delete all stream continuity data - if user has upgraded from Kodi 18 to Kodi 19
-    if previous_ver and is_less_version(previous_ver, '1.13'):
+    if previous_ver and CmpVersion(previous_ver) < '1.13':
         # There is no way to determine if the user has migrated from Kodi 18 to Kodi 19,
         #   then we assume that add-on versions prior to 1.13 was on Kodi 18
         # The am_stream_continuity.py on Kodi 18 works differently and the existing data can not be used on Kodi 19
         G.SHARED_DB.clear_stream_continuity()
-    if previous_ver and is_less_version(previous_ver, '1.9.0'):
+    if previous_ver and CmpVersion(previous_ver) < '1.9.0':
         # In the version 1.9.0 has been changed the COOKIE_ filename with a static filename
         from resources.lib.upgrade_actions import rename_cookie_file
         rename_cookie_file()
-    if previous_ver and is_less_version(previous_ver, '1.12.0'):
+    if previous_ver and CmpVersion(previous_ver) < '1.12.0':
         # In the version 1.13.0:
         # - 'force_widevine' on setting.xml has been moved
         #   as 'widevine_force_seclev' in TABLE_SESSION with different values:

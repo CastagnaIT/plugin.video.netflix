@@ -236,7 +236,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         table_columns = table[1]
         # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
         # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
-        if common.is_less_version(sql.sqlite_version, '3.24.0'):
+        if common.CmpVersion(sql.sqlite_version) < '3.24.0':
             query = 'INSERT OR REPLACE INTO {} ({}, {}) VALUES (?, ?)'.format(table_name,
                                                                               table_columns[0],
                                                                               table_columns[1])

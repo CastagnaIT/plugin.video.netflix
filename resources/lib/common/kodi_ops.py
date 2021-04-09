@@ -14,7 +14,7 @@ import xbmc
 
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
-from .misc_utils import is_less_version
+from .misc_utils import CmpVersion
 
 __CURRENT_KODI_PROFILE_NAME__ = None
 
@@ -237,8 +237,8 @@ def fix_locale_languages(data_list):
                 LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
 
 
-class GetKodiVersion:
-    """Get the kodi version, git date, stage name"""
+class KodiVersion(CmpVersion):
+    """Comparator for Kodi version numbers"""
     # Examples of some types of supported strings:
     # 10.1 Git:Unknown                       PRE-11.0 Git:Unknown                  11.0-BETA1 Git:20111222-22ad8e4
     # 18.1-RC1 Git:20190211-379f5f9903       19.0-ALPHA1 Git:20190419-c963b64487
@@ -247,9 +247,8 @@ class GetKodiVersion:
         self.build_version = xbmc.getInfoLabel('System.BuildVersion')
         # Parse the version number
         result = re.search(r'\d+\.\d+', self.build_version)
-        self.version = result.group(0) if result else ''
-        # Parse the major version number
-        self.major_version = self.version.split('.')[0] if self.version else ''
+        version = result.group(0) if result else ''
+        super().__init__(version)
         # Parse the date of GIT build
         result = re.search(r'(Git:)(\d+?(?=(-|$)))', self.build_version)
         self.date = int(result.group(2)) if result and len(result.groups()) >= 2 else None
@@ -260,12 +259,3 @@ class GetKodiVersion:
             self.stage = result.group(1) if result else ''
         else:
             self.stage = result.group(2) if result else ''
-
-    def is_major_ver(self, major_ver):
-        return bool(major_ver in self.major_version)
-
-    def is_less_version(self, ver):
-        return is_less_version(self.version, ver)
-
-    def __str__(self):
-        return self.build_version

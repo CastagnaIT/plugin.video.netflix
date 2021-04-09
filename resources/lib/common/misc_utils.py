@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import operator
 from urllib.parse import quote, urlencode
 
 from resources.lib.globals import G
@@ -154,16 +155,6 @@ def enclose_quotes(content):
     return '"' + content + '"'
 
 
-def is_minimum_version(version, min_version):
-    """Return True if version is equal or greater to min_version"""
-    return list(map(int, version.split('.'))) >= list(map(int, min_version.split('.')))
-
-
-def is_less_version(version, max_version):
-    """Return True if version is less to max_version"""
-    return list(map(int, version.split('.'))) < list(map(int, max_version.split('.')))
-
-
 def make_list(arg):
     """Return a list with arg as its member or arg if arg is already a list. Returns an empty list if arg is None"""
     return (arg
@@ -201,3 +192,51 @@ def run_threaded(non_blocking, target_func, *args, **kwargs):
     from threading import Thread
     Thread(target=target_func, args=args, kwargs=kwargs).start()
     return None
+
+
+class CmpVersion:
+    """Comparator for version numbers"""
+    def __init__(self, version):
+        self.version = version
+
+    def __str__(self):
+        return self.version
+
+    def __repr__(self):
+        return self.version
+
+    def __lt__(self, other):
+        """Operator <"""
+        return operator.lt(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))
+
+    def __le__(self, other):
+        """Operator <="""
+        return operator.le(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))
+
+    def __gt__(self, other):
+        """Operator >"""
+        return operator.gt(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))
+
+    def __ge__(self, other):
+        """Operator >="""
+        return operator.ge(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))
+
+    def __eq__(self, other):
+        """Operator =="""
+        return operator.eq(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))
+
+    def __ne__(self, other):
+        """Operator !="""
+        return operator.ne(*zip(*map(lambda x, y: (x or 0, y or 0),
+                                     map(int, self.version.split('.')),
+                                     map(int, other.split('.')))))

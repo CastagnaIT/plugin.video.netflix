@@ -7,14 +7,14 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-import resources.lib.common as common
+from resources.lib.common import CmpVersion
 from resources.lib.globals import G
 
 
 def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
-    if common.is_less_version(current_version, '0.2'):
+    if CmpVersion(current_version) < '0.2':
         # Changes: added table 'search'
         import sqlite3 as sql
         from resources.lib.database.db_base_sqlite import CONN_ISOLATION_LEVEL
@@ -34,7 +34,7 @@ def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disabl
         cur.execute(table)
         shared_db_conn.close()
 
-    if common.is_less_version(current_version, '0.3'):
+    if CmpVersion(current_version) < '0.3':
         pass
 
 
@@ -42,7 +42,7 @@ def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disab
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
 
-    if common.is_less_version(current_version, '0.2'):
+    if CmpVersion(current_version) < '0.2':
         # Changes: added table 'watched_status_override'
 
         # SQLite
@@ -91,5 +91,5 @@ def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disab
                 cur.execute(alter_tbl)
                 shared_db_conn.conn.close()
 
-    if common.is_less_version(current_version, '0.3'):
+    if CmpVersion(current_version) < '0.3':
         pass
