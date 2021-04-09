@@ -80,8 +80,7 @@ class CacheManagement:
         ]
         for slot in slots:
             # For AddonSignals IPC
-            enveloped_func = common.EnvelopeIPCReturnCall(slot).call
-            common.register_slot(enveloped_func, slot.__name__)
+            common.register_slot(slot, slot.__name__)
 
     def load_ttl_values(self):
         """Load the ttl values from add-on settings"""

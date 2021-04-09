@@ -109,16 +109,16 @@ class LibraryUpdateService(xbmc.Monitor):
             self.clean_in_progress = False
             self.check_awaiting_operations()
 
-    def request_kodi_library_update(self, data=None):
+    def request_kodi_library_update(self, clean=False, scan=False):
         """Make a request for scan/clean the Kodi library database"""
         # Kodi library scan/clean has some issues (Kodi 18/19), for example:
         # - If more than one scan calls will be performed, the last call cancel the previous scan
         # - If a clean is in progress, a new scan/clean call will be ignored
         # To manage these problems we monitor the events to check if a scan/clean is currently in progress
         # (from this or others add-ons) and delay the call until the current scan/clean will be finished.
-        if data.get('clean'):
+        if clean:
             self.start_clean_kodi_library()
-        if data.get('scan'):
+        if scan:
             self.start_update_kodi_library()
 
     def check_awaiting_operations(self):

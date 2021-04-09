@@ -146,4 +146,4 @@ def _check_watched_status_sync():
     progress_manager_enabled_old = G.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
     if progress_manager_enabled != progress_manager_enabled_old:
         G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
-        common.send_signal(signal=common.Signals.SWITCH_EVENTS_HANDLER, data=progress_manager_enabled)
+        common.send_signal(common.Signals.SWITCH_EVENTS_HANDLER, progress_manager_enabled)

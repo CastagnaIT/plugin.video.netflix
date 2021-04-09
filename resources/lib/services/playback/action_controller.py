@@ -49,18 +49,15 @@ class ActionController(xbmc.Monitor):
         self.action_managers = None
         self._last_player_state = {}
         self._is_pause_called = False
-        common.register_slot(self.initialize_playback, common.Signals.PLAYBACK_INITIATED)
+        common.register_slot(self.initialize_playback, common.Signals.PLAYBACK_INITIATED, is_signal=True)
 
-    def initialize_playback(self, data):
+    def initialize_playback(self, **kwargs):
         """
         Callback for AddonSignal when this add-on has initiated a playback
         """
-        # We convert the videoid only once for all action managers
-        videoid = common.VideoId.from_dict(data['videoid'])
-        data['videoid'] = videoid
-        data['videoid_parent'] = videoid.derive_parent(common.VideoId.SHOW)
-        data['metadata'] = self.nfsession.get_metadata(videoid)
-        self._init_data = data
+        self._init_data = kwargs
+        self._init_data['videoid_parent'] = kwargs['videoid'].derive_parent(common.VideoId.SHOW)
+        self._init_data['metadata'] = self.nfsession.get_metadata(kwargs['videoid'])
         self.active_player_id = None
         self.is_tracking_enabled = True
 

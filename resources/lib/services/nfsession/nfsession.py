@@ -37,8 +37,7 @@ class NetflixSession:
             # For HTTP IPC (http_server.py)
             self.http_ipc_slots[func_name] = slot
             # For AddonSignals IPC
-            enveloped_func = common.EnvelopeIPCReturnCall(slot).call
-            common.register_slot(enveloped_func, func_name)
+            common.register_slot(slot, func_name)
 
     def library_auto_update(self):
         """Run the library auto update"""

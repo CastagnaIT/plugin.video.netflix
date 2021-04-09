@@ -60,7 +60,11 @@ class AMUpNextNotifier(ActionManager):
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
         if self.upnext_info:
             LOG.debug('Sending initialization signal to Up Next Add-on')
-            common.send_signal(common.Signals.UPNEXT_ADDON_INIT, self.upnext_info, non_blocking=True)
+            import AddonSignals
+            AddonSignals.sendSignal(
+                source_id=G.ADDON_ID,
+                signal='upnext_data',
+                data=self.upnext_info)
 
     def on_tick(self, player_state):
         pass

@@ -266,6 +266,9 @@ class VideoId:
     def __neq__(self, other):
         return not self.__eq__(other)
 
+    def __repr__(self):
+        return 'VideoId object [{}]'.format(self)
+
 
 def _get_unicode_kwargs(kwargs):
     # Example of return value: (None, None, '70084801', None, None, None) this is a movieid
