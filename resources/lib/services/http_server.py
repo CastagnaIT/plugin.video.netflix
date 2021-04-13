@@ -84,7 +84,7 @@ def handle_msl_request(server, func_name, data, params=None):
         server.end_headers()
         server.wfile.write(manifest_data)
     else:
-        handle_request(server, server.server.netflix_session.msl_handler, func_name, data)
+        handle_request(server, server.server.netflix_session, func_name, data)
 
 
 def handle_request(server, handler, func_name, data):
