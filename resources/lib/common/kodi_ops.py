@@ -207,6 +207,16 @@ def get_kodi_ui_language(iso_format=xbmc.ISO_639_1):
     return convert_language_iso(setting.split('.')[-1][:2], iso_format)
 
 
+def get_kodi_is_prefer_sub_impaired():
+    """Return True if subtitles for impaired are enabled in Kodi settings"""
+    return json_rpc('Settings.GetSettingValue', {'setting': 'accessibility.subhearing'})['value']
+
+
+def get_kodi_is_prefer_audio_impaired():
+    """Return True if audio for impaired is enabled in Kodi settings"""
+    return json_rpc('Settings.GetSettingValue', {'setting': 'accessibility.audiovisual'})['value']
+
+
 def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
     """
     Convert given value (English name or two/three letter code) to the specified format
