@@ -44,7 +44,7 @@ def convert_to_dash(manifest):
 
     id_default_audio_tracks = _get_id_default_audio_tracks(manifest)
     for audio_track in manifest['audio_tracks']:
-        is_default = audio_track['id'] in id_default_audio_tracks
+        is_default = audio_track['id'] == id_default_audio_tracks
         _convert_audio_track(audio_track, period, init_length, is_default, has_audio_drm_streams, cdn_index)
 
     for text_track in manifest['timedtexttracks']:
@@ -309,13 +309,14 @@ def _get_id_default_audio_tracks(manifest):
         audio_stream = _find_audio_stream(manifest, 'isNative', True, channels_multi)
     if not audio_stream:
         audio_stream = _find_audio_stream(manifest, 'isNative', True, channels_stereo)
-    # Try find the default track for impaired
     imp_audio_stream = {}
-    if not is_prefer_stereo:
-        imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_multi, True)
-    if not imp_audio_stream:
-        imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_stereo, True)
-    return audio_stream.get('id'), imp_audio_stream.get('id')
+    if common.get_kodi_is_prefer_audio_impaired():
+        # Try to find the default track for impaired
+        if not is_prefer_stereo:
+            imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_multi, True)
+        if not imp_audio_stream:
+            imp_audio_stream = _find_audio_stream(manifest, 'language', audio_language, channels_stereo, True)
+    return imp_audio_stream.get('id') or audio_stream.get('id')
 
 
 def _find_audio_stream(manifest, property_name, property_value, channels_list, is_impaired=False):
