@@ -59,8 +59,6 @@ class AMStreamContinuity(ActionManager):
         self.resume = {}
         self.is_kodi_forced_subtitles_only = None
         self.is_prefer_alternative_lang = None
-        self.is_prefer_sub_impaired = None
-        self.is_prefer_audio_impaired = None
 
     def __str__(self):
         return ('enabled={}, videoid_parent={}'
@@ -69,10 +67,6 @@ class AMStreamContinuity(ActionManager):
     def initialize(self, data):
         self.is_kodi_forced_subtitles_only = common.get_kodi_subtitle_language() == 'forced_only'
         self.is_prefer_alternative_lang = G.ADDON.getSettingBool('prefer_alternative_lang')
-        self.is_prefer_sub_impaired = common.json_rpc('Settings.GetSettingValue',
-                                                      {'setting': 'accessibility.subhearing'}).get('value')
-        self.is_prefer_audio_impaired = common.json_rpc('Settings.GetSettingValue',
-                                                        {'setting': 'accessibility.audiovisual'}).get('value')
 
     def on_playback_started(self, player_state):
         is_enabled = G.ADDON.getSettingBool('StreamContinuityManager_enabled')
@@ -248,7 +242,7 @@ class AMStreamContinuity(ActionManager):
         lang_code = _find_lang_with_country_code(audio_list, pref_audio_language)
         if lang_code and common.get_kodi_audio_language() not in ['mediadefault', 'original']:
             stream_audio = None
-            if self.is_prefer_audio_impaired:
+            if common.get_kodi_is_prefer_audio_impaired():
                 stream_audio = next((audio_track for audio_track in audio_list
                                      if audio_track['language'] == lang_code
                                      and audio_track['isimpaired']
@@ -350,7 +344,7 @@ class AMStreamContinuity(ActionManager):
     def _find_subtitle_stream(self, language, is_forced=False):
         # Take in account if a user have enabled Kodi impaired subtitles preference
         # but only without forced setting (same Kodi player behaviour)
-        is_prefer_impaired = self.is_prefer_sub_impaired and not is_forced
+        is_prefer_impaired = common.get_kodi_is_prefer_sub_impaired() and not is_forced
         subtitles_list = self.player_state.get(STREAMS['subtitle']['list'])
         stream = None
         if is_prefer_impaired:
