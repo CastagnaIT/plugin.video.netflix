@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.15.0+matrix.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.15.1+matrix.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -87,21 +87,11 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.15.0 (2021-04-02)
-NOTICE TO PARENTAL CONTROL:
-THE OLD PARENTAL CONTROL WITH PIN IS NO LONGER SUPPORTED,
-HAS BEEN DEPRECATED BY NETFLIX SINCE LAST YEAR, IF YOU KEEP USING IT
-YOU MUST UPDATE YOUR ACCOUNT PARENTAL CONTROL SETTINGS.
-- Fixes due to website changes (fix KeyError loco)
-- Removed the deprecated Parental Control (with PIN protection)
-- Improved playback startup speed
-- Enabled IPC over HTTP by default, IPC over AddonSignals lead to a memory leak (Kodi bug)
-- IPC now use only Pickle
-- Add missing support to IPC over AddonSignals for the cache
-- Joined all HTTP servers to one multithreaded to save resources
-- Used a single web session instead of two distinct (nfsession/MSL)
-- Cleaned many part of source code (nfsession/MSL/directory/IPC/...)
-- Update translations zh_tw, gr
+v1.15.1 (2021-04-21)
+- Fixed regression to ESN/Widevine window
+- Fixed wrong selection of audio track for impaired
+- Add latest changes to IPC
+- Minor changes
     </news>
   </extension>
 </addon>

@@ -1,3 +1,9 @@
+v1.15.1 (2021-04-21)
+- Fixed regression to ESN/Widevine window
+- Fixed wrong selection of audio track for impaired
+- Add latest changes to IPC
+- Minor changes
+
 v1.15.0 (2021-04-02)
 NOTICE TO PARENTAL CONTROL:
 THE OLD PARENTAL CONTROL WITH PIN IS NO LONGER SUPPORTED,
