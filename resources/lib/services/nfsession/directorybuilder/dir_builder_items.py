@@ -165,7 +165,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
     episodeid = seasonid.derive_episode(episodeid_value)
     list_item = ListItemW(label=episode['title'])
     list_item.setProperties({
-        'isPlayable': 'true' if is_playable else 'false',
+        'isPlayable': str(is_playable).lower(),
         'nf_videoid': episodeid.to_string()
     })
     add_info_list_item(list_item, episodeid, episode, episodes_list.data, False, common_data)
@@ -289,14 +289,14 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
 
 
 def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):  # pylint: disable=unused-argument
-    is_playable = video['availability']['isPlayable']
     videoid = common.VideoId.from_videolist_item(video)
     is_folder = videoid.mediatype == common.VideoId.SHOW
+    is_playable = video['availability']['isPlayable']
+    is_video_playable = not is_folder and is_playable
     is_in_mylist = videoid in common_data['mylist_items']
-
     list_item = ListItemW(label=video['title'])
     list_item.setProperties({
-        'isPlayable': str(not is_folder and is_playable),
+        'isPlayable': str(is_video_playable).lower(),
         'nf_videoid': videoid.to_string(),
         'nf_is_in_mylist': str(is_in_mylist),
         'nf_perpetual_range_start': str(perpetual_range_start)
