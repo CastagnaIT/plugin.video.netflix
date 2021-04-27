@@ -314,7 +314,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         # The video is not playable, try check if there is a date
         list_item.setProperty('nf_availability_message', get_availability_message(video))
         url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
-    return url, list_item, is_folder
+    return url, list_item, is_folder and is_playable
 
 
 @measure_exec_time_decorator(is_immediate=True)
