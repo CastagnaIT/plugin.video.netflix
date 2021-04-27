@@ -1074,6 +1074,14 @@ msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "Θέλετε να επαναφέρετε όλες τις ρυθμίσεις;"
 
+msgctxt "#30620"
+msgid "This title will be available from: {}"
+msgstr ""
+
+msgctxt "#30621"
+msgid "Do you want to play the promo trailer?"
+msgstr ""
+
 msgctxt "#30700"
 msgid "New and popular"
 msgstr ""

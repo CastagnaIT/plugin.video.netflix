@@ -8,6 +8,7 @@
     See LICENSES/MIT.md for more information.
 """
 import xbmc
+import xbmcgui
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -199,8 +200,20 @@ class AddonActionExecutor:
 
     def show_availability_message(self, pathitems=None):  # pylint: disable=unused-argument
         """Show a message to the user to show the date of availability of a video"""
-        ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'),
-                          xbmc.getInfoLabel('ListItem.Property(nf_availability_message)'))
+        # Try get the promo trailer path
+        trailer_path = xbmc.getInfoLabel('ListItem.Trailer')
+        msg = common.get_local_string(30620).format(
+            xbmc.getInfoLabel('ListItem.Property(nf_availability_message)') or '--')
+        if trailer_path:
+            if ui.show_yesno_dialog(xbmc.getInfoLabel('ListItem.Label'),
+                                    msg + '[CR]' + common.get_local_string(30621)):
+                # Create a basic trailer ListItem (all other info if available are set on Play callback)
+                list_item = xbmcgui.ListItem(xbmc.getInfoLabel('ListItem.Title'), offscreen=True)
+                list_item.setInfo('video', {'Title': xbmc.getInfoLabel('ListItem.Title')})
+                list_item.setProperty('isPlayable', 'true')
+                xbmc.Player().play(trailer_path, list_item)
+        else:
+            ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'), msg)
 
 
 def sync_library(videoid, operation):
