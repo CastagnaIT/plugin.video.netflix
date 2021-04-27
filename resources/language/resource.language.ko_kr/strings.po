@@ -1073,3 +1073,7 @@ msgstr "ESN형식이 이상합니다."
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "전부 다시 설정할까요?"
+
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""

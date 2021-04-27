@@ -196,6 +196,21 @@ class Directory:
 
     @measure_exec_time_decorator()
     @custom_viewmode(G.VIEW_FOLDER)
+    def category_list(self, pathitems):
+        """Show a list of folders of a LoLoMo category"""
+        menu_data = G.MAIN_MENU_ITEMS.get(pathitems[1])
+        call_args = {
+            'menu_data': menu_data
+        }
+        dir_items, extra_data = common.make_call('get_category_list', call_args)
+
+        finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_FOLDER),
+                           title=get_title(menu_data, extra_data), sort_type='sort_label')
+        end_of_directory(self.dir_update_listing)
+        return menu_data.get('view')
+
+    @measure_exec_time_decorator()
+    @custom_viewmode(G.VIEW_FOLDER)
     def recommendations(self, pathitems):
         """Show video lists for a genre"""
         menu_data = G.MAIN_MENU_ITEMS.get(pathitems[1])

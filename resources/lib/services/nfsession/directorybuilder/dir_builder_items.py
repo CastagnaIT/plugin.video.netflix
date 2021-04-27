@@ -305,13 +305,15 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     if not is_folder:
         set_watched_status(list_item, video, common_data)
     if is_playable:
+        # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
                                mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                params=None if is_folder else common_data['params'])
         list_item.addContextMenuItems(generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
                                                                   common_data['ctxmenu_remove_watched_status']))
     else:
-        # The video is not playable, try check if there is a date
+        # The movie or tvshow (episodes) is not available
+        # Try check if there is a availability date
         list_item.setProperty('nf_availability_message', get_availability_message(video))
         url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
@@ -341,4 +343,40 @@ def build_subgenres_listing(subgenre_list, menu_data):
 def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
     list_item = ListItemW(label=subgenre_data['name'])
+    return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True
+
+
+def build_lolomo_category_listing(lolomo_cat_list, menu_data):
+    """Build a folders listing of a LoLoMo category"""
+    common_data = {
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
+    }
+    directory_items = []
+    for list_id, summary_data, video_list in lolomo_cat_list.lists():
+        menu_parameters = common.MenuIdParameters(list_id)
+        # Skip "Top 10" list, currently we have it in the main menu
+        if menu_parameters.type_id == '101':
+            continue
+        # Create dynamic sub-menu info in MAIN_MENU_ITEMS
+        sub_menu_data = menu_data.copy()
+        sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
+        sub_menu_data['loco_known'] = False
+        sub_menu_data['loco_contexts'] = None
+        sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
+        sub_menu_data['title'] = summary_data['displayName']
+        sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
+        #  sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
+        G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
+        directory_item = _create_category_item(list_id, video_list, sub_menu_data, common_data, summary_data)
+        directory_items.append(directory_item)
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
+    return directory_items, {}
+
+
+def _create_category_item(list_id, video_list, menu_data, common_data, summary_data):
+    pathitems = ['video_list', menu_data['path'][1], list_id]
+    list_item = ListItemW(label=summary_data['displayName'])
+    add_info_list_item(list_item, video_list.videoid, video_list, video_list.data, False, common_data,
+                       art_item=video_list.artitem)
     return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True

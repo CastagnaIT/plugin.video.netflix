@@ -1074,3 +1074,7 @@ msgstr ""
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr ""
+
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""

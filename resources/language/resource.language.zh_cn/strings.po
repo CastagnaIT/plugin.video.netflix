@@ -1073,3 +1073,7 @@ msgstr "错误的ESN格式"
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "你确定要重置所有设置吗？"
+
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""

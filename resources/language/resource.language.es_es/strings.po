@@ -1073,3 +1073,7 @@ msgstr "Formato de ESN incorrecto"
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "¿Quieres restablecer todos los ajustes?"
+
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""
