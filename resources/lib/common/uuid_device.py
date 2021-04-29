@@ -117,8 +117,8 @@ def _get_android_uuid():
                     'ro.product.manufacturer', 'ro.product.model', 'ro.product.platform',
                     'persist.sys.timezone', 'persist.sys.locale', 'net.hostname']
         # Warning net.hostname property starting from android 10 is deprecated return empty
-        proc = subprocess.Popen(['/system/bin/getprop'], stdout=subprocess.PIPE)
-        output_data = proc.communicate()[0].decode('utf-8')
+        with subprocess.Popen(['/system/bin/getprop'], stdout=subprocess.PIPE) as proc:
+            output_data = proc.communicate()[0].decode('utf-8')
         list_values = output_data.splitlines()
         for value in list_values:
             value_splitted = re.sub(r'\[|\]|\s', '', value).split(':')
@@ -134,10 +134,10 @@ def _get_macos_uuid():
     import subprocess
     sp_dict_values = None
     try:
-        proc = subprocess.Popen(
-            ['/usr/sbin/system_profiler', 'SPHardwareDataType', '-detaillevel', 'full', '-xml'],
-            stdout=subprocess.PIPE)
-        output_data = proc.communicate()[0].decode('utf-8')
+        with subprocess.Popen(
+                ['/usr/sbin/system_profiler', 'SPHardwareDataType', '-detaillevel', 'full', '-xml'],
+                stdout=subprocess.PIPE) as proc:
+            output_data = proc.communicate()[0].decode('utf-8')
         if output_data:
             sp_dict_values = _parse_osx_xml_plist_data(output_data)
     except Exception as exc:
