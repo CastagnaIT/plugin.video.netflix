@@ -1040,7 +1040,7 @@ msgstr "Nastavení ESN / Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
