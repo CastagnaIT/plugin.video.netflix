@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2020-08-10 00:40+0000\n"
-"Last-Translator: otava5\n"
+"PO-Revision-Date: 2021-05-04 19:24+0200\n"
+"Last-Translator: tajnymag\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
@@ -68,11 +68,11 @@ msgstr "Všechny kategorie"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "Možnosti profilu a rodičovská kontrola"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "V seznamu profilů, otevřete kontextové menu vybraného profilu"
 
 msgctxt "#30014"
 msgid "Account"
@@ -153,35 +153,35 @@ msgstr "Nastavení InputStream Adaptive ..."
 # Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
-msgstr ""
+msgstr "Druhy zobrazení vzhledu"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr ""
+msgstr "Povolit vlastní druh zobrazení"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr ""
+msgstr "Zobrazit ID pro složky"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr ""
+msgstr "Zobrazit ID pro filmy"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr ""
+msgstr "Zobrazit ID pro seriály"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr ""
+msgstr "Zobrazit ID pro série"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr ""
+msgstr "Zobrazit ID pro epizody"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr ""
+msgstr "Zobrazit ID pro profily"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -259,7 +259,7 @@ msgstr "Automatická aktualizace řad a dílů seriálů"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Povolit záznam ladicích dat"
 
 msgctxt "#30067"
 msgid "daily"
@@ -327,7 +327,7 @@ msgstr "Zapamatovat si předvolby zvuku / titulků"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Vynutit zobrazování vynucených titulků pouze při specifikovaném jazyce"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -355,11 +355,11 @@ msgstr "Procházet podžánry"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "Procházet podobné seznamy videí a objevovat další obsah"
+msgstr "Procházet podobné seznamy videí a objevovat další obsah."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Procházet a spravovat obsah, který byl exportován do knihovny Kodi"
+msgstr "Procházet a spravovat obsah, který byl exportován do knihovny Kodi."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -367,7 +367,7 @@ msgstr "Hledejte obsah a snadno najděte, co chcete sledovat."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "Procházet podle žánru a snadno objevit podobný obsah"
+msgstr "Procházet podle žánru a snadno objevit podobný obsah."
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
@@ -608,15 +608,15 @@ msgstr "Spustit průvodce konfigurací doplňku"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr ""
+msgstr "Zobrazit ID pro hlavní menu"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr ""
+msgstr "Zobrazit ID pro vyhledávání"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr ""
+msgstr "Zobrazit ID pro exportované"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -632,7 +632,7 @@ msgstr "Procházet obsah s audio popisem."
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "Zobrazi ID pro \"Můj seznam\""
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -696,7 +696,7 @@ msgstr "Došlo k potížím s přihlášením. Je možné, že váš účet neby
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Vždy zobrazit titulky, pokud není preferovaný jazyk audio stopy k dispozici"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -732,7 +732,7 @@ msgstr "film"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "seriál"
+msgstr "Seriál"
 
 # Unused 30191
 msgctxt "#30192"
@@ -948,32 +948,32 @@ msgstr "Zahrnout knihovnu Kodi (pouze odesílání dat)"
 # Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "Vyberte metodu přihlášení[CR](pokud přihlášení E-Mail/Heslo vždy vyhodí \"incorrect password\", použijte Autentizační klíč, dle návodu v ReadME na GitHubu)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "E-Mail/Heslo"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "Autentizační klíč"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "Vybraný soubor není kompatibilní nebo je poškozen"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "Platnost autentizačního klíče vypršela"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "Zadejte PIN"
 
 # Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Řadit historii dle"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1022,54 +1022,54 @@ msgstr "Podle jazyka titulků"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Podle ID žánru/podžánru"
 
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Preferovat jazyk zvuku/titulků s kódem země (pokud je k dispozici)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Preferovat stereo stopy bez zeptání"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "Nastavení ESN / Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "Změnit ESN"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "Uložit systémové informace"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widevine - Vynutit úroveň zabezpečení"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr ""
+msgstr "Vynutit {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "ESN byla úspěšně nastavena[CR]Zkuste přehrát nějaké video"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "Tato ESN není aplikovatelná[CR]Zkuste ESN změnit nebo resetovat.[CR][CR]Podrobnosti chyby:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "Neplatný formát ESN"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "Přejete si resetovat všechna nastavení?"
