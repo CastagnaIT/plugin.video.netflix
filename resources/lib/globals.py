@@ -246,9 +246,8 @@ class GlobalVariables:
                 self.IS_SERVICE = True
                 self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
                                                              netloc=self.ADDON_ID)
-            # Disabled currently unused
-            #   from resources.lib.common.kodi_ops import KodiVersion
-            #   self.KODI_VERSION = KodiVersion()
+            from resources.lib.common.kodi_ops import KodiVersion
+            self.KODI_VERSION = KodiVersion()
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
