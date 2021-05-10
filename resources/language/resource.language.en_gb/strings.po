@@ -1100,6 +1100,8 @@ msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr ""
 
+# Unused 30610 to 30619
+
 msgctxt "#30620"
 msgid "This title will be available from: {}"
 msgstr ""
@@ -1107,6 +1109,16 @@ msgstr ""
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr ""
+
+msgctxt "#30622"
+msgid "Remind me"
+msgstr ""
+
+msgctxt "#30623"
+msgid "Reminder set"
+msgstr ""
+
+# Unused 30624 to 30699
 
 msgctxt "#30700"
 msgid "New and popular"

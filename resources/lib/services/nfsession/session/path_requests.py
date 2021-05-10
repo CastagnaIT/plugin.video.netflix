@@ -123,7 +123,7 @@ class SessionPathRequests(SessionAccess):
         return path_response
 
     @measure_exec_time_decorator(is_immediate=True)
-    def callpath_request(self, callpaths, params=None, path_suffixs=None):
+    def callpath_request(self, callpaths, params=None, path_suffixs=None, path=None):
         """Perform a callPath request against the Shakti API"""
         LOG.debug('Executing callPath request: {} params: {} path_suffixs: {}',
                   callpaths, params, path_suffixs)
@@ -141,6 +141,8 @@ class SessionPathRequests(SessionAccess):
             #          if the request have wrong data will raise error 401
             #          if the parameters are not formatted correctly will raise error 401
             data += '&param=' + '&param='.join(params)
+        if path:
+            data += '&path=' + json.dumps(path, separators=(',', ':'))
         if path_suffixs:
             data += '&pathSuffix=' + '&pathSuffix='.join(
                 json.dumps(path_suffix, separators=(',', ':')) for path_suffix in path_suffixs)

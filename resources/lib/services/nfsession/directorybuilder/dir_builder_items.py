@@ -8,10 +8,13 @@
     See LICENSES/MIT.md for more information.
 """
 import resources.lib.common as common
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS
+from resources.lib.common.exceptions import CacheMiss
 from resources.lib.common.kodi_wrappers import ListItemW
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
-from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
+from resources.lib.kodi.context_menu import (generate_context_menu_items, generate_context_menu_profile,
+                                             generate_context_menu_remind_me)
 from resources.lib.kodi.infolabels import get_color_name, set_watched_status, add_info_list_item
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page,
@@ -315,6 +318,16 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         # The movie or tvshow (episodes) is not available
         # Try check if there is a availability date
         list_item.setProperty('nf_availability_message', get_availability_message(video))
+        # Check if the user has set "Remind Me" feature,
+        try:
+            #  Due to the add-on cache we can not change in easy way the value stored in database cache,
+            #  then we temporary override the value (see 'remind_me' in navigation/actions.py)
+            is_in_remind_me = G.CACHE.get(CACHE_BOOKMARKS, 'is_in_remind_me_' + str(videoid))
+        except CacheMiss:
+            #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
+            is_in_remind_me = video['inRemindMeList'] or video['queue']['inQueue']
+        trackid = video['trackIds']['trackId']
+        list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, trackid))
         url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
 
