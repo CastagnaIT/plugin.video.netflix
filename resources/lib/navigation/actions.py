@@ -209,7 +209,8 @@ class AddonActionExecutor:
                 pass
         common.container_refresh()
 
-    def show_availability_message(self, pathitems=None):  # pylint: disable=unused-argument
+    @common.inject_video_id(path_offset=1)
+    def show_availability_message(self, videoid):  # pylint: disable=unused-argument
         """Show a message to the user to show the date of availability of a video"""
         # Try get the promo trailer path
         trailer_path = xbmc.getInfoLabel('ListItem.Trailer')
