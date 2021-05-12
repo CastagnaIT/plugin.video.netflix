@@ -367,6 +367,8 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
     }
     directory_items = []
     for list_id, summary_data, video_list in lolomo_cat_list.lists():
+        if summary_data['length'] == 0:  # Do not show empty lists
+            continue
         menu_parameters = common.MenuIdParameters(list_id)
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         sub_menu_data = menu_data.copy()
