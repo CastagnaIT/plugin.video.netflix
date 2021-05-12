@@ -368,9 +368,6 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
     directory_items = []
     for list_id, summary_data, video_list in lolomo_cat_list.lists():
         menu_parameters = common.MenuIdParameters(list_id)
-        # Skip "Top 10" list, currently we have it in the main menu
-        if menu_parameters.type_id == '101':
-            continue
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
@@ -379,7 +376,7 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['title'] = summary_data['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        #  sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
+        sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
         directory_item = _create_category_item(list_id, video_list, sub_menu_data, common_data, summary_data)
         directory_items.append(directory_item)

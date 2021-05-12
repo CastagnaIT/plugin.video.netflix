@@ -440,11 +440,6 @@
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="show_menu_mostwatched" type="boolean" label="30242" help="">
-                    <level>0</level>
-                    <default>true</default>
-                    <control type="toggle"/>
-                </setting>
                 <setting id="show_menu_mostviewed" type="boolean" label="30172" help="">
                     <level>0</level>
                     <default>true</default>
