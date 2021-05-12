@@ -326,7 +326,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         except CacheMiss:
             #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
             is_in_remind_me = video['inRemindMeList'] or video['queue']['inQueue']
-        trackid = video['trackIds']['trackId']
+        trackid = video['trackIds']['trackId_jaw']
         list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, trackid))
         url = common.build_url(['show_availability_message'], videoid=videoid, mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
