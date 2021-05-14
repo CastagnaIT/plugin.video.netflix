@@ -106,7 +106,7 @@ def auto_scroll(dir_items):
     works only with Sync of watched status with netflix
     """
     # A sad implementation to a Kodi feature available only for the Kodi library
-    if G.ADDON.getSettingBool('ProgressManager_enabled') and G.ADDON.getSettingBool('select_first_unwatched'):
+    if G.ADDON.getSettingBool('sync_watched_status') and G.ADDON.getSettingBool('select_first_unwatched'):
         total_items = len(dir_items)
         if total_items:
             # Delay a bit to wait for the completion of the screen update

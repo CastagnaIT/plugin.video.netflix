@@ -29,25 +29,31 @@
             </group>
             <!--GROUP: Other options-->
             <group id="3" label="30015">
-                <setting id="ProgressManager_enabled" type="boolean" label="30235" help="">
+                <setting id="ProgressManager_enabled" type="boolean" label="30235" help=""><!--DEPRECATED: kept only for add-on upgrade purpose-->
                     <level>0</level>
                     <default>false</default>
+                    <visible>false</visible>
                     <control type="toggle"/>
                 </setting>
-                <setting id="sync_watched_status_library" type="boolean" label="30301" help="" parent="ProgressManager_enabled">
+                <setting id="sync_watched_status" type="boolean" label="30235" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="sync_watched_status_library" type="boolean" label="30301" help="" parent="sync_watched_status">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="visible" setting="ProgressManager_enabled">true</dependency>
+                        <dependency type="visible" setting="sync_watched_status">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="select_first_unwatched" type="boolean" label="30243" help="" parent="ProgressManager_enabled">
+                <setting id="select_first_unwatched" type="boolean" label="30243" help="" parent="sync_watched_status">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="visible" setting="ProgressManager_enabled">true</dependency>
+                        <dependency type="visible" setting="sync_watched_status">true</dependency>
                     </dependencies>
                 </setting>
                 <setting id="mylist_titles_color" type="integer" label="30215" help="">

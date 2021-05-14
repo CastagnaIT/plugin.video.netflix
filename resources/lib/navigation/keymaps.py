@@ -74,7 +74,7 @@ class KeymapsActionExecutor:
         """Change the watched status of a video, only when sync of watched status with NF is enabled"""
         if videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
             return
-        if G.ADDON.getSettingBool('ProgressManager_enabled'):
+        if G.ADDON.getSettingBool('sync_watched_status'):
             change_watched_status_locally(videoid)
 
     @allow_execution_decorator(inject_videoid=True)

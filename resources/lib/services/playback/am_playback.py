@@ -79,7 +79,7 @@ class AMPlayback(ActionManager):
             return
         if not self.watched_threshold or not player_state['elapsed_seconds'] > self.watched_threshold:
             return
-        if G.ADDON.getSettingBool('ProgressManager_enabled') and not self.is_played_from_strm:
+        if G.ADDON.getSettingBool('sync_watched_status') and not self.is_played_from_strm:
             # This have not to be applied with our custom watched status of Netflix sync, within the addon
             return
         if self.is_played_from_strm:
