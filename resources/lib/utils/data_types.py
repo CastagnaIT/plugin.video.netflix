@@ -256,6 +256,30 @@ class SubgenreList:
             self.lists = list(path_response['genres'].get(genre_id, {}).get('subgenres').items())
 
 
+class LoLoMoCategory:
+    """'List of Lists of Movies' by category (LoLoMoByCategory)"""
+    def __init__(self, path_response):
+        self.data = path_response
+        # LOG.debug('LoLoMoByCategory data: {}', self.data)
+        self.id = next(iter(self.data['locos']))  # Get loco root id
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data['locos'][self.id][key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this LoLoMoByCategory."""
+        return self.data['locos'][self.id].get(key, default)
+
+    def lists(self):
+        """
+        Generator to get all lists of videos
+        :return tuples as: list ID, summary data (dict), video list
+        """
+        # It is as property to avoid slow down the loading of main menu
+        for list_id, list_data in self.data['lists'].items():  # pylint: disable=unused-variable
+            yield list_id, list_data['componentSummary'], VideoListLoCo(self.data, list_id)
+
+
 def merge_data_type(data, data_to_merge):
     for video_id, video in data_to_merge.videos.items():
         data.videos[video_id] = video

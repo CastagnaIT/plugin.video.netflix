@@ -13,7 +13,7 @@ from resources.lib.common import VideoId
 from resources.lib.globals import G
 from resources.lib.services.nfsession.directorybuilder.dir_builder_items \
     import (build_video_listing, build_subgenres_listing, build_season_listing, build_episode_listing,
-            build_loco_listing, build_mainmenu_listing, build_profiles_listing)
+            build_loco_listing, build_mainmenu_listing, build_profiles_listing, build_lolomo_category_listing)
 from resources.lib.services.nfsession.directorybuilder.dir_path_requests import DirectoryPathRequests
 from resources.lib.utils.logging import measure_exec_time_decorator
 
@@ -32,6 +32,7 @@ class DirectoryBuilder(DirectoryPathRequests):
             self.get_video_list,
             self.get_video_list_sorted,
             self.get_video_list_sorted_sp,
+            self.get_category_list,
             self.get_video_list_supplemental,
             self.get_video_list_chunked,
             self.get_video_list_search,
@@ -110,6 +111,11 @@ class DirectoryBuilder(DirectoryPathRequests):
                                                 menu_data=menu_data)
         return build_video_listing(video_list, menu_data, None, pathitems, perpetual_range_start,
                                    self.req_mylist_items())
+
+    @measure_exec_time_decorator(is_immediate=True)
+    def get_category_list(self, menu_data):
+        lolomo_category_list = self.req_lolomo_category(menu_data['loco_contexts'][0])
+        return build_lolomo_category_listing(lolomo_category_list, menu_data)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_video_list_supplemental(self, menu_data, video_id_dict, supplemental_type):
