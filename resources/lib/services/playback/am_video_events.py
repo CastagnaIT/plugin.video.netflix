@@ -28,7 +28,7 @@ if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not a
 class AMVideoEvents(ActionManager):
     """Detect the progress of the played video and send the data to the netflix service"""
 
-    SETTING_ID = 'ProgressManager_enabled'
+    SETTING_ID = 'sync_watched_status'
 
     def __init__(self, nfsession: 'NFSessionOperations', msl_handler: 'MSLHandler',
                  directory_builder: 'DirectoryBuilder'):

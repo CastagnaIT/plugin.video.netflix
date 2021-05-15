@@ -149,7 +149,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
     """Build a episodes listing of a season"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
-        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
@@ -254,7 +254,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
     common_data = {
         'params': get_param_watched_status_by_profile(),
         'mylist_items': mylist_items,
-        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
         'mylist_titles_color': (get_color_name(G.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'

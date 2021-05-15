@@ -111,7 +111,7 @@ class MSLHandler:
         if self.events_handler_thread:
             self.events_handler_thread.stop_join()
             self.events_handler_thread = None
-        if G.ADDON.getSettingBool('ProgressManager_enabled') or override_enable:
+        if G.ADDON.getSettingBool('sync_watched_status') or override_enable:
             self.events_handler_thread = EventsHandler(self.msl_requests.chunked_request, self.nfsession)
             self.events_handler_thread.start()
 
