@@ -879,6 +879,7 @@
                     <control type="toggle"/>
                 </setting>
                 <setting id="enable_hevc_profiles" type="boolean" label="30060" help="">
+                    <requirement>HAS_MEDIACODEC</requirement><!--Visible only for Android-->
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
