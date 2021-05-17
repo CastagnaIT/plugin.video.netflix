@@ -8,4 +8,4 @@ requests
 setuptools
 tox
 xmlschema
-Kodistubs==19.0.2
+Kodistubs==19.0.3
