@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Aktivera Up Next-integration"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Installera Up Next-tillägget"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Kontrollera loggfilen för detaljerad information"

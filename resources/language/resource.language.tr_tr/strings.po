@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Sonraki entegrasyonunu etkinleştir"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Up Next Eklentisini Yükle"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Ayrıntılı bilgi için günlük dosyasına bakın"

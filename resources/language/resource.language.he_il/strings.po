@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "לאפשר אינטגרציית Up Next"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "התקנת תוסף Up Next"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "בדיקת קבצי Log עבור מידע מפורט"

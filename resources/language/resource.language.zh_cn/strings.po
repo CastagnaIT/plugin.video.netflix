@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "启用Up Next集成"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "安装Up Next插件"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "检查日志文件以获取详细信息”"

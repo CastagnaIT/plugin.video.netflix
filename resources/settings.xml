@@ -825,10 +825,30 @@
             </group>
             <!--GROUP: Up Next-->
             <group id="3" label="30238">
+                <setting id="upnext_install" type="action" label="30130">
+                    <level>0</level>
+                    <data>InstallAddon(service.upnext)</data>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition on="property" operator="!is" name="InfoBool">System.HasAddon(service.upnext)</condition>
+                        </dependency>
+                    </dependencies>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
                 <setting id="UpNextNotifier_enabled" type="boolean" label="30129" help="">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition on="property" name="InfoBool">System.HasAddon(service.upnext)</condition>
+                        </dependency>
+                        <dependency type="enable">
+                            <condition on="property" name="InfoBool">System.AddonIsEnabled(service.upnext)</condition>
+                        </dependency>
+                    </dependencies>
                 </setting>
                 <setting id="upnext_settings" type="action" label="30178">
                     <level>0</level>
@@ -836,6 +856,14 @@
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition on="property" name="InfoBool">System.HasAddon(service.upnext)</condition>
+                        </dependency>
+                        <dependency type="enable">
+                            <condition on="property" name="InfoBool">System.AddonIsEnabled(service.upnext)</condition>
+                        </dependency>
+                    </dependencies>
                 </setting>
             </group>
         </category>

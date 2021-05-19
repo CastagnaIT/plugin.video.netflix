@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Up Next 기능 사용"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Up Next 애드온 설치"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "자세한 내용은 로그파일을 확인하십시오."

@@ -516,7 +516,9 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr ""
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr ""
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"

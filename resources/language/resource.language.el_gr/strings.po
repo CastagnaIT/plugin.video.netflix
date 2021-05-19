@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Ενεργοποίηση ενσωμάτωσης επομένου"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Εγκατάσταση του προσθέτου για τα επόμενα"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Έλεγχος του αρχείου καταγραφής για λεπτομερείς πληροφορίες"
