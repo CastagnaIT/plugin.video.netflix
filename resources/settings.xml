@@ -879,6 +879,11 @@
                     <control type="toggle"/>
                 </setting>
                 <setting id="enable_hevc_profiles" type="boolean" label="30060" help="">
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition on="property" name="InfoBool">system.platform.android</condition>
+                        </dependency>
+                    </dependencies>
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
