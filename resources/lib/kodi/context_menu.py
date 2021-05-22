@@ -43,6 +43,14 @@ def generate_context_menu_searchitem(row_id, search_type):
     return items
 
 
+def generate_context_menu_remind_me(videoid, is_set, trackid):
+    items = []
+    if is_set is not None and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+        action = 'remove_remind_me' if is_set else 'add_remind_me'
+        items.insert(0, _ctx_item(action, videoid, {'trackid': trackid}))
+    return items
+
+
 def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None, add_remove_watched_status=False):
     """Generate context menu items for a listitem"""
     items = []
@@ -73,7 +81,7 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
         # Add menu to allow change manually the watched status when progress manager is enabled
-        if G.ADDON.getSettingBool('ProgressManager_enabled'):
+        if G.ADDON.getSettingBool('sync_watched_status'):
             items.insert(0, _ctx_item('change_watched_status', videoid))
 
     return items

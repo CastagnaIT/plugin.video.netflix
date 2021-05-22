@@ -508,7 +508,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Activar integración 'Up Next'"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Instalar o complemento 'Up Next'"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "Comprobe o arquivo de rexistro para información detallada"
@@ -1075,3 +1078,25 @@ msgstr "Formato incorrecto do ESN"
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "Queres reiniciar todos os parámetros?"
+
+# Unused 30610 to 30619
+msgctxt "#30620"
+msgid "This title will be available from: {}"
+msgstr ""
+
+msgctxt "#30621"
+msgid "Do you want to play the promo trailer?"
+msgstr ""
+
+msgctxt "#30622"
+msgid "Remind me"
+msgstr ""
+
+msgctxt "#30623"
+msgid "Reminder set"
+msgstr ""
+
+# Unused 30624 to 30699
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""

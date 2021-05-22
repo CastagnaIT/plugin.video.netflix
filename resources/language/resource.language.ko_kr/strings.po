@@ -506,7 +506,10 @@ msgctxt "#30129"
 msgid "Enable Up Next integration"
 msgstr "Up Next 기능 사용"
 
-# Unused 30130
+msgctxt "#30130"
+msgid "Install Up Next add-on"
+msgstr "Up Next 애드온 설치"
+
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
 msgstr "자세한 내용은 로그파일을 확인하십시오."
@@ -1073,3 +1076,25 @@ msgstr "ESN형식이 이상합니다."
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "전부 다시 설정할까요?"
+
+# Unused 30610 to 30619
+msgctxt "#30620"
+msgid "This title will be available from: {}"
+msgstr ""
+
+msgctxt "#30621"
+msgid "Do you want to play the promo trailer?"
+msgstr ""
+
+msgctxt "#30622"
+msgid "Remind me"
+msgstr ""
+
+msgctxt "#30623"
+msgid "Reminder set"
+msgstr ""
+
+# Unused 30624 to 30699
+msgctxt "#30700"
+msgid "New and popular"
+msgstr ""

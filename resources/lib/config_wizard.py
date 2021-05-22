@@ -66,21 +66,13 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
 
 def _set_profiles(system, is_4k_capable):
     """Method for self-configuring of netflix manifest profiles"""
-    enable_vp9_profiles = False
+    enable_vp9_profiles = True
     enable_hevc_profiles = False
-    if system in ['osx', 'ios']:
-        enable_hevc_profiles = True
-    elif system in ['windows', 'uwp']:
-        enable_vp9_profiles = True
-    elif system == 'android':
+    if system == 'android':
         # By default we do not enable VP9 because on some devices do not fully support it
+        enable_vp9_profiles = False
         # By default we do not enable HEVC because not all device support it, then enable it only on 4K capable devices
         enable_hevc_profiles = is_4k_capable
-    elif system == 'linux':
-        # Too many different linux systems, we can not predict all the behaviors
-        # some linux distributions have encountered problems with VP9,
-        # some OSMC users reported that HEVC does not work well
-        pass
     G.ADDON.setSettingBool('enable_vp9_profiles', enable_vp9_profiles)
     G.ADDON.setSettingBool('enable_hevc_profiles', enable_hevc_profiles)
 

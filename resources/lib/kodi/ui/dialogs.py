@@ -100,8 +100,13 @@ def show_ok_dialog(title, message):
     return xbmcgui.Dialog().ok(title, message)
 
 
-def show_yesno_dialog(title, message, yeslabel=None, nolabel=None):
-    return xbmcgui.Dialog().yesno(title, message, yeslabel=yeslabel, nolabel=nolabel)
+def show_yesno_dialog(title, message, yeslabel=None, nolabel=None, default_yes_button=False):
+    if G.KODI_VERSION < '20':
+        return xbmcgui.Dialog().yesno(title, message, yeslabel=yeslabel, nolabel=nolabel)
+    # pylint: disable=no-member,unexpected-keyword-arg
+    default_button = xbmcgui.DLG_YESNO_YES_BTN if default_yes_button else xbmcgui.DLG_YESNO_NO_BTN
+    return xbmcgui.Dialog().yesno(title, message,
+                                  yeslabel=yeslabel, nolabel=nolabel, defaultbutton=default_button)
 
 
 def show_error_info(title, message, unknown_error=False, netflix_error=False):

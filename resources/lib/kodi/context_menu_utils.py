@@ -88,5 +88,11 @@ CONTEXT_MENU_ACTIONS = {
         'url': ctx_item_url(['library_playback_remove_profile'])},
     'profile_parental_control': {
         'label': common.get_local_string(30062),
-        'url': ctx_item_url(['parental_control'])}
+        'url': ctx_item_url(['parental_control'])},
+    'add_remind_me': {
+        'label': common.get_local_string(30622),
+        'url': ctx_item_url(['remind_me', 'add'])},
+    'remove_remind_me': {
+        'label': common.get_local_string(30623),
+        'url': ctx_item_url(['remind_me', 'remove'])}
 }

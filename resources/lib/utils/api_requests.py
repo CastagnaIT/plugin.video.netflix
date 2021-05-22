@@ -98,6 +98,18 @@ def rate_thumb(videoid, rating, track_id_jaw):
     ui.show_notification(common.get_local_string(30045).split('|')[rating])
 
 
+def update_remindme(operation, videoid, trackid):
+    """Call API to update "Remind Me" feature with either add or remove action"""
+    cmd = 'addToRemindMeList' if operation == 'add' else 'removeFromRemindMeList'
+    call_args = {
+        'callpaths': [['videos', videoid.value, cmd]],
+        'params': [trackid],
+        'path': ['videos', videoid.value, 'inRemindMeList']
+    }
+    response = common.make_call('callpath_request', call_args)
+    LOG.debug('update_remindme response: {}', response)
+
+
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to update my list with either add or remove action"""

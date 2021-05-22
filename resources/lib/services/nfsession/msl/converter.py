@@ -111,16 +111,12 @@ def _add_protection_info(adaptation_set, pssh, keyid):
                                             table=TABLE_SESSION)
     if (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
             and wv_force_sec_lev == WidevineForceSecLev.DISABLED):
-        # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices,
-        # if it is set on L3 devices ISA already remove it automatically.
-        # But some L1 devices with non regular Widevine library cause issues then need to be handled
-        robustness_level = 'HW_SECURE_CODECS_REQUIRED'
-    else:
-        robustness_level = ''
-    ET.SubElement(
-        protection,  # Parent
-        'widevine:license',  # Tag
-        robustness_level=robustness_level)
+        # NOTE: This is needed only when on ISA is enabled the Expert setting "Don't use secure decoder if possible"
+        # The flag HW_SECURE_CODECS_REQUIRED is mandatory for L1 devices (if set on L3 devices is ignored)
+        ET.SubElement(
+            protection,  # Parent
+            'widevine:license',  # Tag
+            robustness_level='HW_SECURE_CODECS_REQUIRED')
     if pssh:
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 
@@ -193,7 +189,7 @@ def _determine_video_codec(content_profile):
             return 'dvhe'
         return 'hevc'
     if content_profile.startswith('vp9'):
-        return 'vp9.0.' + content_profile[14:16]
+        return 'vp9.' + content_profile[11:12]
     return 'h264'
 
 

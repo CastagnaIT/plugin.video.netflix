@@ -142,8 +142,8 @@ def _check_msl_profiles(clean_buckets):
 
 def _check_watched_status_sync():
     """Check if NF watched status sync setting is changed"""
-    progress_manager_enabled = G.ADDON.getSettingBool('ProgressManager_enabled')
-    progress_manager_enabled_old = G.LOCAL_DB.get_value('progress_manager_enabled', False, TABLE_SETTINGS_MONITOR)
+    progress_manager_enabled = G.ADDON.getSettingBool('sync_watched_status')
+    progress_manager_enabled_old = G.LOCAL_DB.get_value('sync_watched_status', True, TABLE_SETTINGS_MONITOR)
     if progress_manager_enabled != progress_manager_enabled_old:
-        G.LOCAL_DB.set_value('progress_manager_enabled', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
+        G.LOCAL_DB.set_value('sync_watched_status', progress_manager_enabled, TABLE_SETTINGS_MONITOR)
         common.send_signal(common.Signals.SWITCH_EVENTS_HANDLER, progress_manager_enabled)

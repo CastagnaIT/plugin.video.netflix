@@ -8,11 +8,13 @@
     See LICENSES/MIT.md for more information.
 """
 import xbmc
+import xbmcgui
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 import resources.lib.utils.api_requests as api
 from resources.lib.common import cache_utils
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS
 from resources.lib.common.exceptions import MissingCredentialsError, CacheMiss
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
@@ -111,6 +113,16 @@ class AddonActionExecutor:
             common.json_rpc('Input.Down')  # Avoids selection back to the top
         common.container_refresh()
 
+    @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
+    def remind_me(self, videoid, pathitems):
+        """Add or remove an item to 'remind me' feature"""
+        # This functionality is used with videos that are not available,
+        # allows you to automatically add the title to my list as soon as it becomes available.
+        operation = pathitems[1]
+        G.CACHE.add(CACHE_BOOKMARKS, 'is_in_remind_me_' + str(videoid), bool(operation == 'add'))
+        api.update_remindme(operation, videoid, self.params['trackid'])
+        common.container_refresh()
+
     @common.inject_video_id(path_offset=1)
     @measure_exec_time_decorator()
     def trailer(self, videoid):
@@ -197,10 +209,24 @@ class AddonActionExecutor:
                 pass
         common.container_refresh()
 
-    def show_availability_message(self, pathitems=None):  # pylint: disable=unused-argument
+    @common.inject_video_id(path_offset=1)
+    def show_availability_message(self, videoid):  # pylint: disable=unused-argument
         """Show a message to the user to show the date of availability of a video"""
-        ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'),
-                          xbmc.getInfoLabel('ListItem.Property(nf_availability_message)'))
+        # Try get the promo trailer path
+        trailer_path = xbmc.getInfoLabel('ListItem.Trailer')
+        msg = common.get_local_string(30620).format(
+            xbmc.getInfoLabel('ListItem.Property(nf_availability_message)') or '--')
+        if trailer_path:
+            if ui.show_yesno_dialog(xbmc.getInfoLabel('ListItem.Label'),
+                                    msg + '[CR]' + common.get_local_string(30621),
+                                    default_yes_button=True):
+                # Create a basic trailer ListItem (all other info if available are set on Play callback)
+                list_item = xbmcgui.ListItem(xbmc.getInfoLabel('ListItem.Title'), offscreen=True)
+                list_item.setInfo('video', {'Title': xbmc.getInfoLabel('ListItem.Title')})
+                list_item.setProperty('isPlayable', 'true')
+                xbmc.Player().play(trailer_path, list_item)
+        else:
+            ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'), msg)
 
 
 def sync_library(videoid, operation):

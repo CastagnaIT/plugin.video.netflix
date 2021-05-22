@@ -104,6 +104,12 @@ def _perform_service_changes(previous_ver, current_ver):
         ui.show_ok_dialog('Netflix add-on upgrade',
                           'This add-on upgrade has reset your ESN code, if you had set an ESN code manually '
                           'you must re-enter it again in the Expert settings, otherwise simply ignore this message.')
+    if previous_ver and CmpVersion(previous_ver) < '1.16.0':
+        # In the version 1.16.0 the watched status sync setting has been enabled by default,
+        # therefore to be able to keep the user's setting even when it has never been changed,
+        # we have done a new setting (ProgressManager_enabled >> to >> sync_watched_status)
+        with G.SETTINGS_MONITOR.ignore_events(1):
+            G.ADDON.setSettingBool('sync_watched_status', G.ADDON.getSettingBool('ProgressManager_enabled'))
     # Always leave this to last - After the operations set current version
     G.LOCAL_DB.set_value('service_previous_version', current_ver)
 

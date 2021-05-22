@@ -8,10 +8,13 @@
     See LICENSES/MIT.md for more information.
 """
 import resources.lib.common as common
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS
+from resources.lib.common.exceptions import CacheMiss
 from resources.lib.common.kodi_wrappers import ListItemW
 from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
-from resources.lib.kodi.context_menu import generate_context_menu_items, generate_context_menu_profile
+from resources.lib.kodi.context_menu import (generate_context_menu_items, generate_context_menu_profile,
+                                             generate_context_menu_remind_me)
 from resources.lib.kodi.infolabels import get_color_name, set_watched_status, add_info_list_item
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page,
@@ -146,7 +149,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
     """Build a episodes listing of a season"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
-        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
@@ -251,7 +254,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
     common_data = {
         'params': get_param_watched_status_by_profile(),
         'mylist_items': mylist_items,
-        'set_watched_status': G.ADDON.getSettingBool('ProgressManager_enabled'),
+        'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
         'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
         'mylist_titles_color': (get_color_name(G.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'
@@ -305,15 +308,27 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     if not is_folder:
         set_watched_status(list_item, video, common_data)
     if is_playable:
+        # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
                                mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                params=None if is_folder else common_data['params'])
         list_item.addContextMenuItems(generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
                                                                   common_data['ctxmenu_remove_watched_status']))
     else:
-        # The video is not playable, try check if there is a date
+        # The movie or tvshow (episodes) is not available
+        # Try check if there is a availability date
         list_item.setProperty('nf_availability_message', get_availability_message(video))
-        url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
+        # Check if the user has set "Remind Me" feature,
+        try:
+            #  Due to the add-on cache we can not change in easy way the value stored in database cache,
+            #  then we temporary override the value (see 'remind_me' in navigation/actions.py)
+            is_in_remind_me = G.CACHE.get(CACHE_BOOKMARKS, 'is_in_remind_me_' + str(videoid))
+        except CacheMiss:
+            #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
+            is_in_remind_me = video['inRemindMeList'] or video['queue']['inQueue']
+        trackid = video['trackIds']['trackId_jaw']
+        list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, trackid))
+        url = common.build_url(['show_availability_message'], videoid=videoid, mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
 
 
@@ -341,4 +356,39 @@ def build_subgenres_listing(subgenre_list, menu_data):
 def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
     list_item = ListItemW(label=subgenre_data['name'])
+    return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True
+
+
+def build_lolomo_category_listing(lolomo_cat_list, menu_data):
+    """Build a folders listing of a LoLoMo category"""
+    common_data = {
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
+    }
+    directory_items = []
+    for list_id, summary_data, video_list in lolomo_cat_list.lists():
+        if summary_data['length'] == 0:  # Do not show empty lists
+            continue
+        menu_parameters = common.MenuIdParameters(list_id)
+        # Create dynamic sub-menu info in MAIN_MENU_ITEMS
+        sub_menu_data = menu_data.copy()
+        sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
+        sub_menu_data['loco_known'] = False
+        sub_menu_data['loco_contexts'] = None
+        sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
+        sub_menu_data['title'] = summary_data['displayName']
+        sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
+        sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
+        G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
+        directory_item = _create_category_item(list_id, video_list, sub_menu_data, common_data, summary_data)
+        directory_items.append(directory_item)
+    G.CACHE_MANAGEMENT.execute_pending_db_ops()
+    return directory_items, {}
+
+
+def _create_category_item(list_id, video_list, menu_data, common_data, summary_data):
+    pathitems = ['video_list', menu_data['path'][1], list_id]
+    list_item = ListItemW(label=summary_data['displayName'])
+    add_info_list_item(list_item, video_list.videoid, video_list, video_list.data, False, common_data,
+                       art_item=video_list.artitem)
     return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True

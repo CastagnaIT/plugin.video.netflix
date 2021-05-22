@@ -86,6 +86,8 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     arg_value = None
     if fixed_identifier:
         identifier = fixed_identifier
+        if identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
+            identifier += '_' + str(kwargs.get(identify_append_from_kwarg_name))
     else:
         identifier = str(kwargs.get(identify_from_kwarg_name) or '')
         if not identifier and args:

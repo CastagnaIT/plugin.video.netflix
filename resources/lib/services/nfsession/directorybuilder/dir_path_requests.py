@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
-                                            SearchVideoList, CustomVideoList)
+                                            SearchVideoList, CustomVideoList, LoLoMoCategory)
 from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -263,3 +263,20 @@ class DirectoryPathRequests:
                             custom_partial_paths if custom_partial_paths else VIDEO_LIST_PARTIAL_PATHS)
         path_response = self.nfsession.path_request(paths)
         return CustomVideoList(path_response)
+
+    @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='lolomo_category',
+                              identify_append_from_kwarg_name='category_name', ignore_self_class=True)
+    def req_lolomo_category(self, category_name):
+        """Retrieve LoLoMo by category lists"""
+        LOG.debug('Requesting LoLoMo "{}" category lists'.format(category_name))
+        paths = ([['lolomoByCategory', category_name, ['componentSummary']],
+                  ['lolomoByCategory', category_name, {'from': 0, 'to': 10}, ['componentSummary']],
+                  # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
+                  ['lolomoByCategory', category_name,
+                   {'from': 0, 'to': 10}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
+                 # Art for the first video of each context list (needed only to add art to the menu item)
+                 build_paths(['lolomoByCategory', category_name,
+                              {'from': 0, 'to': 10}, 0, 'reference'], ART_PARTIAL_PATHS))
+        call_args = {'paths': paths}
+        path_response = self.nfsession.path_request(**call_args)
+        return LoLoMoCategory(path_response)

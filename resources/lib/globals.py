@@ -76,6 +76,12 @@ class GlobalVariables:
         ('continueWatching', {'path': ['video_list', 'continueWatching'],
                               'loco_contexts': ['continueWatching'],
                               'loco_known': True}),
+        ('newAndPopular', {'path': ['category_list', 'newAndPopular'],
+                           'loco_contexts': ['comingSoon'],
+                           'loco_known': False,
+                           'label_id': 30700,
+                           'description_id': 30146,
+                           'icon': 'DefaultRecentlyAddedMovies.png'}),
         ('chosenForYou', {'path': ['video_list', 'chosenForYou'],
                           'loco_contexts': ['topTen'],
                           'loco_known': True}),
@@ -95,10 +101,6 @@ class GlobalVariables:
         ('currentTitles', {'path': ['video_list', 'currentTitles'],
                            'loco_contexts': ['trendingNow'],
                            'loco_known': True}),
-        ('mostWatched', {'path': ['video_list', 'mostWatched'],  # Top 10 menu
-                         'loco_contexts': ['mostWatched'],
-                         'loco_known': True,
-                         'no_use_cache': True}),
         ('mostViewed', {'path': ['video_list', 'mostViewed'],
                         'loco_contexts': ['popularTitles'],
                         'loco_known': True}),
@@ -240,9 +242,8 @@ class GlobalVariables:
                 self.IS_SERVICE = True
                 self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
                                                              netloc=self.ADDON_ID)
-            # Disabled currently unused
-            #   from resources.lib.common.kodi_ops import KodiVersion
-            #   self.KODI_VERSION = KodiVersion()
+            from resources.lib.common.kodi_ops import KodiVersion
+            self.KODI_VERSION = KodiVersion()
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
