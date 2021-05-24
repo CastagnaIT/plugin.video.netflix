@@ -1080,21 +1080,21 @@ msgstr "Voulez-vous réinitialiser tous les paramètres ?"
 # Unused 30610 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "Le titre sera disponible à partir de : {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Voulez-vous voir la bande-annonce ?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Ajouter un rappel"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Rappel activé"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Nouveautés les plus regardées"
