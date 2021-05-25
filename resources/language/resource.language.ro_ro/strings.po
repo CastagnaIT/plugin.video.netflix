@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2021-02-22 13:00+0000\n"
+"PO-Revision-Date: 2021-05-25 11:00+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "Language: ro_RO\n"
@@ -89,7 +89,7 @@ msgstr "Deconectare"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "Exportă în librărie"
+msgstr "Exportă în bibliotecă"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
@@ -117,15 +117,15 @@ msgstr "Verificare SSL"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "Librărie"
+msgstr "Bibliotecă"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "Activează director personalizat în librărie"
+msgstr "Activează director personalizat în bibliotecă"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "Cale personalizată pentru librărie"
+msgstr "Cale personalizată pentru bibliotecă"
 
 msgctxt "#30028"
 msgid "Playback error"
@@ -134,7 +134,7 @@ msgstr "Eroare de redare"
 # Unused 30029
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "Șterge din librărie"
+msgstr "Șterge din bibliotecă"
 
 msgctxt "#30031"
 msgid "General"
@@ -189,7 +189,7 @@ msgstr "Evaluare ștearsă|Evaluare negativă|Evaluare pozitivă"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu librăria Widevine. Ar putea lipsi sau nu este activ, operațiunea va fi anulată."
+msgstr "A apărut o problemă cu add-on-ul InputStream Adaptive sau cu biblioteca Widevine. Ar putea lipsi sau nu este activ, operațiunea va fi anulată."
 
 msgctxt "#30047"
 msgid "Library update in progress"
@@ -201,20 +201,20 @@ msgstr "Exportat"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr "Librărie"
+msgstr "Bibliotecă"
 
 # Unused 30050
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr "Profil ales pentru redare din librărie"
+msgstr "Profil ales pentru redare din bibliotecă"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr "Ales pentru redarea librăriei"
+msgstr "Ales pentru redarea bibliotecii"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr "Elimină pentru redarea din librăriei"
+msgstr "Elimină pentru redarea din bibliotecii"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
@@ -239,7 +239,7 @@ msgstr "Activează profilele HEVC (4K pentru Android/HDR/Dolby Vision"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "Actualizează în interiorul librăriei"
+msgstr "Actualizează în interiorul bibliotecii"
 
 msgctxt "#30062"
 msgid "Parental controls"
@@ -295,7 +295,7 @@ msgstr "Mod vizualizare pentru exporturi"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Întreabă dacă se dorește să se deruleze peste intro și recapitulare"
+msgstr "Întreabă dacă se dorește să se sară peste intro și recapitulare"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -359,7 +359,7 @@ msgstr "Navighează liste cu conținut similar și descoperă conținut suplimen
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Navighează și gestionează conținut care a fost exportat în librăria Kodi"
+msgstr "Navighează și gestionează conținut care a fost exportat în biblioteca Kodi"
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -451,7 +451,7 @@ msgstr "Deconectare reușită"
 
 msgctxt "#30114"
 msgid "Keep 'My list' and Kodi Library in sync"
-msgstr "Păstrează sincronizate 'Lista mea' și librăria Kodi"
+msgstr "Păstrează sincronizate 'Lista mea' și biblioteca Kodi"
 
 msgctxt "#30115"
 msgid "Content Profiles"
@@ -468,7 +468,7 @@ msgstr "Gestionare cache"
 # Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Nu se poate șterge automat un sezon din librăria Kodi, vă rugăm s-o faceți manual"
+msgstr "Nu se poate șterge automat un sezon din biblioteca Kodi, vă rugăm s-o faceți manual"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -476,7 +476,7 @@ msgstr "Efectuează acum o sincronizare completă"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "Sincronizează 'Lista mea' cu librăria Kodi"
+msgstr "Sincronizează 'Lista mea' cu biblioteca Kodi"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
@@ -484,15 +484,15 @@ msgstr "Doriți să continuați?[CR]Sincronizarea completă va șterge toate tit
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "Doriți să ștergeți acest element din librărie?"
+msgstr "Doriți să ștergeți acest element din bibliotecă?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Golește librăria"
+msgstr "Golește biblioteca"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
-msgstr "Doriți cu adevărat să goliți librăria dumneavoastră?[CR]Toate elementele exportate vor fi șterse."
+msgstr "Doriți cu adevărat să goliți biblioteca dumneavoastră?[CR]Toate elementele exportate vor fi șterse."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -545,7 +545,7 @@ msgstr "Activează IPC prin HTTP (folosiți-l atunci când apar mesaje legate de
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr "Importă librăria existentă"
+msgstr "Importă bibliotecă existentă"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -768,11 +768,11 @@ msgstr "Se exportă noile episoade"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "Librărie partajată (este nevoie de server MySQL Kodi)"
+msgstr "Bibliotecă partajată (este nevoie de server MySQL Kodi)"
 
 msgctxt "#30200"
 msgid "Use shared library MySQL-database"
-msgstr "Folosește baza de date MySQL pentru librăria partajată"
+msgstr "Folosește baza de date MySQL pentru biblioteca partajată"
 
 msgctxt "#30201"
 msgid "Username"
@@ -808,19 +808,19 @@ msgstr "Verifică dacă acest dispozitiv gestionează actualizările automate"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of the shared library"
-msgstr "Acest dispozitiv gestionează acum actualizările automate ale librăriei partajate"
+msgstr "Acest dispozitiv gestionează acum actualizările automate ale bibliotecii partajate"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of the shared library"
-msgstr "Acest dispozitiv gestionează actualizările automate ale librăriei partajate"
+msgstr "Acest dispozitiv gestionează actualizările automate ale bibliotecii partajate"
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of the shared library"
-msgstr "Alt dispozitiv gestionează actualizările automate ale librăriei partajate"
+msgstr "Alt dispozitiv gestionează actualizările automate ale bibliotecii partajate"
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of the shared library"
-msgstr "Nu există dispozitiv care să gestioneze actualizările automate ale librăriei partajate"
+msgstr "Nu există dispozitiv care să gestioneze actualizările automate ale bibliotecii partajate"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
@@ -841,7 +841,7 @@ msgstr "Dezactivează notificarea pentru completarea sincronizării"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr "Librăria Kodi a fost actualizată"
+msgstr "Biblioteca Kodi a fost actualizată"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -866,7 +866,7 @@ msgstr "Programat"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with 'My list'"
-msgstr "Sincronizează librăria Kodi cu 'Lista mea'"
+msgstr "Sincronizează biblioteca Kodi cu 'Lista mea'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
@@ -929,7 +929,7 @@ msgstr "Selectează primul episod neurmărit"
 # Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr "Se șterg fișiere exportate în librărie"
+msgstr "Se șterg fișiere exportate în bibliotecă"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
@@ -946,7 +946,7 @@ msgstr "Doriți să ștergeți '{}' din lista de vizualizare?[CR][CR]Operațiune
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr "Include librăria Kodi (doar trimite date)"
+msgstr "Include biblioteca Kodi (doar trimite date)"
 
 # Unused 30302 to 30339
 msgctxt "#30340"
@@ -1034,7 +1034,7 @@ msgstr "Preferă limba pentru audio/subtitări cu codul de țară (dacă este di
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr "Preferă în mod implicit sunet stereo"
+msgstr "Alege în mod implicit sunet stereo"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
@@ -1059,7 +1059,7 @@ msgstr "Forțează nivel de securitate Widevine"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr "Force {}"
+msgstr "Forțează {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
@@ -1080,21 +1080,21 @@ msgstr "Ești sigur că vrei să resetezi toate setările"
 # Unused 30610 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "Acest titlu va fi disponivil începând cu: {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Dorești să redai trailerul de promovare?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Amintește-mi"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Memento configurat"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Nou și popular"
