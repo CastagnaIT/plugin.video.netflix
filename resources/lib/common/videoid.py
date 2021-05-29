@@ -212,7 +212,7 @@ class VideoId:
         of this show. Raises InvalidVideoId is this instance does not
         represent a show."""
         if self.mediatype != VideoId.SHOW:
-            raise InvalidVideoId('Cannot derive season VideoId from {}'.format(self))
+            raise InvalidVideoId(f'Cannot derive season VideoId from {self}')
         return type(self)(tvshowid=self.tvshowid, seasonid=str(seasonid))
 
     def derive_episode(self, episodeid):
@@ -220,7 +220,7 @@ class VideoId:
         of this season. Raises InvalidVideoId is this instance does not
         represent a season."""
         if self.mediatype != VideoId.SEASON:
-            raise InvalidVideoId('Cannot derive episode VideoId from {}'.format(self))
+            raise InvalidVideoId(f'Cannot derive episode VideoId from {self}')
         return type(self)(tvshowid=self.tvshowid, seasonid=self.seasonid,
                           episodeid=str(episodeid))
 
@@ -243,7 +243,7 @@ class VideoId:
                 return self
             return type(self)(tvshowid=self.tvshowid,
                               seasonid=self.seasonid)
-        raise InvalidVideoId('VideoId type {} not valid'.format(videoid_type))
+        raise InvalidVideoId(f'VideoId type {videoid_type} not valid')
 
     def _assigned_id_values(self):
         """Return a list of all id_values that are not None"""
@@ -252,7 +252,7 @@ class VideoId:
                 if id_value is not None]
 
     def __str__(self):
-        return '{}_{}'.format(self.mediatype, self.value)
+        return f'{self.mediatype}_{self.value}'
 
     def __hash__(self):
         return hash(str(self))
@@ -267,7 +267,7 @@ class VideoId:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return 'VideoId object [{}]'.format(self)
+        return f'VideoId object [{self}]'
 
 
 def _get_unicode_kwargs(kwargs):
@@ -303,7 +303,7 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
                 _path_to_videoid(kwargs, pathitems_arg, path_offset,
                                  inject_remaining_pathitems, inject_full_pathitems)
             except KeyError as exc:
-                raise Exception('Pathitems must be passed as kwarg {}'.format(pathitems_arg)) from exc
+                raise Exception(f'Pathitems must be passed as kwarg {pathitems_arg}') from exc
             return func(*args, **kwargs)
         return wrapper
     return injecting_decorator

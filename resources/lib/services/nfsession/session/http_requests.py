@@ -190,10 +190,8 @@ def _document_url(endpoint_address, kwargs):
 
 
 def _api_url(endpoint_address):
-    return '{baseurl}{endpoint_adr}'.format(
-        baseurl=G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        endpoint_adr=endpoint_address)
-
+    baseurl = G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION)
+    return f'{baseurl}{endpoint_address}'
 
 def _raise_api_error(decoded_response):
     if decoded_response.get('status', 'success') == 'error':

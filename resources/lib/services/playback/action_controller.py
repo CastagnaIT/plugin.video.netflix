@@ -248,7 +248,7 @@ def _notify_managers(manager, notification, data):
             notify_method()
     except Exception as exc:  # pylint: disable=broad-except
         manager.enabled = False
-        msg = '{} disabled due to exception: {}'.format(manager.name, exc)
+        msg = f'{manager.name} disabled due to exception: {exc}'
         import traceback
         LOG.error(traceback.format_exc())
         ui.show_notification(title=common.get_local_string(30105), msg=msg)

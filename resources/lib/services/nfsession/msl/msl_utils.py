@@ -124,8 +124,9 @@ def _find_audio_data(player_state, manifest):
             stream = max(audio_track['streams'], key=lambda x: x['bitrate'])
             return stream['downloadable_id'], audio_track['new_track_id']
     # Not found?
-    raise Exception('build_media_tag: unable to find audio data with language: {}, channels: {}'
-                    .format(language, channels))
+    raise Exception(
+        f'build_media_tag: unable to find audio data with language: {language}, channels: {channels}'
+    )
 
 
 def _find_video_data(player_state, manifest):
@@ -140,8 +141,9 @@ def _find_video_data(player_state, manifest):
             if codec in stream['content_profile'] and width == stream['res_w'] and height == stream['res_h']:
                 return stream['downloadable_id'], video_track['new_track_id']
     # Not found?
-    raise Exception('build_media_tag: unable to find video data with codec: {}, width: {}, height: {}'
-                    .format(codec, width, height))
+    raise Exception(
+        f'build_media_tag: unable to find video data with codec: {codec}, width: {width}, height: {height}'
+    )
 
 
 def generate_logblobs_params():

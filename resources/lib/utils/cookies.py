@@ -70,9 +70,7 @@ def log_cookie(cookie_jar):
     debug_output = 'Cookies currently loaded:\n'
     for cookie in cookie_jar:
         remaining_ttl = int((cookie.expires or 0) - time()) if cookie.expires else None
-        debug_output += '{} (expires ts {} - remaining TTL {} sec)\n'.format(cookie.name,
-                                                                             cookie.expires,
-                                                                             remaining_ttl)
+        debug_output += f'{cookie.name} (expires ts {cookie.expires} - remaining TTL {remaining_ttl} sec)\n'
     LOG.debug(debug_output)
 
 

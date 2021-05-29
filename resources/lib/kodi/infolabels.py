@@ -247,10 +247,10 @@ def _best_art(arts):
 def get_info_from_library(videoid):
     """Get infolabels with info from Kodi library"""
     details = common.get_library_item_by_videoid(videoid)
-    LOG.debug('Got file info from library: {}'.format(details))
+    LOG.debug('Got file info from library: {}', details)
     art = details.pop('art', {})
     infos = {
-        'DBID': details.pop('{}id'.format(videoid.mediatype)),
+        'DBID': details.pop(f'{videoid.mediatype}id'),
         'MediaType': MEDIA_TYPE_MAPPINGS[videoid.mediatype]
     }
     infos.update(details)
@@ -259,7 +259,7 @@ def get_info_from_library(videoid):
 
 def _colorize_text(color_name, text):
     if color_name:
-        return '[COLOR {}]{}[/COLOR]'.format(color_name, text)
+        return f'[COLOR {color_name}]{text}[/COLOR]'
     return text
 
 

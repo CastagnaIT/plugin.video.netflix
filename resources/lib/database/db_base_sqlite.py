@@ -174,9 +174,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'SELECT {} FROM {} WHERE {} = ?'.format(table_columns[1],
-                                                        table_name,
-                                                        table_columns[0])
+        query = f'SELECT {table_columns[1]} FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         result = cur.fetchone()
         if default_value is not None:
@@ -197,9 +195,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'SELECT {} FROM {} WHERE {} = ?'.format(table_columns[1],
-                                                        table_name,
-                                                        table_columns[0])
+        query = f'SELECT {table_columns[1]} FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         result = cur.fetchall()
         return result if result is not None else default_value
@@ -215,14 +211,11 @@ class SQLiteDatabase(db_base.BaseDatabase):
         table_name = table[0]
         table_columns = table[1]
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
-        update_query = 'UPDATE {} SET {} = ? WHERE {} = ?'.format(table_name,
-                                                                  table_columns[1],
-                                                                  table_columns[0])
+        update_query = f'UPDATE {table_name} SET {table_columns[1]} = ? WHERE {table_columns[0]} = ?'
         value = common.convert_to_string(value)
         cur = self._execute_query(update_query, (value, key))
         if cur.rowcount == 0:
-            insert_query = 'INSERT INTO {} ({}, {}) VALUES (?, ?)'\
-                .format(table_name, table_columns[0], table_columns[1])
+            insert_query = f'INSERT INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?)'
             self._execute_non_query(insert_query, (key, value))
 
     @handle_connection
@@ -237,17 +230,13 @@ class SQLiteDatabase(db_base.BaseDatabase):
         # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
         # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
         if common.CmpVersion(sql.sqlite_version) < '3.24.0':
-            query = 'INSERT OR REPLACE INTO {} ({}, {}) VALUES (?, ?)'.format(table_name,
-                                                                              table_columns[0],
-                                                                              table_columns[1])
+            query = f'INSERT OR REPLACE INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?)'
             records_values = [(key, common.convert_to_string(value)) for key, value in dict_values.items()]
         else:
             # sqlite UPSERT clause exists only on sqlite >= 3.24.0
-            query = ('INSERT INTO {tbl_name} ({tbl_col1}, {tbl_col2}) VALUES (?, ?) '
-                     'ON CONFLICT({tbl_col1}) DO UPDATE SET {tbl_col2} = ? '
-                     'WHERE {tbl_col1} = ?').format(tbl_name=table_name,
-                                                    tbl_col1=table_columns[0],
-                                                    tbl_col2=table_columns[1])
+            query = (f'INSERT INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?) '
+                     f'ON CONFLICT({table_columns[0]}) DO UPDATE SET {table_columns[1]} = ? '
+                     f'WHERE {table_columns[0]} = ?')
             records_values = []
             for key, value in dict_values.items():
                 value_str = common.convert_to_string(value)
@@ -267,7 +256,7 @@ class SQLiteDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'DELETE FROM {} WHERE {} = ?'.format(table_name, table_columns[0])
+        query = f'DELETE FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         return cur.rowcount
 

@@ -67,7 +67,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
                                                 WidevineForceSecLev.DISABLED,
                                                 table=TABLE_SESSION)
         if wv_force_sec_lev != WidevineForceSecLev.DISABLED:
-            LOG.warn('Widevine security level is forced to {} by user settings!'.format(wv_force_sec_lev))
+            LOG.warn('Widevine security level is forced to {} by user settings!', wv_force_sec_lev)
         LOG.debug('Widevine CryptoSession current hdcp level: {}', drm_info['hdcp_level'])
         LOG.debug('Widevine CryptoSession max hdcp level supported: {}', drm_info['hdcp_level_max'])
         LOG.debug('Widevine CryptoSession algorithms: {}', self.crypto_session.GetPropertyString('algorithms'))

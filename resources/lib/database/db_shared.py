@@ -141,7 +141,7 @@ def get_shareddb_class(use_mysql=False):
                  'INNER JOIN video_lib_seasons '
                  'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
                  'WHERE video_lib_seasons.TvShowID = ? '
-                 'ORDER BY {} LIMIT 1').format(rand_func_name)
+                 f'ORDER BY {rand_func_name} LIMIT 1')
             cur = self._execute_query(query, (tvshowid,))
             result = cur.fetchone()
             if not result:
@@ -158,7 +158,7 @@ def get_shareddb_class(use_mysql=False):
                  'INNER JOIN video_lib_seasons '
                  'ON video_lib_episodes.SeasonID = video_lib_seasons.SeasonID '
                  'WHERE video_lib_seasons.TvShowID = ? AND video_lib_seasons.SeasonID = ? '
-                 'ORDER BY {} LIMIT 1').format(rand_func_name)
+                 f'ORDER BY {rand_func_name} LIMIT 1')
             cur = self._execute_query(query, (tvshowid, seasonid))
             result = cur.fetchone()
             if not result:

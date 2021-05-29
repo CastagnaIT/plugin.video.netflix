@@ -52,9 +52,7 @@ def json_rpc(method, params=None):
     # debug('JSON-RPC response: {}'.format(raw_response))
     response = json.loads(raw_response)
     if 'error' in response:
-        raise IOError('JSONRPC-Error {}: {}'
-                      .format(response['error']['code'],
-                              response['error']['message']))
+        raise IOError(f'JSONRPC-Error {response["error"]["code"]}: {response["error"]["message"]}')
     return response['result']
 
 
@@ -73,7 +71,7 @@ def json_rpc_multi(method, list_params=None):
     LOG.debug('Executing JSON-RPC: {}', request)
     raw_response = xbmc.executeJSONRPC(request)
     if 'error' in raw_response:
-        raise IOError('JSONRPC-Error {}'.format(raw_response))
+        raise IOError(f'JSONRPC-Error {raw_response}')
     return json.loads(raw_response)
 
 
@@ -91,8 +89,8 @@ def container_refresh(use_delay=False):
 
 def container_update(url, reset_history=False):
     """Update the current container"""
-    func_str = 'Container.Update({},replace)' if reset_history else 'Container.Update({})'
-    xbmc.executebuiltin(func_str.format(url))
+    func_str = f'Container.Update({url},replace)' if reset_history else f'Container.Update({url})'
+    xbmc.executebuiltin(func_str)
 
 
 @contextmanager
@@ -114,7 +112,7 @@ def get_local_string(string_id):
 def run_plugin_action(path, block=False):
     """Create an action that can be run with xbmc.executebuiltin in order to run a Kodi plugin specified by path.
     If block is True (default=False), the execution of code will block until the called plugin has finished running."""
-    return 'RunPlugin({}, {})'.format(path, block)
+    return f'RunPlugin({path}, {block})'
 
 
 def run_plugin(path, block=False):
@@ -125,13 +123,12 @@ def run_plugin(path, block=False):
 
 def schedule_builtin(time, command, name='NetflixTask'):
     """Set an alarm to run builtin command after time has passed"""
-    xbmc.executebuiltin('AlarmClock({},{},{},silent)'
-                        .format(name, command, time))
+    xbmc.executebuiltin(f'AlarmClock({name},{command},{time},silent)')
 
 
 def play_media(media):
     """Play a media in Kodi"""
-    xbmc.executebuiltin('PlayMedia({})'.format(media))
+    xbmc.executebuiltin(f'PlayMedia({media})')
 
 
 def stop_playback():
@@ -167,14 +164,13 @@ class _WndProps:  # pylint: disable=no-init
     def __getitem__(self, key):
         try:
             # If you use multiple Kodi profiles you need to distinguish the property of current profile
-            return G.WND_KODI_HOME.getProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key))
+            return G.WND_KODI_HOME.getProperty(f'netflix_{get_current_kodi_profile_name()}_{key}')
         except Exception:  # pylint: disable=broad-except
             return ''
 
     def __setitem__(self, key, newvalue):
         # If you use multiple Kodi profiles you need to distinguish the property of current profile
-        G.WND_KODI_HOME.setProperty('netflix_{}_{}'.format(get_current_kodi_profile_name(), key),
-                                    newvalue)
+        G.WND_KODI_HOME.setProperty(f'netflix_{get_current_kodi_profile_name()}_{key}', newvalue)
 
 
 WndHomeProps = _WndProps()
@@ -271,7 +267,7 @@ def fix_locale_languages(item):
         if item['language'] in LOCALE_CONV_TABLE:
             item['language'] = LOCALE_CONV_TABLE[item['language']]
         else:
-            LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
+            LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"', item['language'])
 
 
 class KodiVersion(CmpVersion):

@@ -30,7 +30,7 @@ def convert_to_string(value):
     elif data_type in (list, dict, OrderedDict):
         converter = _conv_json_to_string
     else:
-        LOG.error('convert_to_string: Data type {} not mapped'.format(data_type))
+        LOG.error('convert_to_string: Data type {} not mapped', data_type)
         raise DataTypeNotMapped
     return converter(value)
 
@@ -47,7 +47,7 @@ def convert_from_string(value, to_data_type):
     elif to_data_type == datetime.datetime:
         converter = _conv_string_to_datetime
     else:
-        LOG.error('convert_from_string: Data type {} not mapped'.format(to_data_type))
+        LOG.error('convert_from_string: Data type {} not mapped', to_data_type)
         raise DataTypeNotMapped
     return converter(value)
 

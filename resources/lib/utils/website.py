@@ -285,7 +285,7 @@ def extract_json(content, name):
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(traceback.format_exc())
-        raise WebsiteParsingError('Unable to extract {}'.format(name)) from exc
+        raise WebsiteParsingError(f'Unable to extract {name}') from exc
 
 
 def extract_parental_control_data(content, current_maturity):

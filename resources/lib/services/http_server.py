@@ -94,7 +94,7 @@ def handle_request(server, handler, func_name, data):
         try:
             func = handler.http_ipc_slots[func_name]
         except KeyError as exc:
-            raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
+            raise SlotNotImplemented(f'The specified IPC slot {func_name} does not exist') from exc
         ret_data = _call_func(func, pickle.loads(data))
     except Exception as exc:  # pylint: disable=broad-except
         if not isinstance(exc, (CacheMiss, MetadataNotAvailable)):
@@ -129,10 +129,10 @@ def handle_request_test(server, handler, func_name, data):
         try:
             func = handler.http_ipc_slots[func_name]
         except KeyError as exc:
-            raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
+            raise SlotNotImplemented(f'The specified IPC slot {func_name} does not exist') from exc
         ret_data = _call_func(func, json.loads(data))
     except Exception as exc:  # pylint: disable=broad-except
-        ret_data = 'The request has failed, error: {}'.format(exc)
+        ret_data = f'The request has failed, error: {exc}'
     if ret_data:
         server.wfile.write(json.dumps(ret_data).encode('utf-8'))
 
@@ -141,7 +141,7 @@ def _call_instance_func(instance, func_name, data):
     try:
         func = getattr(instance, func_name)
     except AttributeError as exc:
-        raise InvalidPathError('Function {} not found'.format(func_name)) from exc
+        raise InvalidPathError(f'Function {func_name} not found') from exc
     if isinstance(data, dict):
         return func(**data)
     if data is not None:

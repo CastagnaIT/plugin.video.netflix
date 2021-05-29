@@ -61,8 +61,7 @@ class AMStreamContinuity(ActionManager):
         self.is_prefer_alternative_lang = None
 
     def __str__(self):
-        return ('enabled={}, videoid_parent={}'
-                .format(self.enabled, self.videoid_parent))
+        return f'enabled={self.enabled}, videoid_parent={self.videoid_parent}'
 
     def initialize(self, data):
         self.is_kodi_forced_subtitles_only = common.get_kodi_subtitle_language() == 'forced_only'

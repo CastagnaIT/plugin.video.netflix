@@ -36,7 +36,7 @@ class AMUpNextNotifier(ActionManager):
         self.upnext_info = None
 
     def __str__(self):
-        return 'enabled={}'.format(self.enabled)
+        return f'enabled={self.enabled}'
 
     def initialize(self, data):
         if not xbmc.getCondVisibility('System.AddonIsEnabled(service.upnext)'):

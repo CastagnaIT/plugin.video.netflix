@@ -141,7 +141,7 @@ def _get_macos_uuid():
         if output_data:
             sp_dict_values = _parse_osx_xml_plist_data(output_data)
     except Exception as exc:
-        LOG.debug('Failed to fetch OSX/IOS system profile {}'.format(exc))
+        LOG.debug('Failed to fetch OSX/IOS system profile {}', exc)
     if sp_dict_values:
         if 'UUID' in list(sp_dict_values.keys()):
             return sp_dict_values['UUID']

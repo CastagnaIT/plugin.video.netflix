@@ -88,7 +88,7 @@ def _play(videoid, is_played_from_strm=False):
 
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set for playback of the given video_id"""
-    service_url = 'http://127.0.0.1:{}'.format(G.LOCAL_DB.get_value('nf_server_service_port'))
+    service_url = f'http://127.0.0.1:{G.LOCAL_DB.get_value("nf_server_service_port")}'
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)

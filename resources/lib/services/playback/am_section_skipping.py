@@ -31,9 +31,7 @@ class AMSectionSkipper(ActionManager):
         self.pause_on_skip = False
 
     def __str__(self):
-        return ('enabled={}, markers={}, auto_skip={}, pause_on_skip={}'
-                .format(self.enabled, self.markers, self.auto_skip,
-                        self.pause_on_skip))
+        return f'enabled={self.enabled}, markers={self.markers}, auto_skip={self.auto_skip}, pause_on_skip={self.pause_on_skip}'
 
     def initialize(self, data):
         self.markers = get_timeline_markers(data['metadata'][0])

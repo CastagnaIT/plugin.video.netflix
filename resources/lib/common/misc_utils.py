@@ -18,7 +18,7 @@ def find(value_to_find, attribute, search_space):
     for video in search_space:
         if video[attribute] == value_to_find:
             return video
-    raise KeyError('Metadata for {} does not exist'.format(value_to_find))
+    raise KeyError(f'Metadata for {value_to_find} does not exist')
 
 
 def find_episode_metadata(episode_videoid, metadata):
@@ -46,10 +46,7 @@ def build_url(pathitems=None, videoid=None, params=None, mode=None):
     """Build a plugin URL from pathitems and query parameters. Add videoid to the path if it's present."""
     if not (pathitems or videoid):
         raise ValueError('Either pathitems or videoid must be set.')
-    path = '{netloc}/{path}/{qs}'.format(
-        netloc=G.BASE_URL,
-        path=_encode_path(mode, pathitems, videoid),
-        qs=_encode_params(params))
+    path = f'{G.BASE_URL}/{_encode_path(mode, pathitems, videoid)}/{_encode_params(params)}'
     return path
 
 

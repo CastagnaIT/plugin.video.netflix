@@ -93,8 +93,8 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.current_level_index = self.getControl(10004).getInt() if new_level_index is None else new_level_index
         # Update labels color of slider steps
         for index in range(0, self.levels_count):
-            maturity_name = '[' + self.rating_levels[index]['label'] + ']'
-            ml_label = '[COLOR red]{}[/COLOR]'.format(maturity_name) if index <= self.current_level_index else maturity_name
+            maturity_name = f'[{self.rating_levels[index]["label"]}]'
+            ml_label = f'[COLOR red]{maturity_name}[/COLOR]' if index <= self.current_level_index else maturity_name
             self.controls[index].setLabel(ml_label)
         # Update status description
         hint = self.rating_levels[self.current_level_index]['description']

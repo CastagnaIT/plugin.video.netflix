@@ -233,9 +233,9 @@ def _save_system_info():
                 data += '\n>>> Suggested solutions:'
                 data += '\n>>> - Restore a previous version of Widevine library from InputStream Helper add-on settings'
                 data += '\n>>> - Report the problem to the GitHub of InputStream Helper add-on'
-                data += '\n>>> Error details: {}'.format(exc)
+                data += f'\n>>> Error details: {exc}'
         except Exception as exc:  # pylint: disable=broad-except
-            data += '\nThe data could not be obtained. Error details: {}'.format(exc)
+            data += f'\nThe data could not be obtained. Error details: {exc}'
     data += '\n\n' + '#### ESN ####\n'
     esn = get_esn() or '--not obtained--'
     data += '\nUsed ESN: ' + common.censure(esn) if len(esn) > 50 else esn
@@ -248,11 +248,11 @@ def _save_system_info():
             info = subprocess.check_output(['/system/bin/getprop']).decode('utf-8')
             data += '\n' + info
         except Exception as exc:  # pylint: disable=broad-except
-            data += '\nThe data could not be obtained. Error: {}'.format(exc)
+            data += f'\nThe data could not be obtained. Error: {exc}'
     data += '\n'
     try:
         common.save_file(common.join_folders_paths(path, filename), data.encode('utf-8'))
-        ui.show_notification('{}: {}'.format(xbmc.getLocalizedString(35259), filename))  # 35259=Saved
+        ui.show_notification(f'{xbmc.getLocalizedString(35259)}: {filename}')  # 35259=Saved
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('save_file error: {}', exc)
         ui.show_notification('Error! Try another path')
@@ -276,5 +276,5 @@ def _get_cdm_file_path():
     addon = Addon('inputstream.adaptive')
     cdm_path = xbmcvfs.translatePath(addon.getSetting('DECRYPTERPATH'))
     if not common.folder_exists(cdm_path):
-        raise Exception('The CDM path {} not exists'.format(cdm_path))
+        raise Exception(f'The CDM path {cdm_path} not exists')
     return common.join_folders_paths(cdm_path, lib_filename)

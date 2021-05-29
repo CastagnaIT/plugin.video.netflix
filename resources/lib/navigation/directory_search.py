@@ -89,7 +89,7 @@ def search_add():
         if genre_id:
             row_id = _search_add_bygenreid(SEARCH_TYPES[type_index], genre_id)
     else:
-        raise NotImplementedError('Search type index {} not implemented'.format(type_index))
+        raise NotImplementedError(f'Search type index {type_index} not implemented')
     # Redirect to "search" endpoint (otherwise no results in JSON-RPC)
     # Rewrite path history using dir_update_listing + container_update
     # (otherwise will retrigger input dialog on Back or Container.Refresh)
@@ -121,7 +121,7 @@ def _search_add_bygenreid(search_type, genre_id):
         ui.show_notification(common.get_local_string(30407))
         return None
     # In this case the 'value' is used only as title for the ListItem and not for the query
-    title += ' [{}]'.format(genre_id)
+    title += f' [{genre_id}]'
     row_id = G.LOCAL_DB.insert_search_item(search_type, title, {'genre_id': genre_id})
     return row_id
 
@@ -208,7 +208,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     else:
-        raise NotImplementedError('Search type {} not implemented'.format(search_type))
+        raise NotImplementedError(f'Search type {search_type} not implemented')
     # Show the results
     if not dir_items:
         ui.show_notification(common.get_local_string(30407))
