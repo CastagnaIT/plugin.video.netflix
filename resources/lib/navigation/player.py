@@ -107,7 +107,7 @@ def get_inputstream_listitem(videoid):
         raise Exception(common.get_local_string(30046))
     list_item.setProperty(
         key='inputstream.adaptive.stream_headers',
-        value='user-agent=' + common.get_user_agent())
+        value=f'user-agent={common.get_user_agent()}')
     list_item.setProperty(
         key='inputstream.adaptive.license_type',
         value='com.widevine.alpha')

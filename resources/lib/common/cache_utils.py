@@ -87,14 +87,14 @@ def _get_identifier(fixed_identifier, identify_from_kwarg_name,
     if fixed_identifier:
         identifier = fixed_identifier
         if identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier += '_' + str(kwargs.get(identify_append_from_kwarg_name))
+            identifier += f'_{kwargs.get(identify_append_from_kwarg_name)}'
     else:
         identifier = str(kwargs.get(identify_from_kwarg_name) or '')
         if not identifier and args:
             arg_value = str(args[identify_fallback_arg_index] or '')
             identifier = arg_value
         if identifier and identify_append_from_kwarg_name and kwargs.get(identify_append_from_kwarg_name):
-            identifier += '_' + str(kwargs.get(identify_append_from_kwarg_name))
+            identifier += f'_{kwargs.get(identify_append_from_kwarg_name)}'
     # LOG.debug('Get_identifier identifier value: {}', identifier if identifier else 'None')
     return arg_value, identifier
 

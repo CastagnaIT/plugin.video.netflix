@@ -255,7 +255,7 @@ class NFSessionOperations(SessionPathRequests):
         # by checking if the red status bar of watched time position appears and will be updated, or also
         # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
         call_paths = [['refreshVideoCurrentPositions']]
-        params = ['[' + video_id + ']', '[]']
+        params = [f'[{video_id}]', '[]']
         try:
             response = self.callpath_request(call_paths, params)
             LOG.debug('refreshVideoCurrentPositions response: {}', response)

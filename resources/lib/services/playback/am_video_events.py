@@ -202,5 +202,5 @@ class AMVideoEvents(ActionManager):
 
 def _get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = get_esn() + '_' + videoid.value
+    cache_identifier = f'{get_esn()}_{videoid.value}'
     return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

@@ -194,23 +194,23 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
 def _save_system_info():
     # Ask to save to a file
     filename = 'NFSystemInfo.txt'
-    path = ui.show_browse_dialog(common.get_local_string(30603) + ' - ' + filename)
+    path = ui.show_browse_dialog(f'{common.get_local_string(30603)} - {filename}')
     if not path:
         return
     # This collect the main data to allow verification checks for problems
-    data = 'Netflix add-on version: ' + G.VERSION
-    data += '\nDebug enabled: ' + str(LOG.is_enabled)
-    data += '\nSystem platform: ' + common.get_system_platform()
-    data += '\nMachine architecture: ' + common.get_machine()
-    data += '\nUser agent string: ' + common.get_user_agent()
-    data += '\n\n' + '#### Widevine info ####\n'
+    data = f'Netflix add-on version: {G.VERSION}'
+    data += f'\nDebug enabled: {LOG.is_enabled}'
+    data += f'\nSystem platform: {common.get_system_platform()}'
+    data += f'\nMachine architecture: {common.get_machine()}'
+    data += f'\nUser agent string: {common.get_user_agent()}'
+    data += '\n\n#### Widevine info ####\n'
     if common.get_system_platform() == 'android':
-        data += '\nSystem ID: ' + G.LOCAL_DB.get_value('drm_system_id', '--not obtained--', TABLE_SESSION)
-        data += '\nSecurity level: ' + G.LOCAL_DB.get_value('drm_security_level', '--not obtained--', TABLE_SESSION)
-        data += '\nHDCP level: ' + G.LOCAL_DB.get_value('drm_hdcp_level', '--not obtained--', TABLE_SESSION)
+        data += f'\nSystem ID: {G.LOCAL_DB.get_value("drm_system_id", "--not obtained--", TABLE_SESSION)}'
+        data += f'\nSecurity level: {G.LOCAL_DB.get_value("drm_security_level", "--not obtained--", TABLE_SESSION)}'
+        data += f'\nHDCP level: {G.LOCAL_DB.get_value("drm_hdcp_level", "--not obtained--", TABLE_SESSION)}'
         wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev', WidevineForceSecLev.DISABLED,
                                                 TABLE_SESSION)
-        data += '\nForced security level setting is: ' + wv_force_sec_lev
+        data += f'\nForced security level setting is: {wv_force_sec_lev}'
     else:
         try:
             from ctypes import (CDLL, c_char_p)
@@ -220,7 +220,7 @@ def _save_system_info():
                 data += '\nLibrary status: Correctly loaded'
                 try:
                     lib.GetCdmVersion.restype = c_char_p
-                    data += '\nVersion: ' + lib.GetCdmVersion().decode('utf-8')
+                    data += f'\nVersion: {lib.GetCdmVersion().decode("utf-8")}'
                 except Exception:  # pylint: disable=broad-except
                     # This can happen if the endpoint 'GetCdmVersion' is changed
                     data += '\nVersion: Reading error'
@@ -236,17 +236,17 @@ def _save_system_info():
                 data += f'\n>>> Error details: {exc}'
         except Exception as exc:  # pylint: disable=broad-except
             data += f'\nThe data could not be obtained. Error details: {exc}'
-    data += '\n\n' + '#### ESN ####\n'
+    data += '\n\n#### ESN ####\n'
     esn = get_esn() or '--not obtained--'
-    data += '\nUsed ESN: ' + common.censure(esn) if len(esn) > 50 else esn
-    data += '\nWebsite ESN: ' + (get_website_esn() or '--not obtained--')
-    data += '\nAndroid generated ESN: ' + (generate_android_esn() or '--not obtained--')
+    data += f'\nUsed ESN: {common.censure(esn) if len(esn) > 50 else esn}'
+    data += f'\nWebsite ESN: {get_website_esn() or "--not obtained--"}'
+    data += f'\nAndroid generated ESN: {(generate_android_esn() or "--not obtained--")}'
     if common.get_system_platform() == 'android':
-        data += '\n\n' + '#### Device system info ####\n'
+        data += '\n\n#### Device system info ####\n'
         try:
             import subprocess
             info = subprocess.check_output(['/system/bin/getprop']).decode('utf-8')
-            data += '\n' + info
+            data += f'\n{info}'
         except Exception as exc:  # pylint: disable=broad-except
             data += f'\nThe data could not be obtained. Error: {exc}'
     data += '\n'

@@ -66,7 +66,7 @@ def _encode_path(mode, pathitems, videoid):
 
 
 def _encode_params(params):
-    return ('?' + urlencode(params)) if params else ''
+    return f'?{urlencode(params)}' if params else ''
 
 
 def is_numeric(string):
@@ -149,7 +149,7 @@ def any_value_except(mapping, excluded_keys):
 
 
 def enclose_quotes(content):
-    return '"' + content + '"'
+    return f'"{content}"'
 
 
 def make_list(arg):

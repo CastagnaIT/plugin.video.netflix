@@ -84,14 +84,14 @@ def mysql_insert_or_update(table, id_columns, columns):
     Create a MySQL insert or update query (required multi=True)
     """
     columns[0:0] = id_columns
-    sets_columns = ['@' + col for col in columns]
-    sets = [col + ' = %s' for col in sets_columns]
+    sets_columns = [f'@{col}' for col in columns]
+    sets = [f'{col} = %s' for col in sets_columns]
     query_set = f'SET {", ".join(sets)};'
     query_columns = ', '.join(columns)
     values = ', '.join(sets_columns)
     query_insert = f'INSERT INTO {table} ({query_columns}) VALUES ({values})'
 
     columns = list(set(columns) - set(id_columns))  # Fastest method to remove list to list tested
-    on_duplicate_params = [col + ' = @' + col for col in columns]
+    on_duplicate_params = [f'{col} = @{col}' for col in columns]
     query_duplicate = f'ON DUPLICATE KEY UPDATE {", ".join(on_duplicate_params)};'
     return ' '.join([query_set, query_insert, query_duplicate])

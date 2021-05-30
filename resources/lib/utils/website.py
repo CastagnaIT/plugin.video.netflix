@@ -246,10 +246,10 @@ def validate_login(react_context):
             error_code = common.get_path(path_error_code, react_context)
             LOG.error('Login not valid, error code {}', error_code)
             error_description = common.get_local_string(30102) + error_code
-            if 'login_' + error_code in error_code_list:
-                error_description = error_code_list['login_' + error_code]
-            elif 'email_' + error_code in error_code_list:
-                error_description = error_code_list['email_' + error_code]
+            if f'login_{error_code}' in error_code_list:
+                error_description = error_code_list[f'login_{error_code}']
+            elif f'email_{error_code}' in error_code_list:
+                error_description = error_code_list[f'email_{error_code}']
             elif error_code in error_code_list:
                 error_description = error_code_list[error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))

@@ -178,8 +178,8 @@ class SessionHTTPRequests(SessionBase):
             # Special case used by path_request/callpath_request in path_requests.py
             data_converted = data
             if endpoint_conf['add_auth_url'] == 'to_data':
-                auth_data = 'authURL=' + self.auth_url
-                data_converted += '&' + auth_data if data_converted else auth_data
+                auth_data = f'authURL={self.auth_url}'
+                data_converted += f'&{auth_data}' if data_converted else auth_data
         return data_converted, headers, params
 
 

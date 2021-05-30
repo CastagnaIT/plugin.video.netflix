@@ -213,7 +213,7 @@ class DirectoryPathRequests:
     def req_video_list_search(self, search_term, perpetual_range_start=None):
         """Retrieve a video list by search term"""
         LOG.debug('Requesting video list by search term "{}"', search_term)
-        base_path = ['search', 'byTerm', '|' + search_term, 'titles', PATH_REQUEST_SIZE_STD]
+        base_path = ['search', 'byTerm', f'|{search_term}', 'titles', PATH_REQUEST_SIZE_STD]
         paths = ([base_path + [['id', 'name', 'requestId']]] +
                  build_paths(base_path + [RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
         call_args = {

@@ -99,7 +99,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         # Update status description
         hint = self.rating_levels[self.current_level_index]['description']
         ml_labels_included = [self.rating_levels[index]['label'] for index in range(0, self.current_level_index + 1)]
-        status_desc = self.status_base_desc.format(', '.join(ml_labels_included)) + '[CR]' + hint
+        status_desc = self.status_base_desc.format(', '.join(ml_labels_included)) + f'[CR]{hint}'
         self.getControl(10009).setLabel(status_desc)
 
     # def _validate_pin(self, pin_value):
@@ -117,7 +117,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         pos_y = 508  # 668
         for index, rating_level in enumerate(self.rating_levels):
             current_x = pos_x + (width * index)
-            maturity_name = '[' + rating_level['label'] + ']'
+            maturity_name = f'[{rating_level["label"]}]'
             lbl = xbmcgui.ControlLabel(current_x, pos_y, width, height, maturity_name,
                                        font='font10',
                                        alignment=XBFONT_CENTER_X)

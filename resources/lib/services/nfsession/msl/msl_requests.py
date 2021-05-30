@@ -174,7 +174,7 @@ class MSLRequests(MSLRequestBuilder):
         while True:
             try:
                 if is_attempts_enabled:
-                    _endpoint = endpoint.replace('reqAttempt=', 'reqAttempt=' + str(retry))
+                    _endpoint = endpoint.replace('reqAttempt=', f'reqAttempt={retry}')
                 else:
                     _endpoint = endpoint
                 LOG.debug('Executing POST request to {}', _endpoint)
@@ -221,8 +221,9 @@ class MSLRequests(MSLRequestBuilder):
 
 def _process_json_response(response):
     """Processes the response data by returning header and payloads in JSON format and check for possible MSL error"""
+    comma_separated_response = response.replace('}{', '},{')
     try:
-        data = json.loads('[' + response.replace('}{', '},{') + ']')
+        data = json.loads(f'[{comma_separated_response}]')
         # On 'data' list the first dict is always the header or the error
         payloads = [msg_part for msg_part in data if 'payload' in msg_part]
         return _raise_if_error(data[0]), payloads

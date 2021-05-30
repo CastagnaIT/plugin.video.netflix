@@ -102,14 +102,14 @@ def search_add():
 
 def _search_add_bylang(search_type, dict_languages):
     search_type_desc = SEARCH_TYPES_DESC.get(search_type, 'Unknown')
-    title = search_type_desc + ' - ' + common.get_local_string(30405)
+    title = f'{search_type_desc} - {common.get_local_string(30405)}'
     index = ui.show_dlg_select(title, list(dict_languages.values()))
     if index == -1:  # Cancelled
         return None
     lang_code = list(dict_languages.keys())[index]
     lang_desc = list(dict_languages.values())[index]
     # In this case the 'value' is used only as title for the ListItem and not for the query
-    value = search_type_desc + ': ' + lang_desc
+    value = f'{search_type_desc}: {lang_desc}'
     row_id = G.LOCAL_DB.insert_search_item(search_type, value, {'lang_code': lang_code})
     return row_id
 
@@ -219,7 +219,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
 
 @custom_viewmode(G.VIEW_SHOW)
 def _search_results_directory(search_value, menu_data, dir_items, extra_data, dir_update_listing):
-    extra_data['title'] = common.get_local_string(30400) + ' - ' + search_value
+    extra_data['title'] = f'{common.get_local_string(30400)} - {search_value}'
     finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                        title=get_title(menu_data, extra_data))
     end_of_directory(dir_update_listing)

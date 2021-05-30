@@ -42,7 +42,7 @@ MEDIA_TYPE_MAPPINGS = {
 
 def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False):
     """Get the infolabels data"""
-    cache_identifier = videoid.value + '_' + profile_language_code
+    cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         cache_entry = G.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
@@ -103,7 +103,7 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
 
 def get_art(videoid, item, profile_language_code='', delayed_db_op=False):
     """Get art infolabels - NOTE: If 'item' arg is None this method can raise TypeError when there is not cache"""
-    cache_identifier = videoid.value + '_' + profile_language_code
+    cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
     except CacheMiss:

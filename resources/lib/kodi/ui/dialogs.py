@@ -91,7 +91,7 @@ def ask_for_resume(resume_position):
 def show_backend_not_ready(error_details=None):
     message = common.get_local_string(30138)
     if error_details:
-        message += '[CR][CR]Error details:[CR]' + error_details
+        message += f'[CR][CR]Error details:[CR]{error_details}'
     return xbmcgui.Dialog().ok(common.get_local_string(30105), message)
 
 
