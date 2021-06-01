@@ -37,8 +37,8 @@ def convert_to_dash(manifest):
     for video_track in manifest['video_tracks']:
         _convert_video_track(video_track, period, init_length, video_protection_info, has_video_drm_streams, cdn_index)
 
-    common.fix_locale_languages(manifest['audio_tracks'])
-    common.fix_locale_languages(manifest['timedtexttracks'])
+    common.apply_lang_code_changes(manifest['audio_tracks'])
+    common.apply_lang_code_changes(manifest['timedtexttracks'])
 
     has_audio_drm_streams = manifest['audio_tracks'][0].get('hasDrmStreams', False)
 

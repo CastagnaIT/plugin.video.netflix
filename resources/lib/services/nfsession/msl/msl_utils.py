@@ -83,7 +83,7 @@ def update_play_times_duration(play_times, player_state):
 
 def build_media_tag(player_state, manifest):
     """Build the playTimes and the mediaId data by parsing manifest and the current player streams used"""
-    common.fix_locale_languages(manifest['audio_tracks'])
+    common.apply_lang_code_changes(manifest['audio_tracks'])
     duration = player_state['elapsed_seconds'] * 1000
 
     audio_downloadable_id, audio_track_id = _find_audio_data(player_state, manifest)

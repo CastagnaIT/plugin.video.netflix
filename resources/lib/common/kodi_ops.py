@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import itertools
 import json
 from contextlib import contextmanager
 
@@ -26,6 +27,11 @@ LOCALE_CONV_TABLE = {
     'nl-BE': 'nl-Belgium',
     'en-GB': 'en-UnitedKingdom'
 }
+REPLACE_MACRO_LANG = {
+    # 'language code' : [macro language codes]
+    'no': ['nb', 'nn']
+}
+REPLACE_MACRO_LIST = list(itertools.chain.from_iterable(REPLACE_MACRO_LANG.values()))
 
 
 def json_rpc(method, params=None):
@@ -225,26 +231,47 @@ def convert_language_iso(from_value, iso_format=xbmc.ISO_639_1):
     return xbmc.convertLanguage(from_value, iso_format)
 
 
-def fix_locale_languages(data_list):
+def apply_lang_code_changes(data_list):
+    """Apply changes to the language codes"""
+    lang_list = [item['language'] for item in data_list if not item.get('isNoneTrack', False)]
+    for item in data_list:
+        if item.get('isNoneTrack', False):
+            continue
+        convert_macro_languages(item, lang_list)
+        fix_locale_languages(item)
+
+
+def convert_macro_languages(item, lang_list):
+    """Covert the macrolanguage's code to their primary language code"""
+    # Kodi handles the macrolanguage's separately, then if the user sets a primary language to audio/subtitles,
+    # it will not be able to automatically fallback to his macrolanguage when the primary language not exist.
+    # e.g. if you set Norwegian (no) and the video played has only the macro lang. Norwegian Bokmål (nb)
+    #  the macro language will not be selected, and the user will have to manually select it.
+    # To avoid this we will convert the macro (nb) code to the main lang code (no)
+    if item['language'] in REPLACE_MACRO_LIST:
+        main_lang = next(k for k, v in REPLACE_MACRO_LANG.items() if item['language'] in v)
+        # Convert the macro code to the main lang code only if the primary language not already exist
+        if main_lang not in lang_list:
+            item['language'] = main_lang
+
+
+def fix_locale_languages(item):
     """Replace all the languages with the country code because Kodi does not support IETF BCP 47 standard"""
     # Languages with the country code causes the display of wrong names in Kodi settings like
     # es-ES as 'Spanish-Spanish', pt-BR as 'Portuguese-Breton', nl-BE as 'Dutch-Belarusian', etc
     # and the impossibility to set them as the default audio/subtitle language
     # Issue: https://github.com/xbmc/xbmc/issues/15308
-    for item in data_list:
-        if item.get('isNoneTrack', False):
-            continue
-        if item['language'] == 'pt-BR':
-            # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
-            # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
-            item['language'] = 'pb'
-        if len(item['language']) > 2:
-            # Replace know locale with country
-            # so Kodi will not recognize the modified country code and will show the string as it is
-            if item['language'] in LOCALE_CONV_TABLE:
-                item['language'] = LOCALE_CONV_TABLE[item['language']]
-            else:
-                LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
+    if item['language'] == 'pt-BR':
+        # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
+        # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
+        item['language'] = 'pb'
+    if len(item['language']) > 2:
+        # Replace know locale with country
+        # so Kodi will not recognize the modified country code and will show the string as it is
+        if item['language'] in LOCALE_CONV_TABLE:
+            item['language'] = LOCALE_CONV_TABLE[item['language']]
+        else:
+            LOG.error('fix_locale_languages: missing mapping conversion for locale "{}"'.format(item['language']))
 
 
 class KodiVersion(CmpVersion):
