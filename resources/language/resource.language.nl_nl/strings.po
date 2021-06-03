@@ -68,11 +68,11 @@ msgstr "Alle soorten lijsten"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "Profiel opties en ouderlijk toezicht"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "Open in de profiellijst het contextmenu in het gekozen profiel"
 
 msgctxt "#30014"
 msgid "Account"
@@ -157,31 +157,31 @@ msgstr ""
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr ""
+msgstr "Aangepaste weergavetypen inschakelen"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr ""
+msgstr "ID voor mappen bekijken"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr ""
+msgstr "ID voor films bekijken"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr ""
+msgstr "ID bekijken voor shows"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr ""
+msgstr "ID voor seizoenen bekijken"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr ""
+msgstr "ID voor afleveringen bekijken"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr ""
+msgstr "ID voor profielen bekijken"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -259,7 +259,7 @@ msgstr "Automatisch bijwerken voor tv-programma's"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Logboekregistratie voor foutopsporing inschakelen"
 
 msgctxt "#30067"
 msgid "daily"
@@ -327,7 +327,7 @@ msgstr "Onthoud geluid / ondertiteling voorkeuren"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Forceer de weergave van geforceerde ondertitels alleen met de audiotaal ingesteld""
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -611,15 +611,15 @@ msgstr "Start de add-on configuratie wizard"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr ""
+msgstr "ID bekijken voor hoofdmenu"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr ""
+msgstr "ID bekijken voor zoeken"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr ""
+msgstr "ID bekijken voor geëxporteerd"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -635,7 +635,7 @@ msgstr "Blader door inhoud met audiobeschrijving"
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "ID bekijken voor 'Mijn lijst'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -699,7 +699,7 @@ msgstr "Er is een probleem opgetreden met het inloggen. Het is mogelijk dat je a
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Toon altijd de ondertitels wanneer de gewenste audiotaal niet beschikbaar is"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -1030,16 +1030,16 @@ msgstr "Op genre/subgenre ID"
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Geef de voorkeur aan de audio-/ondertiteltaal met landcode (indien beschikbaar)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Geef standaard de voorkeur aan stereo-audiotracks"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "ESN / Widevine-instellingen"
 
 msgctxt "#30601"
 msgid "ESN:"
@@ -1047,15 +1047,15 @@ msgstr ""
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "Wijzig ESN"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "Systeeminfo opslaan"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widevine - Beveiligingsniveau forceren"
 
 msgctxt "#30605"
 msgid "Force {}"
@@ -1063,38 +1063,38 @@ msgstr ""
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "ESN succesvol ingesteld[CR]Probeer een video af te spelen"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "Deze ESN kan niet worden gebruikt[CR]Probeer ESN te wijzigen of ESN te resetten.[CR][CR]Foutdetails:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "Verkeerd ESN-formaat"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "Wil je alle instellingen resetten?"
 
 # Unused 30610 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "Deze titel is beschikbaar vanaf: {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Wil je de promotrailer spelen?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Herinner me"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Herinnering ingesteld"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Nieuw en populair"
