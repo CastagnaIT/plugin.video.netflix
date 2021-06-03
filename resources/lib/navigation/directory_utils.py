@@ -110,7 +110,7 @@ def auto_scroll(dir_items):
         total_items = len(dir_items)
         if total_items:
             # Delay a bit to wait for the completion of the screen update
-            xbmc.sleep(100)
+            xbmc.sleep(200)
             if not _auto_scroll_init_checks():
                 return
             # Check if all items are already watched
