@@ -45,7 +45,7 @@ class AMVideoEvents(ActionManager):
         self.allow_request_update_loco = False
 
     def __str__(self):
-        return 'enabled={}'.format(self.enabled)
+        return f'enabled={self.enabled}'
 
     def initialize(self, data):
         if self.videoid.mediatype not in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
@@ -202,5 +202,5 @@ class AMVideoEvents(ActionManager):
 
 def _get_manifest(videoid):
     """Get the manifest from cache"""
-    cache_identifier = get_esn() + '_' + videoid.value
+    cache_identifier = f'{get_esn()}_{videoid.value}'
     return G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

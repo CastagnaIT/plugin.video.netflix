@@ -128,7 +128,7 @@ def generate_android_esn(wv_force_sec_lev=None):
                 esn += model[:45].replace(' ', '=')
                 esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
                 if system_id:
-                    esn += '-' + system_id + '-'
+                    esn += f'-{system_id}-'
                 LOG.debug('Generated Android ESN: {} (widevine force sec.lev. set as "{}")', esn, wv_force_sec_lev)
                 return esn
         except OSError:

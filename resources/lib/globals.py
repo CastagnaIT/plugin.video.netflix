@@ -235,13 +235,11 @@ class GlobalVariables:
             try:
                 self.PLUGIN_HANDLE = int(argv[1])
                 self.IS_SERVICE = False
-                self.BASE_URL = '{scheme}://{netloc}'.format(scheme=self.URL[0],
-                                                             netloc=self.URL[1])
+                self.BASE_URL = f'{self.URL[0]}://{self.URL[1]}'
             except IndexError:
                 self.PLUGIN_HANDLE = 0
                 self.IS_SERVICE = True
-                self.BASE_URL = '{scheme}://{netloc}'.format(scheme='plugin',
-                                                             netloc=self.ADDON_ID)
+                self.BASE_URL = f'plugin://{self.ADDON_ID}'
             from resources.lib.common.kodi_ops import KodiVersion
             self.KODI_VERSION = KodiVersion()
         # Initialize the log

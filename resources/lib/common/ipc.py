@@ -44,7 +44,7 @@ def register_slot(callback, signal=None, source_id=None, is_signal=False):
         signaler_id=source_id or G.ADDON_ID,
         signal=name,
         callback=_callback)
-    LOG.debug('Registered AddonSignals slot {} to {}'.format(name, callback))
+    LOG.debug('Registered AddonSignals slot {} to {}', name, callback)
 
 
 def unregister_slot(callback, signal=None):
@@ -53,7 +53,7 @@ def unregister_slot(callback, signal=None):
     AddonSignals.unRegisterSlot(
         signaler_id=G.ADDON_ID,
         signal=name)
-    LOG.debug('Unregistered AddonSignals slot {}'.format(name))
+    LOG.debug('Unregistered AddonSignals slot {}', name)
 
 
 def send_signal(signal, data=None, non_blocking=False):
@@ -105,8 +105,8 @@ def make_http_call(endpoint, func_name, data=None):
     from urllib.request import build_opener, install_opener, ProxyHandler, urlopen
     from urllib.error import URLError
     # Note: Using 'localhost' as address slowdown the call (Windows OS is affected) not sure if it is an urllib issue
-    url = 'http://127.0.0.1:{}{}/{}'.format(G.LOCAL_DB.get_value('nf_server_service_port'), endpoint, func_name)
-    LOG.debug('Handling HTTP IPC call to {}'.format(url))
+    url = f'http://127.0.0.1:{G.LOCAL_DB.get_value("nf_server_service_port")}{endpoint}/{func_name}'
+    LOG.debug('Handling HTTP IPC call to {}', url)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
         with urlopen(url=url,
@@ -134,7 +134,7 @@ def make_addonsignals_call(callname, data):
     Make an IPC call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function.
     """
-    LOG.debug('Handling AddonSignals IPC call to {}'.format(callname))
+    LOG.debug('Handling AddonSignals IPC call to {}', callname)
     _data = b64encode(pickle.dumps(data, pickle.HIGHEST_PROTOCOL)).decode('ascii')
     result = AddonSignals.makeCall(
         source_id=G.ADDON_ID,

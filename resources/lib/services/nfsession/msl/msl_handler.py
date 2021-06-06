@@ -142,7 +142,7 @@ class MSLHandler:
 
     @measure_exec_time_decorator(is_immediate=True)
     def _get_manifest(self, viewable_id, esn):
-        cache_identifier = esn + '_' + str(viewable_id)
+        cache_identifier = f'{esn}_{viewable_id}'
         try:
             # The manifest must be requested once and maintained for its entire duration
             manifest = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)

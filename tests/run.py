@@ -21,14 +21,14 @@ if len(sys.argv) > 1:
     path = sys.argv[1].lstrip('/') or default
 else:
     path = default
-uri = 'plugin://plugin.video.netflix/{path}'.format(path=path)
+uri = f'plugin://plugin.video.netflix/{path}'
 sys.argv = [uri, '0', '']
 
 
 from resources.lib import run_addon  # pylint: disable=wrong-import-position
 run_addon.G.init_globals(sys.argv)
-run_addon.LOG.info('Started (Version {})'.format(run_addon.G.VERSION))
-run_addon.LOG.info('URL is {}'.format(run_addon.G.URL))
+run_addon.LOG.info('Started (Version {})', run_addon.G.VERSION)
+run_addon.LOG.info('URL is {}', run_addon.G.URL)
 if run_addon._check_valid_credentials():  # pylint: disable=protected-access
     if run_addon.check_addon_upgrade():
         from resources.lib.config_wizard import run_addon_configuration  # pylint: disable=wrong-import-position

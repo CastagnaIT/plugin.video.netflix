@@ -129,7 +129,7 @@ def _update_mylist_cache(videoid, operation, params):
     perpetual_range_start = params.get('perpetual_range_start')
     mylist_identifier = 'mylist'
     if perpetual_range_start and perpetual_range_start != 'None':
-        mylist_identifier += '_' + perpetual_range_start
+        mylist_identifier += f'_{perpetual_range_start}'
     if operation == 'remove':
         try:
             video_list_sorted_data = G.CACHE.get(cache_utils.CACHE_MYLIST, mylist_identifier)

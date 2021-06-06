@@ -6,10 +6,11 @@
 
 #### Types of changes
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Feature change (non-breaking change which change behaviour of an existing functionality)
-- [ ] Improvement (non-breaking change which improve functionality)
+- [ ] Feature change (non-breaking change which changes behaviour of an existing functionality)
+- [ ] Improvement (non-breaking change which improves functionality)
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Refactor (non-breaking performance or readability improvements)
 
 ### Description
 <!--- Motivation and a possible detailed explanation of the changes -->

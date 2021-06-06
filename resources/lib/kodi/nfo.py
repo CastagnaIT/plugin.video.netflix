@@ -80,7 +80,7 @@ class NFOSettings:
             if self.tvshow_prompt_dialog:
                 ask_message_typelist.append(common.get_local_string(30190))
         if ask_message_typelist:
-            message = ' {} '.format(common.get_local_string(1397)).join(ask_message_typelist)
+            message = f' {common.get_local_string(1397)} '.join(ask_message_typelist)
             message = common.get_local_string(30183).format(message) + common.get_local_string(30192)
             user_choice = ui.ask_for_confirmation(common.get_local_string(30182), message)
             if len(ask_message_typelist) == 2 and not user_choice:

@@ -254,7 +254,8 @@ def reference_path(ref):
     if isinstance(ref, dict):
         return ref['value'] if ref.get('$type') == 'ref' else None
     raise InvalidReferenceError(
-        'Unexpected reference format encountered: {}'.format(ref))
+        f'Unexpected reference format encountered: {ref}'
+    )
 
 
 def _remove_nesting(ref):

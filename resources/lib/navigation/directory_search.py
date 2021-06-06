@@ -89,7 +89,7 @@ def search_add():
         if genre_id:
             row_id = _search_add_bygenreid(SEARCH_TYPES[type_index], genre_id)
     else:
-        raise NotImplementedError('Search type index {} not implemented'.format(type_index))
+        raise NotImplementedError(f'Search type index {type_index} not implemented')
     # Redirect to "search" endpoint (otherwise no results in JSON-RPC)
     # Rewrite path history using dir_update_listing + container_update
     # (otherwise will retrigger input dialog on Back or Container.Refresh)
@@ -102,14 +102,14 @@ def search_add():
 
 def _search_add_bylang(search_type, dict_languages):
     search_type_desc = SEARCH_TYPES_DESC.get(search_type, 'Unknown')
-    title = search_type_desc + ' - ' + common.get_local_string(30405)
+    title = f'{search_type_desc} - {common.get_local_string(30405)}'
     index = ui.show_dlg_select(title, list(dict_languages.values()))
     if index == -1:  # Cancelled
         return None
     lang_code = list(dict_languages.keys())[index]
     lang_desc = list(dict_languages.values())[index]
     # In this case the 'value' is used only as title for the ListItem and not for the query
-    value = search_type_desc + ': ' + lang_desc
+    value = f'{search_type_desc}: {lang_desc}'
     row_id = G.LOCAL_DB.insert_search_item(search_type, value, {'lang_code': lang_code})
     return row_id
 
@@ -121,7 +121,7 @@ def _search_add_bygenreid(search_type, genre_id):
         ui.show_notification(common.get_local_string(30407))
         return None
     # In this case the 'value' is used only as title for the ListItem and not for the query
-    title += ' [{}]'.format(genre_id)
+    title += f' [{genre_id}]'
     row_id = G.LOCAL_DB.insert_search_item(search_type, title, {'genre_id': genre_id})
     return row_id
 
@@ -208,7 +208,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     else:
-        raise NotImplementedError('Search type {} not implemented'.format(search_type))
+        raise NotImplementedError(f'Search type {search_type} not implemented')
     # Show the results
     if not dir_items:
         ui.show_notification(common.get_local_string(30407))
@@ -219,7 +219,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
 
 @custom_viewmode(G.VIEW_SHOW)
 def _search_results_directory(search_value, menu_data, dir_items, extra_data, dir_update_listing):
-    extra_data['title'] = common.get_local_string(30400) + ' - ' + search_value
+    extra_data['title'] = f'{common.get_local_string(30400)} - {search_value}'
     finalize_directory(dir_items, menu_data.get('content_type', G.CONTENT_SHOW),
                        title=get_title(menu_data, extra_data))
     end_of_directory(dir_update_listing)

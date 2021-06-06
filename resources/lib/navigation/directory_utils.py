@@ -28,11 +28,11 @@ def custom_viewmode(content_type):
             override_content_type = func(*args, **kwargs)
             _content_type = override_content_type if override_content_type else content_type
             if (G.ADDON.getSettingBool('customview')
-                    and 'plugin://{}'.format(G.ADDON_ID) in xbmc.getInfoLabel('Container.FolderPath')):
+                    and f'plugin://{G.ADDON_ID}' in xbmc.getInfoLabel('Container.FolderPath')):
                 # Activate the given skin viewtype if the plugin is run in the foreground
-                view_id = G.ADDON.getSettingInt('viewmode' + _content_type + 'id')
+                view_id = G.ADDON.getSettingInt(f'viewmode{_content_type}id')
                 if view_id > 0:
-                    xbmc.executebuiltin('Container.SetViewMode({})'.format(view_id))
+                    xbmc.executebuiltin(f'Container.SetViewMode({view_id})')
         return set_custom_viewmode
     return decorate_viewmode
 

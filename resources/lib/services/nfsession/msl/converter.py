@@ -75,7 +75,7 @@ def _add_segment_base(representation, init_length):
     ET.SubElement(
         representation,  # Parent
         'SegmentBase',  # Tag
-        indexRange='0-' + str(init_length),
+        indexRange=f'0-{init_length}',
         indexRangeExact='true')
 
 
@@ -189,7 +189,7 @@ def _determine_video_codec(content_profile):
             return 'dvhe'
         return 'hevc'
     if content_profile.startswith('vp9'):
-        return 'vp9.' + content_profile[11:12]
+        return f'vp9.{content_profile[11:12]}'
     return 'h264'
 
 

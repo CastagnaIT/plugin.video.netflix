@@ -81,7 +81,7 @@ class EventsHandler(threading.Thread):
         # Request attempts can be made up to a maximum of 3 times per event
         LOG.info('EVENT [{}] - Executing request', event_type)
         endpoint_url = ENDPOINTS['events'] + create_req_params(20 if event_type == EVENT_START else 0,
-                                                               'events/{}'.format(event_type))
+                                                               f'events/{event_type}')
         try:
             response = self.chunked_request(endpoint_url, request_data, get_esn(),
                                             disable_msl_switch=False)

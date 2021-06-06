@@ -35,8 +35,8 @@ def catch_exceptions_decorator(func):
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog('InputStream Helper Add-on error',
                            ('The operation has been cancelled.[CR]'
-                            'InputStream Helper has generated an internal error:[CR]{}[CR][CR]'
-                            'Please report it to InputStream Helper github.'.format(exc)))
+                            f'InputStream Helper has generated an internal error:[CR]{exc}[CR][CR]'
+                            'Please report it to InputStream Helper github.'))
         except HttpError401 as exc:
             # This is a generic error, can happen when the http request for some reason has failed.
             # Known causes:
@@ -46,7 +46,7 @@ def catch_exceptions_decorator(func):
             show_ok_dialog(get_local_string(30105),
                            ('There was a communication problem with Netflix.[CR]'
                             'You can try the operation again or exit.[CR]'
-                            '(Error code: {})').format(exc.__class__.__name__))
+                            f'(Error code: {exc.__class__.__name__})'))
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
             from resources.lib.kodi.ui import show_error_info
             show_error_info(get_local_string(30008), get_local_string(30180), False, True)
@@ -141,7 +141,7 @@ def _get_nav_handler(root_handler, pathitems):
         from resources.lib.navigation.keymaps import KeymapsActionExecutor
         nav_handler = KeymapsActionExecutor
     else:
-        raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
+        raise InvalidPathError(f'No root handler for path {"/".join(pathitems)}')
     return nav_handler
 
 
@@ -150,7 +150,7 @@ def _execute(executor_type, pathitems, params, root_handler):
     try:
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
     except AttributeError as exc:
-        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems))) from exc
+        raise InvalidPathError(f'Unknown action {"/".join(pathitems)}') from exc
     LOG.debug('Invoking action: {}', executor.__name__)
     executor(pathitems=pathitems)
     if root_handler == G.MODE_DIRECTORY and not G.IS_ADDON_EXTERNAL_CALL:
@@ -215,8 +215,8 @@ def run(argv):
     # PR: https://github.com/xbmc/xbmc/pull/13814
     G.init_globals(argv)
 
-    LOG.info('Started (Version {})'.format(G.VERSION_RAW))
-    LOG.info('URL is {}'.format(G.URL))
+    LOG.info('Started (Version {})', G.VERSION_RAW)
+    LOG.info('URL is {}', G.URL)
     success = True
 
     is_external_call = _check_addon_external_call()

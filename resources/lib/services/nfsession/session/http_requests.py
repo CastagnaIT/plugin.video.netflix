@@ -178,8 +178,8 @@ class SessionHTTPRequests(SessionBase):
             # Special case used by path_request/callpath_request in path_requests.py
             data_converted = data
             if endpoint_conf['add_auth_url'] == 'to_data':
-                auth_data = 'authURL=' + self.auth_url
-                data_converted += '&' + auth_data if data_converted else auth_data
+                auth_data = f'authURL={self.auth_url}'
+                data_converted += f'&{auth_data}' if data_converted else auth_data
         return data_converted, headers, params
 
 
@@ -190,10 +190,8 @@ def _document_url(endpoint_address, kwargs):
 
 
 def _api_url(endpoint_address):
-    return '{baseurl}{endpoint_adr}'.format(
-        baseurl=G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        endpoint_adr=endpoint_address)
-
+    baseurl = G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION)
+    return f'{baseurl}{endpoint_address}'
 
 def _raise_api_error(decoded_response):
     if decoded_response.get('status', 'success') == 'error':

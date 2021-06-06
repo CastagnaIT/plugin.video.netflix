@@ -88,7 +88,7 @@ class DirectoryPathRequests:
         try:
             return next(iter(self.req_loco_list_root().lists_by_context([context], True)))[0]
         except StopIteration as exc:
-            raise InvalidVideoListTypeError('No lists with context {} available'.format(context)) from exc
+            raise InvalidVideoListTypeError(f'No lists with context {context} available') from exc
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, fixed_identifier='profiles_raw_data',
                               ttl=300, ignore_self_class=True)
@@ -109,7 +109,7 @@ class DirectoryPathRequests:
     def req_seasons(self, videoid, perpetual_range_start):
         """Retrieve the seasons of a tv show"""
         if videoid.mediatype != common.VideoId.SHOW:
-            raise InvalidVideoId('Cannot request season list for {}'.format(videoid))
+            raise InvalidVideoId(f'Cannot request season list for {videoid}')
         LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
             'paths': (build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS) +
@@ -125,7 +125,7 @@ class DirectoryPathRequests:
     def req_episodes(self, videoid, perpetual_range_start=None):
         """Retrieve the episodes of a season"""
         if videoid.mediatype != common.VideoId.SEASON:
-            raise InvalidVideoId('Cannot request episode list for {}'.format(videoid))
+            raise InvalidVideoId(f'Cannot request episode list for {videoid}')
         LOG.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
@@ -184,7 +184,7 @@ class DirectoryPathRequests:
     def req_video_list_supplemental(self, videoid, supplemental_type):
         """Retrieve a video list of supplemental type videos"""
         if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
-            raise InvalidVideoId('Cannot request video list supplemental for {}'.format(videoid))
+            raise InvalidVideoId(f'Cannot request video list supplemental for {videoid}')
         LOG.debug('Requesting video list supplemental of type "{}" for {}', supplemental_type, videoid)
         path = build_paths(
             ['videos', videoid.value, supplemental_type, {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS
@@ -213,7 +213,7 @@ class DirectoryPathRequests:
     def req_video_list_search(self, search_term, perpetual_range_start=None):
         """Retrieve a video list by search term"""
         LOG.debug('Requesting video list by search term "{}"', search_term)
-        base_path = ['search', 'byTerm', '|' + search_term, 'titles', PATH_REQUEST_SIZE_STD]
+        base_path = ['search', 'byTerm', f'|{search_term}', 'titles', PATH_REQUEST_SIZE_STD]
         paths = ([base_path + [['id', 'name', 'requestId']]] +
                  build_paths(base_path + [RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
         call_args = {
@@ -268,7 +268,7 @@ class DirectoryPathRequests:
                               identify_append_from_kwarg_name='category_name', ignore_self_class=True)
     def req_lolomo_category(self, category_name):
         """Retrieve LoLoMo by category lists"""
-        LOG.debug('Requesting LoLoMo "{}" category lists'.format(category_name))
+        LOG.debug('Requesting LoLoMo "{}" category lists', category_name)
         paths = ([['lolomoByCategory', category_name, ['componentSummary']],
                   ['lolomoByCategory', category_name, {'from': 0, 'to': 10}, ['componentSummary']],
                   # Titles of first 4 videos in each video list (needed only to show titles in the plot description)

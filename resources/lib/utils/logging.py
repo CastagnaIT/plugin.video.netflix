@@ -33,7 +33,7 @@ class Logging:
             return
         self.__addon_id = addon_id
         self.__plugin_handle = plugin_handle
-        self.__log('The debug logging is set as {}'.format('ENABLED' if is_enabled else 'DISABLED'), xbmc.LOGINFO)
+        self.__log(f'The debug logging is set as {"ENABLED" if is_enabled else "DISABLED"}', xbmc.LOGINFO)
         self.is_enabled = is_enabled
         self.is_time_trace_enabled = is_enabled and is_time_trace_enabled
         if is_enabled:
@@ -115,7 +115,7 @@ def logdetails_decorator(func):
         """Wrapper function to maintain correct stack traces"""
         that = args[0]
         class_name = that.__class__.__name__
-        arguments = [':{} = {}:'.format(key, value)
+        arguments = [f':{key} = {value}:'
                      for key, value in kwargs.items()
                      if key not in ['account', 'credentials']]
         if arguments:

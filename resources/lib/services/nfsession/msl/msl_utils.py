@@ -54,7 +54,7 @@ def display_error_info(func):
         try:
             return func(*args, **kwargs)
         except Exception as exc:
-            message = exc.__class__.__name__ + ': ' + str(exc)
+            message = f'{exc.__class__.__name__}: {exc}'
             ui.show_error_info(common.get_local_string(30028), message,
                                unknown_error=not message,
                                netflix_error=isinstance(exc, MSLError))
@@ -124,8 +124,9 @@ def _find_audio_data(player_state, manifest):
             stream = max(audio_track['streams'], key=lambda x: x['bitrate'])
             return stream['downloadable_id'], audio_track['new_track_id']
     # Not found?
-    raise Exception('build_media_tag: unable to find audio data with language: {}, channels: {}'
-                    .format(language, channels))
+    raise Exception(
+        f'build_media_tag: unable to find audio data with language: {language}, channels: {channels}'
+    )
 
 
 def _find_video_data(player_state, manifest):
@@ -140,15 +141,16 @@ def _find_video_data(player_state, manifest):
             if codec in stream['content_profile'] and width == stream['res_w'] and height == stream['res_h']:
                 return stream['downloadable_id'], video_track['new_track_id']
     # Not found?
-    raise Exception('build_media_tag: unable to find video data with codec: {}, width: {}, height: {}'
-                    .format(codec, width, height))
+    raise Exception(
+        f'build_media_tag: unable to find video data with codec: {codec}, width: {width}, height: {height}'
+    )
 
 
 def generate_logblobs_params():
     """Generate the initial log blog"""
     # It seems that this log is sent when logging in to a profile the first time
     # i think it is the easiest to reproduce, the others contain too much data
-    screen_size = str(xbmcgui.getScreenWidth()) + 'x' + str(xbmcgui.getScreenHeight())
+    screen_size = f'{xbmcgui.getScreenWidth()}x{xbmcgui.getScreenHeight()}'
     timestamp_utc = time.time()
     timestamp = int(timestamp_utc * 1000)
     app_id = int(time.time()) * 10000 + random.SystemRandom().randint(1, 10001)  # Should be used with all log requests
@@ -218,4 +220,4 @@ def create_req_params(req_priority, req_name):
         ('osname', G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION).lower()),
         ('osversion', G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION))
     ]
-    return '?' + urlencode(params)
+    return f'?{urlencode(params)}'
