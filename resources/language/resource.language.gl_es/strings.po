@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-10-22 11:24+0200\n"
-"PO-Revision-Date: 2020-10-23 22:57+0200\n"
+"PO-Revision-Date: 2021-06-05 21:57+0200\n"
 "Last-Translator: Ignacio Hernández Rial <naciohr@gmail.com>\n"
 "Language-Team: Galego\n"
 "Language: gl_ES\n"
@@ -107,7 +107,7 @@ msgstr "Engadir a 'Miña Lista'"
 
 msgctxt "#30022"
 msgid "(between 0 and 10)"
-msgstr "(Entre 0 & 10)"
+msgstr "(Entre 0 e 10)"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -249,7 +249,7 @@ msgstr "Controles Parentais"
 
 msgctxt "#30063"
 msgid "An update is already in progress"
-msgstr "Unha actualización xa está en progreso"
+msgstr "Xa hai unha actualización en curso"
 
 msgctxt "#30064"
 msgid "Perform auto-update"
@@ -345,7 +345,7 @@ msgstr "Tempo de vida útil dos elementos na cache de ‘Miña Lista’ (minutos
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
-msgstr "Contén {} e máis..."
+msgstr "Contén {} e mais..."
 
 msgctxt "#30088"
 msgid "Browse related content"
@@ -588,7 +588,7 @@ msgstr "Orden alfabética (Z-A)"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "Suxestións para vostede"
+msgstr "Suxestións para ti"
 
 msgctxt "#30153"
 msgid "Year released"
@@ -1082,21 +1082,21 @@ msgstr "Queres reiniciar todos os parámetros?"
 # Unused 30610 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "Este contido estará dispoñíbel a partir de: {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Desexas reproducir o vídeo promocional?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Acórdamo"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Recordatorio establecido"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Novo e popular"
