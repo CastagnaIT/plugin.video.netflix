@@ -140,7 +140,7 @@ def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=
     :param extensions: extensions allowed e.g. '.jpg|.png'
     :return: The selected path as string (or tuple of selected items) if user pressed 'Ok', else None
     """
-    ret = xbmcgui.Dialog().browse(browse_type, title, shares='local', useThumbs=False, treatAsFolder=False,
+    ret = xbmcgui.Dialog().browse(browse_type, title, shares='', useThumbs=False, treatAsFolder=False,
                                   defaultt=default_path, enableMultiple=multi_selection, mask=extensions)
     # Note: when defaultt is set and the user cancel the action (when enableMultiple is False),
     #       will be returned the defaultt value again, so we avoid this strange behavior...
