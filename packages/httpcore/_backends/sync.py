@@ -14,6 +14,7 @@ from .._exceptions import (
     WriteTimeout,
     map_exceptions,
 )
+from .tcp_keep_alive import enable_tcp_keep_alive
 from .._types import TimeoutDict
 from .._utils import is_socket_readable
 
@@ -137,6 +138,9 @@ class SyncBackend:
             sock = socket.create_connection(
                 address, connect_timeout, source_address=source_address  # type: ignore
             )
+            # Enable TCP Keep-Alive
+            enable_tcp_keep_alive(sock)
+
             if ssl_context is not None:
                 sock = ssl_context.wrap_socket(
                     sock, server_hostname=hostname.decode("ascii")
