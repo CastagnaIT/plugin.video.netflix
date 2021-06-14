@@ -94,6 +94,8 @@ def get_inputstream_listitem(videoid):
     list_item.setContentLookup(False)
     list_item.setMimeType('application/xml+dash')
     list_item.setProperty('IsPlayable', 'true')
+    # Allows the add-on to always have play callbacks also when using the playlist (Kodi versions >= 20)
+    list_item.setProperty('ForceResolvePlugin', 'true')
     try:
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
