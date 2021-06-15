@@ -149,7 +149,7 @@ def parse_profiles(data):
         _delete_non_existing_profiles(current_guids)
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
-        LOG.error(traceback.format_exc(), 'latin-1')
+        LOG.error(traceback.format_exc())
         LOG.error('Profile list data: {}', profiles_list)
         raise InvalidProfilesError from exc
 
