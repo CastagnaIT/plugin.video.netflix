@@ -74,8 +74,8 @@ def sql_filtered_insert(table, set_columns, values):
             del values[index]
     values_fields = ['?'] * len(set_columns)
     query_columns = ', '.join(set_columns)
-    values = ', '.join(values_fields)
-    query = f'INSERT INTO {table} ({query_columns}) VALUES ({values})'
+    values_fields = ', '.join(values_fields)
+    query = f'INSERT INTO {table} ({query_columns}) VALUES ({values_fields})'
     return query, values
 
 
