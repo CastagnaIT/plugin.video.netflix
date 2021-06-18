@@ -53,17 +53,9 @@ class SessionPathRequests(SessionAccess):
         # multiple path requests will be executed with forward shifting range selectors
         # and the results will be combined into one path response.
         response_type, length_args = length_params
-        context_name = length_args[0]
+        # context_name = length_args[0]
         response_length = apipaths.LENGTH_ATTRIBUTES[response_type]
-
-        # Note: when the request is made with 'genres' or 'seasons' context,
-        #   the response strangely does not respect the number of objects
-        #   requested, returning 1 more item, i couldn't understand why
-        if context_name in ['genres', 'seasons']:
-            request_size -= 1
         response_size = request_size + 1
-        if context_name in ['genres', 'seasons']:
-            response_size += 1
 
         number_of_requests = 100 if no_limit_req else int(G.ADDON.getSettingInt('page_results') / 45)
         perpetual_range_start = int(perpetual_range_start) if perpetual_range_start else 0
