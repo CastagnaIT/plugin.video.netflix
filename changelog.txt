@@ -1,3 +1,7 @@
+v1.12.5 (2021-06-20)
+- Updated video profiles for HEVC/HEVC HDR
+- Fixed missing items in episodes lists and others submenus
+
 v1.12.4 (2021-04-02)
 - Fixes due to website changes (fix KeyError loco)
 
