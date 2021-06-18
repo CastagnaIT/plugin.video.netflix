@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.16.0+matrix.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.16.1+matrix.1" provider-name="libdev + jojo + asciidisco + caphm + castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -87,18 +87,13 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.16.0 (2021-06-03)
-- Add new menu "New and Popular"
-- Add feature to play promo trailer on unavailable videos
-- Add "Remind me" feature on unavailable videos
-- Norwegian macrolanguages are now played/selected as the main Norwegian language
-- Watched status sync is now enabled by default (on new installs)
-- VP9 codec profile is now enabled by default (on new installs for non-android devices)
-- "Top 10" menu is now under "New and Popular" menu
-- Re-added Up Next add-on install menu
-- Unplayable videos no longer cause playback error
+v1.16.1 (2021-06-20)
+- Updated video profiles for HEVC/HEVC HDR
+- Add support to browse network paths with open file/folder dialog
+- Fixed missing items in episodes lists and others submenus
+- Fixed broken add-on services when play videos from playlist (only Kodi 20)
+- Update translations gl_es
 - Minor changes
-- Update translations cs_cz, it, hu, de, cz, fr, ro, jp, kr, pt-br, zh_tw
     </news>
   </extension>
 </addon>
