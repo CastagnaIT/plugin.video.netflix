@@ -214,15 +214,17 @@ class MSLHandler:
             'preferAssistiveAudio': False
         }
 
-        if 'linux' in common.get_system_platform() and 'arm' in common.get_machine():
-            # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
-            #   is mandatory to add the widevine challenge data (key request) to the manifest request.
-            # Is not possible get the key request from the default_crypto, is needed to implement
-            #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
-            #   under android OS.
-            # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
-            #   then when ISA perform the license callback we replace it with the fresh license challenge data.
-            params['challenge'] = self.manifest_challenge
+        if 'linux' in common.get_system_platform():
+            machine_arch = common.get_machine()
+            if machine_arch.startswith('arm') or machine_arch.startswith('aarch'):
+                # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
+                #   is mandatory to add the widevine challenge data (key request) to the manifest request.
+                # Is not possible get the key request from the default_crypto, is needed to implement
+                #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
+                #   under android OS.
+                # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
+                #   then when ISA perform the license callback we replace it with the fresh license challenge data.
+                params['challenge'] = self.manifest_challenge
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
         manifest = self.msl_requests.chunked_request(endpoint_url,

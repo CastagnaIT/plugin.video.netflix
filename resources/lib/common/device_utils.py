@@ -126,7 +126,8 @@ def get_user_agent(enable_android_mediaflag_fix=False):
     if system in ['windows', 'uwp']:
         return base.replace('%PL%', '(Windows NT 10.0; Win64; x64)')
     # ARM based Linux
-    if get_machine().startswith('arm'):
+    machine_arch = get_machine()
+    if machine_arch.startswith('arm') or machine_arch.startswith('aarch'):
         # Last number is the platform version of Chrome OS
         return base.replace('%PL%', '(X11; CrOS armv7l 13099.110.0)')
     # x86 Linux
