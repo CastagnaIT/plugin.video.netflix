@@ -12,9 +12,10 @@ from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer, ThreadingMixIn
 from urllib.parse import urlparse, parse_qs, unquote
 
+from resources.lib import common
 from resources.lib.common import IPC_ENDPOINT_CACHE, IPC_ENDPOINT_NFSESSION, IPC_ENDPOINT_MSL, IPC_ENDPOINT_NFSESSION_TEST
 from resources.lib.common.exceptions import InvalidPathError, CacheMiss, MetadataNotAvailable, SlotNotImplemented
-from resources.lib.globals import G
+from resources.lib.globals import G, remove_ver_suffix
 from resources.lib.services.nfsession.nfsession import NetflixSession
 from resources.lib.utils.logging import LOG
 
@@ -78,10 +79,18 @@ def handle_msl_request(server, func_name, data, params=None):
     elif func_name == 'get_manifest':
         # Proxy for InputStream Adaptive to get the XML manifest for the requested video
         videoid = int(params['videoid'][0])
-        challenge = server.headers['challengeB64']
-        sid = server.headers['sessionId']
+        challenge = server.headers.get('challengeB64')
+        sid = server.headers.get('sessionId')
         if not challenge or not sid:
-            raise Exception(f'Widevine session data not valid\r\nSession ID: {sid} Challenge: {challenge}')
+            from xbmcaddon import Addon
+            isa_version = remove_ver_suffix(Addon('inputstream.adaptive').getAddonInfo('version'))
+            if common.CmpVersion(isa_version) >= '2.6.18':
+                raise Exception(f'Widevine session data not valid\r\nSession ID: {sid} Challenge: {challenge}')
+            # TODO: We temporary allow the use of older versions of InputStream Adaptive (but SD video content)
+            #       to allow a soft transition, this must be removed in future.
+            LOG.error('Detected older version of InputStream Adaptive add-on, HD video contents are not supported.')
+            challenge = ''
+            sid = ''
         manifest_data = server.server.netflix_session.msl_handler.get_manifest(videoid, unquote(challenge), sid)
         server.send_response(200)
         server.send_header('Content-type', 'application/xml')

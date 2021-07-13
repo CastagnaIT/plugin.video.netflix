@@ -188,16 +188,17 @@ class MSLHandler:
                 'name': 'default',
                 'profiles': profiles
             }],
-            'licenseType': 'standard',
-            'challenge': challenge,
-            'challenges': {
+            'licenseType': 'standard'
+        }
+        if challenge and sid:
+            params['challenge'] = challenge
+            params['challenges'] = {
                 'default': [{
                     'drmSessionId': sid,
                     'clientTime': int(time.time()),
                     'challengeBase64': challenge
                 }]
             }
-        }
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'licensedManifest')
         manifest = self.msl_requests.chunked_request(endpoint_url,
