@@ -38,34 +38,6 @@ class MSLHandler:
     licenses_session_id = []
     licenses_xid = []
     licenses_release_url = []
-    manifest_challenge = ('CAESwQsKhgsIARLsCQqvAggCEhGN3Th6q2GhvXw9bD+X9aW2ChjQ8PLmBSKOAjCCAQoCggEBANsVUL5yI9K'
-                          'UG1TPpb1A0bzk6df3YwbpDEkh+IOj52RfnKyspASRN1JQvCRrKwiq433M9BV+8ZkzkheYEPZ9X5rl5Ydkwp'
-                          'qedzdZRAiuaVp/mMA5zUM3I3fZogVxGnVzh4mB2URg+g7TFwbPWz2x1uzPumO+2ImOPIUyR7auoOKrZml30'
-                          '8w8Edwdd1HwFyrJEZHLDN2P51PJhVrUBWUlxebY05NhfIUvWQ/pyXAa6AahTf7PTVow/uu1d0vc6gHSxmj0'
-                          'hodvaxrkDcBY9NoOH2XCW7LNJnKC487CVwCHOJC9+6fakaHnjHepayeGEp2JL2AaCrGGqAOZdG8F11Pa0H8'
-                          'CAwEAASirbxKAAmFqOFvUp7caxO5/q2QK5yQ8/AA5E1KOQJxZrqwREPbGUX3670XGw9bamA0bxc37DUi6Dw'
-                          'rOyWKWSaW/qVNie86mW/7KdVSpZPGcF/TxO+kd4iXMIjH0REZst/mMJhv5UMMO9dDFGR3RBqkPbDTdzvX1u'
-                          'E/loVPDH8QEfDACzDkeCA1P0zAcjWKGPzaeUrogsnBEQN4wCVRQqufDXkgImhDUCUkmyQDJXQkhgMMWtbbC'
-                          'HMa/DMGEZAhu4I8G32m8XxU3NoK1kDsb+s5VUgOdkX3ZnFw1uf3niQ9FCTYlzv4SIBJGEokJjkHagT6kVWf'
-                          'hsvSHMHzayKb00OwIn/6NsNEatAUKrgIIARIQiX9ghrmqxsdcq/w8cprG8Bj46/LmBSKOAjCCAQoCggEBAL'
-                          'udF8e+FexCGnOsPQCNtaIvTRW8XsqiTxdo5vElAnGMoOZn6Roy2jwDkc1Gy2ucybY926xk0ZP2Xt5Uy/atI'
-                          '5yAvn7WZGWzbR5BbMbXIxaCyDysm7L+X6Fid55YbJ8GLl2/ToOY2CVYT+EciaTj56OjcyBJLDW/0Zqp25gn'
-                          'da61HwomZOVLoFmLbeZtC5DjvEv8c2NIDXXketqd/vj0I1nWKtEy8nKIPw/2nhitR6QFUnfEb8hJgPgdTAp'
-                          'TkxWm4hSpWsM0j8CQOYNzDL2/kfP1cYw0Fh7oJMSEt2H6AUjC4lIkp54rPHAhLYE+tmwKSYfrmjEoTVErcI'
-                          'jl6jEvwtsCAwEAASirbxKAA0OHZIfwXbTghTVi4awHyXje/8D5fdtggtTa0Edec0KmZbHwBbLJ9OCBc9RrR'
-                          'L8O4WgQPG/5RVLc9IsR9x/Gw1vg/X+MmWEBnY62XNdVAUjbYGwRQuHQFMkwEQdzxfcH9oWoJtOZdLEN2X/p'
-                          'Ws7MeM4KZc8gTUqcDHekq1QqKNs+Voc8Q5hIX7fims9llY/RUHNatDPFVuEyJ0Vqx5l+Rrrdqk+b1fXuVR6'
-                          'yxP1h4S/C/UtedUyZxZgc/1OJ0mLr5x1tkRbFVyzA8Z/qfZeYq3HV4pAGg7nLg0JRBTbjiZH8eUhr1JtwLi'
-                          'udU9vLvDnv1Y6bsfaT62vfLOttozSZVIeWo7acZHICduOL/tH1Kx7f6e7ierwQYAOng1LGs/PLofQ874C1A'
-                          'tNkN0tVe6cSSAvN+Vl33GbICXpX6Rq8LBPqqhzGMGBMiybnmXqOaXz8ngSQCiXqp/ImaOKfx8OE6qH92rUV'
-                          'Wgw68qBy9ExEOl95SSEx9A/B4vEYFHaHwzqh2BoYChFhcmNoaXRlY3R1cmVfbmFtZRIDYXJtGhYKDGNvbXB'
-                          'hbnlfbmFtZRIGR29vZ2xlGhcKCm1vZGVsX25hbWUSCUNocm9tZUNETRoZCg1wbGF0Zm9ybV9uYW1lEghDaH'
-                          'JvbWVPUxojChR3aWRldmluZV9jZG1fdmVyc2lvbhILNC4xMC4xNjEwLjYyCAgBEAAYACABEiwKKgoUCAESE'
-                          'AAAAAAD0mdJAAAAAAAAAAAQARoQA5cwqbEo4TSV6p1qQZy26BgBIOSrw/cFMBUagAIp7zGUC9p3XZ9sp0w+'
-                          'yd6/wyRa1V22NyPF4BsNivSEkMtcEaQiUOW+LrGhHO+RrukWeJlzVbtpai5/vjOAbsaouQ0yMp8yfpquZcV'
-                          'kpPugSOPKu1A0W5w5Ou9NOGsMaJi6+LicGxhS+7xAp/lv/9LATCcQJXS2elBCz6f6VUQyMOPyjQYBrH3h27'
-                          'tVRcsnTRQATcogwCytXohKroBGvODIYcpVFsy2saOCyh4HTezzXJvgogx2f15ViyF5rDqho4YsW0z4it9TF'
-                          'BT0OOLkk0fQ6a1LSqA49eN3RufKYq4LT+G+ffdgoDmKpIWS3bp7xQ6GeYtDAUh0D8Ipwc8aKzP2')
 
     def __init__(self, nfsession: 'NFSessionOperations'):
         self.nfsession = nfsession
@@ -116,7 +88,7 @@ class MSLHandler:
             self.events_handler_thread.start()
 
     @display_error_info
-    def get_manifest(self, viewable_id):
+    def get_manifest(self, viewable_id, challenge, sid):
         """
         Get the manifests for the given viewable_id and returns a mpd-XML-Manifest
 
@@ -128,7 +100,7 @@ class MSLHandler:
             # When the add-on is installed from scratch or you logout the account the ESN will be empty
             if not esn:
                 esn = set_esn()
-            manifest = self._get_manifest(viewable_id, esn)
+            manifest = self._get_manifest(viewable_id, esn, challenge, sid)
         except MSLError as exc:
             if 'Email or password is incorrect' in str(exc):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -141,7 +113,7 @@ class MSLHandler:
         return self.__tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def _get_manifest(self, viewable_id, esn):
+    def _get_manifest(self, viewable_id, esn, challenge, sid):
         cache_identifier = f'{esn}_{viewable_id}'
         try:
             # The manifest must be requested once and maintained for its entire duration
@@ -170,7 +142,7 @@ class MSLHandler:
         if hdcp_4k_capable and hdcp_override:
             hdcp_version = ['2.2']
 
-        LOG.info('Requesting manifest for {} with ESN {} and HDCP {}',
+        LOG.info('Requesting licensed manifest for {} with ESN {} and HDCP {}',
                  viewable_id,
                  common.censure(esn) if len(esn) > 50 else esn,
                  hdcp_version)
@@ -211,24 +183,25 @@ class MSLHandler:
                 'supportedHdcpVersions': hdcp_version,
                 'isHdcpEngaged': hdcp_override
             }],
-            'preferAssistiveAudio': False
+            'preferAssistiveAudio': False,
+            'profileGroups': [{
+                'name': 'default',
+                'profiles': profiles
+            }],
+            'licenseType': 'standard',
+            'challenge': challenge,
+            'challenges': {
+                'default': [{
+                    'drmSessionId': sid,
+                    'clientTime': int(time.time()),
+                    'challengeBase64': challenge
+                }]
+            }
         }
 
-        if 'linux' in common.get_system_platform():
-            machine_arch = common.get_machine()
-            if machine_arch.startswith('arm') or machine_arch.startswith('aarch'):
-                # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
-                #   is mandatory to add the widevine challenge data (key request) to the manifest request.
-                # Is not possible get the key request from the default_crypto, is needed to implement
-                #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
-                #   under android OS.
-                # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
-                #   then when ISA perform the license callback we replace it with the fresh license challenge data.
-                params['challenge'] = self.manifest_challenge
-
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'licensedManifest')
         manifest = self.msl_requests.chunked_request(endpoint_url,
-                                                     self.msl_requests.build_request_data('/manifest', params),
+                                                     self.msl_requests.build_request_data('licensedManifest', params),
                                                      esn,
                                                      disable_msl_switch=False)
         if LOG.is_enabled:
@@ -259,7 +232,6 @@ class MSLHandler:
             'challengeBase64': challenge,
             'xid': xid
         }]
-        self.manifest_challenge = challenge
         endpoint_url = ENDPOINTS['license'] + create_req_params(0, 'prefetch/license')
         try:
             response = self.msl_requests.chunked_request(endpoint_url,

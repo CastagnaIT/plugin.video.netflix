@@ -75,7 +75,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
     def load_crypto_session(self, msl_data=None):
         if not msl_data:
             return
-        self.keyset_id = base64.standard_b64decode(msl_data['key_set_id'])
+        self.keyset_id = base64.standard_b64decode(msl_data['key_set_id']).decode('utf-8')
         self.key_id = base64.standard_b64decode(msl_data['key_id'])
         self.hmac_key_id = base64.standard_b64decode(msl_data['hmac_key_id'])
         self.crypto_session.RestoreKeys(self.keyset_id)
@@ -87,23 +87,16 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         """Return a key request dict"""
         # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
-        key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
+        _key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
             bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
-
-        if not key_request:
+        if not _key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
-
-        LOG.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(key_request))
-
-        # Save the key request (challenge data) required for manifest requests
-        # Todo: to be implemented if/when it becomes mandatory
-        key_request = base64.standard_b64encode(key_request).decode('utf-8')
-        # G.LOCAL_DB.set_value('drm_session_challenge', key_request, TABLE_SESSION)
-
+        LOG.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(_key_request))
+        _key_request = base64.standard_b64encode(_key_request).decode('utf-8')
         return [{
             'scheme': 'WIDEVINE',
             'keydata': {
-                'keyrequest': key_request
+                'keyrequest': _key_request
             }
         }]
 
@@ -115,7 +108,6 @@ class AndroidMSLCrypto(MSLBaseCrypto):
             raise MSLError('Widevine CryptoSession provideKeyResponse failed')
         LOG.debug('Widevine CryptoSession provideKeyResponse successful')
         LOG.debug('keySetId: {}', self.keyset_id)
-        self.keyset_id = self.keyset_id.encode('utf-8')
 
     def encrypt(self, plaintext, esn):  # pylint: disable=unused-argument
         """
@@ -176,7 +168,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
 
     def _export_keys(self):
         return {
-            'key_set_id': base64.standard_b64encode(self.keyset_id).decode('utf-8'),
+            'key_set_id': base64.standard_b64encode(self.keyset_id.encode('utf-8')).decode('utf-8'),
             'key_id': base64.standard_b64encode(self.key_id).decode('utf-8'),
             'hmac_key_id': base64.standard_b64encode(self.hmac_key_id).decode('utf-8')
         }
