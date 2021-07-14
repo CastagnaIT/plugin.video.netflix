@@ -9,7 +9,7 @@
 """
 from resources.lib.common.misc_utils import CmpVersion
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
-from resources.lib.globals import G
+from resources.lib.globals import G, remove_ver_suffix
 from resources.lib.utils.logging import LOG
 
 
@@ -60,6 +60,14 @@ def _perform_addon_changes(previous_ver, current_ver):
         from resources.lib.upgrade_actions import migrate_library
         migrate_library()
         cancel_playback = True
+    if previous_ver and CmpVersion(previous_ver) < '1.16.2':
+        from xbmcaddon import Addon
+        isa_version = remove_ver_suffix(Addon('inputstream.adaptive').getAddonInfo('version'))
+        if CmpVersion(isa_version) < '2.6.18':
+            from resources.lib.kodi import ui
+            ui.show_ok_dialog('Netflix add-on upgrade',
+                              'The currently installed [B]InputStream Adaptive add-on[/B] version not support Netflix HD videos.'
+                              '[CR]To get HD video contents, please update it to the last version.')
     # Always leave this to last - After the operations set current version
     G.LOCAL_DB.set_value('addon_previous_version', current_ver)
     return cancel_playback

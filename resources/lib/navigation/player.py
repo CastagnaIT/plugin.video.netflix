@@ -36,6 +36,8 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
     'ovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ'
     '0fFdCmw=')
 
+PSSH_KID = 'AAAANHBzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAABQIARIQAAAAAAPSZ0kAAAAAAAAAAA==|AAAAAAPSZ0kAAAAAAAAAAA=='
+
 
 @common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
 def play_strm(videoid):
@@ -125,6 +127,10 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty(
         key='inputstream',
         value='inputstream.adaptive')
+    # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
+    list_item.setProperty(
+        key='inputstream.adaptive.pre_init_data',
+        value=PSSH_KID)
     return list_item
 
 
