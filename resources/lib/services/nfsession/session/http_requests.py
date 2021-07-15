@@ -111,7 +111,7 @@ class SessionHTTPRequests(SessionBase):
             self.session.cookies.clear()
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
-                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+                self.msl_handler.clear_user_id_tokens()
             # Needed to do a new login
             common.purge_credentials()
             ui.show_notification(common.get_local_string(30008))

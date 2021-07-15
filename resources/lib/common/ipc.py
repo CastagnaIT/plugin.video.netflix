@@ -30,8 +30,6 @@ class Signals:  # pylint: disable=no-init,too-few-public-methods
     """Signal names for use with AddonSignals"""
     PLAYBACK_INITIATED = 'playback_initiated'
     REQUEST_KODI_LIBRARY_UPDATE = 'request_kodi_library_update'
-    CLEAR_USER_ID_TOKENS = 'clean_user_id_tokens'
-    REINITIALIZE_MSL_HANDLER = 'reinitialize_msl_handler'
     SWITCH_EVENTS_HANDLER = 'switch_events_handler'
 
 

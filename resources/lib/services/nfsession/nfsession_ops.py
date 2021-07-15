@@ -168,7 +168,8 @@ class NFSessionOperations(SessionPathRequests):
             LOG.warn('The session data is not more valid ({})', type(exc).__name__)
             common.purge_credentials()
             self.session.cookies.clear()
-            common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+            # Clear the user ID tokens are tied to the credentials
+            self.msl_handler.clear_user_id_tokens()
             raise NotLoggedInError from exc
 
     @measure_exec_time_decorator(is_immediate=True)

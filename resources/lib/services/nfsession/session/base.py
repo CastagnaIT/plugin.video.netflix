@@ -8,11 +8,16 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+from typing import TYPE_CHECKING
+
 import resources.lib.common as common
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
 from resources.lib.utils.logging import LOG
+
+if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
+    from resources.lib.services.nfsession.msl.msl_handler import MSLHandler
 
 
 class SessionBase:
@@ -26,6 +31,9 @@ class SessionBase:
 
     # Functions from derived classes to allow perform particular operations in parent classes
     external_func_activate_profile = None  # (set by nfsession_op.py)
+
+    msl_handler: 'MSLHandler' = None
+    """A reference to the MSL Handler object"""
 
     def __init__(self):
         self._init_session()

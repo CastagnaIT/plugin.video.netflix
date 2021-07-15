@@ -44,14 +44,6 @@ class MSLHandler:
         self.events_handler_thread = None
         self._init_msl_handler()
         common.register_slot(
-            signal=common.Signals.CLEAR_USER_ID_TOKENS,
-            callback=self.clear_user_id_tokens,
-            is_signal=True)
-        common.register_slot(
-            signal=common.Signals.REINITIALIZE_MSL_HANDLER,
-            callback=self.reinitialize_msl_handler,
-            is_signal=True)
-        common.register_slot(
             signal=common.Signals.SWITCH_EVENTS_HANDLER,
             callback=self.switch_events_handler,
             is_signal=True)
