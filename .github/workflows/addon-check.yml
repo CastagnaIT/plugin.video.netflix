@@ -25,12 +25,10 @@ jobs:
       with:
         python-version: 3.8
     - name: Install dependencies
-      # TODO: Revert addon checker git install when the new version will be released
-      # pip install kodi-addon-checker
       run: |
         sudo apt-get install gettext
         python -m pip install --upgrade pip
-        pip install git+git://github.com/xbmc/addon-check.git@master
+        pip install kodi-addon-checker
     - name: Checking language translations
       run: make check-translations
       working-directory: ${{ github.repository }}
