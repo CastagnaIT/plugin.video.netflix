@@ -1,3 +1,6 @@
+v1.12.6 (2021-07-16)
+- Fixed empty lists on menu/submenus due to website changes
+
 v1.12.5 (2021-06-20)
 - Updated video profiles for HEVC/HEVC HDR
 - Fixed missing items in episodes lists and others submenus
