@@ -174,7 +174,11 @@ class DirectoryPathRequests:
             int(G.ADDON.getSettingInt('menu_sortorder_' + menu_data.get('initial_menu_id', menu_data['path'][1])))
         ]
         base_path.append(req_sort_order_type)
-        paths = build_paths(base_path + [RANGE_PLACEHOLDER], VIDEO_LIST_PARTIAL_PATHS)
+        _base_path = list(base_path)
+        _base_path.append(RANGE_PLACEHOLDER)
+        if not menu_data.get('query_without_reference', False):
+            _base_path.append('reference')
+        paths = build_paths(_base_path, VIDEO_LIST_PARTIAL_PATHS)
 
         path_response = self.nfsession.perpetual_path_request(paths, [response_type, base_path], perpetual_range_start)
         return VideoListSorted(path_response, context_name, context_id, req_sort_order_type)
