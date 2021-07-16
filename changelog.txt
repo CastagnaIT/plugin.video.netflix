@@ -1,3 +1,10 @@
+v1.16.2 (2021-07-16)
+- Implemented new licensed manifest request (to have HD is mandatory to update InputStream Adaptive to last version)
+- Fixed "This title is not available to watch instantly" error on some ARM devices incorrectly identified
+- Fixed empty lists on menu/submenus due to website changes
+- Update translation zh_cn
+- Minor changes
+
 v1.16.1 (2021-06-20)
 - Updated video profiles for HEVC/HEVC HDR
 - Add support to browse network paths with open file/folder dialog
