@@ -10,3 +10,4 @@ coverage:
 comment: false
 ignore:
 - tests/
+- packages/

@@ -10,6 +10,7 @@
 import time
 from datetime import datetime, timedelta
 
+import httpx
 import xbmc
 
 import resources.lib.common as common
@@ -78,10 +79,9 @@ class NFSessionOperations(SessionPathRequests):
             self.dt_initial_page_prefetch = None
             return
         LOG.debug('Fetch initial page')
-        from requests import exceptions
         try:
             self.refresh_session_data(True)
-        except exceptions.TooManyRedirects:
+        except httpx.TooManyRedirects:
             # This error can happen when the profile used in nf session actually no longer exists,
             # something wrong happen in the session then the server try redirect to the login page without success.
             # (CastagnaIT: i don't know the best way to handle this borderline case, but login again works)
@@ -128,11 +128,10 @@ class NFSessionOperations(SessionPathRequests):
 
         G.LOCAL_DB.switch_active_profile(guid)
         G.CACHE_MANAGEMENT.identifier_prefix = guid
-        cookies.save(self.session.cookies)
+        cookies.save(self.session.cookies.jar)
 
     def parental_control_data(self, guid, password):
         # Ask to the service if password is right and get the PIN status
-        from requests import exceptions
         try:
             response = self.post_safe('profile_hub',
                                       data={'destination': 'contentRestrictions',
@@ -142,7 +141,7 @@ class NFSessionOperations(SessionPathRequests):
             if response.get('status') != 'ok':
                 LOG.warn('Parental control status issue: {}', response)
                 raise MissingCredentialsError
-        except exceptions.HTTPError as exc:
+        except httpx.HTTPStatusError as exc:
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
                 raise MissingCredentialsError from exc
