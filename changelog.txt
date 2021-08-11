@@ -1,3 +1,7 @@
+v1.17.0 (2021-08-13)
+- Migration to HTTP2 protocol
+- Fixed login with username/password for more than 90% of cases
+
 v1.16.2 (2021-07-16)
 - Implemented new licensed manifest request (to have HD is mandatory to update InputStream Adaptive to last version)
 - Fixed "This title is not available to watch instantly" error on some ARM devices incorrectly identified
