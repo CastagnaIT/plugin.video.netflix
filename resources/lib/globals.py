@@ -13,6 +13,7 @@
 # All other modules (imports) are initialized only on the first invocation of the add-on.
 import collections
 import os
+import sys
 from urllib.parse import parse_qsl, unquote, urlparse
 
 import xbmcaddon
@@ -233,6 +234,7 @@ class GlobalVariables:
             self.DEFAULT_FANART = self.ADDON.getAddonInfo('fanart')
             self.ADDON_DATA_PATH = self.ADDON.getAddonInfo('path')  # Add-on folder
             self.DATA_PATH = self.ADDON.getAddonInfo('profile')  # Add-on user data folder
+            self.ADDON_PACKAGES_PATH = os.path.join(self.ADDON_DATA_PATH, 'packages')
             self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
             self.COOKIES_PATH = os.path.join(self.DATA_PATH, 'COOKIES')
             try:
@@ -250,6 +252,9 @@ class GlobalVariables:
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,
                        self.ADDON.getSettingBool('enable_debug'),
                        self.ADDON.getSettingBool('enable_timing'))
+        # Add path of embedded packages (not supplied by Kodi) to python system directory
+        if self.ADDON_PACKAGES_PATH not in sys.path:
+            sys.path.insert(0, self.ADDON_PACKAGES_PATH)
         if self.IS_ADDON_FIRSTRUN:
             self.init_database()
             # Initialize the cache

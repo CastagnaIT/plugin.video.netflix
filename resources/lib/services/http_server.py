@@ -68,6 +68,11 @@ class NFThreadedTCPServer(ThreadingMixIn, TCPServer):
         # Define shared members
         self.netflix_session = NetflixSession()
 
+    def __del__(self):
+        if self.netflix_session.nfsession.session:
+            # Close the connection pool of the session
+            self.netflix_session.nfsession.session.close()
+
 
 def handle_msl_request(server, func_name, data, params=None):
     if func_name == 'get_license':

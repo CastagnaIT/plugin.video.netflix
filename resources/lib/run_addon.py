@@ -86,7 +86,8 @@ def lazy_login(func):
             try:
                 return func(*args, **kwargs)
             except NotLoggedInError:
-                # Exception raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
+                # Exception raised by nfsession:
+                #   "login" / "assert_logged_in" / "website_extract_session_data" / _request from http_requests.py
                 LOG.debug('Tried to perform an action without being logged in')
                 try:
                     from resources.lib.utils.api_requests import login
