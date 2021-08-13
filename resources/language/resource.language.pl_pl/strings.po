@@ -648,7 +648,7 @@ msgstr "Przeglądaj zawartość z deskrypcją audio"
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "ID widoku dla 'Moja lista'"
 
 msgctxt "#30166"
 msgid "Main menu items"
