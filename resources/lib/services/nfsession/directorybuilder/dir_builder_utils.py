@@ -18,11 +18,14 @@ def _get_custom_thumb_path(thumb_file_name):
     return os.path.join(G.ADDON_DATA_PATH, 'resources', 'media', thumb_file_name)
 
 
-def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, sub_genre_id=None):
+def add_items_previous_next_page(directory_items, pathitems, perpetual_range_selector, sub_genre_id=None,
+                                 path_params=None):
     if pathitems and perpetual_range_selector:
         if 'previous_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('previous_start'),
                       'sub_genre_id': sub_genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
+            if path_params:
+                params.update(path_params)
             previous_page_item = ListItemW(label=common.get_local_string(30148))
             previous_page_item.setProperty('specialsort', 'top')  # Force an item to stay on top
             previous_page_item.setArt({'thumb': _get_custom_thumb_path('FolderPagePrevious.png')})
@@ -31,6 +34,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                                        True))
         if 'next_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
+            if path_params:
+                params.update(path_params)
             next_page_item = ListItemW(label=common.get_local_string(30147))
             next_page_item.setProperty('specialsort', 'bottom')  # Force an item to stay on bottom
             next_page_item.setArt({'thumb': _get_custom_thumb_path('FolderPageNext.png')})

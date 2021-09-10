@@ -34,7 +34,10 @@ SEARCH_TYPES_DESC = {
 
 
 def route_search_nav(pathitems, perpetual_range_start, dir_update_listing, params):
-    path = pathitems[2] if len(pathitems) > 2 else 'list'
+    if 'query' in params:
+        path = 'query'
+    else:
+        path = pathitems[2] if len(pathitems) > 2 else 'list'
     LOG.debug('Routing "search" navigation to: {}', path)
     ret = True
     if path == 'list':
@@ -47,6 +50,12 @@ def route_search_nav(pathitems, perpetual_range_start, dir_update_listing, param
         search_remove(params['row_id'])
     elif path == 'clear':
         ret = search_clear()
+    elif path == 'query':
+        # Used to make a search by text from a JSON-RPC request
+        # without save the item to the add-on database
+        # Endpoint: plugin://plugin.video.netflix/directory/search/search/?query=something
+        ret = exec_query(None, 'text', None, params['query'], perpetual_range_start, dir_update_listing,
+                         {'query': params['query']})
     else:
         ret = search_query(path, perpetual_range_start, dir_update_listing)
     if not ret:
@@ -169,14 +178,19 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
     # Update the last access data (move on top last used items)
     if not perpetual_range_start:
         G.LOCAL_DB.update_search_item_last_access(row_id)
-    # Perform the path call
+    return exec_query(row_id, search_item['Type'], search_item['Parameters'], search_item['Value'],
+                      perpetual_range_start, dir_update_listing)
+
+
+def exec_query(row_id, search_type, search_params, search_value, perpetual_range_start, dir_update_listing,
+               path_params=None):
     menu_data = G.MAIN_MENU_ITEMS['search']
-    search_type = search_item['Type']
     if search_type == 'text':
         call_args = {
             'menu_data': menu_data,
-            'search_term': search_item['Value'],
-            'pathitems': ['search', 'search', row_id],
+            'search_term': search_value,
+            'pathitems': ['search', 'search', row_id] if row_id else ['search', 'search'],
+            'path_params': path_params,
             'perpetual_range_start': perpetual_range_start
         }
         dir_items, extra_data = common.make_call('get_video_list_search', call_args)
@@ -186,7 +200,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start,
             'context_name': 'spokenAudio',
-            'context_id': common.convert_from_string(search_item['Parameters'], dict)['lang_code']
+            'context_id': common.convert_from_string(search_params, dict)['lang_code']
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'subtitles_lang':
@@ -195,7 +209,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start,
             'context_name': 'subtitles',
-            'context_id': common.convert_from_string(search_item['Parameters'], dict)['lang_code']
+            'context_id': common.convert_from_string(search_params, dict)['lang_code']
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'genre_id':
@@ -204,7 +218,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start,
             'context_name': 'genres',
-            'context_id': common.convert_from_string(search_item['Parameters'], dict)['genre_id']
+            'context_id': common.convert_from_string(search_params, dict)['genre_id']
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     else:
@@ -213,7 +227,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
     if not dir_items:
         ui.show_notification(common.get_local_string(30407))
         return False
-    _search_results_directory(search_item['Value'], menu_data, dir_items, extra_data, dir_update_listing)
+    _search_results_directory(search_value, menu_data, dir_items, extra_data, dir_update_listing)
     return True
 
 
