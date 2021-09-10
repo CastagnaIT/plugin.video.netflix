@@ -88,7 +88,7 @@ class AndroidMSLCrypto(MSLBaseCrypto):
         # No key update supported -> remove existing keys
         self.crypto_session.RemoveKeys()
         _key_request = self.crypto_session.GetKeyRequest(  # pylint: disable=assignment-from-none
-            bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, dict())
+            bytes([10, 122, 0, 108, 56, 43]), 'application/xml', True, {})
         if not _key_request:
             raise MSLError('Widevine CryptoSession getKeyRequest failed!')
         LOG.debug('Widevine CryptoSession getKeyRequest successful. Size: {}', len(_key_request))
