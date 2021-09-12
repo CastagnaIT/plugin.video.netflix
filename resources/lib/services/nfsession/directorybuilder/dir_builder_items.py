@@ -249,7 +249,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
 
 @measure_exec_time_decorator(is_immediate=True)
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
-                        mylist_items=None):
+                        mylist_items=None, path_params=None):
     """Build a video listing"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
@@ -286,7 +286,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
                                    folder_list_item,
                                    True))
     # add_items_previous_next_page use the new value of perpetual_range_selector
-    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id)
+    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id,
+                                 path_params)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
