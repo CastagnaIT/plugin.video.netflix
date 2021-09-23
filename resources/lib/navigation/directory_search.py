@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+from copy import deepcopy
+
 import xbmcplugin
 
 import resources.lib.utils.api_requests as api
@@ -170,7 +172,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
     if not perpetual_range_start:
         G.LOCAL_DB.update_search_item_last_access(row_id)
     # Perform the path call
-    menu_data = G.MAIN_MENU_ITEMS['search']
+    menu_data = deepcopy(G.MAIN_MENU_ITEMS['search'])
     search_type = search_item['Type']
     if search_type == 'text':
         call_args = {
@@ -181,6 +183,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
         }
         list_data, extra_data = common.make_call('get_video_list_search', call_args)
     elif search_type == 'audio_lang':
+        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
@@ -190,6 +193,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
         }
         list_data, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'subtitles_lang':
+        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
