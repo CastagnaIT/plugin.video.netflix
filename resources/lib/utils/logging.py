@@ -51,10 +51,7 @@ class Logging:
         """Log a message to the Kodi logfile."""
         if args or kwargs:
             msg = msg.format(*args, **kwargs)
-        message = '[{identifier} ({handle})] {msg}'.format(
-            identifier=self.__addon_id,
-            handle=self.__plugin_handle,
-            msg=msg)
+        message = f'[{self.__addon_id} ({self.__plugin_handle})] {msg}'
         xbmc.log(message, log_level)
 
     def _debug(self, msg, *args, **kwargs):
@@ -101,7 +98,7 @@ class Logging:
         for trace in self.__time_trace_data:
             time_trace.append(' ' * trace[2])
             time_trace.append(format(trace[0], '<30'))
-            time_trace.append('{:>5} ms\n'.format(trace[1]))
+            time_trace.append(f'{trace[1]:>5} ms\n')
         self.debug(''.join(time_trace))
         self.reset_time_trace()
 

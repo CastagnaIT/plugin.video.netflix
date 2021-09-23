@@ -167,6 +167,7 @@ def _limit_video_resolution(video_tracks, has_drm_streams):
 
 
 def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_index):
+    # pylint: disable=consider-using-f-string
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag

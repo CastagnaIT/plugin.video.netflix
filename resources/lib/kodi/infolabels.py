@@ -230,8 +230,7 @@ def _assign_art(videoid, **kwargs):
                                 kwargs['boxart_large'],
                                 kwargs['boxart_small']]),
            'thumb': ((kwargs['interesting_moment']
-                      if videoid.mediatype == common.VideoId.EPISODE or
-                      videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
+                      if videoid.mediatype in (common.VideoId.EPISODE, common.VideoId.SUPPLEMENTAL) else '')
                      or kwargs['boxart_large'] or kwargs['boxart_small'])}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:

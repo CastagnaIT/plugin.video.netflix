@@ -173,8 +173,7 @@ class SessionHTTPRequests(SessionBase):
                 'isVolatileBillboardsEnabled': 'true',
                 'isTop10Supported': 'true',
                 'categoryCraversEnabled': 'false',
-                'original_path': '/shakti/{}/pathEvaluator'.format(
-                    G.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+                'original_path': f'/shakti/{G.LOCAL_DB.get_value("build_identifier", "", TABLE_SESSION)}/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
             params['authURL'] = self.auth_url

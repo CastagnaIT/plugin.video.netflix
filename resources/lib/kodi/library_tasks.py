@@ -66,9 +66,7 @@ class LibraryTasks(LibraryJobs):
             for job_data in jobs_data:
                 self._execute_job(task_type, job_data, list_errors)
                 progress_bar.perform_step()
-                progress_bar.set_message('{} ({}/{})'.format(job_data['title'],
-                                                             progress_bar.value,
-                                                             progress_bar.max_value))
+                progress_bar.set_message(f'{job_data["title"]} ({progress_bar.value}/{progress_bar.max_value})')
                 if progress_bar.is_cancelled():
                     LOG.warn('Library operations interrupted by User')
                     break
@@ -187,7 +185,7 @@ class LibraryTasks(LibraryJobs):
 
     def _create_export_episode_job(self, videoid, episode, season, show, nfo_settings):
         """Create job data to export a single episode"""
-        filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
+        filename = f'S{season["seq"]:02d}E{episode["seq"]:02d}'
         title = ' - '.join((show['title'], filename))
         create_nfo_file = nfo_settings and nfo_settings.export_tvshow_enabled
         nfo_data = nfo.create_episode_nfo(episode, season, show) if create_nfo_file else None

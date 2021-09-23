@@ -166,7 +166,7 @@ def convert_seconds_to_hms_str(time):
     time %= 3600
     m = int(time // 60)
     s = int(time % 60)
-    return '{:02d}:{:02d}:{:02d}'.format(h, m, s)
+    return f'{h:02d}:{m:02d}:{s:02d}'
 
 
 def remove_html_tags(raw_html):

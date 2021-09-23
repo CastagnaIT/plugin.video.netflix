@@ -187,7 +187,7 @@ class DirectoryPathRequests:
                               ignore_self_class=True)
     def req_video_list_supplemental(self, videoid, supplemental_type):
         """Retrieve a video list of supplemental type videos"""
-        if videoid.mediatype != common.VideoId.SHOW and videoid.mediatype != common.VideoId.MOVIE:
+        if videoid.mediatype not in (common.VideoId.SHOW, common.VideoId.MOVIE):
             raise InvalidVideoId(f'Cannot request video list supplemental for {videoid}')
         LOG.debug('Requesting video list supplemental of type "{}" for {}', supplemental_type, videoid)
         path = build_paths(

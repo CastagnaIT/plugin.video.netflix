@@ -50,7 +50,7 @@ def _show_modal_dialog(dlg_class, xml_filename, **kwargs):
         if seconds > 59 and minutes == 0:
             alarm_time = time.strftime('%M:%S', time.gmtime(seconds))
         else:
-            alarm_time = '{:02d}:{:02d}'.format(minutes, seconds)
+            alarm_time = f'{minutes:02d}:{seconds:02d}'
         xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(alarm_time))
     dlg.doModal()
     if hasattr(dlg, 'return_value'):

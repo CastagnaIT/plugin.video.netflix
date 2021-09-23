@@ -238,6 +238,7 @@ def _login_payload(credentials, auth_url, react_context):
 
 
 def _get_accept_language_string(react_context):
+    # pylint: disable=consider-using-f-string
     # Set the HTTP header 'Accept-Language' allow to get http strings in the right language,
     # and also influence the reactContext data (locale data and messages strings).
     # Locale is usually automatically determined by the browser,
