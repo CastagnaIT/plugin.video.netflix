@@ -7,6 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+from copy import deepcopy
+
 import xbmcgui
 import xbmcplugin
 
@@ -184,7 +186,7 @@ def search_query(row_id, perpetual_range_start, dir_update_listing):
 
 def exec_query(row_id, search_type, search_params, search_value, perpetual_range_start, dir_update_listing,
                path_params=None):
-    menu_data = G.MAIN_MENU_ITEMS['search']
+    menu_data = deepcopy(G.MAIN_MENU_ITEMS['search'])
     if search_type == 'text':
         call_args = {
             'menu_data': menu_data,
@@ -195,6 +197,7 @@ def exec_query(row_id, search_type, search_params, search_value, perpetual_range
         }
         dir_items, extra_data = common.make_call('get_video_list_search', call_args)
     elif search_type == 'audio_lang':
+        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
@@ -204,6 +207,7 @@ def exec_query(row_id, search_type, search_params, search_value, perpetual_range
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'subtitles_lang':
+        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
