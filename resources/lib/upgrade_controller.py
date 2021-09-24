@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+from resources.lib.common import is_device_4k_capable
 from resources.lib.common.misc_utils import CmpVersion
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
 from resources.lib.globals import G, remove_ver_suffix
@@ -81,6 +82,10 @@ def _perform_service_changes(previous_ver, current_ver):
         #   then we assume that add-on versions prior to 1.13 was on Kodi 18
         # The am_stream_continuity.py on Kodi 18 works differently and the existing data can not be used on Kodi 19
         G.SHARED_DB.clear_stream_continuity()
+        # Disable enable_hevc_profiles if has been wrongly enabled by the user and it is unsupported by the systems
+        with G.SETTINGS_MONITOR.ignore_events(1):
+            is_4k_capable = is_device_4k_capable()
+            G.ADDON.setSettingBool('enable_hevc_profiles', is_4k_capable)
     if CmpVersion(previous_ver) < '1.9.0':
         # In the version 1.9.0 has been changed the COOKIE_ filename with a static filename
         from resources.lib.upgrade_actions import rename_cookie_file
