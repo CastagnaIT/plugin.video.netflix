@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .device_utils import get_system_platform
 
@@ -43,21 +44,22 @@ def _get_system_uuid():
     Try to get an uuid from the system, if it's not possible generates a fake uuid
     :return: an uuid converted to MD5
     """
-    uuid_value = None
-    system = get_system_platform()
-    if system in ['windows', 'uwp']:
-        uuid_value = _get_windows_uuid()
-    elif system == 'android':
-        uuid_value = _get_android_uuid()
-    elif system == 'linux':
-        uuid_value = _get_linux_uuid()
-    elif system == 'osx':
-        # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
-        # See python limits in the wiki development page
-        uuid_value = _get_macos_uuid()
-    if not uuid_value:
-        LOG.debug('It is not possible to get a system UUID creating a new UUID')
-        uuid_value = _get_fake_uuid(system not in ['android', 'linux'])
+    uuid_value = ''
+    if G.ADDON.getSettingBool('credentials_system_encryption'):
+        system = get_system_platform()
+        if system in ['windows', 'uwp']:
+            uuid_value = _get_windows_uuid()
+        elif system == 'android':
+            uuid_value = _get_android_uuid()
+        elif system == 'linux':
+            uuid_value = _get_linux_uuid()
+        elif system == 'osx':
+            # Due to OS restrictions on 'ios' and 'tvos' is not possible to use _get_macos_uuid()
+            # See python limits in the wiki development page
+            uuid_value = _get_macos_uuid()
+        if not uuid_value:
+            LOG.debug('It is not possible to get a system UUID creating a new UUID')
+            uuid_value = _get_fake_uuid(system not in ['android', 'linux'])
     return get_namespace_uuid(str(uuid_value)).bytes
 
 
@@ -92,15 +94,14 @@ def _get_linux_uuid():
     import subprocess
     uuid_value = None
     try:
-        uuid_value = subprocess.check_output(['cat', '/var/lib/dbus/machine-id']).decode('utf-8')
+        uuid_value = subprocess.check_output(['cat', '/etc/machine-id']).decode('utf-8')
     except Exception as exc:
         import traceback
         LOG.error('_get_linux_uuid first attempt returned: {}', exc)
         LOG.error(traceback.format_exc())
     if not uuid_value:
         try:
-            # Fedora linux
-            uuid_value = subprocess.check_output(['cat', '/etc/machine-id']).decode('utf-8')
+            uuid_value = subprocess.check_output(['cat', '/var/lib/dbus/machine-id']).decode('utf-8')
         except Exception as exc:
             LOG.error('_get_linux_uuid second attempt returned: {}', exc)
     return uuid_value

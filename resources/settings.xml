@@ -1019,6 +1019,11 @@
                         <popup>false</popup>
                     </control>
                 </setting>
+                <setting id="credentials_system_encryption" type="boolean" label="30610" help="30611">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
             </group>
             <!--GROUP: Cache-->
             <group id="4" label="30117">
