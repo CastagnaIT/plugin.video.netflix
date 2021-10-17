@@ -1078,7 +1078,16 @@ msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "Želite li obnoviti sve postavke?"
 
-# Unused 30610 to 30619
+msgctxt "#30610"
+msgid "Use system-based encryption for credentials"
+msgstr ""
+
+# Help description for setting id 30610
+msgctxt "#30611"
+msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
+msgstr ""
+
+# Unused 30612 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
 msgstr "Ovaj naslov bit će dostupan od: {}"
