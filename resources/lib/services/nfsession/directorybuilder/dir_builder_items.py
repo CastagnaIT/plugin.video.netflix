@@ -89,7 +89,7 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_pl
     profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
     profile_attributes = []
     if G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
-        profile_attributes.append('[COLOR red]' + common.get_local_string(20068) + '[/COLOR]')
+        profile_attributes.append(f'[COLOR red]{common.get_local_string(20068)}[/COLOR]')
     if G.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30221))
     if G.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
@@ -99,7 +99,7 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_pl
     if is_library_playback and detailed_info:
         profile_attributes.append(common.get_local_string(30051))
     attributes_desc = '[CR]'.join(profile_attributes) + '[CR]' if profile_attributes else ''
-    description = attributes_desc + '[' + G.LOCAL_DB.get_profile_config('language_desc', '', guid=profile_guid) + ']'
+    description = f'{attributes_desc}[{G.LOCAL_DB.get_profile_config("language_desc", "", guid=profile_guid)}]'
 
     if detailed_info:
         menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback)
@@ -131,7 +131,7 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
-    return directory_items, {'title': season_list.tvshow['title'] + ' - ' + common.get_local_string(20366)[2:]}
+    return directory_items, {'title': f'{season_list.tvshow["title"]} - {common.get_local_string(20366)[2:]}'}
 
 
 def _create_season_item(tvshowid, seasonid_value, season, season_list, common_data):
@@ -160,7 +160,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, episodes_list.perpetual_range_selector)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
-    return directory_items, {'title': episodes_list.tvshow['title'] + ' - ' + episodes_list.season['summary']['name']}
+    return directory_items, {'title': f'{episodes_list.tvshow["title"]} - {episodes_list.season["summary"]["name"]}'}
 
 
 def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data):
@@ -249,7 +249,7 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
 
 @measure_exec_time_decorator(is_immediate=True)
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
-                        mylist_items=None):
+                        mylist_items=None, path_params=None):
     """Build a video listing"""
     common_data = {
         'params': get_param_watched_status_by_profile(),
@@ -269,7 +269,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
     # If genre_id exists add possibility to browse LoCo sub-genres
     if sub_genre_id and sub_genre_id != 'None':
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
-        menu_id = 'subgenre_' + sub_genre_id
+        menu_id = f'subgenre_{sub_genre_id}'
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, sub_genre_id]
         sub_menu_data['loco_known'] = False
@@ -286,7 +286,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
                                    folder_list_item,
                                    True))
     # add_items_previous_next_page use the new value of perpetual_range_selector
-    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id)
+    add_items_previous_next_page(directory_items, pathitems, video_list.perpetual_range_selector, sub_genre_id,
+                                 path_params)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
     return directory_items, {}
 
@@ -322,7 +323,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         try:
             #  Due to the add-on cache we can not change in easy way the value stored in database cache,
             #  then we temporary override the value (see 'remind_me' in navigation/actions.py)
-            is_in_remind_me = G.CACHE.get(CACHE_BOOKMARKS, 'is_in_remind_me_' + str(videoid))
+            is_in_remind_me = G.CACHE.get(CACHE_BOOKMARKS, f'is_in_remind_me_{videoid}')
         except CacheMiss:
             #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
             is_in_remind_me = video['inRemindMeList'] or video['queue']['inQueue']

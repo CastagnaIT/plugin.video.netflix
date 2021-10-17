@@ -54,12 +54,10 @@ def sql_filtered_update(table, set_columns, where_columns, values):
             del set_columns[index]
             del values[index]
     set_columns = [col + ' = ?' for col in set_columns]
+    columns_to_set = ', '.join(set_columns)
     where_columns = [col + ' = ?' for col in where_columns]
-    query = 'UPDATE {} SET {} WHERE {}'.format(
-        table,
-        ', '.join(set_columns),
-        ' AND '.join(where_columns)
-    )
+    where_condition = ' AND '.join(where_columns)
+    query = f'UPDATE {table} SET {columns_to_set} WHERE {where_condition}'
     return query, values
 
 
@@ -75,11 +73,9 @@ def sql_filtered_insert(table, set_columns, values):
             del set_columns[index]
             del values[index]
     values_fields = ['?'] * len(set_columns)
-    query = 'INSERT INTO {} ({}) VALUES ({})'.format(
-        table,
-        ', '.join(set_columns),
-        ', '.join(values_fields)
-    )
+    query_columns = ', '.join(set_columns)
+    values_fields = ', '.join(values_fields)
+    query = f'INSERT INTO {table} ({query_columns}) VALUES ({values_fields})'
     return query, values
 
 
@@ -88,13 +84,14 @@ def mysql_insert_or_update(table, id_columns, columns):
     Create a MySQL insert or update query (required multi=True)
     """
     columns[0:0] = id_columns
-    sets_columns = ['@' + col for col in columns]
-    sets = [col + ' = %s' for col in sets_columns]
-    query_set = 'SET {};'.format(', '.join(sets))
-    query_insert = 'INSERT INTO {} ({}) VALUES ({})'.format(table,
-                                                            ', '.join(columns),
-                                                            ', '.join(sets_columns))
+    sets_columns = [f'@{col}' for col in columns]
+    sets = [f'{col} = %s' for col in sets_columns]
+    query_set = f'SET {", ".join(sets)};'
+    query_columns = ', '.join(columns)
+    values = ', '.join(sets_columns)
+    query_insert = f'INSERT INTO {table} ({query_columns}) VALUES ({values})'
+
     columns = list(set(columns) - set(id_columns))  # Fastest method to remove list to list tested
-    on_duplicate_params = [col + ' = @' + col for col in columns]
-    query_duplicate = 'ON DUPLICATE KEY UPDATE {}'.format(', '.join(on_duplicate_params)) + ';'
+    on_duplicate_params = [f'{col} = @{col}' for col in columns]
+    query_duplicate = f'ON DUPLICATE KEY UPDATE {", ".join(on_duplicate_params)};'
     return ' '.join([query_set, query_insert, query_duplicate])

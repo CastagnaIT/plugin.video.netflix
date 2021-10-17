@@ -1,4 +1,4 @@
-name: Kodi
+name: Kodi Addon-Check
 on:
   push:
     branches:
@@ -7,35 +7,15 @@ on:
     branches:
     - master
 jobs:
-  tests:
-    name: Addon checker
+  kodi-addon-checker:
     runs-on: ubuntu-latest
-    env:
-      PYTHONIOENCODING: utf-8
-    strategy:
-      fail-fast: false
-      matrix:
-        kodi-branch: [matrix]
+    name: Kodi addon checker
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Kodi addon checker validation
+      id: kodi-addon-checker
+      uses: xbmc/action-kodi-addon-checker@master
       with:
-        path: ${{ github.repository }}
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      # TODO: Revert addon checker git install when the new version will be released
-      # pip install kodi-addon-checker
-      run: |
-        sudo apt-get install gettext
-        python -m pip install --upgrade pip
-        pip install git+git://github.com/xbmc/addon-check.git@master
-    - name: Checking language translations
-      run: make check-translations
-      working-directory: ${{ github.repository }}
-    - name: Remove unwanted files
-      run: awk '/export-ignore/ { print $1 }' .gitattributes | xargs rm -rf --
-      working-directory: ${{ github.repository }}
-    - name: Run kodi-addon-checker
-      run: kodi-addon-checker --branch=${{ matrix.kodi-branch }} ${{ github.repository }}/
+        kodi-version: matrix
+        addon-id: ${{ github.event.repository.name }}

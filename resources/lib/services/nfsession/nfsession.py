@@ -26,6 +26,8 @@ class NetflixSession:
         self.nfsession = NFSessionOperations()
         # Create MSL handler
         self.msl_handler = MSLHandler(self.nfsession)
+        # Set to the nfsession the reference to the current MSL Handler object
+        self.nfsession.msl_handler = self.msl_handler
         # Initialize correlated features
         self.directory_builder = DirectoryBuilder(self.nfsession)
         self.action_controller = ActionController(self.nfsession, self.msl_handler, self.directory_builder)

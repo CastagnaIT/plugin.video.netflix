@@ -50,7 +50,7 @@ def _show_modal_dialog(dlg_class, xml_filename, **kwargs):
         if seconds > 59 and minutes == 0:
             alarm_time = time.strftime('%M:%S', time.gmtime(seconds))
         else:
-            alarm_time = '{:02d}:{:02d}'.format(minutes, seconds)
+            alarm_time = f'{minutes:02d}:{seconds:02d}'
         xbmc.executebuiltin(CMD_CLOSE_DIALOG_BY_NOOP.format(alarm_time))
     dlg.doModal()
     if hasattr(dlg, 'return_value'):
@@ -120,7 +120,7 @@ def show_profiles_dialog(title=None, title_prefix=None, preselect_guid=None):
     if not title:
         title = G.ADDON.getLocalizedString(30128)
     if title_prefix:
-        title = title_prefix + ' - ' + title
+        title = f'{title_prefix} - {title}'
     # Get profiles data
     # pylint: disable=unused-variable
     dir_items, extra_data = make_call('get_profiles',

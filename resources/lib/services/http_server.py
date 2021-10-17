@@ -10,11 +10,12 @@
 import pickle
 from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer, ThreadingMixIn
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote
 
+from resources.lib import common
 from resources.lib.common import IPC_ENDPOINT_CACHE, IPC_ENDPOINT_NFSESSION, IPC_ENDPOINT_MSL, IPC_ENDPOINT_NFSESSION_TEST
 from resources.lib.common.exceptions import InvalidPathError, CacheMiss, MetadataNotAvailable, SlotNotImplemented
-from resources.lib.globals import G
+from resources.lib.globals import G, remove_ver_suffix
 from resources.lib.services.nfsession.nfsession import NetflixSession
 from resources.lib.utils.logging import LOG
 
@@ -67,6 +68,11 @@ class NFThreadedTCPServer(ThreadingMixIn, TCPServer):
         # Define shared members
         self.netflix_session = NetflixSession()
 
+    def __del__(self):
+        if self.netflix_session.nfsession.session:
+            # Close the connection pool of the session
+            self.netflix_session.nfsession.session.close()
+
 
 def handle_msl_request(server, func_name, data, params=None):
     if func_name == 'get_license':
@@ -78,7 +84,19 @@ def handle_msl_request(server, func_name, data, params=None):
     elif func_name == 'get_manifest':
         # Proxy for InputStream Adaptive to get the XML manifest for the requested video
         videoid = int(params['videoid'][0])
-        manifest_data = server.server.netflix_session.msl_handler.get_manifest(videoid)
+        challenge = server.headers.get('challengeB64')
+        sid = server.headers.get('sessionId')
+        if not challenge or not sid:
+            from xbmcaddon import Addon
+            isa_version = remove_ver_suffix(Addon('inputstream.adaptive').getAddonInfo('version'))
+            if common.CmpVersion(isa_version) >= '2.6.18':
+                raise Exception(f'Widevine session data not valid\r\nSession ID: {sid} Challenge: {challenge}')
+            # TODO: We temporary allow the use of older versions of InputStream Adaptive (but SD video content)
+            #       to allow a soft transition, this must be removed in future.
+            LOG.error('Detected older version of InputStream Adaptive add-on, HD video contents are not supported.')
+            challenge = ''
+            sid = ''
+        manifest_data = server.server.netflix_session.msl_handler.get_manifest(videoid, unquote(challenge), sid)
         server.send_response(200)
         server.send_header('Content-type', 'application/xml')
         server.end_headers()
@@ -94,7 +112,7 @@ def handle_request(server, handler, func_name, data):
         try:
             func = handler.http_ipc_slots[func_name]
         except KeyError as exc:
-            raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
+            raise SlotNotImplemented(f'The specified IPC slot {func_name} does not exist') from exc
         ret_data = _call_func(func, pickle.loads(data))
     except Exception as exc:  # pylint: disable=broad-except
         if not isinstance(exc, (CacheMiss, MetadataNotAvailable)):
@@ -129,10 +147,10 @@ def handle_request_test(server, handler, func_name, data):
         try:
             func = handler.http_ipc_slots[func_name]
         except KeyError as exc:
-            raise SlotNotImplemented('The specified IPC slot {} does not exist'.format(func_name)) from exc
+            raise SlotNotImplemented(f'The specified IPC slot {func_name} does not exist') from exc
         ret_data = _call_func(func, json.loads(data))
     except Exception as exc:  # pylint: disable=broad-except
-        ret_data = 'The request has failed, error: {}'.format(exc)
+        ret_data = f'The request has failed, error: {exc}'
     if ret_data:
         server.wfile.write(json.dumps(ret_data).encode('utf-8'))
 
@@ -141,7 +159,7 @@ def _call_instance_func(instance, func_name, data):
     try:
         func = getattr(instance, func_name)
     except AttributeError as exc:
-        raise InvalidPathError('Function {} not found'.format(func_name)) from exc
+        raise InvalidPathError(f'Function {func_name} not found') from exc
     if isinstance(data, dict):
         return func(**data)
     if data is not None:

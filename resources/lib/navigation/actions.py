@@ -119,7 +119,7 @@ class AddonActionExecutor:
         # This functionality is used with videos that are not available,
         # allows you to automatically add the title to my list as soon as it becomes available.
         operation = pathitems[1]
-        G.CACHE.add(CACHE_BOOKMARKS, 'is_in_remind_me_' + str(videoid), bool(operation == 'add'))
+        G.CACHE.add(CACHE_BOOKMARKS, f'is_in_remind_me_{videoid}', bool(operation == 'add'))
         api.update_remindme(operation, videoid, self.params['trackid'])
         common.container_refresh()
 
@@ -218,7 +218,7 @@ class AddonActionExecutor:
             xbmc.getInfoLabel('ListItem.Property(nf_availability_message)') or '--')
         if trailer_path:
             if ui.show_yesno_dialog(xbmc.getInfoLabel('ListItem.Label'),
-                                    msg + '[CR]' + common.get_local_string(30621),
+                                    f'{msg}[CR]{common.get_local_string(30621)}',
                                     default_yes_button=True):
                 # Create a basic trailer ListItem (all other info if available are set on Play callback)
                 list_item = xbmcgui.ListItem(xbmc.getInfoLabel('ListItem.Title'), offscreen=True)

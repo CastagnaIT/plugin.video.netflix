@@ -36,6 +36,8 @@ INPUTSTREAM_SERVER_CERTIFICATE = (
     'ovtl/ogZgjMeEdFyd/9YMYjOS4krYmwp3yJ7m9ZzYCQ6I8RQN4x/yLlHG5RH/+WNLNUs6JAZ'
     '0fFdCmw=')
 
+PSSH_KID = 'AAAANHBzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAABQIARIQAAAAAAPSZ0kAAAAAAAAAAA==|AAAAAAPSZ0kAAAAAAAAAAA=='
+
 
 @common.inject_video_id(path_offset=0, pathitems_arg='videoid', inject_full_pathitems=True)
 def play_strm(videoid):
@@ -88,12 +90,14 @@ def _play(videoid, is_played_from_strm=False):
 
 def get_inputstream_listitem(videoid):
     """Return a listitem that has all inputstream relevant properties set for playback of the given video_id"""
-    service_url = 'http://127.0.0.1:{}'.format(G.LOCAL_DB.get_value('nf_server_service_port'))
+    service_url = f'http://127.0.0.1:{G.LOCAL_DB.get_value("nf_server_service_port")}'
     manifest_path = MANIFEST_PATH_FORMAT.format(videoid.value)
     list_item = xbmcgui.ListItem(path=service_url + manifest_path, offscreen=True)
     list_item.setContentLookup(False)
     list_item.setMimeType('application/xml+dash')
     list_item.setProperty('IsPlayable', 'true')
+    # Allows the add-on to always have play callbacks also when using the playlist (Kodi versions >= 20)
+    list_item.setProperty('ForceResolvePlugin', 'true')
     try:
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
@@ -107,7 +111,7 @@ def get_inputstream_listitem(videoid):
         raise Exception(common.get_local_string(30046))
     list_item.setProperty(
         key='inputstream.adaptive.stream_headers',
-        value='user-agent=' + common.get_user_agent())
+        value=f'user-agent={common.get_user_agent()}')
     list_item.setProperty(
         key='inputstream.adaptive.license_type',
         value='com.widevine.alpha')
@@ -123,6 +127,10 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty(
         key='inputstream',
         value='inputstream.adaptive')
+    # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
+    list_item.setProperty(
+        key='inputstream.adaptive.pre_init_data',
+        value=PSSH_KID)
     return list_item
 
 

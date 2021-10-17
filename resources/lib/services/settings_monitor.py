@@ -39,7 +39,7 @@ class SettingsMonitor(xbmc.Monitor):
         # This method will be called when user change add-on settings or every time ADDON.setSetting...() is called
         if self.ignore_n_events > 0:
             self.ignore_n_events -= 1
-            LOG.debug('SettingsMonitor: onSettingsChanged event ignored (remaining {})'.format(self.ignore_n_events))
+            LOG.debug('SettingsMonitor: onSettingsChanged event ignored (remaining {})', self.ignore_n_events)
             return
         try:
             self._on_change()
@@ -82,22 +82,22 @@ class SettingsMonitor(xbmc.Monitor):
             # Check settings changes in show/hide menu
             if menu_data.get('has_show_setting', True):
                 show_menu_new_setting = bool(G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))))
-                show_menu_old_setting = G.LOCAL_DB.get_value('menu_{}_show'.format(menu_id),
+                show_menu_old_setting = G.LOCAL_DB.get_value(f'menu_{menu_id}_show',
                                                              True,
                                                              TABLE_SETTINGS_MONITOR)
                 if show_menu_new_setting != show_menu_old_setting:
-                    G.LOCAL_DB.set_value('menu_{}_show'.format(menu_id),
+                    G.LOCAL_DB.set_value(f'menu_{menu_id}_show',
                                          show_menu_new_setting,
                                          TABLE_SETTINGS_MONITOR)
                     reboot_addon = True
             # Check settings changes in sort order of menu
             if menu_data.get('has_sort_setting'):
                 menu_sortorder_new_setting = int(G.ADDON.getSettingInt('menu_sortorder_' + menu_data['path'][1]))
-                menu_sortorder_old_setting = G.LOCAL_DB.get_value('menu_{}_sortorder'.format(menu_id),
+                menu_sortorder_old_setting = G.LOCAL_DB.get_value(f'menu_{menu_id}_sortorder',
                                                                   0,
                                                                   TABLE_SETTINGS_MONITOR)
                 if menu_sortorder_new_setting != menu_sortorder_old_setting:
-                    G.LOCAL_DB.set_value('menu_{}_sortorder'.format(menu_id),
+                    G.LOCAL_DB.set_value(f'menu_{menu_id}_sortorder',
                                          menu_sortorder_new_setting,
                                          TABLE_SETTINGS_MONITOR)
                     clean_buckets += [CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH]

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-02-22 00:19+0000\n"
+"PO-Revision-Date: 2021-05-28 22:35+0000\n"
 "Last-Translator: JuenTingShie <>\n"
 "Language-Team: Taiwanese\n"
 "Language: zh_TW\n"
@@ -68,7 +68,7 @@ msgstr "所有種類的清單"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr "設定選項與父控制"
+msgstr "設定檔選項與家長控制"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
@@ -1077,24 +1077,33 @@ msgctxt "#30609"
 msgid "Do you want to reset all settings?"
 msgstr "您想要重設所有設定嗎？"
 
-# Unused 30610 to 30619
+msgctxt "#30610"
+msgid "Use system-based encryption for credentials"
+msgstr ""
+
+# Help description for setting id 30610
+msgctxt "#30611"
+msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
+msgstr ""
+
+# Unused 30612 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "此標題在以下可以找到: {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "您想要撥放推薦預告片嗎?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "提醒我"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "提醒已設定"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "最新與熱門"

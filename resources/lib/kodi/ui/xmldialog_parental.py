@@ -93,13 +93,13 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         self.current_level_index = self.getControl(10004).getInt() if new_level_index is None else new_level_index
         # Update labels color of slider steps
         for index in range(0, self.levels_count):
-            maturity_name = '[' + self.rating_levels[index]['label'] + ']'
-            ml_label = '[COLOR red]{}[/COLOR]'.format(maturity_name) if index <= self.current_level_index else maturity_name
+            maturity_name = f'[{self.rating_levels[index]["label"]}]'
+            ml_label = f'[COLOR red]{maturity_name}[/COLOR]' if index <= self.current_level_index else maturity_name
             self.controls[index].setLabel(ml_label)
         # Update status description
         hint = self.rating_levels[self.current_level_index]['description']
         ml_labels_included = [self.rating_levels[index]['label'] for index in range(0, self.current_level_index + 1)]
-        status_desc = self.status_base_desc.format(', '.join(ml_labels_included)) + '[CR]' + hint
+        status_desc = self.status_base_desc.format(', '.join(ml_labels_included)) + f'[CR]{hint}'
         self.getControl(10009).setLabel(status_desc)
 
     # def _validate_pin(self, pin_value):
@@ -117,7 +117,7 @@ class ParentalControl(xbmcgui.WindowXMLDialog):
         pos_y = 508  # 668
         for index, rating_level in enumerate(self.rating_levels):
             current_x = pos_x + (width * index)
-            maturity_name = '[' + rating_level['label'] + ']'
+            maturity_name = f'[{rating_level["label"]}]'
             lbl = xbmcgui.ControlLabel(current_x, pos_y, width, height, maturity_name,
                                        font='font10',
                                        alignment=XBFONT_CENTER_X)

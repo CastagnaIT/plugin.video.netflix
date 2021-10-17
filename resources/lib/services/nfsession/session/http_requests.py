@@ -11,7 +11,7 @@
 import json
 import time
 
-import requests.exceptions as req_exceptions
+import httpx
 
 import resources.lib.common as common
 import resources.lib.utils.website as website
@@ -32,14 +32,14 @@ class SessionHTTPRequests(SessionBase):
     def get(self, endpoint, **kwargs):
         """Execute a GET request to the designated endpoint."""
         return self._request_call(
-            method=self.session.get,
+            method='GET',
             endpoint=endpoint,
             **kwargs)
 
     def post(self, endpoint, **kwargs):
         """Execute a POST request to the designated endpoint."""
         return self._request_call(
-            method=self.session.post,
+            method='POST',
             endpoint=endpoint,
             **kwargs)
 
@@ -56,20 +56,34 @@ class SessionHTTPRequests(SessionBase):
         retry = 1
         while True:
             try:
-                LOG.debug('Executing {verb} request to {url}',
-                          verb='GET' if method == self.session.get else 'POST', url=url)
+                LOG.debug('Executing {verb} request to {url}', verb=method, url=url)
                 start = time.perf_counter()
-                response = method(
-                    url=url,
-                    verify=self.verify_ssl,
-                    headers=headers,
-                    params=params,
-                    data=data,
-                    timeout=8)
+                if method == 'GET':
+                    response = self.session.get(
+                        url=url,
+                        headers=headers,
+                        params=params,
+                        timeout=8)
+                else:
+                    response = self.session.post(
+                        url=url,
+                        headers=headers,
+                        params=params,
+                        data=data,
+                        timeout=8)
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned status code {}', response.status_code)
                 break
-            except req_exceptions.ConnectionError as exc:
+            except httpx.RemoteProtocolError as exc:
+                if 'Server disconnected' in str(exc):
+                    # Known reasons:
+                    # - The server has revoked cookies validity
+                    # - The user has executed "Sign out of all devices" from account settings
+                    # Clear the user ID tokens are tied to the credentials
+                    self.msl_handler.clear_user_id_tokens()
+                    raise NotLoggedInError from exc
+                raise
+            except httpx.ConnectError as exc:
                 LOG.error('HTTP request error: {}', exc)
                 if retry == 3:
                     raise
@@ -98,7 +112,7 @@ class SessionHTTPRequests(SessionBase):
         """Refresh session data from the Netflix website"""
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
-            cookies.save(self.session.cookies)
+            cookies.save(self.session.cookies.jar)
             LOG.debug('Successfully refreshed session data')
             return True
         except MbrStatusError:
@@ -111,14 +125,14 @@ class SessionHTTPRequests(SessionBase):
             self.session.cookies.clear()
             if isinstance(exc, MbrStatusAnonymousError):
                 # This prevent the MSL error: No entity association record found for the user
-                common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+                self.msl_handler.clear_user_id_tokens()
             # Needed to do a new login
             common.purge_credentials()
             ui.show_notification(common.get_local_string(30008))
             raise NotLoggedInError from exc
-        except req_exceptions.RequestException:
+        except httpx.RequestError:
             import traceback
-            LOG.warn('Failed to refresh session data, request error (RequestException)')
+            LOG.warn('Failed to refresh session data, request error (RequestError)')
             LOG.warn(traceback.format_exc())
             if raise_exception:
                 raise
@@ -159,8 +173,7 @@ class SessionHTTPRequests(SessionBase):
                 'isVolatileBillboardsEnabled': 'true',
                 'isTop10Supported': 'true',
                 'categoryCraversEnabled': 'false',
-                'original_path': '/shakti/{}/pathEvaluator'.format(
-                    G.LOCAL_DB.get_value('build_identifier', '', TABLE_SESSION))
+                'original_path': f'/shakti/{G.LOCAL_DB.get_value("build_identifier", "", TABLE_SESSION)}/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
             params['authURL'] = self.auth_url
@@ -171,15 +184,15 @@ class SessionHTTPRequests(SessionBase):
             if endpoint_conf['add_auth_url'] == 'to_data':
                 data['authURL'] = self.auth_url
             if endpoint_conf.get('content_type') == 'application/x-www-form-urlencoded':
-                data_converted = data  # In this case Requests module convert the data automatically
+                data_converted = data  # In this case the data is converted automatically
             else:
                 data_converted = json.dumps(data, separators=(',', ':'))  # Netflix rejects spaces
         else:
             # Special case used by path_request/callpath_request in path_requests.py
             data_converted = data
             if endpoint_conf['add_auth_url'] == 'to_data':
-                auth_data = 'authURL=' + self.auth_url
-                data_converted += '&' + auth_data if data_converted else auth_data
+                auth_data = f'authURL={self.auth_url}'
+                data_converted += f'&{auth_data}' if data_converted else auth_data
         return data_converted, headers, params
 
 
@@ -190,9 +203,8 @@ def _document_url(endpoint_address, kwargs):
 
 
 def _api_url(endpoint_address):
-    return '{baseurl}{endpoint_adr}'.format(
-        baseurl=G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION),
-        endpoint_adr=endpoint_address)
+    baseurl = G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION)
+    return f'{baseurl}{endpoint_address}'
 
 
 def _raise_api_error(decoded_response):

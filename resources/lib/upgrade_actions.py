@@ -44,7 +44,7 @@ def migrate_library():
                                max_value=len(folders)) as progress_bar:
             for folder_path in folders:
                 folder_name = os.path.basename(xbmcvfs.translatePath(folder_path))
-                progress_bar.set_message('PLEASE WAIT - Migrating: ' + folder_name)
+                progress_bar.set_message(f'PLEASE WAIT - Migrating: {folder_name}')
                 _migrate_strm_files(folder_path)
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Migrating failed: {}', exc)

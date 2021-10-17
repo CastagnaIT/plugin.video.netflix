@@ -33,15 +33,15 @@ LIBRARY_PROPS = {
 
 def update_library_item_details(dbtype, dbid, details):
     """Update properties of an item in the Kodi library"""
-    method = 'VideoLibrary.Set{}Details'.format(dbtype.capitalize())
-    params = {'{}id'.format(dbtype): dbid}
+    method = f'VideoLibrary.Set{dbtype.capitalize()}Details'
+    params = {f'{dbtype}id': dbid}
     params.update(details)
     return json_rpc(method, params)
 
 
 def get_library_items(dbtype, video_filter=None):
     """Return a list of all items in the Kodi library that are of type dbtype (either movie or episode)"""
-    method = 'VideoLibrary.Get{}s'.format(dbtype.capitalize())
+    method = f'VideoLibrary.Get{dbtype.capitalize()}s'
     params = {'properties': ['file']}
     if video_filter:
         params.update({'filter': video_filter})
@@ -50,7 +50,7 @@ def get_library_items(dbtype, video_filter=None):
 
 def get_library_item_details(dbtype, itemid):
     """Return details for an item from the Kodi library"""
-    method = 'VideoLibrary.Get{}Details'.format(dbtype.capitalize())
+    method = f'VideoLibrary.Get{dbtype.capitalize()}Details'
     params = {
         dbtype + 'id': itemid,
         'properties': LIBRARY_PROPS[dbtype]}
@@ -89,7 +89,7 @@ def get_library_item_by_videoid(videoid):
         # Ask to Kodi to find this file path in Kodi library database, and get all item details
         return _get_item_details_from_kodi(media_type, file_path)
     except (KeyError, IndexError, ItemNotFound, DBRecordNotExistError) as exc:
-        raise ItemNotFound('The video with id {} is not present in the Kodi library'.format(videoid)) from exc
+        raise ItemNotFound(f'The video with id {videoid} is not present in the Kodi library') from exc
 
 
 def _get_videoid_file_path(videoid):

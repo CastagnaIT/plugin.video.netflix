@@ -149,7 +149,7 @@ def parse_profiles(data):
         _delete_non_existing_profiles(current_guids)
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
-        LOG.error(traceback.format_exc(), 'latin-1')
+        LOG.error(traceback.format_exc())
         LOG.error('Profile list data: {}', profiles_list)
         raise InvalidProfilesError from exc
 
@@ -246,12 +246,12 @@ def validate_login(react_context):
             error_code = common.get_path(path_error_code, react_context)
             LOG.error('Login not valid, error code {}', error_code)
             error_description = common.get_local_string(30102) + error_code
-            if error_code in error_code_list:
+            if f'login_{error_code}' in error_code_list:
+                error_description = error_code_list[f'login_{error_code}']
+            elif f'email_{error_code}' in error_code_list:
+                error_description = error_code_list[f'email_{error_code}']
+            elif error_code in error_code_list:
                 error_description = error_code_list[error_code]
-            if 'email_' + error_code in error_code_list:
-                error_description = error_code_list['email_' + error_code]
-            if 'login_' + error_code in error_code_list:
-                error_description = error_code_list['login_' + error_code]
             raise LoginValidateError(common.remove_html_tags(error_description))
         except (AttributeError, KeyError) as exc:
             import traceback
@@ -285,7 +285,7 @@ def extract_json(content, name):
             LOG.error('JSON string trying to load: {}', json_str)
         import traceback
         LOG.error(traceback.format_exc())
-        raise WebsiteParsingError('Unable to extract {}'.format(name)) from exc
+        raise WebsiteParsingError(f'Unable to extract {name}') from exc
 
 
 def extract_parental_control_data(content, current_maturity):

@@ -1,3 +1,35 @@
+v1.17.0 (2021-08-13)
+- Migration to HTTP2 protocol
+- Fixed login with username/password for more than 90% of cases
+
+v1.16.2 (2021-07-16)
+- Implemented new licensed manifest request (to have HD is mandatory to update InputStream Adaptive to last version)
+- Fixed "This title is not available to watch instantly" error on some ARM devices incorrectly identified
+- Fixed empty lists on menu/submenus due to website changes
+- Update translation zh_cn
+- Minor changes
+
+v1.16.1 (2021-06-20)
+- Updated video profiles for HEVC/HEVC HDR
+- Add support to browse network paths with open file/folder dialog
+- Fixed missing items in episodes lists and others submenus
+- Fixed broken add-on services when play videos from playlist (only Kodi 20)
+- Update translations gl_es
+- Minor changes
+
+v1.16.0 (2021-06-03)
+- Add new menu "New and Popular"
+- Add feature to play promo trailer on unavailable videos
+- Add "Remind me" feature on unavailable videos
+- Norwegian macrolanguages are now played/selected as the main Norwegian language
+- Watched status sync is now enabled by default (on new installs)
+- VP9 codec profile is now enabled by default (on new installs for non-android devices)
+- "Top 10" menu is now under "New and Popular" menu
+- Re-added Up Next add-on install menu
+- Unplayable videos no longer cause playback error
+- Minor changes
+- Update translations cs_cz, it, hu, de, cz, fr, ro, jp, kr, pt-br, zh_tw
+
 v1.15.1 (2021-04-21)
 - Fixed regression to ESN/Widevine window
 - Fixed wrong selection of audio track for impaired

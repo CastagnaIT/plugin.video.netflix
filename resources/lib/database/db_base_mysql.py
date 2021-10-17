@@ -161,9 +161,7 @@ class MySQLDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'SELECT {} FROM {} WHERE {} = ?'.format(table_columns[1],
-                                                        table_name,
-                                                        table_columns[0])
+        query = f'SELECT {table_columns[1]} FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         result = cur.fetchone()
         if default_value is not None:
@@ -184,9 +182,7 @@ class MySQLDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'SELECT {} FROM {} WHERE {} = ?'.format(table_columns[1],
-                                                        table_name,
-                                                        table_columns[0])
+        query = f'SELECT {table_columns[1]} FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         result = cur.fetchall()
         return result if result is not None else default_value
@@ -216,7 +212,7 @@ class MySQLDatabase(db_base.BaseDatabase):
         """
         table_name = table[0]
         table_columns = table[1]
-        query = 'DELETE FROM {} WHERE {} = ?'.format(table_name, table_columns[0])
+        query = f'DELETE FROM {table_name} WHERE {table_columns[0]} = ?'
         cur = self._execute_query(query, (key,))
         return cur.rowcount
 

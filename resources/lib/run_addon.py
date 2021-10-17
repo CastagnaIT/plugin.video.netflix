@@ -35,8 +35,8 @@ def catch_exceptions_decorator(func):
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog('InputStream Helper Add-on error',
                            ('The operation has been cancelled.[CR]'
-                            'InputStream Helper has generated an internal error:[CR]{}[CR][CR]'
-                            'Please report it to InputStream Helper github.'.format(exc)))
+                            f'InputStream Helper has generated an internal error:[CR]{exc}[CR][CR]'
+                            'Please report it to InputStream Helper github.'))
         except HttpError401 as exc:
             # This is a generic error, can happen when the http request for some reason has failed.
             # Known causes:
@@ -46,7 +46,7 @@ def catch_exceptions_decorator(func):
             show_ok_dialog(get_local_string(30105),
                            ('There was a communication problem with Netflix.[CR]'
                             'You can try the operation again or exit.[CR]'
-                            '(Error code: {})').format(exc.__class__.__name__))
+                            f'(Error code: {exc.__class__.__name__})'))
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
             from resources.lib.kodi.ui import show_error_info
             show_error_info(get_local_string(30008), get_local_string(30180), False, True)
@@ -86,7 +86,8 @@ def lazy_login(func):
             try:
                 return func(*args, **kwargs)
             except NotLoggedInError:
-                # Exception raised by nfsession: "login" / "assert_logged_in" / "website_extract_session_data"
+                # Exception raised by nfsession:
+                #   "login" / "assert_logged_in" / "website_extract_session_data" / _request from http_requests.py
                 LOG.debug('Tried to perform an action without being logged in')
                 try:
                     from resources.lib.utils.api_requests import login
@@ -141,7 +142,7 @@ def _get_nav_handler(root_handler, pathitems):
         from resources.lib.navigation.keymaps import KeymapsActionExecutor
         nav_handler = KeymapsActionExecutor
     else:
-        raise InvalidPathError('No root handler for path {}'.format('/'.join(pathitems)))
+        raise InvalidPathError(f'No root handler for path {"/".join(pathitems)}')
     return nav_handler
 
 
@@ -150,7 +151,7 @@ def _execute(executor_type, pathitems, params, root_handler):
     try:
         executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
     except AttributeError as exc:
-        raise InvalidPathError('Unknown action {}'.format('/'.join(pathitems))) from exc
+        raise InvalidPathError(f'Unknown action {"/".join(pathitems)}') from exc
     LOG.debug('Invoking action: {}', executor.__name__)
     executor(pathitems=pathitems)
     if root_handler == G.MODE_DIRECTORY and not G.IS_ADDON_EXTERNAL_CALL:
@@ -215,8 +216,8 @@ def run(argv):
     # PR: https://github.com/xbmc/xbmc/pull/13814
     G.init_globals(argv)
 
-    LOG.info('Started (Version {})'.format(G.VERSION_RAW))
-    LOG.info('URL is {}'.format(G.URL))
+    LOG.info('Started (Version {})', G.VERSION_RAW)
+    LOG.info('URL is {}', G.URL)
     success = True
 
     is_external_call = _check_addon_external_call()
@@ -235,21 +236,13 @@ def run(argv):
                 show_backend_not_ready()
         success = False
     if success:
-        cancel_playback = False
         pathitems = [part for part in G.REQUEST_PATH.split('/') if part]
         if G.IS_ADDON_FIRSTRUN:
-            is_first_run_install, cancel_playback = check_addon_upgrade()
+            is_first_run_install = check_addon_upgrade()
             if is_first_run_install:
                 from resources.lib.config_wizard import run_addon_configuration
                 run_addon_configuration()
-        if cancel_playback and G.MODE_PLAY in pathitems[:1]:
-            # Temporary for migration library STRM to new format. todo: to be removed in future releases
-            # When a user do the add-on upgrade, the first time that the add-on will be opened will be executed
-            # the library migration. But if a user instead to open the add-on, try to play a video from Kodi
-            # library, Kodi will open the old STRM file because the migration is executed after.
-            success = False
-        else:
-            success = route(pathitems)
+        success = route(pathitems)
     if not success:
         from xbmcplugin import endOfDirectory
         endOfDirectory(handle=G.PLUGIN_HANDLE, succeeded=False)

@@ -42,7 +42,7 @@ MEDIA_TYPE_MAPPINGS = {
 
 def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False):
     """Get the infolabels data"""
-    cache_identifier = videoid.value + '_' + profile_language_code
+    cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         cache_entry = G.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
@@ -103,7 +103,7 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
 
 def get_art(videoid, item, profile_language_code='', delayed_db_op=False):
     """Get art infolabels - NOTE: If 'item' arg is None this method can raise TypeError when there is not cache"""
-    cache_identifier = videoid.value + '_' + profile_language_code
+    cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
     except CacheMiss:
@@ -230,8 +230,7 @@ def _assign_art(videoid, **kwargs):
                                 kwargs['boxart_large'],
                                 kwargs['boxart_small']]),
            'thumb': ((kwargs['interesting_moment']
-                      if videoid.mediatype == common.VideoId.EPISODE or
-                      videoid.mediatype == common.VideoId.SUPPLEMENTAL else '')
+                      if videoid.mediatype in (common.VideoId.EPISODE, common.VideoId.SUPPLEMENTAL) else '')
                      or kwargs['boxart_large'] or kwargs['boxart_small'])}
     art['landscape'] = art['thumb']
     if videoid.mediatype != common.VideoId.UNSPECIFIED:
@@ -247,10 +246,10 @@ def _best_art(arts):
 def get_info_from_library(videoid):
     """Get infolabels with info from Kodi library"""
     details = common.get_library_item_by_videoid(videoid)
-    LOG.debug('Got file info from library: {}'.format(details))
+    LOG.debug('Got file info from library: {}', details)
     art = details.pop('art', {})
     infos = {
-        'DBID': details.pop('{}id'.format(videoid.mediatype)),
+        'DBID': details.pop(f'{videoid.mediatype}id'),
         'MediaType': MEDIA_TYPE_MAPPINGS[videoid.mediatype]
     }
     infos.update(details)
@@ -259,7 +258,7 @@ def get_info_from_library(videoid):
 
 def _colorize_text(color_name, text):
     if color_name:
-        return '[COLOR {}]{}[/COLOR]'.format(color_name, text)
+        return f'[COLOR {color_name}]{text}[/COLOR]'
     return text
 
 

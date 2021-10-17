@@ -33,7 +33,7 @@ class Logging:
             return
         self.__addon_id = addon_id
         self.__plugin_handle = plugin_handle
-        self.__log('The debug logging is set as {}'.format('ENABLED' if is_enabled else 'DISABLED'), xbmc.LOGINFO)
+        self.__log(f'The debug logging is set as {"ENABLED" if is_enabled else "DISABLED"}', xbmc.LOGINFO)
         self.is_enabled = is_enabled
         self.is_time_trace_enabled = is_enabled and is_time_trace_enabled
         if is_enabled:
@@ -51,10 +51,7 @@ class Logging:
         """Log a message to the Kodi logfile."""
         if args or kwargs:
             msg = msg.format(*args, **kwargs)
-        message = '[{identifier} ({handle})] {msg}'.format(
-            identifier=self.__addon_id,
-            handle=self.__plugin_handle,
-            msg=msg)
+        message = f'[{self.__addon_id} ({self.__plugin_handle})] {msg}'
         xbmc.log(message, log_level)
 
     def _debug(self, msg, *args, **kwargs):
@@ -101,7 +98,7 @@ class Logging:
         for trace in self.__time_trace_data:
             time_trace.append(' ' * trace[2])
             time_trace.append(format(trace[0], '<30'))
-            time_trace.append('{:>5} ms\n'.format(trace[1]))
+            time_trace.append(f'{trace[1]:>5} ms\n')
         self.debug(''.join(time_trace))
         self.reset_time_trace()
 
@@ -115,7 +112,7 @@ def logdetails_decorator(func):
         """Wrapper function to maintain correct stack traces"""
         that = args[0]
         class_name = that.__class__.__name__
-        arguments = [':{} = {}:'.format(key, value)
+        arguments = [f':{key} = {value}:'
                      for key, value in kwargs.items()
                      if key not in ['account', 'credentials']]
         if arguments:

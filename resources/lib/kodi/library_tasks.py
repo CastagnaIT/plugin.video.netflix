@@ -66,9 +66,7 @@ class LibraryTasks(LibraryJobs):
             for job_data in jobs_data:
                 self._execute_job(task_type, job_data, list_errors)
                 progress_bar.perform_step()
-                progress_bar.set_message('{} ({}/{})'.format(job_data['title'],
-                                                             progress_bar.value,
-                                                             progress_bar.max_value))
+                progress_bar.set_message(f'{job_data["title"]} ({progress_bar.value}/{progress_bar.max_value})')
                 if progress_bar.is_cancelled():
                     LOG.warn('Library operations interrupted by User')
                     break
@@ -87,7 +85,7 @@ class LibraryTasks(LibraryJobs):
             LOG.error(traceback.format_exc())
             LOG.error('{} of {} ({}) failed', job_handler.__name__, job_data['videoid'], job_data['title'])
             list_errors.append({'title': job_data['title'],
-                                'error': '{}: {}'.format(type(exc).__name__, exc)})
+                                'error': f'{type(exc).__name__}: {exc}'})
 
     @measure_exec_time_decorator(is_immediate=True)
     def compile_jobs_data(self, videoid, task_type, nfo_settings=None):
@@ -127,7 +125,7 @@ class LibraryTasks(LibraryJobs):
     def _create_export_movie_job(self, videoid, movie, nfo_settings):
         """Create job data to export a movie"""
         # Reset NFO export to false if we never want movies nfo
-        filename = '{title} ({year})'.format(title=movie['title'], year=movie['year'])
+        filename = f'{movie["title"]} ({movie["year"]})'
         create_nfo_file = nfo_settings and nfo_settings.export_movie_enabled
         nfo_data = nfo.create_movie_nfo(movie) if create_nfo_file else None
         return self._build_export_job_data(True, create_nfo_file,
@@ -187,7 +185,7 @@ class LibraryTasks(LibraryJobs):
 
     def _create_export_episode_job(self, videoid, episode, season, show, nfo_settings):
         """Create job data to export a single episode"""
-        filename = 'S{:02d}E{:02d}'.format(season['seq'], episode['seq'])
+        filename = f'S{season["seq"]:02d}E{episode["seq"]:02d}'
         title = ' - '.join((show['title'], filename))
         create_nfo_file = nfo_settings and nfo_settings.export_tvshow_enabled
         nfo_data = nfo.create_episode_nfo(episode, season, show) if create_nfo_file else None

@@ -16,7 +16,7 @@ import resources.lib.common as common
 
 def show_notification(msg, title='Netflix', time=3000):
     """Show a notification"""
-    xbmc.executebuiltin('Notification({}, {}, {}, {})'.format(title, msg, time, G.ICON))
+    xbmc.executebuiltin(f'Notification({title}, {msg}, {time}, {G.ICON})')
 
 
 def ask_credentials():
@@ -45,8 +45,7 @@ def ask_for_password():
 
 def ask_for_rating():
     """Ask the user for a rating"""
-    heading = '{} {}'.format(common.get_local_string(30019),
-                             common.get_local_string(30022))
+    heading = f'{common.get_local_string(30019)} {common.get_local_string(30022)}'
     try:
         return int(xbmcgui.Dialog().numeric(heading=heading, type=0,
                                             defaultt=''))
@@ -92,7 +91,7 @@ def ask_for_resume(resume_position):
 def show_backend_not_ready(error_details=None):
     message = common.get_local_string(30138)
     if error_details:
-        message += '[CR][CR]Error details:[CR]' + error_details
+        message += f'[CR][CR]Error details:[CR]{error_details}'
     return xbmcgui.Dialog().ok(common.get_local_string(30105), message)
 
 
@@ -127,7 +126,7 @@ def show_addon_error_info(exc):
 def show_library_task_errors(notify_errors, errors):
     if notify_errors and errors:
         xbmcgui.Dialog().ok(common.get_local_string(0),
-                            '[CR]'.join(['{} ({})'.format(err['title'], err['error'])
+                            '[CR]'.join([f'{err["title"]} ({err["error"]})'
                                          for err in errors]))
 
 
@@ -141,7 +140,7 @@ def show_browse_dialog(title, browse_type=0, default_path=None, multi_selection=
     :param extensions: extensions allowed e.g. '.jpg|.png'
     :return: The selected path as string (or tuple of selected items) if user pressed 'Ok', else None
     """
-    ret = xbmcgui.Dialog().browse(browse_type, title, shares='local', useThumbs=False, treatAsFolder=False,
+    ret = xbmcgui.Dialog().browse(browse_type, title, shares='', useThumbs=False, treatAsFolder=False,
                                   defaultt=default_path, enableMultiple=multi_selection, mask=extensions)
     # Note: when defaultt is set and the user cancel the action (when enableMultiple is False),
     #       will be returned the defaultt value again, so we avoid this strange behavior...

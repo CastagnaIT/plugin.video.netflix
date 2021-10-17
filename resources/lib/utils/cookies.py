@@ -8,6 +8,8 @@
     See LICENSES/MIT.md for more information.
 """
 import pickle
+from http.cookiejar import CookieJar
+from threading import RLock
 from time import time
 
 import xbmcvfs
@@ -17,14 +19,38 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
+class PickleableCookieJar(CookieJar):
+    """A pickleable CookieJar class"""
+    # This code has been adapted from RequestsCookieJar of "Requests" module
+    @classmethod
+    def cast(cls, cookie_jar: CookieJar):
+        """Make a kind of cast to convert the class from CookieJar to PickleableCookieJar"""
+        assert isinstance(cookie_jar, CookieJar)
+        cookie_jar.__class__ = cls
+        assert isinstance(cookie_jar, PickleableCookieJar)
+        return cookie_jar
+
+    def __getstate__(self):
+        """Unlike a normal CookieJar, this class is pickleable."""
+        state = self.__dict__.copy()
+        # remove the unpickleable RLock object
+        state.pop('_cookies_lock')
+        return state
+
+    def __setstate__(self, state):
+        """Unlike a normal CookieJar, this class is pickleable."""
+        self.__dict__.update(state)
+        if '_cookies_lock' not in self.__dict__:
+            self._cookies_lock = RLock()
+
+
 def save(cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
     if log_output:
         log_cookie(cookie_jar)
     cookie_file = xbmcvfs.File(cookie_file_path(), 'wb')
     try:
-        # pickle.dump(cookie_jar, cookie_file)
-        cookie_file.write(bytearray(pickle.dumps(cookie_jar)))
+        cookie_file.write(bytearray(pickle.dumps(PickleableCookieJar.cast(cookie_jar))))
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
@@ -70,9 +96,7 @@ def log_cookie(cookie_jar):
     debug_output = 'Cookies currently loaded:\n'
     for cookie in cookie_jar:
         remaining_ttl = int((cookie.expires or 0) - time()) if cookie.expires else None
-        debug_output += '{} (expires ts {} - remaining TTL {} sec)\n'.format(cookie.name,
-                                                                             cookie.expires,
-                                                                             remaining_ttl)
+        debug_output += f'{cookie.name} (expires ts {cookie.expires} - remaining TTL {remaining_ttl} sec)\n'
     LOG.debug(debug_output)
 
 
@@ -83,11 +107,12 @@ def cookie_file_path():
 
 def convert_chrome_cookie(cookie):
     """Convert a cookie from Chrome to a CookieJar format type"""
-    kwargs = {'domain': cookie['domain']}
-    if cookie['expires'] != -1:
-        kwargs['expires'] = int(cookie['expires'])
-    kwargs['path'] = cookie['path']
-    kwargs['secure'] = cookie['secure']
-    if cookie['httpOnly']:
-        kwargs['rest'] = {'HttpOnly': True}
-    return cookie['name'], cookie['value'], kwargs
+    return {
+        'name': cookie['name'],
+        'value': cookie['value'],
+        'domain': cookie['domain'],
+        'path': cookie['path'],
+        'secure': cookie['secure'],
+        'expires': int(cookie['expires']) if cookie['expires'] != -1 else None,
+        'rest': {'HttpOnly': True if cookie['httpOnly'] else None}
+    }

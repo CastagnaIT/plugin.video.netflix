@@ -1,0 +1,32 @@
+name: Translations
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+jobs:
+  tests:
+    name: Check translations
+    runs-on: ubuntu-latest
+    env:
+      PYTHONIOENCODING: utf-8
+    strategy:
+      fail-fast: false
+      matrix:
+        kodi-branch: [matrix]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ github.repository }}
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        sudo apt-get install gettext
+    - name: Checking language translations
+      run: make check-translations
+      working-directory: ${{ github.repository }}

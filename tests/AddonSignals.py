@@ -34,7 +34,7 @@ def _decodeData(data):
 
 
 def _encodeData(data):
-    return '\\"[\\"{0}\\"]\\"'.format(binascii.hexlify(json.dumps(data)))
+    return f'\\"[\\"{binascii.hexlify(json.dumps(data))}\\"]\\"'
 
 
 class SignalReceiver(xbmc.Monitor):
@@ -74,7 +74,7 @@ class CallHandler:
         self._return = None
         self.is_callback_received = False
         self.use_timeout_exception = use_timeout_exception
-        registerSlot(self.sourceID, '_return.{0}'.format(self.signal), self.callback)
+        registerSlot(self.sourceID, f'_return.{self.signal}', self.callback)
         sendSignal(signal, data, self.sourceID)
 
     def callback(self, data):
@@ -111,7 +111,7 @@ def sendSignal(signal, data=None, source_id=None, sourceID=None):
     if sourceID:
         xbmc.log('++++==== script.module.addon.signals: sourceID keyword is DEPRECATED - use source_id ====++++', xbmc.LOGNOTICE)
     source_id = source_id or sourceID or xbmcaddon.Addon().getAddonInfo('id')
-    command = 'XBMC.NotifyAll({0}.SIGNAL,{1},{2})'.format(source_id, signal, _encodeData(data))
+    command = f'XBMC.NotifyAll({source_id}.SIGNAL,{signal},{_encodeData(data)})'
     xbmc.executebuiltin(command)
 
 
@@ -120,7 +120,7 @@ def registerCall(signaler_id, signal, callback):
 
 
 def returnCall(signal, data=None, source_id=None):
-    sendSignal('_return.{0}'.format(signal), data, source_id)
+    sendSignal(f'_return.{signal}', data, source_id)
 
 
 def makeCall(signal, data=None, source_id=None, timeout_ms=1000, use_timeout_exception=False):

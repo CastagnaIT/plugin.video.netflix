@@ -33,7 +33,7 @@ class AMPlayback(ActionManager):
         self.watched_threshold = None
 
     def __str__(self):
-        return 'enabled={}'.format(self.enabled)
+        return f'enabled={self.enabled}'
 
     def initialize(self, data):
         self.resume_position = data.get('resume_position')

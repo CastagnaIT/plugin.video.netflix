@@ -75,13 +75,13 @@ def is_videoid_in_db(videoid):
         return G.SHARED_DB.episode_id_exists(videoid.tvshowid,
                                              videoid.seasonid,
                                              videoid.episodeid)
-    raise InvalidVideoId('videoid {} type not implemented'.format(videoid))
+    raise InvalidVideoId(f'videoid {videoid} type not implemented')
 
 
 def get_episode_title_from_path(file_path):
     filename = os.path.splitext(os.path.basename(file_path))[0]
     path = os.path.split(os.path.split(file_path)[0])[1]
-    return '{} - {}'.format(path, filename)
+    return f'{path} - {filename}'
 
 
 def get_nfo_settings():

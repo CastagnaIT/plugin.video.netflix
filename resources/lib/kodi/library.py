@@ -279,7 +279,7 @@ class Library(LibraryTasks):
                                                                            task_handler,
                                                                            nfo_settings=nfo_settings,
                                                                            notify_errors=show_prg_dialog):
-                    label_partial_op = ' ({}/{})'.format(index + 1, total_tasks) if total_tasks > 1 else ''
+                    label_partial_op = f' ({index + 1}/{total_tasks})' if total_tasks > 1 else ''
                     progress_bar.set_message(title + label_partial_op)
                 if progress_bar.is_cancelled():
                     LOG.warn('Auto update of the Kodi library interrupted by User')
@@ -325,7 +325,7 @@ class Library(LibraryTasks):
                                                                                self.export_item,
                                                                                nfo_settings=nfo_settings,
                                                                                notify_errors=True):
-                        label_partial_op = ' ({}/{})'.format(index + 1, total_tasks) if total_tasks > 1 else ''
+                        label_partial_op = f' ({index + 1}/{total_tasks})' if total_tasks > 1 else ''
                         progress_bar.set_message(title + label_partial_op)
                     if progress_bar.is_cancelled():
                         LOG.warn('Import library interrupted by User')
@@ -357,7 +357,7 @@ class Library(LibraryTasks):
         LOG.info('Start deleting folders')
         with ui.ProgressDialog(True, max_value=tot_folders) as progress_bar:
             for file_path in remove_folders:
-                progress_bar.set_message('{}/{}'.format(progress_bar.value, tot_folders))
+                progress_bar.set_message(f'{progress_bar.value}/{tot_folders}')
                 LOG.debug('Deleting folder: {}', file_path)
                 common.delete_folder(file_path)
                 progress_bar.perform_step()

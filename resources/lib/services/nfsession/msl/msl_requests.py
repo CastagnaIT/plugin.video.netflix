@@ -14,7 +14,7 @@ import time
 import zlib
 from typing import TYPE_CHECKING
 
-import requests.exceptions as req_exceptions
+import httpx
 
 import resources.lib.common as common
 from resources.lib.common.exceptions import MSLError
@@ -174,18 +174,19 @@ class MSLRequests(MSLRequestBuilder):
         while True:
             try:
                 if is_attempts_enabled:
-                    _endpoint = endpoint.replace('reqAttempt=', 'reqAttempt=' + str(retry))
+                    _endpoint = endpoint.replace('reqAttempt=', f'reqAttempt={retry}')
                 else:
                     _endpoint = endpoint
                 LOG.debug('Executing POST request to {}', _endpoint)
                 start = time.perf_counter()
-                response = self.nfsession.session.post(_endpoint, request_data,
+                response = self.nfsession.session.post(url=_endpoint,
+                                                       data=request_data,
                                                        headers=self.HTTP_HEADERS,
                                                        timeout=4)
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 break
-            except req_exceptions.ConnectionError as exc:
+            except httpx.ConnectError as exc:
                 LOG.error('HTTP request error: {}', exc)
                 if retry == 3:
                     raise
@@ -221,8 +222,9 @@ class MSLRequests(MSLRequestBuilder):
 
 def _process_json_response(response):
     """Processes the response data by returning header and payloads in JSON format and check for possible MSL error"""
+    comma_separated_response = response.replace('}{', '},{')
     try:
-        data = json.loads('[' + response.replace('}{', '},{') + ']')
+        data = json.loads(f'[{comma_separated_response}]')
         # On 'data' list the first dict is always the header or the error
         payloads = [msg_part for msg_part in data if 'payload' in msg_part]
         return _raise_if_error(data[0]), payloads

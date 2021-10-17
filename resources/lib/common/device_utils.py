@@ -17,8 +17,8 @@ from resources.lib.utils.logging import LOG
 def select_port(service):
     """Select an unused port on the host machine for a server and store it in the settings"""
     port = select_unused_port()
-    G.LOCAL_DB.set_value('{}_service_port'.format(service.lower()), port)
-    LOG.info('[{}] Picked Port: {}'.format(service, port))
+    G.LOCAL_DB.set_value(f'{service.lower()}_service_port', port)
+    LOG.info('[{}] Picked Port: {}', service, port)
     return port
 
 
@@ -126,7 +126,8 @@ def get_user_agent(enable_android_mediaflag_fix=False):
     if system in ['windows', 'uwp']:
         return base.replace('%PL%', '(Windows NT 10.0; Win64; x64)')
     # ARM based Linux
-    if get_machine().startswith('arm'):
+    machine_arch = get_machine()
+    if machine_arch.startswith('arm') or machine_arch.startswith('aarch'):
         # Last number is the platform version of Chrome OS
         return base.replace('%PL%', '(X11; CrOS armv7l 13099.110.0)')
     # x86 Linux

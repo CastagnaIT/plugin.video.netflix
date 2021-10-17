@@ -38,11 +38,11 @@ class NetflixService:
             LOG.error(traceback.format_exc())
             if isinstance(exc, gaierror):
                 message = ('Something is wrong in your network localhost configuration.\r\n'
-                           'It is possible that the hostname {} can not be resolved.').format(self.HOST_ADDRESS)
+                           f'It is possible that the hostname {self.HOST_ADDRESS} can not be resolved.')
             elif isinstance(exc, ImportError):
                 message = ('In your system is missing some required library to run Netflix.\r\n'
                            'Read how to install the add-on in the GitHub Readme.\r\n'
-                           'Error details: {}'.format(exc))
+                           f'Error details: {exc}')
             else:
                 message = str(exc)
             self._set_service_status('error', message)
@@ -54,7 +54,7 @@ class NetflixService:
 
         self.nf_server_instance.server_activate()
         self.nf_server_thread.start()
-        LOG.info('[{}] Thread started'.format('NF_SERVER'))
+        LOG.info('[NF_SERVER] Thread started')
 
         self.library_updater = LibraryUpdateService()
         # We reset the value in case of any eventuality (add-on disabled, update, etc)
