@@ -1079,12 +1079,12 @@ msgstr "Möchten Sie wirklich alle Einstellungen zurücksetzen?"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "System-basierte Verschlüsselung für Anmeldedaten verwenden"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]Deaktivieren ist ein Sicherheitsrisiko![/B] Falls Ihr Betriebssystem dies nicht unterstützt, werden Sie jedesmal nach ihren Anmeldedaten gefragt, wenn Sie ihr Gerät neu starten. Deaktivieren Sie dies [B]nur[/B] in diesem Fall. Bei Änderung müssen Sie sich erneut anmelden wenn Sie das Gerät neu starten."
 
 # Unused 30612 to 30619
 msgctxt "#30620"
