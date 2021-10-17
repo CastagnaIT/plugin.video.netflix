@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-05-28 22:35+0000\n"
+"PO-Revision-Date: 2021-10-18 00:49+0000\n"
 "Last-Translator: JuenTingShie <>\n"
 "Language-Team: Taiwanese\n"
 "Language: zh_TW\n"
@@ -1079,12 +1079,12 @@ msgstr "您想要重設所有設定嗎？"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "將基於系統的加密方式使用於證書"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]如果取消此設定將會導致安全性危險。[/B]如果你的作業系統不支援此功能，在每一次重新開機後，都會被要求重新登入。[B]只有[/B]在這種情形下才取消此設定。修改此設定會在下一次重新開機後被要求重新登入。"
 
 # Unused 30612 to 30619
 msgctxt "#30620"
