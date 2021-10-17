@@ -30,7 +30,6 @@ def convert_to_dash(manifest):
     cdn_index = int(G.ADDON.getSettingString('cdn_server')[-1]) - 1
 
     seconds = manifest['duration'] / 1000
-    init_length = int(seconds / 2 * 12 + 20 * 1000)
     duration = "PT" + str(int(seconds)) + ".00S"
 
     root = _mpd_manifest_root(duration)
@@ -40,7 +39,7 @@ def convert_to_dash(manifest):
     video_protection_info = _get_protection_info(manifest['video_tracks'][0]) if has_video_drm_streams else None
 
     for video_track in manifest['video_tracks']:
-        _convert_video_track(video_track, period, init_length, video_protection_info, has_video_drm_streams, cdn_index)
+        _convert_video_track(video_track, period, video_protection_info, has_video_drm_streams, cdn_index)
 
     common.fix_locale_languages(manifest['audio_tracks'])
     common.fix_locale_languages(manifest['timedtexttracks'])
@@ -50,7 +49,7 @@ def convert_to_dash(manifest):
     id_default_audio_tracks = _get_id_default_audio_tracks(manifest)
     for audio_track in manifest['audio_tracks']:
         is_default = audio_track['id'] in id_default_audio_tracks
-        _convert_audio_track(audio_track, period, init_length, is_default, has_audio_drm_streams, cdn_index)
+        _convert_audio_track(audio_track, period, is_default, has_audio_drm_streams, cdn_index)
 
     for text_track in manifest['timedtexttracks']:
         if text_track['isNoneTrack']:
@@ -76,12 +75,26 @@ def _add_base_url(representation, base_url):
     ET.SubElement(representation, 'BaseURL').text = base_url
 
 
-def _add_segment_base(representation, init_length):
-    ET.SubElement(
+def _add_segment_base(representation, downloadable):
+    if 'sidx' not in downloadable:
+        return
+    sidx_end_offset = downloadable['sidx']['offset'] + downloadable['sidx']['size']
+    timescale = None
+    if 'framerate_value' in downloadable:
+        timescale = str(1000 * downloadable['framerate_value'] * downloadable['framerate_scale'])
+    segment_base = ET.SubElement(
         representation,  # Parent
         'SegmentBase',  # Tag
-        indexRange='0-' + str(init_length),
+        xmlns='urn:mpeg:dash:schema:mpd:2011',
+        indexRange='{sidx_offset}-{sidx_end_offset}'.format(sidx_offset=downloadable["sidx"]["offset"],
+                                                            sidx_end_offset=sidx_end_offset),
         indexRangeExact='true')
+    if timescale:
+        segment_base.set('timescale', timescale)
+    ET.SubElement(
+        segment_base,  # Parent
+        'Initialization',  # Tag
+        range='0-{sidx_end_offset}'.format(sidx_end_offset=downloadable["sidx"]["offset"] - 1))
 
 
 def _get_protection_info(content):
@@ -127,7 +140,7 @@ def _add_protection_info(adaptation_set, pssh, keyid):
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 
 
-def _convert_video_track(video_track, period, init_length, protection, has_drm_streams, cdn_index):
+def _convert_video_track(video_track, period, protection, has_drm_streams, cdn_index):
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
@@ -144,7 +157,7 @@ def _convert_video_track(video_track, period, init_length, protection, has_drm_s
         if limit_res:
             if int(downloadable['res_h']) > limit_res:
                 continue
-        _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_index)
+        _convert_video_downloadable(downloadable, adaptation_set, cdn_index)
 
 
 def _limit_video_resolution(video_tracks, has_drm_streams):
@@ -172,11 +185,12 @@ def _limit_video_resolution(video_tracks, has_drm_streams):
     return None
 
 
-def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_index):
+def _convert_video_downloadable(downloadable, adaptation_set, cdn_index):
+    # pylint: disable=consider-using-f-string
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
-        id=str(downloadable['urls'][cdn_index]['cdn_id']),
+        id=str(downloadable['downloadable_id']),
         width=str(downloadable['res_w']),
         height=str(downloadable['res_h']),
         bandwidth=str(downloadable['bitrate'] * 1024),
@@ -186,7 +200,7 @@ def _convert_video_downloadable(downloadable, adaptation_set, init_length, cdn_i
                                                   fps_scale=downloadable['framerate_scale']),
         mimeType='video/mp4')
     _add_base_url(representation, downloadable['urls'][cdn_index]['url'])
-    _add_segment_base(representation, init_length)
+    _add_segment_base(representation, downloadable)
 
 
 def _determine_video_codec(content_profile):
@@ -200,7 +214,7 @@ def _determine_video_codec(content_profile):
 
 
 # pylint: disable=unused-argument
-def _convert_audio_track(audio_track, period, init_length, default, has_drm_streams, cdn_index):
+def _convert_audio_track(audio_track, period, default, has_drm_streams, cdn_index):
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -223,18 +237,17 @@ def _convert_audio_track(audio_track, period, init_length, default, has_drm_stre
         # Some audio stream has no drm
         # if downloadable['isDrm'] != has_drm_streams:
         #     continue
-        _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count[downloadable['channels']],
-                                    cdn_index)
+        _convert_audio_downloadable(downloadable, adaptation_set, channels_count[downloadable['channels']], cdn_index)
 
 
-def _convert_audio_downloadable(downloadable, adaptation_set, init_length, channels_count, cdn_index):
+def _convert_audio_downloadable(downloadable, adaptation_set, channels_count, cdn_index):
     codec_type = 'aac'
     if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
         codec_type = 'ec-3'
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
-        id=str(downloadable['urls'][cdn_index]['cdn_id']),
+        id=str(downloadable['downloadable_id']),
         codecs=codec_type,
         bandwidth=str(downloadable['bitrate'] * 1024),
         mimeType='audio/mp4')
@@ -244,7 +257,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, init_length, chann
         schemeIdUri='urn:mpeg:dash:23003:3:audio_channel_configuration:2011',
         value=channels_count)
     _add_base_url(representation, downloadable['urls'][cdn_index]['url'])
-    _add_segment_base(representation, init_length)
+    _add_segment_base(representation, downloadable)
 
 
 def _convert_text_track(text_track, period, default, cdn_index, isa_version):
@@ -288,6 +301,7 @@ def _convert_text_track(text_track, period, default, cdn_index, isa_version):
     representation = ET.SubElement(
         adaptation_set,  # Parent
         'Representation',  # Tag
+        id=str(list(text_track['downloadableIds'].values())[0]),
         nflxProfile=content_profile)
     _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[cdn_index])
 
