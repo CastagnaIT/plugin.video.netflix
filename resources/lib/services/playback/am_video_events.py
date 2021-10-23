@@ -181,8 +181,8 @@ class AMVideoEvents(ActionManager):
         else:
             is_in_mylist = videoid_data['queue'].get('inQueue', False)
 
-        event_data = {'resume_position':
-                          videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None,
+        resume_position = videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None
+        event_data = {'resume_position': resume_position,
                       'runtime': videoid_data['runtime'],
                       'request_id': videoid_data['requestId'],
                       'watched': videoid_data['watched'],

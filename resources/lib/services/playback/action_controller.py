@@ -97,7 +97,7 @@ class ActionController(xbmc.Monitor):
                 self._on_playback_started()
                 if self._playback_tick is None or not self._playback_tick.is_alive():
                     self._playback_tick = PlaybackTick(self.on_playback_tick)
-                    self._playback_tick.setDaemon(True)
+                    self._playback_tick.daemon = True
                     self._playback_tick.start()
             elif method == 'Player.OnSeek':
                 self._on_playback_seek(json.loads(data)['player']['time'])

@@ -69,7 +69,7 @@ class ListItemW(xbmcgui.ListItem):
         # super().addStreamInfo(cType, dictionary)
         self.__dict__['stream_info'][cType] = dictionary
 
-    def addContextMenuItems(self, items: List[Tuple[str, str]], replaceItems = False):
+    def addContextMenuItems(self, items: List[Tuple[str, str]], replaceItems=False):
         # NOTE: 'replaceItems' argument is ignored because not works
         # super().addContextMenuItems(items)
         self.__dict__['context_menus'] = items
