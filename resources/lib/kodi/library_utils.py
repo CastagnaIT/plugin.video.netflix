@@ -25,7 +25,7 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 LIBRARY_HOME = 'library'
 FOLDER_NAME_MOVIES = 'movies'
 FOLDER_NAME_SHOWS = 'shows'
-ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*]'
+ILLEGAL_CHARACTERS = '[<|>|"|?|$|!|:|#|*|/|\\\\]'
 
 
 def get_library_path():
