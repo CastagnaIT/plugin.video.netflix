@@ -1,3 +1,12 @@
+v1.18.0 (2021-10-23)
+- Add support to make search by text from Json-RPC requests (see wiki)
+- Add expert setting to disable system-based encryption (for persistent login request problem)
+- Fixed bug in Kodi 20 which led to possible crashes when playing
+- Fixed bug in search by subtitle/audio language
+- Fixed problems with scrapers due to slash-backslash
+- Update translations po, zh_tw, it, hr, hu, cz, de, fr, pt_br, ro
+- Minor changes
+
 v1.17.0 (2021-08-13)
 - Migration to HTTP2 protocol
 - Fixed login with username/password for more than 90% of cases
@@ -308,7 +317,7 @@ v1.2.0 (2020-04-22)
 - EventHandler thread now is running only when sync of watched status is enabled
 - Fixed an issue caused of disabling the Up Next setting
 - Fixed an issue which prevented a correctly add/remove operations to paginated My list
-- Fixed an issue caused mixing images with other languages of profiles 
+- Fixed an issue caused mixing images with other languages of profiles
 - Fixed an issue caused error when art data was missing
 - Fixed an issue caused generic wrong error messages of BackendNotReady with HTTP IPC
 - Fixed an issue caused ProfilesMissing with profiles without avatar
@@ -417,8 +426,8 @@ v0.16.1 (2019-12-14)
 - Improved return to main page from search dialog
 - Improved cancel login dialog after the logout
 - Improved timeout on IPC over HTTP
-- Fixed an issue that showed the wrong label while browsing movies 
-- Fixed ParentalControl/Rating GUI on custom skins 
+- Fixed an issue that showed the wrong label while browsing movies
+- Fixed ParentalControl/Rating GUI on custom skins
 - Fixed an issue that cause unicodedecode error on some android devices
 - Fixed an issue that can cause unicodedecode error in user/password
 - Added japanese language
