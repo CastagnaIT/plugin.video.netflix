@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-07-12 14:00+0000\n"
+"PO-Revision-Date: 2021-10-24 14:00+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -1067,11 +1067,11 @@ msgstr "ESN 设置成功[CR]请尝试播放视频"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr "这个ESN不能使用[CR]请尝试切换或重置ESN。[CR][CR]错误细节如下：[CR]{}"
+msgstr "这个ESN不能使用[CR]请尝试切换或重置ESN。[CR][CR]错误详情如下：[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr "错误的ESN格式"
+msgstr "ESN格式错误"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
@@ -1079,12 +1079,12 @@ msgstr "您确定要重置所有设置吗？"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "对凭证使用基于系统的加密"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]如果禁用，将导致安全漏洞[/B]。如果你的操作系统不支持它，你每次重启设备时都会被提示登录，[B]仅在[/B]这种情况下禁用它。如果你改变了这个设置，在你下次重启时，你将被提示重新登录。"
 
 # Unused 30612 to 30619
 msgctxt "#30620"
