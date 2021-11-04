@@ -1079,12 +1079,12 @@ msgstr "전부 다시 설정할까요?"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "시스템에서 제공하는 암호화 사용"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]이 기능을 끄면, 보안이 약해질 수 있습니다.[/B] OS에서 [B]지원하지 않을 경우에만[/B] 끄고, 재기동할때마다 로그인을 해야합니다. 설정을 바꾸면, 다음번에 재기동할 때 다시 로그인을 해야합니다."
 
 # Unused 30612 to 30619
 msgctxt "#30620"
