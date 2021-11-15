@@ -179,7 +179,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
     else:
         # The video is not playable, try check if there is a date
         list_item.setProperty('nf_availability_message', get_availability_message(episode))
-        url = common.build_url(['show_availability_message'], mode=G.MODE_ACTION)
+        url = common.build_url(['show_availability_message'], videoid=episodeid, mode=G.MODE_ACTION)
     return url, list_item, False
 
 
