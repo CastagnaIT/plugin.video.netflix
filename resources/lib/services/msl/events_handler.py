@@ -96,9 +96,9 @@ class EventsHandler(threading.Thread):
                             'list_id': self.loco_data['list_id'],
                             'list_index': self.loco_data['list_index']})
                     else:
-                        LOG.warn('EventsHandler: LoCo list not updated due to missing list context data')
-                    video_id = request_data['params']['sessionParams']['uiplaycontext']['video_id']
-                    common.make_http_call('update_videoid_bookmark', {'video_id': video_id})
+                        LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
+                    # video_id = request_data['params']['sessionParams']['uiplaycontext']['video_id']
+                    # common.make_http_call('update_videoid_bookmark', {'video_id': video_id})
                 self.loco_data = None
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('EVENT [{}] - The request has failed: {}', event_type, exc)
@@ -161,20 +161,29 @@ class EventsHandler(threading.Thread):
         # else:
         #     list_id = G.LOCAL_DB.get_value('last_menu_id', 'unknown')
 
+        position = player_state['elapsed_seconds']
+        if position != 1:
+            position *= 1000
+
         if msl_utils.is_media_changed(previous_player_state, player_state):
-            play_times, media_id = msl_utils.build_media_tag(player_state, manifest)
+            play_times, video_track_id, audio_track_id, sub_track_id = msl_utils.build_media_tag(player_state, manifest,
+                                                                                                 position)
         else:
             play_times = previous_data['playTimes']
             msl_utils.update_play_times_duration(play_times, player_state)
-            media_id = previous_data['mediaId']
+            video_track_id = previous_data['videoTrackId']
+            audio_track_id = previous_data['audioTrackId']
+            sub_track_id = previous_data['timedTextTrackId']
 
         params = {
             'event': event_type,
             'xid': previous_data.get('xid', G.LOCAL_DB.get_value('xid', table=TABLE_SESSION)),
-            'position': player_state['elapsed_seconds'] * 1000,  # Video time elapsed
+            'position': position,  # Video time elapsed
             'clientTime': timestamp,
             'sessionStartTime': previous_data.get('sessionStartTime', timestamp),
-            'mediaId': media_id,
+            'videoTrackId': video_track_id,
+            'audioTrackId': audio_track_id,
+            'timedTextTrackId': sub_track_id,
             'trackId': str(event_data['track_id']),
             'sessionId': str(self.session_id),
             'appId': str(self.app_id or self.session_id),
