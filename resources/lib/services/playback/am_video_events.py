@@ -75,9 +75,9 @@ class AMVideoEvents(ActionManager):
                 # We do not use _on_playback_started() to send EVENT_START, because the action managers
                 # AMStreamContinuity and AMPlayback may cause inconsistencies with the content of player_state data
 
-                # When the playback starts for the first time, for correctness should send elapsed_seconds value to 0
+                # When the playback starts for the first time, for correctness should send elapsed_seconds value to 1
                 if self.tick_elapsed < 5 and self.event_data['resume_position'] is None:
-                    player_state['elapsed_seconds'] = 0
+                    player_state['elapsed_seconds'] = 1
                 self._send_event(EVENT_START, self.event_data, player_state)
                 self.is_event_start_sent = True
                 self.tick_elapsed = 0

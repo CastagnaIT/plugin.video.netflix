@@ -230,7 +230,8 @@ class NFSessionOperations(SessionPathRequests):
         loco_data = self.path_request([['loco', [context_name], ['context', 'id', 'index']]])
         loco_root = loco_data['loco'][1]
         _loco_data = {'root_id': loco_root}
-        if context_name in loco_data['locos'][loco_root]:
+        # 22/11/2021 With some users the API path request not provide the "locos" data
+        if 'locos' in loco_data and context_name in loco_data['locos'][loco_root]:
             # NOTE: In the new profiles, there is no 'continueWatching' list and no list is returned
             _loco_data['list_context_name'] = context_name
             _loco_data['list_index'] = loco_data['locos'][loco_root][context_name][2]
@@ -245,10 +246,12 @@ class NFSessionOperations(SessionPathRequests):
         #   serverDefs/date/requestId of reactContext nor to request_id of the video event request,
         #   seem to have some kind of relationship with renoMessageId suspect with the logblob but i am not sure.
         #   I noticed also that this request can also be made with the fourth parameter empty.
+        #   The fifth parameter unknown
         params = [common.enclose_quotes(list_id),
                   list_index,
                   common.enclose_quotes(list_context_name),
-                  '']
+                  '""',
+                  '""']
         # path_suffixs = [
         #    [{'from': 0, 'to': 100}, 'itemSummary'],
         #    [['componentSummary']]
@@ -271,6 +274,7 @@ class NFSessionOperations(SessionPathRequests):
         # You can check if this function works through the official android app
         # by checking if the red status bar of watched time position appears and will be updated, or also
         # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
+        # 22/11/2021: This method seem not more used
         call_paths = [['refreshVideoCurrentPositions']]
         params = ['[' + video_id + ']', '[]']
         try:

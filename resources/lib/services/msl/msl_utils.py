@@ -95,19 +95,14 @@ def update_play_times_duration(play_times, player_state):
     play_times['video'][0]['duration'] = duration
 
 
-def build_media_tag(player_state, manifest):
+def build_media_tag(player_state, manifest, position):
     """Build the playTimes and the mediaId data by parsing manifest and the current player streams used"""
     common.fix_locale_languages(manifest['audio_tracks'])
-    duration = player_state['elapsed_seconds'] * 1000
 
     audio_downloadable_id, audio_track_id = _find_audio_data(player_state, manifest)
     video_downloadable_id, video_track_id = _find_video_data(player_state, manifest)
-    # Warning 'currentsubtitle' value in player_state on Kodi 18
-    # do not have proprieties like isdefault, isforced, isimpaired
-    # if in the future the implementation will be done it should be available only on Kodi 19
-    # then for now we leave the subtitles as disabled
-
-    text_track_id = 'T:1:1;1;NONE;0;1;'
+    text_track_id = _find_subtitle_data(manifest)
+    duration = position - 1  # 22//11/2021 The duration has the subtracted value of 1
 
     play_times = {
         'total': duration,
@@ -121,11 +116,7 @@ def build_media_tag(player_state, manifest):
         }],
         'text': []
     }
-
-    # Format example: "A:1:1;2;en;1;|V:2:1;2;;default;1;CE3;0;|T:1:1;1;NONE;0;1;"
-    media_id = '|'.join([audio_track_id, video_track_id, text_track_id])
-
-    return play_times, media_id
+    return play_times, video_track_id, audio_track_id, text_track_id
 
 
 def _find_audio_data(player_state, manifest):
@@ -160,6 +151,21 @@ def _find_video_data(player_state, manifest):
     # Not found?
     raise Exception('build_media_tag: unable to find video data with codec: {}, width: {}, height: {}'
                     .format(codec, width, height))
+
+
+def _find_subtitle_data(manifest):
+    """
+    Find the subtitle downloadable id and the subtitle track id
+    """
+    # Warning 'currentsubtitle' value in player_state on Kodi 18
+    # do not have proprieties like isdefault, isforced, isimpaired
+    # if in the future the implementation will be done it should be available only on Kodi 19
+    # then for now we leave the subtitles as disabled
+    for sub_track in manifest['timedtexttracks']:
+        if sub_track['isNoneTrack']:
+            return sub_track['new_track_id']
+    # Not found?
+    raise Exception('build_media_tag: unable to find subtitle data')
 
 
 def generate_logblobs_params():
