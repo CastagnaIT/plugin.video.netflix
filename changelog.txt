@@ -1,3 +1,8 @@
+v1.18.1 (2021-11-26)
+- Fix problems to watched status sync due to website changes
+- Fix error when trying to play an episode not yet available
+- Update translations zh_cn, jp, kr
+
 v1.18.0 (2021-10-23)
 - Add support to make search by text from Json-RPC requests (see wiki)
 - Add expert setting to disable system-based encryption (for persistent login request problem)
