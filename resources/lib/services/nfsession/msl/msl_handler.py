@@ -145,42 +145,47 @@ class MSLHandler:
 
         params = {
             'type': 'standard',
-            'viewableId': [viewable_id],
+            'manifestVersion': 'v2',
+            'viewableId': viewable_id,
             'profiles': profiles,
             'flavor': 'PRE_FETCH',
             'drmType': 'widevine',
             'drmVersion': 25,
             'usePsshBox': True,
             'isBranching': False,
-            'isNonMember': False,
-            'isUIAutoPlay': False,
             'useHttpsStreams': True,
+            'supportsUnequalizedDownloadables': True,
             'imageSubtitleHeight': 1080,
             'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
             'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
-            'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
-            'supportsUnequalizedDownloadables': True,
             'showAllSubDubTracks': False,
-            'titleSpecificData': {
-                str(viewable_id): {
-                    'unletterboxed': True
-                }
-            },
             'videoOutputInfo': [{
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
                 'supportedHdcpVersions': hdcp_version,
                 'isHdcpEngaged': hdcp_override
             }],
+            'titleSpecificData': {
+                str(viewable_id): {
+                    'unletterboxed': True
+                }
+            },
             'preferAssistiveAudio': False,
+            'isUIAutoPlay': False,
+            'isNonMember': False,
+            'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
+            'desiredSegmentVmaf': 'plus_lts',
+            'requestSegmentVmaf': False,
+            'supportsPartialHydration': False,
+            'contentPlaygraph': [],
             'profileGroups': [{
                 'name': 'default',
                 'profiles': profiles
             }],
-            'licenseType': 'standard'
+            'licenseType': 'limited'  # standard / limited
         }
         if challenge and sid:
             params['challenge'] = challenge
