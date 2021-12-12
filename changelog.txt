@@ -1,3 +1,6 @@
+v1.18.2 (2021-12-12)
+- Fix "This title is not available to watch instantly" error due to website changes
+
 v1.18.1 (2021-11-26)
 - Fix problems to watched status sync due to website changes
 - Fix error when trying to play an episode not yet available
