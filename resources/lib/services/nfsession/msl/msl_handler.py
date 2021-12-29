@@ -106,6 +106,7 @@ class MSLHandler:
 
     @measure_exec_time_decorator(is_immediate=True)
     def _get_manifest(self, viewable_id, esn, challenge, sid):
+        from pprint import pformat
         cache_identifier = f'{esn}_{viewable_id}'
         try:
             # The manifest must be requested once and maintained for its entire duration
@@ -134,20 +135,79 @@ class MSLHandler:
         if hdcp_4k_capable and hdcp_override:
             hdcp_version = ['2.2']
 
-        LOG.info('Requesting licensed manifest for {} with ESN {} and HDCP {}',
+        manifest_ver = G.ADDON.getSettingString('msl_manifest_version')
+        profiles = enabled_profiles()
+
+        LOG.info('Requesting manifest (version {}) for\nVIDEO ID: {}\nESN: {}\nHDCP: {}\nPROFILES:\n{}',
+                 manifest_ver,
                  viewable_id,
                  common.censure(esn) if len(esn) > 50 else esn,
-                 hdcp_version)
+                 hdcp_version,
+                 pformat(profiles, indent=2))
+        if manifest_ver == 'v1':
+            endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
+                                                                 hdcp_override=hdcp_override, profiles=profiles,
+                                                                 challenge=challenge)
+        else:  # Default - most recent version
+            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id, hdcp_version=hdcp_version,
+                                                                 hdcp_override=hdcp_override, profiles=profiles,
+                                                                 challenge=challenge, sid=sid)
+        manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn, disable_msl_switch=False)
+        if LOG.is_enabled:
+            # Save the manifest to disk as reference
+            common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
+        # Save the manifest to the cache to retrieve it during its validity
+        expiration = int(manifest['expiration'] / 1000)
+        G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
+        return manifest
 
-        profiles = enabled_profiles()
-        from pprint import pformat
-        LOG.info('Requested profiles:\n{}', pformat(profiles, indent=2))
+    def _build_manifest_v1(self, **kwargs):
+        params = {
+            'type': 'standard',
+            'viewableId': [kwargs['viewable_id']],
+            'profiles': kwargs['profiles'],
+            'flavor': 'PRE_FETCH',
+            'drmType': 'widevine',
+            'drmVersion': 25,
+            'usePsshBox': True,
+            'isBranching': False,
+            'isNonMember': False,
+            'isUIAutoPlay': False,
+            'useHttpsStreams': True,
+            'imageSubtitleHeight': 1080,
+            'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
+            'uiPlatform': 'SHAKTI',
+            'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+            'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
+            'supportsPreReleasePin': True,
+            'supportsWatermark': True,
+            'supportsUnequalizedDownloadables': True,
+            'showAllSubDubTracks': False,
+            'titleSpecificData': {
+                str(kwargs['viewable_id']): {
+                    'unletterboxed': True
+                }
+            },
+            'videoOutputInfo': [{
+                'type': 'DigitalVideoOutputDescriptor',
+                'outputType': 'unknown',
+                'supportedHdcpVersions': kwargs['hdcp_version'],
+                'isHdcpEngaged': kwargs['hdcp_override']
+            }],
+            'preferAssistiveAudio': False
+        }
+        if kwargs['challenge']:
+            params['challenge'] = kwargs['challenge']
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
+        request_data = self.msl_requests.build_request_data('/manifest', params)
+        return endpoint_url, request_data
 
+    def _build_manifest_v2(self, **kwargs):
         params = {
             'type': 'standard',
             'manifestVersion': 'v2',
-            'viewableId': viewable_id,
-            'profiles': profiles,
+            'viewableId': kwargs['viewable_id'],
+            'profiles': kwargs['profiles'],
             'flavor': 'PRE_FETCH',
             'drmType': 'widevine',
             'drmVersion': 25,
@@ -165,11 +225,11 @@ class MSLHandler:
             'videoOutputInfo': [{
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
-                'supportedHdcpVersions': hdcp_version,
-                'isHdcpEngaged': hdcp_override
+                'supportedHdcpVersions': kwargs['hdcp_version'],
+                'isHdcpEngaged': kwargs['hdcp_override']
             }],
             'titleSpecificData': {
-                str(viewable_id): {
+                str(kwargs['viewable_id']): {
                     'unletterboxed': True
                 }
             },
@@ -183,32 +243,22 @@ class MSLHandler:
             'contentPlaygraph': [],
             'profileGroups': [{
                 'name': 'default',
-                'profiles': profiles
+                'profiles': kwargs['profiles']
             }],
             'licenseType': 'limited'  # standard / limited
         }
-        if challenge and sid:
-            params['challenge'] = challenge
+        if kwargs['challenge'] and kwargs['sid']:
+            params['challenge'] = kwargs['challenge']
             params['challenges'] = {
                 'default': [{
-                    'drmSessionId': sid,
+                    'drmSessionId': kwargs['sid'],
                     'clientTime': int(time.time()),
-                    'challengeBase64': challenge
+                    'challengeBase64': kwargs['challenge']
                 }]
             }
-
         endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'licensedManifest')
-        manifest = self.msl_requests.chunked_request(endpoint_url,
-                                                     self.msl_requests.build_request_data('licensedManifest', params),
-                                                     esn,
-                                                     disable_msl_switch=False)
-        if LOG.is_enabled:
-            # Save the manifest to disk as reference
-            common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
-        # Save the manifest to the cache to retrieve it during its validity
-        expiration = int(manifest['expiration'] / 1000)
-        G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
-        return manifest
+        request_data = self.msl_requests.build_request_data('licensedManifest', params)
+        return endpoint_url, request_data
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)

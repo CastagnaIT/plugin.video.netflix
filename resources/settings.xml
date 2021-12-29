@@ -989,6 +989,18 @@
                     </constraints>
                     <control type="spinner" format="string"/>
                 </setting>
+                <setting id="msl_manifest_version" type="string" label="30612" help="">
+                    <level>0</level>
+                    <default>default</default>
+                    <constraints>
+                        <options>
+                            <option label="Default">default</option>
+                            <option label="Version 1">v1</option>
+                        </options>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
                 <setting id="cdn_server" type="string" label="30241" help="">
                     <level>0</level>
                     <default>Server 1</default>
