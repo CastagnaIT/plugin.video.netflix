@@ -109,7 +109,7 @@ class SettingsMonitor(xbmc.Monitor):
             G.LOCAL_DB.set_value('page_results', page_results, TABLE_SETTINGS_MONITOR)
             clean_buckets += [CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH]
 
-        _check_msl_profiles(clean_buckets)
+        _check_manifest_settings_status(clean_buckets)
         _check_watched_status_sync()
 
         # Clean cache buckets if needed (to get new results and so on...)
@@ -124,19 +124,20 @@ class SettingsMonitor(xbmc.Monitor):
             common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
 
 
-def _check_msl_profiles(clean_buckets):
-    """Check for changes on content profiles settings"""
-    # This is necessary because it is possible that some manifests
-    # could be cached using the previous settings (see load_manifest on msl_handler.py)
-    menu_keys = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
-                 'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
-                 'disable_webvtt_subtitle']
-    collect_int = ''
-    for menu_key in menu_keys:
-        collect_int += str(int(G.ADDON.getSettingBool(menu_key)))
-    collect_int_old = G.LOCAL_DB.get_value('content_profiles_int', '', TABLE_SETTINGS_MONITOR)
-    if collect_int != collect_int_old:
-        G.LOCAL_DB.set_value('content_profiles_int', collect_int, TABLE_SETTINGS_MONITOR)
+def _check_manifest_settings_status(clean_buckets):
+    """Check settings that require to clean Manifest cache bucket"""
+    # When one of these settings changes they will affect the Manifest request,
+    # therefore cached manifests must be deleted (see load_manifest on msl_handler.py)
+    menu_keys_bool = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
+                      'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
+                      'disable_webvtt_subtitle']
+    collected_data = ''
+    for menu_key in menu_keys_bool:
+        collected_data += str(int(G.ADDON.getSettingBool(menu_key)))
+    collected_data += G.ADDON.getSettingString('msl_manifest_version')
+    collected_data_old = G.LOCAL_DB.get_value('manifest_settings_status', '', TABLE_SETTINGS_MONITOR)
+    if collected_data != collected_data_old:
+        G.LOCAL_DB.set_value('manifest_settings_status', collected_data, TABLE_SETTINGS_MONITOR)
         clean_buckets.append(CACHE_MANIFESTS)
 
 

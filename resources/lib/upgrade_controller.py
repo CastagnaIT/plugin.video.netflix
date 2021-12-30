@@ -120,6 +120,9 @@ def _perform_service_changes(previous_ver, current_ver):
         # we have done a new setting (ProgressManager_enabled >> to >> sync_watched_status)
         with G.SETTINGS_MONITOR.ignore_events(1):
             G.ADDON.setSettingBool('sync_watched_status', G.ADDON.getSettingBool('ProgressManager_enabled'))
+    if CmpVersion(previous_ver) < '1.18.3':
+        # In the version 1.18.3 content_profiles_int has been replaced by manifest_settings_status
+        G.LOCAL_DB.delete_key('content_profiles_int')
 
 
 def _perform_local_db_changes(current_version, upgrade_to_version):
