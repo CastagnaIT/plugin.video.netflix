@@ -1,3 +1,7 @@
+v1.18.3 (2021-12-30)
+- Add 1080P workaround for linux ARM devices
+To enable it: On Expert settings, set "MSL manifest version" to "Version 1"
+
 v1.18.2 (2021-12-12)
 - Fix "This title is not available to watch instantly" error due to website changes
 
