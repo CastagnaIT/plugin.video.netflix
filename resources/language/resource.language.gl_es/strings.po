@@ -1081,12 +1081,12 @@ msgstr "Queres reiniciar todos os parámetros?"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "Empregar a encriptación do sistema para as credenciais"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]Se se deshabilita provocará unha grecha de seguranza[/B]. Se o teu sistema operativo non o soporta, che saltará o control de acceso cada vez que reinicies o dispositivo, deshabilítao [B]tan só[/B] neste caso. Se mudas este parámetro che saltará o control de acceso de novo a vindeira vez que reincies."
 
 # Unused 30612 to 30619
 msgctxt "#30620"
