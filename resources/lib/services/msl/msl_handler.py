@@ -182,7 +182,7 @@ class MSLHandler(object):
 
         params = {
             'type': 'standard',
-            'viewableId': [viewable_id],
+            'viewableId': viewable_id,
             'profiles': profiles,
             'flavor': 'PRE_FETCH',
             'drmType': 'widevine',
