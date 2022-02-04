@@ -164,7 +164,7 @@ class MSLHandler:
     def _build_manifest_v1(self, **kwargs):
         params = {
             'type': 'standard',
-            'viewableId': [kwargs['viewable_id']],
+            'viewableId': kwargs['viewable_id'],
             'profiles': kwargs['profiles'],
             'flavor': 'PRE_FETCH',
             'drmType': 'widevine',
