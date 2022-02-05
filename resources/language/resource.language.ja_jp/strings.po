@@ -1088,7 +1088,7 @@ msgstr "[B]無効にするとセキュリティ漏洩の可能性があります
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSLマニファストバージョン"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
