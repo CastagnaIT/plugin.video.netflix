@@ -1088,7 +1088,7 @@ msgstr "[B]Se disabilitata causerà una falla di sicurezza[/B]. Se il tuo sistem
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Versione MSL-manifest"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
