@@ -1088,7 +1088,7 @@ msgstr "[B]이 기능을 끄면, 보안이 약해질 수 있습니다.[/B] OS에
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL버전"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
