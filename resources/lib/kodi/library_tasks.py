@@ -153,22 +153,29 @@ class LibraryTasks(LibraryJobs):
             tasks = [self._create_export_episode_job(videoid, *metadata, nfo_settings=nfo_settings)]
 
         if nfo_settings and nfo_settings.export_full_tvshow:
-            # Create tvshow.nfo file
-            # In episode metadata, the show data is at 3rd position,
-            # In show metadata, the show data is at 1st position.
-            # Best is to enumerate values to find the correct key position
-            key_index = -1
-            for i, item in enumerate(metadata):
-                if item and item.get('type', None) == 'show':
-                    key_index = i
-            if key_index > -1:
-                tasks.append(self._build_export_job_data(False, True,
-                                                         videoid=videoid, title='tvshow.nfo',
-                                                         root_folder_name=FOLDER_NAME_SHOWS,
-                                                         folder_name=metadata[key_index]['title'],
-                                                         filename='tvshow',
-                                                         nfo_data=nfo.create_show_nfo(metadata[key_index])))
+            job = self._create_export_tvshow_nfo_job(videoid, metadata)
+            if job:
+                tasks.append(job)
         return tasks
+
+    def _create_export_tvshow_nfo_job(self, videoid, metadata):
+        # Create tvshow.nfo file
+        # 'get_metadata' return metadata as tuple that can have more items according to type requested, e.g.
+        # for episode metadata: (episode_meta, season_meta, tvshow_meta)
+        # for tvshow/season metadata: (tvshow_meta,)
+        # We need to get the tvshow metadata for each case, then we try to find it on each tuple item
+        key_index = -1
+        for i, item in enumerate(metadata):
+            if item and item.get('type', None) == 'show':
+                key_index = i
+        if key_index == -1:
+            return None
+        return self._build_export_job_data(False, True,
+                                           videoid=videoid, title='tvshow.nfo',
+                                           root_folder_name=FOLDER_NAME_SHOWS,
+                                           folder_name=metadata[key_index]['title'],
+                                           filename='tvshow',
+                                           nfo_data=nfo.create_show_nfo(metadata[key_index]))
 
     def _get_export_tvshow_jobs(self, videoid, show, nfo_settings):
         """Get jobs data to export a tv show (join all jobs data of the seasons)"""
@@ -219,6 +226,10 @@ class LibraryTasks(LibraryJobs):
                     nfo_settings = nfo.NFOSettings(nfo_export)
                 # Check and add missing seasons and episodes
                 self._add_missing_items(tasks, season, videoid, metadata, nfo_settings)
+            if nfo_settings and nfo_settings.export_full_tvshow:
+                job = self._create_export_tvshow_nfo_job(videoid, metadata)
+                if job:
+                    tasks.append(job)
         return tasks
 
     def _add_missing_items(self, tasks, season, videoid, metadata, nfo_settings):
