@@ -1086,7 +1086,11 @@ msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
 msgstr "[B]Se disabilitata causerà una falla di sicurezza[/B]. Se il tuo sistema non supporta questa protezione, l'add-on chiederà il login ad ogni riavvio del dispositivo, [B]solo[/B] in questo caso disabilita la protezione. Se questa impostazione viene modificata al riavvio dovrai fare nuovamente il login."
 
-# Unused 30612 to 30619
+msgctxt "#30612"
+msgid "MSL manifest version"
+msgstr ""
+
+# Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
 msgstr "Questo titolo sarà disponibile dal: {}"

@@ -1086,7 +1086,11 @@ msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
 msgstr "[B]Ha letiltja, biztonsági rést okoz[/B]. Ha az operációs rendszer nem támogatja, akkor minden alkalommal, amikor újraindítja az eszközt, a rendszer felszólítja, hogy jelentkezzen be, [B]csak[/B] ebben az esetben . Ha módosítja ezt a beállítást, a rendszer a következő újraindításkor újra bejelentkezést fog kérni."
 
-# Unused 30612 to 30619
+msgctxt "#30612"
+msgid "MSL manifest version"
+msgstr ""
+
+# Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
 msgstr "Ez a cím elérhető lesz ettől az időponttól: {}"
