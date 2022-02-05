@@ -135,6 +135,7 @@
     <setting id="enable_timing" type="bool" label="30134" default="false" visible="eq(-1,2)" subsetting="true"/>
     <setting id="show_codec_info" type="bool" label="30073" default="false" visible="eq(-2,2)" subsetting="true"/>
     <setting id="stream_max_resolution" type="labelenum" label="30194" values="--|SD 480p|SD 576p|HD 720p|Full HD 1080p|UHD 4K" default="--" />
+    <setting id="msl_manifest_version" type="labelenum" label="30502" values="Default|Version 1" default="Default" />
     <setting id="cdn_server" type="labelenum" label="30241" values="Server 1|Server 2|Server 3" default="Server 1" />
     <setting id="enable_ipc_over_http" type="bool" label="30139" default="false"/>
     <setting id="ssl_verification" type="bool" label="30024" default="true" visible="false"/> <!-- just for developers -->

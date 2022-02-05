@@ -143,6 +143,7 @@ class MSLHandler(object):
 
     @measure_exec_time_decorator(is_immediate=True)
     def _load_manifest(self, viewable_id, esn):
+        from pprint import pformat
         cache_identifier = esn + '_' + unicode(viewable_id)
         try:
             # The manifest must be requested once and maintained for its entire duration
@@ -176,14 +177,49 @@ class MSLHandler(object):
                  common.censure(esn) if G.ADDON.getSetting('esn') else esn,
                  hdcp_version)
 
+        manifest_ver = G.ADDON.getSettingString('msl_manifest_version')
         profiles = enabled_profiles()
-        from pprint import pformat
-        LOG.info('Requested profiles:\n{}', pformat(profiles, indent=2))
 
+        LOG.info('Requesting manifest (version {}) for\nVIDEO ID: {}\nESN: {}\nHDCP: {}\nPROFILES:\n{}',
+                 manifest_ver,
+                 viewable_id,
+                 common.censure(esn) if len(esn) > 50 else esn,
+                 hdcp_version,
+                 pformat(profiles, indent=2))
+
+        challenge = ''
+        if 'linux' in common.get_system_platform() and 'arm' in common.get_machine():
+            # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
+            #   is mandatory to add the widevine challenge data (key request) to the manifest request.
+            # Is not possible get the key request from the default_crypto, is needed to implement
+            #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
+            #   under android OS.
+            # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
+            #   then when ISA perform the license callback we replace it with the fresh license challenge data.
+            challenge = self.manifest_challenge
+
+        if manifest_ver == 'Version 1':
+            endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
+                                                                 hdcp_override=hdcp_override, profiles=profiles,
+                                                                 challenge=challenge)
+        else:  # Default - most recent version
+            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id, hdcp_version=hdcp_version,
+                                                                 hdcp_override=hdcp_override, profiles=profiles,
+                                                                 challenge=challenge)
+        manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn, disable_msl_switch=False)
+        if LOG.level == LOG.LEVEL_VERBOSE:
+            # Save the manifest to disk as reference
+            common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
+        # Save the manifest to the cache to retrieve it during its validity
+        expiration = int(manifest['expiration'] / 1000)
+        G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
+        return manifest
+
+    def _build_manifest_v1(self, **kwargs):
         params = {
             'type': 'standard',
-            'viewableId': [viewable_id],
-            'profiles': profiles,
+            'viewableId': [kwargs['viewable_id']],
+            'profiles': kwargs['profiles'],
             'flavor': 'PRE_FETCH',
             'drmType': 'widevine',
             'drmVersion': 25,
@@ -202,41 +238,82 @@ class MSLHandler(object):
             'supportsUnequalizedDownloadables': True,
             'showAllSubDubTracks': False,
             'titleSpecificData': {
-                unicode(viewable_id): {
+                str(kwargs['viewable_id']): {
                     'unletterboxed': True
                 }
             },
             'videoOutputInfo': [{
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
-                'supportedHdcpVersions': hdcp_version,
-                'isHdcpEngaged': hdcp_override
+                'supportedHdcpVersions': kwargs['hdcp_version'],
+                'isHdcpEngaged': kwargs['hdcp_override']
             }],
             'preferAssistiveAudio': False
         }
-
-        if 'linux' in common.get_system_platform() and 'arm' in common.get_machine():
-            # 24/06/2020 To get until to 1080P resolutions under arm devices (ChromeOS), android excluded,
-            #   is mandatory to add the widevine challenge data (key request) to the manifest request.
-            # Is not possible get the key request from the default_crypto, is needed to implement
-            #   the wv crypto (used for android) but currently InputStreamAdaptive support this interface only
-            #   under android OS.
-            # As workaround: Initially we pass an hardcoded challenge data needed to play the first video,
-            #   then when ISA perform the license callback we replace it with the fresh license challenge data.
-            params['challenge'] = self.manifest_challenge
-
+        if kwargs['challenge']:
+            params['challenge'] = kwargs['challenge']
         endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
-        manifest = self.msl_requests.chunked_request(endpoint_url,
-                                                     self.msl_requests.build_request_data('/manifest', params),
-                                                     esn,
-                                                     disable_msl_switch=False)
-        if LOG.level == LOG.LEVEL_VERBOSE:
-            # Save the manifest to disk as reference
-            common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
-        # Save the manifest to the cache to retrieve it during its validity
-        expiration = int(manifest['expiration'] / 1000)
-        G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
-        return manifest
+        request_data = self.msl_requests.build_request_data('/manifest', params)
+        return endpoint_url, request_data
+
+    def _build_manifest_v2(self, **kwargs):
+        params = {
+            'type': 'standard',
+            'manifestVersion': 'v2',
+            'viewableId': kwargs['viewable_id'],
+            'profiles': kwargs['profiles'],
+            'flavor': 'PRE_FETCH',
+            'drmType': 'widevine',
+            'drmVersion': 25,
+            'usePsshBox': True,
+            'isBranching': False,
+            'useHttpsStreams': True,
+            'supportsUnequalizedDownloadables': True,
+            'imageSubtitleHeight': 1080,
+            'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
+            'uiPlatform': 'SHAKTI',
+            'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+            'supportsPreReleasePin': True,
+            'supportsWatermark': True,
+            'showAllSubDubTracks': False,
+            'videoOutputInfo': [{
+                'type': 'DigitalVideoOutputDescriptor',
+                'outputType': 'unknown',
+                'supportedHdcpVersions': kwargs['hdcp_version'],
+                'isHdcpEngaged': kwargs['hdcp_override']
+            }],
+            'titleSpecificData': {
+                str(kwargs['viewable_id']): {
+                    'unletterboxed': True
+                }
+            },
+            'preferAssistiveAudio': False,
+            'isUIAutoPlay': False,
+            'isNonMember': False,
+            'desiredVmaf': 'plus_lts',  # phone_plus_exp can be used to mobile, not tested
+            'desiredSegmentVmaf': 'plus_lts',
+            'requestSegmentVmaf': False,
+            'supportsPartialHydration': False,
+            'contentPlaygraph': [],
+            'profileGroups': [{
+                'name': 'default',
+                'profiles': kwargs['profiles']
+            }],
+            'licenseType': 'limited'  # standard / limited
+        }
+        if kwargs['challenge']:
+            params['challenge'] = kwargs['challenge']
+            # We cannot get the right Widevine session id / challenge data (required Kodi 19 or above)
+            # params['challenges'] = {
+            #     'default': [{
+            #         'drmSessionId': kwargs['sid'],
+            #         'clientTime': int(time.time()),
+            #         'challengeBase64': kwargs['challenge']
+            #     }]
+            # }
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'licensedManifest')
+        request_data = self.msl_requests.build_request_data('licensedManifest', params)
+        return endpoint_url, request_data
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)

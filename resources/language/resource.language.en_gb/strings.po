@@ -1087,3 +1087,7 @@ msgstr ""
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
 msgstr ""
+
+msgctxt "#30502"
+msgid "MSL manifest version"
+msgstr ""
