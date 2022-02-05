@@ -1088,7 +1088,7 @@ msgstr "[B]Se desativado, causará um problema de segurança[/B]. Se o seu siste
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL versão do manifesto"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
