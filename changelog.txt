@@ -1,3 +1,8 @@
+v1.18.4 (2022-02-05)
+- Fix error "This title is not available to watch instantly" when using MSL manifest v1
+- Fixed tvshow.nfo not exported on library auto-update
+- Update translations gl_es, jp, kr, de
+
 v1.18.3 (2021-12-30)
 - Add 1080P workaround for linux ARM devices
 To enable it: On Expert settings, set "MSL manifest version" to "Version 1"
