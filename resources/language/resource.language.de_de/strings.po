@@ -1088,7 +1088,7 @@ msgstr "[B]Deaktivieren ist ein Sicherheitsrisiko![/B] Falls Ihr Betriebssystem 
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL-Manifest-Version"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
