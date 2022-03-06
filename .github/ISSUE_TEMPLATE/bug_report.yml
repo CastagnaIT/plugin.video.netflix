@@ -1,0 +1,96 @@
+name: Bug Report
+description: To report errors or wrong behaviour
+labels: ["Bug", "Triage: Needed"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing an issue, this help us to determine what is causing your issue, please take your time to read and fill out everything with as much detail as you can.
+        We would like to remind you that if your problem not concern bugs, instead open an bug report please use channels like Kodi forum, Github Discussions tab or Github Wiki pages."
+
+  - type: input
+    id: addon-version
+    validations:
+      required: true
+    attributes:
+      label: Netflix add-on version
+      description: Specify the add-on version where you have encountered the problem
+
+  - type: dropdown
+    id: operative-systems
+    validations:
+      required: true
+    attributes:
+      label: Operative systems used
+      multiple: true
+      description: Select the operative systems where you have encountered the problem
+      options:
+        - Android
+        - Linux (Ubuntu / Mint / ...)
+        - Raspbian
+        - CoreELEC
+        - LibreELEC
+        - OSMC
+        - Mac OSX
+        - Windows
+        - Other (specify in description)
+
+  - type: dropdown
+    id: kodi-versions
+    validations:
+      required: true
+    attributes:
+      label: Kodi version used
+      options:
+        - Kodi 18 (Leia)
+        - Kodi 19 (Matrix)
+        - Kodi 20 (Nexus)
+        - Other (specify in description)
+
+  - type: textarea
+    id: description
+    validations:
+      required: true
+    attributes:
+      label: Description of the bug
+      description: Give a clear detailed description of the problem
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce the behavior
+      placeholder: |
+        Example:
+        1. Navigate to menu X
+        2. Select context menu Y
+        3. Play Z
+
+  - type: input
+    id: log-file
+    validations:
+      required: true
+    attributes:
+      label: Debug log - mandatory
+      description: |
+        Refer to the Github Readme instructions on how to get the log,
+        then save it to http://paste.kodi.tv/ and paste the link here.
+        If the log size is too large drag-n-drop the file on description field.
+
+  - type: textarea
+    id: possible-fix
+    attributes:
+      label: Possible fix
+      description: If you know a possible fix to the problem describe it
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything else related that might be useful (related issues, suggestions, links, ...)
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Add some screenshots if that helps understanding your problem
