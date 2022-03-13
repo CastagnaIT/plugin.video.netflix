@@ -33,6 +33,8 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 #### Quick download links
 
 Install add-on via repository - provide automatic installation of updates:
+
+***NOTICE Kodi 18 (Leia) is EOL and the add-on version for Kodi 18 is deprecated (#975), we highly recommend upgrading to Kodi 19!***
 * [CastagnaIT Repository for KODI 18.x LEIA - repository.castagnait-1.0.1.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.1.zip)
 * [CastagnaIT Repository for KODI 19.x MATRIX - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/matrix/repository.castagnait-1.0.0.zip)
 
