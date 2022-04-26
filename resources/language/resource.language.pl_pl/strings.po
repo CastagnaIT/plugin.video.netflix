@@ -295,7 +295,7 @@ msgstr "Zobacz wyeksportowane"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "Pytaj o pominiecie czołówki i podsumowania"
+msgstr "Pytaj o pominięcie czołówki i podsumowania"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -1079,16 +1079,16 @@ msgstr "Czy chcesz zresetować wszystkie ustawienia?"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "Używaj szyfrowania opartego na systemie dla poświadczeń"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]W przypadku wyłączenia spowoduje to wyciek zabezpieczeń[/B]. Jeśli Twój system operacyjny tego nie obsługuje, będziesz proszony o zalogowanie się za każdym razem, gdy ponownie uruchomisz urządzenie, [B]tylko[/B] w tym przypadku wyłącz je. Jeśli zmienisz to ustawienie, zostaniesz poproszony o ponowne zalogowanie się przy następnym uruchomieniu."
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Wersja manifestu MSL"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
