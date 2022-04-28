@@ -186,10 +186,10 @@ class NFSessionOperations(SessionPathRequests):
                 LOG.debug('find_episode_metadata raised an error: {}, refreshing cache', exc)
                 try:
                     metadata_data = self._episode_metadata(videoid, parent_videoid, refresh_cache=True)
-                except KeyError as exc:
+                except KeyError as exc_:
                     # The new metadata does not contain the episode
-                    LOG.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc)
-                    raise MetadataNotAvailable from exc
+                    LOG.error('Episode metadata not found, find_episode_metadata raised an error: {}', exc_)
+                    raise MetadataNotAvailable from exc_
         else:
             metadata_data = self._metadata(video_id=parent_videoid), None
         return metadata_data
