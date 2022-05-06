@@ -128,9 +128,10 @@ def get_inputstream_listitem(videoid):
         key='inputstream',
         value='inputstream.adaptive')
     # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
-    list_item.setProperty(
-        key='inputstream.adaptive.pre_init_data',
-        value=PSSH_KID)
+    if common.get_system_platform() != 'android':
+        list_item.setProperty(
+            key='inputstream.adaptive.pre_init_data',
+            value=PSSH_KID)
     return list_item
 
 

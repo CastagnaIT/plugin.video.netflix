@@ -38,6 +38,8 @@ class MSLHandler:
     licenses_session_id = []
     licenses_xid = []
     licenses_release_url = []
+    licenses_response = None
+    needs_license_request = True
 
     def __init__(self, nfsession: 'NFSessionOperations'):
         self.nfsession = nfsession
@@ -106,6 +108,9 @@ class MSLHandler:
 
     @measure_exec_time_decorator(is_immediate=True)
     def _get_manifest(self, viewable_id, esn, challenge, sid):
+        if common.get_system_platform() != 'android' and (not challenge or not sid):
+            LOG.error('DRM session data not valid (Session ID: {}, Challenge: {})', challenge, sid)
+
         from pprint import pformat
         cache_identifier = f'{esn}_{viewable_id}'
         try:
@@ -144,15 +149,34 @@ class MSLHandler:
                  common.censure(esn) if len(esn) > 50 else esn,
                  hdcp_version,
                  pformat(profiles, indent=2))
+        xid = None
+        # On non-Android systems, we pre-initialize the DRM with default PSSH/KID, this allows to obtain Challenge/SID
+        # to achieve 1080p resolution.
+        # On Android, pre-initialize DRM is possible but cannot keep the same DRM session, will result in an error
+        # because the manifest license data do not match the current DRM session, then we do not use it and
+        # we still make the license requests.
         if manifest_ver == 'v1':
             endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
                                                                  hdcp_override=hdcp_override, profiles=profiles,
                                                                  challenge=challenge)
         else:  # Default - most recent version
-            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id, hdcp_version=hdcp_version,
-                                                                 hdcp_override=hdcp_override, profiles=profiles,
-                                                                 challenge=challenge, sid=sid)
+            endpoint_url, request_data, xid = self._build_manifest_v2(viewable_id=viewable_id,
+                                                                      hdcp_version=hdcp_version,
+                                                                      hdcp_override=hdcp_override,
+                                                                      profiles=profiles,
+                                                                      challenge=challenge, sid=sid)
         manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn, disable_msl_switch=False)
+        if manifest_ver == 'default' and 'license' in manifest['video_tracks'][0]:
+            self.needs_license_request = False
+            # This xid must be used also for each future Event request, until playback stops
+            G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
+            self.licenses_xid.insert(0, xid)
+            self.licenses_session_id.insert(0, manifest['video_tracks'][0]['license']['drmSessionId'])
+            self.licenses_release_url.insert(0,
+                                             manifest['video_tracks'][0]['license']['links']['releaseLicense']['href'])
+            self.licenses_response = manifest['video_tracks'][0]['license']['licenseResponseBase64']
+        else:
+            self.needs_license_request = True
         if LOG.is_enabled:
             # Save the manifest to disk as reference
             common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
@@ -198,17 +222,18 @@ class MSLHandler:
         }
         if kwargs['challenge']:
             params['challenge'] = kwargs['challenge']
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'prefetch/manifest')
+        endpoint_url = ENDPOINTS['manifest_v1'] + create_req_params('prefetch/manifest')
         request_data = self.msl_requests.build_request_data('/manifest', params)
         return endpoint_url, request_data
 
     def _build_manifest_v2(self, **kwargs):
+        xid = int(time.time() * 10000)
         params = {
             'type': 'standard',
             'manifestVersion': 'v2',
             'viewableId': kwargs['viewable_id'],
             'profiles': kwargs['profiles'],
-            'flavor': 'PRE_FETCH',
+            'flavor': 'PRE_FETCH',  # PRE_FETCH / STANDARD
             'drmType': 'widevine',
             'drmVersion': 25,
             'usePsshBox': True,
@@ -245,20 +270,19 @@ class MSLHandler:
                 'name': 'default',
                 'profiles': kwargs['profiles']
             }],
-            'licenseType': 'limited'  # standard / limited
-        }
-        if kwargs['challenge'] and kwargs['sid']:
-            params['challenge'] = kwargs['challenge']
-            params['challenges'] = {
+            'challenges': {
                 'default': [{
-                    'drmSessionId': kwargs['sid'],
+                    'drmSessionId': kwargs['sid'] or 'session',
                     'clientTime': int(time.time()),
-                    'challengeBase64': kwargs['challenge']
-                }]
-            }
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params(0, 'licensedManifest')
+                    'challengeBase64': kwargs['challenge'],
+                    'xid': xid
+                }]},
+            'licenseType': 'standard'  # standard / limited
+        }
+
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
         request_data = self.msl_requests.build_request_data('licensedManifest', params)
-        return endpoint_url, request_data
+        return endpoint_url, request_data, xid
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
@@ -269,42 +293,47 @@ class MSLHandler:
         :param license_data: The license data provided by isa
         :return: Base64 representation of the license key or False unsuccessful
         """
-        LOG.debug('Requesting license')
-        challenge, sid = license_data.decode('utf-8').split('!')
-        sid = base64.standard_b64decode(sid).decode('utf-8')
-        timestamp = int(time.time() * 10000)
-        xid = str(timestamp + 1610)
-        params = [{
-            'drmSessionId': sid,
-            'clientTime': int(timestamp / 10000),
-            'challengeBase64': challenge,
-            'xid': xid
-        }]
-        endpoint_url = ENDPOINTS['license'] + create_req_params(0, 'prefetch/license')
-        try:
-            response = self.msl_requests.chunked_request(endpoint_url,
-                                                         self.msl_requests.build_request_data(self.last_license_url,
-                                                                                              params,
-                                                                                              'drmSessionId'),
-                                                         get_esn())
-        except MSLError as exc:
-            if exc.err_number == '1044' and common.get_system_platform() == 'android':
-                msg = ('This title is not available to watch instantly. Please try another title.\r\n'
-                       'To try to solve this problem you can force "Widevine L3" from the add-on Expert settings.\r\n'
-                       'More info in the Wiki FAQ on add-on GitHub.')
-                raise MSLError(msg) from exc
-            raise
-        # This xid must be used also for each future Event request, until playback stops
-        G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
+        if self.needs_license_request:
+            LOG.debug('Requesting license')
+            challenge, sid = license_data.decode('utf-8').split('!')
+            sid = base64.standard_b64decode(sid).decode('utf-8')
+            timestamp = int(time.time() * 10000)
+            xid = str(timestamp + 1610)
+            params = [{
+                'drmSessionId': sid,
+                'clientTime': int(timestamp / 10000),
+                'challengeBase64': challenge,
+                'xid': xid
+            }]
+            endpoint_url = ENDPOINTS['license'] + create_req_params('prefetch/license')
+            try:
+                response = self.msl_requests.chunked_request(endpoint_url,
+                                                             self.msl_requests.build_request_data(self.last_license_url,
+                                                                                                  params,
+                                                                                                  'drmSessionId'),
+                                                             get_esn())
+            except MSLError as exc:
+                if exc.err_number == '1044' and common.get_system_platform() == 'android':
+                    msg = ('This title is not available to watch instantly. Please try another title.\r\n'
+                           'To try to solve this problem you can force "Widevine L3" from the add-on Expert settings.\r\n'
+                           'More info in the Wiki FAQ on add-on GitHub.')
+                    raise MSLError(msg) from exc
+                raise
+            # This xid must be used also for each future Event request, until playback stops
+            G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 
-        self.licenses_xid.insert(0, xid)
-        self.licenses_session_id.insert(0, sid)
-        self.licenses_release_url.insert(0, response[0]['links']['releaseLicense']['href'])
-
+            self.licenses_xid.insert(0, xid)
+            self.licenses_session_id.insert(0, sid)
+            self.licenses_release_url.insert(0, response[0]['links']['releaseLicense']['href'])
+            response_data = base64.standard_b64decode(response[0]['licenseResponseBase64'])
+        else:
+            LOG.debug('Get manifest license')
+            response_data = base64.standard_b64decode(self.licenses_response)
         if self.msl_requests.msl_switch_requested:
             self.msl_requests.msl_switch_requested = False
-            self.bind_events()
-        return base64.standard_b64decode(response[0]['licenseResponseBase64'])
+            # With the new manifest endpoint bind_events currently give error
+            # self.bind_events()
+        return response_data
 
     def bind_events(self):
         """Bind events"""
@@ -312,7 +341,7 @@ class MSLHandler:
         # playback, and only the first time after a switch,
         # in the response you can also understand if the msl switch has worked
         LOG.debug('Requesting bind events')
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params(20, 'bind')
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params('bind')
         response = self.msl_requests.chunked_request(endpoint_url,
                                                      self.msl_requests.build_request_data('/bind', {}),
                                                      get_esn(),
@@ -329,18 +358,16 @@ class MSLHandler:
             url = self.licenses_release_url.pop()
             sid = self.licenses_session_id.pop()
             xid = self.licenses_xid.pop()
-
             LOG.debug('Requesting releasing license')
             params = [{
                 'url': url,
                 'params': {
                     'drmSessionId': sid,
-                    'xid': xid
+                    'xid': str(xid)
                 },
                 'echo': 'drmSessionId'
             }]
-
-            endpoint_url = ENDPOINTS['license'] + create_req_params(10, 'release/license')
+            endpoint_url = ENDPOINTS['license'] + create_req_params('release/license')
             response = self.msl_requests.chunked_request(endpoint_url,
                                                          self.msl_requests.build_request_data('/bundle', params),
                                                          get_esn())
