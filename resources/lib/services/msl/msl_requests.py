@@ -88,7 +88,7 @@ class MSLRequests(MSLRequestBuilder):
         # The only way (found to now) to get it immediately, is send a logblob event request, and save the
         # user id token obtained in the response.
         LOG.debug('Requesting logblog')
-        endpoint_url = ENDPOINTS['logblobs'] + create_req_params(0, 'bind')
+        endpoint_url = ENDPOINTS['logblobs'] + create_req_params('bind')
         response = self.chunked_request(endpoint_url,
                                         self.build_request_data('/logblob', generate_logblobs_params()),
                                         get_esn(),
