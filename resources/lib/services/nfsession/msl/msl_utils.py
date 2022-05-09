@@ -27,7 +27,8 @@ CHROME_BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium/'
 CHROME_PLAYAPI_URL = 'https://www.netflix.com/msl/playapi/cadmium/'
 
 ENDPOINTS = {
-    'manifest': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
+    'manifest_v1': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
+    'manifest': CHROME_PLAYAPI_URL + 'licensedmanifest',
     'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
     'events': CHROME_PLAYAPI_URL + 'event/1',
     'logblobs': CHROME_PLAYAPI_URL + 'logblob/1'
@@ -211,14 +212,13 @@ def generate_logblobs_params():
     return {'logblobs': blobs_dump}
 
 
-def create_req_params(req_priority, req_name):
+def create_req_params(req_name):
     """Create the params for the POST request"""
     # Used list of tuple in order to preserve the params order
     # Will result something like:
-    # ?reqAttempt=&reqPriority=0&reqName=events/engage&clienttype=akira&uiversion=vdeb953cf&browsername=chrome&browserversion=84.0.4147.136&osname=windows&osversion=10.0
+    # ?reqAttempt=&reqName=events/engage&clienttype=akira&uiversion=vdeb953cf&browsername=chrome&browserversion=84.0.4147.136&osname=windows&osversion=10.0
     params = [
         ('reqAttempt', ''),  # Will be populated by _post() in msl_requests.py
-        ('reqPriority', req_priority),
         ('reqName', req_name),
         ('clienttype', 'akira'),
         ('uiversion', G.LOCAL_DB.get_value('build_identifier', '', table=TABLE_SESSION)),
