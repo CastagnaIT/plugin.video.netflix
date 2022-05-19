@@ -1,3 +1,7 @@
+v1.18.5 (2022-05-19)
+- Updates to get/handle licensed manifest
+- Update translations pt_br, pl
+
 v1.18.4 (2022-02-05)
 - Fix error "This title is not available to watch instantly" when using MSL manifest v1
 - Fixed tvshow.nfo not exported on library auto-update
