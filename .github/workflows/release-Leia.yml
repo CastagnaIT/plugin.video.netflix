@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build zip files
         run: |
+          sudo apt-get update
           sudo apt-get install libxml2-utils
           make build release=1
       - name: Get zip filename

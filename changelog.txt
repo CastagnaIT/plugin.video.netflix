@@ -1,3 +1,6 @@
+v1.12.10 (2022-05-19)
+- Updates to get/handle licensed manifest
+
 v1.12.9 (2022-02-05)
 - Switched to MSL manifest v2 as default (Dev.note without sid/challenge)
 - Add "MSL manifest version" expert setting to allow switch to MSL manifest v1
