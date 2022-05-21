@@ -270,6 +270,7 @@ class MSLHandler:
                 'name': 'default',
                 'profiles': kwargs['profiles']
             }],
+            'challenge': kwargs['challenge'],
             'challenges': {
                 'default': [{
                     'drmSessionId': kwargs['sid'] or 'session',
