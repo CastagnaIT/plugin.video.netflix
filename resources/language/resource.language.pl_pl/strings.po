@@ -1013,19 +1013,19 @@ msgstr "Brak pasujących wyników"
 # Unused 30408, 30409
 msgctxt "#30410"
 msgid "By term"
-msgstr "Wg. słowa"
+msgstr "Wg słowa"
 
 msgctxt "#30411"
 msgid "By audio language"
-msgstr "Wg. języka audio"
+msgstr "Wg języka audio"
 
 msgctxt "#30412"
 msgid "By subtitles language"
-msgstr "Wg. języka napisów"
+msgstr "Wg języka napisów"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr "Wg. ID gatunku/podgatunku"
+msgstr "Wg ID gatunku/podgatunku"
 
 # Unused 30414 to 30499
 msgctxt "#30500"
