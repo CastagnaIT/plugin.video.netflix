@@ -149,7 +149,7 @@ def _get_nav_handler(root_handler, pathitems):
 def _execute(executor_type, pathitems, params, root_handler):
     """Execute an action as specified by the path"""
     try:
-        executor = executor_type(params).__getattribute__(pathitems[0] if pathitems else 'root')
+        executor = getattr(executor_type(params), pathitems[0] if pathitems else 'root')
     except AttributeError as exc:
         raise InvalidPathError(f'Unknown action {"/".join(pathitems)}') from exc
     LOG.debug('Invoking action: {}', executor.__name__)

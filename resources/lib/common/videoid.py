@@ -201,10 +201,10 @@ class VideoId:
         """Return a dict containing the relevant properties of this
         instance"""
         result = {'mediatype': self.mediatype}
-        result.update({prop: self.__getattribute__(prop)  # pylint: disable=no-member
+        result.update({prop: getattr(self, prop)
                        for prop in ['videoid', 'supplementalid', 'movieid',
                                     'tvshowid', 'seasonid', 'episodeid']
-                       if self.__getattribute__(prop) is not None})  # pylint: disable=no-member
+                       if getattr(self, prop, None) is not None})
         return result
 
     def derive_season(self, seasonid):
