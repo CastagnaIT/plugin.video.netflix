@@ -137,12 +137,10 @@ class DirectoryBuilder(DirectoryPathRequests):
         if genre_id:
             # Load the LoCo list of the specified genre
             loco_list = self.req_loco_list_genre(genre_id)
-            exclude_loco_known = True
         else:
             # Load the LoCo root list filtered by 'loco_contexts' specified in the menu_data
             loco_list = self.req_loco_list_root()
-            exclude_loco_known = False
-        return build_loco_listing(loco_list, menu_data, force_use_videolist_id, exclude_loco_known)
+        return build_loco_listing(loco_list, menu_data, force_use_videolist_id)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_subgenres(self, menu_data, genre_id):
