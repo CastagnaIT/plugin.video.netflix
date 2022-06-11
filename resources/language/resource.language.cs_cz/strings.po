@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-10-17 18:23+0200\n"
+"PO-Revision-Date: 2022-06-11 16:27+0200\n"
 "Last-Translator: tajnymag\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.1\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -1088,7 +1089,7 @@ msgstr "[B]Úroveň zabezpečení bude snížena, pokud je vypnuto[/B]. Pokud v�
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Verze MSL manifestu"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1114,9 +1115,9 @@ msgstr "Nové a oblíbené"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Označí rozkoukané seriály jako zhlédnuté"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Dbejte, prosím, na to, že po zapnutí této funkce a zapnutém filtrování v nastavení vašeho motivu Kodi, budou zhlédnuté položky skryty v seznamu médií."
