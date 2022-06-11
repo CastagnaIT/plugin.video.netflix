@@ -1111,3 +1111,12 @@ msgstr "Definir Lembrete"
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "Novo e popular"
+
+msgctxt "#30701"
+msgid "Marks started tv shows as seen"
+msgstr ""
+
+# Description of setting ID #30701
+msgctxt "#30702"
+msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, will make items marked as seen not visible."
+msgstr ""

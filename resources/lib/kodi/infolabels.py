@@ -69,6 +69,8 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
         # Highlight ListItem title when the videoid is contained in my-list
         list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
     infos_copy['title'] = list_item.getLabel()
+    if videoid.mediatype == common.VideoId.SHOW and not common_data['marks_tvshow_started']:
+        infos_copy.pop('PlayCount', None)
     list_item.setInfo('video', infos_copy)
     list_item.setArt(get_art(videoid, art_item or item or {}, common_data['profile_language_code'],
                              delayed_db_op=True))
