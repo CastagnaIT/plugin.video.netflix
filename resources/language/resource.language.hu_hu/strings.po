@@ -1114,9 +1114,9 @@ msgstr "Új és népszerű"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Az elkezdett sorozatokat jelöld nézettként"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Kérjük, vegye figyelembe, hogy ha engedélyezi ezt a beállítást, és a szűrők engedélyezve vannak a felszín beállításaiban, előfordulhat, hogy a megtekintettként megjelölt elemek nem jelennek meg."
