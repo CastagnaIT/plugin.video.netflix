@@ -249,23 +249,6 @@ class NFSessionOperations(SessionPathRequests):
                                  msg='An error prevented the update the loco context on Netflix',
                                  time=10000)
 
-    def update_videoid_bookmark(self, video_id):
-        """Update the videoid bookmark position"""
-        # You can check if this function works through the official android app
-        # by checking if the red status bar of watched time position appears and will be updated, or also
-        # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
-        # 22/11/2021: This method seem not more used
-        call_paths = [['refreshVideoCurrentPositions']]
-        params = [f'[{video_id}]', '[]']
-        try:
-            response = self.callpath_request(call_paths, params)
-            LOG.debug('refreshVideoCurrentPositions response: {}', response)
-        except Exception as exc:  # pylint: disable=broad-except
-            LOG.warn('refreshVideoCurrentPositions failed: {}', exc)
-            ui.show_notification(title=common.get_local_string(30105),
-                                 msg='An error prevented the update the status watched on Netflix',
-                                 time=10000)
-
     def get_videoid_info(self, videoid):
         """Get infolabels and arts from cache (if exist) otherwise will be requested"""
         from resources.lib.kodi.infolabels import get_info, get_art

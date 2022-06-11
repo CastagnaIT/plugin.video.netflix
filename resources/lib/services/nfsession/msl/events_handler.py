@@ -96,8 +96,6 @@ class EventsHandler(threading.Thread):
                             self.loco_data['list_index'])
                     else:
                         LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
-                    # video_id = request_data['params']['sessionParams']['uiplaycontext']['video_id']
-                    # self.nfsession.update_videoid_bookmark(video_id)
                 self.loco_data = None
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('EVENT [{}] - The request has failed: {}', event_type, exc)
