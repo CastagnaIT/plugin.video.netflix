@@ -261,7 +261,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
                                 else None),
         'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
-        'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
+        'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
+        'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
     }
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video

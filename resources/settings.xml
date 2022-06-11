@@ -56,6 +56,11 @@
                         <dependency type="visible" setting="sync_watched_status">true</dependency>
                     </dependencies>
                 </setting>
+                <setting id="marks_tvshow_started" type="boolean" label="30701" help="30702">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
                 <setting id="mylist_titles_color" type="integer" label="30215" help="">
                     <level>0</level>
                     <default>1</default>
