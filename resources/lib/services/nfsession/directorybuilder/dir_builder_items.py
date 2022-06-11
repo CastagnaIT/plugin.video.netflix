@@ -184,7 +184,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
 
 
 @measure_exec_time_decorator(is_immediate=True)
-def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclude_loco_known=False):
+def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False):
     """Build a listing of video lists (LoCo)"""
     # If contexts are specified (loco_contexts in the menu_data), then the loco_list data will be filtered by
     # the specified contexts, otherwise all LoCo items will be added
@@ -196,30 +196,17 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False, exclu
     contexts = menu_data.get('loco_contexts')
     items_list = loco_list.lists_by_context(contexts) if contexts else loco_list.lists.items()
     directory_items = []
-    for video_list_id, video_list in items_list:
-        menu_parameters = common.MenuIdParameters(video_list_id)
-        if not menu_parameters.is_menu_id:
-            continue
-        list_id = (menu_parameters.context_id
-                   if menu_parameters.context_id and not force_use_videolist_id
-                   else video_list_id)
-        # Keep only some type of menus: 28=genre, 101=top 10
-        if exclude_loco_known:
-            if menu_parameters.type_id not in ['28', '101']:
-                continue
-            if menu_parameters.type_id == '101':
-                # Top 10 list can be obtained only with 'video_list' query
-                force_use_videolist_id = True
+    for video_list_id, video_list in items_list:  # pylint: disable=unused-variable
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
+        list_id = str(video_list['genreId'])
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
         sub_menu_data['loco_known'] = False
-        sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
+        sub_menu_data['no_use_cache'] = False
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
 
         directory_items.append(_create_videolist_item(list_id, video_list, sub_menu_data, common_data))
@@ -274,7 +261,6 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], menu_id, sub_genre_id]
         sub_menu_data['loco_known'] = False
-        sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data.update({'title': common.get_local_string(30089)})
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
@@ -371,7 +357,6 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
     for list_id, summary_data, video_list in lolomo_cat_list.lists():
         if summary_data['length'] == 0:  # Do not show empty lists
             continue
-        menu_parameters = common.MenuIdParameters(list_id)
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
@@ -380,7 +365,7 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['title'] = summary_data['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        sub_menu_data['no_use_cache'] = menu_parameters.type_id == '101'
+        sub_menu_data['no_use_cache'] = False
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
         directory_item = _create_category_item(list_id, video_list, sub_menu_data, common_data, summary_data)
         directory_items.append(directory_item)

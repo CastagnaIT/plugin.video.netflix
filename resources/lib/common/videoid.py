@@ -41,7 +41,6 @@ class VideoId:
         self._id_values = _get_unicode_kwargs(kwargs)
         # debug('VideoId validation values: {}'.format(self._id_values))
         self._validate()
-        self._menu_parameters = MenuIdParameters(self._assigned_id_values()[0])
 
     def _validate(self):
         validation_mask = 0
@@ -99,11 +98,6 @@ class VideoId:
     def value(self):
         """The value of this VideoId"""
         return self._assigned_id_values()[0]
-
-    @property
-    def menu_parameters(self):
-        """The menu parameters of the videoid value, if it exists"""
-        return self._menu_parameters
 
     @property
     def videoid(self):
@@ -323,50 +317,3 @@ def _path_to_videoid(kwargs, pathitems_arg, path_offset,
             kwargs[pathitems_arg] = kwargs[pathitems_arg][:path_offset]
     else:
         del kwargs[pathitems_arg]
-
-
-class MenuIdParameters:
-    """Parse the information grouped in a id value of a menu"""
-    # Example:
-    # 8f0bcda8-a281-4ca3-9f56-f64ee1d76219_68180357X28X1430972X1551542684270
-    # [              request id                   ]X[ type id ]X[ context id ]X[ timestamp ]
-
-    def __init__(self, id_values):
-        # Check if the idvalues is a menu id value
-        if id_values and id_values.count('-') == 4 and id_values.count('_') == 1 and id_values.count('X') == 3:
-            self._is_menu_id = True
-            self._splitted_id = id_values.split('X')
-        else:
-            self._is_menu_id = False
-
-    @property
-    def is_menu_id(self):
-        """Return True if is a Menu Id"""
-        return self._is_menu_id
-
-    @property
-    def request_id(self):
-        """Return the menu id"""
-        return self._splitted_id[0] if self._is_menu_id else None
-
-    @property
-    def type_id(self):
-        """Return the menu type
-        Menu types can be distinguished by numeric code, some example:
-        6 - My list menu
-        20 - Featured menu
-        28 - Generic type of menu that returns tv series
-        29 - Generic type of "Other content similar to"
-        55 - Original netflix menu
-        """
-        return self._splitted_id[1] if self._is_menu_id else None
-
-    @property
-    def context_id(self):
-        """Return the menu context id"""
-        return self._splitted_id[2] if self._is_menu_id else None
-
-    @property
-    def timestamp(self):
-        """Return the menu timestamp"""
-        return self._splitted_id[3] if self._is_menu_id else None
