@@ -9,10 +9,13 @@
 """
 from typing import Dict, List, Tuple
 
+import xbmc
 import xbmcgui
 
+from resources.lib.globals import G
 
-# pylint: disable=redefined-builtin,invalid-name
+
+# pylint: disable=redefined-builtin,invalid-name,no-member
 class ListItemW(xbmcgui.ListItem):
     """
     Wrapper for xbmcgui.ListItem
@@ -35,11 +38,19 @@ class ListItemW(xbmcgui.ListItem):
     def __setstate__(self, state):  # Pickle method
         """Restore the state of the object data"""
         self.setContentLookup(False)
-        super().setInfo('video', state['infolabels'])
+        if G.IS_OLD_KODI_MODULES:
+            super().setInfo('video', state['infolabels'])
+            for stream_type, quality_info in state['stream_info'].items():
+                super().addStreamInfo(stream_type, quality_info)
+        else:
+            # TODO: setInfo is deprecated
+            super().setInfo('video', state['infolabels'])
+            video_info_tag = super().getVideoInfoTag()
+            if state['stream_info']:
+                video_info_tag.addVideoStream(xbmc.VideoStreamDetail(**state['stream_info']['video']))
+                video_info_tag.addAudioStream(xbmc.AudioStreamDetail(**state['stream_info']['audio']))
         super().setProperties(state['properties'])
         super().setArt(state['art'])
-        for stream_type, quality_info in state['stream_info'].items():
-            super().addStreamInfo(stream_type, quality_info)
         super().addContextMenuItems(state.get('context_menus', []))
         super().select(state.get('is_selected', False))
 
