@@ -12,8 +12,8 @@ from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
-from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.common import get_system_platform, is_device_4k_capable, get_local_string, json_rpc
+from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.globals import G
 from resources.lib.kodi.ui import show_ok_dialog
 from resources.lib.utils.logging import LOG
@@ -56,12 +56,19 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
         raise InputStreamHelperError(str(exc)) from exc
 
     isa_addon = Addon('inputstream.adaptive')
-    isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
-    if isa_addon.getSettingInt('STREAMSELECTION') == 1:
-        # Stream selection must never be set to 'Manual' or cause problems with the streams
-        isa_addon.setSettingInt('STREAMSELECTION', 0)
-    # 'Ignore display' should only be set when Kodi display resolution is not 4K
-    isa_addon.setSettingBool('IGNOREDISPLAY', is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
+    if G.KODI_VERSION < '20':
+        isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
+        if isa_addon.getSettingInt('STREAMSELECTION') == 1:
+            # Stream selection must never be set to 'Manual' or cause problems with the streams
+            isa_addon.setSettingInt('STREAMSELECTION', 0)
+        # 'Ignore display' should only be set when Kodi display resolution is not 4K
+        isa_addon.setSettingBool('IGNOREDISPLAY',
+                                 is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
+    else:
+        isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
+        # 'Ignore display' should only be set when Kodi display resolution is not 4K
+        isa_addon.setSettingBool('adaptivestream.ignore.screen.res',
+                                 is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
 
 
 def _set_profiles(system, is_4k_capable):
