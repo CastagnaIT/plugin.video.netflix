@@ -146,7 +146,7 @@ class GlobalVariables:
                           'content_type': CONTENT_MOVIE,
                           'has_sort_setting': True}),
         ('tvshows', {'path': ['genres', 'tvshows', '83'],
-                     'loco_contexts': None,
+                     'loco_contexts': ['genre'],
                      'loco_known': False,
                      'request_context_name': 'genres',  # Used for sub-menus
                      'label_id': 30095,
@@ -154,7 +154,7 @@ class GlobalVariables:
                      'icon': 'DefaultTVShows.png',
                      'has_sort_setting': True}),
         ('movies', {'path': ['genres', 'movies', '34399'],
-                    'loco_contexts': None,
+                    'loco_contexts': ['genre'],
                     'loco_known': False,
                     'request_context_name': 'genres',  # Used for sub-menus
                     'label_id': 30096,
