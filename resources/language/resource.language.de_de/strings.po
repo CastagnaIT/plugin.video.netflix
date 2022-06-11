@@ -1114,9 +1114,9 @@ msgstr "Neu und beliebt"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Angefangene TV-Serien als gesehen markieren"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Bitte beachten, dass gesehene Einträge mit aktivierten Filtern in den Skin-Einstellungen eventuell nicht sichtbar sind."
