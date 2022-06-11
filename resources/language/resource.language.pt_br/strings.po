@@ -1113,10 +1113,10 @@ msgid "New and popular"
 msgstr "Novo e popular"
 
 msgctxt "#30701"
-msgid "Marks started tv shows as seen"
+msgid "Marks started tv shows as watched"
 msgstr ""
 
 # Description of setting ID #30701
 msgctxt "#30702"
-msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, will make items marked as seen not visible."
+msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr ""
