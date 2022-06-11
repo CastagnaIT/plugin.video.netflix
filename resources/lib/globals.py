@@ -247,6 +247,7 @@ class GlobalVariables:
                 self.BASE_URL = f'plugin://{self.ADDON_ID}'
             from resources.lib.common.kodi_ops import KodiVersion
             self.KODI_VERSION = KodiVersion()
+            self.IS_OLD_KODI_MODULES = self.KODI_VERSION < '20'
         # Initialize the log
         from resources.lib.utils.logging import LOG
         LOG.initialize(self.ADDON_ID, self.PLUGIN_HANDLE,

@@ -22,9 +22,9 @@ from resources.lib.utils.logging import LOG
 # it is not possible to provide specific info, then we set info according to the video properties of the video list data
 # h264 is the entry-level codec always available to all streams, the 4k only works with HEVC
 QUALITIES = [
-    {'codec': 'h264', 'width': '960', 'height': '540'},
-    {'codec': 'h264', 'width': '1920', 'height': '1080'},
-    {'codec': 'hevc', 'width': '3840', 'height': '2160'}
+    {'codec': 'h264', 'width': 960, 'height': 540},
+    {'codec': 'h264', 'width': 1920, 'height': 1080},
+    {'codec': 'hevc', 'width': 3840, 'height': 2160}
 ]
 
 COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
@@ -202,6 +202,10 @@ def get_quality_infos(item):
                 quality_infos['audio']['codec'] = 'eac3'
         else:
             quality_infos['audio']['codec'] = 'aac'
+        if delivery.get('hasDolbyVision', False):
+            quality_infos['video']['hdrType'] = 'dolbyvision'
+        elif delivery.get('hasHDR', False):
+            quality_infos['video']['hdrType'] = 'hdr10'
     return quality_infos
 
 
