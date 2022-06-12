@@ -1120,4 +1120,3 @@ msgstr "將已經開始的節目標記為已觀看"
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr "請注意，若在外觀設定中有開啟過濾，開啟此設定可能會使被標記為已觀看的項目不可見。"
-zh_tw missing translate
