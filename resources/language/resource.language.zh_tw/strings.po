@@ -1088,7 +1088,7 @@ msgstr "[B]如果取消此設定將會導致安全性危險。[/B]如果你的�
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL manifest 版本"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1114,9 +1114,9 @@ msgstr "最新與熱門"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "將已經開始的節目標記為已觀看"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "請注意，若在外觀設定中有開啟過濾，開啟此設定可能會使被標記為已觀看的項目不可見。"
