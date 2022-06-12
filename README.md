@@ -32,15 +32,11 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 
 #### Quick download links
 
-Install add-on via repository - provide automatic installation of updates:
+Install add-on via repository - provide automatic installation of updates:<br/>
+[CastagnaIT Repository for Kodi - repository.castagnait-2.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/kodi/repository.castagnait-2.0.0.zip)<br/>
+_NOTICE: Add-on version for Kodi 18 is deprecated [#975](https://github.com/CastagnaIT/plugin.video.netflix/issues/975), we highly recommend upgrading to Kodi 19 or above._
 
-***NOTICE Kodi 18 (Leia) is EOL and the add-on version for Kodi 18 is deprecated (#975), we highly recommend upgrading to Kodi 19!***
-* [CastagnaIT Repository for KODI 18.x LEIA - repository.castagnait-1.0.1.zip](https://github.com/castagnait/repository.castagnait/raw/master/repository.castagnait-1.0.1.zip)
-* [CastagnaIT Repository for KODI 19.x MATRIX - repository.castagnait-1.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/matrix/repository.castagnait-1.0.0.zip)
-
-Install add-on manually - updates should always be installed manually:
-* Daily builds - To get latest fixes https://bit.ly/citnfdailybuilds (not always published see dates)
-* As Kodi file source, only for Kodi 19:<br/>
+Install add-on manually - updates should always be installed manually:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
 
 ## Login with Authentication key
