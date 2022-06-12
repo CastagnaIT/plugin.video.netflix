@@ -1,6 +1,6 @@
 # Netflix Plugin for Kodi (plugin.video.netflix)
 
-[![Kodi version](https://img.shields.io/badge/kodi%20versions-18--19-blue)](https://kodi.tv/)
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-18--19--20-blue)](https://kodi.tv/)
 [![GitHub release](https://img.shields.io/github/release/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/releases)
 [![CI](https://github.com/castagnait/plugin.video.netflix/workflows/CI/badge.svg)](https://github.com/castagnait/plugin.video.netflix/actions?query=workflow:CI)
 [![Code Climate - Maintainability](https://api.codeclimate.com/v1/badges/9fbe3ac732f86c05ff00/maintainability)](https://codeclimate.com/github/CastagnaIT/plugin.video.netflix/maintainability)
