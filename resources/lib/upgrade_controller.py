@@ -123,6 +123,10 @@ def _perform_service_changes(previous_ver, current_ver):
     if CmpVersion(previous_ver) < '1.18.3':
         # In the version 1.18.3 content_profiles_int has been replaced by manifest_settings_status
         G.LOCAL_DB.delete_key('content_profiles_int')
+    if CmpVersion(previous_ver) < '1.18.7':
+        # Migrate to new repository
+        from resources.lib.upgrade_actions import migrate_repository
+        migrate_repository()
 
 
 def _perform_local_db_changes(current_version, upgrade_to_version):

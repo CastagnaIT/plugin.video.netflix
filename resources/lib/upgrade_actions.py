@@ -12,6 +12,7 @@ import os
 import xbmc
 import xbmcvfs
 
+from resources.lib.common import CmpVersion
 from resources.lib.common.fileops import (list_dir, join_folders_paths, load_file, save_file, copy_file, delete_file)
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -72,3 +73,44 @@ def _migrate_strm_files(folder_path):
             continue
         file_content = file_content.strip('\t\n\r').replace('/play/', '/play_strm/')
         save_file(file_path, file_content.encode('utf-8'))
+
+
+def migrate_repository():
+    if not xbmc.getCondVisibility('System.hasAddon(repository.castagnait)'):
+        return
+    from xbmcaddon import Addon
+    if CmpVersion(Addon('repository.castagnait').getAddonInfo('version')) >= '2.0.0':
+        return
+    LOG.info('Upgrading add-on repository "repository.castagnait" to version 2.0.0')
+    repo_folder = G.ADDON_DATA_PATH.replace('plugin.video.netflix', 'repository.castagnait')
+    data = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        '<addon id="repository.castagnait" name="CastagnaIT Repository" version="2.0.0" provider-name="castagnait">\n'
+        '<extension point="xbmc.addon.repository" name="CastagnaIT Repository">\n'
+        '<dir minversion="18.0.0">\n'
+        '<info compressed="false">https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi18/addons.xml</info>\n'
+        '<checksum>https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi18/addons.xml.md5</checksum>\n'
+        '<datadir zip="true">https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi18</datadir>\n'
+        '<hashes>false</hashes>\n'
+        '</dir>\n'
+        '<dir minversion="19.0.0">\n'
+        '<info compressed="false">https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi19/addons.xml</info>\n'
+        '<checksum>https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi19/addons.xml.md5</checksum>\n'
+        '<datadir zip="true">https://github.com/CastagnaIT/repository.castagnait/raw/kodi/kodi19</datadir>\n'
+        '<hashes>false</hashes>\n'
+        '</dir>\n'
+        '</extension>\n'
+        '<extension point="xbmc.addon.metadata">\n'
+        '<summary>CastagnaIT Repository</summary>\n'
+        '<description>Castagna IT repository</description>\n'
+        '<platform>all</platform>\n'
+        '<assets>\n'
+        '<icon>icon.jpg</icon>\n'
+        '</assets>\n'
+        '</extension>\n'
+        '</addon>\n')
+    try:
+        save_file(repo_folder + 'addon.xml', data.encode('utf-8'))
+        xbmc.executebuiltin('UpdateLocalAddons')
+    except Exception:  # pylint: disable=broad-except
+        LOG.error('Failed to upgrade add-on repository')
