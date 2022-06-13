@@ -155,7 +155,7 @@ msgstr "Axustes do complemento InputStream..."
 # Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
-msgstr "Tema para modos de vista"
+msgstr "Aspecto para modos de vista"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
@@ -1090,7 +1090,7 @@ msgstr "[B]Se se deshabilita provocará unha grecha de seguranza[/B]. Se o teu s
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Versión do manifesto MSL"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1116,9 +1116,9 @@ msgstr "Novo e popular"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Marca as series TV como vistas"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Nótese que, ao activares esta opción, se tiveres filtros activados na configuración de aspecto, poida que non se amosen os elementos marcados como vistos."
