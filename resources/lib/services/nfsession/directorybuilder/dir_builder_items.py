@@ -206,7 +206,8 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False):
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        sub_menu_data['no_use_cache'] = False
+        # Do not use the cache with 'Top 10' menus, so that you always get up-to-date data.
+        sub_menu_data['no_use_cache'] = video_list['context'] == 'mostWatched'
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
 
         directory_items.append(_create_videolist_item(list_id, video_list, sub_menu_data, common_data))
@@ -365,7 +366,8 @@ def build_lolomo_category_listing(lolomo_cat_list, menu_data):
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['title'] = summary_data['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
-        sub_menu_data['no_use_cache'] = False
+        # Do not use the cache with 'Top 10' menus, so that you always get up-to-date data.
+        sub_menu_data['no_use_cache'] = video_list['context'] == 'mostWatched'
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
         directory_item = _create_category_item(list_id, video_list, sub_menu_data, common_data, summary_data)
         directory_items.append(directory_item)
