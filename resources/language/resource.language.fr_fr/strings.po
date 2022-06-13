@@ -1088,7 +1088,7 @@ msgstr "[B]Désactiver ce paramètre causera une faille de sécurité[/B]. Si vo
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Version du manifeste MSL"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1114,9 +1114,9 @@ msgstr "Nouveautés les plus regardées"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Marquer les séries démarrées comme vues"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "En activant ce paramètre si des filtres sont activés dans les paramètres de votre thème, les élements marqués comme vus peuvent ne pas être visibles."
