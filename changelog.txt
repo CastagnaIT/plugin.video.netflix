@@ -1,3 +1,14 @@
+v1.18.7 (2022-06-14)
+- REPOSITORY CHANGED: The repository has been changed, to receive future updates
+the add-on will try update it automatically to new v2.0, if for some reason this not
+happens you can update it manually by downloading: repository.castagnait-2.0.0.zip
+from Github Readme: https://github.com/CastagnaIT/plugin.video.netflix
+- Started tv shows are no longer marked as watched by default, this to prevent problems 
+with Skin filters, if you prefer it enable "Marks started tv shows as watched" from settings.
+- Fix genres/subgenres menus due to website changes
+- Add support to HDR/DolbyVision skin media flags (Kodi 20)
+- Update translations pl, it, cs_cz, hu, de, zh_tw, fr, gl_es
+
 v1.18.6 (2022-05-21)
 - Fix regression to allow 1080p on ARM
 
