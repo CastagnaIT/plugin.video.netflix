@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-10-24 14:00+0000\n"
+"PO-Revision-Date: 2022-06-15 21:30+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -22,7 +22,7 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
-msgstr "Netflix VOD服务附加组件"
+msgstr "Netflix VOD服务 附加组件"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
@@ -161,27 +161,27 @@ msgstr "启用自定义视图类型"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr "查看文件夹ID"
+msgstr "文件夹 视图ID"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr "查看电影ID"
+msgstr "电影 视图ID"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr "查看节目ID"
+msgstr "节目 视图ID"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr "查看季ID"
+msgstr "季 视图ID"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr "查看集ID"
+msgstr "集 视图ID"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr "查看个人资料ID"
+msgstr "个人资料 视图ID"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -189,7 +189,7 @@ msgstr "移除评分|踩|赞"
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "InputStream Adaptive附加组件或Widevine库存在问题。可能丢失或未启用，操作将被取消"
+msgstr "InputStream Adaptive附加组件或Widevine库存在问题。可能缺失或未启用，操作将被取消"
 
 msgctxt "#30047"
 msgid "Library update in progress"
@@ -206,7 +206,7 @@ msgstr "库"
 # Unused 30050
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr "设置从库播放个人资料"
+msgstr "设置从库中播放的个人资料"
 
 msgctxt "#30052"
 msgid "Set for library playback"
@@ -399,11 +399,11 @@ msgstr "“{}”的结果"
 
 msgctxt "#30101"
 msgid "Netflix returned an unknown error."
-msgstr "Netflix返回了未知错误。"
+msgstr "Netflix返回未知错误。"
 
 msgctxt "#30102"
 msgid "Netflix returned the following error:"
-msgstr "Netflix返回了如下错误："
+msgstr "Netflix返回如下错误："
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
@@ -545,7 +545,7 @@ msgstr "启用基于HTTP的IPC（在附加组件提示信号超时信息时使�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr "导入现有的库"
+msgstr "导入现有库"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -574,7 +574,7 @@ msgstr "« 上一页"
 
 msgctxt "#30149"
 msgid "Sort results by"
-msgstr "结果排序依据"
+msgstr "结果排序方式"
 
 msgctxt "#30150"
 msgid "Alphabetical order (A-Z)"
@@ -586,7 +586,7 @@ msgstr "字母顺序（Z-A）"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "对您的建议"
+msgstr "为您推荐"
 
 msgctxt "#30153"
 msgid "Year released"
@@ -611,15 +611,15 @@ msgstr "运行附加组件配置向导"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr "查看主菜单ID"
+msgstr "主菜单 视图ID"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr "查看搜索ID"
+msgstr "搜索 视图ID"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr "查看输出ID"
+msgstr "已导出 视图ID"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -635,7 +635,7 @@ msgstr "浏览带有音频描述的内容"
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr "查看'我的片单'ID"
+msgstr "'我的片单' 视图ID"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -667,7 +667,7 @@ msgstr "热门选择"
 
 msgctxt "#30173"
 msgid "Netflix Originals"
-msgstr "Netflix 独家"
+msgstr "Netflix独家"
 
 msgctxt "#30174"
 msgid "TV show genres"
@@ -780,7 +780,7 @@ msgstr "用户名"
 
 msgctxt "#30202"
 msgid "Connection to the MySQL-database was successful"
-msgstr "到MySQL数据库的连接成功"
+msgstr "连接到MySQL数据库成功"
 
 msgctxt "#30203"
 msgid "Host IP"
@@ -832,7 +832,7 @@ msgstr "强制刷新"
 
 msgctxt "#30215"
 msgid "Color of the titles included in 'My list'"
-msgstr "'我的片单'中标题颜色"
+msgstr "列入'我的片单'的标题颜色"
 
 # Unused 30216 to 30218
 msgctxt "#30219"
@@ -904,7 +904,7 @@ msgstr "标记为已观看|标记为未观看|已恢复Netflix观看状态"
 
 msgctxt "#30238"
 msgid "Up Next notifications (watch next video)"
-msgstr "Up Next通知（观看下一个视频）"
+msgstr "Up Next通知（观看下个视频）"
 
 msgctxt "#30239"
 msgid "Color of supplemental plot info"
@@ -920,7 +920,7 @@ msgstr "Open Connect CDN（索引越低越好）"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr "十大排行"
+msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
@@ -937,7 +937,7 @@ msgstr "有{}标题无法导入。[CR]您是否要删除这些内容"
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr "每页结果（如果超时错误，请减少）"
+msgstr "每页结果（如遇超时错误，请减少）"
 
 # Unused 30248 to 30299
 msgctxt "#30300"
@@ -976,7 +976,7 @@ msgstr "输入PIN码"
 # Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr "历史记录排序依据"
+msgstr "历史记录排序方式"
 
 msgctxt "#30400"
 msgid "Search"
@@ -1084,11 +1084,11 @@ msgstr "对凭证使用基于系统的加密"
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr "[B]如果禁用，将导致安全漏洞[/B]。如果你的操作系统不支持它，你每次重启设备时都会被提示登录，[B]仅在[/B]这种情况下禁用它。如果你改变了这个设置，在你下次重启时，你将被提示重新登录。"
+msgstr "[B]如果禁用，将导致安全漏洞[/B]。如果您的操作系统不支持它，您每次重启设备时都会被提示登录，[B]仅在[/B]这种情况下禁用它。如果您改变这个设置，在您下次重启时，您将被提示重新登录。"
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL清单版本"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1114,9 +1114,9 @@ msgstr "最新与热播"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "标记开始观看的电视节目"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "请注意，如果您在皮肤设置中启用过滤器，启用此设置后，标记为已观看的项目可能不可见。"
