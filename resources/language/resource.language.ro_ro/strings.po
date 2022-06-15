@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-04-13 19:54+0000\n"
-"PO-Revision-Date: 2021-05-25 11:00+0000\n"
+"PO-Revision-Date: 2022-06-15 22:25+0000\n"
 "Last-Translator: tmihai20 <>\n"
 "Language-Team: Romanian (Romania)\n"
 "Language: ro_RO\n"
@@ -1088,7 +1088,7 @@ msgstr "[B]Dacă este dezactivat va cauza o breșă de securitate[/B]. Dacă sis
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "Versiune manifest MSL"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1114,9 +1114,9 @@ msgstr "Nou și popular"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Marchează serialele TV începute ca văzute"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Vă rugăm să luați aminte că activând această setare în filtrele din setările temei, elementele marcate ca văzute ar putea să nu fie vizibile."
