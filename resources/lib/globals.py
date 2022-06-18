@@ -306,7 +306,7 @@ class GlobalVariables:
 def remove_ver_suffix(version):
     """Remove the codename suffix from version value"""
     import re
-    pattern = re.compile(r'\+\w+\.\d$')  # Example: +matrix.1
+    pattern = re.compile(r'\+.+$')  # Example: +matrix +matrix.1 ...
     return re.sub(pattern, '', version)
 
 

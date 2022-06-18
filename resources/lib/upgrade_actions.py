@@ -14,7 +14,7 @@ import xbmcvfs
 
 from resources.lib.common import CmpVersion
 from resources.lib.common.fileops import (list_dir, join_folders_paths, load_file, save_file, copy_file, delete_file)
-from resources.lib.globals import G
+from resources.lib.globals import G, remove_ver_suffix
 from resources.lib.kodi import ui
 from resources.lib.kodi.library_utils import get_library_subfolders, FOLDER_NAME_MOVIES, FOLDER_NAME_SHOWS
 from resources.lib.utils.logging import LOG
@@ -79,7 +79,8 @@ def migrate_repository():
     if not xbmc.getCondVisibility('System.hasAddon(repository.castagnait)'):
         return
     from xbmcaddon import Addon
-    if CmpVersion(Addon('repository.castagnait').getAddonInfo('version')) >= '2.0.0':
+    # Sometime kodi append suffix "+matrix" to the version also when the addon version string not include it
+    if CmpVersion(remove_ver_suffix(Addon('repository.castagnait').getAddonInfo('version'))) >= '2.0.0':
         return
     LOG.info('Upgrading add-on repository "repository.castagnait" to version 2.0.0')
     repo_folder = G.ADDON_DATA_PATH.replace('plugin.video.netflix', 'repository.castagnait')
