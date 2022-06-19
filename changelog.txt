@@ -1,3 +1,11 @@
+v1.18.8 (2022-06-19)
+- REPOSITORY CHANGED: The repository has been changed, to receive future updates
+the add-on will try update it automatically to new v2.0, if for some reason this not
+happens you can update it manually by downloading: repository.castagnait-2.0.0.zip
+from Github Readme: https://github.com/CastagnaIT/plugin.video.netflix
+- Fix broken addon startup due to update error
+- Update translations zh_cn, ro, pt_br
+
 v1.18.7 (2022-06-14)
 - REPOSITORY CHANGED: The repository has been changed, to receive future updates
 the add-on will try update it automatically to new v2.0, if for some reason this not
