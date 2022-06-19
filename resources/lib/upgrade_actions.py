@@ -103,7 +103,7 @@ def migrate_repository():
     if not xbmc.getCondVisibility('System.hasAddon(repository.castagnait)'):
         return
     from xbmcaddon import Addon
-    if not is_less_version(Addon('repository.castagnait').getAddonInfo('version'), '2.0.0'):
+    if not is_less_version(G.remove_ver_suffix(Addon('repository.castagnait').getAddonInfo('version')), '2.0.0'):
         return
     LOG.info('Upgrading add-on repository "repository.castagnait" to version 2.0.0')
     repo_folder = G.ADDON_DATA_PATH.replace('plugin.video.netflix', 'repository.castagnait')
