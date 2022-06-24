@@ -216,9 +216,14 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False):
     directory_items = []
     for video_list_id, video_list in items_list:  # pylint: disable=unused-variable
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
-        list_id = str(video_list['genreId'])
+        if video_list['context'] == 'genre':
+            menu_func_name = menu_data['path'][0]
+            list_id = str(video_list['genreId'])
+        else:
+            menu_func_name = 'video_list'
+            list_id = video_list['id']
         sub_menu_data = menu_data.copy()
-        sub_menu_data['path'] = [menu_data['path'][0], list_id, list_id]
+        sub_menu_data['path'] = [menu_func_name, list_id, list_id]
         sub_menu_data['loco_known'] = False
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
