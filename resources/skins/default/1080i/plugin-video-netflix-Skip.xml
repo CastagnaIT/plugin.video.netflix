@@ -27,6 +27,11 @@
 				<texturenofocus border="10" colordiffuse="B3161618">smallbutton.png</texturenofocus>
 				<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<!--
+				allowhiddenfocus is necessary because the window is opened completely transparently (animation fade effect start from 0)
+				Without it, the button cannot receive focus and a double "click" is required to trigger the action
+				-->
+				<visible allowhiddenfocus="true">true</visible>
 			</control>
 		</control>
 	</controls>
