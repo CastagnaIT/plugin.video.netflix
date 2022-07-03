@@ -15,7 +15,7 @@ from resources.lib.database.db_utils import (TABLE_MENU_DATA)
 from resources.lib.globals import G
 from resources.lib.kodi.context_menu import (generate_context_menu_items, generate_context_menu_profile,
                                              generate_context_menu_remind_me)
-from resources.lib.kodi.infolabels import get_color_name, set_watched_status, add_info_list_item
+from resources.lib.kodi.infolabels import get_color_name, set_watched_status, add_info_list_item, get_video_codec_hint
 from resources.lib.services.nfsession.directorybuilder.dir_builder_utils import (get_param_watched_status_by_profile,
                                                                                  add_items_previous_next_page,
                                                                                  get_availability_message)
@@ -30,15 +30,21 @@ from resources.lib.utils.logging import measure_exec_time_decorator
 # 'common_data' dict is used to avoid cpu overload for multiple accesses to other resources improve a lot the execution
 
 
+def get_common_data():
+    """Temporarily stores common data for faster access"""
+    return {
+        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
+        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
+        'video_codec_hint': get_video_codec_hint()
+    }
+
+
 @measure_exec_time_decorator(is_immediate=True)
 def build_mainmenu_listing(loco_list):
     """Builds the main menu listing (my list, continue watching, etc.)"""
     from resources.lib.kodi.context_menu import generate_context_menu_mainmenu
     directory_items = []
-    common_data = {
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
-    }
+    common_data = get_common_data()
     for menu_id, data in G.MAIN_MENU_ITEMS.items():
         if data.get('has_show_setting', True) and not G.ADDON.getSettingBool('_'.join(('show_menu', menu_id))):
             continue
@@ -122,10 +128,7 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_pl
 @measure_exec_time_decorator(is_immediate=True)
 def build_season_listing(season_list, tvshowid, pathitems=None):
     """Build a season listing"""
-    common_data = {
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
-    }
+    common_data = get_common_data()
     directory_items = [_create_season_item(tvshowid, seasonid_value, season, season_list, common_data)
                        for seasonid_value, season in season_list.seasons.items()]
     # add_items_previous_next_page use the new value of perpetual_range_selector
@@ -147,13 +150,11 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
 @measure_exec_time_decorator(is_immediate=True)
 def build_episode_listing(episodes_list, seasonid, pathitems=None):
     """Build a episodes listing of a season"""
-    common_data = {
-        'params': get_param_watched_status_by_profile(),
-        'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
-        'active_profile_guid': G.LOCAL_DB.get_active_profile_guid()
-    }
+    common_data = get_common_data()
+    common_data['params'] = get_param_watched_status_by_profile()
+    common_data['set_watched_status'] = G.ADDON.getSettingBool('sync_watched_status')
+    common_data['active_profile_guid'] = G.LOCAL_DB.get_active_profile_guid()
+
     directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data)
                        for episodeid_value, episode
                        in episodes_list.episodes.items()]
@@ -188,11 +189,8 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False):
     """Build a listing of video lists (LoCo)"""
     # If contexts are specified (loco_contexts in the menu_data), then the loco_list data will be filtered by
     # the specified contexts, otherwise all LoCo items will be added
-    common_data = {
-        'menu_data': menu_data,
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', '')
-    }
+    common_data = get_common_data()
+    common_data['menu_data'] = menu_data
     contexts = menu_data.get('loco_contexts')
     items_list = loco_list.lists_by_context(contexts) if contexts else loco_list.lists.items()
     directory_items = []
@@ -244,19 +242,18 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
                         mylist_items=None, path_params=None):
     """Build a video listing"""
-    common_data = {
+    common_data = get_common_data()
+    common_data.update({
         'params': get_param_watched_status_by_profile(),
         'mylist_items': mylist_items,
         'set_watched_status': G.ADDON.getSettingBool('sync_watched_status'),
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color')),
         'mylist_titles_color': (get_color_name(G.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'
                                 else None),
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
         'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
-    }
+    })
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
                        in video_list.videos.items()]
@@ -355,10 +352,7 @@ def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
 
 def build_lolomo_category_listing(lolomo_cat_list, menu_data):
     """Build a folders listing of a LoLoMo category"""
-    common_data = {
-        'profile_language_code': G.LOCAL_DB.get_profile_config('language', ''),
-        'supplemental_info_color': get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))
-    }
+    common_data = get_common_data()
     directory_items = []
     for list_id, summary_data, video_list in lolomo_cat_list.lists():
         if summary_data['length'] == 0:  # Do not show empty lists

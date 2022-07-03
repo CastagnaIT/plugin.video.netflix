@@ -18,15 +18,6 @@ from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
-# For each videos Netflix provides multiple codecs and the resolutions depends on type of device/SO/DRM used
-# it is not possible to provide specific info, then we set info according to the video properties of the video list data
-# h264 is the entry-level codec always available to all streams, the 4k only works with HEVC
-QUALITIES = [
-    {'codec': 'h264', 'width': 960, 'height': 540},
-    {'codec': 'h264', 'width': 1920, 'height': 1080},
-    {'codec': 'hevc', 'width': 3840, 'height': 2160}
-]
-
 COLORS = [None, 'blue', 'red', 'green', 'white', 'yellow', 'black', 'gray']
 
 # Mapping of videoid type to ListItem.MediaType
@@ -40,7 +31,21 @@ MEDIA_TYPE_MAPPINGS = {
 }
 
 
-def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False):
+def get_video_codec_hint():
+    """Suggests which codec the video may have"""
+    # The video lists do not provide the type of codec, it depends on many factors (device/SO/DRM/manifest request)
+    # but we can rely on which codec is enabled from the settings, if there are more codecs enabled usually
+    # the most efficient codec has the priority, e.g. HEVC > VP9 > H264
+    # This could be not always reliable, depends also on the availability of stream types
+    codec = 'h264'
+    if G.ADDON.getSettingBool('enable_hevc_profiles'):
+        codec = 'hevc'
+    elif G.ADDON.getSettingBool('enable_vp9_profiles'):
+        codec = 'vp9'
+    return codec
+
+
+def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False, common_data=dict):
     """Get the infolabels data"""
     cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
@@ -48,7 +53,7 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
     except CacheMiss:
-        infos, quality_infos = parse_info(videoid, item, raw_data)
+        infos, quality_infos = parse_info(videoid, item, raw_data, common_data)
         G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos},
                     delayed_db_op=delayed_db_op)
     return infos, quality_infos
@@ -56,8 +61,7 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
 
 def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None):
     """Add infolabels and art to a ListItem"""
-    infos, quality_infos = get_info(videoid, item, raw_data,
-                                    delayed_db_op=True)
+    infos, quality_infos = get_info(videoid, item, raw_data, delayed_db_op=True, common_data=common_data)
     list_item.addStreamInfoFromDict(quality_infos)
     # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
     infos_copy = copy.deepcopy(infos)
@@ -124,7 +128,7 @@ def get_resume_info_from_library(videoid):
     return {}
 
 
-def parse_info(videoid, item, raw_data):
+def parse_info(videoid, item, raw_data, common_data):
     """Parse info from a path request response into Kodi infolabels"""
     if (videoid.mediatype == common.VideoId.UNSPECIFIED and
             hasattr(item, 'contained_titles')):
@@ -147,7 +151,7 @@ def parse_info(videoid, item, raw_data):
     infos.update(_parse_referenced_infos(item, raw_data))
     infos.update(_parse_tags(item))
 
-    return infos, get_quality_infos(item)
+    return infos, get_quality_infos(item, common_data.get('video_codec_hint', get_video_codec_hint()))
 
 
 def _parse_atomic_infos(item):
@@ -186,14 +190,17 @@ def _parse_tags(item):
                     if isinstance(tagdef.get('name', {}), str)]}
 
 
-def get_quality_infos(item):
+def get_quality_infos(item, video_codec_hint):
     """Return audio and video quality infolabels"""
     quality_infos = {}
     delivery = item.get('delivery')
     if delivery:
-        quality_infos['video'] = QUALITIES[
-            min((delivery.get('hasUltraHD', False) << 1 |
-                 delivery.get('hasHD')), 2)]
+        if delivery.get('hasUltraHD', False):  # 4k only with HEVC codec
+            quality_infos['video'] = {'codec': 'hevc', 'width': 3840, 'height': 2160}
+        elif delivery.get('hasHD'):
+            quality_infos['video'] = {'codec': video_codec_hint, 'width': 1920, 'height': 1080}
+        else:
+            quality_infos['video'] = {'codec': video_codec_hint, 'width': 960, 'height': 540}
         quality_infos['audio'] = {'channels': 2 + 4 * delivery.get('has51Audio', False)}
         if G.ADDON.getSettingBool('enable_dolby_sound'):
             if delivery.get('hasDolbyAtmos', False):
