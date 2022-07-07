@@ -45,8 +45,10 @@ def get_video_codec_hint():
     return codec
 
 
-def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False, common_data=dict):
+def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=False, common_data=None):
     """Get the infolabels data"""
+    if common_data is None:
+        common_data = {}
     cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         cache_entry = G.CACHE.get(CACHE_INFOLABELS, cache_identifier)
