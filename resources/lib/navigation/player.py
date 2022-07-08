@@ -110,6 +110,9 @@ def get_inputstream_listitem(videoid):
     if not inputstream_ready:
         raise Exception(common.get_local_string(30046))
     list_item.setProperty(
+        key='inputstream',
+        value='inputstream.adaptive')
+    list_item.setProperty(
         key='inputstream.adaptive.stream_headers',
         value=f'user-agent={common.get_user_agent()}')
     list_item.setProperty(
@@ -124,14 +127,17 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty(
         key='inputstream.adaptive.server_certificate',
         value=INPUTSTREAM_SERVER_CERTIFICATE)
-    list_item.setProperty(
-        key='inputstream',
-        value='inputstream.adaptive')
     # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
     if common.get_system_platform() != 'android':
         list_item.setProperty(
             key='inputstream.adaptive.pre_init_data',
             value=PSSH_KID)
+    # Override InputStreamAdaptive "Stream selection type" setting (Kodi v20 and above, this is ignored on old versions)
+    stream_sel_type = G.ADDON.getSettingString('isa_streamselection_override')
+    if stream_sel_type != 'disabled':
+        list_item.setProperty(
+            key='inputstream.adaptive.stream_selection_type',
+            value=G.ADDON.getSettingString('isa_streamselection_override'))
     return list_item
 
 

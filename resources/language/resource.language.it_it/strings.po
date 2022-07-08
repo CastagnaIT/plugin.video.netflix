@@ -453,10 +453,7 @@ msgctxt "#30114"
 msgid "Keep 'My list' and Kodi Library in sync"
 msgstr "Mantieni 'La mia lista' e la libreria Kodi sincronizzate"
 
-msgctxt "#30115"
-msgid "Content Profiles"
-msgstr "Profili per contenuti"
-
+# Unused 30115
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
 msgstr "Configurazione avanzata dell'Add-on"
@@ -1120,3 +1117,27 @@ msgstr "Contrassegna le serie tv iniziate come viste"
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr "Da notare che attivando questa impostazione, se i filtri nelle impostazioni della Skin sono abilitati, gli elementi contrassegnati come visti potrebbero non essere visibili."
+
+msgctxt "#30703"
+msgid "Override stream selection type"
+msgstr ""
+
+msgctxt "#30704"
+msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
+msgstr ""
+
+msgctxt "#30705"
+msgid "Adaptive quality"
+msgstr ""
+
+msgctxt "#30706"
+msgid "Fixed video quality"
+msgstr ""
+
+msgctxt "#30707"
+msgid "Ask video quality"
+msgstr ""
+
+msgctxt "#30720"
+msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
+msgstr ""

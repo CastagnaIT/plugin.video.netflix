@@ -898,9 +898,46 @@
                     </control>
                 </setting>
             </group>
-            <!--GROUP: Content Profiles-->
-            <group id="2" label="30115">
-                <!--If something will be modified in this group remember to reflect the changes also on settings_monitor.py "content profiles"-->
+            <!--GROUP: Playback-->
+            <group id="2" label="30078">
+                <setting id="isa_streamselection_override" type="string" label="30703" help="30704">
+                  <level>0</level>
+                  <default>fixed</default>
+                  <constraints>
+                    <options>
+                      <option label="13106">disabled</option>
+                      <option label="30705">adaptive</option>
+                      <option label="30706">fixed-res</option>
+                      <option label="30707">ask-quality</option>
+                    </options>
+                  </constraints>
+                  <dependencies> <!-- Feature available on Kodi v20 or above -->
+                      <dependency type="visible">
+                          <or>
+                              <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,19.9)</condition> <!-- v20 pre-releases -->
+                              <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
+                          </or>
+                      </dependency>
+                  </dependencies>
+                  <control type="spinner" format="string" />
+                </setting>
+                <setting id="stream_max_resolution" type="string" label="30194" help="30720">
+                    <level>0</level>
+                    <default>--</default>
+                    <constraints>
+                        <options>
+                            <option label="--">--</option>
+                            <option label="SD 480p">SD 480p</option>
+                            <option label="SD 576p">SD 576p</option>
+                            <option label="HD 720p">HD 720p</option>
+                            <option label="Full HD 1080p">Full HD 1080p</option>
+                            <option label="UHD 4K">UHD 4K</option>
+                        </options>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <!--If you should be added/removed profile settings is needed to reflect the changes also on settings_monitor.py "content profiles"-->
                 <setting id="enable_dolby_sound" type="boolean" label="30033" help="">
                     <level>0</level>
                     <default>true</default>
@@ -977,22 +1014,6 @@
                     <dependencies>
                         <dependency type="visible" setting="enable_debug">true</dependency>
                     </dependencies>
-                </setting>
-                <setting id="stream_max_resolution" type="string" label="30194" help="">
-                    <level>0</level>
-                    <default>--</default>
-                    <constraints>
-                        <options>
-                            <option label="--">--</option>
-                            <option label="SD 480p">SD 480p</option>
-                            <option label="SD 576p">SD 576p</option>
-                            <option label="HD 720p">HD 720p</option>
-                            <option label="Full HD 1080p">Full HD 1080p</option>
-                            <option label="UHD 4K">UHD 4K</option>
-                        </options>
-                        <allowempty>false</allowempty>
-                    </constraints>
-                    <control type="spinner" format="string"/>
                 </setting>
                 <setting id="msl_manifest_version" type="string" label="30612" help="">
                     <level>0</level>
