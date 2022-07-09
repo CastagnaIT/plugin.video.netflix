@@ -359,7 +359,7 @@ msgstr "Durchstöbere verwandte Videolisten und entdecke weitere Inhalte."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "Durchsuche und verwalte Inhalte die der Kodi-Datenbank hinzugefügt wurden."
+msgstr "Durchsuche und verwalte Inhalte die der Kodi-Bibliothek hinzugefügt wurden."
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -465,7 +465,7 @@ msgstr "Cache"
 # Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Staffeln können nicht automatisch aus der Kodi-Bilbiothek entfernt werden. Bitte tue dies manuell."
+msgstr "Staffeln können nicht automatisch aus der Kodi-Bibliothek entfernt werden. Bitte tue dies manuell."
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -473,7 +473,7 @@ msgstr "Vollständige Synchronisation jetzt durchführen"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "'Meine Liste' mit Kodi Bibliothek synchronisieren"
+msgstr "'Meine Liste' mit Kodi-Bibliothek synchronisieren"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
