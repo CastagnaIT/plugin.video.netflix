@@ -902,7 +902,7 @@
             <group id="2" label="30078">
                 <setting id="isa_streamselection_override" type="string" label="30703" help="30704">
                   <level>0</level>
-                  <default>fixed</default>
+                  <default>disabled</default>
                   <constraints>
                     <options>
                       <option label="13106">disabled</option>
