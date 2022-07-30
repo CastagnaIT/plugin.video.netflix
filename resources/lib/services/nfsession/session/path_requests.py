@@ -126,13 +126,11 @@ class SessionPathRequests(SessionAccess):
             'materialize': 'true',
         }
         # Use separators with dumps because Netflix rejects spaces
+        # The data must be formatted correctly (numbers, strings, spaces) otherwise will raise HTTP error 401
         data = 'callPath=' + '&callPath='.join(
             json.dumps(callpath, separators=(',', ':')) for callpath in callpaths)
         if params:
-            # The data to pass on 'params' must not be formatted with json.dumps because it is not full compatible
-            #          if the request have wrong data will raise error 401
-            #          if the parameters are not formatted correctly will raise error 401
-            data += '&param=' + '&param='.join(params)
+            data += '&param=' + '&param='.join(json.dumps(param, separators=(',', ':')) for param in params)
         if path:
             data += '&path=' + json.dumps(path, separators=(',', ':'))
         if path_suffixs:
