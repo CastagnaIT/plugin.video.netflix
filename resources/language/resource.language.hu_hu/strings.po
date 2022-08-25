@@ -1120,24 +1120,24 @@ msgstr "Kérjük, vegye figyelembe, hogy ha engedélyezi ezt a beállítást, é
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Az adatfolyam kiválasztási típusának felülbírálása"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "Az InputStream Adaptive bővítmény adatfolyam típus beállításának felülbírálása annak beállításához, hogy lejátszás közben választhassuk ki az audio/video folyam minőségét."
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Alkalmazkodó minőség"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Fixált videó minőség"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Kérdezz rá a videó minőségre"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "Kérjük, vegye figyelembe, hogy ennek a beállításnak az engedélyezése kényszeríti a beállított tartományon kívüli adatfolyamok eltávolítását, és ez hatással lehet az InputStream Adaptive működésére. Ha lehetséges, próbálja meg először korlátozni a minőséget az InputStream Adaptive beállításaiban."
