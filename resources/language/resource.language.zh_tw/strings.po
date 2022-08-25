@@ -1120,24 +1120,24 @@ msgstr "請注意，若在外觀設定中有開啟過濾，開啟此設定可能
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "覆寫串流選擇類型"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "覆寫 InputStream Adaptive 插件的串流選擇類型，以設定如何選擇播放中的 音訊/影像 串流品質。"
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "自適應品質"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "固定影像品質"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "詢問影像品質"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "請注意，啟用此設定將強制刪除不在設定範圍內的串流，這可能會影響 InputStream Adaptive 的運作。如果可以的話，請先嘗試從 InputStream Adaptive 設定中限制品質。"
