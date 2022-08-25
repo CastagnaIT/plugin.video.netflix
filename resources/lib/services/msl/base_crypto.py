@@ -125,7 +125,14 @@ class MSLBaseCrypto(object):
         """Check if user id token is expired"""
         token_data = json.loads(base64.standard_b64decode(user_id_token['tokendata']))
         # Subtract 5min as a safety measure
-        return (token_data['expiration'] - 300) < time.time()
+        # return (token_data['expiration'] - 300) < time.time()
+        #
+        # 25/08/2022 The 'expiration' value on android seems not works correctly anymore, by returning MSL error:
+        #  "User entity association record query returned different entity identities."
+        #  Internal code 205043
+        # Is not clear the problem, if it is a bug in the netflix server or other changes, at first seems that we have
+        # the validity window limited to the 'renewalwindow' instead of 'expiration' value
+        return token_data['renewalwindow'] < time.time()
 
     def is_current_mastertoken_expired(self):
         """Check if the current MasterToken is expired"""
