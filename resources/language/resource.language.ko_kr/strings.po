@@ -1111,33 +1111,33 @@ msgstr "NEW! 요즘 대세 콘텐츠"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "보기 시작한 TV시리즈를 본 것으로 설정"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "이 기능을 사용하면, 스킨설정에 따라 본 것으로 설정한 것들이 나타나지 않을 수도 있습니다."
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "스트림설정 방법을 무시"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "InputStream 애드온의 설정을 무시하고, 재생 중에 음성과 화질을 선택할 수 있습니다."
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "해상도 자동조정"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "화질고정"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "해상도 선택"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "이 기능을 사용하면 설정 범위 밖의 스트림을 삭제함으로서 InputStream Adaptive의 동작에 영향을 줄 수 있습니다. 가능하면 InputStream Adaptive의 설정에서 화질을 제한하는 것이 좋습니다."

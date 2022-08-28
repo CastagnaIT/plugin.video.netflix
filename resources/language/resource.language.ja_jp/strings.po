@@ -1111,33 +1111,33 @@ msgstr "新作＆人気作"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "見始めたTV番組・ドラマを視聴済みにする。"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "有効化するとスキン設定によって視聴済みとなったアイテムが表示されない場合があります。"
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "ストリーム選択方法を無効化"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "InputStream Adaptiveアドオンの設定を無効化し、再生中に音声や解像度を選択する。"
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "解像度自動設定"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "解像度固定"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "解像度選択"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "有効化すると設定範囲外のストリームを削除することでInputStream Adaptiveの動作に影響を与える可能性があります。可能であればInputStream Adaptiveの設定から解像度制限を行ってください。"
