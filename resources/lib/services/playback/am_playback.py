@@ -7,6 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import re
 import time
 
 import xbmc
@@ -47,6 +48,29 @@ class AMPlayback(ActionManager):
             self.watched_threshold = data['metadata'][0]['creditsOffset'] - lower_value
 
     def on_playback_started(self, player_state):
+        # The black bar minimizer zoom the video to show the same height of black bars for all cropped videos,
+        # so this calculation takes into account the different black band heights between various videos.
+        # NOTE: Kodi save viewmode permanently
+        blackbar_perc = G.ADDON.getSettingInt('blackbars_minimizer')
+        if blackbar_perc < 50:
+            # Try find the crop info to the track name
+            stream = player_state['videostreams'][0]
+            result = re.match(r'\(Crop (\d+\.\d+)\)', stream['name'])
+            if result:
+                crop_factor = float(result.group(1))
+                video_height = stream['height']
+                crop_height = stream['height'] / crop_factor
+                blackbar_px = video_height - crop_height
+                blackbar_px_max = video_height / 100 * blackbar_perc
+                blackbar_px = min(blackbar_px, blackbar_px_max)
+                zoom_factor = (video_height - blackbar_px) / crop_height
+                # Check if the current view mode (previously stored) has already the right zoom value
+                current_view_mode = common.json_rpc('Player.GetViewMode')
+                current_zoom = current_view_mode.get('zoom', 1.0)
+                if current_zoom != zoom_factor:
+                    common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': zoom_factor}})
+        elif G.ADDON.getSettingBool('blackbars_minimizer_restore'):
+            common.json_rpc('Player.SetViewMode', {'viewmode': 'normal'})
         if self.resume_position:
             # Due to a bug on Kodi the resume on STRM files not works correctly,
             # so we force the skip to the resume point
