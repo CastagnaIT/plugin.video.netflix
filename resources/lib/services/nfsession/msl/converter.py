@@ -151,6 +151,12 @@ def _convert_video_track(video_track, period, protection, has_drm_streams, cdn_i
             if int(downloadable['res_h']) > limit_res:
                 continue
         _convert_video_downloadable(downloadable, adaptation_set, cdn_index)
+    # Calculate the crop factor, will be used on am_playback.py to set zoom viewmode
+    try:
+        factor = video_track['maxHeight'] / video_track['maxCroppedHeight']
+        adaptation_set.set('name', f'(Crop {factor:0.2f})')
+    except Exception as exc:  # pylint: disable=broad-except
+        LOG.error('Cannot calculate crop factor: {}', exc)
 
 
 def _limit_video_resolution(video_tracks, has_drm_streams):

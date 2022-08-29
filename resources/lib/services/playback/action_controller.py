@@ -206,7 +206,8 @@ class ActionController(xbmc.Monitor):
                     'currentsubtitle',
                     'subtitleenabled',
                     'percentage',
-                    'time']
+                    'time',
+                    'videostreams']
             })
         except IOError as exc:
             LOG.warn('_get_player_state: {}', exc)
