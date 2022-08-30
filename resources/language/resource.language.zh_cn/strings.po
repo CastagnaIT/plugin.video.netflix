@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-06-15 21:30+0000\n"
+"PO-Revision-Date: 2022-08-31 23:00+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -1120,24 +1120,51 @@ msgstr "请注意，如果您在皮肤设置中启用过滤器，启用此设置
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "覆盖流选择类型"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "覆盖InputStream Adaptive附加组件的流选择类型设置，以设置播放时如何选择音频/视频流质量。"
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "自适应质量"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "固定视频质量"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "询问视频质量"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "请注意，启用此设置将强制移除不在设定范围内的流，这可能影响InputStream Adaptive的操作。如果可能的话，先尝试从InputStream Adaptive设置中限制质量。"
+
+msgctxt "#30721"
+msgid "Limit maximum height of black bars (Experimental)"
+msgstr "限制黑条的最大高度（实验性）"
+
+# Description of setting ID #30721
+msgctxt "#30722"
+msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
+msgstr "通过将 Kodi \"视图模式\" 设置为 \"满屏\" 以最小化设置的最大高度处的黑条，裁剪的视频将被拉伸。例如 10% 表示黑条最多可以覆盖屏幕的 10%。要禁用它，请设置为 50%。"
+
+msgctxt "#30723"
+msgid "Force reset the \"View mode\" setting"
+msgstr "强制重置 \"视图模式\" 设置"
+
+# Description of setting ID #30723
+msgctxt "#30724"
+msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
+msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置可在播放之前观看的视频时恢复 \"正常\" 查看模式。"
+
+# Unused 30721 to 31999
+msgctxt "#32000"
+msgid "Enable AV1 profiles (TEST ONLY)"
+msgstr "启用AV1（测试）"
+
+msgctxt "#32001"
+msgid "The support of this codec is a experimental test and playback problems may occur on some operating systems."
+msgstr "对该编码支持为实验性测试，在某些操作系统上可能会出现播放问题。"
