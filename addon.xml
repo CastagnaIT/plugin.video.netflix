@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.18.8+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.18.9+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -86,13 +86,15 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.18.8 (2022-06-19)
-- REPOSITORY CHANGED: The repository has been changed, to receive future updates
-the add-on will try update it automatically to new v2.0, if for some reason this not
-happens you can update it manually by downloading: repository.castagnait-2.0.0.zip
-from Github Readme: https://github.com/CastagnaIT/plugin.video.netflix
-- Fix broken addon startup due to update error
-- Update translations zh_cn, ro, pt_br
+v1.18.9 (2022-08-30)
+- Add new expert setting to override "Stream selection type" setting of InputStream Adaptive (Kodi 20)
+- Add new experimental setting "Limit maximum height of black bars"
+- Fixed recommendations menu
+- Fixed "Remind me" context menu error
+- Fixed MSL error "User entity association record ..."
+- Fixed "double click" problem on Skip button (Kodi 20)
+- Better match for video codec with skin mediaflag
+- Update translations it, de, zh_tw, hu, ro, fr, jp, kr
     </news>
   </extension>
 </addon>
