@@ -247,11 +247,11 @@ class NFSessionOperations(SessionPathRequests):
         #   seem to have some kind of relationship with renoMessageId suspect with the logblob but i am not sure.
         #   I noticed also that this request can also be made with the fourth parameter empty.
         #   The fifth parameter unknown
-        params = [common.enclose_quotes(list_id),
-                  list_index,
-                  common.enclose_quotes(list_context_name),
-                  '""',
-                  '""']
+        params = [list_id,
+                  int(list_index),
+                  list_context_name,
+                  '',
+                  '']
         # path_suffixs = [
         #    [{'from': 0, 'to': 100}, 'itemSummary'],
         #    [['componentSummary']]
