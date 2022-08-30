@@ -1,3 +1,13 @@
+v1.18.9 (2022-08-30)
+- Add new expert setting to override "Stream selection type" setting of InputStream Adaptive (Kodi 20)
+- Add new experimental setting "Limit maximum height of black bars"
+- Fixed recommendations menu
+- Fixed "Remind me" context menu error
+- Fixed MSL error "User entity association record ..."
+- Fixed "double click" problem on Skip button (Kodi 20)
+- Better match for video codec with skin mediaflag
+- Update translations it, de, zh_tw, hu, ro, fr, jp, kr
+
 v1.18.8 (2022-06-19)
 - REPOSITORY CHANGED: The repository has been changed, to receive future updates
 the add-on will try update it automatically to new v2.0, if for some reason this not
@@ -11,7 +21,7 @@ v1.18.7 (2022-06-14)
 the add-on will try update it automatically to new v2.0, if for some reason this not
 happens you can update it manually by downloading: repository.castagnait-2.0.0.zip
 from Github Readme: https://github.com/CastagnaIT/plugin.video.netflix
-- Started tv shows are no longer marked as watched by default, this to prevent problems 
+- Started tv shows are no longer marked as watched by default, this to prevent problems
 with Skin filters, if you prefer it enable "Marks started tv shows as watched" from settings.
 - Fix genres/subgenres menus due to website changes
 - Add support to HDR/DolbyVision skin media flags (Kodi 20)
