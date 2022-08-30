@@ -143,6 +143,13 @@ ENDPOINTS = {
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
+    'shakti_playlistop':
+        {'address': '/api/shakti/mre/playlistop',
+         'is_api_call': False,
+         'use_default_params': False,
+         'add_auth_url': 'to_data',
+         'content_type': 'application/json',
+         'accept': 'application/json, text/javascript, */*'},
     'viewing_activity':
         {'address': '/viewingactivity',
          'is_api_call': True,

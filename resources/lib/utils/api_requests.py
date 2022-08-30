@@ -100,13 +100,15 @@ def rate_thumb(videoid, rating, track_id_jaw):
 
 def update_remindme(operation, videoid, trackid):
     """Call API to update "Remind Me" feature with either add or remove action"""
-    cmd = 'addToRemindMeList' if operation == 'add' else 'removeFromRemindMeList'
-    call_args = {
-        'callpaths': [['videos', int(videoid.value), cmd]],
-        'params': [trackid],
-        'path': ['videos', int(videoid.value), 'inRemindMeList']
-    }
-    response = common.make_call('callpath_request', call_args)
+    response = common.make_call(
+        'post_safe',
+        {'endpoint': 'shakti_playlistop',
+         'data': {
+             'lolomoId': '',
+             'operation': operation,
+             'videoId': int(videoid.value),
+             'trackId': int(trackid)
+         }})
     LOG.debug('update_remindme response: {}', response)
 
 
