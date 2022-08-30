@@ -1,3 +1,7 @@
+v1.12.13 (2022-08-30)
+- Fixed recommendation menu
+- Fixed MSL error User entity association
+
 v1.12.12 (2022-06-19)
 - REPOSITORY CHANGED: The repository has been changed, to receive future updates
 the add-on will try update it automatically to new v2.0, if for some reason this not
