@@ -52,14 +52,14 @@ Unlike official apps (on Smart TV or certified TV Boxes) in some cases using thi
 Here Netflix could provide the same TV shows/movies with lower resolutions, this mostly depends on the type of system/device in use.
 Devices with more limited resolutions are all those that use Linux operating system (certified Android excluded). Even between different Linux machines there may be differences.
 
-| System                              | 1080P    | 4K    | Video Decoding             |
-| ----------------------------------- | -------- | ----- | -------------------------- |
-| Windows                             | ✔\*1     | ✖\*2  | Software                   |
-| Linux (Android) \*5                 | ✔\*1, \*3| ✔\*4  | Software \\ Hardware \*4   |
-| Linux (Distributions)               | ✔\*1     | ✖\*2  | Software                   |
-| Linux (OSMC-CoreElec-LibreELEC-...) | ✔\*1     | ✖\*2  | Software                   |
-| MacOS                               | ✔\*1     | ✖\*2  | Software                   |
-| iOS / tvOS                          | ✖        | ✖     | Not supported              |
+| System                              | 1080P     | 4K      | Video Decoding             |
+| ----------------------------------- | --------- | ------- | -------------------------- |
+| Windows                             | ✔️\*1     | ❌\*2  | Software                   |
+| Linux (Android) \*5                 | ✔️\*1, \*3| ✔️\*4  | Software \\ Hardware \*4   |
+| Linux (Distributions)               | ✔️\*1     | ❌\*2  | Software                   |
+| Linux (OSMC-CoreElec-LibreELEC-...) | ✔️\*1     | ❌\*2  | Software                   |
+| MacOS                               | ✔️\*1     | ❌\*2  | Software                   |
+| iOS / tvOS                          | ❌        | ❌     | Not supported              |
 
 <sub><br/>
 *1 <b>With Software decoding 1080P is not guaranteed.</b><br/>
