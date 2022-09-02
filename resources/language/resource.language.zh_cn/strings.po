@@ -1158,4 +1158,4 @@ msgstr "强制重置 \"视图模式\" 设置"
 # Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置可在播放之前观看的视频时恢复 \"正常\" 查看模式。"
+msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置可在播放之前观看的视频时恢复 \"正常\" 视图模式。"
