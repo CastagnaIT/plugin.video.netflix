@@ -1122,24 +1122,24 @@ msgstr "Nótese que, ao activares esta opción, se tiveres filtros activados na 
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Modificar a selección do tipo de fluxo"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "Modificar o axuste da selección do tipo de fluxo do complemento InputStream Adaptive, para establecer como se escollerá a calidade dos fluxos de audio e vídeo durante a reprodución."
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Calidade adaptativa"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Calidade de vídeo fixa"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Preguntar a calidade de vídeo"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "Nótese que ao activar este axuste se van descartar automaticamente os fluxos fóra do rango establecido e isto pode afectar a operación do InputStream Adaptive. Se for posíbel, primeiro tenta limitar a calidade dende os axustes do InputStream Adaptive."
