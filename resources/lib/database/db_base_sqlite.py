@@ -16,6 +16,7 @@ import resources.lib.database.db_base as db_base
 import resources.lib.database.db_create_sqlite as db_create_sqlite
 import resources.lib.database.db_utils as db_utils
 from resources.lib.common.exceptions import DBSQLiteConnectionError, DBSQLiteError
+from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 
 
@@ -39,20 +40,22 @@ def handle_connection(func):
             # If database is mysql pass to next decorator
             return func(*args, **kwargs)
         conn = None
+        is_not_thread_safe = not G.IS_SQLITE3_THREADSAFE
         try:
             if not args[0].is_connected:
-                args[0].mutex.acquire()
+                if is_not_thread_safe:
+                    args[0].mutex.acquire()
                 args[0].conn = sql.connect(args[0].db_file_path,
-                                           isolation_level=CONN_ISOLATION_LEVEL)
+                                           isolation_level=CONN_ISOLATION_LEVEL,
+                                           check_same_thread = is_not_thread_safe)
                 args[0].is_connected = True
                 conn = args[0].conn
-
             return func(*args, **kwargs)
         except sql.Error as exc:
             LOG.error('SQLite error {}:', exc.args[0])
             raise DBSQLiteConnectionError from exc
         finally:
-            if conn:
+            if conn and is_not_thread_safe:
                 args[0].is_connected = False
                 conn.close()
                 args[0].mutex.release()
@@ -78,12 +81,13 @@ class SQLiteDatabase(db_base.BaseDatabase):
 
     def _initialize_connection(self):
         try:
-            LOG.debug('Trying connection to the database {}', self.db_filename)
+            LOG.debug('Trying connection to the SQLite database {}', self.db_filename)
             self.conn = sql.connect(self.db_file_path, check_same_thread=False)
             cur = self.conn.cursor()
             cur.execute(str('SELECT SQLITE_VERSION()'))
-            LOG.debug('Database connection {} was successful (SQLite ver. {})',
-                      self.db_filename, cur.fetchone()[0])
+            LOG.debug('Database connection {} was successful (SQLite ver. {} {})',
+                      self.db_filename, cur.fetchone()[0],
+                      'thread safe' if G.IS_SQLITE3_THREADSAFE else 'not thread safe')
             cur.row_factory = lambda cursor, row: row[0]
             cur.execute(str('SELECT name FROM sqlite_master WHERE type=\'table\' '
                             'AND name NOT LIKE \'sqlite_%\''))

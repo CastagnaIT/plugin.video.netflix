@@ -38,10 +38,14 @@ def handle_connection(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         conn = None
+        is_not_thread_safe = not G.IS_SQLITE3_THREADSAFE
         try:
             if not args[0].is_connected:
-                args[0].mutex.acquire()
-                args[0].conn = sql.connect(args[0].db_file_path, isolation_level=CONN_ISOLATION_LEVEL)
+                if is_not_thread_safe:
+                    args[0].mutex.acquire()
+                args[0].conn = sql.connect(args[0].db_file_path,
+                                           isolation_level=CONN_ISOLATION_LEVEL,
+                                           check_same_thread = is_not_thread_safe)
                 args[0].is_connected = True
                 conn = args[0].conn
             return func(*args, **kwargs)
@@ -49,7 +53,7 @@ def handle_connection(func):
             LOG.error('SQLite error {}:', exc.args[0])
             raise DBSQLiteConnectionError from exc
         finally:
-            if conn:
+            if conn and is_not_thread_safe:
                 args[0].is_connected = False
                 conn.close()
                 args[0].mutex.release()

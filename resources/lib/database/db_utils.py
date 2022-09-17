@@ -12,6 +12,7 @@ import os
 import xbmcvfs
 
 from resources.lib.globals import G
+from resources.lib.utils.logging import LOG
 
 
 LOCAL_DB_FILENAME = 'nf_local.sqlite3'
@@ -95,3 +96,19 @@ def mysql_insert_or_update(table, id_columns, columns):
     on_duplicate_params = [f'{col} = @{col}' for col in columns]
     query_duplicate = f'ON DUPLICATE KEY UPDATE {", ".join(on_duplicate_params)};'
     return ' '.join([query_set, query_insert, query_duplicate])
+
+
+def is_sqlite3_threadsafe():
+    """
+    Check if SQLite3 module is threadsafe
+    """
+    try:
+        import sqlite3 as sql
+        conn = sql.connect(':memory:')
+        threadsafety = conn.execute('SELECT * FROM pragma_compile_options WHERE compile_options LIKE \'THREADSAFE=%\'').fetchone()[0]
+        conn.close()
+        if int(threadsafety.split("=")[1]) == 1:
+            return True
+    except Exception as exc:  # pylint: disable=broad-except
+        LOG.error('Failed to check sqlite thread safe: {}', exc)
+    return False
