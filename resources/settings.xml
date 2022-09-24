@@ -834,10 +834,19 @@
             </group>
             <!--GROUP: Library-->
             <group id="2" label="30049">
-                <setting id="ResumeManager_enabled" type="boolean" label="30176" help="">
+                <setting id="ResumeManager_enabled" type="boolean" label="30176" help=""><!-- Needed only to Kodi versions below 19.5 -->
                     <level>0</level>
                     <default>true</default>
                     <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition on="property" operator="!is" name="InfoBool">String.StartsWith(System.BuildVersionCode,19.5)</condition>
+                                <condition on="property" operator="!is" name="InfoBool">String.StartsWith(System.BuildVersionCode,19.9)</condition> <!-- v20 pre-releases -->
+                                <condition on="property" operator="!is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
                 </setting>
                 <setting id="ResumeManager_dialog" type="boolean" label="30177" help="" parent="ResumeManager_enabled">
                     <level>0</level>
