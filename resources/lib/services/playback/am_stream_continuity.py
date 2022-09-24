@@ -78,13 +78,13 @@ class AMStreamContinuity(ActionManager):
             self.enabled = False
         if (player_state.get(STREAMS['subtitle']['current']) is None and
                 player_state.get('currentvideostream') is None):
-            # Kodi 19 BUG JSON RPC: "Player.GetProperties" is broken: https://github.com/xbmc/xbmc/issues/17915
-            # The first call return wrong data the following calls return OSError, and then _notify_all will be blocked
+            # KODI BUG! All Kodi v19 Matrix versions have the playlist bug, full fixed in version 20
+            # These versions set a wrong playlist id and corrupt the response data in JSON-RPC calls.
             self.enabled = False
-            LOG.error('Due of Kodi 19 bug has been disabled: '
-                      'Ask to skip dialog, remember audio/subtitles preferences and other features')
+            LOG.error('You are using a bugged Kodi version, please update to Kodi 20 or above: '
+                      'All Netflix add-on features has been now disabled and cannot be used.')
             ui.show_notification(title=common.get_local_string(30105),
-                                 msg='Due to Kodi bug has been disabled all Netflix features')
+                                 msg='A Kodi bug prevent to use Netflix features, please update to Kodi 20 or above.')
             return
         xbmc.sleep(500)  # Wait for slower systems
         self.player_state = player_state
