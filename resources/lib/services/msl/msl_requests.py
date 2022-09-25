@@ -23,7 +23,8 @@ from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 from resources.lib.services.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.msl.msl_utils import (display_error_info, generate_logblobs_params, ENDPOINTS,
-                                                  MSL_DATA_FILENAME, create_req_params)
+                                                  MSL_DATA_FILENAME, create_req_params, MSL_AUTH_NETFLIXID,
+                                                  MSL_AUTH_USER_ID_TOKEN)
 from resources.lib.services.tcp_keep_alive import enable_tcp_keep_alive
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_clock
@@ -31,6 +32,8 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator, perf_c
 
 class MSLRequests(MSLRequestBuilder):
     """Provides methods to make MSL requests"""
+
+    MSL_AUTH_SCHEME = MSL_AUTH_NETFLIXID
 
     def __init__(self, msl_data=None):
         super(MSLRequests, self).__init__()
@@ -162,12 +165,17 @@ class MSLRequests(MSLRequestBuilder):
     def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
-        auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
+
+        auth_data = {'auth_scheme': self.MSL_AUTH_SCHEME}
+
+        if self.MSL_AUTH_SCHEME == MSL_AUTH_USER_ID_TOKEN:
+            auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
+
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
-            save_uid_token_to_owner=auth_data['user_id_token'] is None)
+            save_uid_token_to_owner=auth_data.get('user_id_token') is None)
         return chunked_response['result']
 
     def _post(self, endpoint, request_data):

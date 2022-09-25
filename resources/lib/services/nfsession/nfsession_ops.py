@@ -49,7 +49,8 @@ class NFSessionOperations(SessionPathRequests):
             self.get_metadata,
             self.update_loco_context,
             self.update_videoid_bookmark,
-            self.get_loco_data
+            self.get_loco_data,
+            self.get_auth_data
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -90,6 +91,14 @@ class NFSessionOperations(SessionPathRequests):
             # (CastagnaIT: i don't know the best way to handle this borderline case, but login again works)
             self.session.cookies.clear()
             self.login()
+
+    def get_auth_data(self, placeholder_data):  # pylint: disable=unused-argument
+        """Workaround to get auth data"""
+        data = {
+            'NetflixId': self.session.cookies['NetflixId'],
+            'SecureNetflixId': self.session.cookies['SecureNetflixId']
+        }
+        return data
 
     @measure_exec_time_decorator(is_immediate=True)
     def activate_profile(self, guid):
