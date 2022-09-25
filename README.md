@@ -109,9 +109,7 @@ If it happens often, there is the possibility to exclude the auto update from th
 old closed Issues (on Issue tab), the Wiki pages or ask in the Kodi forum.***
 
 If you have encountered an error or misbehaviour:
-1. Open add-on `Expert` settings and:<br/>
-if on Kodi 18, change `Debug logging level` setting to `Verbose`<br/>
-if on Kodi 19, turn on `Enable debug logging` setting
+1. Open add-on `Expert` settings and turn on `Enable debug logging` setting, then press OK button
 2. Enable Kodi debug, go to Kodi `Settings` > `System Settings` > `Logging` and enable `Enable debug logging`
 3. Perform the actions that cause the error, so they are written in the log file
 4. Open a new GitHub Issue (of type *Bug report*) and fill in the page with detailed information
