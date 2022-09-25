@@ -12,7 +12,6 @@ import base64
 import json
 import time
 import zlib
-from typing import TYPE_CHECKING
 
 import httpx
 
@@ -22,12 +21,10 @@ from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, create_req_params, generate_logblobs_params,
-                                                            MSL_DATA_FILENAME)
+                                                            MSL_DATA_FILENAME, MSL_AUTH_NETFLIXID,
+                                                            MSL_AUTH_USER_ID_TOKEN)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
-
-if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
-    from resources.lib.services.nfsession.nfsession_ops import NFSessionOperations
 
 
 class MSLRequests(MSLRequestBuilder):
@@ -40,9 +37,13 @@ class MSLRequests(MSLRequestBuilder):
         'Host': 'www.netflix.com'
     }
 
+    # Define the user authentication scheme to be used on the MSL HTTP requests
+    # https://github.com/Netflix/msl/wiki/User-Authentication-%28Configuration%29
+    # Values can be: MSL_AUTH_NETFLIXID, MSL_AUTH_EMAIL_PASSWORD, MSL_AUTH_USER_ID_TOKEN
+    MSL_AUTH_SCHEME = MSL_AUTH_NETFLIXID
+
     def __init__(self, msl_data, nfsession):
-        super().__init__()
-        self.nfsession: 'NFSessionOperations' = nfsession
+        super().__init__(nfsession)
         self._load_msl_data(msl_data)
         self.msl_switch_requested = False
 
@@ -123,6 +124,9 @@ class MSLRequests(MSLRequestBuilder):
         :param: force_auth_credential: force the use of authentication with credentials
         :return: auth data that will be used in MSLRequestBuilder _add_auth_info
         """
+        # TODO: This _check_user_id_token method need to be revisited,
+        #  since at today 25/09/2022 the SWITCH_PROFILE auth scheme do not works anymore
+
         # Warning: the user id token contains also contains the identity of the netflix profile
         # therefore it is necessary to use the right user id token for the request
         current_profile_guid = G.LOCAL_DB.get_active_profile_guid()
@@ -159,12 +163,15 @@ class MSLRequests(MSLRequestBuilder):
     def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
-        auth_data = self._check_user_id_token(disable_msl_switch, force_auth_credential)
+
+        auth_data = {'auth_scheme': self.MSL_AUTH_SCHEME}
+        if self.MSL_AUTH_SCHEME == MSL_AUTH_USER_ID_TOKEN:
+            auth_data.update(self._check_user_id_token(disable_msl_switch, force_auth_credential))
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(
             self._post(endpoint, self.msl_request(request_data, esn, auth_data)),
-            save_uid_token_to_owner=auth_data['user_id_token'] is None)
+            save_uid_token_to_owner=auth_data.get('user_id_token') is None)
         return chunked_response['result']
 
     def _post(self, endpoint, request_data):
