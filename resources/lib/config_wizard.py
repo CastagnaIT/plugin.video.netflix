@@ -55,19 +55,15 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
         LOG.error(traceback.format_exc())
         raise InputStreamHelperError(str(exc)) from exc
 
-    isa_addon = Addon('inputstream.adaptive')
     if G.KODI_VERSION < '20':
+        # Only needed for Kodi <= v19, this has been fixed on Kodi 20
+        isa_addon = Addon('inputstream.adaptive')
         isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
         if isa_addon.getSettingInt('STREAMSELECTION') == 1:
             # Stream selection must never be set to 'Manual' or cause problems with the streams
             isa_addon.setSettingInt('STREAMSELECTION', 0)
         # 'Ignore display' should only be set when Kodi display resolution is not 4K
         isa_addon.setSettingBool('IGNOREDISPLAY',
-                                 is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
-    else:
-        isa_addon.setSettingBool('HDCPOVERRIDE', hdcp_override)
-        # 'Ignore display' should only be set when Kodi display resolution is not 4K
-        isa_addon.setSettingBool('adaptivestream.ignore.screen.res',
                                  is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
 
 
