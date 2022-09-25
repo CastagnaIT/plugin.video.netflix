@@ -72,10 +72,10 @@ class VideoListLoCo:
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.list_id = list_id
-        self.videoids = None
+        self.videoids = []
         # Set a 'UNSPECIFIED' type videoid (special handling for menus see parse_info in infolabels.py)
         self.videoid = common.VideoId(videoid=list_id)
-        self.contained_titles = None
+        self.contained_titles = []
         self.artitem = None
         if 'lists' not in path_response:
             # No data in path response
@@ -91,7 +91,7 @@ class VideoListLoCo:
         try:
             self.videoids = _get_videoids(self.videos)
         except KeyError:
-            self.videoids = None
+            self.videoids = []
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'][key])
@@ -110,8 +110,8 @@ class VideoList:
         has_data = bool(path_response.get('lists'))
         self.videos = OrderedDict()
         self.artitem = None
-        self.contained_titles = None
-        self.videoids = None
+        self.contained_titles = []
+        self.videoids = []
         if has_data:
             # Generate one videoid, or from the first id of the list or with specified one
             self.videoid = common.VideoId(
@@ -126,7 +126,7 @@ class VideoList:
                 try:
                     self.videoids = _get_videoids(self.videos)
                 except KeyError:
-                    self.videoids = None
+                    self.videoids = []
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.videoid.value][key])
@@ -149,8 +149,8 @@ class VideoListSorted:
         self.data_lists = {}
         self.videos = OrderedDict()
         self.artitem = None
-        self.contained_titles = None
-        self.videoids = None
+        self.contained_titles = []
+        self.videoids = []
         if has_data:
             self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
                 if context_id else path_response[context_name][req_sort_order_type]
@@ -162,7 +162,7 @@ class VideoListSorted:
                 try:
                     self.videoids = _get_videoids(self.videos)
                 except KeyError:
-                    self.videoids = None
+                    self.videoids = []
 
     def __getitem__(self, key):
         return _check_sentinel(self.data_lists[key])
@@ -179,9 +179,9 @@ class SearchVideoList:
         self.data = path_response
         has_data = 'search' in path_response
         self.videos = OrderedDict()
-        self.videoids = None
+        self.videoids = []
         self.artitem = None
-        self.contained_titles = None
+        self.contained_titles = []
         if has_data:
             self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
             self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
