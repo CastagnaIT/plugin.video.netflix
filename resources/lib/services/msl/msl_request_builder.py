@@ -14,8 +14,10 @@ import base64
 import random
 import time
 
-from resources.lib.globals import G
 import resources.lib.common as common
+from resources.lib.common.exceptions import MSLError
+from resources.lib.globals import G
+from resources.lib.services.msl.msl_utils import MSL_AUTH_USER_ID_TOKEN, MSL_AUTH_EMAIL_PASSWORD, MSL_AUTH_NETFLIXID
 from resources.lib.utils.logging import measure_exec_time_decorator
 
 
@@ -126,14 +128,16 @@ class MSLRequestBuilder(object):
 
     def _add_auth_info(self, header_data, auth_data):
         """User authentication identifies the application user associated with a message"""
-        # Warning: the user id token contains also contains the identity of the netflix profile
-        # therefore it is necessary to use the right user id token for the request
-        if auth_data.get('user_id_token'):
+        if auth_data['auth_scheme'] == MSL_AUTH_USER_ID_TOKEN:
+            # Authentication scheme with: User ID token
+            # Make requests by using by default main netflix profile, since the user id token contains also the identity
+            # of the netflix profile, to send data to the right profile (e.g. for continue watching) must be used
+            # SWITCH_PROFILE scheme to switching MSL profile.
+            # 25/09/2022: SWITCH_PROFILE auth scheme has been disabled on netflix website backend and not works anymore.
             if auth_data['use_switch_profile']:
-                # The SWITCH_PROFILE is a custom Netflix MSL user authentication scheme
-                # that is needed for switching profile on MSL side
-                # works only combined with user id token and can not be used with all endpoints
-                # after use it you will get user id token of the profile specified in the response
+                # The SWITCH_PROFILE is a custom Netflix MSL user authentication scheme, that is needed for switching
+                # profile on MSL side, works only combined with user id token and can not be used with all endpoints
+                # after use it you will get the user id token of the requested profile in the response.
                 header_data['userauthdata'] = {
                     'scheme': 'SWITCH_PROFILE',
                     'authdata': {
@@ -142,10 +146,10 @@ class MSLRequestBuilder(object):
                     }
                 }
             else:
-                # Authentication with user ID token containing the user identity (netflix profile)
                 header_data['useridtoken'] = auth_data['user_id_token']
-        else:
-            # Authentication with the user credentials
+        elif auth_data['auth_scheme'] == MSL_AUTH_EMAIL_PASSWORD:
+            # Authentication scheme with: Email password
+            # Make requests by using main netflix profile only (you cannot update continue watching to other profiles)
             credentials = common.get_credentials()
             header_data['userauthdata'] = {
                 'scheme': 'EMAIL_PASSWORD',
@@ -154,13 +158,18 @@ class MSLRequestBuilder(object):
                     'password': credentials['password']
                 }
             }
-            # Authentication with user Netflix ID cookies
-            # This not works on android,
-            #   will raise: User authentication data does not match entity identity
-            # header_data['userauthdata'] = {
-            #     'scheme': 'NETFLIXID',
-            #     'authdata': {
-            #         'netflixid': cookies['NetflixId'],
-            #         'securenetflixid': cookies['SecureNetflixId']
-            #     }
-            # }
+        elif auth_data['auth_scheme'] == MSL_AUTH_NETFLIXID:
+            # Authentication scheme with: Netflix ID cookies
+            # Make requests by using the same netflix profile used/set on nfsession (website)
+
+            # Workaround to get updated auth data from nfsession
+            data = common.make_http_call('get_auth_data', {'placeholder_data': ''})
+            header_data['userauthdata'] = {
+                'scheme': 'NETFLIXID',
+                'authdata': {
+                    'netflixid': data['NetflixId'],
+                    'securenetflixid': data['SecureNetflixId']
+                }
+            }
+        else:
+            raise MSLError('Authentication scheme not supported.')

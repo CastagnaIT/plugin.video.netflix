@@ -45,6 +45,10 @@ ENDPOINTS = {
     'logblobs': CHROME_PLAYAPI_URL + 'logblob/1'
 }
 
+MSL_AUTH_NETFLIXID = 'NETFLIXID'  # Netflix ID cookies user authentication
+MSL_AUTH_EMAIL_PASSWORD = 'EMAIL_PASSWORD'  # Email password user authentication
+MSL_AUTH_USER_ID_TOKEN = 'USER_ID_TOKEN'  # User ID token user authentication
+
 MSL_DATA_FILENAME = 'msl_data.json'
 
 EVENT_START = 'start'      # events/start : Video starts
