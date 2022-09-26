@@ -1,3 +1,6 @@
+v1.12.14 (2022-09-26)
+- Fixed MSL error when playing videos from non-owner Netflix profiles
+
 v1.12.13 (2022-08-30)
 - Fixed recommendation menu
 - Fixed MSL error User entity association
