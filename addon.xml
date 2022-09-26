@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.18.9+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.18.10+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -86,15 +86,12 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.18.9 (2022-08-30)
-- Add new expert setting to override "Stream selection type" setting of InputStream Adaptive (Kodi 20)
-- Add new experimental setting "Limit maximum height of black bars"
-- Fixed recommendations menu
-- Fixed "Remind me" context menu error
-- Fixed MSL error "User entity association record ..."
-- Fixed "double click" problem on Skip button (Kodi 20)
-- Better match for video codec with skin mediaflag
-- Update translations it, de, zh_tw, hu, ro, fr, jp, kr
+v1.18.10 (2022-09-26)
+- Fixed MSL error when playing videos from non-owner Netflix profiles
+- Fixed setting type error at first plugin startup on Kodi 20
+- Fixed error when you add a tvshow/movie on an empty my list
+- Removed STRM resume workaround for Kodi v19.5 and v20 (fixed on Kodi)
+- Update translations zh_cn, cs_cz, gl_es
     </news>
   </extension>
 </addon>
