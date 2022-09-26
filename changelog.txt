@@ -1,3 +1,10 @@
+v1.18.10 (2022-09-26)
+- Fixed MSL error when playing videos from non-owner Netflix profiles
+- Fixed setting type error at first plugin startup on Kodi 20
+- Fixed error when you add a tvshow/movie on an empty my list
+- Removed STRM resume workaround for Kodi v19.5 and v20 (fixed on Kodi)
+- Update translations zh_cn, cs_cz, gl_es
+
 v1.18.9 (2022-08-30)
 - Add new expert setting to override "Stream selection type" setting of InputStream Adaptive (Kodi 20)
 - Add new experimental setting "Limit maximum height of black bars"
