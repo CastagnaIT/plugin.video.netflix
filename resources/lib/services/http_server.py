@@ -109,7 +109,7 @@ def handle_request(server, handler, func_name, data):
             import traceback
             LOG.error(traceback.format_exc())
         ret_data = exc
-    if ret_data is not None:
+    if ret_data != None:
         server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
 
 
@@ -124,7 +124,7 @@ def handle_cache_request(server, func_name, data):
             import traceback
             LOG.error(traceback.format_exc())
         ret_data = exc
-    if ret_data is not None:
+    if ret_data != None:
         server.wfile.write(pickle.dumps(ret_data, protocol=pickle.HIGHEST_PROTOCOL))
 
 
