@@ -201,6 +201,7 @@ class GlobalVariables:
         # Define here also any other variables necessary for the correct loading of the other project modules
         self.WND_KODI_HOME = Window(10000)  # Kodi home window
         self.IS_ADDON_FIRSTRUN = None
+        self.IS_SERVICE = False
         self.ADDON = None
         self.ADDON_DATA_PATH = None
         self.DATA_PATH = None
@@ -224,6 +225,11 @@ class GlobalVariables:
         except IndexError:
             self.PARAM_STRING = ''
         self.REQUEST_PARAMS = dict(parse_qsl(self.PARAM_STRING))
+        try:
+            self.PLUGIN_HANDLE = int(argv[1])
+        except IndexError:
+            self.PLUGIN_HANDLE = 0
+            self.IS_SERVICE = True
         if self.IS_ADDON_FIRSTRUN:
             # Global variables that do not need to be generated at every instance
             self.ADDON_ID = self.ADDON.getAddonInfo('id')
@@ -237,14 +243,10 @@ class GlobalVariables:
             self.ADDON_PACKAGES_PATH = os.path.join(self.ADDON_DATA_PATH, 'packages')
             self.CACHE_PATH = os.path.join(self.DATA_PATH, 'cache')
             self.COOKIES_PATH = os.path.join(self.DATA_PATH, 'COOKIES')
-            try:
-                self.PLUGIN_HANDLE = int(argv[1])
-                self.IS_SERVICE = False
-                self.BASE_URL = f'{self.URL[0]}://{self.URL[1]}'
-            except IndexError:
-                self.PLUGIN_HANDLE = 0
-                self.IS_SERVICE = True
+            if self.IS_SERVICE:
                 self.BASE_URL = f'plugin://{self.ADDON_ID}'
+            else:
+                self.BASE_URL = f'{self.URL[0]}://{self.URL[1]}'
             from resources.lib.common.kodi_ops import KodiVersion
             self.KODI_VERSION = KodiVersion()
             self.IS_OLD_KODI_MODULES = self.KODI_VERSION < '20'
