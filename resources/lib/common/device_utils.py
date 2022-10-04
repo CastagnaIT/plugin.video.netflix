@@ -89,6 +89,16 @@ def is_device_4k_capable():
     return False
 
 
+def is_device_l1_enabled():
+    """Check if L1 security level is enabled"""
+    from resources.lib.database.db_utils import TABLE_SESSION
+    wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                            WidevineForceSecLev.DISABLED,
+                                            table=TABLE_SESSION)
+    is_l3_forced = wv_force_sec_lev != WidevineForceSecLev.DISABLED
+    return G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1' and not is_l3_forced
+
+
 def get_hdcp_level():
     """Get the HDCP level when exist else None"""
     from re import findall

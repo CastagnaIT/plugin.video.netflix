@@ -1090,8 +1090,8 @@ msgstr "Verze MSL manifestu"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
-msgid "This title will be available from: {}"
-msgstr "Tento titul bude dostupný až od: {}"
+msgid "This title will be available from:[CR]{}"
+msgstr "Tento titul bude dostupný až od:[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"

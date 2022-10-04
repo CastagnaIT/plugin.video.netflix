@@ -83,8 +83,8 @@ class VideoId:
     @classmethod
     def from_videolist_item(cls, video):
         """Create a VideoId from a video item contained in a video list path response"""
-        mediatype = video['summary']['type']
-        video_id = video['summary']['id']
+        mediatype = video['summary']['value']['type']
+        video_id = video['summary']['value']['id']
         if mediatype == VideoId.MOVIE:
             return cls(movieid=video_id)
         if mediatype == VideoId.SHOW:

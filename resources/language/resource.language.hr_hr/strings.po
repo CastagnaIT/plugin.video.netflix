@@ -1090,8 +1090,8 @@ msgstr ""
 
 # Unused 30613 to 30619
 msgctxt "#30620"
-msgid "This title will be available from: {}"
-msgstr "Ovaj naslov bit će dostupan od: {}"
+msgid "This title will be available from:[CR]{}"
+msgstr "Ovaj naslov bit će dostupan od:[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"

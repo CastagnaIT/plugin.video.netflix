@@ -99,29 +99,47 @@ def rate_thumb(videoid, rating, track_id_jaw):
 
 
 def update_remindme(operation, videoid, trackid):
-    """Call API to update "Remind Me" feature with either add or remove action"""
-    response = common.make_call(
-        'post_safe',
-        {'endpoint': 'shakti_playlistop',
-         'data': {
-             'lolomoId': '',
-             'operation': operation,
-             'videoId': int(videoid.value),
-             'trackId': int(trackid)
-         }})
-    LOG.debug('update_remindme response: {}', response)
+    """Call API to add / remove "Remind Me" to not available videos"""
+    # Method used with old api endpoint
+    # response = common.make_call(
+    #     'post_safe',
+    #     {'endpoint': 'playlistop',
+    #      'data': {
+    #          'lolomoId': 'unknown',
+    #          'operation': operation,
+    #          'videoId': int(videoid.value),
+    #          'trackId': int(trackid)
+    #      }})
+    # LOG.debug('update_remindme response: {}', response)
+    op = 'addToRemindMeList' if operation == 'add' else 'removeToRemindMeList'
+    call_args = {
+        'callpaths': [['videos', int(videoid.value), op]],
+        'params': [str(trackid)],
+        'path': ['videos', int(videoid.value), 'inRemindMeList']
+    }
+    response = common.make_call('callpath_request', call_args)
+    if response['videos'][videoid.value]['inRemindMeList']['value'] != (operation == 'add'):
+        LOG.debug('update_remindme response: {}', response)
+        raise Exception('Unable update remind me, an error occurred in the request.')
 
 
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
-    """Call API to update my list with either add or remove action"""
+    """Call API to add / remove videos to my list"""
     LOG.debug('My List: {} {}', operation, videoid)
-    common.make_call(
+    response = common.make_call(
         'post_safe',
-        {'endpoint': 'update_my_list',
+        {'endpoint': 'playlistop',
          'data': {
+             'lolomoId': 'unknown',
              'operation': operation,
-             'videoId': videoid.value}})
+             'videoId': int(videoid.value),
+             'trackId': int(params['trackid']),
+             'skipRootInvalidation': True,
+         }})
+    if response.get('status') != 'success':
+        LOG.debug('update_my_list response: {}', response)
+        raise Exception('Unable update my list, an error occurred in the request.')
     _update_mylist_cache(videoid, operation, params)
 
 
@@ -181,14 +199,14 @@ def set_parental_control_data(data):
 def verify_profile_lock(guid, pin):
     """Send profile PIN to Netflix and verify it."""
     try:
-        common.make_call(
+        response = common.make_call(
             'post_safe',
             {'endpoint': 'profile_lock',
              'data': {'pin': pin,
                       'action': 'verify',
                       'guid': guid}}
         )
-        return True
+        return response.get('success') is True
     except HttpError401:  # Wrong PIN
         return False
 
@@ -201,7 +219,10 @@ def get_available_audio_languages():
     response = common.make_call('path_request', call_args)
     lang_list = {}
     for lang_dict in response.get('spokenAudioLanguages', {}).values():
-        lang_list[lang_dict['id']] = lang_dict['name']
+        lang_id = lang_dict['id'].get('value')
+        if lang_id is None:  # If none the list is ended
+            break
+        lang_list[lang_id] = lang_dict['name']['value']
     return lang_list
 
 
@@ -213,7 +234,10 @@ def get_available_subtitles_languages():
     response = common.make_call('path_request', call_args)
     lang_list = {}
     for lang_dict in response.get('subtitleLanguages', {}).values():
-        lang_list[lang_dict['id']] = lang_dict['name']
+        lang_id = lang_dict['id'].get('value')
+        if lang_id is None:  # If none the list is ended
+            break
+        lang_list[lang_id] = lang_dict['name']['value']
     return lang_list
 
 
@@ -226,7 +250,7 @@ def get_genre_title(genre_id):
         'paths': [['genres', int(genre_id), ['name']]]
     }
     response = common.make_call('path_request', call_args)
-    return response['genres'].get(genre_id, {}).get('name')
+    return response['genres'].get(genre_id, {}).get('name', {}).get('value')
 
 
 def remove_watched_status(videoid):

@@ -16,13 +16,14 @@ import zlib
 import httpx
 
 import resources.lib.common as common
+from resources.lib.common import get_system_platform, is_device_l1_enabled
 from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, create_req_params, generate_logblobs_params,
                                                             MSL_DATA_FILENAME, MSL_AUTH_NETFLIXID,
-                                                            MSL_AUTH_USER_ID_TOKEN)
+                                                            MSL_AUTH_USER_ID_TOKEN, MSL_AUTH_EMAIL_PASSWORD)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
@@ -37,15 +38,9 @@ class MSLRequests(MSLRequestBuilder):
         'Host': 'www.netflix.com'
     }
 
-    # Define the user authentication scheme to be used on the MSL HTTP requests
-    # https://github.com/Netflix/msl/wiki/User-Authentication-%28Configuration%29
-    # Values can be: MSL_AUTH_NETFLIXID, MSL_AUTH_EMAIL_PASSWORD, MSL_AUTH_USER_ID_TOKEN
-    MSL_AUTH_SCHEME = MSL_AUTH_NETFLIXID
-
     def __init__(self, msl_data, nfsession):
         super().__init__(nfsession)
         self._load_msl_data(msl_data)
-        self.msl_switch_requested = False
 
     def _load_msl_data(self, msl_data):
         try:
@@ -134,6 +129,12 @@ class MSLRequests(MSLRequestBuilder):
         use_switch_profile = False
         user_id_token = None
 
+        if current_profile_guid != owner_profile_guid:
+            # TODO: due to removal of SWITCH_PROFILE, we cannot currently switch profile on MSL side,
+            #  CIT: i have no idea if there is another way to have a kind of profile switching with id tokens
+            raise Exception('Due to changes to the Netflix website, on Android L3 devices '
+                            'videos can only be played from the main/owner profile.')
+
         if not force_auth_credential:
             if current_profile_guid == owner_profile_guid:
                 # The request will be executed from the owner profile
@@ -155,8 +156,6 @@ class MSLRequests(MSLRequestBuilder):
                         # The owner profile token id does not exist/valid, then get it
                         self._get_owner_user_id_token()
                         user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
-                    # Mark msl_switch_requested as True in order to make a bind event request
-                    self.msl_switch_requested = True
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
     @measure_exec_time_decorator(is_immediate=True)
@@ -164,9 +163,25 @@ class MSLRequests(MSLRequestBuilder):
         """Do a POST request and process the chunked response"""
         self._mastertoken_checks()
 
-        auth_data = {'auth_scheme': self.MSL_AUTH_SCHEME}
-        if self.MSL_AUTH_SCHEME == MSL_AUTH_USER_ID_TOKEN:
+        # Define the user authentication scheme to be used on the MSL HTTP requests
+        # https://github.com/Netflix/msl/wiki/User-Authentication-%28Configuration%29
+        # Values can be: MSL_AUTH_NETFLIXID, MSL_AUTH_EMAIL_PASSWORD, MSL_AUTH_USER_ID_TOKEN
+        auth_scheme = MSL_AUTH_NETFLIXID
+        auth_data = {}
+
+        # TODO: MSL netflixid auth at today not works with L3 android devices by returning error:
+        #  "User authentication data does not match entity identity."
+        #  so we fallback to idtoken auth, but this will not allow to play videos with other profiles than owner one,
+        #  then until another solution will be found the other profiles will be unusable...
+        if get_system_platform() == 'android' and not is_device_l1_enabled():
+            auth_scheme = MSL_AUTH_USER_ID_TOKEN
+
+        if auth_scheme == MSL_AUTH_USER_ID_TOKEN:
             auth_data.update(self._check_user_id_token(disable_msl_switch, force_auth_credential))
+            if auth_data['user_id_token'] is None:
+                auth_scheme = MSL_AUTH_EMAIL_PASSWORD
+
+        auth_data['auth_scheme'] = auth_scheme
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(

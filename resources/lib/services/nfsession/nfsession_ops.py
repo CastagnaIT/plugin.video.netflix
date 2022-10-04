@@ -112,10 +112,12 @@ class NFSessionOperations(SessionPathRequests):
         # END Method 1
         # INIT Method 2 - API mode
         try:
-            self.get_safe(endpoint='activate_profile',
-                          params={'switchProfileGuid': guid,
-                                  '_': int(timestamp * 1000),
-                                  'authURL': self.auth_url})
+            response = self.get_safe(endpoint='activate_profile',
+                                     params={'switchProfileGuid': guid,
+                                             '_': int(timestamp * 1000),
+                                             'authURL': self.auth_url})
+            if response.get('status') != 'success':
+                raise InvalidProfilesError('Unable to access to the selected profile.')
         except HttpError401 as exc:
             # Profile guid not more valid
             raise InvalidProfilesError('Unable to access to the selected profile.') from exc
@@ -275,12 +277,12 @@ class NFSessionOperations(SessionPathRequests):
         #  will change every time that nfsession update_loco_context is called
         context_name = 'continueWatching'
         loco_data = self.path_request([['loco', [context_name], ['context', 'id', 'index']]])
-        loco_root = loco_data['loco'][1]
+        loco_root = loco_data['loco']['value'][1]
         _loco_data = {'root_id': loco_root}
         # 22/11/2021 With some users the API path request not provide the "locos" data
         if 'locos' in loco_data and context_name in loco_data['locos'][loco_root]:
             # NOTE: In the new profiles, there is no 'continueWatching' list and no data will be provided
             _loco_data['list_context_name'] = context_name
-            _loco_data['list_index'] = loco_data['locos'][loco_root][context_name][2]
-            _loco_data['list_id'] = loco_data['locos'][loco_root][_loco_data['list_index']][1]
+            _loco_data['list_index'] = loco_data['locos'][loco_root][context_name]['value'][2]
+            _loco_data['list_id'] = loco_data['locos'][loco_root][_loco_data['list_index']]['value'][1]
         return _loco_data

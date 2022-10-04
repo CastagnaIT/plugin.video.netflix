@@ -105,7 +105,7 @@ class SessionHTTPRequests(SessionBase):
             raise HttpError401
         response.raise_for_status()
         return (_raise_api_error(response.json() if response.content else {})
-                if endpoint_conf['is_api_call']
+                if 'application/json' in response.headers.get('content-type', '')
                 else response.content)
 
     def try_refresh_session_data(self, raise_exception=False):
@@ -167,13 +167,13 @@ class SessionHTTPRequests(SessionBase):
         if endpoint_conf['use_default_params']:
             params = {
                 'drmSystem': 'widevine',
+                'falcor_server': '0.1.0',
                 'withSize': 'false',
                 'materialize': 'false',
                 'routeAPIRequestsThroughFTL': 'false',
                 'isVolatileBillboardsEnabled': 'true',
                 'isTop10Supported': 'true',
-                'categoryCraversEnabled': 'false',
-                'original_path': f'/shakti/{G.LOCAL_DB.get_value("build_identifier", "", TABLE_SESSION)}/pathEvaluator'
+                'original_path': '/shakti/mre/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
             params['authURL'] = self.auth_url

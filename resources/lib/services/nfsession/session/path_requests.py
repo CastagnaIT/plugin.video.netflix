@@ -21,19 +21,17 @@ class SessionPathRequests(SessionAccess):
     """Manages the PATH requests"""
 
     @measure_exec_time_decorator(is_immediate=True)
-    def path_request(self, paths, use_jsongraph=False):
+    def path_request(self, paths):
         """Perform a path request against the Shakti API"""
         LOG.debug('Executing path request: {}', paths)
         custom_params = {}
-        if use_jsongraph:
-            custom_params['falcor_server'] = '0.1.0'
         # Use separators with dumps because Netflix rejects spaces
         data = 'path=' + '&path='.join(json.dumps(path, separators=(',', ':')) for path in paths)
         response = self.post_safe(
             endpoint='shakti',
             params=custom_params,
             data=data)
-        return response['jsonGraph'] if use_jsongraph else response['value']
+        return response['jsonGraph']
 
     @measure_exec_time_decorator(is_immediate=True)
     def perpetual_path_request(self, paths, length_params, perpetual_range_start=None,
@@ -120,7 +118,6 @@ class SessionPathRequests(SessionAccess):
         LOG.debug('Executing callPath request: {} params: {} path_suffixs: {}',
                   callpaths, params, path_suffixs)
         custom_params = {
-            'falcor_server': '0.1.0',
             'method': 'call',
             'withSize': 'true',
             'materialize': 'true',

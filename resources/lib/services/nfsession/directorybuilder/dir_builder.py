@@ -158,7 +158,7 @@ class DirectoryBuilder(DirectoryPathRequests):
         if video_list:
             for video_id, video in video_list.videos.items():
                 video_id_list.append(video_id)
-                video_id_list_type.append(video['summary']['type'])
+                video_id_list_type.append(video['summary']['value']['type'])
         return video_id_list, video_id_list_type
 
     @measure_exec_time_decorator(is_immediate=True)

@@ -54,6 +54,6 @@ def get_param_watched_status_by_profile():
 
 
 def get_availability_message(video_data):
-    return (video_data.get('summary', {}).get('availabilityDateMessaging') or
-            video_data.get('availability', {}).get('availabilityDate') or
-            common.get_local_string(10005))  # "Not available"
+    suppl_msg = video_data.get('dpSupplementalMessage', {}).get('value')
+    return (suppl_msg or video_data.get('availability', {}).get('value', {}).get(
+        'availabilityDate') or common.get_local_string(10005))  # "Not available"

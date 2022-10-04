@@ -1089,8 +1089,8 @@ msgstr ""
 
 # Unused 30613 to 30619
 msgctxt "#30620"
-msgid "This title will be available from: {}"
-msgstr "Ez a cím elérhető lesz ettől az időponttól: {}"
+msgid "This title will be available from:[CR]{}"
+msgstr "Ez a cím elérhető lesz ettől az időponttól:[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
