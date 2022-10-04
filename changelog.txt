@@ -1,3 +1,11 @@
+v1.19.0 (2022-10-04)
+- NOTE: DUE TO WEBSITE CHANGES ANDROID L3 DEVICES CAN PLAY VIDEOS FROM MAIN PROFILE ONLY
+- Rework of the addon due to website API change
+- Fix HTTP error 404 Not Found for url
+- Fix error missing 2 required keyword-only arguments: 'request' and 'response'
+- Fix MSL error user auth data does not match entity identity on android L3 devices
+- Update translation sv_se
+
 v1.18.10 (2022-09-26)
 - Fixed MSL error when playing videos from non-owner Netflix profiles
 - Fixed setting type error at first plugin startup on Kodi 20
