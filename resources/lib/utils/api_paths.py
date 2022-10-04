@@ -27,30 +27,30 @@ ART_SIZE_HD = '_1280x720'
 ART_SIZE_SD = '_665x375'
 
 LENGTH_ATTRIBUTES = {
-    'stdlist': lambda r, context, key: len(r[context][key]),
-    'stdlist_wid': lambda r, context, uid, key: len(r[context][uid][key]),
+    'stdlist': lambda r, context, key: jgrapgh_len(r[context][key]),
+    'stdlist_wid': lambda r, context, uid, key: jgrapgh_len(r[context][uid][key]),
     'searchlist': lambda r, context, key: len(list(r[context][key].values())[0]),
 }
 
 """Predefined lambda expressions that return the number of video results within a path response dict"""
 
 ART_PARTIAL_PATHS = [
-    ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg'],
-    ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg'],
-    ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', '_550x124', 'png'],  # 11/05/2020 same img of bb2OGLogo
-    ['storyArt', ART_SIZE_SD, 'jpg']  # 11/05/2020 same img of BGImages
+    ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg', 'value'],
+    ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg', 'value'],
+    ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', '_550x124', 'png', 'value'],  # 11/05/2020 same img of bb2OGLogo
+    ['storyArt', ART_SIZE_SD, 'jpg', 'value']  # 11/05/2020 same img of BGImages
 ]
 
 # Old image paths for reference
-# ['bb2OGLogo', '_550x124', 'png']
-# ['BGImages', '720', 'jpg']
+# ['bb2OGLogo', '_550x124', 'png', 'value']
+# ['BGImages', '720', 'jpg', 'value']
 
 
 VIDEO_LIST_PARTIAL_PATHS = [
     [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'inRemindMeList',
       'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'availability', 'trackIds',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo']],
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo', 'availability']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
 ] + ART_PARTIAL_PATHS
@@ -80,7 +80,7 @@ EPISODES_PARTIAL_PATHS = [
 ] + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackId', 'delivery', 'runtime',
+    [['availability', 'summary', 'synopsis', 'title', 'trackIds', 'delivery', 'runtime',
       'bookmarkPosition', 'creditsOffset']]
 ] + ART_PARTIAL_PATHS
 
@@ -95,27 +95,27 @@ VIDEO_LIST_RATING_THUMB_PATHS = [
 SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 
 INFO_MAPPINGS = [
-    ('Title', 'title'),  # Title is needed only for UpNext metadata on play method
-    ('Year', 'releaseYear'),
-    ('Plot', 'regularSynopsis'),  # Complete plot
-    ('PlotOutline', 'synopsis'),  # Small plot
-    ('Season', 'seasonCount'),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
-    ('Season', ['summary', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)
-    ('Season', ['summary', 'season']),  # Path used with episode list data for 'episode' ListItems (get current season)
-    ('Episode', 'episodeCount'),  # Path used with videolist data for 'tvshow' ListItems (get total episodes)
-    ('Episode', ['summary', 'length']),  # Path used with season list data for 'season' ListItems (get total episodes)
-    ('Episode', ['summary', 'episode']),  # Path used with videolist data for 'tvshow' ListItems (get current episode)
-    ('Rating', ['userRating', 'matchScore']),
-    ('UserRating', ['userRating', 'userRating']),
-    ('Mpaa', ['maturity', 'rating', 'value']),
-    ('Duration', 'runtime'),
+    ('Title', ['title', 'value']),  # Title is needed only for UpNext metadata on play method
+    ('Year', ['releaseYear', 'value']),
+    ('Plot', ['regularSynopsis', 'value']),  # Complete plot
+    ('PlotOutline', ['synopsis', 'value']),  # Small plot
+    ('Season', ['seasonCount', 'value']),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
+    ('Season', ['summary', 'value', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)
+    ('Season', ['summary', 'value', 'season']),  # Path used with episode list data for 'episode' ListItems (get current season)
+    ('Episode', ['episodeCount', 'value']),  # Path used with videolist data for 'tvshow' ListItems (get total episodes)
+    ('Episode', ['summary', 'value', 'length']),  # Path used with season list data for 'season' ListItems (get total episodes)
+    ('Episode', ['summary', 'value', 'episode']),  # Path used with videolist data for 'tvshow' ListItems (get current episode)
+    ('Rating', ['userRating', 'value', 'matchScore']),
+    ('UserRating', ['userRating', 'value', 'userRating']),
+    ('Mpaa', ['maturity', 'value', 'rating', 'value']),
+    ('Duration', ['runtime', 'value']),
     # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
     #   to reproduce a background promo video when a ListItem is selected
-    ('Trailer', ['promoVideo', 'id']),
+    ('Trailer', ['promoVideo', 'value', 'id']),
     # ListItem.DateAdded: Removed for now, the actual use of this property for tvshow ListItem type is not clear,
     #                     the documentation says "date of adding in the library", but kodi developers say that
     #                     is used as the latest update date
-    # ('DateAdded', ['availability', 'availabilityStartTime'])
+    # ('DateAdded', ['availability', 'value', 'availabilityStartTime'])
 ]
 
 # pylint: disable=unnecessary-lambda
@@ -153,8 +153,8 @@ def build_paths(base_path, partial_paths):
 def resolve_refs(references, targets):
     """Return a generator expression that returns the objects in targets
     by resolving the references in sorted order"""
-    return (common.get_path(ref, targets, include_key=True)
-            for index, ref in iterate_references(references))
+    return (common.get_path(path_ref, targets, include_key=True)
+            for index, path_ref in iterate_references(references))
 
 
 def iterate_references(source):
@@ -314,3 +314,17 @@ def jgraph_get_list(key, full_data):
     for n in range(0, jgraph_get_path(['summary', 'length'], data)):
         converted[n] = jgraph_get(str(n), data, full_data)
     return converted
+
+
+def jgrapgh_len(data_dict):
+    """
+    Count the values in a JSON Graph dict list of dicts (break counting at first 'atom')
+    e.g.
+    data_dict = {"0": {"$type": "ref"}, "1": {"$type": "atom"}}
+    """
+    count = 0
+    for value in data_dict:
+        if data_dict[value].get('$type') == 'atom':
+            break
+        count += 1
+    return count

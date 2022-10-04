@@ -42,7 +42,7 @@ class DirectoryPathRequests:
                 # pylint: disable=unused-variable
                 items = [common.VideoId.from_videolist_item(video)
                          for video_id, video in video_list.videos.items()
-                         if video['queue'].get('inQueue', False)]
+                         if video['queue']['value'].get('inQueue', False)]
             return items
         except InvalidVideoListTypeError:
             return []
@@ -98,7 +98,7 @@ class DirectoryPathRequests:
                   ['profilesList', 'current', 'summary'],
                   ['profilesList', {'to': 5}, 'summary'],
                   ['profilesList', {'to': 5}, 'avatar', 'images', 'byWidth', 320]])
-        path_response = self.nfsession.path_request(paths, use_jsongraph=True)
+        path_response = self.nfsession.path_request(paths)
         if update_database:
             from resources.lib.utils.website import parse_profiles
             parse_profiles(path_response)

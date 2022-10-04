@@ -36,14 +36,15 @@ PAGE_ITEMS_INFO = [
     'models/userInfo/data/pinEnabled',
     'models/serverDefs/data/BUILD_IDENTIFIER',
     'models/esnGeneratorModel/data/esn',
-    'models/memberContext/data/geo/preferredLocale'
+    'models/memberContext/data/geo/preferredLocale',
+    'models/truths/data/isAdsPlan'
 ]
 
 PAGE_ITEMS_API_URL = {
     'auth_url': 'models/userInfo/data/authURL',
-    # 'ichnaea_log': 'models/serverDefs/data/ICHNAEA_ROOT',  can be for XSS attacks?
     'api_endpoint_root_url': 'models/serverDefs/data/API_ROOT',
-    'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',
+    'api_endpoint_url': 'models/services/data/memberapi',
+    # 'api_endpoint_url': 'models/playerModel/data/config/ui/initParams/apiUrl',  # old endpoint address path
     'request_id': 'models/serverDefs/data/requestId',
     'asset_core': 'models/playerModel/data/config/core/assets/core',
     'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
@@ -140,7 +141,7 @@ def parse_profiles(data):
             if LOG.is_enabled:
                 for key, value in summary.items():
                     if key in PROFILE_DEBUG_INFO:
-                        LOG.debug('Profile info {}', {key: value})
+                        LOG.debug('Profile info: {0: <15} = {1}', key, value)
             # Translate the profile name, is coded as HTML
             summary['profileName'] = parse_html(summary['profileName'])
             summary['avatar'] = avatar_url
@@ -204,10 +205,11 @@ def extract_userdata(react_context, debug_log=True):
 
     for path in (path.split('/') for path in PAGE_ITEMS_INFO):
         try:
-            extracted_value = {path[-1]: common.get_path(path, react_context)}
-            user_data.update(extracted_value)
-            if 'esn' not in path and debug_log:
-                LOG.debug('Extracted {}', extracted_value)
+            prop_name = path[-1]
+            prop_value = common.get_path(path, react_context)
+            user_data[prop_name] = prop_value
+            if debug_log and 'esn' not in path:
+                LOG.debug('Extracted: {0: <19} = {1}', prop_name, prop_value)
         except (AttributeError, KeyError):
             LOG.error('Could not extract {}', path)
     return user_data
@@ -220,10 +222,13 @@ def extract_api_data(react_context, debug_log=True):
     for key, value in list(PAGE_ITEMS_API_URL.items()):
         path = value.split('/')
         try:
-            extracted_value = {key: common.get_path(path, react_context)}
-            api_data.update(extracted_value)
+            extracted_value = common.get_path(path, react_context)
+            if key == 'api_endpoint_url' and isinstance(extracted_value, dict):
+                addr = f'{extracted_value["protocol"]}://{extracted_value["hostname"]}{extracted_value["path"][0]}'
+                extracted_value = addr
+            api_data.update({key: extracted_value})
             if debug_log:
-                LOG.debug('Extracted {}', extracted_value)
+                LOG.debug('Extracted: {0: <34} = {1}', value, extracted_value)
         except (AttributeError, KeyError):
             LOG.warn('Could not extract {}', path)
     return assert_valid_auth_url(api_data)

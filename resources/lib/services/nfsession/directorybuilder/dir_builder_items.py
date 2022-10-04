@@ -134,12 +134,12 @@ def build_season_listing(season_list, tvshowid, pathitems=None):
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
-    return directory_items, {'title': f'{season_list.tvshow["title"]} - {common.get_local_string(20366)[2:]}'}
+    return directory_items, {'title': f'{season_list.tvshow["title"]["value"]} - {common.get_local_string(20366)[2:]}'}
 
 
 def _create_season_item(tvshowid, seasonid_value, season, season_list, common_data):
     seasonid = tvshowid.derive_season(seasonid_value)
-    list_item = ListItemW(label=season['summary']['name'])
+    list_item = ListItemW(label=season['summary']['value']['name'])
     list_item.setProperty('nf_videoid', seasonid.to_string())
     add_info_list_item(list_item, seasonid, season, season_list.data, False, common_data,
                        art_item=season_list.artitem)
@@ -161,13 +161,14 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, episodes_list.perpetual_range_selector)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
-    return directory_items, {'title': f'{episodes_list.tvshow["title"]} - {episodes_list.season["summary"]["name"]}'}
+    return directory_items, {
+        'title': f'{episodes_list.tvshow["title"]["value"]} - {episodes_list.season["summary"]["value"]["name"]}'}
 
 
 def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data):
-    is_playable = episode['summary']['isPlayable']
+    is_playable = episode['availability'].get('value', {}).get('isPlayable', False)
     episodeid = seasonid.derive_episode(episodeid_value)
-    list_item = ListItemW(label=episode['title'])
+    list_item = ListItemW(label=episode['title']['value'])
     list_item.setProperties({
         'isPlayable': str(is_playable).lower(),
         'nf_videoid': episodeid.to_string()
@@ -285,10 +286,10 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
 def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):  # pylint: disable=unused-argument
     videoid = common.VideoId.from_videolist_item(video)
     is_folder = videoid.mediatype == common.VideoId.SHOW
-    is_playable = video['availability']['isPlayable']
+    is_playable = video['availability'].get('value', {}).get('isPlayable', False)
     is_video_playable = not is_folder and is_playable
     is_in_mylist = videoid in common_data['mylist_items']
-    list_item = ListItemW(label=video['title'])
+    list_item = ListItemW(label=video['title']['value'])
     list_item.setProperties({
         'isPlayable': str(is_video_playable).lower(),
         'nf_videoid': videoid.to_string(),
@@ -298,13 +299,15 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data)
     if not is_folder:
         set_watched_status(list_item, video, common_data)
+    trackid = video['trackIds']['value']['trackId_jaw']
     if is_playable:
         # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
                                mode=G.MODE_DIRECTORY if is_folder else G.MODE_PLAY,
                                params=None if is_folder else common_data['params'])
         list_item.addContextMenuItems(generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
-                                                                  common_data['ctxmenu_remove_watched_status']))
+                                                                  common_data['ctxmenu_remove_watched_status'],
+                                                                  trackid))
     else:
         # The movie or tvshow (episodes) is not available
         # Try check if there is a availability date
@@ -316,8 +319,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
             is_in_remind_me = G.CACHE.get(CACHE_BOOKMARKS, f'is_in_remind_me_{videoid}')
         except CacheMiss:
             #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
-            is_in_remind_me = video['inRemindMeList'] or video['queue']['inQueue']
-        trackid = video['trackIds']['trackId_jaw']
+            is_in_remind_me = video['inRemindMeList']['value'] or video['queue']['value']['inQueue']
         list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, trackid))
         url = common.build_url(['show_availability_message'], videoid=videoid, mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
@@ -329,13 +331,16 @@ def build_subgenres_listing(subgenre_list, menu_data):
     directory_items = []
     for index, subgenre_data in subgenre_list.lists:  # pylint: disable=unused-variable
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
-        sel_video_list_id = str(subgenre_data['id'])
+        subgenre_id = subgenre_data['id'].get('value')
+        if subgenre_id is None:  # if there is no id the list is ended
+            break
+        sel_video_list_id = str(subgenre_id)
         sub_menu_data = menu_data.copy()
         sub_menu_data['path'] = [menu_data['path'][0], sel_video_list_id, sel_video_list_id]
         sub_menu_data['loco_known'] = False
         sub_menu_data['loco_contexts'] = None
         sub_menu_data['content_type'] = menu_data.get('content_type', G.CONTENT_SHOW)
-        sub_menu_data['title'] = subgenre_data['name']
+        sub_menu_data['title'] = subgenre_data['name']['value']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
         G.LOCAL_DB.set_value(sel_video_list_id, sub_menu_data, TABLE_MENU_DATA)
         directory_items.append(_create_subgenre_item(sel_video_list_id,
@@ -346,7 +351,7 @@ def build_subgenres_listing(subgenre_list, menu_data):
 
 def _create_subgenre_item(video_list_id, subgenre_data, menu_data):
     pathitems = ['video_list_sorted', menu_data['path'][1], video_list_id]
-    list_item = ListItemW(label=subgenre_data['name'])
+    list_item = ListItemW(label=subgenre_data['name']['value'])
     return common.build_url(pathitems, mode=G.MODE_DIRECTORY), list_item, True
 
 

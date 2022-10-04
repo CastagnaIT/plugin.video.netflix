@@ -51,7 +51,8 @@ def generate_context_menu_remind_me(videoid, is_set, trackid):
     return items
 
 
-def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None, add_remove_watched_status=False):
+def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=None, add_remove_watched_status=False,
+                                trackid=None):
     """Generate context menu items for a listitem"""
     items = []
 
@@ -77,7 +78,8 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
         list_action = 'remove_from_list' if is_in_mylist else 'add_to_list'
-        items.insert(0, _ctx_item(list_action, videoid, {'perpetual_range_start': perpetual_range_start}))
+        items.insert(0, _ctx_item(list_action, videoid, {'perpetual_range_start': perpetual_range_start,
+                                                         'trackid': trackid}))
 
     if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.EPISODE]:
         # Add menu to allow change manually the watched status when progress manager is enabled

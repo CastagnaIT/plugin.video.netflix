@@ -14,7 +14,7 @@ def get_path(path, search_space, include_key=False):
     Throws KeyError if any key along the path does not exist"""
     if not isinstance(path, (tuple, list)):
         path = [path]
-    current_value = search_space[path[0]]
+    current_value = search_space[str(path[0])]
     if len(path) == 1:
         return (path[0], current_value) if include_key else current_value
     return get_path(path[1:], current_value, include_key)

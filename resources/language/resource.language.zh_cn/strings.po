@@ -1089,7 +1089,7 @@ msgstr "MSL清单版本"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
-msgid "This title will be available from: {}"
+msgid "This title will be available from:[CR]{}"
 msgstr "将在{}上线"
 
 msgctxt "#30621"

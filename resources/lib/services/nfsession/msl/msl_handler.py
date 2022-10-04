@@ -16,7 +16,7 @@ import xbmcaddon
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.common.exceptions import CacheMiss, MSLError
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn, set_esn
@@ -104,7 +104,7 @@ class MSLHandler:
                 common.purge_credentials()
                 self.msl_requests.crypto.clear_user_id_tokens()
             raise
-        return self.__tranform_to_dash(manifest)
+        return self._tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
     def _get_manifest(self, viewable_id, esn, challenge, sid):
@@ -112,24 +112,6 @@ class MSLHandler:
             LOG.error('DRM session data not valid (Session ID: {}, Challenge: {})', challenge, sid)
 
         from pprint import pformat
-        cache_identifier = f'{esn}_{viewable_id}'
-        try:
-            # The manifest must be requested once and maintained for its entire duration
-            manifest = G.CACHE.get(CACHE_MANIFESTS, cache_identifier)
-            expiration = int(manifest['expiration'] / 1000)
-            if (expiration - time.time()) < 14400:
-                # Some devices remain active even longer than 48 hours, if the manifest is at the limit of the deadline
-                # when requested by am_stream_continuity.py / events_handler.py will cause problems
-                # if it is already expired, so we guarantee a minimum of safety ttl of 4h (14400s = 4 hours)
-                raise CacheMiss()
-            if LOG.is_enabled:
-                LOG.debug('Manifest for {} obtained from the cache', viewable_id)
-                # Save the manifest to disk as reference
-                common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
-            return manifest
-        except CacheMiss:
-            pass
-
         isa_addon = xbmcaddon.Addon('inputstream.adaptive')
         hdcp_override = isa_addon.getSettingBool('HDCPOVERRIDE')
         hdcp_4k_capable = common.is_device_4k_capable() or G.ADDON.getSettingBool('enable_force_hdcp')
@@ -149,7 +131,7 @@ class MSLHandler:
                  common.censure(esn) if len(esn) > 50 else esn,
                  hdcp_version,
                  pformat(profiles, indent=2))
-        xid = None
+        xid = int(time.time() * 10000)
         # On non-Android systems, we pre-initialize the DRM with default PSSH/KID, this allows to obtain Challenge/SID
         # to achieve 1080p resolution.
         # On Android, pre-initialize DRM is possible but cannot keep the same DRM session, will result in an error
@@ -160,16 +142,18 @@ class MSLHandler:
                                                                  hdcp_override=hdcp_override, profiles=profiles,
                                                                  challenge=challenge)
         else:  # Default - most recent version
-            endpoint_url, request_data, xid = self._build_manifest_v2(viewable_id=viewable_id,
-                                                                      hdcp_version=hdcp_version,
-                                                                      hdcp_override=hdcp_override,
-                                                                      profiles=profiles,
-                                                                      challenge=challenge, sid=sid)
+            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id,
+                                                                 hdcp_version=hdcp_version,
+                                                                 hdcp_override=hdcp_override,
+                                                                 profiles=profiles,
+                                                                 challenge=challenge, sid=sid, xid=xid)
         manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn, disable_msl_switch=False)
+
+        # The xid must be used also for each future MSL requests, until playback stops
+        G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
+
         if manifest_ver == 'default' and 'license' in manifest['video_tracks'][0]:
             self.needs_license_request = False
-            # This xid must be used also for each future Event request, until playback stops
-            G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
             self.licenses_xid.insert(0, xid)
             self.licenses_session_id.insert(0, manifest['video_tracks'][0]['license']['drmSessionId'])
             self.licenses_release_url.insert(0,
@@ -177,11 +161,15 @@ class MSLHandler:
             self.licenses_response = manifest['video_tracks'][0]['license']['licenseResponseBase64']
         else:
             self.needs_license_request = True
+
+        self.last_license_url = manifest['links']['license']['href']
+
         if LOG.is_enabled:
             # Save the manifest to disk as reference
             common.save_file_def('manifest.json', json.dumps(manifest).encode('utf-8'))
-        # Save the manifest to the cache to retrieve it during its validity
+        # Save the manifest to the cache, it will be used on am_video_events.py
         expiration = int(manifest['expiration'] / 1000)
+        cache_identifier = f'{esn}_{viewable_id}'
         G.CACHE.add(CACHE_MANIFESTS, cache_identifier, manifest, expires=expiration)
         return manifest
 
@@ -227,7 +215,6 @@ class MSLHandler:
         return endpoint_url, request_data
 
     def _build_manifest_v2(self, **kwargs):
-        xid = int(time.time() * 10000)
         params = {
             'type': 'standard',
             'manifestVersion': 'v2',
@@ -265,7 +252,8 @@ class MSLHandler:
             'desiredSegmentVmaf': 'plus_lts',
             'requestSegmentVmaf': False,
             'supportsPartialHydration': False,
-            'contentPlaygraph': [],
+            'contentPlaygraph': ['start'],
+            'liveMetadataFormat': 'INDEXED_SEGMENT_TEMPLATE',
             'profileGroups': [{
                 'name': 'default',
                 'profiles': kwargs['profiles']
@@ -276,14 +264,17 @@ class MSLHandler:
                     'drmSessionId': kwargs['sid'] or 'session',
                     'clientTime': int(time.time()),
                     'challengeBase64': kwargs['challenge'],
-                    'xid': xid
+                    'xid': kwargs['xid']
                 }]},
-            'licenseType': 'standard'  # standard / limited
+            # License type:
+            # - 'limited' license data provided in the manifest response, may be needed a second license request
+            # - 'standard' no license data provided in the manifest response
+            'licenseType': 'limited'
         }
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
         request_data = self.msl_requests.build_request_data('licensedManifest', params)
-        return endpoint_url, request_data, xid
+        return endpoint_url, request_data
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
@@ -298,11 +289,10 @@ class MSLHandler:
             LOG.debug('Requesting license')
             challenge, sid = license_data.decode('utf-8').split('!')
             sid = base64.standard_b64decode(sid).decode('utf-8')
-            timestamp = int(time.time() * 10000)
-            xid = str(timestamp + 1610)
+            xid = G.LOCAL_DB.get_value('xid', '', table=TABLE_SESSION)
             params = [{
                 'drmSessionId': sid,
-                'clientTime': int(timestamp / 10000),
+                'clientTime': int(time.time()),
                 'challengeBase64': challenge,
                 'xid': xid
             }]
@@ -320,34 +310,22 @@ class MSLHandler:
                            'More info in the Wiki FAQ on add-on GitHub.')
                     raise MSLError(msg) from exc
                 raise
-            # This xid must be used also for each future Event request, until playback stops
-            G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
-
-            self.licenses_xid.insert(0, xid)
-            self.licenses_session_id.insert(0, sid)
-            self.licenses_release_url.insert(0, response[0]['links']['releaseLicense']['href'])
+            # If this is a second license request from ISAdaptive then update the previous license data
+            # so when we "release" the license we release the last one
+            if len(self.licenses_xid) > 1 and self.licenses_xid[0] == xid:
+                self.licenses_session_id[0] = sid
+                self.licenses_release_url[0] = response[0]['links']['releaseLicense']['href']
+            else:
+                self.licenses_xid.insert(0, xid)
+                self.licenses_session_id.insert(0, sid)
+                self.licenses_release_url.insert(0, response[0]['links']['releaseLicense']['href'])
             response_data = base64.standard_b64decode(response[0]['licenseResponseBase64'])
         else:
             LOG.debug('Get manifest license')
+            # With licensed manifest with licenseType limited InputStream Adaptive may request license a second time
+            self.needs_license_request = True
             response_data = base64.standard_b64decode(self.licenses_response)
-        if self.msl_requests.msl_switch_requested:
-            self.msl_requests.msl_switch_requested = False
-            # With the new manifest endpoint bind_events currently give error
-            # self.bind_events()
         return response_data
-
-    def bind_events(self):
-        """Bind events"""
-        # I don't know the real purpose of its use, it seems to be requested after the license and before starting
-        # playback, and only the first time after a switch,
-        # in the response you can also understand if the msl switch has worked
-        LOG.debug('Requesting bind events')
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params('bind')
-        response = self.msl_requests.chunked_request(endpoint_url,
-                                                     self.msl_requests.build_request_data('/bind', {}),
-                                                     get_esn(),
-                                                     disable_msl_switch=False)
-        LOG.debug('Bind events response: {}', response)
 
     @display_error_info
     @measure_exec_time_decorator(is_immediate=True)
@@ -382,6 +360,5 @@ class MSLHandler:
         self.msl_requests.crypto.clear_user_id_tokens()
 
     @measure_exec_time_decorator(is_immediate=True)
-    def __tranform_to_dash(self, manifest):
-        self.last_license_url = manifest['links']['license']['href']
+    def _tranform_to_dash(self, manifest):
         return convert_to_dash(manifest)

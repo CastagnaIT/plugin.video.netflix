@@ -81,10 +81,11 @@ class AddonActionExecutor:
         raw_data = api.get_video_raw_data([videoid], VIDEO_LIST_RATING_THUMB_PATHS)
         if raw_data.get('videos', {}).get(videoid.value):
             video_data = raw_data['videos'][videoid.value]
-            title = video_data.get('title')
-            track_id_jaw = video_data.get('trackIds', {})['trackId_jaw']
-            is_thumb_rating = video_data.get('userRating', {}).get('type', '') == 'thumb'
-            user_rating = video_data.get('userRating', {}).get('userRating') if is_thumb_rating else None
+            title = video_data.get('title', {}).get('value', '--')
+            # Is intended throw error when missing some dict data
+            track_id_jaw = video_data['trackIds']['value']['trackId_jaw']
+            is_thumb_rating = video_data['userRating'].get('value', {}).get('type') == 'thumb'
+            user_rating = video_data['userRating']['value']['userRating'] if is_thumb_rating else None
             ui.show_rating_thumb_dialog(videoid=videoid,
                                         title=title,
                                         track_id_jaw=track_id_jaw,

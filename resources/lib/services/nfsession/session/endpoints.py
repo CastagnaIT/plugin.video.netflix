@@ -65,13 +65,6 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': None,
          'accept': 'text/html,application/xhtml+xml,application/xml'},
-    'profiles_gate':
-    # This endpoint is used after ending editing profiles page, i think to force close an active profile session
-        {'address': '/ProfilesGate',
-         'is_api_call': False,
-         'use_default_params': False,
-         'add_auth_url': 'to_data',
-         'accept': '*/*'},
     'profiles':
         {'address': '/profiles/manage',
          'is_api_call': False,
@@ -85,27 +78,28 @@ ENDPOINTS = {
          'add_auth_url': None,
          'accept': '*/*'},
     'activate_profile':
-        {'address': '/profiles/switch',
-         'is_api_call': True,
+        {'address': '/api/shakti/mre/profiles/switch',
+         'is_api_call': False,
          'use_default_params': False,
-         'add_auth_url': None},
+         'add_auth_url': None,
+         'accept': 'application/json, text/javascript, */*'},
     'profile_lock':
-        {'address': '/profileLock',
-         'is_api_call': True,
+        {'address': '/api/shakti/mre/profileLock',
+         'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
     'profile_hub':
-        {'address': '/profilehub',
-         'is_api_call': True,
+        {'address': '/api/shakti/mre/profilehub',
+         'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
     'content_restrictions':
-        {'address': '/contentRestrictions',
-         'is_api_call': True,
+        {'address': '/api/shakti/mre/contentRestrictions',
+         'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
          'content_type': 'application/json',
@@ -136,14 +130,7 @@ ENDPOINTS = {
          'add_auth_url': 'to_data',
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
-    'update_my_list':
-        {'address': '/playlistop',
-         'is_api_call': True,
-         'use_default_params': False,
-         'add_auth_url': 'to_data',
-         'content_type': 'application/json',
-         'accept': 'application/json, text/javascript, */*'},
-    'shakti_playlistop':
+    'playlistop':
         {'address': '/api/shakti/mre/playlistop',
          'is_api_call': False,
          'use_default_params': False,
@@ -151,8 +138,8 @@ ENDPOINTS = {
          'content_type': 'application/json',
          'accept': 'application/json, text/javascript, */*'},
     'viewing_activity':
-        {'address': '/viewingactivity',
-         'is_api_call': True,
+        {'address': '/api/shakti/mre/viewingactivity',
+         'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': 'to_data',
          'content_type': 'application/json',

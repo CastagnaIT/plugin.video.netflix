@@ -1089,8 +1089,8 @@ msgstr "MSL-manifestversion"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
-msgid "This title will be available from: {}"
-msgstr "Denna titel kommer att vara tillgänglig från: {}"
+msgid "This title will be available from:[CR]{}"
+msgstr "Denna titel kommer att vara tillgänglig från:[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"

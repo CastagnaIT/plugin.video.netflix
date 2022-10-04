@@ -177,20 +177,21 @@ class AMVideoEvents(ActionManager):
 
         if is_episode:
             # Get inQueue from tvshow data
-            is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('inQueue', False)
+            is_in_mylist = raw_data['videos'][str(req_videoids[1].value)]['queue'].get('value', {}).get('inQueue', False)
         else:
-            is_in_mylist = videoid_data['queue'].get('inQueue', False)
+            is_in_mylist = videoid_data['queue'].get('value', {}).get('inQueue', False)
 
-        resume_position = videoid_data['bookmarkPosition'] if videoid_data['bookmarkPosition'] > -1 else None
+        bookmark_pos = videoid_data['bookmarkPosition']['value']
+        resume_position = bookmark_pos if bookmark_pos > -1 else None
         event_data = {'resume_position': resume_position,
-                      'runtime': videoid_data['runtime'],
-                      'request_id': videoid_data['requestId'],
-                      'watched': videoid_data['watched'],
+                      'runtime': videoid_data['runtime']['value'],
+                      'request_id': videoid_data['requestId']['value'],
+                      'watched': videoid_data['watched']['value'],
                       'is_in_mylist': is_in_mylist}
         if videoid.mediatype == common.VideoId.EPISODE:
-            event_data['track_id'] = videoid_data['trackIds']['trackId_jawEpisode']
+            event_data['track_id'] = videoid_data['trackIds']['value']['trackId_jawEpisode']
         else:
-            event_data['track_id'] = videoid_data['trackIds']['trackId_jaw']
+            event_data['track_id'] = videoid_data['trackIds']['value']['trackId_jaw']
         return event_data
 
     def _get_video_raw_data(self, videoids):

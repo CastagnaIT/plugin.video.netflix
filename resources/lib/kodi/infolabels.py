@@ -8,6 +8,7 @@
     See LICENSES/MIT.md for more information.
 """
 import copy
+import time
 
 import resources.lib.utils.api_paths as paths
 import resources.lib.common as common
@@ -85,17 +86,25 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
 def _add_supplemental_plot_info(infos_copy, item, common_data):
     """Add supplemental info to plot description"""
     suppl_info = []
-    if item.get('summary', {}).get('availabilityDateMessaging'):
-        suppl_info.append(item['summary']['availabilityDateMessaging'])
-    if item.get('dpSupplementalMessage'):
-        # Short information about future release of tv show season or other
-        suppl_info.append(item['dpSupplementalMessage'])
+    suppl_msg = item.get('dpSupplementalMessage', {}).get('value')
+    if suppl_msg:
+        # Short information about future release of tv show episode/season or movie
+        suppl_info.append(suppl_msg)
+    else:
+        # If there is no supplemental message, we provide a possible release date info
+        avail_data = item.get('availability', {}).get('value', {})
+        avail_text = avail_data.get('availabilityDate')
+        if avail_text:
+            avail_timestamp = avail_data.get('availabilityStartTime', 0) / 1000
+            if avail_timestamp > time.time():
+                suppl_info.append(common.get_local_string(30620).format(avail_text))
     # The 'sequiturEvidence' dict can be of type 'hook' or 'watched'
-    if (item.get('sequiturEvidence') and
-            item['sequiturEvidence'].get('type') == 'hook' and
-            item['sequiturEvidence'].get('value')):
-        # Short information about the actors career/awards and similarities/connections with others films or tv shows
-        suppl_info.append(item['sequiturEvidence']['value']['text'])
+    sequitur_evid = item.get('sequiturEvidence', {}).get('value')
+    if sequitur_evid and sequitur_evid.get('type') == 'hook':
+        hook_value = sequitur_evid.get('value')
+        if hook_value:
+            # Short info about the actors career/awards and similarities/connections with others films or tv shows
+            suppl_info.append(hook_value['text'])
     suppl_text = '[CR][CR]'.join(suppl_info)
     plot = infos_copy.get('Plot', '')
     plotoutline = infos_copy.get('PlotOutline', '')
@@ -145,8 +154,8 @@ def parse_info(videoid, item, raw_data, common_data):
 
     infos = {'MediaType': MEDIA_TYPE_MAPPINGS[videoid.mediatype]}
     if videoid.mediatype in common.VideoId.TV_TYPES:
-        infos['TVShowTitle'] = raw_data['videos'][videoid.tvshowid]['title']
-    if item.get('watched', False):
+        infos['TVShowTitle'] = raw_data['videos'][videoid.tvshowid]['title'].get('value', '')
+    if item.get('watched', {}).get('value'):
         infos['PlayCount'] = 1
 
     infos.update(_parse_atomic_infos(item))
@@ -178,7 +187,7 @@ def _transform_value(target, value):
 def _parse_referenced_infos(item, raw_data):
     """Parse those infos into infolabels that need their references
     resolved within the raw data"""
-    return {target: [person['name']
+    return {target: [person['name']['value']
                      for _, person
                      in paths.resolve_refs(item.get(source, {}), raw_data)]
             for target, source in paths.REFERENCE_MAPPINGS.items()}
@@ -186,7 +195,7 @@ def _parse_referenced_infos(item, raw_data):
 
 def _parse_tags(item):
     """Parse the tags"""
-    return {'tag': [tagdef['name']
+    return {'tag': [tagdef['name']['value']
                     for tagdef
                     in item.get('tags', {}).values()
                     if isinstance(tagdef.get('name', {}), str)]}
@@ -195,7 +204,7 @@ def _parse_tags(item):
 def get_quality_infos(item, video_codec_hint):
     """Return audio and video quality infolabels"""
     quality_infos = {}
-    delivery = item.get('delivery')
+    delivery = item.get('delivery', {}).get('value')
     if delivery:
         if delivery.get('hasUltraHD', False):  # 4k only with HEVC codec
             quality_infos['video'] = {'codec': 'hevc', 'width': 3840, 'height': 2160}
@@ -285,7 +294,7 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
     """Check and set progress status (watched and resume)"""
     if not common_data['set_watched_status']:
         return
-    video_id = str(video_data['summary']['id'])
+    video_id = str(video_data['summary']['value']['id'])
     # Check from db if user has manually changed the watched status
     is_watched_user_overrided = G.SHARED_DB.get_watched_status(common_data['active_profile_guid'], video_id, None, bool)
     resume_time = 0
@@ -296,22 +305,23 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
         #                        is available only with the metadata api and only for "episode" video type
         # 'creditsOffset' :  this value is used as position where to show the (play) "Next" (episode) button
         #                    on the website, but it may not be always available with the "movie" video type
-        if 'creditsOffset' in video_data:
+        credits_offset_val = video_data.get('creditsOffset', {}).get('value')
+        if credits_offset_val is not None:
             # To better ensure that a video is marked as watched also when a user do not reach the ending credits
             # we generally lower the watched threshold by 50 seconds for 50 minutes of video (3000 secs)
-            lower_value = video_data['runtime'] / 3000 * 50
-            watched_threshold = video_data['creditsOffset'] - lower_value
+            lower_value = video_data['runtime']['value'] / 3000 * 50
+            watched_threshold = credits_offset_val - lower_value
         else:
             # When missing the value should be only a video of movie type,
             # then we simulate the default Kodi playcount behaviour (playcountminimumpercent)
-            watched_threshold = video_data['runtime'] / 100 * 90
+            watched_threshold = video_data['runtime']['value'] / 100 * 90
         # To avoid asking to the server again the entire list of titles (after watched a video)
         # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
         try:
             bookmark_position = G.CACHE.get(CACHE_BOOKMARKS, video_id)
         except CacheMiss:
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
-            bookmark_position = video_data['bookmarkPosition']
+            bookmark_position = video_data['bookmarkPosition'].get('value', 0)
         playcount = '1' if bookmark_position >= watched_threshold else '0'
         if playcount == '0' and bookmark_position > 0:
             resume_time = bookmark_position
@@ -320,5 +330,5 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     list_item.updateInfo({'PlayCount': playcount})
-    list_item.setProperty('TotalTime', str(video_data['runtime']))
+    list_item.setProperty('TotalTime', str(video_data['runtime']['value']))
     list_item.setProperty('ResumeTime', str(resume_time))

@@ -29,7 +29,8 @@ class LoCo:
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this LoLoMo."""
-        return self.data['locos'][self.id].get(key, default)
+        data = self.data['locos'][self.id].get(key, {}).get('value')
+        return default if data is None else data
 
     @property
     def lists(self):
@@ -50,7 +51,7 @@ class LoCo:
         """
         lists = {}
         for list_id, list_data in self.data['lists'].items():
-            if list_data['componentSummary']['context'] in contexts:
+            if list_data['componentSummary'].get('value', {}).get('context') in contexts:
                 lists.update({list_id: VideoListLoCo(self.data, list_id)})
                 if break_on_first:
                     break
@@ -59,7 +60,7 @@ class LoCo:
     def find_by_context(self, context):
         """Return the video list and the id list of a context"""
         for list_id, data in self.data['lists'].items():
-            if data['componentSummary']['context'] != context:
+            if data['componentSummary'].get('value', {}).get('context') != context:
                 continue
             return list_id, VideoListLoCo(self.data, list_id)
         return None, None
@@ -94,11 +95,11 @@ class VideoListLoCo:
             self.videoids = []
 
     def __getitem__(self, key):
-        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'][key])
+        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'].get('value', {})[key])
 
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
-        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'].get(key, default))
+        return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'].get('value', {}).get(key, default))
 
 
 class VideoList:
@@ -277,7 +278,7 @@ class LoLoMoCategory:
         """
         # It is as property to avoid slow down the loading of main menu
         for list_id, list_data in self.data['lists'].items():  # pylint: disable=unused-variable
-            yield list_id, list_data['componentSummary'], VideoListLoCo(self.data, list_id)
+            yield list_id, list_data['componentSummary'].get('value', {}), VideoListLoCo(self.data, list_id)
 
 
 def merge_data_type(data, data_to_merge):
@@ -295,7 +296,10 @@ def _check_sentinel(value):
 
 def _get_title(video):
     """Get the title of a video (either from direct key or nested within summary)"""
-    return video.get('title', video.get('summary', {}).get('title'))
+    title = video.get('title', {}).get('value')
+    if not title:
+        title = video.get('summary', {}).get('value', {}).get('title', {}).get('value')
+    return title
 
 
 def _get_titles(videos):
@@ -313,10 +317,10 @@ def _get_videoids(videos):
 
 def _filterout_loco_contexts(root_id, data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    total_items = data['locos'][root_id]['componentSummary']['length']
+    total_items = data['locos'][root_id]['componentSummary'].get('value', {}).get('length', 0)
     for index in range(total_items - 1, -1, -1):
-        list_id = data['locos'][root_id][str(index)][1]
-        if not data['lists'][list_id]['componentSummary'].get('context') in contexts:
+        list_id = data['locos'][root_id][str(index)]['value'][1]
+        if not data['lists'][list_id]['componentSummary'].get('value', {}).get('context') in contexts:
             continue
         del data['lists'][list_id]
         del data['locos'][root_id][str(index)]

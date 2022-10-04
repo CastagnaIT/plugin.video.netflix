@@ -41,7 +41,6 @@ class MSLRequests(MSLRequestBuilder):
     def __init__(self, msl_data, nfsession):
         super().__init__(nfsession)
         self._load_msl_data(msl_data)
-        self.msl_switch_requested = False
 
     def _load_msl_data(self, msl_data):
         try:
@@ -157,8 +156,6 @@ class MSLRequests(MSLRequestBuilder):
                         # The owner profile token id does not exist/valid, then get it
                         self._get_owner_user_id_token()
                         user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
-                    # Mark msl_switch_requested as True in order to make a bind event request
-                    self.msl_switch_requested = True
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
     @measure_exec_time_decorator(is_immediate=True)
