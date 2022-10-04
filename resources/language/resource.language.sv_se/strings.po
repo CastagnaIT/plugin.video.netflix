@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-01-07 00:00+0000\n"
 "PO-Revision-Date: 2020-07-26 00:00+0000\n"
-"Last-Translator: Tomas Andersson\n"
+"Last-Translator: Sopor\n"
 "Language-Team: Swedish (Sweden)\n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "Ange PIN-kod för att få tillgång till den här profilen"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "PIN-kod för Föräldrakontroll(4 siffror)"
+msgstr "PIN-kod för föräldrakontroll (4 siffror)"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -59,7 +59,7 @@ msgstr "Inloggningen misslyckades"
 
 msgctxt "#30009"
 msgid "Please check your e-mail and password"
-msgstr "Kontrollera din e-post och lösenord"
+msgstr "Kontrollera din e-postadress och lösenord"
 
 msgctxt "#30010"
 msgid "Lists of all kinds"
@@ -68,11 +68,11 @@ msgstr "Listor av alla slag"
 # Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
-msgstr ""
+msgstr "Profilalternativ och föräldrakontroll"
 
 msgctxt "#30013"
 msgid "In the profile list, open the context menu in the chosen profile"
-msgstr ""
+msgstr "I profillistan öppnar du innehållsmenyn i den valda profilen"
 
 msgctxt "#30014"
 msgid "Account"
@@ -97,11 +97,11 @@ msgstr "Betygsätt på Netflix"
 
 msgctxt "#30020"
 msgid "Remove from 'My list'"
-msgstr "Ta bort från 'Min Lista'"
+msgstr "Ta bort från 'Min lista'"
 
 msgctxt "#30021"
 msgid "Add to 'My list'"
-msgstr "Lägg till i 'Min Lista'"
+msgstr "Lägg till i 'Min lista'"
 
 msgctxt "#30022"
 msgid "(between 0 and 10)"
@@ -153,35 +153,35 @@ msgstr "Inställningar för InputStream Adaptive..."
 # Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
-msgstr ""
+msgstr "Skalvytyper"
 
 msgctxt "#30038"
 msgid "Enable custom viewtypes"
-msgstr ""
+msgstr "Aktivera anpassade vytyper"
 
 msgctxt "#30039"
 msgid "View ID for folders"
-msgstr ""
+msgstr "Visa ID för mappar"
 
 msgctxt "#30040"
 msgid "View ID for movies"
-msgstr ""
+msgstr "Visa ID för filmer"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr ""
+msgstr "Visa ID för serier"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
-msgstr ""
+msgstr "Visa ID för säsonger"
 
 msgctxt "#30043"
 msgid "View ID for episodes"
-msgstr ""
+msgstr "Visa ID för avsnitt"
 
 msgctxt "#30044"
 msgid "View ID for profiles"
-msgstr ""
+msgstr "Visa ID för profiler"
 
 msgctxt "#30045"
 msgid "Thumb rating removed|You rated a thumb down|You rated a thumb up"
@@ -189,7 +189,7 @@ msgstr "Betyget har tagits bort|Du gav betyget tumme ner|Du gav betyget tumme up
 
 msgctxt "#30046"
 msgid "There is a problem with InputStream Adaptive add-on or the Widevine library. May be missing or not enabled, the operation will be cancelled."
-msgstr "Det finns ett problem med InputStream Adaptive-tillägget eller Widevine-biblioteket. Kan saknas eller har inte aktiverats, åtgärden kommer att avbrytas."
+msgstr "Det finns ett problem med tillägget InputStream Adaptive eller Widevine-biblioteket. Kan saknas eller har inte aktiverats, åtgärden kommer att avbrytas."
 
 msgctxt "#30047"
 msgid "Library update in progress"
@@ -206,19 +206,19 @@ msgstr "Bibliotek"
 # Unused 30050
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
-msgstr ""
+msgstr "Profil inställd för uppspelning från biblioteket"
 
 msgctxt "#30052"
 msgid "Set for library playback"
-msgstr ""
+msgstr "Ställ in för biblioteksuppspelning"
 
 msgctxt "#30053"
 msgid "Remove for playback from library"
-msgstr ""
+msgstr "Ta bort för uppspelning från biblioteket"
 
 msgctxt "#30054"
 msgid "Profile set to auto-selection"
-msgstr ""
+msgstr "Profil inställd på automatiskt val"
 
 msgctxt "#30055"
 msgid "Set for auto-selection"
@@ -226,12 +226,12 @@ msgstr "Ställ in för automatiskt val"
 
 msgctxt "#30056"
 msgid "Remove auto-selection"
-msgstr "Ta bort automatiskt val av profil"
+msgstr "Ta bort automatiskt val"
 
 # Unused 30057, 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
-msgstr "Var försiktig, du håller på att uppdatera många titlar {}.[CR]Detta kan orsaka serviceproblem eller tillfälligt förbud att använda kontot.[CR]Vill du fortsätta?"
+msgstr "Var försiktig, du håller på att uppdatera många titlar {}.[CR]Detta kan orsaka tjänsteproblem eller tillfälligt förbud att använda kontot.[CR]Vill du fortsätta?"
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
@@ -255,27 +255,27 @@ msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Auto-update for TV shows seasons and episodes"
-msgstr "Automatisk uppdatering för Serier, säsonger och avsnitt"
+msgstr "Automatisk uppdatering för TV-seriesäsonger och avsnitt"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
-msgstr ""
+msgstr "Aktivera felsökningsloggning"
 
 msgctxt "#30067"
 msgid "daily"
-msgstr "Dagligen"
+msgstr "dagligen"
 
 msgctxt "#30068"
 msgid "every other day"
-msgstr "Varannan dag"
+msgstr "varannan dag"
 
 msgctxt "#30069"
 msgid "every 5 days"
-msgstr "Var 5:e dag"
+msgstr "var 5:e dag"
 
 msgctxt "#30070"
 msgid "weekly"
-msgstr "Veckovis"
+msgstr "veckovis"
 
 msgctxt "#30071"
 msgid "Time of Day"
@@ -283,15 +283,15 @@ msgstr "Tidpunkt på dygnet"
 
 msgctxt "#30072"
 msgid "Only start after 5 minutes of idle"
-msgstr "Starta först efter 5 minuters overksamhet"
+msgstr "Starta först efter 5 minuters inaktivitet"
 
 msgctxt "#30073"
 msgid "Always show codec information during video playback"
-msgstr "Visa alltid Codec-informationen under videouppspelningen"
+msgstr "Visa alltid kodekinformationen under videouppspelningen"
 
 msgctxt "#30074"
 msgid "View for exported"
-msgstr "Vy för Exporterad"
+msgstr "Vy för exporterad"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
@@ -303,7 +303,7 @@ msgstr "Hoppa över introt"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "Hoppa över sammanfattningen"
+msgstr "Hoppa över sammanfattning"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -315,19 +315,19 @@ msgstr "Hoppa över automatiskt"
 
 msgctxt "#30080"
 msgid "Pause when skipping"
-msgstr "Pausa efter att du har hoppat över introt"
+msgstr "Pausa vid överhoppning"
 
 msgctxt "#30081"
 msgid "Force HDCP 2.2 video streams"
-msgstr "Tvinga HDCP 2.2 videoströmmar"
+msgstr "Tvinga HDCP 2.2-videoströmmar"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
-msgstr "Kom ihåg inställningarna för ljud och undertext"
+msgstr "Kom ihåg inställningarna för ljud och undertexter"
 
 msgctxt "#30083"
 msgid "Force the display of forced subtitles only with the audio language set"
-msgstr ""
+msgstr "Tvinga fram visning av påtvingad undertext endast med ljudspråket inställt"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
@@ -339,7 +339,7 @@ msgstr "Cache metadata TTL (dagar)"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "Cache objekt 'Min Lista' TTL (minuter)"
+msgstr "Cache objekt 'Min lista' TTL (minuter)"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -375,11 +375,11 @@ msgstr "Bläddra bland rekommendationer och hitta något nytt som du kanske gill
 
 msgctxt "#30095"
 msgid "All TV shows"
-msgstr "Alla Serier"
+msgstr "Alla serier"
 
 msgctxt "#30096"
 msgid "All Movies"
-msgstr "Alla Filmer"
+msgstr "Alla filmer"
 
 msgctxt "#30097"
 msgid "Main Menu"
@@ -431,7 +431,7 @@ msgstr "Allt innehåll är skyddat med PIN-kod."
 
 msgctxt "#30109"
 msgid "Login successful"
-msgstr "Inloggningen lyckades"
+msgstr "Inloggad"
 
 msgctxt "#30110"
 msgid "Background services started"
@@ -447,11 +447,11 @@ msgstr "Du måste vara inloggad för att kunna använda Netflix"
 
 msgctxt "#30113"
 msgid "Logout successful"
-msgstr "Utloggningen lyckades"
+msgstr "Utloggad"
 
 msgctxt "#30114"
 msgid "Keep 'My list' and Kodi Library in sync"
-msgstr "Håll Min Lista och Kodi-biblioteket synkroniserade"
+msgstr "Håll 'Min lista' och Kodi-biblioteket synkroniserade"
 
 # Unused 30115
 msgctxt "#30116"
@@ -465,7 +465,7 @@ msgstr "Cache"
 # Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Kan inte ta bort en säsong automatiskt från Kodi-biblioteket, gör det manuellt"
+msgstr "Kan inte ta bort en säsong automatiskt från Kodi-biblioteket, du måste göra det manuellt"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -473,11 +473,11 @@ msgstr "Utför full synkronisering nu"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "Synkronisera Min lista till Kodi-biblioteket"
+msgstr "Synkronisera 'Min lista' till Kodi-biblioteket"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
-msgstr "Vill du fortsätta?[CR]Fullständig synkronisering raderar alla tidigare exporterade titlar.[CR]Om det finns många titlar kan denna operation ta lite tid."
+msgstr "Vill du fortsätta?[CR]Fullständig synkronisering tar bort alla tidigare exporterade titlar.[CR]Om det finns många titlar kan denna operation ta lite tid."
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
@@ -485,11 +485,11 @@ msgstr "Vill du ta bort det här objektet från biblioteket?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Rensa biblioteksinnehållet"
+msgstr "Ta bort biblioteksinnehållet"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
-msgstr "Vill du verkligen rensa ditt bibliotek?[CR]Alla exporterade objekt kommer att raderas."
+msgstr "Vill du verkligen rensa ditt bibliotek?[CR]Alla exporterade objekt kommer att tas bort."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -497,7 +497,7 @@ msgstr "Tilldelat betyg på {}"
 
 msgctxt "#30128"
 msgid "Select a profile"
-msgstr "Välj en Profil"
+msgstr "Välj en profil"
 
 msgctxt "#30129"
 msgid "Enable Up Next integration"
@@ -505,7 +505,7 @@ msgstr "Aktivera Up Next-integration"
 
 msgctxt "#30130"
 msgid "Install Up Next add-on"
-msgstr "Installera Up Next-tillägget"
+msgstr "Installera tillägget Up Next"
 
 msgctxt "#30131"
 msgid "Check the logfile for detailed information"
@@ -538,7 +538,7 @@ msgstr "Bakgrundstjänsterna kanske ännu inte är tillgängliga om du just star
 
 msgctxt "#30139"
 msgid "Enable IPC over HTTP (use when Addon Signals timeout messages appear)"
-msgstr "Aktivera IPC över HTTP (använd när 'Addon Signals timeout'-meddelanden visas)"
+msgstr "Aktivera IPC över HTTP (använd när meddelandet 'Addon Signals timeout' visas)"
 
 msgctxt "#30140"
 msgid "Import existing library"
@@ -546,12 +546,12 @@ msgstr "Importera befintligt bibliotek"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
-msgstr "Inaktivera startmeddelande"
+msgstr "Inaktivera startavisering"
 
 # Unused 30142, 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
-msgstr "Inaktivera WebVTT undertextsupport"
+msgstr "Inaktivera stöd för WebVTT-undertexter"
 
 msgctxt "#30145"
 msgid "Recently added"
@@ -608,15 +608,15 @@ msgstr "Kör tilläggskonfigurationsguiden"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
-msgstr ""
+msgstr "Visa ID för huvudmenyn"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr ""
+msgstr "Visa ID för sök"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr ""
+msgstr "Visa ID för exporterad"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -632,7 +632,7 @@ msgstr "Bläddra bland innehåll med ljudbeskrivning."
 
 msgctxt "#30165"
 msgid "View ID for 'My list'"
-msgstr ""
+msgstr "Visa ID för 'Min lista'"
 
 msgctxt "#30166"
 msgid "Main menu items"
@@ -640,7 +640,7 @@ msgstr "Huvudmenyobjekt"
 
 msgctxt "#30167"
 msgid "My list"
-msgstr "Min Lista"
+msgstr "Min lista"
 
 msgctxt "#30168"
 msgid "Continue watching"
@@ -668,15 +668,15 @@ msgstr "Netflix Originals"
 
 msgctxt "#30174"
 msgid "TV show genres"
-msgstr "Serier genrer"
+msgstr "Genrer för TV-serier"
 
 msgctxt "#30175"
 msgid "Movie genres"
-msgstr "Film genrer"
+msgstr "Genrer för film"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround"
-msgstr "Aktivera problemlösningen för att återuppta STRM"
+msgstr "Aktivera lösningen för återuppta STRM"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
@@ -684,7 +684,7 @@ msgstr "Fråga om att återuppta videon"
 
 msgctxt "#30178"
 msgid "Open Up Next add-on settings"
-msgstr "Öppna Up Next tilläggsinställningar"
+msgstr "Öppna tilläggsinställningar för Up Next "
 
 msgctxt "#30179"
 msgid "Show trailers and more"
@@ -696,7 +696,7 @@ msgstr "Det har uppstått ett problem med inloggningen, det är möjligt att dit
 
 msgctxt "#30181"
 msgid "Always show the subtitles when the preferred audio language is not available"
-msgstr ""
+msgstr "Visa alltid undertexterna när det önskade ljudspråket inte är tillgängligt"
 
 msgctxt "#30182"
 msgid "Export NFO files"
@@ -716,11 +716,11 @@ msgstr "Aktivera export av NFO-filer"
 
 msgctxt "#30186"
 msgid "For Movies"
-msgstr "För Filmer"
+msgstr "För filmer"
 
 msgctxt "#30187"
 msgid "For TV show"
-msgstr "För Serier"
+msgstr "För TV-serier"
 
 msgctxt "#30188"
 msgid "Ask"
@@ -728,20 +728,20 @@ msgstr "Fråga"
 
 msgctxt "#30189"
 msgid "movie"
-msgstr "Film"
+msgstr "film"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "Serier"
+msgstr "TV-serier"
 
 # Unused 30191
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
-msgstr "[CR]Dessa filer används av leverantörens informationsskrapa för att integrera information om filmer och Serier, användbara med bonusavsnitt eller regissörs-klipp(director's cut)"
+msgstr "[CR]Dessa filer används av leverantörens informationsskrapa för att integrera information om filmer och TV-serier, användbara med bonusavsnitt eller regissörsklipp (director's cut)"
 
 msgctxt "#30193"
 msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Inkludera all information i NFO-filerna (används endast med 'Lokal Information'-skrapa)"
+msgstr "Inkludera all information i NFO-filerna (används endast med 'Lokal information'-skrapa)"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -781,7 +781,7 @@ msgstr "Anslutningen till MySQL-databasen fungerade"
 
 msgctxt "#30203"
 msgid "Host IP"
-msgstr "Värd IP"
+msgstr "Värd-IP"
 
 msgctxt "#30204"
 msgid "Port"
@@ -829,12 +829,12 @@ msgstr "Tvinga uppdatering"
 
 msgctxt "#30215"
 msgid "Color of the titles included in 'My list'"
-msgstr "Färg på titlarna som ingår i Min Lista"
+msgstr "Färg på titlarna som ingår i 'Min lista'"
 
 # Unused 30216 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
-msgstr "Inaktivering av avisering för synkronisering färdig"
+msgstr "Inaktivera avisering för slutförd synkronisering"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
@@ -859,11 +859,11 @@ msgstr "Manuellt"
 
 msgctxt "#30226"
 msgid "Scheduled"
-msgstr "Planerad"
+msgstr "Schemalagt"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with 'My list'"
-msgstr "Synkronisera Kodi-biblioteket med Min Lista"
+msgstr "Synkronisera Kodi-biblioteket med 'Min lista'"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
@@ -876,7 +876,7 @@ msgstr "Sök efter uppdateringar nu"
 
 msgctxt "#30231"
 msgid "Do you want to check update now?"
-msgstr "Vill du kontrollera uppdateringen nu?"
+msgstr "Vill du söka efter uppdateringar nu?"
 
 msgctxt "#30232"
 msgid "Profile maturity rating for {}"
@@ -917,7 +917,7 @@ msgstr "Open Connect CDN (lägre siffra är bättre)"
 
 msgctxt "#30242"
 msgid "Top 10"
-msgstr "Top 10"
+msgstr "Topp 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
@@ -934,7 +934,7 @@ msgstr "Det finns {} titlar som inte kan importeras.[CR]Vill du ta bort dessa fi
 
 msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
-msgstr ""
+msgstr "Resultat per sida (minska värdet vid timeout-fel)"
 
 # Unused 30248 to 30299
 msgctxt "#30300"
@@ -943,37 +943,37 @@ msgstr "Vill du ta bort statusen sedd för '{}'?[CR][CR]Operationen kan ta upp t
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr ""
+msgstr "Inkludera Kodi-bibliotek (skickar endast data)"
 
 # Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
-msgstr ""
+msgstr "Välj inloggningsmetod[CR](om inloggningen med e-postadress/lösenord alltid returnerar \"felaktigt lösenord\", använd då Autentiseringsnyckel, instruktioner finns i ReadMe på GitHub)"
 
 msgctxt "#30341"
 msgid "E-Mail/Password"
-msgstr ""
+msgstr "E-postadress/lösenord"
 
 msgctxt "#30342"
 msgid "Authentication key"
-msgstr ""
+msgstr "Autentiseringsnyckel"
 
 msgctxt "#30343"
 msgid "The selected file is not compatible or corrupted"
-msgstr ""
+msgstr "Den valda filen är inte kompatibel eller skadad"
 
 msgctxt "#30344"
 msgid "The authentication key file is expired"
-msgstr ""
+msgstr "Autentiseringsnyckeln har löpt ut"
 
 msgctxt "#30345"
 msgid "Enter PIN"
-msgstr ""
+msgstr "Ange PIN-kod"
 
 # Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
-msgstr ""
+msgstr "Sortera historik efter"
 
 msgctxt "#30400"
 msgid "Search"
@@ -989,7 +989,7 @@ msgstr "Sök titlar, personer, genrer"
 
 msgctxt "#30403"
 msgid "New search..."
-msgstr "Ny sökning"
+msgstr "Ny sökning..."
 
 msgctxt "#30404"
 msgid "Clear search history"
@@ -1001,7 +1001,7 @@ msgstr "Välj språk"
 
 msgctxt "#30406"
 msgid "Do you want to delete the entire contents?"
-msgstr "Vill du radera hela innehållet?"
+msgstr "Vill du ta bort hela innehållet?"
 
 msgctxt "#30407"
 msgid "No matches found"
@@ -1022,122 +1022,122 @@ msgstr "Efter undertextspråk"
 
 msgctxt "#30413"
 msgid "By genre/subgenre ID"
-msgstr ""
+msgstr "Efter genre/undergenre-ID"
 
 # Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
-msgstr ""
+msgstr "Föredrar språket för ljud/textning med landskod (om tillgängligt)"
 
 msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
-msgstr ""
+msgstr "Föredrar stereoljudspår som standard"
 
 # Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
-msgstr ""
+msgstr "Inställningar för ESN / Widevine"
 
 msgctxt "#30601"
 msgid "ESN:"
-msgstr ""
+msgstr "ESN:"
 
 msgctxt "#30602"
 msgid "Change ESN"
-msgstr ""
+msgstr "Ändra ESN"
 
 msgctxt "#30603"
 msgid "Save system info"
-msgstr ""
+msgstr "Spara systeminfo"
 
 msgctxt "#30604"
 msgid "Widevine - Force security level"
-msgstr ""
+msgstr "Widevine - Tvinga säkerhetsnivån"
 
 msgctxt "#30605"
 msgid "Force {}"
-msgstr ""
+msgstr "Tviga {}"
 
 msgctxt "#30606"
 msgid "ESN set successfully[CR]Try to play a video"
-msgstr ""
+msgstr "ESN inställd[CR]Försök spela upp en video"
 
 msgctxt "#30607"
 msgid "This ESN cannot be used[CR]Try change ESN or reset ESN.[CR][CR]Error details:[CR]{}"
-msgstr ""
+msgstr "Denna ESN kan inte användas[CR]Försök ändra ESN eller återställ ESN.[CR][CR]Feldetaljer:[CR]{}"
 
 msgctxt "#30608"
 msgid "Wrong ESN format"
-msgstr ""
+msgstr "Fel ESN-format"
 
 msgctxt "#30609"
 msgid "Do you want to reset all settings?"
-msgstr ""
+msgstr "Vill du återställa alla inställningar?"
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "Använd systembaserad kryptering för autentiseringsuppgifter"
 
 # Help description for setting id 30610
 msgctxt "#30611"
 msgid "[B]If disabled it will cause a security leak[/B]. If your operating system does not support it, you will be prompted to login each time you reboot the device, [B]only[/B] in this case disable it. If you change this setting you will be prompted to login again in the next time you reboot."
-msgstr ""
+msgstr "[B]Om det är inaktiverat kommer det att orsaka en säkerhetsläcka[/B]. Om ditt operativsystem inte stöder det kommer du att uppmanas att logga in varje gång du startar om enheten. Inaktivera [B]endast[/B] om så är fallet. Om du ändrar den här inställningen kommer du att uppmanas att logga in igen nästa gång du startar om."
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL-manifestversion"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from: {}"
-msgstr ""
+msgstr "Denna titel kommer att vara tillgänglig från: {}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Vill du spela upp kampanjtrailern?"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Påminn mig"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Påminnelse inställd"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Nytt och populärt"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Markera påbörjad TV-serier som sedda"
 
 # Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Observera att genom att aktivera den här inställningen kanske objekt som är markerade som sedda inte syns om filter är aktiverade i dina skalinställningar."
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Åsidosätt strömvalstyp"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "Åsidosätt inställningen för strömvalstyp för tillägget InputStream Adaptive. Detta för att ställa in hur ljud- / videokvaliteten väljs under uppspelningen"
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Anpassningsbar kvalitet"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Fast videokvalitet"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Fråga om videokvalitet"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "Observera att aktivering av den här inställningen tvingar bort strömmar som inte ligger inom det angivna intervallet och detta kan påverka funktionen för InputStream Adaptive. Om möjligt försök att först begränsa kvaliteten från inställningarna i InputStream Adaptive."
