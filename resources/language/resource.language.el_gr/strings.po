@@ -1076,7 +1076,7 @@ msgstr "Θέλετε να επαναφέρετε όλες τις ρυθμίσε�
 
 msgctxt "#30610"
 msgid "Use system-based encryption for credentials"
-msgstr ""
+msgstr "Χρησιμοποιήστε κρυπτογράφηση βάσει συστήματος για τα διαπιστευτήρια"
 
 # Help description for setting id 30610
 msgctxt "#30611"
@@ -1094,24 +1094,24 @@ msgstr ""
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr ""
+msgstr "Θέλετε να αναπράγετε το promo trailer;"
 
 msgctxt "#30622"
 msgid "Remind me"
-msgstr ""
+msgstr "Θύμισε μου"
 
 msgctxt "#30623"
 msgid "Reminder set"
-msgstr ""
+msgstr "Ορίστηκε Υπενθύμιση"
 
 # Unused 30624 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr ""
+msgstr "Νέα και δημοφιλή"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Επισημαίνει τηλεοπτικές εκπομπές που έχετε ξεκινήσει ως ήδη παρακολουθούμενες"
 
 # Description of setting ID #30701
 msgctxt "#30702"
@@ -1120,7 +1120,7 @@ msgstr ""
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Παράκαμψη τύπου επιλογής ροής"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
@@ -1128,15 +1128,15 @@ msgstr ""
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Προσαρμόσιμη ποιότητα"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Διορθώθηκε η ποιότητα βίντεο"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Ρωτήστε την ποιότητα βίντεο"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
