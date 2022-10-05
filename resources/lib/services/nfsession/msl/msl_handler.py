@@ -269,7 +269,9 @@ class MSLHandler:
             # License type:
             # - 'limited' license data provided in the manifest response, may be needed a second license request
             # - 'standard' no license data provided in the manifest response
-            'licenseType': 'limited'
+            # TODO: Currently on linux only the license type set to "limited" cause this error on ISA:
+            #  License update not successful (no keys)
+            'licenseType': 'standard'
         }
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
