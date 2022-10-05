@@ -113,7 +113,8 @@ class DirectoryPathRequests:
         LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
             'paths': (build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS) +
-                      build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS)),
+                      build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS) +
+                      [['videos', videoid.tvshowid, 'componentSummary']]),
             'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']],
             'perpetual_range_start': perpetual_range_start
         }
@@ -128,6 +129,7 @@ class DirectoryPathRequests:
             raise InvalidVideoId(f'Cannot request episode list for {videoid}')
         LOG.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
+                 [['seasons', videoid.seasonid, 'componentSummary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
                  build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
         call_args = {
@@ -145,7 +147,8 @@ class DirectoryPathRequests:
         # Some of this type of request have results fixed at ~40 from netflix
         # The 'length' tag never return to the actual total count of the elements
         LOG.debug('Requesting video list {}', list_id)
-        paths = build_paths(['lists', list_id, RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS)
+        paths = (build_paths(['lists', list_id, RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS) +
+                 [['lists', list_id, 'componentSummary']])
         call_args = {
             'paths': paths,
             'length_params': ['stdlist', ['lists', list_id]],
@@ -218,7 +221,7 @@ class DirectoryPathRequests:
         """Retrieve a video list by search term"""
         LOG.debug('Requesting video list by search term "{}"', search_term)
         base_path = ['search', 'byTerm', f'|{search_term}', 'titles', PATH_REQUEST_SIZE_STD]
-        paths = ([base_path + [['id', 'name', 'requestId']]] +
+        paths = ([base_path + [['id', 'name', 'requestId', 'trackIds']]] +
                  build_paths(base_path + [RANGE_PLACEHOLDER, 'reference'], VIDEO_LIST_PARTIAL_PATHS))
         call_args = {
             'paths': paths,

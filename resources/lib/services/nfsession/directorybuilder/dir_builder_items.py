@@ -299,7 +299,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data)
     if not is_folder:
         set_watched_status(list_item, video, common_data)
-    trackid = video['trackIds']['value']['trackId_jaw']
+    trackid = video_list.component_summary.get('trackIds', {}).get('trackId', '')
     if is_playable:
         # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
