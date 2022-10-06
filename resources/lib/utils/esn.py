@@ -14,32 +14,6 @@ from resources.lib.globals import G
 from .logging import LOG
 
 
-# 25/11/2020 - Follow Android ESN generator is changed (current method not yet known)
-# First NF identifies the device in this way and in the following order:
-# 1) if getPackageManager().hasSystemFeature("org.chromium.arc") == true
-#                 the device is : DEV_TYPE_CHROME_OS (Chrome OS)
-# 2) if getSystemService(Context.DISPLAY_SERVICE)).getDisplay(0) == null
-#                 the device is : DEV_TYPE_ANDROID_STB (Set-Top Box)
-# 3) if getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() == UI_MODE_TYPE_TELEVISION
-#                 the device is : DEV_TYPE_ANDROID_TV
-# 4) if 528 is <= of (calculated resolution display):
-#    DisplayMetrics dMetr = new DisplayMetrics();
-#    defaultDisplay.getRealMetrics(displayMetrics);
-#    float disDens = displayMetrics.density;
-#    if 528 <= Math.min((dMetr.widthPixels / disDens, (dMetr.heightPixels / disDens)
-#                 the device is : DEV_TYPE_TABLET
-# 5) if all other cases are not suitable, then the device is :  DEV_TYPE_PHONE
-# Then after identifying the device type, a specific letter will be added after the prefix "PRV-"
-
-# ESN Device categories (updated 25/11/2020)
-#  Unknown or Phone "PRV-P"
-#  Tablet?          "PRV-T"   (should be for tablet)
-#  Tablet           "PRV-C"   (should be for Chrome OS devices only)
-#  Google TV        "PRV-B"   (Set-Top Box)
-#  Smart Display    "PRV-E"
-#  Android TV       "PRV-"    (without letter specified)
-
-
 class WidevineForceSecLev:  # pylint: disable=no-init, disable=too-few-public-methods
     """The values accepted for 'widevine_force_seclev' TABLE_SESSION setting"""
     DISABLED = 'Disabled'
@@ -81,58 +55,11 @@ def generate_android_esn(wv_force_sec_lev=None):
     """Generate an ESN if on android or return the one from user_data"""
     from resources.lib.common.device_utils import get_system_platform
     if get_system_platform() == 'android':
-        import subprocess
-        try:
-            sdk_version = int(subprocess.check_output(['/system/bin/getprop', 'ro.build.version.sdk']))
-            manufacturer = subprocess.check_output(
-                ['/system/bin/getprop',
-                 'ro.product.manufacturer']).decode('utf-8').strip(' \t\n\r').upper()
-            if manufacturer:
-                model = subprocess.check_output(
-                    ['/system/bin/getprop',
-                     'ro.product.model']).decode('utf-8').strip(' \t\n\r').upper()
-
-                # Netflix Ready Device Platform (NRDP)
-                nrdp_modelgroup = subprocess.check_output(
-                    ['/system/bin/getprop',
-                     'ro.vendor.nrdp.modelgroup' if sdk_version >= 28 else 'ro.nrdp.modelgroup']
-                ).decode('utf-8').strip(' \t\n\r').upper()
-
-                drm_security_level = G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
-                system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
-
-                # Some device with false Widevine certification can be specified as Widevine L1
-                # but we do not know how NF original app force the fallback to L3, so we add a manual setting
-                if not wv_force_sec_lev:
-                    wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
-                                                            WidevineForceSecLev.DISABLED,
-                                                            table=TABLE_SESSION)
-                if wv_force_sec_lev == WidevineForceSecLev.L3:
-                    drm_security_level = 'L3'
-                elif wv_force_sec_lev == WidevineForceSecLev.L3_4445:
-                    # For some devices the Netflix android app change the DRM System ID to 4445
-                    drm_security_level = 'L3'
-                    system_id = '4445'
-
-                if drm_security_level == 'L1':
-                    esn = 'NFANDROID2-PRV-'
-                    if nrdp_modelgroup:
-                        esn += nrdp_modelgroup + '-'
-                    else:
-                        esn += model.replace(' ', '') + '-'
-                else:
-                    esn = 'NFANDROID1-PRV-'
-                    esn += 'T-L3-'
-
-                esn += f'{manufacturer:=<5.5}'
-                esn += model[:45].replace(' ', '=')
-                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-                if system_id:
-                    esn += f'-{system_id}-'
-                LOG.debug('Generated Android ESN: {} (widevine force sec.lev. set as "{}")', esn, wv_force_sec_lev)
-                return esn
-        except OSError:
-            pass
+        props = _get_android_system_props()
+        is_android_tv = 'TV' in props.get('ro.build.characteristics', '').upper()
+        if is_android_tv:
+            return _generate_esn_android_tv(props, wv_force_sec_lev)
+        return _generate_esn_android(props, wv_force_sec_lev)
     return None
 
 
@@ -146,3 +73,122 @@ def generate_esn(prefix=''):
         esn += random.choice(possible)
     LOG.debug('Generated random ESN: {}', esn)
     return esn
+
+
+def _generate_esn_android(props, wv_force_sec_lev):
+    """Generate ESN for Android device"""
+    manufacturer = props.get('ro.product.manufacturer', '').upper()
+    if not manufacturer:
+        LOG.error('Cannot generate ESN ro.product.manufacturer not found')
+        return None
+    model = props.get('ro.product.model', '').upper()
+    if not model:
+        LOG.error('Cannot generate ESN ro.product.model not found')
+        return None
+
+    device_category = 'T-'  # The default value must be "P",
+    # but we force to "T" that should provide 1080p on tablets, this because to determinate if the device fall in
+    # to the tablet category we need to know the screen size by DisplayMetrics android API that we do not have access
+    # and then check/calculate with the following formula:
+    # if 600 <= min(width_px / density, height_px / density):
+    #    device_category = 'T-'
+
+    # Device categories (updated 06/10/2022):
+    #  Unknown or Phone "P"
+    #  Tablet           "T"
+    #  Chrome OS Tablet "C"
+    #  Setup Box        "B"
+    #  Smart Display    "E"
+
+    drm_security_level, system_id = _get_drm_info(wv_force_sec_lev)
+
+    sec_lev = '' if drm_security_level == 'L1' else 'L3-'
+
+    if len(manufacturer) < 5:
+        manufacturer += '       '
+    manufacturer = manufacturer[:5]
+    model = model[:45].strip()
+
+    prod = manufacturer + model
+    prod = sub(r'[^A-Za-z0-9=-]', '=', prod)
+    return 'NFANDROID1-PRV-' + device_category + sec_lev + prod + '-' + system_id + '-'
+
+
+def _generate_esn_android_tv(props, wv_force_sec_lev):
+    """Generate ESN for Android TV device"""
+    sdk_version = int(props['ro.build.version.sdk'])
+    manufacturer = props.get('ro.product.manufacturer', '').upper()
+    if not manufacturer:
+        LOG.error('Cannot generate ESN ro.product.manufacturer not found')
+        return None
+    model = props.get('ro.product.model', '').upper()
+    if not model:
+        LOG.error('Cannot generate ESN ro.product.model not found')
+        return None
+
+    # Netflix Ready Device Platform (NRDP)
+    if sdk_version >= 28:
+        model_group = props.get('ro.vendor.nrdp.modelgroup', '').upper()
+    else:
+        model_group = props.get('ro.nrdp.modelgroup', '').upper()
+
+    if not model_group:
+        model_group = '0'
+    model_group = sub(r'[^A-Za-z0-9=-]', '=', model_group)
+
+    if len(manufacturer) < 5:
+        manufacturer += '       '
+    manufacturer = manufacturer[:5]
+    model = model[:45].strip()
+
+    prod = manufacturer + model
+    prod = sub(r'[^A-Za-z0-9=-]', '=', prod)
+
+    _, system_id = _get_drm_info(wv_force_sec_lev)
+    return 'NFANDROID2-PRV-' + model_group + '-' + prod + '-' + system_id + '-'
+
+
+def _get_drm_info(wv_force_sec_lev):
+    drm_security_level = G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION)
+    system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
+
+    if not system_id:
+        raise Exception('Cannot get DRM system id')
+
+    # Some device with false Widevine certification can be specified as Widevine L1
+    # but we do not know how NF original app force the fallback to L3, so we add a manual setting
+    if not wv_force_sec_lev:
+        wv_force_sec_lev = G.LOCAL_DB.get_value('widevine_force_seclev',
+                                                WidevineForceSecLev.DISABLED,
+                                                table=TABLE_SESSION)
+    if wv_force_sec_lev == WidevineForceSecLev.L3:
+        drm_security_level = 'L3'
+    elif wv_force_sec_lev == WidevineForceSecLev.L3_4445:
+        # For some devices the Netflix android app change the DRM System ID to 4445
+        drm_security_level = 'L3'
+        system_id = '4445'
+    return drm_security_level, system_id
+
+
+def _get_android_system_props():
+    """Get Android system properties by parsing the raw output of getprop into a dictionary"""
+    try:
+        import subprocess
+        info_dict = {}
+        info = subprocess.check_output(['/system/bin/getprop']).decode('utf-8', errors='ignore').replace('\r\n', '\n')
+        for line in info.split(']\n'):
+            if not line:
+                continue
+            try:
+                name, value = line.split(': ', 1)
+            except ValueError:
+                LOG.debug('Failed to parse getprop line: {}', line)
+                continue
+            name = name.strip()[1:-1]  # Remove brackets [] and spaces
+            if value and value[0] == '[':
+                value = value[1:]
+            info_dict[name] = value
+        return info_dict
+    except OSError:
+        LOG.error('Cannot get "getprop" data due to system error.')
+        return {}
