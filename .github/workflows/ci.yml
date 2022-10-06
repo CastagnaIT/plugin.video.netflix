@@ -34,6 +34,7 @@ jobs:
         args: >
           -Dsonar.organization=add-ons
           -Dsonar.projectKey=add-ons_plugin.video.netflix
+          -Dsonar.python.version=3.7,3.8,3.9,3.10
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
