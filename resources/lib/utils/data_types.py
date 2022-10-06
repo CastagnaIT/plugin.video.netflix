@@ -93,6 +93,7 @@ class VideoListLoCo:
             self.videoids = _get_videoids(self.videos)
         except KeyError:
             self.videoids = []
+        self.component_summary = {}
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.list_id]['componentSummary'].get('value', {})[key])
@@ -113,12 +114,15 @@ class VideoList:
         self.artitem = None
         self.contained_titles = []
         self.videoids = []
+        self.component_summary = {}
         if has_data:
+            first_list_id = next(iter(self.data['lists']))
+            self.component_summary = self.data['lists'][first_list_id].get('componentSummary', {}).get('value', {})
             # Generate one videoid, or from the first id of the list or with specified one
             self.videoid = common.VideoId(
                 videoid=(list_id
                          if list_id
-                         else next(iter(self.data['lists']))))
+                         else first_list_id))
             self.videos = OrderedDict(resolve_refs(self.data['lists'][self.videoid.value], self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())
@@ -152,6 +156,7 @@ class VideoListSorted:
         self.artitem = None
         self.contained_titles = []
         self.videoids = []
+        self.component_summary = {}
         if has_data:
             self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
                 if context_id else path_response[context_name][req_sort_order_type]
@@ -183,9 +188,13 @@ class SearchVideoList:
         self.videoids = []
         self.artitem = None
         self.contained_titles = []
+        self.component_summary = {}
         if has_data:
+            first_list_id = next(iter(self.data['search']['byReference']))
+            self.component_summary = {
+                'trackIds': self.data['search']['byReference'][first_list_id]['trackIds'].get('value', {})}
             self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
-            self.videos = OrderedDict(resolve_refs(list(self.data['search']['byReference'].values())[0], self.data))
+            self.videos = OrderedDict(resolve_refs(self.data['search']['byReference'][first_list_id], self.data))
             self.videoids = _get_videoids(self.videos)
             # self.artitem = next(self.videos.values(), None)
             self.artitem = list(self.videos.values())[0] if self.videos else None

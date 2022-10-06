@@ -100,32 +100,36 @@ def rate_thumb(videoid, rating, track_id_jaw):
 
 def update_remindme(operation, videoid, trackid):
     """Call API to add / remove "Remind Me" to not available videos"""
-    # Method used with old api endpoint
-    # response = common.make_call(
-    #     'post_safe',
-    #     {'endpoint': 'playlistop',
-    #      'data': {
-    #          'lolomoId': 'unknown',
-    #          'operation': operation,
-    #          'videoId': int(videoid.value),
-    #          'trackId': int(trackid)
-    #      }})
-    # LOG.debug('update_remindme response: {}', response)
-    op = 'addToRemindMeList' if operation == 'add' else 'removeToRemindMeList'
-    call_args = {
-        'callpaths': [['videos', int(videoid.value), op]],
-        'params': [str(trackid)],
-        'path': ['videos', int(videoid.value), 'inRemindMeList']
-    }
-    response = common.make_call('callpath_request', call_args)
-    if response['videos'][videoid.value]['inRemindMeList']['value'] != (operation == 'add'):
-        LOG.debug('update_remindme response: {}', response)
-        raise Exception('Unable update remind me, an error occurred in the request.')
+    if not trackid:
+        raise Exception('Unable update remind me, trackid not found.')
+    response = common.make_call(
+        'post_safe',
+        {'endpoint': 'playlistop',
+         'data': {
+             'lolomoId': 'unknown',
+             'operation': operation,
+             'videoId': int(videoid.value),
+             'trackId': int(trackid)
+         }})
+    LOG.debug('update_remindme response: {}', response)
+    # 05/10/2022: The remove action by using this new callpath not works
+    # op = 'addToRemindMeList' if operation == 'add' else 'removeToRemindMeList'
+    # call_args = {
+    #     'callpaths': [['videos', int(videoid.value), op]],
+    #     'params': [str(trackid)],
+    #     'path': ['videos', int(videoid.value), 'inRemindMeList']
+    # }
+    # response = common.make_call('callpath_request', call_args)
+    # if response['videos'][videoid.value]['inRemindMeList']['value'] != (operation == 'add'):
+    #     LOG.debug('update_remindme response: {}', response)
+    #     raise Exception('Unable update remind me, an error occurred in the request.')
 
 
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to add / remove videos to my list"""
+    if not params['trackid']:
+        raise Exception('Unable update my list, trackid not found.')
     LOG.debug('My List: {} {}', operation, videoid)
     response = common.make_call(
         'post_safe',
