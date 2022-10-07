@@ -170,12 +170,13 @@ class MSLRequests(MSLRequestBuilder):
         auth_data = {}
 
         # TODO: MSL netflixid auth at today not works with L3 android devices by returning error:
-        #  "User authentication data does not match entity identity."
-        #  so we fallback to idtoken auth, but this will not allow to play videos with other profiles than owner one,
-        #  then until another solution will be found the other profiles will be unusable...
-        if get_system_platform() == 'android' and not is_device_l1_enabled():
+        #  "User authentication data does not match entity identity." so we fallback to idtoken auth
+        if get_system_platform() == 'android' and (not is_device_l1_enabled()
+                                                   or G.ADDON.getSettingBool('msl_auth_type')):
             auth_scheme = MSL_AUTH_USER_ID_TOKEN
 
+        # TODO: Due to removal of SWITCH_PROFILE using idtoken authenticaton is possible play videos
+        #  from main/owner profile only
         if auth_scheme == MSL_AUTH_USER_ID_TOKEN:
             auth_data.update(self._check_user_id_token(disable_msl_switch, force_auth_credential))
             if auth_data['user_id_token'] is None:
