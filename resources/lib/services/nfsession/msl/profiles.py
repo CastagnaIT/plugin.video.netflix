@@ -15,15 +15,18 @@ CENC_PRK = 'dash-cenc-prk'
 CENC_PRK_DO = 'dash-cenc-prk-do'
 CENC = 'dash-cenc'
 CENC_TL = 'dash-cenc-tl'
+CBCS_PRK = 'dash-cbcs-prk'
 HDR = 'hevc-hdr-main10-'
 DV5 = 'hevc-dv5-main10-'
 VP9_PROFILE0 = 'vp9-profile0-'
 # VP9 Profile 2 (HDR) test only, the website does not list it but some videos still have this profile available
 # VP9_PROFILE2 = 'vp9-profile2-'
+AV1 = 'av1-main-'
 
 BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 VP9_PROFILE0_LEVELS = ['L21-', 'L30-', 'L31-', 'L40-']
 # VP9_PROFILE2_LEVELS = ['L30-', 'L31-', 'L40-', 'L50-', 'L51-']
+AV1_LEVELS = ['L20-', 'L21-', 'L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
 
 
 def _profile_strings(base, tails):
@@ -60,10 +63,13 @@ PROFILES = {
                                 (BASE_LEVELS, CENC_PRK_DO)]),
     'vp9profile0':
         _profile_strings(base=VP9_PROFILE0,
-                         tails=[(VP9_PROFILE0_LEVELS, CENC)])
+                         tails=[(VP9_PROFILE0_LEVELS, CENC)]),
     # 'vp9profile2':
     #     _profile_strings(base=VP9_PROFILE2,
     #                      tails=[(VP9_PROFILE2_LEVELS, CENC_PRK)])
+    'av1':
+        _profile_strings(base=AV1,
+                         tails=[(AV1_LEVELS, CBCS_PRK)])
 }
 
 
@@ -81,7 +87,8 @@ def enabled_profiles():
                                   'enable_hdr_profiles']) +
             _additional_profiles('dolbyvision',
                                  ['enable_hevc_profiles',
-                                  'enable_dolbyvision_profiles']))
+                                  'enable_dolbyvision_profiles']) +
+            _additional_profiles('av1', 'enable_av1_profiles'))
 
 
 def _subtitle_profiles():

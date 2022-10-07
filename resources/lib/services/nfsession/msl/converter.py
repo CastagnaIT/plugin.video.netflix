@@ -97,7 +97,7 @@ def _get_protection_info(content):
     return {'pssh': pssh, 'keyid': keyid}
 
 
-def _add_protection_info(adaptation_set, pssh, keyid):
+def _add_protection_info(video_track, adaptation_set, pssh, keyid):
     if keyid:
         # Signaling presence of encrypted content
         from base64 import standard_b64decode
@@ -107,7 +107,7 @@ def _add_protection_info(adaptation_set, pssh, keyid):
             attrib={
                 'schemeIdUri': 'urn:mpeg:dash:mp4protection:2011',
                 'cenc:default_KID': str(uuid.UUID(bytes=standard_b64decode(keyid))),
-                'value': 'cenc'
+                'value': 'cbcs' if 'av1' in video_track['profile'] else 'cenc'
             })
     # Define the DRM system configuration
     protection = ET.SubElement(
@@ -140,7 +140,7 @@ def _convert_video_track(video_track, period, protection, has_drm_streams, cdn_i
         mimeType='video/mp4',
         contentType='video')
     if protection:
-        _add_protection_info(adaptation_set, **protection)
+        _add_protection_info(video_track, adaptation_set, **protection)
 
     limit_res = _limit_video_resolution(video_track['streams'], has_drm_streams)
 
@@ -209,6 +209,8 @@ def _determine_video_codec(content_profile):
         return 'hevc'
     if content_profile.startswith('vp9'):
         return f'vp9.{content_profile[11:12]}'
+    if 'av1' in content_profile:
+        return 'av1'
     return 'h264'
 
 

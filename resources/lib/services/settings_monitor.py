@@ -130,7 +130,7 @@ def _check_manifest_settings_status(clean_buckets):
     # therefore cached manifests must be deleted (see load_manifest on msl_handler.py)
     menu_keys_bool = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
                       'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
-                      'disable_webvtt_subtitle']
+                      'disable_webvtt_subtitle', 'enable_av1_profiles']
     collected_data = ''
     for menu_key in menu_keys_bool:
         collected_data += str(int(G.ADDON.getSettingBool(menu_key)))

@@ -1003,6 +1003,19 @@
                         <dependency type="visible" setting="enable_hevc_profiles">true</dependency>
                     </dependencies>
                 </setting>
+                <setting id="enable_av1_profiles" type="boolean" label="30727">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies> <!-- Feature available on Kodi v20 or above -->
+                        <dependency type="visible">
+                            <or>
+                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,19.9)</condition> <!-- v20 pre-releases -->
+                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
+                            </or>
+                        </dependency>
+                    </dependencies>
+                </setting>
                 <setting id="disable_webvtt_subtitle" type="boolean" label="30144" help="">
                     <level>0</level>
                     <default>false</default>
