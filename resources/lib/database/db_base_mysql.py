@@ -29,18 +29,13 @@ def handle_connection(func):
         if not args[0].is_mysql_database:
             # If database is not mysql pass to next decorator
             return func(*args, **kwargs)
-        conn = None
         try:
             if not args[0].conn or (args[0].conn and not args[0].conn.is_connected()):
                 args[0].conn = mysql.connector.connect(**args[0].config)
-                conn = args[0].conn
             return func(*args, **kwargs)
         except mysql.connector.Error as exc:
             LOG.error('MySQL error {}:', exc)
             raise DBMySQLConnectionError from exc
-        finally:
-            if conn and conn.is_connected():
-                conn.close()
     return wrapper
 
 

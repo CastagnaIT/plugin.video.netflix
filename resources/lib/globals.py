@@ -273,6 +273,9 @@ class GlobalVariables:
         self.IPC_OVER_HTTP = self.ADDON.getSettingBool('enable_ipc_over_http')
 
     def init_database(self):
+        # Check if SQLite module is thread safe
+        from resources.lib.database.db_utils import is_sqlite3_threadsafe
+        self.IS_SQLITE3_THREADSAFE = is_sqlite3_threadsafe()
         # Initialize local database
         import resources.lib.database.db_local as db_local
         self.LOCAL_DB = db_local.NFLocalDatabase()
