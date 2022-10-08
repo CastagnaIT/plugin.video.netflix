@@ -12,6 +12,7 @@ import resources.lib.common as common
 
 HEVC_M10 = 'hevc-main10-'
 CENC_PRK = 'dash-cenc-prk'
+CENC_PRK_QC = 'dash-cenc-prk-qc'
 CENC_PRK_DO = 'dash-cenc-prk-do'
 CENC = 'dash-cenc'
 CENC_TL = 'dash-cenc-tl'
@@ -23,10 +24,12 @@ VP9_PROFILE0 = 'vp9-profile0-'
 # VP9_PROFILE2 = 'vp9-profile2-'
 AV1 = 'av1-main-'
 
-BASE_LEVELS = ['L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
-VP9_PROFILE0_LEVELS = ['L21-', 'L30-', 'L31-', 'L40-']
-# VP9_PROFILE2_LEVELS = ['L30-', 'L31-', 'L40-', 'L50-', 'L51-']
-AV1_LEVELS = ['L20-', 'L21-', 'L30-', 'L31-', 'L40-', 'L41-', 'L50-', 'L51-']
+# Video codec levels
+LEVELS_2 = ['L20-', 'L21-']
+LEVELS_3 = ['L30-', 'L31-']
+LEVELS_4 = ['L40-', 'L41-']
+LEVELS_5 = ['L50-', 'L51-']
+ALL_LEVELS = LEVELS_2 + LEVELS_3 + LEVELS_4 + LEVELS_5
 
 
 def _profile_strings(base, tails):
@@ -47,36 +50,38 @@ PROFILES = {
              'playready-h264mpl40-dash',
              'playready-h264hpl22-dash', 'playready-h264hpl30-dash',
              'playready-h264hpl31-dash', 'playready-h264hpl40-dash'],
+    'h264_prk_qc': ['h264mpl30-dash-playready-prk-qc', 'h264mpl31-dash-playready-prk-qc',
+                    'h264mpl40-dash-playready-prk-qc'],
     'hevc':
         _profile_strings(base=HEVC_M10,
-                         tails=[(BASE_LEVELS, CENC),
-                                (BASE_LEVELS[:4], CENC_PRK),
-                                (BASE_LEVELS, CENC_PRK_DO)]),
+                         tails=[(LEVELS_3 + LEVELS_4 + LEVELS_5, CENC),
+                                (LEVELS_3 + LEVELS_4, CENC_PRK),
+                                (LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK_DO)]),
     'hdr':
         _profile_strings(base=HDR,
-                         tails=[(BASE_LEVELS, CENC),
-                                (BASE_LEVELS, CENC_PRK),
-                                (BASE_LEVELS, CENC_PRK_DO)]),
+                         tails=[(LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK),
+                                (LEVELS_3 + LEVELS_4, CENC_PRK_DO)]),
     'dolbyvision':
         _profile_strings(base=DV5,
-                         tails=[(BASE_LEVELS, CENC_PRK),
-                                (BASE_LEVELS, CENC_PRK_DO)]),
+                         tails=[(LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK),
+                                (LEVELS_4 + LEVELS_5, CENC_PRK_QC),
+                                (LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK_DO)]),
     'vp9profile0':
         _profile_strings(base=VP9_PROFILE0,
-                         tails=[(VP9_PROFILE0_LEVELS, CENC)]),
+                         tails=[(LEVELS_2[1:2] + LEVELS_3 + LEVELS_4[:1], CENC)]),
     # 'vp9profile2':
     #     _profile_strings(base=VP9_PROFILE2,
-    #                      tails=[(VP9_PROFILE2_LEVELS, CENC_PRK)])
+    #                      tails=[(LEVELS_3 + LEVELS_4[:1] + LEVELS_5, CENC_PRK)])
     'av1':
         _profile_strings(base=AV1,
-                         tails=[(AV1_LEVELS, CBCS_PRK)])
+                         tails=[(ALL_LEVELS, CBCS_PRK)])
 }
 
 
 def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
     return (PROFILES['base'] +
-            PROFILES['h264'] +
+            PROFILES['h264'] + PROFILES['h264_prk_qc'] +
             _subtitle_profiles() +
             _additional_profiles('vp9profile0', 'enable_vp9_profiles') +
             # _additional_profiles('vp9profile2', 'enable_vp9_profiles') +
