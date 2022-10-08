@@ -1113,7 +1113,7 @@ msgctxt "#30701"
 msgid "Marks started tv shows as watched"
 msgstr "Az elkezdett sorozatokat jelöld nézettként"
 
-# Description of setting ID #30701
+#. Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr "Kérjük, vegye figyelembe, hogy ha engedélyezi ezt a beállítást, és a szűrők engedélyezve vannak a felszín beállításaiban, előfordulhat, hogy a megtekintettként megjelölt elemek nem jelennek meg."
@@ -1141,3 +1141,34 @@ msgstr "Kérdezz rá a videó minőségre"
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
 msgstr "Kérjük, vegye figyelembe, hogy ennek a beállításnak az engedélyezése kényszeríti a beállított tartományon kívüli adatfolyamok eltávolítását, és ez hatással lehet az InputStream Adaptive működésére. Ha lehetséges, próbálja meg először korlátozni a minőséget az InputStream Adaptive beállításaiban."
+
+msgctxt "#30721"
+msgid "Maximum height of black bars (Experimental)"
+msgstr ""
+
+#. Description of setting ID #30721
+msgctxt "#30722"
+msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
+msgstr ""
+
+msgctxt "#30723"
+msgid "Force reset the \"View mode\" setting"
+msgstr ""
+
+#. Description of setting ID #30723
+msgctxt "#30724"
+msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
+msgstr ""
+
+msgctxt "#30725"
+msgid "Force MSL with idtoken authentication"
+msgstr ""
+
+#. Description of setting ID 30725 - do not translate the error message
+msgctxt "#30726"
+msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
+msgstr ""
+
+msgctxt "#30727"
+msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
+msgstr ""

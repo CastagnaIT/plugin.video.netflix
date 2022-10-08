@@ -1141,7 +1141,7 @@ msgctxt "#30701"
 msgid "Marks started tv shows as watched"
 msgstr ""
 
-# Description of setting ID #30701
+#. Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr ""
@@ -1171,10 +1171,10 @@ msgid "Please note that enabling this setting will force the removal of streams 
 msgstr ""
 
 msgctxt "#30721"
-msgid "Limit maximum height of black bars (Experimental)"
+msgid "Maximum height of black bars (Experimental)"
 msgstr ""
 
-# Description of setting ID #30721
+#. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
 msgstr ""
@@ -1183,7 +1183,7 @@ msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
 msgstr ""
 
-# Description of setting ID #30723
+#. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr ""

@@ -1113,7 +1113,7 @@ msgctxt "#30701"
 msgid "Marks started tv shows as watched"
 msgstr "标记开始观看的电视节目"
 
-# Description of setting ID #30701
+#. Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
 msgstr "请注意，如果您在皮肤设置中启用过滤器，启用此设置后，标记为已观看的项目可能不可见。"
@@ -1143,10 +1143,10 @@ msgid "Please note that enabling this setting will force the removal of streams 
 msgstr "请注意，启用此设置将强制移除不在设定范围内的流，这可能影响InputStream Adaptive的操作。如果可能的话，先尝试从InputStream Adaptive设置中限制质量。"
 
 msgctxt "#30721"
-msgid "Limit maximum height of black bars (Experimental)"
-msgstr "限制黑边最大高度（实验性）"
+msgid "Maximum height of black bars (Experimental)"
+msgstr ""
 
-# Description of setting ID #30721
+#. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
 msgstr "通过将 Kodi \"视图模式\" 设置为 \"满屏\" 裁剪的视频将被拉伸，以最小化设置黑边最大高度。例如 10% 表示黑条最多可以覆盖屏幕的 10%。要禁用它，请设置为 50%。"
@@ -1155,7 +1155,20 @@ msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
 msgstr "强制重置 \"视图模式\" 设置"
 
-# Description of setting ID #30723
+#. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置可在播放之前观看的视频时恢复 \"正常\" 视图模式。"
+
+msgctxt "#30725"
+msgid "Force MSL with idtoken authentication"
+msgstr ""
+
+#. Description of setting ID 30725 - do not translate the error message
+msgctxt "#30726"
+msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
+msgstr ""
+
+msgctxt "#30727"
+msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
+msgstr ""
