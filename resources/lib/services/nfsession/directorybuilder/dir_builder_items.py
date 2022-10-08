@@ -243,6 +243,9 @@ def _create_videolist_item(list_id, video_list, menu_data, common_data, static_l
 def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None, perpetual_range_start=None,
                         mylist_items=None, path_params=None):
     """Build a video listing"""
+    trackid = None
+    if hasattr(video_list, 'component_summary'):
+        trackid = video_list.component_summary.get('trackIds', {}).get('trackId', 'None')
     common_data = get_common_data()
     common_data.update({
         'params': get_param_watched_status_by_profile(),
@@ -254,6 +257,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
         'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
+        'trackid': trackid
     })
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
@@ -299,7 +303,6 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data)
     if not is_folder:
         set_watched_status(list_item, video, common_data)
-    trackid = video_list.component_summary.get('trackIds', {}).get('trackId', '')
     if is_playable:
         # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
@@ -307,7 +310,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
                                params=None if is_folder else common_data['params'])
         list_item.addContextMenuItems(generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start,
                                                                   common_data['ctxmenu_remove_watched_status'],
-                                                                  trackid))
+                                                                  common_data['trackid']))
     else:
         # The movie or tvshow (episodes) is not available
         # Try check if there is a availability date
@@ -320,7 +323,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         except CacheMiss:
             #  The website check the "Remind Me" value on key "inRemindMeList" and also "queue"/"inQueue"
             is_in_remind_me = video['inRemindMeList']['value'] or video['queue']['value']['inQueue']
-        list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, trackid))
+        list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, common_data['trackid']))
         url = common.build_url(['show_availability_message'], videoid=videoid, mode=G.MODE_ACTION)
     return url, list_item, is_folder and is_playable
 

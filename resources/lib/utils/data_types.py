@@ -158,8 +158,12 @@ class VideoListSorted:
         self.videoids = []
         self.component_summary = {}
         if has_data:
-            self.data_lists = path_response[context_name][context_id][req_sort_order_type] \
-                if context_id else path_response[context_name][req_sort_order_type]
+            if context_id:
+                self.data_lists = path_response[context_name][context_id][req_sort_order_type]
+                self.component_summary = {'trackIds': self.data[context_name][context_id]['trackIds'].get('value', {})}
+            else:
+                self.data_lists = path_response[context_name][req_sort_order_type]
+                self.component_summary = {'trackIds': self.data[context_name]['trackIds'].get('value', {})}
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())

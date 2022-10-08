@@ -100,8 +100,8 @@ def rate_thumb(videoid, rating, track_id_jaw):
 
 def update_remindme(operation, videoid, trackid):
     """Call API to add / remove "Remind Me" to not available videos"""
-    if not trackid:
-        raise Exception('Unable update remind me, trackid not found.')
+    if trackid == 'None':
+        raise Exception('Unable update my list, trackid not found.')
     response = common.make_call(
         'post_safe',
         {'endpoint': 'playlistop',
@@ -128,7 +128,7 @@ def update_remindme(operation, videoid, trackid):
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to add / remove videos to my list"""
-    if not params['trackid']:
+    if params['trackid'] == 'None':
         raise Exception('Unable update my list, trackid not found.')
     LOG.debug('My List: {} {}', operation, videoid)
     response = common.make_call(

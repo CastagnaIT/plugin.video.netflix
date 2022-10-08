@@ -76,7 +76,7 @@ def generate_context_menu_items(videoid, is_in_mylist, perpetual_range_start=Non
             videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]):
         items.insert(0, _ctx_item('trailer', videoid))
 
-    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
+    if videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW] and trackid is not None:
         list_action = 'remove_from_list' if is_in_mylist else 'add_to_list'
         items.insert(0, _ctx_item(list_action, videoid, {'perpetual_range_start': perpetual_range_start,
                                                          'trackid': trackid}))

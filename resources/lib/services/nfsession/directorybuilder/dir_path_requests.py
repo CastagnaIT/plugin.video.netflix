@@ -181,7 +181,8 @@ class DirectoryPathRequests:
         _base_path.append(RANGE_PLACEHOLDER)
         if not menu_data.get('query_without_reference', False):
             _base_path.append('reference')
-        paths = build_paths(_base_path, VIDEO_LIST_PARTIAL_PATHS)
+        paths = (build_paths(_base_path, VIDEO_LIST_PARTIAL_PATHS) +
+                 [base_path[:-1] + [['id', 'name', 'requestId', 'trackIds']]])
 
         path_response = self.nfsession.perpetual_path_request(paths, [response_type, base_path], perpetual_range_start)
         return VideoListSorted(path_response, context_name, context_id, req_sort_order_type)
@@ -244,7 +245,8 @@ class DirectoryPathRequests:
         contains only minimal video info
         """
         LOG.debug('Requesting the full video list for {}', context_name)
-        paths = build_paths([context_name, 'az', RANGE_PLACEHOLDER], VIDEO_LIST_BASIC_PARTIAL_PATHS)
+        paths = (build_paths([context_name, 'az', RANGE_PLACEHOLDER], VIDEO_LIST_BASIC_PARTIAL_PATHS) +
+                 [[context_name, ['id', 'name', 'requestId', 'trackIds']]])
         call_args = {
             'paths': paths,
             'length_params': ['stdlist', [context_name, 'az']],
