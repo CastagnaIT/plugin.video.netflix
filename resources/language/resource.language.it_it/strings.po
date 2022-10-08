@@ -1144,31 +1144,31 @@ msgstr "Si noti che l'attivazione di questa impostazione forzerà la rimozione d
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Altezza massima delle bande nere (Sperimentale)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "I video ritagliati saranno allungati cambiando l'impostazione di Kodi \"Modalità di visualizzazione\" su \"Zoom\" per ridurre al minimo le bande nere all'altezza massima impostata. Ad esempio, 10% significa che le barre nere possono coprire al massimo il 10% dello schermo. Per disabilitare, impostare al 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Ripristino forzato dell'impostazione \"Modalità di visualizzazione\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi salva l'impostazione \"Modalità di visualizzazione\" \"Zoom\" in modo permanente, abilita questa impostazione per ripristinare la modalità \"Normale\" quando si riproduce un video già guardato in precedenza."
 
 msgctxt "#30725"
 msgid "Force MSL with idtoken authentication"
-msgstr ""
+msgstr "Forza l'autenticazione MSL con idtoken"
 
 #. Description of setting ID 30725 - do not translate the error message
 msgctxt "#30726"
 msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
-msgstr ""
+msgstr "Su alcuni dispositivi Android potrebbe verificarsi l'errore \"User authentication data does not match entity identity\", attivando questa impostazione potrebbe risolvere il problema, ma sarà possibile riprodurre i video solo dal profilo principale."
 
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Abilita profili AV1 - SOLO PER TEST DI SVILUPPO"
