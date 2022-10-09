@@ -1,3 +1,15 @@
+v1.19.1 (2022-10-09)
+- NOTE: DUE TO WEBSITE CHANGES ANDROID L3 DEVICES CAN PLAY VIDEOS FROM MAIN PROFILE ONLY
+- Fixed error "License update not successful (no keys)" on linux systems
+- Fixed add/remove the remind me to the videos
+- Fixed IPC timeout error when you share STRM library with MySQL
+- Speeded up database access
+- Updated Android ESN generation
+- Add Expert setting "Force MSL with idtoken authentication"
+can be used to try solve error: "User authentication data does not match entity identity"
+- Add AV1 codec support, for development test purpose only (Kodi 20)
+- Update translations el_gr, it
+
 v1.19.0 (2022-10-04)
 - NOTE: DUE TO WEBSITE CHANGES ANDROID L3 DEVICES CAN PLAY VIDEOS FROM MAIN PROFILE ONLY
 - Rework of the addon due to website API change
