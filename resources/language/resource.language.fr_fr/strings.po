@@ -828,10 +828,14 @@ msgid "Force refresh"
 msgstr "Forcer la mise à jour"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
-msgstr "Couleur des titres déjà dans 'Ma Liste'"
+msgid "Color of the titles included in \"My list\""
+msgstr "Couleur des titres déjà dans \"Ma Liste\""
 
-# Unused 30216 to 30218
+msgctxt "#30216"
+msgid "Color of the titles marked as \"Remember me\""
+msgstr ""
+
+# Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "Désactiver la notification de fin de synchronisation"

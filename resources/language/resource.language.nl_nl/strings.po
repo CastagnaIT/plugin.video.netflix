@@ -828,10 +828,14 @@ msgid "Force refresh"
 msgstr "Forceer vernieuwen"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
-msgstr "Benadruk titels uit 'Mijn lijst' met een kleur"
+msgid "Color of the titles included in \"My list\""
+msgstr "Benadruk titels uit \"Mijn lijst\" met een kleur"
 
-# Unused 30216 to 30218
+msgctxt "#30216"
+msgid "Color of the titles marked as \"Remember me\""
+msgstr ""
+
+# Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "Melding voor 'Synchronisatie voltooid' uitschakelen"
