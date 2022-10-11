@@ -831,7 +831,11 @@ msgctxt "#30215"
 msgid "Color of the titles included in \"My list\""
 msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
-# Unused 30216 to 30218
+msgctxt "#30216"
+msgid "Color of the titles marked as \"Remember me\""
+msgstr ""
+
+# Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "동기화완료 알림을 사용하지 않습니다."

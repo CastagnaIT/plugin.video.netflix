@@ -831,7 +831,11 @@ msgctxt "#30215"
 msgid "Color of the titles included in \"My list\""
 msgstr "Επισήμανε τίτλους συμπεριλαμβανομένους στην λίστα μου με ενα χρώμα"
 
-# Unused 30216 to 30218
+msgctxt "#30216"
+msgid "Color of the titles marked as \"Remember me\""
+msgstr ""
+
+# Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "Απενεργοποίηση ειδοποίησης για ολοκλήρωση συγχρονισμού"
