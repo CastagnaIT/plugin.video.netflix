@@ -73,7 +73,6 @@ class VideoListLoCo:
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.list_id = list_id
-        self.videoids = []
         # Set a 'UNSPECIFIED' type videoid (special handling for menus see parse_info in infolabels.py)
         self.videoid = common.VideoId(videoid=list_id)
         self.contained_titles = []
@@ -89,10 +88,6 @@ class VideoListLoCo:
         self.contained_titles = _get_titles(self.videos)
         # Set art data of first video (special handling for menus see parse_info in infolabels.py)
         self.artitem = list(self.videos.values())[0]
-        try:
-            self.videoids = _get_videoids(self.videos)
-        except KeyError:
-            self.videoids = []
         self.component_summary = {}
 
     def __getitem__(self, key):
@@ -113,7 +108,6 @@ class VideoList:
         self.videos = OrderedDict()
         self.artitem = None
         self.contained_titles = []
-        self.videoids = []
         self.component_summary = {}
         if has_data:
             first_list_id = next(iter(self.data['lists']))
@@ -128,10 +122,6 @@ class VideoList:
                 # self.artitem = next(self.videos.values())
                 self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
-                try:
-                    self.videoids = _get_videoids(self.videos)
-                except KeyError:
-                    self.videoids = []
 
     def __getitem__(self, key):
         return _check_sentinel(self.data['lists'][self.videoid.value][key])
@@ -155,24 +145,20 @@ class VideoListSorted:
         self.videos = OrderedDict()
         self.artitem = None
         self.contained_titles = []
-        self.videoids = []
         self.component_summary = {}
         if has_data:
             if context_id:
                 self.data_lists = path_response[context_name][context_id][req_sort_order_type]
-                self.component_summary = {'trackIds': self.data[context_name][context_id]['trackIds'].get('value', {})}
+                self.component_summary = {
+                    'trackIds': self.data[context_name][context_id].get('trackIds', {}).get('value', {})}
             else:
                 self.data_lists = path_response[context_name][req_sort_order_type]
-                self.component_summary = {'trackIds': self.data[context_name]['trackIds'].get('value', {})}
+                self.component_summary = {'trackIds': self.data[context_name].get('trackIds', {}).get('value', {})}
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())
                 self.artitem = list(self.videos.values())[0]
                 self.contained_titles = _get_titles(self.videos)
-                try:
-                    self.videoids = _get_videoids(self.videos)
-                except KeyError:
-                    self.videoids = []
 
     def __getitem__(self, key):
         return _check_sentinel(self.data_lists[key])
@@ -182,6 +168,13 @@ class VideoListSorted:
         return _check_sentinel(self.data_lists.get(key, default))
 
 
+class VideoListSupplemental(VideoListSorted):
+    """A video list"""
+    def __init__(self, path_response, context_name, context_id, supplemental_type):
+        # LOG.debug('VideoListSupplemental data: {}', path_response)
+        VideoListSorted.__init__(self, path_response, context_name, context_id, supplemental_type)
+
+
 class SearchVideoList:
     """A video list with search results"""
     def __init__(self, path_response):
@@ -189,7 +182,6 @@ class SearchVideoList:
         self.data = path_response
         has_data = 'search' in path_response
         self.videos = OrderedDict()
-        self.videoids = []
         self.artitem = None
         self.contained_titles = []
         self.component_summary = {}
@@ -199,7 +191,6 @@ class SearchVideoList:
                 'trackIds': self.data['search']['byReference'][first_list_id]['trackIds'].get('value', {})}
             self.title = common.get_local_string(30100).format(list(self.data['search']['byTerm'])[0][1:])
             self.videos = OrderedDict(resolve_refs(self.data['search']['byReference'][first_list_id], self.data))
-            self.videoids = _get_videoids(self.videos)
             # self.artitem = next(self.videos.values(), None)
             self.artitem = list(self.videos.values())[0] if self.videos else None
             self.contained_titles = _get_titles(self.videos)
@@ -218,7 +209,6 @@ class CustomVideoList:
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videos = OrderedDict(self.data.get('videos', {}))
-        self.videoids = _get_videoids(self.videos)
         # self.artitem = next(self.videos.values())
         self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
@@ -297,7 +287,6 @@ class LoLoMoCategory:
 def merge_data_type(data, data_to_merge):
     for video_id, video in data_to_merge.videos.items():
         data.videos[video_id] = video
-    data.videoids.extend(data_to_merge.videoids)
     data.contained_titles.extend(data_to_merge.contained_titles)
 
 
@@ -320,12 +309,6 @@ def _get_titles(videos):
     return [_get_title(video)
             for video in videos.values()
             if _get_title(video)]
-
-
-def _get_videoids(videos):
-    """Return a list of VideoId s for the videos"""
-    return [common.VideoId.from_videolist_item(video)
-            for video in videos.values()]
 
 
 def _filterout_loco_contexts(root_id, data, contexts):

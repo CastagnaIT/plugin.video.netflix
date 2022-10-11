@@ -257,7 +257,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
         'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
-        'trackid': trackid
+        'trackid': trackid,
+        'is_supplemental_type': video_list.__class__.__name__ == 'VideoListSupplemental'
     })
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video
@@ -288,7 +289,12 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
 
 
 def _create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data):  # pylint: disable=unused-argument
-    videoid = common.VideoId.from_videolist_item(video)
+    if common_data['is_supplemental_type']:
+        # 10/10/2022 Broken api? the video trailers are not more identified as supplemental type but as movie type
+        # as workaround we check the data type
+        videoid = common.VideoId(supplementalid=videoid_value)
+    else:
+        videoid = common.VideoId.from_videolist_item(video)
     is_folder = videoid.mediatype == common.VideoId.SHOW
     is_playable = video['availability'].get('value', {}).get('isPlayable', False)
     is_video_playable = not is_folder and is_playable

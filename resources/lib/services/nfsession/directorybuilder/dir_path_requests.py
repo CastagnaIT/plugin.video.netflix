@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
-                                            SearchVideoList, CustomVideoList, LoLoMoCategory)
+                                            SearchVideoList, CustomVideoList, LoLoMoCategory, VideoListSupplemental)
 from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -198,7 +198,7 @@ class DirectoryPathRequests:
             ['videos', videoid.value, supplemental_type, {"from": 0, "to": 35}], TRAILER_PARTIAL_PATHS
         )
         path_response = self.nfsession.path_request(path)
-        return VideoListSorted(path_response, 'videos', videoid.value, supplemental_type)
+        return VideoListSupplemental(path_response, 'videos', videoid.value, supplemental_type)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='chunked_video_list',
                               ttl=900, ignore_self_class=True)
