@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "Kényszerített frissítés"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "Saját listám elemeinek színe"
 
 # Unused 30216 to 30218

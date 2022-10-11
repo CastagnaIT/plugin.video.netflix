@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "強制更新する"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "マイリストにあるタイトルの色"
 
 # Unused 30216 to 30218

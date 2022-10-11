@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "הכרח רענון"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "צבע הכותרים הכלולים ב'הרשימה שלי'"
 
 # Unused 30216 to 30218

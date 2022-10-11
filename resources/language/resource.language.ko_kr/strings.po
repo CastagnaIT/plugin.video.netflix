@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "강제로 새로 고칩니다"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
 # Unused 30216 to 30218

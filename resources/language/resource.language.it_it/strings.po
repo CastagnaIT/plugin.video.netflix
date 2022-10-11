@@ -828,8 +828,8 @@ msgid "Force refresh"
 msgstr "Forza l'aggiornamento"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
-msgstr "Colore dei titoli inclusi su 'La mia lista'"
+msgid "Color of the titles included in \"My list\""
+msgstr "Colore dei titoli inclusi su \"La mia lista\""
 
 # Unused 30216 to 30218
 msgctxt "#30219"

@@ -829,7 +829,7 @@ msgid "Force refresh"
 msgstr "Prisilno osvježi"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "Boja naslova iz Moje liste"
 
 # Unused 30216 to 30218

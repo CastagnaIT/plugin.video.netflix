@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "Zorla yenile"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "Listeme dahil edilen başlıkları bir renkle vurgula"
 
 # Unused 30216 to 30218

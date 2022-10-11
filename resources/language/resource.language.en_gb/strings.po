@@ -843,7 +843,7 @@ msgid "Force refresh"
 msgstr ""
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr ""
 
 msgctxt "#30216"

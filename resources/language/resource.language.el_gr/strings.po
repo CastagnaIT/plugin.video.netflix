@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "Επιβολή ανανέωσης"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "Επισήμανε τίτλους συμπεριλαμβανομένους στην λίστα μου με ενα χρώμα"
 
 # Unused 30216 to 30218

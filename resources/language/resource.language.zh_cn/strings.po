@@ -828,7 +828,7 @@ msgid "Force refresh"
 msgstr "强制刷新"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "列入'我的片单'的标题颜色"
 
 # Unused 30216 to 30218

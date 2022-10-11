@@ -830,7 +830,7 @@ msgid "Force refresh"
 msgstr "Forzar actualización"
 
 msgctxt "#30215"
-msgid "Color of the titles included in 'My list'"
+msgid "Color of the titles included in \"My list\""
 msgstr "Cor dos títulos incluídos en ‘Miña lista’"
 
 # Unused 30216 to 30218
