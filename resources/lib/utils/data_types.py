@@ -149,10 +149,11 @@ class VideoListSorted:
         if has_data:
             if context_id:
                 self.data_lists = path_response[context_name][context_id][req_sort_order_type]
-                self.component_summary = {'trackIds': self.data[context_name][context_id]['trackIds'].get('value', {})}
+                self.component_summary = {
+                    'trackIds': self.data[context_name][context_id].get('trackIds', {}).get('value', {})}
             else:
                 self.data_lists = path_response[context_name][req_sort_order_type]
-                self.component_summary = {'trackIds': self.data[context_name]['trackIds'].get('value', {})}
+                self.component_summary = {'trackIds': self.data[context_name].get('trackIds', {}).get('value', {})}
             self.videos = OrderedDict(resolve_refs(self.data_lists, self.data))
             if self.videos:
                 # self.artitem = next(self.videos.values())
@@ -165,6 +166,13 @@ class VideoListSorted:
     def get(self, key, default=None):
         """Pass call on to the backing dict of this VideoList."""
         return _check_sentinel(self.data_lists.get(key, default))
+
+
+class VideoListSupplemental(VideoListSorted):
+    """A video list"""
+    def __init__(self, path_response, context_name, context_id, supplemental_type):
+        # LOG.debug('VideoListSupplemental data: {}', path_response)
+        VideoListSorted.__init__(self, path_response, context_name, context_id, supplemental_type)
 
 
 class SearchVideoList:
