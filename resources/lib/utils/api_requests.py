@@ -11,7 +11,7 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from resources.lib.common.exceptions import LoginError, MissingCredentialsError, CacheMiss, HttpError401
+from resources.lib.common.exceptions import LoginError, MissingCredentialsError, CacheMiss, HttpError401, APIError
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
 
@@ -258,20 +258,27 @@ def get_genre_title(genre_id):
 
 
 def remove_watched_status(videoid):
-    """Request to Netflix service to delete the watched status (delete also the item from "continue watching" list)"""
-    # WARNING: THE NF SERVICE MAY TAKE UNTIL TO 24 HOURS TO REMOVE IT
-    try:
-        data = common.make_call(
-            'post_safe',
-            {'endpoint': 'viewing_activity',
-             'data': {'movieID': videoid.value,
-                      'seriesAll': videoid.mediatype == common.VideoId.SHOW,
-                      'guid': G.LOCAL_DB.get_active_profile_guid()}}
-        )
-        return data.get('status', False)
-    except Exception as exc:  # pylint: disable=broad-except
-        LOG.error('remove_watched_status raised this error: {}', exc)
-        return False
+    """Request to delete the watched status of a video (delete also the item from "continue watching" list)"""
+    call_args = {
+        'callpaths': [['removeVideosFromContinueWatching', [int(videoid.value)]]]
+    }
+    response = common.make_call('callpath_request', call_args)
+    if not response['removeVideosFromContinueWatching'][videoid.value]['value'].get('success'):
+        LOG.debug('remove_watched_status response: {}', response)
+        raise APIError('Unable to remove watched status, an error occurred in the request.')
+    # Old API way
+    # try:
+    #     data = common.make_call(
+    #         'post_safe',
+    #         {'endpoint': 'viewing_activity',
+    #          'data': {'movieID': videoid.value,
+    #                   'seriesAll': videoid.mediatype == common.VideoId.SHOW,
+    #                   'guid': G.LOCAL_DB.get_active_profile_guid()}}
+    #     )
+    #     return data.get('status', False)
+    # except Exception as exc:  # pylint: disable=broad-except
+    #     LOG.error('remove_watched_status raised this error: {}', exc)
+    #     return False
 
 
 def get_metadata(videoid, refresh=False):

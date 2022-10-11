@@ -193,9 +193,7 @@ class AddonActionExecutor:
         if not ui.ask_for_confirmation(common.get_local_string(30168),
                                        common.get_local_string(30300).format(xbmc.getInfoLabel('ListItem.Label'))):
             return
-        if not api.remove_watched_status(videoid):
-            ui.show_notification('The operation was cancelled due to an unexpected error')
-            return
+        api.remove_watched_status(videoid)
         # Check if item is in the cache
         videoid_exists, list_id = common.make_call('get_continuewatching_videoid_exists',
                                                    {'video_id': str(videoid.value)})

@@ -938,8 +938,8 @@ msgstr "Resultados por página (em caso de erro de tempo limite, diminua-o)"
 
 # Unused 30248 to 30299
 msgctxt "#30300"
-msgid "Do you want to remove watched status of '{}'?[CR][CR]The operation could take up to 24h, therefore the title may still appear in the list."
-msgstr "Deseja remover o status de assistido de '{}'?[CR][CR]A operação pode levar até 24h, portanto, o título ainda pode aparecer na lista."
+msgid "Do you want to remove watched status of \"{}\"?"
+msgstr "Deseja remover o status de assistido de \"{}\"?"
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
