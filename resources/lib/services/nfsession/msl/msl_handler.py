@@ -263,15 +263,15 @@ class MSLHandler:
                 'default': [{
                     'drmSessionId': kwargs['sid'] or 'session',
                     'clientTime': int(time.time()),
-                    'challengeBase64': kwargs['challenge'],
-                    'xid': kwargs['xid']
+                    'challengeBase64': kwargs['challenge']
                 }]},
             # License type:
             # - 'limited' license data provided in the manifest response, may be needed a second license request
             # - 'standard' no license data provided in the manifest response
             # TODO: Currently on linux only the license type set to "limited" cause this error on ISA:
             #  License update not successful (no keys)
-            'licenseType': 'standard'
+            'licenseType': 'standard',
+            'xid': kwargs['xid']
         }
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
