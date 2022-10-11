@@ -261,7 +261,10 @@ def fix_locale_languages(item):
         # Replace pt-BR with pb, is an unofficial ISO 639-1 Portuguese (Brazil) language code
         # has been added to Kodi 18.7 and Kodi 19.x PR: https://github.com/xbmc/xbmc/pull/17689
         item['language'] = 'pb'
-    if len(item['language']) > 2:
+    # From Kodi v20, this problem has been improved by https://github.com/xbmc/xbmc/pull/21776
+    # it is not needed anymore manually rename country codes to avoid inconsistent descriptions on kodi GUI
+    # and so we allow users to use advancedsettings.xml to specify custom descriptions
+    if G.KODI_VERSION < '20' and len(item['language']) > 2:
         # Replace know locale with country
         # so Kodi will not recognize the modified country code and will show the string as it is
         if item['language'] in LOCALE_CONV_TABLE:
