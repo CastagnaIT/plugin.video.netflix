@@ -254,6 +254,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         'mylist_titles_color': (get_color_name(G.ADDON.getSettingInt('mylist_titles_color'))
                                 if menu_data['path'][1] != 'myList'
                                 else None),
+        'rememberme_titles_color': get_color_name(G.ADDON.getSettingInt('rememberme_titles_color')),
         'ctxmenu_remove_watched_status': menu_data['path'][1] == 'continueWatching',
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
         'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
@@ -299,6 +300,7 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
     is_playable = video['availability'].get('value', {}).get('isPlayable', False)
     is_video_playable = not is_folder and is_playable
     is_in_mylist = videoid in common_data['mylist_items']
+    is_in_remind_me = False
     list_item = ListItemW(label=video['title']['value'])
     list_item.setProperties({
         'isPlayable': str(is_video_playable).lower(),
@@ -306,9 +308,6 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
         'nf_is_in_mylist': str(is_in_mylist),
         'nf_perpetual_range_start': str(perpetual_range_start)
     })
-    add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data)
-    if not is_folder:
-        set_watched_status(list_item, video, common_data)
     if is_playable:
         # The movie or tvshow (episodes) is playable
         url = common.build_url(videoid=videoid,
@@ -331,6 +330,10 @@ def _create_video_item(videoid_value, video, video_list, perpetual_range_start, 
             is_in_remind_me = video['inRemindMeList']['value'] or video['queue']['value']['inQueue']
         list_item.addContextMenuItems(generate_context_menu_remind_me(videoid, is_in_remind_me, common_data['trackid']))
         url = common.build_url(['show_availability_message'], videoid=videoid, mode=G.MODE_ACTION)
+    add_info_list_item(list_item, videoid, video, video_list.data, is_in_mylist, common_data,
+                       is_in_remind_me=is_in_remind_me)
+    if not is_folder:
+        set_watched_status(list_item, video, common_data)
     return url, list_item, is_folder and is_playable
 
 

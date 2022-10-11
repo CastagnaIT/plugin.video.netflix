@@ -62,7 +62,8 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
     return infos, quality_infos
 
 
-def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None):
+def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None,
+                       is_in_remind_me=False):
     """Add infolabels and art to a ListItem"""
     infos, quality_infos = get_info(videoid, item, raw_data, delayed_db_op=True, common_data=common_data)
     list_item.addStreamInfoFromDict(quality_infos)
@@ -73,8 +74,11 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
         infos_copy['Plot'] = infos_copy['PlotOutline']
     _add_supplemental_plot_info(infos_copy, item, common_data)
     if is_in_mylist and common_data.get('mylist_titles_color'):
-        # Highlight ListItem title when the videoid is contained in my-list
+        # Highlight ListItem title when the videoid is contained in "My list"
         list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
+    elif is_in_remind_me:
+        # Highlight ListItem title when a video is marked as "Remind me"
+        list_item.setLabel(_colorize_text(common_data['rememberme_titles_color'], list_item.getLabel()))
     infos_copy['title'] = list_item.getLabel()
     if videoid.mediatype == common.VideoId.SHOW and not common_data['marks_tvshow_started']:
         infos_copy.pop('PlayCount', None)
