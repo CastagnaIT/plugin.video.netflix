@@ -132,7 +132,7 @@ class MSLRequests(MSLRequestBuilder):
         if current_profile_guid != owner_profile_guid:
             # TODO: due to removal of SWITCH_PROFILE, we cannot currently switch profile on MSL side,
             #  CIT: i have no idea if there is another way to have a kind of profile switching with id tokens
-            raise Exception('Due to changes to the Netflix website, on Android L3 devices '
+            raise Exception('Due to changes to the Netflix website, '
                             'videos can only be played from the main/owner profile.')
 
         if not force_auth_credential:
