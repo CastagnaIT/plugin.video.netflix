@@ -235,7 +235,7 @@ msgstr "Seien Sie vorsichtig, sie aktualisieren viele Titel {}.[CR]Dies kann ern
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "Aktiviere HEVC-Profile (4k in Android/HDR/DolbyVision)"
+msgstr "HEVC-Profile aktivieren (4k in Android/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -387,11 +387,11 @@ msgstr "Hauptmenü"
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr "Aktiviere HDR"
+msgstr "HDR-Profile aktivieren"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr "Aktiviere DolbyVision"
+msgstr "DolbyVision-Profile aktivieren"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -530,7 +530,7 @@ msgstr "Cache geleert"
 # Unused 30136
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "Aktiviere VP9-Profile (deaktivieren wenn es Artefakte verursacht)"
+msgstr "VP9-Profile aktivieren (deaktivieren wenn es Artefakte verursacht)"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -833,7 +833,7 @@ msgstr "Farbe der Titel aus \"Meine Liste\""
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remember me\""
-msgstr ""
+msgstr "Farbe der als \"Erinnere mich\" markierten Titel"
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -1148,31 +1148,31 @@ msgstr "Bitte beachten, dass die Aktivierung dieser Einstellung die Entfernung v
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Maximale Höhe der schwarzen Balken (experimentell)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Abgeschnittene Videos werden gestreckt indem die Einstellung \"Ansichtsmodus\" auf \"Zoom\" gesetzt wird, um die schwarzen Balken auf der maximalen Höhe zu minimieren. Beispielsweise bedeutet 10%, dass die schwarzen Balken maximal 10% des Bildschirms bedecken. Um es zu deaktivieren, setzen Sie es auf 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Zurücksetzen der Einstellung \"Ansichtsmodus\" erzwingen"
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi speichert die Einstellung \"Ansichtsmodus\" \"Zoom\" permanent. Durch Aktivieren dieser Einstellung wird die Ansicht wieder auf \"Normal\" gesetzt wenn Sie ein bereits angesehenes Video abspielen."
 
 msgctxt "#30725"
 msgid "Force MSL with idtoken authentication"
-msgstr ""
+msgstr "MSL mit idtoken Authentifizierung erzwingen"
 
 #. Description of setting ID 30725 - do not translate the error message
 msgctxt "#30726"
 msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
-msgstr ""
+msgstr "Auf einigen Android-Geräten kann der Fehler \"User authentication data does not match entity identity\" auftreten. Aktivieren dieser Einstellung kann das Problem beheben, aber es ist dann nur noch möglich, Videos mit dem Hauptprofil abzuspielen."
 
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "AV1-Profile aktivieren - NUR FÜR TEST WÄHREND DER ENTWICKLUNG"
