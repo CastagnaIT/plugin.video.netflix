@@ -229,7 +229,10 @@ class AddonActionExecutor:
 
 
 def sync_library(videoid, operation):
-    if operation and G.ADDON.getSettingBool('lib_sync_mylist') and G.ADDON.getSettingInt('lib_auto_upd_mode') == 2:
+    if (operation
+            and G.ADDON.getSettingBool('lib_enabled')
+            and G.ADDON.getSettingBool('lib_sync_mylist')
+            and G.ADDON.getSettingInt('lib_auto_upd_mode') in [0, 2]):
         sync_mylist_profile_guid = G.SHARED_DB.get_value('sync_mylist_profile_guid',
                                                          G.LOCAL_DB.get_guid_owner_profile())
         # Allow to sync library with My List only by chosen profile
