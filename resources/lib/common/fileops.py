@@ -187,3 +187,12 @@ def join_folders_paths(*args):
     """Join multiple folder paths in a safe way"""
     # Avoid the use of os.path.join, in some cases with special chars like % break the path
     return xbmcvfs.makeLegalFilename('/'.join(args))
+
+
+def get_xml_nodes_text(nodelist):
+    """Get the text value of text node list"""
+    rc = []
+    for node in nodelist:
+        if node.nodeType == node.TEXT_NODE:
+            rc.append(node.data)
+    return ''.join(rc)

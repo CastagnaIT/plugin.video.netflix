@@ -25,7 +25,8 @@ class LibraryUpdateService(xbmc.Monitor):
     def __init__(self):
         super().__init__()
         try:
-            self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
+            self.enabled = (G.ADDON.getSettingBool('lib_enabled')
+                            and G.ADDON.getSettingInt('lib_auto_upd_mode') in [0, 2])
         except Exception:  # pylint: disable=broad-except
             # If settings.xml was not created yet, as at first service run
             # G.ADDON.getSettingInt('lib_auto_upd_mode') will thrown a TypeError
@@ -82,7 +83,8 @@ class LibraryUpdateService(xbmc.Monitor):
         # Wait for slow system (like Raspberry Pi) to write the settings
         xbmc.sleep(500)
         # Check if the status is changed
-        self.enabled = G.ADDON.getSettingInt('lib_auto_upd_mode') == 2
+        self.enabled = (G.ADDON.getSettingBool('lib_enabled')
+                        and G.ADDON.getSettingInt('lib_auto_upd_mode') in [0, 2])
         # Then compute the next schedule
         if self.enabled:
             self.next_schedule = _compute_next_schedule()
@@ -158,10 +160,14 @@ def _compute_next_schedule(date_last_start=None):
                           'has been set as the main update manager')
                 return None
 
-        time = G.ADDON.getSetting('lib_auto_upd_start') or '00:00'
         last_run = date_last_start or G.SHARED_DB.get_value('library_auto_update_last_start',
                                                             datetime.utcfromtimestamp(0))
-        update_frequency = G.ADDON.getSettingInt('lib_auto_upd_freq')
+        if G.ADDON.getSettingInt('lib_auto_upd_mode') == 0:  # Update at Kodi startup
+            time = '00:00'
+            update_frequency = 0
+        else:
+            time = G.ADDON.getSetting('lib_auto_upd_start') or '00:00'
+            update_frequency = G.ADDON.getSettingInt('lib_auto_upd_freq')
 
         last_run = last_run.replace(hour=int(time[0:2]), minute=int(time[3:5]))
         next_run = last_run + timedelta(days=[1, 2, 5, 7][update_frequency])
