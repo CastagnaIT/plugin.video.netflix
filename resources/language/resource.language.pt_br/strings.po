@@ -203,7 +203,10 @@ msgctxt "#30049"
 msgid "Library"
 msgstr "Coleção"
 
-# Unused 30050
+msgctxt "#30050"
+msgid "Enable Kodi library management"
+msgstr ""
+
 msgctxt "#30051"
 msgid "Profile set for playback from the library"
 msgstr "Definir perfil para reprodução na coleção"
@@ -254,8 +257,8 @@ msgid "Perform auto-update"
 msgstr "Realizar atualização automática"
 
 msgctxt "#30065"
-msgid "Auto-update for TV shows seasons and episodes"
-msgstr "Atualizar temporadas e episódios dos seriados automaticamente"
+msgid "Video library update"
+msgstr ""
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -449,11 +452,7 @@ msgctxt "#30113"
 msgid "Logout successful"
 msgstr "Deslogado com sucesso"
 
-msgctxt "#30114"
-msgid "Keep 'My list' and Kodi Library in sync"
-msgstr "Mantenha Minha Lista e coleção do Kodi em sincronia"
-
-# Unused 30115
+# Unused 30114, 30115
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
 msgstr "Ajustes avançados"
@@ -740,8 +739,8 @@ msgid "[CR]These files are used by the provider information scrapers to integrat
 msgstr "[CR]Esses arquivos são usados pelos buscadores de informações do provedor para integrar informações de filmes e programas de TV, úteis com episódios de bônus ou cortes do diretor."
 
 msgctxt "#30193"
-msgid "Include all information in NFO files (use only with 'Local Information' scraper)"
-msgstr "Incluir todas as informações nos arquivos NFO (Usado somente com o buscador de 'Informações Locais')"
+msgid "Include tv show NFO details"
+msgstr ""
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -873,7 +872,10 @@ msgctxt "#30228"
 msgid "Set a profile for synchronization"
 msgstr "Definir um perfil para sincronização"
 
-# Unused 30229
+msgctxt "#30229"
+msgid "When Kodi starts"
+msgstr ""
+
 msgctxt "#30230"
 msgid "Check for updates now"
 msgstr "Verificar por atualizações agora"
@@ -1175,4 +1177,32 @@ msgstr ""
 
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
+msgstr ""
+
+msgctxt "#30728"
+msgid "Add Netflix folders to Kodi library sources"
+msgstr ""
+
+msgctxt "#30729"
+msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
+msgstr ""
+
+#. Description of setting ID 30224
+msgctxt "#30730"
+msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
+msgstr ""
+
+#. Description of setting ID 30227
+msgctxt "#30731"
+msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
+msgstr ""
+
+#. Description of setting ID 30185
+msgctxt "#30732"
+msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
+msgstr ""
+
+#. Description of setting ID 30193
+msgctxt "#30733"
+msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
 msgstr ""
