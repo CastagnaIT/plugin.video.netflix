@@ -1205,4 +1205,4 @@ msgstr "Wenn aktiviert, werden Informationen zu Episoden und Filmen hinzugefügt
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr "Nur aktivieren falls \"Lokale Information"\-Informationsbeschaffungsscraper verwendet wird, oder gewisse Titel nicht in den Kodi-Bibliothen angezeigt werden obwohl sie hinzugefügt wurden."
+msgstr "Nur aktivieren falls \"Lokale Information\"-Informationsbeschaffungsscraper verwendet wird, oder gewisse Titel nicht in den Kodi-Bibliothen angezeigt werden obwohl sie hinzugefügt wurden."
