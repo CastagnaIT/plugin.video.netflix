@@ -1185,24 +1185,24 @@ msgstr "Netflix-Verzeichnisse zu Kodi-Bibliotheksquellen hinzufügen"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Die Verzeichnisse \"Netflix-Movies\" und \"Netflix-Shows\" wurden zu den Kodi-Quellen hinzugefügt. Starten Sie Kodi neu um diese in Kodi Menü [TV Shows] / [Movies] Menü zu sehen. Dann bearbeiten Sie diese Verzeichnisse um den gewünschten Content-Type und Informationsbeschaffungsscraper einzustellen."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Manuell] Aktualisierungen müssen manuell über das Kontextmenü \"Exportiere neue Episoden\" für jede Serie gemacht werden. [Geplant] Sie können automatische Updates zu bestimmten Zeiten einrichten. [Wenn Kodi startet] Automatische Aktualisierungen werden einmal am Tag beim Start von Kodi durchgeführt."
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Synchronisiert die Bibliothek mit Meiner Liste. Wenn Meine Liste extern geändert wurde, bspw. über die mobile App oder die Webseite, dann wird die Aktualisierung zur geplanten Zeit durchgeführt."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Wenn aktiviert, werden Informationen zu Episoden und Filmen hinzugefügt, die nützlich sind, falls der Kodi-Informationsbeschaffungsscraper keine Daten liefert, Dies beinhaltet die Dauer der Videos."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Nur aktivieren falls \"Lokale Information"\-Informationsbeschaffungsscraper verwendet wird, oder gewisse Titel nicht in den Kodi-Bibliothen angezeigt werden obwohl sie hinzugefügt wurden."
