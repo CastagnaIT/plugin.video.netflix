@@ -64,7 +64,11 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
 
     @db_sqlite.handle_connection
     def set_profile_config(self, key, value, guid=None):
-        """Store a value to a profile, if guid is not specified, is stored to active profile"""
+        """
+        Store a value to a profile, if guid is not specified, is stored to active profile
+
+        NOTE: Config key name starting with "addon_" will be preserved until the profile is deleted.
+        """
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
         if not guid:
             guid = self._get_active_guid_profile()
@@ -79,7 +83,9 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
     def insert_profile_configs(self, dict_values, guid=None):
         """
         Store multiple values to a profile by deleting all existing values,
-        if guid is not specified, is stored to active profile
+        if guid is not specified, is stored to active profile.
+
+        NOTE: Config key names starting with "addon_" will be preserved until the profile is deleted.
         """
         # Doing many sqlite operations at the same makes the performance much worse (especially on Kodi 18)
         # The use of 'executemany' and 'transaction' can improve performance up to about 75% !!
@@ -87,7 +93,7 @@ class NFLocalDatabase(db_sqlite.SQLiteDatabase):
             guid = self._get_active_guid_profile()
         cur = self.get_cursor()
         cur.execute("BEGIN TRANSACTION;")
-        query = 'DELETE FROM profiles_config WHERE Guid = ?'
+        query = 'DELETE FROM profiles_config WHERE Guid = ? AND NOT Name LIKE \'addon_%\''
         self._execute_non_query(query, (guid,), cur)
         records_values = [(guid, key, common.convert_to_string(value)) for key, value in dict_values.items()]
         insert_query = 'INSERT INTO profiles_config (Guid, Name, Value) VALUES (?, ?, ?)'
