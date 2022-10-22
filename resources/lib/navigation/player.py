@@ -14,7 +14,7 @@ import resources.lib.common as common
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
 from resources.lib.globals import G
-from resources.lib.common.exceptions import InputStreamHelperError
+from resources.lib.common.exceptions import InputStreamHelperError, ErrorMessage
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 MANIFEST_PATH_FORMAT = common.IPC_ENDPOINT_MSL + '/get_manifest?videoid={}'
@@ -108,7 +108,7 @@ def get_inputstream_listitem(videoid):
         LOG.error(traceback.format_exc())
         raise InputStreamHelperError(str(exc)) from exc
     if not inputstream_ready:
-        raise Exception(common.get_local_string(30046))
+        raise ErrorMessage(common.get_local_string(30046))
     list_item.setProperty(
         key='inputstream',
         value='inputstream.adaptive')

@@ -101,11 +101,10 @@ def _get_selected_videoid():
 def _is_library_ops_allowed():
     """Check if library operations are allowed"""
     allow_lib_operations = True
-    lib_auto_upd_mode = G.ADDON.getSettingInt('lib_auto_upd_mode')
-    if lib_auto_upd_mode == 0:
+    if not G.ADDON.getSettingBool('lib_enabled'):
         return False
     is_lib_sync_with_mylist = (G.ADDON.getSettingBool('lib_sync_mylist') and
-                               lib_auto_upd_mode == 2)
+                               G.ADDON.getSettingInt('lib_auto_upd_mode') in [0, 2])
     if is_lib_sync_with_mylist:
         # If the synchronization of Netflix "My List" with the Kodi library is enabled
         # only in the chosen profile allow to do operations in the Kodi library otherwise

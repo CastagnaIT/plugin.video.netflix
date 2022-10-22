@@ -12,7 +12,7 @@ from xbmc import getCondVisibility, Monitor, getInfoLabel
 
 from resources.lib.common.exceptions import (HttpError401, InputStreamHelperError, MbrStatusNeverMemberError,
                                              MbrStatusFormerMemberError, MissingCredentialsError, LoginError,
-                                             NotLoggedInError, InvalidPathError, BackendNotReady)
+                                             NotLoggedInError, InvalidPathError, BackendNotReady, ErrorMessage)
 from resources.lib.common import check_credentials, get_local_string, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_addon_upgrade
@@ -50,6 +50,9 @@ def catch_exceptions_decorator(func):
         except (MbrStatusNeverMemberError, MbrStatusFormerMemberError):
             from resources.lib.kodi.ui import show_error_info
             show_error_info(get_local_string(30008), get_local_string(30180), False, True)
+        except ErrorMessage as exc:
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog(get_local_string(30105), str(exc))
         except Exception as exc:
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info

@@ -136,6 +136,10 @@ class DBRecordNotExistError(Exception):
 
 # All other exceptions
 
+class ErrorMessage(Exception):
+    """Raise an error message by displaying a GUI dialog box WITHOUT instructions for reporting a bug"""
+
+
 class InvalidPathError(Exception):
     """The requested path is invalid and could not be routed"""
 

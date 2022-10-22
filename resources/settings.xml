@@ -121,19 +121,40 @@
         </category>
         <!--CATEGORY: Library-->
         <category id="library" label="30025" help="">
-            <!--GROUP: Auto-Update-->
-            <group id="1" label="30065">
-                <setting id="lib_auto_upd_mode" type="integer" label="30224" help="">
+            <!--GROUP: Library-->
+            <group id="1" label="30049">
+                <setting id="lib_enabled" type="boolean" label="30050" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="lib_add_sources" type="action" label="30728">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/library/add_folders_to_library/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="lib_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <!--GROUP: Video library update-->
+            <group id="2" label="30065">
+                <setting id="lib_auto_upd_mode" type="integer" label="30224" help="30730">
                     <level>0</level>
                     <default>1</default>
                     <constraints>
                         <options>
-                            <option label="13106">0</option>
+                            <option label="30229">0</option>
                             <option label="30225">1</option>
                             <option label="30226">2</option>
                         </options>
                     </constraints>
                     <control type="spinner" format="string"/>
+                    <dependencies>
+                        <dependency type="enable" setting="lib_enabled">true</dependency>
+                    </dependencies>
                 </setting>
                 <setting id="lib_auto_upd_check_now" type="action" label="30230" parent="lib_auto_upd_mode">
                     <level>0</level>
@@ -176,7 +197,12 @@
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                        <dependency type="visible">
+                            <or>
+                                <condition setting="lib_auto_upd_mode">0</condition>
+                                <condition setting="lib_auto_upd_mode">2</condition>
+                            </or>
+                        </dependency>
                     </dependencies>
                 </setting>
                 <setting id="lib_auto_upd_disable_notification" type="boolean" label="30219" help="" parent="lib_auto_upd_mode">
@@ -184,18 +210,26 @@
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="visible" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                        <dependency type="visible">
+                            <or>
+                                <condition setting="lib_auto_upd_mode">0</condition>
+                                <condition setting="lib_auto_upd_mode">2</condition>
+                            </or>
+                        </dependency>
                     </dependencies>
                 </setting>
-            </group>
-            <!--GROUP: Synchronize Kodi library with My List-->
-            <group id="2" label="30227">
-                <setting id="lib_sync_mylist" type="boolean" label="30114" help="">
+                <setting id="lib_sync_mylist" type="boolean" label="30227" help="30731">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="enable" operator="gt" setting="lib_auto_upd_mode">1</dependency>
+                        <dependency type="enable" setting="lib_enabled">true</dependency>
+                        <dependency type="visible">
+                            <or>
+                                <condition setting="lib_auto_upd_mode">0</condition>
+                                <condition setting="lib_auto_upd_mode">2</condition>
+                            </or>
+                        </dependency>
                     </dependencies>
                 </setting>
                 <setting id="lib_sync_mylist_sel_profile" type="action" label="30228" parent="lib_sync_mylist">
@@ -205,8 +239,13 @@
                         <close>false</close>
                     </control>
                     <dependencies>
-                        <dependency type="enable" setting="lib_sync_mylist">true</dependency>
                         <dependency type="visible" setting="lib_sync_mylist">true</dependency>
+                        <dependency type="visible">
+                            <or>
+                                <condition setting="lib_auto_upd_mode">0</condition>
+                                <condition setting="lib_auto_upd_mode">2</condition>
+                            </or>
+                        </dependency>
                     </dependencies>
                 </setting>
                 <setting id="lib_sync_mylist_now" type="action" label="30121" parent="lib_sync_mylist">
@@ -216,14 +255,19 @@
                         <close>false</close>
                     </control>
                     <dependencies>
-                        <dependency type="enable" setting="lib_sync_mylist">true</dependency>
                         <dependency type="visible" setting="lib_sync_mylist">true</dependency>
+                        <dependency type="visible">
+                            <or>
+                                <condition setting="lib_auto_upd_mode">0</condition>
+                                <condition setting="lib_auto_upd_mode">2</condition>
+                            </or>
+                        </dependency>
                     </dependencies>
                 </setting>
             </group>
             <!--GROUP: NFO Files-->
             <group id="3" label="30184">
-                <setting id="enable_nfo_export" type="boolean" label="30185" help="">
+                <setting id="enable_nfo_export" type="boolean" label="30185" help="30732">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
@@ -258,7 +302,7 @@
                         <dependency type="visible" setting="enable_nfo_export">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="export_full_tvshow_nfo" type="boolean" label="30193" help="">
+                <setting id="export_full_tvshow_nfo" type="boolean" label="30193" help="30733">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
@@ -268,7 +312,7 @@
                 </setting>
             </group>
             <!--GROUP: Other options-->
-            <group id="4" label="30184">
+            <group id="4" label="30015">
                 <setting id="enablelibraryfolder" type="boolean" label="30026" help="">
                     <level>0</level>
                     <default>false</default>

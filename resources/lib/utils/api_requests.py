@@ -143,7 +143,7 @@ def update_my_list(videoid, operation, params):
          }})
     if response.get('status') != 'success':
         LOG.debug('update_my_list response: {}', response)
-        raise Exception('Unable update my list, an error occurred in the request.')
+        raise APIError('Unable update my list, an error occurred in the request.')
     _update_mylist_cache(videoid, operation, params)
 
 

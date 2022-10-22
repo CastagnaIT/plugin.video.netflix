@@ -10,6 +10,7 @@
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library_utils as lib_utils
+from resources.lib.common.exceptions import ErrorMessage
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
 from resources.lib.utils.logging import LOG
@@ -135,6 +136,75 @@ class LibraryActionExecutor:
             client_uuid = G.LOCAL_DB.get_value('client_uuid')
             msg = common.get_local_string(30210 if client_uuid == uuid else 30211)
         ui.show_notification(msg, time=8000)
+
+    def add_folders_to_library(self, pathitems):  # pylint: disable=unused-argument
+        from xml.dom import minidom
+        from xbmcvfs import translatePath
+        sources_xml_path = translatePath('special://userdata/sources.xml')
+        if common.file_exists(sources_xml_path):
+            try:
+                xml_doc = minidom.parse(sources_xml_path)
+            except Exception as exc:  # pylint: disable=broad-except
+                raise ErrorMessage('Cannot open "sources.xml" the file could be corrupted. '
+                                   'Please check manually on your Kodi userdata folder or reinstall Kodi.') from exc
+        else:
+            xml_doc = minidom.Document()
+            source_node = xml_doc.createElement("sources")
+            for content_type in ['programs', 'video', 'music', 'pictures', 'files']:
+                node_type = xml_doc.createElement(content_type)
+                element_default = xml_doc.createElement('default')
+                element_default.setAttribute('pathversion', '1')
+                node_type.appendChild(element_default)
+                source_node.appendChild(node_type)
+            xml_doc.appendChild(source_node)
+
+        lib_path_movies = common.check_folder_path(common.join_folders_paths(lib_utils.get_library_path(),
+                                                                             lib_utils.FOLDER_NAME_MOVIES))
+        lib_path_shows = common.check_folder_path(common.join_folders_paths(lib_utils.get_library_path(),
+                                                                            lib_utils.FOLDER_NAME_SHOWS))
+
+        # Check if the paths already exists in source tags of video content type
+        is_movies_source_exist = False
+        is_shows_source_exist = False
+        video_node = xml_doc.childNodes[0].getElementsByTagName('video')[0]
+        source_nodes = video_node.getElementsByTagName('source')
+        for source_node in source_nodes:
+            path_nodes = source_node.getElementsByTagName('path')
+            if not path_nodes:
+                continue
+            source_path = common.get_xml_nodes_text(path_nodes[0].childNodes)
+            if source_path == lib_path_movies:
+                is_movies_source_exist = True
+            elif source_path == lib_path_shows:
+                is_shows_source_exist = True
+
+        # Add to the parent <video> tag, the folders as <source> child tags
+        if not is_movies_source_exist:
+            video_node.appendChild(_create_xml_source_tag(xml_doc, 'Netflix-Movies', lib_path_movies))
+        if not is_shows_source_exist:
+            video_node.appendChild(_create_xml_source_tag(xml_doc, 'Netflix-Shows', lib_path_shows))
+
+        common.save_file(sources_xml_path,
+                         '\n'.join([x for x in xml_doc.toprettyxml().splitlines() if x.strip()]).encode('utf-8'))
+        ui.show_ok_dialog(common.get_local_string(30728), common.get_local_string(30729))
+
+
+def _create_xml_source_tag(xml_doc, source_name, source_path):
+    source_node = xml_doc.createElement('source')
+    # Create <name> tag
+    name_node = xml_doc.createElement('name')
+    name_node.appendChild(xml_doc.createTextNode(source_name))
+    source_node.appendChild(name_node)
+    # Create <path> tag
+    path_node = xml_doc.createElement('path')
+    path_node.setAttribute('pathversion', '1')
+    path_node.appendChild(xml_doc.createTextNode(source_path))
+    source_node.appendChild(path_node)
+    # Create <allowsharing> tag
+    allowsharing_node = xml_doc.createElement('allowsharing')
+    allowsharing_node.appendChild(xml_doc.createTextNode('true'))
+    source_node.appendChild(allowsharing_node)
+    return source_node
 
 
 def _check_auto_update_running():

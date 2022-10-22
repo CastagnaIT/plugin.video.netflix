@@ -17,7 +17,7 @@ import httpx
 
 import resources.lib.common as common
 from resources.lib.common import get_system_platform, is_device_l1_enabled
-from resources.lib.common.exceptions import MSLError
+from resources.lib.common.exceptions import MSLError, ErrorMessage
 from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
@@ -132,8 +132,8 @@ class MSLRequests(MSLRequestBuilder):
         if current_profile_guid != owner_profile_guid:
             # TODO: due to removal of SWITCH_PROFILE, we cannot currently switch profile on MSL side,
             #  CIT: i have no idea if there is another way to have a kind of profile switching with id tokens
-            raise Exception('Due to changes to the Netflix website, '
-                            'videos can only be played from the main/owner profile.')
+            raise ErrorMessage('Due to changes to the Netflix website, '
+                               'videos can only be played from the main/owner profile, at moment this cannot be fixed.')
 
         if not force_auth_credential:
             if current_profile_guid == owner_profile_guid:

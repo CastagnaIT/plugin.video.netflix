@@ -127,6 +127,13 @@ def _perform_service_changes(previous_ver, current_ver):
         # Migrate to new repository
         from resources.lib.upgrade_actions import migrate_repository
         migrate_repository()
+    if CmpVersion(previous_ver) < '1.19.2':
+        # Migrate library setting
+        if G.ADDON.getSettingInt('lib_auto_upd_mode') == 0:
+            # Previously this value meant "disabled" (where now is "when Kodi starts")
+            # this case has been moved in to a separate setting "lib_enabled"
+            G.ADDON.setSettingBool('lib_enabled', False)
+            G.ADDON.setSettingInt('lib_auto_upd_mode', 1)  # Set to "Manual" default
 
 
 def _perform_local_db_changes(current_version, upgrade_to_version):
