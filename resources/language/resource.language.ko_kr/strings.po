@@ -836,7 +836,7 @@ msgid "Color of the titles included in \"My list\""
 msgstr "찜한 것에 있는 타이틀을 색으로 강조"
 
 msgctxt "#30216"
-msgid "Color of the titles marked as \"Remember me\""
+msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
 # Unused 30217 to 30218
@@ -1107,15 +1107,12 @@ msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr "예고편을 재생할까요?"
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
-msgid "Remind me"
-msgstr "알림받기"
+msgid "{} Remind me"
+msgstr "알림받기 {}"
 
-msgctxt "#30623"
-msgid "Reminder set"
-msgstr "알림 설정 완료"
-
-# Unused 30624 to 30699
+# Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "NEW! 요즘 대세 콘텐츠"

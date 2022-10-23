@@ -122,12 +122,12 @@ class AddonActionExecutor:
             common.json_rpc('Input.Down')  # Avoids selection back to the top
         common.container_refresh()
 
-    @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
-    def remind_me(self, videoid, pathitems):
+    @common.inject_video_id(path_offset=1)
+    def remind_me(self, videoid):
         """Add or remove an item to 'remind me' feature"""
         # This functionality is used with videos that are not available,
         # allows you to automatically add the title to my list as soon as it becomes available.
-        operation = pathitems[1]
+        operation = self.params['operation']
         G.CACHE.add(CACHE_BOOKMARKS, f'is_in_remind_me_{videoid}', bool(operation == 'add'))
         api.update_remindme(operation, videoid, self.params['trackid'])
         common.container_refresh()

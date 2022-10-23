@@ -850,7 +850,7 @@ msgid "Color of the titles included in \"My list\""
 msgstr ""
 
 msgctxt "#30216"
-msgid "Color of the titles marked as \"Remember me\""
+msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
 # Unused 30217 to 30218
@@ -1132,15 +1132,12 @@ msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr ""
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
-msgid "Remind me"
+msgid "{} Remind me"
 msgstr ""
 
-msgctxt "#30623"
-msgid "Reminder set"
-msgstr ""
-
-# Unused 30624 to 30699
+# Unused 30623 to 30699
 
 msgctxt "#30700"
 msgid "New and popular"

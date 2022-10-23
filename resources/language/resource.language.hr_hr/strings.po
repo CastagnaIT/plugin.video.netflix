@@ -837,7 +837,7 @@ msgid "Color of the titles included in \"My list\""
 msgstr "Boja naslova iz Moje liste"
 
 msgctxt "#30216"
-msgid "Color of the titles marked as \"Remember me\""
+msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
 # Unused 30217 to 30218
@@ -1108,15 +1108,12 @@ msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr "Želite li reproducirati promotivni foršpan?"
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
-msgid "Remind me"
-msgstr "Podsjeti me"
+msgid "{} Remind me"
+msgstr "{} Podsjeti me"
 
-msgctxt "#30623"
-msgid "Reminder set"
-msgstr "Podsjetnik postavljen"
-
-# Unused 30624 to 30699
+# Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "Novo i popularno"

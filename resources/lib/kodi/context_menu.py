@@ -46,8 +46,9 @@ def generate_context_menu_searchitem(row_id, search_type):
 def generate_context_menu_remind_me(videoid, is_set, trackid):
     items = []
     if is_set is not None and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
-        action = 'remove_remind_me' if is_set else 'add_remind_me'
-        items.insert(0, _ctx_item(action, videoid, {'trackid': trackid}))
+        operation = 'remove' if is_set else 'add'
+        items.insert(0, _ctx_item('remind_me', videoid, {'operation': operation, 'trackid': trackid},
+                                  label_format='●' if is_set else '○'))
     return items
 
 

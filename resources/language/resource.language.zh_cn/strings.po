@@ -836,7 +836,7 @@ msgid "Color of the titles included in \"My list\""
 msgstr "列入'我的片单'的标题颜色"
 
 msgctxt "#30216"
-msgid "Color of the titles marked as \"Remember me\""
+msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
 # Unused 30217 to 30218
@@ -1107,15 +1107,12 @@ msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr "您想播放预告片吗？"
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
-msgid "Remind me"
-msgstr "提醒我"
+msgid "{} Remind me"
+msgstr "{} 提醒我"
 
-msgctxt "#30623"
-msgid "Reminder set"
-msgstr "提醒已设置"
-
-# Unused 30624 to 30699
+# Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "最新与热播"
