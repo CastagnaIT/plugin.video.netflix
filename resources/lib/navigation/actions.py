@@ -61,6 +61,14 @@ class AddonActionExecutor:
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30053))
 
+    def set_profile_remember_pin(self, pathitems):  # pylint: disable=unused-argument
+        """Set whether to remember the profile PIN"""
+        is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=self.params['profile_guid'])
+        G.LOCAL_DB.set_profile_config('addon_remember_pin', not is_remember_pin, guid=self.params['profile_guid'])
+        if not is_remember_pin:
+            G.LOCAL_DB.set_profile_config('addon_pin', '', guid=self.params['profile_guid'])
+        common.container_refresh()
+
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
         password = ui.ask_for_password()

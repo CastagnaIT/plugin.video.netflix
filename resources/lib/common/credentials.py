@@ -22,7 +22,7 @@ from .uuid_device import get_crypt_key
 __BLOCK_SIZE__ = 32
 
 
-def encrypt_credential(raw):
+def encrypt_string(raw):
     """
     Encodes data
     :param raw: Data to be encoded
@@ -45,7 +45,7 @@ def encrypt_credential(raw):
     return base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
 
 
-def decrypt_credential(enc):
+def decrypt_string(enc):
     """
     Decodes data
     :param enc: Data to be decoded
@@ -66,7 +66,7 @@ def decrypt_credential(enc):
     decoded = Padding.unpad(
         padded_data=cipher.decrypt(enc[AES.block_size:]),
         block_size=__BLOCK_SIZE__)
-    return decoded
+    return decoded.decode('utf-8')
 
 
 def get_credentials():
@@ -79,8 +79,8 @@ def get_credentials():
     verify_credentials(email and password)
     try:
         return {
-            'email': decrypt_credential(email).decode('utf-8'),
-            'password': decrypt_credential(password).decode('utf-8')
+            'email': decrypt_string(email),
+            'password': decrypt_string(password)
         }
     except Exception as exc:  # pylint: disable=broad-except
         raise MissingCredentialsError('Existing credentials could not be decrypted') from exc
@@ -94,8 +94,8 @@ def check_credentials():
     password = G.LOCAL_DB.get_value('account_password')
     try:
         verify_credentials(email and password)
-        decrypt_credential(email)
-        decrypt_credential(password)
+        decrypt_string(email)
+        decrypt_string(password)
         return True
     except Exception:  # pylint: disable=broad-except
         return False
@@ -105,8 +105,8 @@ def set_credentials(credentials):
     """
     Encrypt account credentials and save them.
     """
-    G.LOCAL_DB.set_value('account_email', encrypt_credential(credentials['email']))
-    G.LOCAL_DB.set_value('account_password', encrypt_credential(credentials['password']))
+    G.LOCAL_DB.set_value('account_email', encrypt_string(credentials['email']))
+    G.LOCAL_DB.set_value('account_password', encrypt_string(credentials['password']))
 
 
 def purge_credentials():
