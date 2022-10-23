@@ -1097,16 +1097,6 @@
                         <close>true</close>
                     </control>
                 </setting>
-                <setting id="msl_auth_type" type="boolean" label="30725" help="30726">
-                    <dependencies>
-                        <dependency type="visible">
-                            <condition on="property" name="InfoBool">system.platform.android</condition>
-                        </dependency>
-                    </dependencies>
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
                 <setting id="enable_debug" type="boolean" label="30066" help="">
                     <level>0</level>
                     <default>false</default>

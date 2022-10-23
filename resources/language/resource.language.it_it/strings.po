@@ -1171,15 +1171,7 @@ msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr "Kodi salva l'impostazione \"Modalità di visualizzazione\" \"Zoom\" in modo permanente, abilita questa impostazione per ripristinare la modalità \"Normale\" quando si riproduce un video già guardato in precedenza."
 
-msgctxt "#30725"
-msgid "Force MSL with idtoken authentication"
-msgstr "Forza l'autenticazione MSL con idtoken"
-
-#. Description of setting ID 30725 - do not translate the error message
-msgctxt "#30726"
-msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
-msgstr "Su alcuni dispositivi Android potrebbe verificarsi l'errore \"User authentication data does not match entity identity\", attivando questa impostazione potrebbe risolvere il problema, ma sarà possibile riprodurre i video solo dal profilo principale."
-
+# Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
 msgstr "Abilita profili AV1 - SOLO PER TEST DI SVILUPPO"
