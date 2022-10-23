@@ -22,14 +22,14 @@ def generate_context_menu_mainmenu(menu_id):
 
 def generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback):
     """Generate context menu items for a listitem of the profile"""
+    params = {'profile_guid': profile_guid}
+    is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=profile_guid)
     items = [
-        _ctx_item('autoselect_remove_profile' if is_autoselect else 'autoselect_set_profile',
-                  None,
-                  {'profile_guid': profile_guid}),
+        _ctx_item('autoselect_remove_profile' if is_autoselect else 'autoselect_set_profile', None, params),
         _ctx_item('library_playback_remove_profile' if is_library_playback else 'library_playback_set_profile',
-                  None,
-                  {'profile_guid': profile_guid}),
-        _ctx_item('profile_parental_control', None, {'profile_guid': profile_guid})
+                  None, params),
+        _ctx_item('profile_parental_control', None, params),
+        _ctx_item('profile_remember_pin', None, params, label_format='●' if is_remember_pin else '○')
     ]
     return items
 
@@ -46,8 +46,9 @@ def generate_context_menu_searchitem(row_id, search_type):
 def generate_context_menu_remind_me(videoid, is_set, trackid):
     items = []
     if is_set is not None and videoid.mediatype in [common.VideoId.MOVIE, common.VideoId.SHOW]:
-        action = 'remove_remind_me' if is_set else 'add_remind_me'
-        items.insert(0, _ctx_item(action, videoid, {'trackid': trackid}))
+        operation = 'remove' if is_set else 'add'
+        items.insert(0, _ctx_item('remind_me', videoid, {'operation': operation, 'trackid': trackid},
+                                  label_format='●' if is_set else '○'))
     return items
 
 
@@ -120,10 +121,11 @@ def _generate_library_ctx_items(videoid):
     return [_ctx_item(action, videoid) for action in library_actions]
 
 
-def _ctx_item(template, videoid, params=None):
+def _ctx_item(template, videoid, params=None, label_format=''):
     """Create a context menu item based on the given template and videoid"""
     # Do not move the import to the top of the module header, see context_menu_utils.py
     from resources.lib.kodi.context_menu_utils import CONTEXT_MENU_ACTIONS
-    return (CONTEXT_MENU_ACTIONS[template]['label'],
-            common.run_plugin_action(
-                CONTEXT_MENU_ACTIONS[template]['url'](videoid, params)))
+    label = CONTEXT_MENU_ACTIONS[template]['label']
+    if label_format:
+        label = label.format(label_format)
+    return label, common.run_plugin_action(CONTEXT_MENU_ACTIONS[template]['url'](videoid, params))

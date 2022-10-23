@@ -147,7 +147,7 @@ class MSLHandler:
                                                                  hdcp_override=hdcp_override,
                                                                  profiles=profiles,
                                                                  challenge=challenge, sid=sid, xid=xid)
-        manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn, disable_msl_switch=False)
+        manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn)
 
         # The xid must be used also for each future MSL requests, until playback stops
         G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)

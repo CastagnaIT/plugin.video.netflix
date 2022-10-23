@@ -61,6 +61,14 @@ class AddonActionExecutor:
         common.container_refresh()
         ui.show_notification(profile_name, title=common.get_local_string(30053))
 
+    def set_profile_remember_pin(self, pathitems):  # pylint: disable=unused-argument
+        """Set whether to remember the profile PIN"""
+        is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=self.params['profile_guid'])
+        G.LOCAL_DB.set_profile_config('addon_remember_pin', not is_remember_pin, guid=self.params['profile_guid'])
+        if not is_remember_pin:
+            G.LOCAL_DB.set_profile_config('addon_pin', '', guid=self.params['profile_guid'])
+        common.container_refresh()
+
     def parental_control(self, pathitems=None):  # pylint: disable=unused-argument
         """Open parental control settings dialog"""
         password = ui.ask_for_password()
@@ -114,12 +122,12 @@ class AddonActionExecutor:
             common.json_rpc('Input.Down')  # Avoids selection back to the top
         common.container_refresh()
 
-    @common.inject_video_id(path_offset=2, inject_remaining_pathitems=True)
-    def remind_me(self, videoid, pathitems):
+    @common.inject_video_id(path_offset=1)
+    def remind_me(self, videoid):
         """Add or remove an item to 'remind me' feature"""
         # This functionality is used with videos that are not available,
         # allows you to automatically add the title to my list as soon as it becomes available.
-        operation = pathitems[1]
+        operation = self.params['operation']
         G.CACHE.add(CACHE_BOOKMARKS, f'is_in_remind_me_{videoid}', bool(operation == 'add'))
         api.update_remindme(operation, videoid, self.params['trackid'])
         common.container_refresh()

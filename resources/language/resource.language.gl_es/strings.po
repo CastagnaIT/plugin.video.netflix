@@ -233,7 +233,12 @@ msgctxt "#30056"
 msgid "Remove auto-selection"
 msgstr "Eliminar selección automática"
 
-# Unused 30057, 30058
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+msgctxt "#30057"
+msgid "{} Remember PIN"
+msgstr ""
+
+# Unused 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Coidado, está a piques de actualizar moitos títulos {}.[CR]Isto pode causar problemas do servizo ou bloquear temporalmente a conta.[CR]Desexa continuar?"
@@ -833,7 +838,7 @@ msgid "Color of the titles included in \"My list\""
 msgstr "Cor dos títulos incluídos en ‘Miña lista’"
 
 msgctxt "#30216"
-msgid "Color of the titles marked as \"Remember me\""
+msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
 # Unused 30217 to 30218
@@ -1104,15 +1109,12 @@ msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
 msgstr "Desexas reproducir o vídeo promocional?"
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
-msgid "Remind me"
-msgstr "Acórdamo"
+msgid "{} Remind me"
+msgstr "{} Acórdamo"
 
-msgctxt "#30623"
-msgid "Reminder set"
-msgstr "Recordatorio establecido"
-
-# Unused 30624 to 30699
+# Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "Novo e popular"
@@ -1168,15 +1170,7 @@ msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr ""
 
-msgctxt "#30725"
-msgid "Force MSL with idtoken authentication"
-msgstr ""
-
-#. Description of setting ID 30725 - do not translate the error message
-msgctxt "#30726"
-msgid "On some Android devices the error \"User authentication data does not match entity identity\" may occur, enabling this setting may solve the problem, but it will only be possible to play videos from the main profile."
-msgstr ""
-
+# Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
 msgstr ""

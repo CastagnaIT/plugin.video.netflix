@@ -16,8 +16,8 @@ import zlib
 import httpx
 
 import resources.lib.common as common
-from resources.lib.common import get_system_platform, is_device_l1_enabled
-from resources.lib.common.exceptions import MSLError, ErrorMessage
+from resources.lib.common import get_system_platform
+from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
@@ -85,7 +85,7 @@ class MSLRequests(MSLRequestBuilder):
         response = self.chunked_request(endpoint_url,
                                         self.build_request_data('/logblob', generate_logblobs_params()),
                                         get_esn(),
-                                        force_auth_credential=True)
+                                        msl_auth_scheme=MSL_AUTH_EMAIL_PASSWORD)
         LOG.debug('Response of logblob request: {}', response)
 
     def _mastertoken_checks(self):
@@ -110,79 +110,73 @@ class MSLRequests(MSLRequestBuilder):
                 self.crypto.load_msl_data(msl_data)
                 self.crypto.load_crypto_session(msl_data)
 
-    def _check_user_id_token(self, disable_msl_switch, force_auth_credential=False):
+    def _get_user_auth_data(self):
         """
-        Performs user id token checks and return the auth data
-        checks: uid token validity, get if needed the owner uid token, set when use the switch
+        Get the user id token for the current profile GUID and return the auth data.
 
-        :param: disable_msl_switch: to be used in requests that cannot make the switch
-        :param: force_auth_credential: force the use of authentication with credentials
-        :return: auth data that will be used in MSLRequestBuilder _add_auth_info
+        :returns: The auth data, may override the current auth scheme.
         """
-        # TODO: This _check_user_id_token method need to be revisited,
-        #  since at today 25/09/2022 the SWITCH_PROFILE auth scheme do not works anymore
-
         # Warning: the user id token contains also contains the identity of the netflix profile
         # therefore it is necessary to use the right user id token for the request
         current_profile_guid = G.LOCAL_DB.get_active_profile_guid()
         owner_profile_guid = G.LOCAL_DB.get_guid_owner_profile()
         use_switch_profile = False
-        user_id_token = None
 
-        if current_profile_guid != owner_profile_guid:
-            # TODO: due to removal of SWITCH_PROFILE, we cannot currently switch profile on MSL side,
-            #  CIT: i have no idea if there is another way to have a kind of profile switching with id tokens
-            raise ErrorMessage('Due to changes to the Netflix website, '
-                               'videos can only be played from the main/owner profile, at moment this cannot be fixed.')
+        # Get the UID token if it exists and is not expired, so we get 'None' in all other cases
+        user_id_token = self.crypto.get_user_id_token(current_profile_guid)
 
-        if not force_auth_credential:
+        if not user_id_token:
             if current_profile_guid == owner_profile_guid:
-                # The request will be executed from the owner profile
-                # By default MSL is associated to the owner profile, then is not necessary get the owner token id
-                # and it is not necessary use the MSL profile switch
-                user_id_token = self.crypto.get_user_id_token(current_profile_guid)
-                # The user_id_token can return None when the add-on is installed from scratch,
-                # in this case will be used the authentication with the user credentials
-            else:
-                # The request will be executed from a non-owner profile
-                # Get the non-owner profile token id, by checking that exists and it is valid
-                user_id_token = self.crypto.get_user_id_token(current_profile_guid)
-                if not user_id_token and not disable_msl_switch:
-                    # The token does not exist/valid, you must set the MSL profile switch
-                    use_switch_profile = True
-                    # First check if the owner profile token exist and it is valid
-                    user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
-                    if not user_id_token:
-                        # The owner profile token id does not exist/valid, then get it
-                        self._get_owner_user_id_token()
-                        user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
+                # The request need to be executed from the owner (main) profile,
+                # but the current token does not exist, or it is expired
+                # to avoid perform an additional request (_get_owner_user_id_token) we use MSL_AUTH_EMAIL_PASSWORD auth
+                # that will provide us the owner token id in the response
+                return {'auth_scheme': MSL_AUTH_EMAIL_PASSWORD}
+            # The request need to be executed from a non-owner (main) profile,
+            # but the current token does not exist, or it is expired
+            # then we need to enable MSL profile switching
+            use_switch_profile = True
+            # Try to get the UID of owner (main) profile
+            user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
+            if not user_id_token:
+                # The token id does not exist, or it is expired, then we request it
+                self._get_owner_user_id_token()
+                user_id_token = self.crypto.get_user_id_token(owner_profile_guid)
+                if user_id_token is None:
+                    raise MSLError('Cannot get user token id of owner / main profile.')
         return {'use_switch_profile': use_switch_profile, 'user_id_token': user_id_token}
 
     @measure_exec_time_decorator(is_immediate=True)
-    def chunked_request(self, endpoint, request_data, esn, disable_msl_switch=True, force_auth_credential=False):
-        """Do a POST request and process the chunked response"""
+    def chunked_request(self, endpoint, request_data, esn, msl_auth_scheme=None):
+        """
+        Do a POST request and process the chunked response
+
+        :param endpoint: The endpoint composed by a key of ENDPOINTS dict and create_req_params method (msl_utils.py)
+        :param request_data: The request data (need to be wrapped by using build_request_data method)
+        :param esn: The current ESN
+        :param msl_auth_scheme: Optionals; Force use a type of MSL auth scheme
+        :returns: The response data
+        """
         self._mastertoken_checks()
+
+        # Define the default auth scheme
+        if msl_auth_scheme:
+            auth_scheme = msl_auth_scheme
+        elif get_system_platform() == 'android':
+            # On android, we have a different ESN from the login then use NETFLIXID auth may cause MSL errors,
+            # (usually on L3 devices) because the identity do not match, so we need to use User id token auth
+            # to switch MSL profile with current ESN when needed
+            auth_scheme = MSL_AUTH_USER_ID_TOKEN
+        else:
+            auth_scheme = MSL_AUTH_NETFLIXID
 
         # Define the user authentication scheme to be used on the MSL HTTP requests
         # https://github.com/Netflix/msl/wiki/User-Authentication-%28Configuration%29
-        # Values can be: MSL_AUTH_NETFLIXID, MSL_AUTH_EMAIL_PASSWORD, MSL_AUTH_USER_ID_TOKEN
-        auth_scheme = MSL_AUTH_NETFLIXID
-        auth_data = {}
+        auth_data = {'auth_scheme': auth_scheme}
 
-        # TODO: MSL netflixid auth at today not works with L3 android devices by returning error:
-        #  "User authentication data does not match entity identity." so we fallback to idtoken auth
-        if get_system_platform() == 'android' and (not is_device_l1_enabled()
-                                                   or G.ADDON.getSettingBool('msl_auth_type')):
-            auth_scheme = MSL_AUTH_USER_ID_TOKEN
-
-        # TODO: Due to removal of SWITCH_PROFILE using idtoken authenticaton is possible play videos
-        #  from main/owner profile only
         if auth_scheme == MSL_AUTH_USER_ID_TOKEN:
-            auth_data.update(self._check_user_id_token(disable_msl_switch, force_auth_credential))
-            if auth_data['user_id_token'] is None:
-                auth_scheme = MSL_AUTH_EMAIL_PASSWORD
+            auth_data.update(self._get_user_auth_data())
 
-        auth_data['auth_scheme'] = auth_scheme
         LOG.debug('Chunked request will be executed with auth data: {}', auth_data)
 
         chunked_response = self._process_chunked_response(

@@ -86,6 +86,7 @@ def activate_profile(guid):
     pin_result = verify_profile_pin(guid)
     if not pin_result:
         if pin_result is not None:
+            G.LOCAL_DB.set_profile_config('addon_pin', '', guid=guid)
             ui.show_notification(common.get_local_string(30106), time=8000)
         return False
     common.make_call('activate_profile', guid)
@@ -96,8 +97,24 @@ def verify_profile_pin(guid):
     """Verify if the profile is locked by a PIN and ask the PIN"""
     if not G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=guid):
         return True
-    pin = ui.show_dlg_input_numeric(common.get_local_string(30006))
-    return None if not pin else verify_profile_lock(guid, pin)
+    is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=guid)
+    stored_pin = ''
+    if is_remember_pin:
+        try:
+            stored_pin = common.decrypt_string(G.LOCAL_DB.get_profile_config('addon_pin', '', guid=guid))
+        except Exception:  # pylint: disable=broad-except
+            pass
+    if stored_pin:
+        pin = stored_pin
+    else:
+        pin = ui.show_dlg_input_numeric(common.get_local_string(30006))
+    if not pin:
+        return None
+    if verify_profile_lock(guid, pin):
+        if is_remember_pin:
+            G.LOCAL_DB.set_profile_config('addon_pin', common.encrypt_string(pin), guid=guid)
+        return True
+    return False
 
 
 def auto_scroll(dir_items):
