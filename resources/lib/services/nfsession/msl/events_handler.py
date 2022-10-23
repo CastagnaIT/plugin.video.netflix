@@ -82,8 +82,7 @@ class EventsHandler(threading.Thread):
         LOG.info('EVENT [{}] - Executing request', event_type)
         endpoint_url = ENDPOINTS['events'] + create_req_params(f'events/{event_type}')
         try:
-            response = self.chunked_request(endpoint_url, request_data, get_esn(),
-                                            disable_msl_switch=False)
+            response = self.chunked_request(endpoint_url, request_data, get_esn())
             # Malformed/wrong content in requests are ignored without returning any error in the response or exception
             LOG.debug('EVENT [{}] - Request response: {}', event_type, response)
             if event_type == EVENT_STOP:
