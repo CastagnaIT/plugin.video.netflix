@@ -1117,7 +1117,7 @@ msgstr "Neu und beliebt"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr "Angefangene TV-Serien als gesehen markieren"
+msgstr "Angefangene Serien als gesehen markieren"
 
 #. Description of setting ID #30701
 msgctxt "#30702"
@@ -1185,7 +1185,7 @@ msgstr "Netflix-Verzeichnisse zu Kodi-Bibliotheksquellen hinzufügen"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr "Die Verzeichnisse \"Netflix-Movies\" und \"Netflix-Shows\" wurden zu den Kodi-Quellen hinzugefügt. Starten Sie Kodi neu um diese in Kodi Menü [TV Shows] / [Movies] Menü zu sehen. Dann bearbeiten Sie diese Verzeichnisse um den gewünschten Content-Type und Informationsbeschaffungsscraper einzustellen."
+msgstr "Die Verzeichnisse \"Netflix-Movies\" und \"Netflix-Shows\" wurden zu den Kodi-Quellen hinzugefügt. Starten Sie Kodi neu um diese in Kodi Menü [Serien] / [Filme] zu sehen. Dann bearbeiten Sie diese Verzeichnisse um den gewünschten Content-Type und Informationsbeschaffungsscraper einzustellen."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
@@ -1200,7 +1200,7 @@ msgstr "Synchronisiert die Bibliothek mit Meiner Liste. Wenn Meine Liste extern 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr "Wenn aktiviert, werden Informationen zu Episoden und Filmen hinzugefügt, die nützlich sind, falls der Kodi-Informationsbeschaffungsscraper keine Daten liefert, Dies beinhaltet die Dauer der Videos."
+msgstr "Wenn aktiviert, werden Informationen zu Episoden und Filmen hinzugefügt, die nützlich sind, falls der Kodi-Informationsbeschaffungsscraper keine Daten liefert. Dies beinhaltet die Dauer der Videos."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
