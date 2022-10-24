@@ -217,7 +217,7 @@ msgstr "{} Wiedergabe aus Bibliothek setzen"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Beim Start setzen"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
