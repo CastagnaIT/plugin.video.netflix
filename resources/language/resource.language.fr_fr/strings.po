@@ -1146,16 +1146,16 @@ msgstr "Hauteur maximale des barres noires (expérimental)"
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr "Les vidéos recadrées seront étirées en utilisant le \"View mode\" \"Zoom\" de Kodi en limitant les barres noires à la hauteur maximale configurée. Par exemple avec 10%, les barres noires ne couvrirons pas plus de 10% de l'écran. Utiliser 50% pour les désactiver."
+msgstr "Les vidéos recadrées seront étirées en utilisant le \"Type de vue\" \"Zoom\" de Kodi en limitant les barres noires à la hauteur maximale configurée. Par exemple avec 10%, les barres noires ne couvrirons pas plus de 10% de l'écran. Utiliser 50% pour les désactiver."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr "Forcer la remise à zéro du paramètre \"View mode\""
+msgstr "Forcer la remise à zéro du paramètre \"Type de vue\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr "Kodi garde en mémoire la valeur \"Zoom\" pour le \"View mode\", activer ce paramètre pour restaurer le \"View mode\" \"Normal\" lors de la lecture d'une vidéo déjà lue."
+msgstr "Kodi garde en mémoire la valeur \"Zoom\" pour le \"Type de vue\", activer ce paramètre pour restaurer le \"Type de vue\" \"Normal\" lors de la lecture d'une vidéo déjà lue."
 
 # Unused 30725, 30726
 msgctxt "#30727"
@@ -1169,7 +1169,6 @@ msgstr "Ajouter les dossier Netflix aux sources de la médiathèque Kodi"
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
 msgstr "Les dossiers \"Netflix-Films\" and \"Netflix-Séries\" ont été ajoutés aux sources Kodi, redémarrez Kodi pour les voir dans les menus [Séries] / [Films]. Puis modifier les dossiers pour configurer le type de contenu et le fournisseur d'informations."
-
 
 #. Description of setting ID 30224
 msgctxt "#30730"
@@ -1189,4 +1188,4 @@ msgstr "Si activé, ajoute des informations aux épisodes et films ce qui est ut
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr "A activer que lorsque le fournisseur d'informations \"Informations Locales\" est utilisé, ou si certains titres ne s'affichent pas dans la médiathèque après leur ajout."
+msgstr "A activer qu'avec le fournisseur d'informations \"Local information only\", ou si certains titres ne s'affichent pas dans la médiathèque après leur ajout."
