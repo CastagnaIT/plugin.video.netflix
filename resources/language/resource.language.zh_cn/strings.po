@@ -207,31 +207,20 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr ""
 
-msgctxt "#30051"
-msgid "Profile set for playback from the library"
-msgstr "设置从库中播放的个人资料"
-
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30051
 msgctxt "#30052"
-msgid "Set for library playback"
-msgstr "设为从库播放"
-
-msgctxt "#30053"
-msgid "Remove for playback from library"
-msgstr "移除从库播放"
-
-msgctxt "#30054"
-msgid "Profile set to auto-selection"
-msgstr "设置自动选择个人资料"
-
-msgctxt "#30055"
-msgid "Set for auto-selection"
-msgstr "设为自动选择"
-
-msgctxt "#30056"
-msgid "Remove auto-selection"
-msgstr "移除自动选择"
+msgid "{} Set for library playback"
+msgstr "{} 设为从库播放"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30053, 30054
+msgctxt "#30055"
+msgid "{} Set at start-up"
+msgstr ""
+
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr ""

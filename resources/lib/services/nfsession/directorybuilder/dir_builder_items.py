@@ -91,7 +91,7 @@ def build_profiles_listing(preselect_guid=None, detailed_info=True):
     return directory_items, {}
 
 
-def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_playback, detailed_info):
+def _create_profile_item(profile_guid, is_selected, is_autoselect, is_autoselect_library, detailed_info):
     profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
     profile_attributes = []
     if G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
@@ -101,14 +101,16 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_library_pl
     if G.LOCAL_DB.get_profile_config('isKids', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30222))
     if is_autoselect and detailed_info:
-        profile_attributes.append(common.get_local_string(30054))
-    if is_library_playback and detailed_info:
-        profile_attributes.append(common.get_local_string(30051))
+        profile_attributes.append(common.get_local_string(30055).format('●'))
+    if is_autoselect_library and detailed_info:
+        profile_attributes.append(common.get_local_string(30052).format('●'))
+    if detailed_info and G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=profile_guid):
+        profile_attributes.append(common.get_local_string(30057).format('●'))
     attributes_desc = '[CR]'.join(profile_attributes) + '[CR]' if profile_attributes else ''
     description = f'{attributes_desc}[{G.LOCAL_DB.get_profile_config("language_desc", "", guid=profile_guid)}]'
 
     if detailed_info:
-        menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback)
+        menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_autoselect_library)
     else:
         menu_items = []
     list_item = ListItemW(label=profile_name)
