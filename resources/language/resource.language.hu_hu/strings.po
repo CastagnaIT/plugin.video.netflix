@@ -734,7 +734,7 @@ msgstr "[CR]Ezeket a fájlokat a szolgáltatói információs scrapperek haszná
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Tartalmazza a Sorozat NFO részleteit"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -826,7 +826,7 @@ msgstr "Saját listám elemeinek színe"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Az emlékeztetőre felvett címek színe"
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -1085,7 +1085,7 @@ msgstr "[B]Ha letiltja, biztonsági rést okoz[/B]. Ha az operációs rendszer n
 
 msgctxt "#30612"
 msgid "MSL manifest version"
-msgstr ""
+msgstr "MSL manifest verziója"
 
 # Unused 30613 to 30619
 msgctxt "#30620"
@@ -1141,51 +1141,51 @@ msgstr "Kérjük, vegye figyelembe, hogy ennek a beállításnak az engedélyez�
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "A fekete sávok maximális magassága (kísérleti)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "A kivágott videókat úgy nyújtja, hogy a Kodi \"Nézetmód\" -ban beállítjuk a \"zoom\" -nál a fekete sávok minimalizálása érdekében a maximális magasságot. Például 10% azt jelenti, hogy a fekete sávok a képernyő legfeljebb 10% -át fedhetik le. A letiltáshoz állítsa 50%-ra."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Visszaállítja a \"Nézetmód\" beállítást"
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "A Kodi a \"Nézetmód\" \"Zoom\" beállítást menti, lehetővé téve ezt a beállítást a \"Normál\" nézet módjának visszaállításához, egy korábban megtekintett videó lejátszásakor."
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Engedélyezze az AV1 profilokat - Csak fejlesztési teszt"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "A Netflix mappák hozzáadása a Kodi médiatár forrásokhoz"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "A \"Netflix-Filmek\" és \"Netflix-sorozatok\" mappák hozzáadva a Kodi forrásokhoz, Kodi újraindítás szükséges, hogy megjelenjenek a Kodi [Sorozatok] / [Filmek] menükben. Ezután szerkeszthetőek a mappák a megfelelő tartalomtípus és az információs szolgáltató beállításával."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Kézi] A frissítéseket manuálisan kell elvégezni az \"Export új epizódok\" helyi menü használatával az egyes sorozatoknál, [Ütemezett] Az automatikus frissítéseket az ütemezett időpontokban hozza létre, [amikor Kodi elindul] ez naponta egyszer fog megtörténni"
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Szinkronizálja a médiatárat a saját listámmal, ha a listámat kívülről módosították, pl. Mobilalkalmazás vagy webhely, a frissítést az ütemezett időre elhalasztja."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Ha engedélyezve van, hozzáadhat információkat az epizódokhoz vagy filmekhez. Ez akkor lehet hasznos, ha a KODI Információs Szolgáltató Scraper nem szolgáltat megfelelő adatokat. Hozzáadja a videók időtartamát is."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Csak akkor engedélyezze, ha a \"helyi információk\" információszolgáltató nem használható, vagy ha bizonyos címek nem jelennek meg a Kodi könyvtárban, annak ellenére, hogy hozzáadta."
