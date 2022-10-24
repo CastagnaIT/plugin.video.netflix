@@ -214,29 +214,21 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr ""
 
-msgctxt "#30051"
-msgid "Profile set for playback from the library"
-msgstr ""
+# Unused 30051
 
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30052"
-msgid "Set for library playback"
+msgid "{} Set for library playback"
 msgstr ""
 
-msgctxt "#30053"
-msgid "Remove for playback from library"
-msgstr ""
+# Unused 30053, 30054
 
-msgctxt "#30054"
-msgid "Profile set to auto-selection"
-msgstr ""
-
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30055"
-msgid "Set for auto-selection"
+msgid "{} Set at start-up"
 msgstr ""
 
-msgctxt "#30056"
-msgid "Remove auto-selection"
-msgstr ""
+# Unused 30056
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30057"

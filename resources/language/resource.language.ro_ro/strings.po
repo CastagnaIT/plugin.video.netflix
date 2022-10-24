@@ -207,31 +207,20 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr ""
 
-msgctxt "#30051"
-msgid "Profile set for playback from the library"
-msgstr "Profil ales pentru redare din bibliotecă"
-
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30051
 msgctxt "#30052"
-msgid "Set for library playback"
-msgstr "Ales pentru redarea bibliotecii"
-
-msgctxt "#30053"
-msgid "Remove for playback from library"
-msgstr "Elimină pentru redarea din bibliotecii"
-
-msgctxt "#30054"
-msgid "Profile set to auto-selection"
-msgstr "Profil ales pentru auto-selectare"
-
-msgctxt "#30055"
-msgid "Set for auto-selection"
-msgstr "Configurat pentru auto-selectare"
-
-msgctxt "#30056"
-msgid "Remove auto-selection"
-msgstr "Șterge auto-selectarea profilului"
+msgid "{} Set for library playback"
+msgstr "{} Ales pentru redarea bibliotecii"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30053, 30054
+msgctxt "#30055"
+msgid "{} Set at start-up"
+msgstr ""
+
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr ""
