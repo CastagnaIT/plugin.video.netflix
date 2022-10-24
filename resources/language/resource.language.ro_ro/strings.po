@@ -734,7 +734,7 @@ msgstr "[CR]Aceste fișiere sunt utilizare de furnizorii de informații pentru a
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr "Include detalii despre serial TV"
+msgstr "Include detalii despre serial TV din NFO"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -1164,7 +1164,7 @@ msgstr "Activează profilele AV1 - DOAR PENTRU TESTE DEZVOLTATORI"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr "Adaugă directoarele Netflix la sursele de biblioteci Kodi"
+msgstr "Adaugă directoarele Netflix la sursele bibliotecii Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
@@ -1178,7 +1178,7 @@ msgstr "[Manual] Actualizările trebuie să fie făcute manual folosing meniul d
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr "Sincronizează biblioteca cu 'Lista mea', dacă lista mea a fost modificată din exterior de către o aplicație mobilă sau un site web, actualizarea va fi amânată până în momentul programat."
+msgstr "Sincronizează biblioteca cu 'Lista mea'. Dacă lista a fost modificată din exterior de către o aplicație mobilă sau un site web, actualizarea va fi amânată până în momentul programat."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
