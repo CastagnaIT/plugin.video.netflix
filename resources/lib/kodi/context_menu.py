@@ -20,14 +20,17 @@ def generate_context_menu_mainmenu(menu_id):
     return items
 
 
-def generate_context_menu_profile(profile_guid, is_autoselect, is_library_playback):
+def generate_context_menu_profile(profile_guid, is_autoselect, is_autoselect_library):
     """Generate context menu items for a listitem of the profile"""
     params = {'profile_guid': profile_guid}
     is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=profile_guid)
     items = [
-        _ctx_item('autoselect_remove_profile' if is_autoselect else 'autoselect_set_profile', None, params),
-        _ctx_item('library_playback_remove_profile' if is_library_playback else 'library_playback_set_profile',
-                  None, params),
+        _ctx_item('profile_autoselect', None,
+                  {**params, 'operation': 'remove' if is_autoselect else 'set'},
+                  label_format='●' if is_autoselect else '○'),
+        _ctx_item('profile_autoselect_library', None,
+                  {**params, 'operation': 'remove' if is_autoselect_library else 'set'},
+                  label_format='●' if is_autoselect_library else '○'),
         _ctx_item('profile_parental_control', None, params),
         _ctx_item('profile_remember_pin', None, params, label_format='●' if is_remember_pin else '○')
     ]

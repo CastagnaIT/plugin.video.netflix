@@ -207,31 +207,20 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr ""
 
-msgctxt "#30051"
-msgid "Profile set for playback from the library"
-msgstr "Profil inställd för uppspelning från biblioteket"
-
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30051
 msgctxt "#30052"
-msgid "Set for library playback"
-msgstr "Ställ in för biblioteksuppspelning"
-
-msgctxt "#30053"
-msgid "Remove for playback from library"
-msgstr "Ta bort för uppspelning från biblioteket"
-
-msgctxt "#30054"
-msgid "Profile set to auto-selection"
-msgstr "Profil inställd på automatiskt val"
-
-msgctxt "#30055"
-msgid "Set for auto-selection"
-msgstr "Ställ in för automatiskt val"
-
-msgctxt "#30056"
-msgid "Remove auto-selection"
-msgstr "Ta bort automatiskt val"
+msgid "{} Set for library playback"
+msgstr "{} Ställ in för biblioteksuppspelning"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30053, 30054
+msgctxt "#30055"
+msgid "{} Set at start-up"
+msgstr ""
+
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
+# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr ""

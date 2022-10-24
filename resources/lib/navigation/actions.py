@@ -33,38 +33,32 @@ class AddonActionExecutor:
         """Perform account logout"""
         api.logout()
 
-    def autoselect_set_profile(self, pathitems):  # pylint: disable=unused-argument
-        """Save the GUID for profile auto-selection"""
-        G.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
-        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+    def profile_autoselect(self, pathitems):  # pylint: disable=unused-argument
+        """Set or remove the GUID for profile auto-selection when addon start-up"""
+        if self.params['operation'] == 'set':
+            G.LOCAL_DB.set_value('autoselect_profile_guid', self.params['profile_guid'])
+        else:
+            G.LOCAL_DB.set_value('autoselect_profile_guid', '')
         common.container_refresh()
-        ui.show_notification(profile_name, title=common.get_local_string(30055))
 
-    def autoselect_remove_profile(self, pathitems):  # pylint: disable=unused-argument
-        """Remove the GUID from auto-selection"""
-        G.LOCAL_DB.set_value('autoselect_profile_guid', '')
-        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
+    def profile_autoselect_library(self, pathitems):  # pylint: disable=unused-argument
+        """Set or remove the GUID for profile auto-selection for playback from Kodi library"""
+        if self.params['operation'] == 'set':
+            G.LOCAL_DB.set_value('library_playback_profile_guid', self.params['profile_guid'])
+        else:
+            G.LOCAL_DB.set_value('library_playback_profile_guid', '')
         common.container_refresh()
-        ui.show_notification(profile_name, title=common.get_local_string(30056))
 
-    def library_playback_set_profile(self, pathitems=None):  # pylint: disable=unused-argument
-        """Save the GUID for the playback from Kodi library"""
-        G.LOCAL_DB.set_value('library_playback_profile_guid', self.params['profile_guid'])
-        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        common.container_refresh()
-        ui.show_notification(profile_name, title=common.get_local_string(30052))
-
-    def library_playback_remove_profile(self, pathitems):  # pylint: disable=unused-argument
-        """Remove the GUID for the playback from Kodi library"""
-        G.LOCAL_DB.set_value('library_playback_profile_guid', '')
-        profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', self.params['profile_guid'])
-        common.container_refresh()
-        ui.show_notification(profile_name, title=common.get_local_string(30053))
-
-    def set_profile_remember_pin(self, pathitems):  # pylint: disable=unused-argument
+    def profile_remember_pin(self, pathitems):  # pylint: disable=unused-argument
         """Set whether to remember the profile PIN"""
-        is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=self.params['profile_guid'])
-        G.LOCAL_DB.set_profile_config('addon_remember_pin', not is_remember_pin, guid=self.params['profile_guid'])
+        is_remember_pin = not G.LOCAL_DB.get_profile_config('addon_remember_pin', False,
+                                                            guid=self.params['profile_guid'])
+        if is_remember_pin:
+            from resources.lib.navigation.directory_utils import verify_profile_pin
+            if not verify_profile_pin(self.params['profile_guid'], is_remember_pin):
+                ui.show_notification(common.get_local_string(30106), time=8000)
+                return
+        G.LOCAL_DB.set_profile_config('addon_remember_pin', is_remember_pin, guid=self.params['profile_guid'])
         if not is_remember_pin:
             G.LOCAL_DB.set_profile_config('addon_pin', '', guid=self.params['profile_guid'])
         common.container_refresh()

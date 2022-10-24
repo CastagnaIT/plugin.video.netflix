@@ -83,7 +83,7 @@ def get_title(menu_data, extra_data):
 
 def activate_profile(guid):
     """Activate a profile and ask the PIN if required"""
-    pin_result = verify_profile_pin(guid)
+    pin_result = verify_profile_pin(guid, G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=guid))
     if not pin_result:
         if pin_result is not None:
             G.LOCAL_DB.set_profile_config('addon_pin', '', guid=guid)
@@ -93,11 +93,10 @@ def activate_profile(guid):
     return True
 
 
-def verify_profile_pin(guid):
+def verify_profile_pin(guid, is_remember_pin):
     """Verify if the profile is locked by a PIN and ask the PIN"""
     if not G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=guid):
         return True
-    is_remember_pin = G.LOCAL_DB.get_profile_config('addon_remember_pin', False, guid=guid)
     stored_pin = ''
     if is_remember_pin:
         try:
