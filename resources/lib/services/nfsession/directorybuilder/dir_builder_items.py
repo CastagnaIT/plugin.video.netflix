@@ -94,7 +94,8 @@ def build_profiles_listing(preselect_guid=None, detailed_info=True):
 def _create_profile_item(profile_guid, is_selected, is_autoselect, is_autoselect_library, detailed_info):
     profile_name = G.LOCAL_DB.get_profile_config('profileName', '???', guid=profile_guid)
     profile_attributes = []
-    if G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid):
+    is_pin_locked = G.LOCAL_DB.get_profile_config('isPinLocked', False, guid=profile_guid)
+    if is_pin_locked:
         profile_attributes.append(f'[COLOR red]{common.get_local_string(20068)}[/COLOR]')
     if G.LOCAL_DB.get_profile_config('isAccountOwner', False, guid=profile_guid):
         profile_attributes.append(common.get_local_string(30221))
@@ -110,7 +111,7 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_autoselect
     description = f'{attributes_desc}[{G.LOCAL_DB.get_profile_config("language_desc", "", guid=profile_guid)}]'
 
     if detailed_info:
-        menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_autoselect_library)
+        menu_items = generate_context_menu_profile(profile_guid, is_autoselect, is_autoselect_library, is_pin_locked)
     else:
         menu_items = []
     list_item = ListItemW(label=profile_name)
