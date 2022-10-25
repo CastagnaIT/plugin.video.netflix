@@ -205,7 +205,7 @@ msgstr "Médiathèque"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Activer la gestion de la médiathèque Kodi"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -217,13 +217,13 @@ msgstr "{} Utiliser lors de la lecture depuis la médiathèque"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Utiliser au démarrage"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Se souvenir du code"
 
 # Unused 30058
 msgctxt "#30059"
@@ -252,7 +252,7 @@ msgstr "Faire une mise à jour"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Mise à jour de la médiathèque vidéo"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -734,7 +734,7 @@ msgstr "[CR]Ces fichiers sont utilisés par les fournisseurs d'informations pour
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Inclure les détails NFO de la série"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -826,7 +826,7 @@ msgstr "Couleur des titres déjà dans \"Ma Liste\""
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Couleur des titres possédant un rappel"
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -868,7 +868,7 @@ msgstr "Choisir le profil pour la synchronisation"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "Quand Kodi démarre"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1141,51 +1141,51 @@ msgstr "En activant ce paramètre les flux qui ne sont pas dans la plage défini
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Hauteur maximale des barres noires (expérimental)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Les vidéos recadrées seront étirées en utilisant le \"Type de vue\" \"Zoom\" de Kodi en limitant les barres noires à la hauteur maximale configurée. Par exemple avec 10%, les barres noires ne couvrirons pas plus de 10% de l'écran. Utiliser 50% pour les désactiver."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Forcer la remise à zéro du paramètre \"Type de vue\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi garde en mémoire la valeur \"Zoom\" pour le \"Type de vue\", activer ce paramètre pour restaurer le \"Type de vue\" \"Normal\" lors de la lecture d'une vidéo déjà lue."
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Activer les profils AV1 - RESERVE AUX TESTS DE DEVELOPPEMENT"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Ajouter les dossier Netflix aux sources de la médiathèque Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Les dossiers \"Netflix-Films\" and \"Netflix-Séries\" ont été ajoutés aux sources Kodi, redémarrez Kodi pour les voir dans les menus [Séries] / [Films]. Puis modifier les dossiers pour configurer le type de contenu et le fournisseur d'informations."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Manuel] mises à jour manuelles en utilisant \"Exporter les nouveaux épisodes\" dans le menu contextuel sur chaque série, [Programmé] vous pouvez programmer les mises à jour à certaines heures, [Quand Kodi démarre] mises à jour automatiques au démarrage de Kodi et une seule fois par jour."
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Synchronise la médiathèque avec \"Ma Liste\", si \"Ma Liste\" a été modifiée en dehors de Kodi (par ex appli mobile ou site internet), la mise à jour sera décalée à l'heure planifiée."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Si activé, ajoute des informations aux épisodes et films ce qui est utile quand les fournisseurs d'informations n'ont pas de données. Ajoutera aussi la durée des vidéos."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "A activer qu'avec le fournisseur d'informations \"Local information only\", ou si certains titres ne s'affichent pas dans la médiathèque après leur ajout."
