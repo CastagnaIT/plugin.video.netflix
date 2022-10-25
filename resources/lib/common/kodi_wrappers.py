@@ -14,6 +14,28 @@ import xbmcgui
 
 from resources.lib.globals import G
 
+# Convert the deprecated ListItem.setInfo keys to use method names of the new xbmc.InfoTagVideo object
+INFO_CONVERT_KEY = {
+    'Title': 'setTitle',
+    'Year': 'setYear',
+    'Plot': 'setPlot',
+    'PlotOutline': 'setPlotOutline',
+    'Season': 'setSeason',
+    'Episode': 'setEpisode',
+    'Rating': 'setRating',
+    'UserRating': 'setUserRating',
+    'Mpaa': 'setMpaa',
+    'Duration': 'setDuration',
+    'Trailer': 'setTrailer',
+    'DateAdded': 'setDateAdded',
+    'Director': 'setDirectors',
+    'Writer': 'setWriters',
+    'Genre': 'setGenres',
+    'MediaType': 'setMediaType',
+    'TVShowTitle': 'setTvShowTitle',
+    'PlayCount': 'setPlaycount'
+}
+
 
 # pylint: disable=redefined-builtin,invalid-name,no-member
 class ListItemW(xbmcgui.ListItem):
@@ -43,12 +65,18 @@ class ListItemW(xbmcgui.ListItem):
             for stream_type, quality_info in state['stream_info'].items():
                 super().addStreamInfo(stream_type, quality_info)
         else:
-            # TODO: setInfo is deprecated
-            super().setInfo('video', state['infolabels'])
-            video_info_tag = super().getVideoInfoTag()
+            video_info = super().getVideoInfoTag()
+            # "Cast" and "Tag" keys need to be converted
+            cast_names = state['infolabels'].pop('Cast', [])
+            video_info.setCast([xbmc.Actor(name) for name in cast_names])
+            tag_names = state['infolabels'].pop('Tag', [])
+            video_info.setTagLine(' / '.join(tag_names))
+            # From Kodi v20 ListItem.setInfo is deprecated, we need to use the methods of InfoTagVideo object
+            for key, value in state['infolabels'].items():
+                getattr(video_info, INFO_CONVERT_KEY[key])(value)
             if state['stream_info']:
-                video_info_tag.addVideoStream(xbmc.VideoStreamDetail(**state['stream_info']['video']))
-                video_info_tag.addAudioStream(xbmc.AudioStreamDetail(**state['stream_info']['audio']))
+                video_info.addVideoStream(xbmc.VideoStreamDetail(**state['stream_info']['video']))
+                video_info.addAudioStream(xbmc.AudioStreamDetail(**state['stream_info']['audio']))
         super().setProperties(state['properties'])
         super().setArt(state['art'])
         super().addContextMenuItems(state.get('context_menus', []))
