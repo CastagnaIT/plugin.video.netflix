@@ -121,7 +121,6 @@ INFO_MAPPINGS = [
 # pylint: disable=unnecessary-lambda
 INFO_TRANSFORMATIONS = {
     'Season': lambda s_value: _convert_season(s_value),
-    'Episode': lambda ep: str(ep),
     'Rating': lambda r: r / 10,
     'PlayCount': lambda w: int(w),
     'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
@@ -130,18 +129,18 @@ INFO_TRANSFORMATIONS = {
 }
 
 REFERENCE_MAPPINGS = {
-    'cast': 'cast',
-    'director': 'directors',
-    'writer': 'creators',
-    'genre': 'genres'
+    'Cast': 'cast',
+    'Director': 'directors',
+    'Writer': 'creators',
+    'Genre': 'genres'
 }
 
 
 def _convert_season(value):
     if isinstance(value, int):
-        return str(value)
+        return value
     # isdigit is needed to filter out non numeric characters from 'shortName' key
-    return ''.join([n for n in value if n.isdigit()])
+    return int(''.join([n for n in value if n.isdigit()] or '0'))
 
 
 def build_paths(base_path, partial_paths):

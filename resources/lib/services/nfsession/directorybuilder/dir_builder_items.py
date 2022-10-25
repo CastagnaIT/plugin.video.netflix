@@ -63,7 +63,7 @@ def build_mainmenu_listing(loco_list):
                                 else '')
             list_item = ListItemW(label=menu_title)
             list_item.setArt({'icon': data['icon']})
-            list_item.setInfo('video', {'plot': menu_description})
+            list_item.setInfo('video', {'Plot': menu_description})
             list_item.addContextMenuItems(generate_context_menu_mainmenu(menu_id))
             directory_items.append((common.build_url(data['path'], mode=G.MODE_DIRECTORY), list_item, True))
         # Save the menu titles, to reuse it when will be open the content of menus
@@ -119,7 +119,7 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_autoselect
         'nf_description': description.replace('[CR]', ' - ')
     })
     list_item.setArt({'icon': G.LOCAL_DB.get_profile_config('avatar', '', guid=profile_guid)})
-    list_item.setInfo('video', {'plot': description})
+    list_item.setInfo('video', {'Plot': description})
     list_item.select(is_selected)
     list_item.addContextMenuItems(menu_items)
     return (common.build_url(pathitems=['home'], params={'switch_profile_guid': profile_guid}, mode=G.MODE_DIRECTORY),
@@ -280,7 +280,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         # Create the folder for the access to sub-genre
         folder_list_item = ListItemW(label=common.get_local_string(30089))
         folder_list_item.setArt({'icon': 'DefaultVideoPlaylists.png'})
-        folder_list_item.setInfo('video', {'plot': common.get_local_string(30088)})  # The description
+        folder_list_item.setInfo('video', {'Plot': common.get_local_string(30088)})  # The description
         directory_items.insert(0, (common.build_url(['genres', menu_id, sub_genre_id], mode=G.MODE_DIRECTORY),
                                    folder_list_item,
                                    True))

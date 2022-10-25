@@ -79,7 +79,7 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
     elif is_in_remind_me:
         # Highlight ListItem title when a video is marked as "Remind me"
         list_item.setLabel(_colorize_text(common_data['rememberme_titles_color'], list_item.getLabel()))
-    infos_copy['title'] = list_item.getLabel()
+    infos_copy['Title'] = list_item.getLabel()
     if videoid.mediatype == common.VideoId.SHOW and not common_data['marks_tvshow_started']:
         infos_copy.pop('PlayCount', None)
     list_item.setInfo('video', infos_copy)
@@ -199,7 +199,7 @@ def _parse_referenced_infos(item, raw_data):
 
 def _parse_tags(item):
     """Parse the tags"""
-    return {'tag': [tagdef['name']['value']
+    return {'Tag': [tagdef['name']['value']
                     for tagdef
                     in item.get('tags', {}).values()
                     if isinstance(tagdef.get('name', {}), str)]}
@@ -326,11 +326,11 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
         except CacheMiss:
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
             bookmark_position = video_data['bookmarkPosition'].get('value', 0)
-        playcount = '1' if bookmark_position >= watched_threshold else '0'
-        if playcount == '0' and bookmark_position > 0:
+        playcount = 1 if bookmark_position >= watched_threshold else 0
+        if playcount == 0 and bookmark_position > 0:
             resume_time = bookmark_position
     else:
-        playcount = '1' if is_watched_user_overrided else '0'
+        playcount = 1 if is_watched_user_overrided else 0
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     list_item.updateInfo({'PlayCount': playcount})

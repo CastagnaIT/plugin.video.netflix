@@ -265,6 +265,6 @@ def _create_diritem_from_row(row):
     row_id = str(row['ID'])
     search_desc = common.get_local_string(30401) + ': ' + SEARCH_TYPES_DESC.get(row['Type'], 'Unknown')
     list_item = xbmcgui.ListItem(label=row['Value'], offscreen=True)
-    list_item.setInfo('video', {'plot': search_desc})
+    list_item.setInfo('video', {'Plot': search_desc})
     list_item.addContextMenuItems(generate_context_menu_searchitem(row_id, row['Type']))
     return common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY), list_item, True
