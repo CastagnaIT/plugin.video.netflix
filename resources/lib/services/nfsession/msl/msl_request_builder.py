@@ -137,7 +137,6 @@ class MSLRequestBuilder:
             # Make requests by using by default main netflix profile, since the user id token contains also the identity
             # of the netflix profile, to send data to the right profile (e.g. for continue watching) must be used
             # SWITCH_PROFILE scheme to switching MSL profile.
-            # 25/09/2022: SWITCH_PROFILE auth scheme has been disabled on netflix website backend and not works anymore.
             if auth_data['use_switch_profile']:
                 # The SWITCH_PROFILE is a custom Netflix MSL user authentication scheme, that is needed for switching
                 # profile on MSL side, works only combined with user id token and can not be used with all endpoints
