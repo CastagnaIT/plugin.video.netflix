@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-09-02 12:00+0000\n"
+"PO-Revision-Date: 2022-10-26 00:00+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -34,7 +34,7 @@ msgstr "推荐"
 
 msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
-msgstr "输入PIN来观看受限内容"
+msgstr "输入PIN码来观看受限内容"
 
 # Unused 30003
 msgctxt "#30004"
@@ -47,11 +47,11 @@ msgstr "电子邮箱"
 
 msgctxt "#30006"
 msgid "Enter PIN to access this profile"
-msgstr "输入PIN即可访问此个人资料"
+msgstr "输入PIN码即可访问此个人资料"
 
 msgctxt "#30007"
 msgid "Parental Control PIN (4 digits)"
-msgstr "家长控制PIN（4位数字）"
+msgstr "家长控制PIN码（4位数字）"
 
 msgctxt "#30008"
 msgid "Login failed"
@@ -89,7 +89,7 @@ msgstr "注销"
 
 msgctxt "#30018"
 msgid "Export to library"
-msgstr "导出到库"
+msgstr "导出到资料库"
 
 msgctxt "#30019"
 msgid "Rate on Netflix"
@@ -117,15 +117,15 @@ msgstr "SSL验证"
 
 msgctxt "#30025"
 msgid "Library"
-msgstr "库"
+msgstr "资料库"
 
 msgctxt "#30026"
 msgid "Enable custom library folder"
-msgstr "启用自定义库文件夹"
+msgstr "启用自定义资料库文件夹"
 
 msgctxt "#30027"
 msgid "Custom library path"
-msgstr "自定义库路径"
+msgstr "自定义资料库路径"
 
 msgctxt "#30028"
 msgid "Playback error"
@@ -134,7 +134,7 @@ msgstr "播放错误"
 # Unused 30029
 msgctxt "#30030"
 msgid "Remove from library"
-msgstr "从库中删除"
+msgstr "从资料库中删除"
 
 msgctxt "#30031"
 msgid "General"
@@ -143,7 +143,7 @@ msgstr "常规"
 # Unused 30032
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "启用Dolby Digital Plus（高级方案的高品质音频和杜比全景声）"
+msgstr "启用杜比数字+（高品质音频和高级方案全景声）"
 
 # Unused 30034
 msgctxt "#30035"
@@ -193,7 +193,7 @@ msgstr "InputStream Adaptive附加组件或Widevine库存在问题。可能缺�
 
 msgctxt "#30047"
 msgid "Library update in progress"
-msgstr "正在更新库"
+msgstr "正在更新资料库"
 
 msgctxt "#30048"
 msgid "Exported"
@@ -201,29 +201,29 @@ msgstr "已导出"
 
 msgctxt "#30049"
 msgid "Library"
-msgstr "库"
+msgstr "资料库"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "启用Kodi资料库管理"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
 msgctxt "#30052"
 msgid "{} Set for library playback"
-msgstr "{} 设为从库播放"
+msgstr "{} 设为资料库播放"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} 设为自动登录"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} 记住PIN码"
 
 # Unused 30058
 msgctxt "#30059"
@@ -232,11 +232,11 @@ msgstr "注意，您将更新许多标题{}。[CR]这可能会导致服务问题
 
 msgctxt "#30060"
 msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "启用HEVC（Android 4K/HDR/Dolby Vision）"
+msgstr "启用HEVC档次（Android 超高清/高动态范围/杜比视界）"
 
 msgctxt "#30061"
 msgid "Update inside library"
-msgstr "在库中更新"
+msgstr "在资料库中更新"
 
 msgctxt "#30062"
 msgid "Parental controls"
@@ -252,7 +252,7 @@ msgstr "执行自动更新"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "视频资料库更新"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -356,7 +356,7 @@ msgstr "浏览相关的视频列表并发现更多内容"
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
-msgstr "浏览和管理已导出到Kodi库的内容"
+msgstr "浏览和管理已导出到Kodi资料库的内容"
 
 msgctxt "#30092"
 msgid "Search for content and easily find what you want to watch."
@@ -384,11 +384,11 @@ msgstr "主菜单"
 
 msgctxt "#30098"
 msgid "Enable HDR profiles"
-msgstr "启用HDR"
+msgstr "启用高动态范围档次"
 
 msgctxt "#30099"
 msgid "Enable DolbyVision profiles"
-msgstr "启用Dolby Vision"
+msgstr "启用杜比视界档次"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -416,15 +416,15 @@ msgstr "Netflix附加组件错误"
 
 msgctxt "#30106"
 msgid "Invalid PIN"
-msgstr "PIN无效"
+msgstr "PIN码无效"
 
 msgctxt "#30107"
 msgid "PIN protection is off."
-msgstr "PIN保护已关闭"
+msgstr "PIN码保护已关闭"
 
 msgctxt "#30108"
 msgid "All content is protected by PIN."
-msgstr "所有内容均受PIN保护"
+msgstr "所有内容均受PIN码保护"
 
 msgctxt "#30109"
 msgid "Login successful"
@@ -458,7 +458,7 @@ msgstr "缓存"
 # Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "无法自动从Kodi库中删除季，请手动操作"
+msgstr "无法自动从Kodi资料库中删除季，请手动操作"
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -466,7 +466,7 @@ msgstr "立即执行完全同步"
 
 msgctxt "#30122"
 msgid "Sync 'My list' to Kodi library"
-msgstr "同步'我的片单'到Kodi库"
+msgstr "同步'我的片单'到Kodi资料库"
 
 msgctxt "#30123"
 msgid "Do you want to continue?[CR]The full synchronization will delete all previously exported titles.[CR]If there are many titles this operation may take some time."
@@ -474,15 +474,15 @@ msgstr "您想继续吗?[CR]完全同步将删除所有以前导出的标题。[
 
 msgctxt "#30124"
 msgid "Do you want to remove this item from the library?"
-msgstr "您要从库中删除该项目吗？"
+msgstr "您要从资料库中删除该项目吗？"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "删除库内容"
+msgstr "删除资料库内容"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
-msgstr "您是否真的要清除库？[CR]所有导出的项目将被删除"
+msgstr "您是否真的要清除资料库？[CR]所有导出的项目将被删除"
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -523,7 +523,7 @@ msgstr "缓存已清除"
 # Unused 30136
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "启用VP9（如果导致伪影则禁用）"
+msgstr "启用VP9档次（如果导致伪影则禁用）"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -535,7 +535,7 @@ msgstr "启用基于HTTP的IPC（在附加组件提示信号超时信息时使�
 
 msgctxt "#30140"
 msgid "Import existing library"
-msgstr "导入现有库"
+msgstr "导入现有资料库"
 
 msgctxt "#30141"
 msgid "Disable startup notification"
@@ -548,11 +548,11 @@ msgstr "禁用WebVTT字幕支持"
 
 msgctxt "#30145"
 msgid "Recently added"
-msgstr "最近新增"
+msgstr "最新上线"
 
 msgctxt "#30146"
 msgid "Discover the latest content added."
-msgstr "发现最新添加的内容"
+msgstr "发现最新上线内容"
 
 msgctxt "#30147"
 msgid "Next page »"
@@ -576,7 +576,7 @@ msgstr "字母顺序（Z-A）"
 
 msgctxt "#30152"
 msgid "Suggestions for you"
-msgstr "为您推荐"
+msgstr "推荐给您"
 
 msgctxt "#30153"
 msgid "Year released"
@@ -734,7 +734,7 @@ msgstr "[CR]这些文件由提供商信息收集器用来集成电影和电视�
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "包括电视节目NFO详细信息"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -758,11 +758,11 @@ msgstr "导出新剧集"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
-msgstr "共享库（需要Kodi MySQL服务器）"
+msgstr "共享资料库（需要Kodi MySQL服务器）"
 
 msgctxt "#30200"
 msgid "Use shared library MySQL-database"
-msgstr "使用MySQL共享库数据库"
+msgstr "使用MySQL共享资料库数据库"
 
 msgctxt "#30201"
 msgid "Username"
@@ -798,19 +798,19 @@ msgstr "检查此设备是否是主要的自动更新管理器"
 
 msgctxt "#30209"
 msgid "This device now handles the auto-updates of the shared library"
-msgstr "此设备现在可以处理共享库的自动更新"
+msgstr "此设备现在可以处理共享资料库的自动更新"
 
 msgctxt "#30210"
 msgid "This device handles the auto-updates of the shared library"
-msgstr "此设备处理共享库的自动更新"
+msgstr "此设备处理共享资料库的自动更新"
 
 msgctxt "#30211"
 msgid "Another device handles the auto-updates of the shared library"
-msgstr "另一台设备处理共享库的自动更新"
+msgstr "另一台设备处理共享资料库的自动更新"
 
 msgctxt "#30212"
 msgid "There is no device that handles the auto-updates of the shared library"
-msgstr "没有设备可以处理共享库的自动更新"
+msgstr "没有设备可以处理共享资料库的自动更新"
 
 msgctxt "#30213"
 msgid "InputStream Helper settings..."
@@ -822,11 +822,11 @@ msgstr "强制刷新"
 
 msgctxt "#30215"
 msgid "Color of the titles included in \"My list\""
-msgstr "列入'我的片单'的标题颜色"
+msgstr "加入'我的片单'的标题颜色"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "标为'提醒我'的标题颜色"
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -835,7 +835,7 @@ msgstr "禁用同步完成通知"
 
 msgctxt "#30220"
 msgid "The Kodi library has been updated"
-msgstr "Kodi库已更新"
+msgstr "Kodi资料库已更新"
 
 msgctxt "#30221"
 msgid "Owner account"
@@ -860,7 +860,7 @@ msgstr "计划"
 
 msgctxt "#30227"
 msgid "Synchronize Kodi library with 'My list'"
-msgstr "将Kodi库与'我的片单'同步"
+msgstr "将Kodi资料库与'我的片单'同步"
 
 msgctxt "#30228"
 msgid "Set a profile for synchronization"
@@ -868,7 +868,7 @@ msgstr "设置同步个人资料"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "当Kodi启动"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -926,7 +926,7 @@ msgstr "选择首个未观看的电视节目剧集"
 # Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
-msgstr "删除导出到库的内容"
+msgstr "删除导出到资料库的内容"
 
 msgctxt "#30246"
 msgid "There are {} titles that cannot be imported.[CR]Do you want to delete these files?"
@@ -943,7 +943,7 @@ msgstr "您是否要删除\"{}\"的已观看状态？"
 
 msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
-msgstr "包括Kodi库（仅发送数据）"
+msgstr "包括Kodi资料库（仅发送数据）"
 
 # Unused 30302 to 30339
 msgctxt "#30340"
@@ -1090,7 +1090,7 @@ msgstr "MSL清单版本"
 # Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from:[CR]{}"
-msgstr "将在{}上线"
+msgstr "此标题：[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
@@ -1104,7 +1104,7 @@ msgstr "{} 提醒我"
 # Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr "最新与热播"
+msgstr "最新与排行榜"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
@@ -1141,12 +1141,12 @@ msgstr "请注意，启用此设置将强制移除不在设定范围内的流，
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "黑条最大高度（实验性）"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr "通过将 Kodi \"视图模式\" 设置为 \"满屏\" 裁剪的视频将被拉伸，以最小化设置黑边最大高度。例如 10% 表示黑条最多可以覆盖屏幕的 10%。要禁用它，请设置为 50%。"
+msgstr "通过将 Kodi \"视图模式\" 设置为 \"满屏\" 以最小化设置黑条的最大高度，被裁切的视频将被拉伸。例如 10% 表示黑条最多可以覆盖屏幕的 10%。要禁用它，请设置为 50%。"
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
@@ -1160,32 +1160,32 @@ msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置�
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "启用AV1档次 - 仅用于开发测试"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "将Netflix文件夹添加到Kodi资料库源"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "文件夹 \"Netflix-Movies\" 和 \"Netflix-Shows\"已经被添加到Kodi源，重新启动Kodi以在Kodi [TV Shows] / [Movies] 菜单中查看它们。然后编辑这些文件夹以设置适当的内容类型和信息提供者刮削器。"
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[手动]更新必须通过在每个电视节目上使用上下文菜单\"导出新剧集\"手动完成，[计划]您可以在预定时间建立自动更新，[当Kodi启动]在Kodi启动时自动更新，每天仅一次。"
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "将资料库与'我的片单'同步，如果'我的片单'被外部修改，例如移动应用程序或网站，更新将被推迟到预定时间。"
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "如果启用，则将信息添加到剧集或电影中，这在 Kodi 信息提供者刮削器不提供信息时很有用。这也将添加视频的片长。"
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "仅在使用\"Local Information\"信息提供者刮削器的情况下启用，或者尽管已经添加了某些标题，但在Kodi资料库中没有显示。"
