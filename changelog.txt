@@ -1,3 +1,16 @@
+v1.20.0 (2022-10-27)
+- Fixed limitation on Android devices to playback from main profile only
+- Fixed trailers context menu and list
+- Add color setting for videos set as "Remind me"
+- Add "Remember PIN" feature, can be set by opening profile context menu
+- Updated "Remove watched status" context menu (continue watching menu)
+- Cleanup add-on library settings
+- Cleanup profiles context menus
+- Removed Expert setting "Force MSL with idtoken authentication" not more needed
+- Removed language code descriptions workaround to Kodi 20 only, for details see Wiki FAQ:
+"Audio/Subtitles language codes have a wrong/incomplete descriptions"
+- Update translations it, de, fr, zh_cn
+
 v1.19.1 (2022-10-09)
 - NOTE: DUE TO WEBSITE CHANGES ANDROID L3 DEVICES CAN PLAY VIDEOS FROM MAIN PROFILE ONLY
 - Fixed error "License update not successful (no keys)" on linux systems
