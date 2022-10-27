@@ -168,30 +168,21 @@ def _get_service_status():
     from json import loads
     try:
         status = WndHomeProps[WndHomeProps.SERVICE_STATUS]
-        return loads(status) if status else {}
+        if status:
+            return loads(status)
     except Exception:  # pylint: disable=broad-except
-        return {}
+        LOG.warn('Cannot read SERVICE_STATUS property from Kodi home window')
+    return {'status': G.SERVICE_STATUS_STARTUP}
 
 
-def _check_addon_external_call():
-    """Check system to verify if the calls to the add-on are originated externally"""
-    # The calls that are made from outside do not respect and do not check whether the services required
-    # for the add-on are actually working and operational, causing problems with the execution of the frontend.
-
-    # A clear example are the Skin widgets, that are executed at Kodi startup immediately and this is cause of different
-    # kinds of problems like widgets not loaded, add-on warning message, etc...
-
-    # Cases where it can happen:
-    # - Calls made by the Skin Widgets, Scripts, Kodi library
-    # - Calls made by others Kodi windows (like file browser)
-    # - Calls made by other add-ons
-
-    # To try to solve the problem, when the service is not ready a loop will be started to freeze the add-on instance
-    # until the service will be ready.
-
+def _verify_external_call():
+    """Verify if the add-on call is coming from external parties."""
+    # What follows is not a 100% safe method, but it is the best that can be done at the moment
+    # Examples of calls made by external parties:
+    # - Skin Widgets, Scripts, Kodi library, Keyboard shortcut
+    # - Kodi windows like file browser
+    # - Third party add-ons
     is_other_plugin_name = getInfoLabel('Container.PluginName') != G.ADDON.getAddonInfo('id')
-    limit_sec = 10
-
     # Note to Kodi boolean condition "Window.IsMedia":
     # All widgets will be either on Home or in a Custom Window, so "Window.IsMedia" will be false
     # When the user is browsing the plugin, Window.IsMedia will be true because video add-ons open
@@ -199,16 +190,57 @@ def _check_addon_external_call():
     # This is not a safe solution, because DEPENDS ON WHICH WINDOW IS OPEN,
     # for example it can fail if you open add-on video browser while widget is still loading.
     # Needed a proper solution by script.skinshortcuts / script.skin.helper.service, and forks
-    if is_other_plugin_name or not getCondVisibility("Window.IsMedia"):
-        monitor = Monitor()
-        sec_elapsed = 0
-        while not _get_service_status().get('status') == 'running':
-            if sec_elapsed >= limit_sec or monitor.abortRequested() or monitor.waitForAbort(0.5):
-                break
-            sec_elapsed += 0.5
-        LOG.debug('Add-on was initiated by an external call - workaround enabled time elapsed {}s', sec_elapsed)
+    if is_other_plugin_name or not getCondVisibility('Window.IsMedia'):
         G.IS_ADDON_EXTERNAL_CALL = True
+
+
+def _check_service():
+    """
+    Check whether the add-on service is up, otherwise wait for start-up.
+
+    :returns: True if service is running, otherwise False
+    """
+    # The calls to the add-on are made by ignoring the add-on service status,
+    # so we must check the service and wait right here until it is ready
+    status = _get_service_status()
+    if status['status'] == G.SERVICE_STATUS_RUNNING:
         return True
+    # Waiting for service start-up
+    timeout_secs = 20
+    is_progress_hidden = G.IS_ADDON_EXTERNAL_CALL
+    from xbmcgui import DialogProgressBG
+    dialog = DialogProgressBG()
+    if not is_progress_hidden:
+        dialog.create('Netflix', get_local_string(30136))
+    monitor = Monitor()
+    from time import perf_counter
+    start = perf_counter()
+    while status['status'] == G.SERVICE_STATUS_STARTUP:
+        elapsed_time = perf_counter() - start
+        if elapsed_time >= timeout_secs or monitor.abortRequested() or monitor.waitForAbort(0.5):
+            break
+        if not is_progress_hidden:
+            dialog.update(percent=int(elapsed_time * 100 / timeout_secs))
+        status = _get_service_status()
+    if not is_progress_hidden:
+        dialog.close()
+
+    if status['status'] == G.SERVICE_STATUS_RUNNING:
+        return True
+
+    LOG.warn('The add-on service is not running (service status: {}).', status['status'])
+    if not G.IS_ADDON_EXTERNAL_CALL:  # With external calls (e.g. widgets/scripts) we do not have to show GUI messages
+        if status['status'] == G.SERVICE_STATUS_ERROR:
+            # The services are not started due to an error exception
+            from resources.lib.kodi.ui import show_error_info
+            show_error_info(get_local_string(30105), get_local_string(30240).format(status.get('message', '--')),
+                            False, False)
+        elif status['status'] == G.SERVICE_STATUS_UPGRADE:
+            from resources.lib.kodi.ui import show_ok_dialog
+            show_ok_dialog('Netflix', 'An upgrade of add-on service is in progress, please wait.')
+        else:
+            from resources.lib.kodi.ui import show_backend_not_ready
+            show_backend_not_ready()
     return False
 
 
@@ -218,27 +250,12 @@ def run(argv):
     # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
     # PR: https://github.com/xbmc/xbmc/pull/13814
     G.init_globals(argv)
+    _verify_external_call()
 
-    LOG.info('Started (Version {})', G.VERSION_RAW)
-    LOG.info('URL is {}', G.URL)
-    success = True
+    LOG.info('Started (version {})\nURL: {}\nFrom external call: {}', G.VERSION_RAW, G.URL, G.IS_ADDON_EXTERNAL_CALL)
 
-    is_external_call = _check_addon_external_call()
-    service_status = _get_service_status()
-
-    if service_status.get('status') != 'running':
-        if not is_external_call:
-            if service_status.get('status') == 'error':
-                # The services are not started due to an error exception
-                from resources.lib.kodi.ui import show_error_info
-                show_error_info(get_local_string(30105), get_local_string(30240).format(service_status.get('message')),
-                                False, False)
-            else:
-                # The services are not started yet
-                from resources.lib.kodi.ui import show_backend_not_ready
-                show_backend_not_ready()
-        success = False
-    if success:
+    success = False
+    if _check_service():
         pathitems = [part for part in G.REQUEST_PATH.split('/') if part]
         if G.IS_ADDON_FIRSTRUN:
             is_first_run_install = check_addon_upgrade()

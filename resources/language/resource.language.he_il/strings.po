@@ -430,10 +430,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "ההתחברות הצליחה"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "השירות החל לעבוד ברקע"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "אין תוכן"
@@ -520,7 +517,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "זיכרון מטמון התרוקן"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "לאפשר פרופילי VP9 (מתבטל במידה וישנם הפרעות בתמונה)"
@@ -537,11 +537,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "ייבוא ספרייה קיימת"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "השתקת הודעות בעליית המערכת"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "כיבוי תמיכה בתרגום WebVTT"

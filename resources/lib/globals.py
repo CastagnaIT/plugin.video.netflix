@@ -194,6 +194,12 @@ class GlobalVariables:
     MODE_LIBRARY = 'library'
     MODE_KEYMAPS = 'keymaps'
 
+    SERVICE_STATUS_STARTUP = 'startup'
+    SERVICE_STATUS_RUNNING = 'running'
+    SERVICE_STATUS_STOPPED = 'stopped'
+    SERVICE_STATUS_UPGRADE = 'upgrade'
+    SERVICE_STATUS_ERROR = 'error'
+
     def __init__(self):
         """Do nothing on constructing the object"""
         # The class initialization (GlobalVariables) will only take place at the first initialization of this module

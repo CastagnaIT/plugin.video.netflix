@@ -430,10 +430,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Zalogowano pomyślnie"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "Uruchomiono usługi w tle"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Nie znaleziono treści"
@@ -520,7 +517,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Pamięć podręczna wyczyszczona"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Włącz profile VP9 (wyłącz jeśli powoduje artefakty)"
@@ -537,11 +537,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Importuj istniejącą bibliotekę"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "Wyłącz powiadomienia o starcie"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Wyłącz obsługę napisów WebVTT"

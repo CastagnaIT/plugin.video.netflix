@@ -430,10 +430,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Bejelentkezés sikeres"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "Háttér folyamat elindult"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Nincs tartalom ehhez"
@@ -520,7 +517,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Gyorsítótár törölve"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)"
@@ -537,11 +537,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Meglévő médiatár importálása"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "Indítási értesítés letiltása"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "WebVTT felirat támogatás tiltása"

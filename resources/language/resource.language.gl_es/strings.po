@@ -432,10 +432,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Inicio de sesión correcto"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "Inicializados os servizos en segundo plano"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Sen contidos"
@@ -522,7 +519,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Caché limpa"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Activar perfís VP9 (deshabilite se causar mal comportamento)"
@@ -539,11 +539,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Importar biblioteca existente"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "Desactivar notificación de inicialización"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Desactivar o soporte de subtítulos WebVTT"

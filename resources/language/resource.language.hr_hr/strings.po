@@ -431,10 +431,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Prijava uspješna"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "Pozadinski servisi pokrenuti"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Nema sadržaja"
@@ -521,7 +518,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Predmemorija oslobođena"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Omogući VP9 profile (onemogući ako uzrokuje artefakte)"
@@ -538,11 +538,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Uvezi postojeću biblioteku"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "Onemogući obavijest prilikom pokretanja"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Onemogući podršku za WebVTT titlove"

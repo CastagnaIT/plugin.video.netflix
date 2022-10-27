@@ -430,10 +430,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Connexion réussie"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "Services d'arrière-plan démarrés"
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Aucun contenu"
@@ -520,7 +517,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "Cache purgé"
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "Activer les profils VP9 (à désactiver en cas d'artéfacts)"
@@ -537,11 +537,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Importer la médiathèque existante"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "Désactiver la notification au démarrage"
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Désactiver la prise en charge des sous-titres WebVTT"
